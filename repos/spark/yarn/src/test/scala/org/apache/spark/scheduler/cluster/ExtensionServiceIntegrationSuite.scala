@@ -72,8 +72,6 @@ class ExtensionServiceIntegrationSuite
       assert(simpleService.started.get, "service not started")
       services.stop()
       assert(!simpleService.started.get, "service not stopped")
-    } finally {
-      services.stop()
-    }
+    } finally services.stop()
   }
 }

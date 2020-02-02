@@ -55,18 +55,16 @@ class CoordinateMatrix @Since("1.0.0") (
   /** Gets or computes the number of columns. */
   @Since("1.0.0")
   override def numCols(): Long = {
-    if (nCols <= 0L) {
+    if (nCols <= 0L)
       computeSize()
-    }
     nCols
   }
 
   /** Gets or computes the number of rows. */
   @Since("1.0.0")
   override def numRows(): Long = {
-    if (nRows <= 0L) {
+    if (nRows <= 0L)
       computeSize()
-    }
     nRows
   }
 
@@ -82,11 +80,10 @@ class CoordinateMatrix @Since("1.0.0") (
   @Since("1.0.0")
   def toIndexedRowMatrix(): IndexedRowMatrix = {
     val nl = numCols()
-    if (nl > Int.MaxValue) {
+    if (nl > Int.MaxValue)
       sys.error(
         s"Cannot convert to a row-oriented format because the number of columns $nl is " +
           "too large.")
-    }
     val n = nl.toInt
     val indexedRows = entries
       .map(entry => (entry.i, (entry.j.toInt, entry.value)))

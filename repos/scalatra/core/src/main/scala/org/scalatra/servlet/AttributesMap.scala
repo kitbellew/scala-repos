@@ -25,12 +25,11 @@ trait AttributesMap
     */
   def get(key: String): Option[Any] =
     if (attributes == null) None
-    else {
+    else
       attributes.getAttribute(key) match {
         case null => None
         case v    => Some(v)
       }
-    }
 
   /**
     * Optionally return and type cast the attribute associated with the key

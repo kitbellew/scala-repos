@@ -121,50 +121,46 @@ trait LoggingBus extends ActorEventBus {
         for {
           loggerName ← defaultLoggers
           if loggerName != StandardOutLogger.getClass.getName
-        } yield {
-          system.dynamicAccess
-            .getClassFor[Actor](loggerName)
-            .map({
-              case actorClass ⇒ addLogger(system, actorClass, level, logName)
-            })
-            .recover({
-              case e ⇒
-                throw new ConfigurationException(
-                  "Logger specified in config can't be loaded [" + loggerName +
-                    "] due to [" + e.toString + "]",
-                  e)
-            })
-            .get
-        }
+        } yield system.dynamicAccess
+          .getClassFor[Actor](loggerName)
+          .map({
+            case actorClass ⇒ addLogger(system, actorClass, level, logName)
+          })
+          .recover({
+            case e ⇒
+              throw new ConfigurationException(
+                "Logger specified in config can't be loaded [" + loggerName +
+                  "] due to [" + e.toString + "]",
+                e)
+          })
+          .get
       guard.withGuard {
         loggers = myloggers
         _logLevel = level
       }
-      try {
-        if (system.settings.DebugUnhandledMessage)
-          subscribe(
-            system.systemActorOf(
-              Props(new Actor {
-                def receive = {
-                  case UnhandledMessage(msg, sender, rcp) ⇒
-                    publish(
-                      Debug(
-                        rcp.path.toString,
-                        rcp.getClass,
-                        "unhandled message from " + sender + ": " + msg))
-                }
-              }),
-              "UnhandledMessageForwarder"
-            ),
-            classOf[UnhandledMessage]
-          )
-      } catch {
+      try if (system.settings.DebugUnhandledMessage)
+        subscribe(
+          system.systemActorOf(
+            Props(new Actor {
+              def receive = {
+                case UnhandledMessage(msg, sender, rcp) ⇒
+                  publish(
+                    Debug(
+                      rcp.path.toString,
+                      rcp.getClass,
+                      "unhandled message from " + sender + ": " + msg))
+              }
+            }),
+            "UnhandledMessageForwarder"
+          ),
+          classOf[UnhandledMessage]
+        )
+      catch {
         case _: InvalidActorNameException ⇒ // ignore if it is already running
       }
       publish(Debug(logName, this.getClass, "Default Loggers started"))
-      if (!(defaultLoggers contains StandardOutLogger.getClass.getName)) {
+      if (!(defaultLoggers contains StandardOutLogger.getClass.getName))
         unsubscribe(StandardOutLogger)
-      }
     } catch {
       case e: Exception ⇒
         System.err.println("error while starting up loggers")
@@ -328,10 +324,9 @@ object LogSource {
   implicit val fromActorRef: LogSource[ActorRef] = new LogSource[ActorRef] {
     def genString(a: ActorRef) = a.path.toString
     override def genString(a: ActorRef, system: ActorSystem) =
-      try {
-        a.path.toStringWithAddress(
-          system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
-      } catch {
+      try a.path.toStringWithAddress(
+        system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress)
+      catch {
         // it can fail if the ActorSystem (remoting) is not completely started yet
         case NonFatal(_) ⇒ a.path.toString
       }

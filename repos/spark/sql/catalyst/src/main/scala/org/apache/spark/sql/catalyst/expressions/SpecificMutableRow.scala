@@ -234,11 +234,10 @@ final class SpecificMutableRow(val values: Array[MutableValue])
   override protected def genericGet(i: Int): Any = values(i).boxed
 
   override def update(ordinal: Int, value: Any) {
-    if (value == null) {
+    if (value == null)
       setNullAt(ordinal)
-    } else {
+    else
       values(ordinal).update(value)
-    }
   }
 
   override def setInt(ordinal: Int, value: Int): Unit = {

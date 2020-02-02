@@ -186,7 +186,7 @@ object CharPredicate {
     }
 
     def --(chars: Seq[Char]): CharPredicate =
-      if (this != Empty) {
+      if (this != Empty)
         chars.foldLeft(this: CharPredicate) {
           case (_: MaskBased, c) if unmaskable(c) ⇒
             this andNot new ArrayBased(chars.toArray)
@@ -195,7 +195,7 @@ object CharPredicate {
           case (MaskBased(low, high), c) ⇒ MaskBased(low, high & ~(1L << c))
           case (x, _) ⇒ x // once the fold acc is not a MaskBased we are done
         }
-      } else this
+      else this
 
     def intersect(that: CharPredicate) = that match {
       case Empty ⇒ Empty
@@ -215,12 +215,12 @@ object CharPredicate {
 
     def getChars(array: Array[Char], startIx: Int): Unit = {
       @tailrec def rec(mask: Long, offset: Int, bit: Int, ix: Int): Int =
-        if (bit < 64 && ix < array.length) {
+        if (bit < 64 && ix < array.length)
           if ((mask & (1L << bit)) > 0) {
             array(ix) = (offset + bit).toChar
             rec(mask, offset, bit + 1, ix + 1)
           } else rec(mask, offset, bit + 1, ix)
-        } else ix
+        else ix
       rec(
         highMask,
         64,

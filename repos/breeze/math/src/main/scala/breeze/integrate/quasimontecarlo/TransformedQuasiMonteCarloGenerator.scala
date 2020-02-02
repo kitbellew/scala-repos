@@ -70,13 +70,12 @@ trait ProvidesTransformedQuasiMonteCarlo {
     def apply(alpha: Double, beta: Double): QuasiRandomVariableSpec = {
       require(alpha > 0)
       require(beta > 0)
-      if (alpha == 1.0) {
+      if (alpha == 1.0)
         breeze.stats.distributions.Exponential(beta)
-      } else if (alpha > 1) {
+      else if (alpha > 1)
         GammaQuasiRandomVariableSpecAlphaGeq1(alpha, beta)
-      } else {
+      else
         GammaQuasiRandomVariableSpecAlphaLeq1(alpha, beta)
-      }
     }
   }
 
@@ -169,17 +168,15 @@ trait ProvidesTransformedQuasiMonteCarlo {
         var i = 0
         while ((i < dimension) && accepted) {
           variables(i) match {
-            case (v: TransformingQuasiRandomVariableSpec) => {
+            case (v: TransformingQuasiRandomVariableSpec) =>
               currentValue(i) = v.transform(next, inputPosition)
-            }
-            case (v: RejectionQuasiRandomVariableSpec) => {
-              if (v.accept(next, inputPosition)) {
+            case (v: RejectionQuasiRandomVariableSpec) =>
+              if (v.accept(next, inputPosition))
                 currentValue(i) = v.compute(next, inputPosition)
-              } else {
+              else {
                 rejectedCount(i) = rejectedCount(i) + 1
                 accepted = false
               }
-            }
           }
           inputPosition = inputPosition + variables(i).numInputs
           i = i + 1

@@ -56,11 +56,10 @@ class CompactHessian(
     // (this is a lower triangular matrix with the diagonal set to all zeroes)
     val D = diag(DenseVector.tabulate[Double](k) { i => S(i) dot Y(i) })
     val L = DenseMatrix.tabulate[Double](k, k) { (i, j) =>
-      if (i > j) {
+      if (i > j)
         S(i) dot Y(j)
-      } else {
+      else
         0.0
-      }
     }
     val SM = collectionOfVectorsToMatrix(S)
     // S_k^T S_k is the symmetric k x k matrix with element (i,j) given by <s_i, s_j>
@@ -77,9 +76,9 @@ class CompactHessian(
   }
 
   def *(v: DenseVector[Double]): DenseVector[Double] =
-    if (Y.size == 0) {
+    if (Y.size == 0)
       v
-    } else {
+    else {
       val nTv = N.t * v.toDenseMatrix.t
       val u = (N * (M \ nTv)).toDenseVector
       v * sigma - u
@@ -159,9 +158,9 @@ class ProjectedQuasiNewton(
       state: State,
       fn: DiffFunction[DenseVector[Double]]): DenseVector[Double] = {
     import state._
-    if (iter == 0) {
+    if (iter == 0)
       computeGradient(x, grad)
-    } else {
+    else {
       // Update the limited-memory BFGS approximation to the Hessian
       //B.update(y, s)
       // Solve subproblem; we use the current iterate x as a guess

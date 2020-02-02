@@ -50,10 +50,9 @@ private[util] sealed trait BaseReadWrite {
     * Returns the user-specified SQL context or the default.
     */
   protected final def sqlContext: SQLContext = {
-    if (optionSQLContext.isEmpty) {
+    if (optionSQLContext.isEmpty)
       optionSQLContext = Some(
         SQLContext.getOrCreate(SparkContext.getOrCreate()))
-    }
     optionSQLContext.get
   }
 
@@ -82,16 +81,14 @@ abstract class MLWriter extends BaseReadWrite with Logging {
     val fs = outputPath.getFileSystem(hadoopConf)
     val qualifiedOutputPath =
       outputPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
-    if (fs.exists(qualifiedOutputPath)) {
+    if (fs.exists(qualifiedOutputPath))
       if (shouldOverwrite) {
         logInfo(s"Path $path already exists. It will be overwritten.")
         // TODO: Revert back to the original content if save is not successful.
         fs.delete(qualifiedOutputPath, true)
-      } else {
+      } else
         throw new IOException(
           s"Path $path already exists. Please use write.overwrite().save(path) to overwrite it.")
-      }
-    }
     saveImpl(path)
   }
 
@@ -334,12 +331,11 @@ private[ml] object DefaultParamsReader {
     val timestamp = (metadata \ "timestamp").extract[Long]
     val sparkVersion = (metadata \ "sparkVersion").extract[String]
     val params = metadata \ "paramMap"
-    if (expectedClassName.nonEmpty) {
+    if (expectedClassName.nonEmpty)
       require(
         className == expectedClassName,
         s"Error loading metadata: Expected class name" +
           s" $expectedClassName but found class name $className")
-    }
 
     Metadata(
       className,

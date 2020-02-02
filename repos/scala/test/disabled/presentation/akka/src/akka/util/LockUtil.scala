@@ -15,20 +15,14 @@ final class ReentrantGuard {
 
   final def withGuard[T](body: => T): T = {
     lock.lock
-    try {
-      body
-    } finally {
-      lock.unlock
-    }
+    try body
+    finally lock.unlock
   }
 
   final def tryWithGuard[T](body: => T): T = {
-    while (!lock.tryLock) { Thread.sleep(10) } // wait on the monitor to be unlocked
-    try {
-      body
-    } finally {
-      lock.unlock
-    }
+    while (!lock.tryLock) Thread.sleep(10) // wait on the monitor to be unlocked
+    try body
+    finally lock.unlock
   }
 }
 
@@ -42,20 +36,14 @@ class ReadWriteGuard {
 
   def withWriteGuard[T](body: => T): T = {
     writeLock.lock
-    try {
-      body
-    } finally {
-      writeLock.unlock
-    }
+    try body
+    finally writeLock.unlock
   }
 
   def withReadGuard[T](body: => T): T = {
     readLock.lock
-    try {
-      body
-    } finally {
-      readLock.unlock
-    }
+    try body
+    finally readLock.unlock
   }
 }
 
@@ -68,31 +56,22 @@ class SimpleLock {
 
   def ifPossible(perform: () => Unit): Boolean =
     if (tryLock()) {
-      try {
-        perform
-      } finally {
-        unlock()
-      }
+      try perform
+      finally unlock()
       true
     } else false
 
   def ifPossibleYield[T](perform: () => T): Option[T] =
-    if (tryLock()) {
-      try {
-        Some(perform())
-      } finally {
-        unlock()
-      }
-    } else None
+    if (tryLock())
+      try Some(perform())
+      finally unlock()
+    else None
 
   def ifPossibleApply[T, R](value: T)(function: (T) => R): Option[R] =
-    if (tryLock()) {
-      try {
-        Some(function(value))
-      } finally {
-        unlock()
-      }
-    } else None
+    if (tryLock())
+      try Some(function(value))
+      finally unlock()
+    else None
 
   def tryLock() =
     if (acquired.get) false
@@ -117,9 +96,8 @@ class Switch(startAsOn: Boolean = false) {
   protected def transcend(from: Boolean, action: => Unit): Boolean =
     synchronized {
       if (switch.compareAndSet(from, !from)) {
-        try {
-          action
-        } catch {
+        try action
+        catch {
           case e: Throwable =>
             EventHandler.error(e, this, e.getMessage)
             switch.compareAndSet(!from, from) // revert status

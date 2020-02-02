@@ -201,9 +201,8 @@ trait ScalatraBase
         }
         rendered = false
         r
-      } else {
+      } else
         throw prehandleException.get.asInstanceOf[Exception]
-      }
     }
 
     cradleHalt(
@@ -214,11 +213,8 @@ trait ScalatraBase
           rendered = false
         }, e => {
           runCallbacks(Failure(e))
-          try {
-            renderUncaughtException(e)
-          } finally {
-            runRenderCallbacks(Failure(e))
-          }
+          try renderUncaughtException(e)
+          finally runRenderCallbacks(Failure(e))
         })
     )
 
@@ -228,17 +224,14 @@ trait ScalatraBase
   private[this] def cradleHalt(body: => Any, error: Throwable => Any): Any =
     try body
     catch {
-      case e: HaltException => {
-        try {
-          handleStatusCode(extractStatusCode(e)) match {
-            case Some(result) => renderResponse(result)
-            case _            => renderHaltException(e)
-          }
+      case e: HaltException =>
+        try handleStatusCode(extractStatusCode(e)) match {
+          case Some(result) => renderResponse(result)
+          case _            => renderHaltException(e)
         } catch {
           case e: HaltException => renderHaltException(e)
           case e: Throwable     => error(e)
         }
-      }
       case e: Throwable => error(e)
     }
 
@@ -303,9 +296,8 @@ trait ScalatraBase
     }
 
   private def liftAction(action: Action): Option[Any] =
-    try {
-      Some(action())
-    } catch {
+    try Some(action())
+    catch {
       case e: PassException => None
     }
 
@@ -366,11 +358,8 @@ trait ScalatraBase
       implicit request: HttpServletRequest): S = {
     val originalParams = multiParams
     setMultiparams(matchedRoute, originalParams)
-    try {
-      thunk
-    } finally {
-      request(MultiParamsKey) = originalParams
-    }
+    try thunk
+    finally request(MultiParamsKey) = originalParams
   }
 
   protected def setMultiparams[S](
@@ -438,11 +427,8 @@ trait ScalatraBase
     } catch {
       case e: Throwable =>
         runCallbacks(Failure(e))
-        try {
-          renderUncaughtException(e)
-        } finally {
-          runRenderCallbacks(Failure(e))
-        }
+        try renderUncaughtException(e)
+        finally runRenderCallbacks(Failure(e))
     }
   }
 

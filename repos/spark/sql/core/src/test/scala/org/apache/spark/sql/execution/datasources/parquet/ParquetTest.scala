@@ -54,12 +54,11 @@ private[sql] trait ParquetTest extends SQLTestUtils {
   protected def readParquetFile(path: String, testVectorized: Boolean = true)(
       f: DataFrame => Unit) =
     (true :: false :: Nil).foreach { vectorized =>
-      if (!vectorized || testVectorized) {
+      if (!vectorized || testVectorized)
         withSQLConf(
           SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> vectorized.toString) {
           f(sqlContext.read.parquet(path.toString))
         }
-      }
     }
 
   /**

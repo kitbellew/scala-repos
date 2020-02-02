@@ -141,9 +141,8 @@ private[spark] class BlockManagerMasterEndpoint(
           if (blockManagerInfo.contains(bm)) {
             val bmInfo = blockManagerInfo(bm)
             context.reply(bmInfo.cachedBlocks.nonEmpty)
-          } else {
+          } else
             context.reply(false)
-          }
         case None => context.reply(false)
       }
   }
@@ -211,9 +210,8 @@ private[spark] class BlockManagerMasterEndpoint(
       val blockId = iterator.next
       val locations = blockLocations.get(blockId)
       locations -= blockManagerId
-      if (locations.size == 0) {
+      if (locations.size == 0)
         blockLocations.remove(blockId)
-      }
     }
     listenerBus.post(
       SparkListenerBlockManagerRemoved(
@@ -232,9 +230,9 @@ private[spark] class BlockManagerMasterEndpoint(
     * indicating that the block manager should re-register.
     */
   private def heartbeatReceived(blockManagerId: BlockManagerId): Boolean =
-    if (!blockManagerInfo.contains(blockManagerId)) {
+    if (!blockManagerInfo.contains(blockManagerId))
       blockManagerId.isDriver && !isLocal
-    } else {
+    else {
       blockManagerInfo(blockManagerId).updateLastSeenMs()
       true
     }
@@ -243,17 +241,15 @@ private[spark] class BlockManagerMasterEndpoint(
   // blocks that the master knows about.
   private def removeBlockFromWorkers(blockId: BlockId) {
     val locations = blockLocations.get(blockId)
-    if (locations != null) {
+    if (locations != null)
       locations.foreach { blockManagerId: BlockManagerId =>
         val blockManager = blockManagerInfo.get(blockManagerId)
-        if (blockManager.isDefined) {
+        if (blockManager.isDefined)
           // Remove the block from the slave's BlockManager.
           // Doesn't actually wait for a confirmation and the message might get lost.
           // If message loss becomes frequent, we should add retry logic here.
           blockManager.get.slaveEndpoint.ask[Boolean](RemoveBlock(blockId))
-        }
       }
-    }
   }
 
   // Return a map from the block manager id to max memory and remaining memory.
@@ -288,11 +284,10 @@ private[spark] class BlockManagerMasterEndpoint(
      */
     blockManagerInfo.values.map { info =>
       val blockStatusFuture =
-        if (askSlaves) {
+        if (askSlaves)
           info.slaveEndpoint.ask[Option[BlockStatus]](getBlockStatus)
-        } else {
+        else
           Future { info.getStatus(blockId) }
-        }
       (info.blockManagerId, blockStatusFuture)
     }.toMap
   }
@@ -313,11 +308,10 @@ private[spark] class BlockManagerMasterEndpoint(
       .sequence(
         blockManagerInfo.values.map { info =>
           val future =
-            if (askSlaves) {
+            if (askSlaves)
               info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
-            } else {
+            else
               Future { info.blocks.asScala.keys.filter(filter).toSeq }
-            }
           future
         }
       )
@@ -361,15 +355,13 @@ private[spark] class BlockManagerMasterEndpoint(
       memSize: Long,
       diskSize: Long): Boolean = {
 
-    if (!blockManagerInfo.contains(blockManagerId)) {
-      if (blockManagerId.isDriver && !isLocal) {
+    if (!blockManagerInfo.contains(blockManagerId))
+      if (blockManagerId.isDriver && !isLocal)
         // We intentionally do not register the master (except in local mode),
         // so we should not indicate failure.
         return true
-      } else {
+      else
         return false
-      }
-    }
 
     if (blockId == null) {
       blockManagerInfo(blockManagerId).updateLastSeenMs()
@@ -383,23 +375,21 @@ private[spark] class BlockManagerMasterEndpoint(
       diskSize)
 
     var locations: mutable.HashSet[BlockManagerId] = null
-    if (blockLocations.containsKey(blockId)) {
+    if (blockLocations.containsKey(blockId))
       locations = blockLocations.get(blockId)
-    } else {
+    else {
       locations = new mutable.HashSet[BlockManagerId]
       blockLocations.put(blockId, locations)
     }
 
-    if (storageLevel.isValid) {
+    if (storageLevel.isValid)
       locations.add(blockManagerId)
-    } else {
+    else
       locations.remove(blockManagerId)
-    }
 
     // Remove the block from master tracking if it has been removed on all slaves.
-    if (locations.size == 0) {
+    if (locations.size == 0)
       blockLocations.remove(blockId)
-    }
     true
   }
 
@@ -414,14 +404,13 @@ private[spark] class BlockManagerMasterEndpoint(
   /** Get the list of the peers of the given block manager */
   private def getPeers(blockManagerId: BlockManagerId): Seq[BlockManagerId] = {
     val blockManagerIds = blockManagerInfo.keySet
-    if (blockManagerIds.contains(blockManagerId)) {
+    if (blockManagerIds.contains(blockManagerId))
       blockManagerIds
         .filterNot { _.isDriver }
         .filterNot { _ == blockManagerId }
         .toSeq
-    } else {
+    else
       Seq.empty
-    }
   }
 
   /**
@@ -430,9 +419,7 @@ private[spark] class BlockManagerMasterEndpoint(
   private def getExecutorEndpointRef(
       executorId: String): Option[RpcEndpointRef] =
     for (blockManagerId <- blockManagerIdByExecutor.get(executorId);
-         info <- blockManagerInfo.get(blockManagerId)) yield {
-      info.slaveEndpoint
-    }
+         info <- blockManagerInfo.get(blockManagerId)) yield info.slaveEndpoint
 
   override def onStop(): Unit =
     askThreadPool.shutdownNow()
@@ -489,9 +476,8 @@ private[spark] class BlockManagerInfo(
       val originalLevel: StorageLevel = blockStatus.storageLevel
       val originalMemSize: Long = blockStatus.memSize
 
-      if (originalLevel.useMemory) {
+      if (originalLevel.useMemory)
         _remainingMem += originalMemSize
-      }
     }
 
     if (storageLevel.isValid) {
@@ -523,29 +509,26 @@ private[spark] class BlockManagerInfo(
             blockManagerId.hostPort,
             Utils.bytesToString(diskSize)))
       }
-      if (!blockId.isBroadcast && blockStatus.isCached) {
+      if (!blockId.isBroadcast && blockStatus.isCached)
         _cachedBlocks += blockId
-      }
     } else if (_blocks.containsKey(blockId)) {
       // If isValid is not true, drop the block.
       val blockStatus: BlockStatus = _blocks.get(blockId)
       _blocks.remove(blockId)
       _cachedBlocks -= blockId
-      if (blockStatus.storageLevel.useMemory) {
+      if (blockStatus.storageLevel.useMemory)
         logInfo(
           "Removed %s on %s in memory (size: %s, free: %s)".format(
             blockId,
             blockManagerId.hostPort,
             Utils.bytesToString(blockStatus.memSize),
             Utils.bytesToString(_remainingMem)))
-      }
-      if (blockStatus.storageLevel.useDisk) {
+      if (blockStatus.storageLevel.useDisk)
         logInfo(
           "Removed %s on %s on disk (size: %s)".format(
             blockId,
             blockManagerId.hostPort,
             Utils.bytesToString(blockStatus.diskSize)))
-      }
     }
   }
 

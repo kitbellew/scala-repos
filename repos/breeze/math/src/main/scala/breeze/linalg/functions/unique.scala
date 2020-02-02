@@ -45,9 +45,8 @@ object unique extends UFunc {
           }
 
           DenseVector(result)
-        } else {
+        } else
           DenseVector(new Array[S](0))
-        }
     }
 
 }

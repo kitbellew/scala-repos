@@ -24,9 +24,8 @@ class InitializeListener
 
   override def contextInitialized(event: ServletContextEvent): Unit = {
     val dataDir = event.getServletContext.getInitParameter("gitbucket.home")
-    if (dataDir != null) {
+    if (dataDir != null)
       System.setProperty("gitbucket.home", dataDir)
-    }
     org.h2.Driver.load()
 
     Database() withTransaction { session =>
@@ -95,15 +94,13 @@ class DeleteOldActivityActor
   private val logger = Logging(context.system, this)
 
   def receive = {
-    case s: String => {
+    case s: String =>
       loadSystemSettings().activityLogLimit.foreach { limit =>
-        if (limit > 0) {
+        if (limit > 0)
           Database() withTransaction { implicit session =>
             val rows = deleteOldActivities(limit)
             logger.info(s"Deleted $rows activity logs")
           }
-        }
       }
-    }
   }
 }

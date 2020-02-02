@@ -15,16 +15,15 @@ object Sampling {
 
   def geometricSample(param: Double): Int = {
     var num = 1
-    while (Random.nextDouble <= param) {
+    while (Random.nextDouble <= param)
       num += 1
-    }
     num
   }
 
   def sortBySrc(a: Array[Edge[Int]]): Array[Edge[Int]] =
-    if (a.length < 2) {
+    if (a.length < 2)
       a
-    } else {
+    else {
       val pivot = a(a.length / 2).srcId
       // 'L'ess, 'E'qual, 'G'reater
       val partitions = a.groupBy { (e: Edge[Int]) =>
@@ -38,9 +37,8 @@ object Sampling {
 
       var sortedAccumulator: Array[Edge[Int]] = Array()
       List('L', 'E', 'G').foreach { (c: Char) =>
-        if (partitions.contains(c)) {
+        if (partitions.contains(c))
           sortedAccumulator = sortedAccumulator ++ partitions(c)
-        }
       }
       sortedAccumulator
     }
@@ -82,9 +80,8 @@ object Sampling {
         sampledVertices = sampledVertices ++ neighborVertexIds.toArray
         burnQueue = burnQueue ++ neighborVertexIds.toArray
 
-        if (sampledVertices.size > targetVertexCount) {
+        if (sampledVertices.size > targetVertexCount)
           burnQueue.dequeueAll((v: VertexId) => true)
-        }
       }
     }
     val vertex: Seq[(VertexId, Int)] = sampledVertices.map(v => (v, 1)).toSeq
@@ -123,9 +120,8 @@ object Sampling {
       if (edge.srcId == target) {
         outEdges.append(edge)
         tIdx += 1
-      } else {
+      } else
         tIdx = e.size
-      }
     }
     // get lower edges
     tIdx = idx - 1
@@ -134,9 +130,8 @@ object Sampling {
       if (edge.srcId == target) {
         outEdges.append(edge)
         tIdx -= 1
-      } else {
+      } else
         tIdx = -1
-      }
     }
     outEdges
   }

@@ -221,15 +221,13 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
       (getCurrentLogFiles(logDirectory1), getCurrentLogFiles(logDirectory2))
 
     def getCurrentLogFiles(logDirectory: File): Seq[String] =
-      try {
-        if (logDirectory.exists()) {
-          logDirectory1.listFiles().filter { _.getName.startsWith("log") }.map {
-            _.toString
-          }
-        } else {
-          Seq.empty
+      try if (logDirectory.exists())
+        logDirectory1.listFiles().filter { _.getName.startsWith("log") }.map {
+          _.toString
         }
-      } catch {
+      else
+        Seq.empty
+      catch {
         case e: Exception =>
           Seq.empty
       }
@@ -257,12 +255,10 @@ class ReceiverSuite extends TestSuiteBase with Timeouts with Serializable {
           val (logFiles1, logFiles2) = getBothCurrentLogFiles()
           allLogFiles1 ++= logFiles1
           allLogFiles2 ++= logFiles2
-          if (allLogFiles1.size > 0) {
+          if (allLogFiles1.size > 0)
             assert(!logFiles1.contains(allLogFiles1.toSeq.sorted.head))
-          }
-          if (allLogFiles2.size > 0) {
+          if (allLogFiles2.size > 0)
             assert(!logFiles2.contains(allLogFiles2.toSeq.sorted.head))
-          }
           assert(allLogFiles1.size >= 7)
           assert(allLogFiles2.size >= 7)
         }

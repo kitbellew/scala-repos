@@ -68,9 +68,8 @@ class CoalescedPartitioner(
       val end =
         if (i < partitionStartIndices.length - 1) partitionStartIndices(i + 1)
         else n
-      for (j <- start until end) {
+      for (j <- start until end)
         result(j) = i
-      }
     }
     result
   }
@@ -147,11 +146,10 @@ class ShuffledRowRDD(
     Array.tabulate[Partition](partitionStartIndices.length) { i =>
       val startIndex = partitionStartIndices(i)
       val endIndex =
-        if (i < partitionStartIndices.length - 1) {
+        if (i < partitionStartIndices.length - 1)
           partitionStartIndices(i + 1)
-        } else {
+        else
           numPreShufflePartitions
-        }
       new ShuffledRowRDDPartition(i, startIndex, endIndex)
     }
   }

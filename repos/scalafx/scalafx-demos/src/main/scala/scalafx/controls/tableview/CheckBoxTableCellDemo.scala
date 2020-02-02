@@ -70,7 +70,7 @@ object CheckBoxTableCellDemo extends JFXApp {
           },
           new TableColumn[Item, String] {
             text = "Name"
-            cellValueFactory = { _.value.name }
+            cellValueFactory = _.value.name
             prefWidth = 180
           }
         )

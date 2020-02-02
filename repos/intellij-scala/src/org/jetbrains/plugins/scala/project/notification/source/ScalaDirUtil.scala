@@ -56,15 +56,12 @@ object ScalaDirUtil {
       if (packageName.length == 0 || StringUtil.endsWithChar(packageName, '.'))
         return null
       packageName
-    } finally {
-      StringBuilderSpinAllocator.dispose(buffer)
-    }
+    } finally StringBuilderSpinAllocator.dispose(buffer)
   }
 
   def skipWhiteSpaceAndComments(lexer: Lexer) {
     while (ScalaTokenTypes.WHITES_SPACES_AND_COMMENTS_TOKEN_SET.contains(
-             lexer.getTokenType)) {
+             lexer.getTokenType))
       lexer.advance()
-    }
   }
 }

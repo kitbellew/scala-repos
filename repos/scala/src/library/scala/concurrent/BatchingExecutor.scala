@@ -61,9 +61,8 @@ private[concurrent] trait BatchingExecutor extends Executor {
             case Nil => ()
             case head :: tail =>
               _tasksLocal set tail
-              try {
-                head.run()
-              } catch {
+              try head.run()
+              catch {
                 case t: Throwable =>
                   // if one task throws, move the
                   // remaining tasks to another thread
@@ -107,7 +106,7 @@ private[concurrent] trait BatchingExecutor extends Executor {
   protected def unbatchedExecute(r: Runnable): Unit
 
   override def execute(runnable: Runnable): Unit =
-    if (batchable(runnable)) { // If we can batch the runnable
+    if (batchable(runnable)) // If we can batch the runnable
       _tasksLocal.get match {
         case null =>
           unbatchedExecute(
@@ -118,7 +117,7 @@ private[concurrent] trait BatchingExecutor extends Executor {
             runnable :: some
           ) // If we are already in batching mode, add to batch
       }
-    } else
+    else
       unbatchedExecute(
         runnable
       ) // If not batchable, just delegate to underlying

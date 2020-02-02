@@ -41,9 +41,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
   @volatile private var blockGenerator: BlockGenerator = null
 
   after {
-    if (blockGenerator != null) {
+    if (blockGenerator != null)
       blockGenerator.stop()
-    }
   }
 
   test("block generation and data callbacks") {

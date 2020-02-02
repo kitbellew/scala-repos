@@ -41,13 +41,12 @@ object PageDisplayer {
     value match {
       case "dashBoard" => displayPage(new DashboardPage())
       case _ =>
-        if (value.startsWith("dashBoard - ")) {
+        if (value.startsWith("dashBoard - "))
           displayPage(new DashboardPage(value.split("-")(1).trim()))
-        } else {
+        else
           displayPage(
             EnsembleTabbedPage
               .buildTab(value.split(">")(1).trim(), value.split(">")(0).trim()))
-        }
     }
 
   private def displayPage(nodeToAdd: DisplayablePage): Node =

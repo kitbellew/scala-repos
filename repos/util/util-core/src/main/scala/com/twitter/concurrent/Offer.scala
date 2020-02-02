@@ -269,13 +269,12 @@ object Offer {
             winner
           }
 
-          if (foundPos >= 0) {
+          if (foundPos >= 0)
             updateLosers(foundPos, prepd)
-          } else {
+          else
             Future.selectIndex(prepd) flatMap { winPos =>
               updateLosers(winPos, prepd)
             }
-          }
         }
       }
 

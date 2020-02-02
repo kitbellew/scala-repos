@@ -73,9 +73,8 @@ trait ScPattern extends ScalaPsiElement {
         case _                         =>
       }
 
-      for (sub <- p.subpatterns) {
+      for (sub <- p.subpatterns)
         inner(sub)
-      }
     }
 
     inner(this)
@@ -96,9 +95,8 @@ trait ScPattern extends ScalaPsiElement {
         case _ =>
       }
 
-      for (sub <- p.subpatterns) {
+      for (sub <- p.subpatterns)
         inner(sub)
-      }
     }
 
     inner(this)
@@ -137,12 +135,11 @@ trait ScPattern extends ScalaPsiElement {
             )
         }
         if (resolve.length != 1) None
-        else {
+        else
           resolve(0) match {
             case s: ScalaResolveResult => Some(s)
             case _                     => None
           }
-        }
       case m => m
     }
 
@@ -399,9 +396,8 @@ trait ScPattern extends ScalaPsiElement {
           tuple.expectedType.flatMap {
             case ScTupleType(comps) =>
               for ((t, p) <- comps.iterator
-                     .zip(patternList.patterns.iterator)) {
+                     .zip(patternList.patterns.iterator))
                 if (p == this) return Some(t)
-              }
               None
             case et0 if et0 == types.AnyRef || et0 == types.Any =>
               Some(types.Any)
@@ -562,7 +558,7 @@ object ScPattern {
 
     val level = place.scalaLanguageLevelOrDefault
     if (level >= Scala_2_11) collectFor2_11
-    else {
+    else
       returnType match {
         case ScParameterizedType(des, args) =>
           ScType.extractClass(des) match {
@@ -595,7 +591,6 @@ object ScPattern {
           }
         case _ => Seq.empty
       }
-    }
   }
 
   def isQuasiquote(fun: ScFunction) = {

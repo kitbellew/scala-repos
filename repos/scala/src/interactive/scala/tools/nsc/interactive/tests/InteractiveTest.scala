@@ -60,13 +60,12 @@ abstract class InteractiveTest
     *  `CompletionAction`, `TypeAction` and `HyperlinkAction`.
     *  Override this member if you need to change the default set of executed test actions.
     */
-  protected lazy val testActions: ListBuffer[PresentationCompilerTestDef] = {
+  protected lazy val testActions: ListBuffer[PresentationCompilerTestDef] =
     ListBuffer(
       new TypeCompletionAction(compiler),
       new ScopeCompletionAction(compiler),
       new TypeAction(compiler),
       new HyperlinkAction(compiler))
-  }
 
   /** Add new presentation compiler actions to test. Presentation compiler's test
     *  need to extends trait `PresentationCompilerTestDef`.

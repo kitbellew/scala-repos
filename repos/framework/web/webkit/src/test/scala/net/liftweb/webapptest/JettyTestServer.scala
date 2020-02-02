@@ -69,13 +69,10 @@ final class JettyTestServer(baseUrlBox: Box[URL]) {
       wc.beginAt(urlFor(startPath))
       f(wc)
     } catch {
-      case exc: AssertionFailedError => {
+      case exc: AssertionFailedError =>
         System.err.println("server response: ", wc.getServerResponse)
         throw exc
-      }
-    } finally {
-      wc.closeBrowser()
-    }
+    } finally wc.closeBrowser()
   }
 
 }

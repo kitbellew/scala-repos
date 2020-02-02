@@ -11,7 +11,7 @@ import akka.http.scaladsl.server.{Route, RoutingSpec}
 
 class ContentNegotiationGivenResponseCodeSpec extends RoutingSpec {
 
-  val routes = {
+  val routes =
     pathPrefix(Segment) { mode ⇒
       complete {
         mode match {
@@ -21,7 +21,6 @@ class ContentNegotiationGivenResponseCodeSpec extends RoutingSpec {
         }
       }
     }
-  }
 
   "Return NotAcceptable for" should {
     "200 OK response, when entity not available in Accept-ed MediaRange" in {

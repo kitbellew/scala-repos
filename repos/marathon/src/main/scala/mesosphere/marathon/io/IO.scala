@@ -61,9 +61,8 @@ object IO {
   }
 
   def delete(file: File) {
-    if (file.isDirectory) {
+    if (file.isDirectory)
       file.listFiles().foreach(delete)
-    }
     file.delete()
   }
 
@@ -108,9 +107,7 @@ object IO {
         }
       }
       read()
-    } finally {
-      if (close) Try(in.close())
-    }
+    } finally if (close) Try(in.close())
   }
 
   def copyInputStreamToString(in: InputStream): String = {
@@ -128,9 +125,6 @@ object IO {
     }
 
   def using[A <: Closeable, B](closeable: A)(fn: (A) => B): B =
-    try {
-      fn(closeable)
-    } finally {
-      Try(closeable.close())
-    }
+    try fn(closeable)
+    finally Try(closeable.close())
 }

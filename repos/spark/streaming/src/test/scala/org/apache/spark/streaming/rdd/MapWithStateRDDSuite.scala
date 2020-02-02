@@ -48,13 +48,10 @@ class MapWithStateRDDSuite
 
   override def afterAll(): Unit =
     try {
-      if (sc != null) {
+      if (sc != null)
         sc.stop()
-      }
       Utils.deleteRecursively(checkpointDir)
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   override def sparkContext: SparkContext = sc
 
@@ -316,9 +313,9 @@ class MapWithStateRDDSuite
           // else if the data is 2, remove the state if it exists
           data match {
             case Some(1) =>
-              if (state.exists()) {
+              if (state.exists())
                 state.update(state.get + 1)
-              } else state.update(0)
+              else state.update(0)
             case Some(2) =>
               state.remove()
             case _ =>
@@ -513,11 +510,10 @@ class MapWithStateRDDSuite
   ): MapWithStateRDD[K, V, S, T] = {
 
     val partitionedNewDataRDD =
-      if (newDataRDD.partitioner != testStateRDD.partitioner) {
+      if (newDataRDD.partitioner != testStateRDD.partitioner)
         newDataRDD.partitionBy(testStateRDD.partitioner.get)
-      } else {
+      else
         newDataRDD
-      }
 
     val newStateRDD = new MapWithStateRDD[K, V, S, T](
       testStateRDD,

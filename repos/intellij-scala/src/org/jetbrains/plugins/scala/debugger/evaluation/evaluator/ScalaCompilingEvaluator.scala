@@ -67,23 +67,21 @@ class ScalaCompilingEvaluator(
   override def evaluate(context: EvaluationContextImpl): Value = {
     val process: DebugProcess = context.getDebugProcess
 
-    try {
-      if (classLoader == null || classLoader.isCollected)
-        classLoader = getClassLoader(context)
-    } catch {
+    try if (classLoader == null || classLoader.isCollected)
+      classLoader = getClassLoader(context)
+    catch {
       case e: Exception =>
         throw new EvaluateException(
           "Error creating evaluation class loader:\n " + e,
           e)
     }
 
-    try {
-      defineClasses(
-        generatedClass.compiledClasses,
-        context,
-        process,
-        classLoader)
-    } catch {
+    try defineClasses(
+      generatedClass.compiledClasses,
+      context,
+      process,
+      classLoader)
+    catch {
       case e: Exception =>
         throw new EvaluateException(
           "Error during classes definition:\n " + e,

@@ -49,19 +49,16 @@ private[spark] class SparkUICssErrorHandler extends DefaultCssErrorHandler {
     cssWhiteList.exists(uri.endsWith)
 
   override def warning(e: CSSParseException): Unit =
-    if (!isInWhileList(e.getURI)) {
+    if (!isInWhileList(e.getURI))
       super.warning(e)
-    }
 
   override def fatalError(e: CSSParseException): Unit =
-    if (!isInWhileList(e.getURI)) {
+    if (!isInWhileList(e.getURI))
       super.fatalError(e)
-    }
 
   override def error(e: CSSParseException): Unit =
-    if (!isInWhileList(e.getURI)) {
+    if (!isInWhileList(e.getURI))
       super.error(e)
-    }
 }
 
 /**
@@ -84,13 +81,9 @@ class UISeleniumSuite
   }
 
   override def afterAll(): Unit =
-    try {
-      if (webDriver != null) {
-        webDriver.quit()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try if (webDriver != null)
+      webDriver.quit()
+    finally super.afterAll()
 
   /**
     * Create a test SparkContext with the SparkUI enabled.
@@ -248,11 +241,9 @@ class UISeleniumSuite
         job @ JObject(_) <- jobJson
         JInt(jobId) <- job \ "jobId"
         jobGroup = job \ "jobGroup"
-      } {
-        jobId.toInt match {
-          case 0 => jobGroup should be(JNothing)
-          case 1 => jobGroup should be(JString("my-job-group"))
-        }
+      } jobId.toInt match {
+        case 0 => jobGroup should be(JNothing)
+        case 1 => jobGroup should be(JString("my-job-group"))
       }
     }
   }
@@ -281,9 +272,8 @@ class UISeleniumSuite
             mapId,
             reduceId,
             message)
-        } else {
+        } else
           x
-        }
       }
       mappedData.count()
       eventually(timeout(5 seconds), interval(50 milliseconds)) {
@@ -312,11 +302,11 @@ class UISeleniumSuite
         JInt(stageId) <- stage \ "stageId"
         JInt(attemptId) <- stage \ "attemptId"
       } {
-        val exp = if (attemptId.toInt == 0 && stageId.toInt == 1) {
-          StageStatus.FAILED
-        } else {
-          StageStatus.COMPLETE
-        }
+        val exp =
+          if (attemptId.toInt == 0 && stageId.toInt == 1)
+            StageStatus.FAILED
+          else
+            StageStatus.COMPLETE
         status should be(exp.name())
       }
 
@@ -578,11 +568,9 @@ class UISeleniumSuite
         (job @ JObject(_), idx) <- jobsJson.children.zipWithIndex
         id = (job \ "jobId").extract[String]
         name = (job \ "name").extract[String]
-      } {
-        withClue(s"idx = $idx; id = $id; name = ${name.substring(0, 20)}") {
-          id should be(expJobInfo(idx)._1)
-          name should include(expJobInfo(idx)._2)
-        }
+      } withClue(s"idx = $idx; id = $id; name = ${name.substring(0, 20)}") {
+        id should be(expJobInfo(idx)._1)
+        name should include(expJobInfo(idx)._2)
       }
 
       // what about when we query for a job that did exist, but has been cleared?

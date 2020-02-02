@@ -107,8 +107,6 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
       JsonParser.Segments.segmentSize = bufSize
       JsonParser.Segments.clear
       JsonParser.parse(compactRender(json))
-    } finally {
-      JsonParser.Segments.segmentSize = existingSize
-    }
+    } finally JsonParser.Segments.segmentSize = existingSize
   }
 }

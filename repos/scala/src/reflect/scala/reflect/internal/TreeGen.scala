@@ -92,19 +92,18 @@ abstract class TreeGen {
       case SingleType(pre, sym) =>
         mkApplyIfNeeded(mkAttributedStableRef(pre, sym))
       case TypeRef(pre, sym, args) =>
-        if (sym.isRoot) {
+        if (sym.isRoot)
           mkAttributedThis(sym)
-        } else if (sym.isModuleClass) {
+        else if (sym.isModuleClass)
           mkApplyIfNeeded(mkAttributedRef(pre, sym.sourceModule))
-        } else if (sym.isModule || sym.isClass) {
+        else if (sym.isModule || sym.isClass) {
           assert(phase.erasedTypes, failMessage)
           mkAttributedThis(sym)
         } else if (sym.isType) {
           assert(termSym != NoSymbol, failMessage)
           mkAttributedIdent(termSym) setType tpe
-        } else {
+        } else
           mkAttributedRef(pre, sym)
-        }
 
       case ConstantType(value) =>
         Literal(value) setType tpe
@@ -168,7 +167,7 @@ abstract class TreeGen {
 
   /** Builds a reference to given symbol. */
   def mkAttributedRef(sym: Symbol): RefTree =
-    if (sym.owner.isStaticOwner) {
+    if (sym.owner.isStaticOwner)
       if (sym.owner.isRoot)
         mkAttributedIdent(sym)
       else {
@@ -176,7 +175,7 @@ abstract class TreeGen {
         assert(ownerModule != NoSymbol, sym.owner)
         mkAttributedSelect(mkAttributedRef(sym.owner.sourceModule), sym)
       }
-    } else if (sym.owner.isClass) mkAttributedRef(sym.owner.thisType, sym)
+    else if (sym.owner.isClass) mkAttributedRef(sym.owner.thisType, sym)
     else mkAttributedIdent(sym)
 
   def mkUnattributedRef(sym: Symbol): RefTree =
@@ -449,7 +448,7 @@ abstract class TreeGen {
     }
 
     val constr = {
-      if (constrMods.isTrait) {
+      if (constrMods.isTrait)
         if (body forall treeInfo.isInterfaceMember) None
         else
           Some(
@@ -461,7 +460,7 @@ abstract class TreeGen {
                 ListOfNil,
                 TypeTree(),
                 Block(lvdefs, Literal(Constant(()))))))
-      } else {
+      else {
         // convert (implicit ... ) to ()(implicit ... ) if it's the only parameter section
         if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1.head.head.mods.isImplicit)
           vparamss1 = List() :: vparamss1

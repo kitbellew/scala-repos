@@ -36,12 +36,12 @@ package object util {
       break: => String = " ... "): String = {
     var i = 0
     val buf = new StringBuilder()
-    if (total <= count) {
+    if (total <= count)
       while (i < total) {
         buf.append(callback(i))
         i += 1
       }
-    } else {
+    else {
       while (i < count / 2) {
         buf.append(callback(i))
         i += 1

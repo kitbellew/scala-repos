@@ -92,12 +92,11 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
         () => {
           val ret =
             meta.findAll(By(foreign, primaryKeyField.get) :: qp.toList: _*)
-          for (child <- ret) {
+          for (child <- ret)
             foreign
               .actualField(child)
               .asInstanceOf[MappedForeignKey[K, O, T]]
               .primeObj(net.liftweb.common.Full(OneToMany.this: T))
-          }
           ret
         },
         foreign
@@ -296,9 +295,9 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     def delete_! =
       delegate.forall { e =>
         if (foreign(e).get ==
-              OneToMany.this.primaryKeyField.get) {
+              OneToMany.this.primaryKeyField.get)
           e.delete_!
-        } else
+        else
           true // doesn't constitute a failure
       }
   }

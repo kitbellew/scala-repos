@@ -31,14 +31,13 @@ trait LongTypedField extends NumericTypedField[Long] {
   def setFromAny(in: Any): Box[Long] = setNumericFromAny(in, _.longValue)
 
   def setFromString(s: String): Box[Long] =
-    if (s == null || s.isEmpty) {
+    if (s == null || s.isEmpty)
       if (optional_?)
         setBox(Empty)
       else
         setBox(Failure(notOptionalErrorMessage))
-    } else {
+    else
       setBox(asLong(s))
-    }
 
   def defaultValue = 0L
 

@@ -72,7 +72,7 @@ class JDBCLEvents(
         SQL(s"create index $entityTypeIndexName on $tableName (entityType)")
           .execute()
           .apply()
-      } else {
+      } else
         SQL(s"""
       create table if not exists $tableName (
         id varchar(32) not null primary key,
@@ -88,7 +88,6 @@ class JDBCLEvents(
         prId text,
         creationTime timestamp DEFAULT CURRENT_TIMESTAMP,
         creationTimeZone varchar(50) not null)""").execute().apply()
-      }
       true
     }
   }

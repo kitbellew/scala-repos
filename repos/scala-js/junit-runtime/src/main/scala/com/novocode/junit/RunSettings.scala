@@ -34,27 +34,25 @@ class RunSettings private (
 
   def buildColoredMessage(t: Throwable, c1: String): String =
     if (t == null) "null"
+    else if (!logExceptionClass || (!logAssert && t
+               .isInstanceOf[AssertionError]))
+      t.getMessage
     else {
-      if (!logExceptionClass || (!logAssert && t
-            .isInstanceOf[AssertionError])) {
-        t.getMessage
-      } else {
-        val b = new StringBuilder()
-        val cn = decodeName(t.getClass.getName)
-        val pos1 = cn.indexOf('$')
-        val pos2 = {
-          if (pos1 == -1) cn.lastIndexOf('.')
-          else cn.lastIndexOf('.', pos1)
-        }
-        if (pos2 == -1) b.append(c(cn, c1))
-        else {
-          b.append(cn.substring(0, pos2))
-          b.append('.')
-          b.append(c(cn.substring(pos2 + 1), c1))
-        }
-        b.append(": ").append(t.getMessage)
-        b.toString()
+      val b = new StringBuilder()
+      val cn = decodeName(t.getClass.getName)
+      val pos1 = cn.indexOf('$')
+      val pos2 = {
+        if (pos1 == -1) cn.lastIndexOf('.')
+        else cn.lastIndexOf('.', pos1)
       }
+      if (pos2 == -1) b.append(c(cn, c1))
+      else {
+        b.append(cn.substring(0, pos2))
+        b.append('.')
+        b.append(c(cn.substring(pos2 + 1), c1))
+      }
+      b.append(": ").append(t.getMessage)
+      b.toString()
     }
 
   def buildInfoMessage(t: Throwable): String =

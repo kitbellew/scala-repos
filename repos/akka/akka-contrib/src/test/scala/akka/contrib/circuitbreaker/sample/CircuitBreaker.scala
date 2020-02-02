@@ -44,11 +44,10 @@ class SimpleService extends Actor with ActorLogging {
       // simulate workload
       Thread.sleep(100 * messageCount)
       // Fails around 30% of the times
-      if (Random.nextInt(100) < 70) {
+      if (Random.nextInt(100) < 70)
         sender ! Response(Right(s"Successfully processed $content"))
-      } else {
+      else
         sender ! Response(Left(s"Failure processing $content"))
-      }
 
   }
 }
@@ -70,11 +69,9 @@ class CircuitBreaker(potentiallyFailingService: ActorRef)
         maxFailures = 3,
         callTimeout = 2.seconds,
         resetTimeout = 30.seconds)
-        .copy(failureDetector = {
-          _ match {
-            case Response(Left(_)) ⇒ true
-            case _ ⇒ false
-          }
+        .copy(failureDetector = _ match {
+          case Response(Left(_)) ⇒ true
+          case _ ⇒ false
         })
         .props(potentiallyFailingService),
       "serviceCircuitBreaker"
@@ -117,11 +114,9 @@ class CircuitBreakerAsk(potentiallyFailingService: ActorRef)
         maxFailures = 3,
         callTimeout = askTimeout,
         resetTimeout = 30.seconds)
-        .copy(failureDetector = {
-          _ match {
-            case Response(Left(_)) ⇒ true
-            case _ ⇒ false
-          }
+        .copy(failureDetector = _ match {
+          case Response(Left(_)) ⇒ true
+          case _ ⇒ false
         })
         .copy(openCircuitFailureConverter = { failure ⇒
           Left(s"Circuit open when processing ${failure.failedMsg}")

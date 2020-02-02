@@ -89,12 +89,11 @@ object StandardTestDBs {
     val url = "jdbc:derby:memory:" + dbName + ";create=true"
     override def cleanUpBefore() = {
       val dropUrl = "jdbc:derby:memory:" + dbName + ";drop=true"
-      try {
-        await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
-            .run(SimpleJdbcAction(_.connection)))
-      } catch { case e: SQLException => }
+      try await(
+        profile.backend.Database
+          .forURL(dropUrl, driver = jdbcDriver)
+          .run(SimpleJdbcAction(_.connection)))
+      catch { case e: SQLException => }
     }
   }
 
@@ -105,12 +104,11 @@ object StandardTestDBs {
     override def cleanUpBefore() = {
       val dropUrl =
         "jdbc:derby:" + TestkitConfig.testDBPath + "/" + dbName + ";shutdown=true"
-      try {
-        await(
-          profile.backend.Database
-            .forURL(dropUrl, driver = jdbcDriver)
-            .run(SimpleJdbcAction(_.connection)))
-      } catch { case e: SQLException => }
+      try await(
+        profile.backend.Database
+          .forURL(dropUrl, driver = jdbcDriver)
+          .run(SimpleJdbcAction(_.connection)))
+      catch { case e: SQLException => }
       TestDB.deleteDBFiles(dbName)
     }
   }
@@ -155,15 +153,13 @@ object StandardTestDBs {
     }
     def assertTablesExist(tables: String*) = profile.api.SimpleDBIO { ctx =>
       val all = ctx.session.database.getTables.map(_.name).toSet
-      for (t <- tables) {
+      for (t <- tables)
         if (!all.contains(t)) Assert.fail("Table " + t + " should exist")
-      }
     }
     def assertNotTablesExist(tables: String*) = profile.api.SimpleDBIO { ctx =>
       val all = ctx.session.database.getTables.map(_.name).toSet
-      for (t <- tables) {
+      for (t <- tables)
         if (all.contains(t)) Assert.fail("Table " + t + " should not exist")
-      }
     }
   }
 
@@ -315,28 +311,25 @@ abstract class DerbyDB(confName: String) extends InternalJdbcTestDB(confName) {
       ts.map(_._3).sorted
     }
   override def dropUserArtifacts(implicit session: profile.Backend#Session) =
-    try {
-      blockingRunOnSession { implicit ec =>
-        for {
-          _ <- sqlu"""create table "__derby_dummy"(x integer primary key)""".asTry
-          constraints <- sql"""select c.constraintname, t.tablename
+    try blockingRunOnSession { implicit ec =>
+      for {
+        _ <- sqlu"""create table "__derby_dummy"(x integer primary key)""".asTry
+        constraints <- sql"""select c.constraintname, t.tablename
                              from sys.sysconstraints c, sys.sysschemas s, sys.systables t
                              where c.schemaid = s.schemaid and c.tableid = t.tableid and s.schemaname = 'APP'
                           """.as[(String, String)]
-          _ <- DBIO.seq(
-            (for ((c, t) <- constraints if !c.startsWith("SQL"))
-              yield sqlu"""alter table ${profile
-                .quoteIdentifier(t)} drop constraint ${profile.quoteIdentifier(
-                c)}"""): _*)
-          tables <- localTables
-          sequences <- localSequences
-          _ <- DBIO.seq(
-            (tables.map(t =>
-              sqlu"""drop table #${profile.quoteIdentifier(t)}""") ++
-              sequences.map(t =>
-                sqlu"""drop sequence #${profile.quoteIdentifier(t)}""")): _*)
-        } yield ()
-      }
+        _ <- DBIO.seq(
+          (for ((c, t) <- constraints if !c.startsWith("SQL"))
+            yield sqlu"""alter table ${profile
+              .quoteIdentifier(t)} drop constraint ${profile
+              .quoteIdentifier(c)}"""): _*)
+        tables <- localTables
+        sequences <- localSequences
+        _ <- DBIO.seq((tables.map(t =>
+          sqlu"""drop table #${profile.quoteIdentifier(t)}""") ++
+          sequences.map(t =>
+            sqlu"""drop sequence #${profile.quoteIdentifier(t)}""")): _*)
+      } yield ()
     } catch {
       case e: Exception =>
         println(

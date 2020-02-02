@@ -69,9 +69,7 @@ object LazyLoad extends DispatchSnippet {
             for {
               templatePath <- S.attr("template")
               renderedTemplate <- S.eval(<lift:embed what={templatePath} />)
-            } yield {
-              renderedTemplate
-            }
+            } yield renderedTemplate
           } openOr {
             <div><img src="/images/ajax-loader.gif" alt="Loading"/></div>
           }

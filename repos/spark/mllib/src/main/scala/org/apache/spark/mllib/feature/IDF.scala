@@ -89,26 +89,23 @@ private object IDF {
 
     /** Adds a new document. */
     def add(doc: Vector): this.type = {
-      if (isEmpty) {
+      if (isEmpty)
         df = BDV.zeros(doc.size)
-      }
       doc match {
         case SparseVector(size, indices, values) =>
           val nnz = indices.length
           var k = 0
           while (k < nnz) {
-            if (values(k) > 0) {
+            if (values(k) > 0)
               df(indices(k)) += 1L
-            }
             k += 1
           }
         case DenseVector(values) =>
           val n = values.length
           var j = 0
           while (j < n) {
-            if (values(j) > 0.0) {
+            if (values(j) > 0.0)
               df(j) += 1L
-            }
             j += 1
           }
         case other =>
@@ -123,11 +120,10 @@ private object IDF {
     def merge(other: DocumentFrequencyAggregator): this.type = {
       if (!other.isEmpty) {
         m += other.m
-        if (df == null) {
+        if (df == null)
           df = other.df.copy
-        } else {
+        else
           df += other.df
-        }
       }
       this
     }
@@ -136,9 +132,8 @@ private object IDF {
 
     /** Returns the current IDF vector. */
     def idf(): Vector = {
-      if (isEmpty) {
+      if (isEmpty)
         throw new IllegalStateException("Haven't seen any document yet.")
-      }
       val n = df.length
       val inv = new Array[Double](n)
       var j = 0
@@ -152,9 +147,8 @@ private object IDF {
          * Since arrays are initialized to 0 by default,
          * we just omit changing those entries.
          */
-        if (df(j) >= minDocFreq) {
+        if (df(j) >= minDocFreq)
           inv(j) = math.log((m + 1.0) / (df(j) + 1.0))
-        }
         j += 1
       }
       Vectors.dense(inv)

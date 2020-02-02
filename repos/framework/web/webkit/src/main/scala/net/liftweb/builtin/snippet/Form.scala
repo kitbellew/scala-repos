@@ -66,9 +66,8 @@ object Form extends DispatchSnippet {
               case x => true
             }))
         new Elem(null, "form", meta, e.scope, e.minimizeEmpty, e.child: _*)
-      } else {
+      } else
         <form method="post" action={S.uri}>{kids}</form>
-      }
 
     S.attr("multipart") match {
       case Full(x) if Helpers.toBoolean(x) =>
@@ -84,11 +83,10 @@ object Form extends DispatchSnippet {
     if (kids.length == 1 &&
         kids(0).isInstanceOf[Elem] &&
         (kids(0).prefix eq null) &&
-        kids(0).label == "form") {
+        kids(0).label == "form")
       new Elem(null, "form", addAjaxForm, TopScope, true, kids(0).child: _*)
-    } else {
+    else
       Elem(null, "form", addAjaxForm, TopScope, true, kids: _*)
-    }
 
   private def addAjaxForm: MetaData = {
     val id = Helpers.nextFuncName

@@ -70,9 +70,7 @@ object FakeState {
       val state = FakeState(enabledPlugins: _*)
       Command.process(input, state)
       new String(outBuffer.toByteArray)
-    } finally {
-      System.setOut(previousOut)
-    }
+    } finally System.setOut(previousOut)
   }
 
   def apply(plugins: AutoPlugin*) = {

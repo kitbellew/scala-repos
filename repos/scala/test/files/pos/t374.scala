@@ -10,11 +10,11 @@ object test extends AnyRef with App {
 
   val reserved = new scala.collection.mutable.HashMap[String, Token]();
 
-  if (true) {
+  if (true)
     reserved.get("a") match {
       case None     => IDENT
       case Some(tk) => tk
     }
-  } else
+  else
     BAD
 }

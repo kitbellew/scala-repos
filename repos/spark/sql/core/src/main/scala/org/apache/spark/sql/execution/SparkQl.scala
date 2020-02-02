@@ -72,11 +72,10 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
           val key = node.remainder.substring(0, keyValueSeparatorIndex).trim
           val value = node.remainder.substring(keyValueSeparatorIndex + 1).trim
           SetCommand(Some(key -> Option(value)))
-        } else if (node.remainder.nonEmpty) {
+        } else if (node.remainder.nonEmpty)
           SetCommand(Some(node.remainder -> None))
-        } else {
+        else
           SetCommand(None)
-        }
 
       // Just fake explain for any of the native commands.
       case Token("TOK_EXPLAIN", explainArgs)
@@ -241,24 +240,22 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
         }.toMap
         val asClause = tableAs.map(nodeToPlan)
 
-        if (temp.isDefined && ifNotExists.isDefined) {
+        if (temp.isDefined && ifNotExists.isDefined)
           throw new AnalysisException(
             "a CREATE TEMPORARY TABLE statement does not allow IF NOT EXISTS clause.")
-        }
 
         if (asClause.isDefined) {
-          if (columns.isDefined) {
+          if (columns.isDefined)
             throw new AnalysisException(
               "a CREATE TABLE AS SELECT statement does not allow column definitions.")
-          }
 
-          val mode = if (ifNotExists.isDefined) {
-            SaveMode.Ignore
-          } else if (temp.isDefined) {
-            SaveMode.Overwrite
-          } else {
-            SaveMode.ErrorIfExists
-          }
+          val mode =
+            if (ifNotExists.isDefined)
+              SaveMode.Ignore
+            else if (temp.isDefined)
+              SaveMode.Overwrite
+            else
+              SaveMode.ErrorIfExists
 
           CreateTableUsingAsSelect(
             tableIdent,
@@ -269,7 +266,7 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
             mode,
             options,
             asClause.get)
-        } else {
+        } else
           CreateTableUsing(
             tableIdent,
             columns,
@@ -278,7 +275,6 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
             options,
             ifNotExists.isDefined,
             managedIfNoPath = false)
-        }
 
       case Token("TOK_SWITCHDATABASE", Token(database, Nil) :: Nil) =>
         SetDatabaseCommand(cleanIdentifier(database))
@@ -289,11 +285,11 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
           getClauses(
             Seq("TOK_TABTYPE", "FORMATTED", "EXTENDED", "PRETTY"),
             describeArgs)
-        if (formatted.isDefined || pretty.isDefined) {
+        if (formatted.isDefined || pretty.isDefined)
           // FORMATTED and PRETTY are not supported and this statement will be treated as
           // a Hive native command.
           nodeToDescribeFallback(node)
-        } else {
+        else
           tableType match {
             case Token("TOK_TABTYPE", Token("TOK_TABNAME", nameParts) :: Nil) =>
               nameParts match {
@@ -324,7 +320,6 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
             case _ =>
               nodeToDescribeFallback(node)
           }
-        }
 
       case Token("TOK_CACHETABLE", Token(tableName, Nil) :: args) =>
         val Seq(lzy, selectAst) = getClauses(Seq("LAZY", "TOK_QUERY"), args)

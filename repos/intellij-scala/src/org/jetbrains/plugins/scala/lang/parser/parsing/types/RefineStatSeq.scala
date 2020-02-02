@@ -13,7 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
   */
 object RefineStatSeq {
   def parse(builder: ScalaPsiBuilder) {
-    while (true) {
+    while (true)
       builder.getTokenType match {
         //end of parsing when find } or builder.eof
         case ScalaTokenTypes.tRBRACE | null => return
@@ -24,7 +24,7 @@ object RefineStatSeq {
           if (!RefineStat.parse(builder)) {
             builder error ScalaBundle.message("wrong.top.statment.declaration")
             return
-          } else {
+          } else
             builder.getTokenType match {
               case ScalaTokenTypes.tSEMICOLON =>
                 builder.advanceLexer //it is good
@@ -33,8 +33,6 @@ object RefineStatSeq {
                 builder error ScalaBundle.message("semi.expected")
               case _ =>
             }
-          }
       }
-    }
   }
 }

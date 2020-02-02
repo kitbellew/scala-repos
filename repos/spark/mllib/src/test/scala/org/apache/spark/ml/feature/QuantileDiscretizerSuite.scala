@@ -85,11 +85,10 @@ class QuantileDiscretizerSuite
         1,
         Double.PositiveInfinity)
     )
-    for ((ori, res) <- splitTestPoints) {
+    for ((ori, res) <- splitTestPoints)
       assert(
         QuantileDiscretizer.getSplits(ori) === res,
         "Returned splits are invalid.")
-    }
   }
 
   test("Test splits on dataset larger than minSamplesRequired") {

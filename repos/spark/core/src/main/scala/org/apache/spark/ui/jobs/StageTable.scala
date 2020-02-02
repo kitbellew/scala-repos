@@ -37,9 +37,9 @@ private[ui] class StageTableBase(
 
   protected def columns: Seq[Node] =
     <th>Stage Id</th> ++ {
-      if (isFairScheduler) {
+      if (isFairScheduler)
         <th>Pool Name</th>
-      } else Seq.empty
+      else Seq.empty
     } ++
       <th>Description</th>
     <th>Submitted</th>
@@ -101,38 +101,35 @@ private[ui] class StageTableBase(
     val nameLink = <a href={nameLinkUri} class="name-link">{s.name}</a>
 
     val cachedRddInfos = s.rddInfos.filter(_.numCachedPartitions > 0)
-    val details = if (s.details.nonEmpty) {
-      <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
+    val details =
+      if (s.details.nonEmpty)
+        <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stage-details collapsed">
+          <div class="stage-details collapsed">
         {
-          if (cachedRddInfos.nonEmpty) {
-            Text("RDD: ") ++
-              cachedRddInfos.map { i =>
-                <a href={s"$basePathUri/storage/rdd?id=${i.id}"}>{i.name}</a>
-              }
+            if (cachedRddInfos.nonEmpty)
+              Text("RDD: ") ++
+                cachedRddInfos.map { i =>
+                  <a href={s"$basePathUri/storage/rdd?id=${i.id}"}>{i.name}</a>
+                }
           }
-        }
         <pre>{s.details}</pre>
       </div>
-    }
 
     val stageDesc = for {
       stageData <- listener.stageIdToData.get((s.stageId, s.attemptId))
       desc <- stageData.description
-    } yield {
-      UIUtils.makeDescription(desc, basePathUri)
-    }
+    } yield UIUtils.makeDescription(desc, basePathUri)
     <div>{stageDesc.getOrElse("")} {killLink} {nameLink} {details}</div>
   }
 
   protected def missingStageRow(stageId: Int): Seq[Node] =
     <td>{stageId}</td> ++ {
-      if (isFairScheduler) {
+      if (isFairScheduler)
         <td>-</td>
-      } else Seq.empty
+      else Seq.empty
     } ++
       <td>No data available for this stage</td> ++ // Description
       <td></td> ++ // Submitted
@@ -145,9 +142,8 @@ private[ui] class StageTableBase(
 
   protected def stageRow(s: StageInfo): Seq[Node] = {
     val stageDataOption = listener.stageIdToData.get((s.stageId, s.attemptId))
-    if (stageDataOption.isEmpty) {
+    if (stageDataOption.isEmpty)
       return missingStageRow(s.stageId)
-    }
 
     val stageData = stageDataOption.get
     val submissionTime = s.submissionTime match {
@@ -163,14 +159,12 @@ private[ui] class StageTableBase(
     val duration: Option[Long] =
       if (taskLaunchTimes.nonEmpty) {
         val startTime = taskLaunchTimes.min
-        if (finishTime > startTime) {
+        if (finishTime > startTime)
           Some(finishTime - startTime)
-        } else {
+        else
           Some(System.currentTimeMillis() - startTime)
-        }
-      } else {
+      } else
         None
-      }
     val formattedDuration =
       duration.map(d => UIUtils.formatDuration(d)).getOrElse("Unknown")
 
@@ -188,13 +182,12 @@ private[ui] class StageTableBase(
       if (shuffleWrite > 0) Utils.bytesToString(shuffleWrite) else ""
 
     {
-      if (s.attemptId > 0) {
+      if (s.attemptId > 0)
         <td>{s.stageId} (retry {s.attemptId})</td>
-      } else {
+      else
         <td>{s.stageId}</td>
-      }
     } ++ {
-      if (isFairScheduler) {
+      if (isFairScheduler)
         <td>
         <a href={
           "%s/stages/pool?poolname=%s"
@@ -203,9 +196,8 @@ private[ui] class StageTableBase(
           {stageData.schedulingPool}
         </a>
       </td>
-      } else {
+      else
         Seq.empty
-      }
     } ++
       <td>{makeDescription(s)}</td>
     <td sorttable_customkey={s.submissionTime.getOrElse(0).toString} valign="middle">
@@ -255,24 +247,24 @@ private[ui] class FailedStageTable(
     val failureReason = s.failureReason.getOrElse("")
     val isMultiline = failureReason.indexOf('\n') >= 0
     // Display the first line by default
-    val failureReasonSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      failureReason.substring(0, failureReason.indexOf('\n'))
-    } else {
-      failureReason
-    })
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val failureReasonSummary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline)
+        failureReason.substring(0, failureReason.indexOf('\n'))
+      else
+        failureReason)
+    val details =
+      if (isMultiline)
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{failureReason}</pre>
         </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+      else
+        ""
     val failureReasonHtml = <td valign="middle">{failureReasonSummary}{details}</td>
     basicColumns ++ failureReasonHtml
   }

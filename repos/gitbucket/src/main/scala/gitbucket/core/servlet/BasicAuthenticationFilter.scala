@@ -49,35 +49,27 @@ class BasicAuthenticationFilter
         .equals(request.getQueryString)
     val settings = loadSystemSettings()
 
-    try {
-      PluginRegistry()
-        .getRepositoryRouting(request.gitRepositoryPath)
-        .map {
-          case GitRepositoryRouting(_, _, filter) =>
-            // served by plug-ins
-            pluginRepository(
-              request,
-              wrappedResponse,
-              chain,
-              settings,
-              isUpdating,
-              filter)
-
-        }
-        .getOrElse {
-          // default repositories
-          defaultRepository(
+    try PluginRegistry()
+      .getRepositoryRouting(request.gitRepositoryPath)
+      .map {
+        case GitRepositoryRouting(_, _, filter) =>
+          // served by plug-ins
+          pluginRepository(
             request,
             wrappedResponse,
             chain,
             settings,
-            isUpdating)
-        }
-    } catch {
-      case ex: Exception => {
+            isUpdating,
+            filter)
+
+      }
+      .getOrElse {
+        // default repositories
+        defaultRepository(request, wrappedResponse, chain, settings, isUpdating)
+      } catch {
+      case ex: Exception =>
         logger.error("error", ex)
         requireAuth(response)
-      }
     }
   }
 
@@ -103,11 +95,10 @@ class BasicAuthenticationFilter
           request.gitRepositoryPath,
           account.map(_.userName),
           settings,
-          isUpdating)) {
+          isUpdating))
       chain.doFilter(request, response)
-    } else {
+    else
       requireAuth(response)
-    }
   }
 
   private def defaultRepository(
@@ -123,16 +114,16 @@ class BasicAuthenticationFilter
         getRepository(
           repositoryOwner,
           repositoryName.replaceFirst("\\.wiki\\.git$|\\.git$", "")) match {
-          case Some(repository) => {
-            if (!isUpdating && !repository.repository.isPrivate && settings.allowAnonymousAccess) {
+          case Some(repository) =>
+            if (!isUpdating && !repository.repository.isPrivate && settings.allowAnonymousAccess)
               chain.doFilter(request, response)
-            } else {
+            else {
               val passed = for {
                 auth <- Option(request.getHeader("Authorization"))
                 Array(username, password) = decodeAuthHeader(auth).split(":", 2)
                 account <- authenticate(settings, username, password)
               } yield
-                if (isUpdating || repository.repository.isPrivate) {
+                if (isUpdating || repository.repository.isPrivate)
                   if (hasWritePermission(
                         repository.owner,
                         repository.name,
@@ -142,25 +133,21 @@ class BasicAuthenticationFilter
                       account.userName)
                     true
                   } else false
-                } else true
+                else true
 
-              if (passed.getOrElse(false)) {
+              if (passed.getOrElse(false))
                 chain.doFilter(request, response)
-              } else {
+              else
                 requireAuth(response)
-              }
             }
-          }
-          case None => {
+          case None =>
             logger.debug(
               s"Repository $repositoryOwner/$repositoryName is not found.")
             response.sendError(HttpServletResponse.SC_NOT_FOUND)
-          }
         }
-      case _ => {
+      case _ =>
         logger.debug(s"Not enough path arguments: ${request.paths}")
         response.sendError(HttpServletResponse.SC_NOT_FOUND)
-      }
     }
   }
 
@@ -170,9 +157,9 @@ class BasicAuthenticationFilter
   }
 
   private def decodeAuthHeader(header: String): String =
-    try {
-      new String(new sun.misc.BASE64Decoder().decodeBuffer(header.substring(6)))
-    } catch {
+    try new String(
+      new sun.misc.BASE64Decoder().decodeBuffer(header.substring(6)))
+    catch {
       case _: Throwable => ""
     }
 }

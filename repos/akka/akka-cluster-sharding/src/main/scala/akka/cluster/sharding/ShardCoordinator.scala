@@ -563,26 +563,24 @@ abstract class ShardCoordinator(
                 allocateShardHomes()
             }
           }
-        } else {
+        } else
           log.debug(
             "ShardRegion {} was not registered since the coordinator currently does not know about a node of that region",
             region)
-        }
 
       case RegisterProxy(proxy) ⇒
         log.debug("ShardRegion proxy registered: [{}]", proxy)
         if (state.regionProxies.contains(proxy))
           proxy ! RegisterAck(self)
-        else {
+        else
           update(ShardRegionProxyRegistered(proxy)) { evt ⇒
             state = state.updated(evt)
             context.watch(proxy)
             proxy ! RegisterAck(self)
           }
-        }
 
       case GetShardHome(shard) ⇒
-        if (!rebalanceInProgress.contains(shard)) {
+        if (!rebalanceInProgress.contains(shard))
           state.shards.get(shard) match {
             case Some(ref) ⇒
               if (regionTerminationInProgress(ref))
@@ -620,7 +618,6 @@ abstract class ShardCoordinator(
                 }
               }
           }
-        }
 
       case AllocateShardResult(shard, None, getShardHomeSender) ⇒
         log.debug("Shard [{}] allocation failed. It will be retried.", shard)
@@ -668,13 +665,13 @@ abstract class ShardCoordinator(
         log.debug("Rebalance shard [{}] done [{}]", shard, ok)
         // The shard could have been removed by ShardRegionTerminated
         if (state.shards.contains(shard))
-          if (ok) {
+          if (ok)
             update(ShardHomeDeallocated(shard)) { evt ⇒
               state = state.updated(evt)
               log.debug("Shard [{}] deallocated", evt.shard)
               allocateShardHomes()
             }
-          } else // rebalance not completed, graceful shutdown will be retried
+          else // rebalance not completed, graceful shutdown will be retried
             gracefulShutdownInProgress -= state.shards(shard)
 
       case GracefulShutdownReq(region) ⇒
@@ -738,7 +735,7 @@ abstract class ShardCoordinator(
 
   def receiveTerminated: Receive = {
     case t @ Terminated(ref) ⇒
-      if (state.regions.contains(ref)) {
+      if (state.regions.contains(ref))
         if (removalMargin != Duration.Zero && t.addressTerminated && aliveRegions(
               ref)) {
           context.system.scheduler.scheduleOnce(
@@ -748,9 +745,8 @@ abstract class ShardCoordinator(
           regionTerminationInProgress += ref
         } else
           regionTerminated(ref)
-      } else if (state.regionProxies.contains(ref)) {
+      else if (state.regionProxies.contains(ref))
         regionProxyTerminated(ref)
-      }
 
     case DelayedShardRegionTerminated(ref) ⇒
       regionTerminated(ref)
@@ -834,12 +830,12 @@ abstract class ShardCoordinator(
       shard: ShardId,
       region: ActorRef,
       getShardHomeSender: ActorRef): Unit =
-    if (!rebalanceInProgress.contains(shard)) {
+    if (!rebalanceInProgress.contains(shard))
       state.shards.get(shard) match {
         case Some(ref) ⇒ getShardHomeSender ! ShardHome(shard, ref)
         case None ⇒
           if (state.regions.contains(region) && !gracefulShutdownInProgress
-                .contains(region)) {
+                .contains(region))
             update(ShardHomeAllocated(shard, region)) { evt ⇒
               state = state.updated(evt)
               log.debug("Shard [{}] allocated at [{}]", evt.shard, evt.region)
@@ -847,18 +843,17 @@ abstract class ShardCoordinator(
               sendHostShardMsg(evt.shard, evt.region)
               getShardHomeSender ! ShardHome(evt.shard, evt.region)
             }
-          } else
+          else
             log.debug(
               "Allocated region {} for shard [{}] is not (any longer) one of the registered regions: {}",
               region,
               shard,
               state)
       }
-    }
 
   def continueRebalance(shards: Set[ShardId]): Unit =
     shards.foreach { shard ⇒
-      if (!rebalanceInProgress(shard)) {
+      if (!rebalanceInProgress(shard))
         state.shards.get(shard) match {
           case Some(rebalanceFromRegion) ⇒
             rebalanceInProgress += shard
@@ -877,7 +872,6 @@ abstract class ShardCoordinator(
             log.debug("Rebalance of non-existing shard [{}] is ignored", shard)
         }
 
-      }
     }
 
 }
@@ -915,14 +909,13 @@ class PersistentShardCoordinator(
         case ShardRegionTerminated(region) ⇒
           if (state.regions.contains(region))
             state = state.updated(evt)
-          else {
+          else
             log.debug(
               "ShardRegionTerminated, but region {} was not registered. This inconsistency is due to that " +
                 " some stored ActorRef in Akka v2.3.0 and v2.3.1 did not contain full address information. It will be " +
                 "removed by later watch.",
               region
             )
-          }
         case ShardRegionProxyTerminated(proxy) ⇒
           if (state.regionProxies.contains(proxy))
             state = state.updated(evt)

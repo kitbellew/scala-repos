@@ -423,12 +423,11 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     */
   private def atLeastOneBatch(readTimespan: Interval[Timestamp]) =
     fromEither[FactoryInput] {
-      if (batcher.batchesCoveredBy(readTimespan) == Empty()) {
+      if (batcher.batchesCoveredBy(readTimespan) == Empty())
         Left(List(
           "readTimespan is not convering at least one batch: " + readTimespan.toString))
-      } else {
+      else
         Right(())
-      }
     }
 
   /**

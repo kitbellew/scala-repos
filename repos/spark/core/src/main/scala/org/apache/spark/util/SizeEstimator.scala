@@ -115,13 +115,10 @@ object SizeEstimator extends Logging {
 
     objectSize =
       if (!is64bit) 8
-      else {
-        if (!isCompressedOops) {
-          16
-        } else {
-          12
-        }
-      }
+      else if (!isCompressedOops)
+        16
+      else
+        12
     pointerSize = if (is64bit && !isCompressedOops) 8 else 4
     classInfos.clear()
     classInfos.put(classOf[Object], new ClassInfo(objectSize, Nil))
@@ -130,14 +127,12 @@ object SizeEstimator extends Logging {
   private def getIsCompressedOops: Boolean = {
     // This is only used by tests to override the detection of compressed oops. The test
     // actually uses a system property instead of a SparkConf, so we'll stick with that.
-    if (System.getProperty("spark.test.useCompressedOops") != null) {
+    if (System.getProperty("spark.test.useCompressedOops") != null)
       return System.getProperty("spark.test.useCompressedOops").toBoolean
-    }
 
     // java.vm.info provides compressed ref info for IBM JDKs
-    if (System.getProperty("java.vendor").contains("IBM")) {
+    if (System.getProperty("java.vendor").contains("IBM"))
       return System.getProperty("java.vm.info").contains("Compressed Ref")
-    }
 
     try {
       val hotSpotMBeanName = "com.sun.management:type=HotSpotDiagnostic"
@@ -159,14 +154,13 @@ object SizeEstimator extends Logging {
       // TODO: We could use reflection on the VMOption returned ?
       getVMMethod.invoke(bean, "UseCompressedOops").toString.contains("true")
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         // Guess whether they've enabled UseCompressedOops based on whether maxMemory < 32 GB
         val guess = Runtime.getRuntime.maxMemory < (32L * 1024 * 1024 * 1024)
         val guessInWords = if (guess) "yes" else "not"
         logWarning(
           "Failed to check whether UseCompressedOops is set; assuming " + guessInWords)
         return guess
-      }
     }
   }
 
@@ -207,32 +201,29 @@ object SizeEstimator extends Logging {
       visited: IdentityHashMap[AnyRef, AnyRef]): Long = {
     val state = new SearchState(visited)
     state.enqueue(obj)
-    while (!state.isFinished) {
+    while (!state.isFinished)
       visitSingleObject(state.dequeue(), state)
-    }
     state.size
   }
 
   private def visitSingleObject(obj: AnyRef, state: SearchState) {
     val cls = obj.getClass
-    if (cls.isArray) {
+    if (cls.isArray)
       visitArray(obj, cls, state)
-    } else if (obj.isInstanceOf[ClassLoader] || obj.isInstanceOf[Class[_]]) {
+    else if (obj.isInstanceOf[ClassLoader] || obj.isInstanceOf[Class[_]]) {
       // Hadoop JobConfs created in the interpreter have a ClassLoader, which greatly confuses
       // the size estimator since it references the whole REPL. Do nothing in this case. In
       // general all ClassLoaders and Classes will be shared between objects anyway.
-    } else {
+    } else
       obj match {
         case s: KnownSizeEstimation =>
           state.size += s.estimatedSize
         case _ =>
           val classInfo = getClassInfo(cls)
           state.size += alignSize(classInfo.shellSize)
-          for (field <- classInfo.pointerFields) {
+          for (field <- classInfo.pointerFields)
             state.enqueue(field.get(obj))
-          }
       }
-    }
   }
 
   // Estimate the size of arrays larger than ARRAY_SIZE_FOR_SAMPLING by sampling.
@@ -287,39 +278,35 @@ object SizeEstimator extends Logging {
     var size = 0L
     for (i <- 0 until ARRAY_SAMPLE_SIZE) {
       var index = 0
-      do {
-        index = rand.nextInt(length)
-      } while (drawn.contains(index))
+      do index = rand.nextInt(length) while (drawn.contains(index))
       drawn.add(index)
       val obj = ScalaRunTime.array_apply(array, index).asInstanceOf[AnyRef]
-      if (obj != null) {
+      if (obj != null)
         size += SizeEstimator.estimate(obj, state.visited).toLong
-      }
     }
     size
   }
 
   private def primitiveSize(cls: Class[_]): Int =
-    if (cls == classOf[Byte]) {
+    if (cls == classOf[Byte])
       BYTE_SIZE
-    } else if (cls == classOf[Boolean]) {
+    else if (cls == classOf[Boolean])
       BOOLEAN_SIZE
-    } else if (cls == classOf[Char]) {
+    else if (cls == classOf[Char])
       CHAR_SIZE
-    } else if (cls == classOf[Short]) {
+    else if (cls == classOf[Short])
       SHORT_SIZE
-    } else if (cls == classOf[Int]) {
+    else if (cls == classOf[Int])
       INT_SIZE
-    } else if (cls == classOf[Long]) {
+    else if (cls == classOf[Long])
       LONG_SIZE
-    } else if (cls == classOf[Float]) {
+    else if (cls == classOf[Float])
       FLOAT_SIZE
-    } else if (cls == classOf[Double]) {
+    else if (cls == classOf[Double])
       DOUBLE_SIZE
-    } else {
+    else
       throw new IllegalArgumentException(
         "Non-primitive class " + cls + " passed to primitiveSize()")
-    }
 
   /**
     * Get or compute the ClassInfo for a given class.
@@ -327,9 +314,8 @@ object SizeEstimator extends Logging {
   private def getClassInfo(cls: Class[_]): ClassInfo = {
     // Check whether we've already cached a ClassInfo for this class
     val info = classInfos.get(cls)
-    if (info != null) {
+    if (info != null)
       return info
-    }
 
     val parent = getClassInfo(cls.getSuperclass)
     var shellSize = parent.shellSize
@@ -337,18 +323,17 @@ object SizeEstimator extends Logging {
     val sizeCount = Array.fill(fieldSizes.max + 1)(0)
 
     // iterate through the fields of this class and gather information.
-    for (field <- cls.getDeclaredFields) {
+    for (field <- cls.getDeclaredFields)
       if (!Modifier.isStatic(field.getModifiers)) {
         val fieldClass = field.getType
-        if (fieldClass.isPrimitive) {
+        if (fieldClass.isPrimitive)
           sizeCount(primitiveSize(fieldClass)) += 1
-        } else {
+        else {
           field.setAccessible(true) // Enable future get()'s on this field
           sizeCount(pointerSize) += 1
           pointerFields = field :: pointerFields
         }
       }
-    }
 
     // Based on the simulated field layout code in Aleksey Shipilev's report:
     // http://cr.openjdk.java.net/~shade/papers/2013-shipilev-fieldlayout-latest.pdf

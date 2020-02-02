@@ -118,9 +118,8 @@ class LanguageFeatureInspection
       val module = ModuleUtilCore.findModuleForPsiElement(e)
 
       if (module != null && module.scalaSdk.exists(
-            _.languageLevel >= Scala_2_10)) {
+            _.languageLevel >= Scala_2_10))
         Features.foreach(_.process(e, holder))
-      }
   }
 }
 
@@ -134,9 +133,9 @@ private case class Feature(
 
   def process(e: PsiElement, holder: ProblemsHolder) {
     e.module.foreach { module =>
-      if (!isEnabled(module.scalaCompilerSettings)) {
+      if (!isEnabled(module.scalaCompilerSettings))
         findIn.lift(e).foreach { it =>
-          if (!isFlagImportedFor(it)) {
+          if (!isFlagImportedFor(it))
             holder.registerProblem(
               it,
               "Advanced language feature: " + name,
@@ -150,9 +149,7 @@ private case class Feature(
                 name,
                 enable)
             )
-          }
         }
-      }
     }
   }
 

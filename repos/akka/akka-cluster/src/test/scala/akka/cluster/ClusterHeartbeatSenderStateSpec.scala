@@ -191,75 +191,68 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
       for (i ← 1 to 100000) {
         val operation = rnd.nextInt(Add, HeartbeatRsp + 1)
         val node = rndNode()
-        try {
-          operation match {
-            case Add ⇒
-              if (node != selfUniqueAddress && !state.ring.nodes.contains(node)) {
-                val oldUnreachable = state.oldReceiversNowUnreachable
-                state = state.addMember(node)
-                // keep unreachable
+        try operation match {
+          case Add ⇒
+            if (node != selfUniqueAddress && !state.ring.nodes.contains(node)) {
+              val oldUnreachable = state.oldReceiversNowUnreachable
+              state = state.addMember(node)
+              // keep unreachable
+              (oldUnreachable diff state.activeReceivers) should ===(Set.empty)
+              state.failureDetector.isMonitoring(node.address) should ===(false)
+              state.failureDetector.isAvailable(node.address) should ===(true)
+            }
+
+          case Remove ⇒
+            if (node != selfUniqueAddress && state.ring.nodes.contains(node)) {
+              val oldUnreachable = state.oldReceiversNowUnreachable
+              state = state.removeMember(node)
+              // keep unreachable, unless it was the removed
+              if (oldUnreachable(node))
+                (oldUnreachable diff state.activeReceivers) should ===(
+                  Set(node))
+              else
                 (oldUnreachable diff state.activeReceivers) should ===(
                   Set.empty)
+
+              state.failureDetector.isMonitoring(node.address) should ===(false)
+              state.failureDetector.isAvailable(node.address) should ===(true)
+              state.activeReceivers should not contain (node)
+            }
+
+          case Unreachable ⇒
+            if (node != selfUniqueAddress && state.activeReceivers(node)) {
+              state.failureDetector.heartbeat(
+                node.address
+              ) // make sure the fd is created
+              fd(state, node).markNodeAsUnavailable()
+              state.failureDetector.isMonitoring(node.address) should ===(true)
+              state.failureDetector.isAvailable(node.address) should ===(false)
+              state = state.unreachableMember(node)
+            }
+
+          case HeartbeatRsp ⇒
+            if (node != selfUniqueAddress && state.ring.nodes.contains(node)) {
+              val oldUnreachable = state.oldReceiversNowUnreachable
+              val oldReceivers = state.activeReceivers
+              val oldRingReceivers = state.ring.myReceivers
+              state = state.heartbeatRsp(node)
+
+              if (oldUnreachable(node))
+                state.oldReceiversNowUnreachable should not contain (node)
+
+              if (oldUnreachable(node) && !oldRingReceivers(node))
                 state.failureDetector.isMonitoring(node.address) should ===(
                   false)
-                state.failureDetector.isAvailable(node.address) should ===(true)
-              }
 
-            case Remove ⇒
-              if (node != selfUniqueAddress && state.ring.nodes.contains(node)) {
-                val oldUnreachable = state.oldReceiversNowUnreachable
-                state = state.removeMember(node)
-                // keep unreachable, unless it was the removed
-                if (oldUnreachable(node))
-                  (oldUnreachable diff state.activeReceivers) should ===(
-                    Set(node))
-                else
-                  (oldUnreachable diff state.activeReceivers) should ===(
-                    Set.empty)
-
-                state.failureDetector.isMonitoring(node.address) should ===(
-                  false)
-                state.failureDetector.isAvailable(node.address) should ===(true)
-                state.activeReceivers should not contain (node)
-              }
-
-            case Unreachable ⇒
-              if (node != selfUniqueAddress && state.activeReceivers(node)) {
-                state.failureDetector.heartbeat(
-                  node.address
-                ) // make sure the fd is created
-                fd(state, node).markNodeAsUnavailable()
+              if (oldRingReceivers(node))
                 state.failureDetector.isMonitoring(node.address) should ===(
                   true)
-                state.failureDetector.isAvailable(node.address) should ===(
-                  false)
-                state = state.unreachableMember(node)
-              }
 
-            case HeartbeatRsp ⇒
-              if (node != selfUniqueAddress && state.ring.nodes.contains(node)) {
-                val oldUnreachable = state.oldReceiversNowUnreachable
-                val oldReceivers = state.activeReceivers
-                val oldRingReceivers = state.ring.myReceivers
-                state = state.heartbeatRsp(node)
+              state.ring.myReceivers should ===(oldRingReceivers)
+              state.failureDetector.isAvailable(node.address) should ===(true)
 
-                if (oldUnreachable(node))
-                  state.oldReceiversNowUnreachable should not contain (node)
+            }
 
-                if (oldUnreachable(node) && !oldRingReceivers(node))
-                  state.failureDetector.isMonitoring(node.address) should ===(
-                    false)
-
-                if (oldRingReceivers(node))
-                  state.failureDetector.isMonitoring(node.address) should ===(
-                    true)
-
-                state.ring.myReceivers should ===(oldRingReceivers)
-                state.failureDetector.isAvailable(node.address) should ===(true)
-
-              }
-
-          }
         } catch {
           case e: Throwable ⇒
             println(s"Failure context: i=$i, node=$node, op=$operation, " +

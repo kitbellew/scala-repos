@@ -95,9 +95,8 @@ object FastEvalEngineWorkflow {
       val result = dataSource
         .readEvalBase(workflow.sc)
         .map {
-          case (td, ei, qaRDD) => {
+          case (td, ei, qaRDD) =>
             (td, ei, qaRDD.zipWithUniqueId().map(_.swap))
-          }
         }
         .zipWithIndex
         .map(_.swap)
@@ -137,28 +136,24 @@ object FastEvalEngineWorkflow {
     val algoMap: Map[AX, BaseAlgorithm[PD, _, Q, P]] =
       prefix.algorithmParamsList
         .map {
-          case (algoName, algoParams) => {
-            try {
-              Doer(workflow.engine.algorithmClassMap(algoName), algoParams)
-            } catch {
-              case e: NoSuchElementException => {
+          case (algoName, algoParams) =>
+            try Doer(workflow.engine.algorithmClassMap(algoName), algoParams)
+            catch {
+              case e: NoSuchElementException =>
                 val algorithmClassMap = workflow.engine.algorithmClassMap
-                if (algoName == "") {
+                if (algoName == "")
                   logger.error(
                     "Empty algorithm name supplied but it could not " +
                       "match with any algorithm in the engine's definition. " +
                       "Existing algorithm name(s) are: " +
                       s"${algorithmClassMap.keys.mkString(", ")}. Aborting.")
-                } else {
+                else
                   logger.error(
                     s"$algoName cannot be found in the engine's " +
                       "definition. Existing algorithm name(s) are: " +
                       s"${algorithmClassMap.keys.mkString(", ")}. Aborting.")
-                }
                 sys.exit(1)
-              }
             }
-          }
         }
         .zipWithIndex
         .map(_.swap)
@@ -179,7 +174,7 @@ object FastEvalEngineWorkflow {
 
     val algoResult: Map[EX, RDD[(QX, Seq[P])]] = dataSourceResult.par
       .map {
-        case (ex, (td, ei, iqaRDD)) => {
+        case (ex, (td, ei, iqaRDD)) =>
           val modelsMap: Map[AX, Any] = algoModelsMap(ex)
           val qs: RDD[(QX, Q)] = iqaRDD.mapValues(_._1)
 
@@ -205,7 +200,6 @@ object FastEvalEngineWorkflow {
               ps.toSeq.sortBy(_._1).map(_._2)
             }
           (ex, unionAlgoPredicts)
-        }
       }
       .seq
       .toMap
@@ -246,7 +240,7 @@ object FastEvalEngineWorkflow {
 
       val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap
         .map {
-          case (ex, psMap) => {
+          case (ex, psMap) =>
             val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
             val qpsaMap: RDD[(QX, Q, Seq[P], A)] = psMap
               .join(qasMap)
@@ -256,7 +250,6 @@ object FastEvalEngineWorkflow {
               case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)
             }
             (ex, qpaMap)
-          }
         }
 
       val servingResult = (0 until evalQAsMap.size).map { ex =>

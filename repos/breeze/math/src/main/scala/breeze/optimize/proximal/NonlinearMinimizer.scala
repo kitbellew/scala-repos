@@ -150,7 +150,7 @@ class NonlinearMinimizer(
           scale + reltol * max(norm(resultState.x), norm(residual))
         val epsDual = scale + reltol * norm(s)
 
-        if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters) {
+        if (residualNorm < epsPrimal && sNorm < epsDual || iter > admmIters)
           State(
             resultState,
             u,
@@ -162,7 +162,7 @@ class NonlinearMinimizer(
             admmIters,
             iter + 1,
             true)
-        } else {
+        else
           State(
             resultState,
             u,
@@ -174,7 +174,6 @@ class NonlinearMinimizer(
             admmIters,
             iter + 1,
             false)
-        }
       }
       .takeUpToWhere { _.converged }
 
@@ -260,15 +259,13 @@ object NonlinearMinimizer {
     constraint match {
       case IDENTITY => project(ProjectIdentity())
       case POSITIVE => project(ProjectPos())
-      case BOX => {
+      case BOX =>
         val lb = DenseVector.zeros[Double](ndim)
         val ub = DenseVector.ones[Double](ndim)
         project(ProjectBox(lb, ub))
-      }
-      case EQUALITY => {
+      case EQUALITY =>
         val aeq = DenseVector.ones[Double](ndim)
         project(ProjectHyperPlane(aeq, 1.0))
-      }
       case PROBABILITYSIMPLEX => project(ProjectProbabilitySimplex(lambda))
       case SPARSE             => project(ProjectL1(lambda))
       case _ =>

@@ -274,11 +274,8 @@ class ContinuousQueryManagerSuite
           query
         }
       }
-      try {
-        body(queries)
-      } finally {
-        queries.foreach(_.stop())
-      }
+      try body(queries)
+      finally queries.foreach(_.stop())
     }
 
   /** Test the behavior of awaitAnyTermination */
@@ -296,9 +293,8 @@ class ContinuousQueryManagerSuite
         assert(
           returnedValue === expectedReturnedValue,
           "Returned value does not match expected")
-      } else {
+      } else
         sqlContext.streams.awaitAnyTermination()
-      }
 
     AwaitTerminationTester.test(
       expectedBehavior,

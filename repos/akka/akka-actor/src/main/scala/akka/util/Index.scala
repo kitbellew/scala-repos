@@ -40,7 +40,7 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
       var added = false
       val set = container get k
 
-      if (set ne null) {
+      if (set ne null)
         set.synchronized {
           if (set.isEmpty)
             retry = true //IF the set is empty then it has been removed, so signal retry
@@ -49,13 +49,13 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
             retry = false
           }
         }
-      } else {
+      else {
         val newSet = new ConcurrentSkipListSet[V](valueComparator)
         newSet add v
 
         // Parry for two simultaneous putIfAbsent(id,newSet)
         val oldSet = container.putIfAbsent(k, newSet)
-        if (oldSet ne null) {
+        if (oldSet ne null)
           oldSet.synchronized {
             if (oldSet.isEmpty)
               retry = true //IF the set is empty then it has been removed, so signal retry
@@ -64,7 +64,7 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
               retry = false
             }
           }
-        } else added = true
+        else added = true
       }
 
       if (retry) spinPut(k, v)
@@ -125,7 +125,7 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   def remove(key: K, value: V): Boolean = {
     val set = container get key
 
-    if (set ne null) {
+    if (set ne null)
       set.synchronized {
         if (set.remove(value)) { //If we can remove the value
           if (set.isEmpty) //and the set becomes empty
@@ -137,7 +137,7 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
           true //Remove succeeded
         } else false //Remove failed
       }
-    } else false //Remove failed
+    else false //Remove failed
   }
 
   /**
@@ -147,14 +147,14 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
   def remove(key: K): Option[Iterable[V]] = {
     val set = container get key
 
-    if (set ne null) {
+    if (set ne null)
       set.synchronized {
         container.remove(key, set)
         val ret = collectionAsScalaIterableConverter(set.clone()).asScala // Make copy since we need to clear the original
         set.clear() // Clear the original set to signal to any pending writers that there was a conflict
         Some(ret)
       }
-    } else None //Remove failed
+    else None //Remove failed
   }
 
   /**
@@ -166,17 +166,15 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
       val e = i.next()
       val set = e.getValue()
 
-      if (set ne null) {
+      if (set ne null)
         set.synchronized {
-          if (set.remove(value)) { //If we can remove the value
+          if (set.remove(value)) //If we can remove the value
             if (set.isEmpty) //and the set becomes empty
               container.remove(
                 e.getKey,
                 emptySet
               ) //We try to remove the key if it's mapped to an empty set
-          }
         }
-      }
     }
   }
 
@@ -193,9 +191,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
     while (i.hasNext) {
       val e = i.next()
       val set = e.getValue()
-      if (set ne null) {
+      if (set ne null)
         set.synchronized { set.clear(); container.remove(e.getKey, emptySet) }
-      }
     }
   }
 }

@@ -313,9 +313,8 @@ case class Netty3Transporter[In, Out](
 
   def channelStatsHandler(statsReceiver: StatsReceiver): ChannelHandler =
     synchronized {
-      if (!(statsHandlers containsKey statsReceiver)) {
+      if (!(statsHandlers containsKey statsReceiver))
         statsHandlers.put(statsReceiver, new ChannelStatsHandler(statsReceiver))
-      }
 
       statsHandlers.get(statsReceiver)
     }

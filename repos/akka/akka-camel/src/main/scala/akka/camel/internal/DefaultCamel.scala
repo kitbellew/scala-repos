@@ -73,14 +73,12 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
     */
   def shutdown(): Unit = {
     try context.stop()
-    finally {
-      try template.stop()
-      catch {
-        case NonFatal(e) ⇒
-          log.debug(
-            "Swallowing non-fatal exception [{}] on stopping Camel producer template",
-            e)
-      }
+    finally try template.stop()
+    catch {
+      case NonFatal(e) ⇒
+        log.debug(
+          "Swallowing non-fatal exception [{}] on stopping Camel producer template",
+          e)
     }
     log.debug(
       "Stopped CamelContext[{}] for ActorSystem[{}]",

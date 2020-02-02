@@ -205,13 +205,12 @@ object Test {
 
       // val st = sts.toList.sorted
       // val pt = pts.toList.sorted
-      if (st.size != pt.size) {
+      if (st.size != pt.size)
         // val zipped = st.zip(pt)
         // val ind = zipped.indexWhere { case (a, b) => a != b }
         // val sliced = zipped.slice(ind - 10, ind + 10)
         // println(sliced.map(t => t._1 + "\n" + t._2 + "\n--------").mkString("\n"))
         println(i + ") seq vs par: " + st.size + " vs " + pt.size)
-      }
       assert(st == pt)
     }
   }

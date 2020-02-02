@@ -34,11 +34,10 @@ object ApplicationBuild extends Build {
   def simpleParser(state: State) = Space ~> any.+.map(_.mkString(""))
 
   def checkLogContains(msg: String): Task[Boolean] = task {
-    if (!bufferLogger.messages.exists(_.contains(msg))) {
+    if (!bufferLogger.messages.exists(_.contains(msg)))
       sys.error(
         "Did not find log message:\n    '" + msg + "'\nin output:\n" + bufferLogger.messages.reverse
           .mkString("    ", "\n    ", ""))
-    }
     true
   }
 

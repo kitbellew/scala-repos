@@ -15,9 +15,8 @@ object MaterializationBenchmark {
 
   val flowWithMapBuilder = (numOfCombinators: Int) => {
     var source = Source.single(())
-    for (_ <- 1 to numOfCombinators) {
+    for (_ <- 1 to numOfCombinators)
       source = source.map(identity)
-    }
     source.to(Sink.ignore)
   }
 
@@ -41,9 +40,8 @@ object MaterializationBenchmark {
 
   val graphWithNestedImportsBuilder = (numOfNestedGraphs: Int) => {
     var flow: Graph[FlowShape[Unit, Unit], NotUsed] = Flow[Unit].map(identity)
-    for (_ <- 1 to numOfNestedGraphs) {
+    for (_ <- 1 to numOfNestedGraphs)
       flow = GraphDSL.create(flow) { b ⇒ flow ⇒ FlowShape(flow.in, flow.out) }
-    }
 
     RunnableGraph.fromGraph(GraphDSL.create(flow) { implicit b ⇒ flow ⇒
       import GraphDSL.Implicits._

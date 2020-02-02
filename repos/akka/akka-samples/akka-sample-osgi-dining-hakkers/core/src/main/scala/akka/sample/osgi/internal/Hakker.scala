@@ -122,11 +122,10 @@ class Hakker(name: String, chair: Int) extends Actor {
     case Busy(chopstick) =>
       pubStateChange("waiting", "thinking")
       become(thinking(left, right) orElse (managementEvents))
-      if (waitingForLeft) {
+      if (waitingForLeft)
         right ! Put(self)
-      } else {
+      else
         left ! Put(self)
-      }
       self ! Eat
     case Identify => identify("Waiting for Chopstick")
   }
@@ -196,7 +195,7 @@ class Hakker(name: String, chair: Int) extends Actor {
 
   def pubStateChange(from: String, to: String): Unit = {
     val chg = HakkerStateChange(name, from, to)
-    subscribers foreach { _ ! chg }
+    subscribers foreach _ ! chg
   }
 
 }

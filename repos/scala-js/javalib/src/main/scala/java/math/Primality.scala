@@ -108,9 +108,8 @@ private[math] object Primality {
       val last = count - 1
       do {
         // To fill the array with random integers
-        for (i <- 0 until n.numberLength) {
+        for (i <- 0 until n.numberLength)
           n.digits(i) = rnd.nextInt()
-        }
         // To fix to the correct bitLength
         n.digits(last) = (n.digits(last) | 0x80000000) >>> shiftCount
         // To create an odd number
@@ -129,28 +128,26 @@ private[math] object Primality {
   def isProbablePrime(n: BigInteger, certainty: Int): Boolean =
     // scalastyle:off return
     // PRE: n >= 0
-    if (certainty <= 0 || (n.numberLength == 1 && n.digits(0) == 2)) {
+    if (certainty <= 0 || (n.numberLength == 1 && n.digits(0) == 2))
       true
-    } else if (!n.testBit(0)) {
+    else if (!n.testBit(0))
       // To discard all even numbers
       false
-    } else if (n.numberLength == 1 && (n.digits(0) & 0XFFFFFC00) == 0) {
+    else if (n.numberLength == 1 && (n.digits(0) & 0XFFFFFC00) == 0)
       // To check if 'n' exists in the table (it fit in 10 bits)
       Arrays.binarySearch(Primes, n.digits(0)) >= 0
-    } else {
+    else {
       // To check if 'n' is divisible by some prime of the table
-      for (i <- 1 until Primes.length) {
+      for (i <- 1 until Primes.length)
         if (Division.remainderArrayByInt(n.digits, n.numberLength, Primes(i)) == 0)
           return false
-      }
 
       // To set the number of iterations necessary for Miller-Rabin test
       var i: Int = 0
       val bitLength = n.bitLength()
       i = 2
-      while (bitLength < Bits(i)) {
+      while (bitLength < Bits(i))
         i += 1
-      }
       val newCertainty = Math.min(i, 1 + ((certainty - 1) >> 1))
       millerRabin(n, newCertainty)
     }
@@ -177,9 +174,8 @@ private[math] object Primality {
     val digitsLessPrime = (n.digits(0) < Primes(Primes.length - 1))
     if ((n.numberLength == 1) && (n.digits(0) >= 0) && digitsLessPrime) {
       var i = 0
-      while (n.digits(0) >= Primes(i)) {
+      while (n.digits(0) >= Primes(i))
         i += 1
-      }
       return BiPrimes(i)
     }
 
@@ -197,14 +193,12 @@ private[math] object Primality {
 
     // To set the improved certainty of Miller-Rabin
     var certainty = 2
-    for (j <- startPoint.bitLength() until Bits(certainty)) {
+    for (j <- startPoint.bitLength() until Bits(certainty))
       certainty += 1
-    }
 
     // To calculate modules: N mod p1, N mod p2, ... for first primes.
-    for (i <- 0 until Primes.length) {
+    for (i <- 0 until Primes.length)
       modules(i) = Division.remainder(startPoint, Primes(i)) - gapSize
-    }
 
     val probPrime: BigInteger = startPoint.copy()
     while (true) {
@@ -222,14 +216,12 @@ private[math] object Primality {
         }
       }
       // To execute Miller-Rabin for non-divisible numbers by all first primes
-      for (j <- 0 until gapSize) {
+      for (j <- 0 until gapSize)
         if (!isDivisible(j)) {
           Elementary.inplaceAdd(probPrime, j)
-          if (millerRabin(probPrime, certainty)) {
+          if (millerRabin(probPrime, certainty))
             return probPrime
-          }
         }
-      }
       Elementary.inplaceAdd(startPoint, gapSize)
     }
     throw new AssertionError("Primality.nextProbablePrime: Should not get here")
@@ -257,28 +249,24 @@ private[math] object Primality {
     val rnd = new Random()
     for (i <- 0 until t) {
       // To generate a witness 'x', first it use the primes of table
-      if (i < Primes.length) {
+      if (i < Primes.length)
         x = BiPrimes(i)
-      } else {
+      else
         /*
          * It generates random witness only if it's necesssary. Note that all
          * methods would call Miller-Rabin with t <= 50 so this part is only to
          * do more robust the algorithm
          */
-        do {
-          x = new BigInteger(bitLength, rnd)
-        } while ((x.compareTo(n) >= BigInteger.EQUALS) || x.sign == 0 || x.isOne)
-      }
+        do x = new BigInteger(bitLength, rnd) while ((x.compareTo(n) >= BigInteger.EQUALS) || x.sign == 0 || x.isOne)
 
       y = x.modPow(q, n)
       if (!(y.isOne || y == nMinus1)) {
-        for (j <- 1 until k) {
+        for (j <- 1 until k)
           if (y != nMinus1) {
             y = y.multiply(y).mod(n)
             if (y.isOne)
               return false
           }
-        }
         if (y != nMinus1)
           return false
       }

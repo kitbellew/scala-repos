@@ -285,9 +285,7 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       EventFilter[ActorKilledException](occurrences = 1) intercept {
         actor ! Kill
       }
-    } finally {
-      shutdown(system)
-    }
+    } finally shutdown(system)
     //#event-filter
   }
 

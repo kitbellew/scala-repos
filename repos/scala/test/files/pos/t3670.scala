@@ -33,10 +33,9 @@ class C {
 
 class D {
   val things = List("things")
-  if (things.size < 100) {
+  if (things.size < 100)
     if (things.size > 10) {
       lazy val msg = "foo"
       msg
     }
-  }
 }

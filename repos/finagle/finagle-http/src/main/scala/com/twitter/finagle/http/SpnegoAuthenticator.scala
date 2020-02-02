@@ -31,9 +31,9 @@ object SpnegoAuthenticator {
     /** If the header represents a valid spnego negotiation, return it. */
     def unapply(header: String): Option[Token] =
       // must be a valid Negotiate header, and have a token
-      if (header.length <= SchemePrefixLength || !header.startsWith(AuthScheme)) {
+      if (header.length <= SchemePrefixLength || !header.startsWith(AuthScheme))
         None
-      } else {
+      else {
         val tokenStr = header.substring(SchemePrefixLength)
         Some(Base64StringEncoder.decode(tokenStr))
       }
@@ -149,9 +149,7 @@ object SpnegoAuthenticator {
           challengeToken: Option[Token]): Future[Token] = pool {
         val tokenIn = challengeToken.getOrElse(Token.Empty)
         var tokenOut: Token = null
-        do {
-          tokenOut = context.initSecContext(tokenIn, 0, tokenIn.length)
-        } while (tokenOut == null);
+        do tokenOut = context.initSecContext(tokenIn, 0, tokenIn.length) while (tokenOut == null);
         tokenOut
       }
 
@@ -331,10 +329,9 @@ object SpnegoAuthenticator {
               rsp
             }
           } handle {
-            case e: GSSException => {
+            case e: GSSException =>
               log.error(e, "authenticating")
               unauthorized(req)
-            }
           }
       } getOrElse {
         log.debug(

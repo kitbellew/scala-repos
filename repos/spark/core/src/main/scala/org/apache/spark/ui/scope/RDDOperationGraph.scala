@@ -122,11 +122,11 @@ private[ui] object RDDOperationGraph extends Logging {
           rdd.storageLevel != StorageLevel.NONE,
           rdd.callSite))
 
-      if (rdd.scope.isEmpty) {
+      if (rdd.scope.isEmpty)
         // This RDD has no encompassing scope, so we put it directly in the root cluster
         // This should happen only if an RDD is instantiated outside of a public RDD API
         rootCluster.attachChildNode(node)
-      } else {
+      else {
         // Otherwise, this RDD belongs to an inner cluster,
         // which may be nested inside of other clusters
         val rddScopes = rdd.scope
@@ -149,9 +149,8 @@ private[ui] object RDDOperationGraph extends Logging {
         }
         // Attach the outermost cluster to the root cluster, and the RDD to the innermost cluster
         rddClusters.headOption.foreach { cluster =>
-          if (!rootCluster.childClusters.contains(cluster)) {
+          if (!rootCluster.childClusters.contains(cluster))
             rootCluster.attachChildCluster(cluster)
-          }
         }
         rddClusters.lastOption.foreach { cluster =>
           cluster.attachChildNode(node)

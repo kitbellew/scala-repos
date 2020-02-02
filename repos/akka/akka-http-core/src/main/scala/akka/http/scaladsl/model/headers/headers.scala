@@ -1042,12 +1042,12 @@ final case class `Transfer-Encoding`(encodings: immutable.Seq[TransferEncoding])
     if (isChunked) this
     else `Transfer-Encoding`(encodings :+ TransferEncodings.chunked)
   def withChunkedPeeled: Option[`Transfer-Encoding`] =
-    if (isChunked) {
+    if (isChunked)
       encodings.init match {
         case Nil ⇒ None
         case remaining ⇒ Some(`Transfer-Encoding`(remaining))
       }
-    } else Some(this)
+    else Some(this)
   def append(encodings: immutable.Seq[TransferEncoding]) =
     `Transfer-Encoding`(this.encodings ++ encodings)
   def renderValue[R <: Rendering](r: R): r.type = r ~~ encodings

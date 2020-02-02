@@ -127,11 +127,10 @@ case class ExceptionFailure(
 
   @deprecated("use accumUpdates instead", "2.0.0")
   val metrics: Option[TaskMetrics] = {
-    if (accumUpdates.nonEmpty) {
+    if (accumUpdates.nonEmpty)
       Try(TaskMetrics.fromAccumulatorUpdates(accumUpdates)).toOption
-    } else {
+    else
       None
-    }
   }
 
   /**
@@ -161,13 +160,12 @@ case class ExceptionFailure(
   }
 
   override def toErrorString: String =
-    if (fullStackTrace == null) {
+    if (fullStackTrace == null)
       // fullStackTrace is added in 1.2.0
       // If fullStackTrace is null, use the old error string for backward compatibility
       exceptionString(className, description, stackTrace)
-    } else {
+    else
       fullStackTrace
-    }
 
   /**
     * Return a nice string representation of the exception, including the stack trace.
@@ -196,9 +194,8 @@ private[spark] class ThrowableSerializationWrapper(var exception: Throwable)
   private def writeObject(out: ObjectOutputStream): Unit =
     out.writeObject(exception)
   private def readObject(in: ObjectInputStream): Unit =
-    try {
-      exception = in.readObject().asInstanceOf[Throwable]
-    } catch {
+    try exception = in.readObject().asInstanceOf[Throwable]
+    catch {
       case e: Exception =>
         log.warn("Task exception could not be deserialized", e)
     }
@@ -255,11 +252,11 @@ case class ExecutorLostFailure(
     reason: Option[String])
     extends TaskFailedReason {
   override def toErrorString: String = {
-    val exitBehavior = if (exitCausedByApp) {
-      "caused by one of the running tasks"
-    } else {
-      "unrelated to the running tasks"
-    }
+    val exitBehavior =
+      if (exitCausedByApp)
+        "caused by one of the running tasks"
+      else
+        "unrelated to the running tasks"
     s"ExecutorLostFailure (executor $execId exited $exitBehavior)" +
       reason
         .map { r => s" Reason: $r" }

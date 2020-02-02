@@ -127,12 +127,11 @@ object GBTExample {
         .required()
         .action((x, c) => c.copy(input = x))
       checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest >= 1) {
+        if (params.fracTest < 0 || params.fracTest >= 1)
           failure(
             s"fracTest ${params.fracTest} value incorrect; should be in [0,1).")
-        } else {
+        else
           success
-        }
       }
     }
 
@@ -220,18 +219,16 @@ object GBTExample {
       case "classification" =>
         val rfModel =
           pipelineModel.stages.last.asInstanceOf[GBTClassificationModel]
-        if (rfModel.totalNumNodes < 30) {
+        if (rfModel.totalNumNodes < 30)
           println(rfModel.toDebugString) // Print full model.
-        } else {
+        else
           println(rfModel) // Print model summary.
-        }
       case "regression" =>
         val rfModel = pipelineModel.stages.last.asInstanceOf[GBTRegressionModel]
-        if (rfModel.totalNumNodes < 30) {
+        if (rfModel.totalNumNodes < 30)
           println(rfModel.toDebugString) // Print full model.
-        } else {
+        else
           println(rfModel) // Print model summary.
-        }
       case _ =>
         throw new IllegalArgumentException("Algo ${params.algo} not supported.")
     }

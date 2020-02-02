@@ -44,29 +44,26 @@ class ScImportExprImpl private (
 
   def singleWildcard: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScImportExprStub].isSingleWildcard
-    }
-    if (findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null) {
+    if (findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null)
       true
-    } else {
+    else
       selectorSet match {
         case Some(set) => set.hasWildcard
         case None      => false
       }
-    }
   }
 
   def wildcardElement: Option[PsiElement] =
-    if (findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null) {
+    if (findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null)
       Some(findChildByType[PsiElement](ScalaTokenTypes.tUNDER))
-    } else {
+    else
       selectorSet match {
         case Some(set) =>
           set.wildcardElement
         case None => None
       }
-    }
 
   def qualifier: ScStableCodeReferenceElement =
     if (reference.isEmpty)
@@ -78,12 +75,12 @@ class ScImportExprImpl private (
 
   def deleteExpr() {
     val parent = getParent.asInstanceOf[ScImportStmt]
-    if (parent.importExprs.length == 1) {
+    if (parent.importExprs.length == 1)
       parent.getParent match {
         case x: ScImportsHolder => x.deleteImportStmt(parent)
         case _                  =>
       }
-    } else {
+    else {
       val node = parent.getNode
       val remove = node.removeChild _
       val next = getNextSibling
@@ -91,46 +88,36 @@ class ScImportExprImpl private (
         def removeWhitespaceAfterComma(comma: ASTNode) {
           if (comma.getTreeNext != null && !comma.getTreeNext.getText.contains(
                 "\n") &&
-              comma.getTreeNext.getText.trim.isEmpty) {
+              comma.getTreeNext.getText.trim.isEmpty)
             remove(comma.getTreeNext)
-          }
         }
         if (next.getText == ",") {
           val comma = next.getNode
           removeWhitespaceAfterComma(comma)
           remove(comma)
+        } else if (next.getNextSibling != null && next.getNextSibling.getText == ",") {
+          val comma = next.getNextSibling
+          removeWhitespaceAfterComma(comma.getNode)
+          remove(next.getNode)
+          remove(comma.getNode)
         } else {
-          if (next.getNextSibling != null && next.getNextSibling.getText == ",") {
-            val comma = next.getNextSibling
-            removeWhitespaceAfterComma(comma.getNode)
-            remove(next.getNode)
-            remove(comma.getNode)
-          } else {
-            val prev = getPrevSibling
-            if (prev != null) {
-              if (prev.getText == ",") {
-                remove(prev.getNode)
-              } else {
-                if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",") {
-                  remove(prev.getPrevSibling.getNode)
-                }
-              }
-            }
-          }
+          val prev = getPrevSibling
+          if (prev != null)
+            if (prev.getText == ",")
+              remove(prev.getNode)
+            else if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",")
+              remove(prev.getPrevSibling.getNode)
         }
       } else {
         val prev = getPrevSibling
-        if (prev != null) {
-          if (prev.getText == ",") {
+        if (prev != null)
+          if (prev.getText == ",")
             remove(prev.getNode)
-          } else {
-            if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",") {
-              val prevSibling = prev.getPrevSibling
-              remove(prev.getNode)
-              remove(prevSibling.getNode)
-            }
+          else if (prev.getPrevSibling != null && prev.getPrevSibling.getText == ",") {
+            val prevSibling = prev.getPrevSibling
+            remove(prev.getNode)
+            remove(prevSibling.getNode)
           }
-        }
       }
       remove(getNode)
     }

@@ -33,9 +33,7 @@ class ArtifactsIntegrationTest
 
       Then("the request should be successful")
       result.code should be(201) // created
-    } finally {
-      tempFile.delete()
-    }
+    } finally tempFile.delete()
 
     When("fetching the artifact")
     val result = marathon.getArtifact("/foo")
@@ -51,9 +49,7 @@ class ArtifactsIntegrationTest
       Given("an uploaded artifact")
       Files.write("foobar".getBytes, tempFile)
       marathon.uploadArtifact("/foobar", tempFile)
-    } finally {
-      tempFile.delete()
-    }
+    } finally tempFile.delete()
 
     When("the artifact has been removed")
     val result = marathon.deleteArtifact("/foobar")

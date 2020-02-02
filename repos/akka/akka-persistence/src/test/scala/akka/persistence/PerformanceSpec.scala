@@ -132,7 +132,7 @@ class PerformanceSpec
       persistentActor: ActorRef,
       failAt: Option[Long],
       description: String): Unit = {
-    failAt foreach { persistentActor ! FailAt(_) }
+    failAt foreach persistentActor ! FailAt(_)
     val m = new Measure(loadCycles)
     m.startMeasure()
     1 to loadCycles foreach { i ⇒ persistentActor ! s"msg$i" }

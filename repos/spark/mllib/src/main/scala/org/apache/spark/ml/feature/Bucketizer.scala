@@ -106,9 +106,9 @@ object Bucketizer extends DefaultParamsReadable[Bucketizer] {
 
   /** We require splits to be of length >= 3 and to be in strictly increasing order. */
   private[feature] def checkSplits(splits: Array[Double]): Boolean =
-    if (splits.length < 3) {
+    if (splits.length < 3)
       false
-    } else {
+    else {
       var i = 0
       val n = splits.length - 1
       while (i < n) {
@@ -125,22 +125,21 @@ object Bucketizer extends DefaultParamsReadable[Bucketizer] {
   private[feature] def binarySearchForBuckets(
       splits: Array[Double],
       feature: Double): Double =
-    if (feature == splits.last) {
+    if (feature == splits.last)
       splits.length - 2
-    } else {
+    else {
       val idx = ju.Arrays.binarySearch(splits, feature)
-      if (idx >= 0) {
+      if (idx >= 0)
         idx
-      } else {
+      else {
         val insertPos = -idx - 1
-        if (insertPos == 0 || insertPos == splits.length) {
+        if (insertPos == 0 || insertPos == splits.length)
           throw new SparkException(
             s"Feature value $feature out of Bucketizer bounds" +
               s" [${splits.head}, ${splits.last}].  Check your features, or loosen " +
               s"the lower/upper bound constraints.")
-        } else {
+        else
           insertPos - 1
-        }
       }
     }
 

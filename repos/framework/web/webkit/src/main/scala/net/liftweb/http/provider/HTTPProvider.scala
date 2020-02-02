@@ -72,9 +72,8 @@ trait HTTPProvider {
             .applyBox(resp.encodeUrl(url), LiftRules.urlDecorate.toList) openOr
             resp.encodeUrl(url)) {
           if (!(isLiftRequest_?(newReq) &&
-                actualServlet.service(newReq, resp))) {
+                actualServlet.service(newReq, resp)))
             chain
-          }
         }
       }
     }
@@ -135,18 +134,15 @@ trait HTTPProvider {
     try {
       ResourceBundle getBundle (LiftRules.liftCoreResourceName)
 
-      if (Props.productionMode && LiftRules.templateCache.isEmpty) {
+      if (Props.productionMode && LiftRules.templateCache.isEmpty)
         // Since we're in productin mode and user did not explicitely set any template caching, we're setting it
         LiftRules.templateCache = Full(InMemoryCache(500))
-      }
     } catch {
       case _: Exception =>
         logger.error(
           "LiftWeb core resource bundle for locale " + Locale
             .getDefault() + ", was not found ! ")
-    } finally {
-      LiftRules.bootFinished()
-    }
+    } finally LiftRules.bootFinished()
   }
 
   private def liftHandled(in: String): Boolean =

@@ -76,15 +76,13 @@ class VersionedBatchedStoreTest extends WordSpec {
   private def createTempDirectory(): java.io.File = {
     val temp = File.createTempFile("temp", System.nanoTime().toString);
 
-    if (!(temp.delete())) {
+    if (!(temp.delete()))
       throw new java.io.IOException(
         "Could not delete temp file: " + temp.getAbsolutePath());
-    }
 
-    if (!(temp.mkdir())) {
+    if (!(temp.mkdir()))
       throw new java.io.IOException(
         "Could not create temp directory: " + temp.getAbsolutePath());
-    }
 
     temp
   }

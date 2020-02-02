@@ -66,7 +66,7 @@ trait GroupFinder extends parser.AST with Tracer {
        */
       mapped filter {
         case (_, _, dtrace) =>
-          dispatches filter { _.actuals.length > 0 } forall dtrace.contains
+          dispatches filter _.actuals.length > 0 forall dtrace.contains
       }
     }
   }
@@ -99,12 +99,11 @@ trait GroupFinder extends parser.AST with Tracer {
       case Let(_, _, _, left, right) =>
         findVars(solve, id)(left) ++ findVars(solve, id)(right)
 
-      case Solve(_, constraints, child) => {
+      case Solve(_, constraints, child) =>
         val constrVars = constraints map findVars(solve, id) reduceOption {
           _ ++ _
         } getOrElse Set()
         constrVars ++ findVars(solve, id)(child)
-      }
 
       case New(_, child) => findVars(solve, id)(child)
 
@@ -122,6 +121,6 @@ trait GroupFinder extends parser.AST with Tracer {
       case _: TicVar => Set()
 
       case NaryOp(_, values) =>
-        values map findVars(solve, id) reduceOption { _ ++ _ } getOrElse Set()
+        values map findVars(solve, id) reduceOption _ ++ _ getOrElse Set()
     }
 }

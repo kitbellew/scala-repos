@@ -331,11 +331,10 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
               _.options.exists(_ == ColumnOption.PrimaryKey)))
         }
         assertEquals(1, posts.foreignKeys.size)
-        if (tdb.profile != slick.jdbc.SQLiteProfile) {
+        if (tdb.profile != slick.jdbc.SQLiteProfile)
           assertEquals(
             "CATEGORY_FK",
             posts.foreignKeys.head.name.get.toUpperCase)
-        }
         def tpe(col: String) =
           posts.columns
             .filter(_.name == col)

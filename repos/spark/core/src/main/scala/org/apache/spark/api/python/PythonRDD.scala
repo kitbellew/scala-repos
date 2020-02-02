@@ -112,9 +112,8 @@ private[spark] class PythonRunner(
       "SPARK_LOCAL_DIRS",
       localdir
     ) // it's also used in monitor thread
-    if (reuse_worker) {
+    if (reuse_worker)
       envVars.put("SPARK_REUSE_WORKER", "1")
-    }
     val worker: Socket =
       env.createPythonWorker(pythonExec, envVars.asScala.toMap)
     // Whether is the worker released into idle pool
@@ -126,14 +125,12 @@ private[spark] class PythonRunner(
 
     context.addTaskCompletionListener { context =>
       writerThread.shutdownOnTaskCompletion()
-      if (!reuse_worker || !released) {
-        try {
-          worker.close()
-        } catch {
+      if (!reuse_worker || !released)
+        try worker.close()
+        catch {
           case e: Exception =>
             logWarning("Failed to close worker socket", e)
         }
-      }
     }
 
     writerThread.start()
@@ -145,70 +142,65 @@ private[spark] class PythonRunner(
     val stdoutIterator = new Iterator[Array[Byte]] {
       override def next(): Array[Byte] = {
         val obj = _nextObj
-        if (hasNext) {
+        if (hasNext)
           _nextObj = read()
-        }
         obj
       }
 
       private def read(): Array[Byte] = {
-        if (writerThread.exception.isDefined) {
+        if (writerThread.exception.isDefined)
           throw writerThread.exception.get
-        }
-        try {
-          stream.readInt() match {
-            case length if length > 0 =>
-              val obj = new Array[Byte](length)
-              stream.readFully(obj)
-              obj
-            case 0                          => Array.empty[Byte]
-            case SpecialLengths.TIMING_DATA =>
-              // Timing data from worker
-              val bootTime = stream.readLong()
-              val initTime = stream.readLong()
-              val finishTime = stream.readLong()
-              val boot = bootTime - startTime
-              val init = initTime - bootTime
-              val finish = finishTime - initTime
-              val total = finishTime - startTime
-              logInfo(
-                "Times: total = %s, boot = %s, init = %s, finish = %s"
-                  .format(total, boot, init, finish))
-              val memoryBytesSpilled = stream.readLong()
-              val diskBytesSpilled = stream.readLong()
-              context.taskMetrics.incMemoryBytesSpilled(memoryBytesSpilled)
-              context.taskMetrics.incDiskBytesSpilled(diskBytesSpilled)
-              read()
-            case SpecialLengths.PYTHON_EXCEPTION_THROWN =>
-              // Signals that an exception has been thrown in python
-              val exLength = stream.readInt()
-              val obj = new Array[Byte](exLength)
-              stream.readFully(obj)
-              throw new PythonException(
-                new String(obj, StandardCharsets.UTF_8),
-                writerThread.exception.getOrElse(null))
-            case SpecialLengths.END_OF_DATA_SECTION =>
-              // We've finished the data section of the output, but we can still
-              // read some accumulator updates:
-              val numAccumulatorUpdates = stream.readInt()
-              (1 to numAccumulatorUpdates).foreach { _ =>
-                val updateLen = stream.readInt()
-                val update = new Array[Byte](updateLen)
-                stream.readFully(update)
-                accumulator += Collections.singletonList(update)
+        try stream.readInt() match {
+          case length if length > 0 =>
+            val obj = new Array[Byte](length)
+            stream.readFully(obj)
+            obj
+          case 0                          => Array.empty[Byte]
+          case SpecialLengths.TIMING_DATA =>
+            // Timing data from worker
+            val bootTime = stream.readLong()
+            val initTime = stream.readLong()
+            val finishTime = stream.readLong()
+            val boot = bootTime - startTime
+            val init = initTime - bootTime
+            val finish = finishTime - initTime
+            val total = finishTime - startTime
+            logInfo(
+              "Times: total = %s, boot = %s, init = %s, finish = %s"
+                .format(total, boot, init, finish))
+            val memoryBytesSpilled = stream.readLong()
+            val diskBytesSpilled = stream.readLong()
+            context.taskMetrics.incMemoryBytesSpilled(memoryBytesSpilled)
+            context.taskMetrics.incDiskBytesSpilled(diskBytesSpilled)
+            read()
+          case SpecialLengths.PYTHON_EXCEPTION_THROWN =>
+            // Signals that an exception has been thrown in python
+            val exLength = stream.readInt()
+            val obj = new Array[Byte](exLength)
+            stream.readFully(obj)
+            throw new PythonException(
+              new String(obj, StandardCharsets.UTF_8),
+              writerThread.exception.getOrElse(null))
+          case SpecialLengths.END_OF_DATA_SECTION =>
+            // We've finished the data section of the output, but we can still
+            // read some accumulator updates:
+            val numAccumulatorUpdates = stream.readInt()
+            (1 to numAccumulatorUpdates).foreach { _ =>
+              val updateLen = stream.readInt()
+              val update = new Array[Byte](updateLen)
+              stream.readFully(update)
+              accumulator += Collections.singletonList(update)
+            }
+            // Check whether the worker is ready to be re-used.
+            if (stream.readInt() == SpecialLengths.END_OF_STREAM)
+              if (reuse_worker) {
+                env.releasePythonWorker(
+                  pythonExec,
+                  envVars.asScala.toMap,
+                  worker)
+                released = true
               }
-              // Check whether the worker is ready to be re-used.
-              if (stream.readInt() == SpecialLengths.END_OF_STREAM) {
-                if (reuse_worker) {
-                  env.releasePythonWorker(
-                    pythonExec,
-                    envVars.asScala.toMap,
-                    worker)
-                  released = true
-                }
-              }
-              null
-          }
+            null
         } catch {
 
           case e: Exception if context.isInterrupted =>
@@ -284,9 +276,8 @@ private[spark] class PythonRunner(
         PythonRDD.writeUTF(SparkFiles.getRootDirectory(), dataOut)
         // Python includes (*.zip and *.egg files)
         dataOut.writeInt(pythonIncludes.size())
-        for (include <- pythonIncludes.asScala) {
+        for (include <- pythonIncludes.asScala)
           PythonRDD.writeUTF(include, dataOut)
-        }
         // Broadcast variables
         val oldBids = PythonRDD.getWorkerBroadcasts(worker)
         val newBids = broadcastVars.asScala.map(_.id).toSet
@@ -299,14 +290,13 @@ private[spark] class PythonRunner(
           dataOut.writeLong(-bid - 1) // bid >= 0
           oldBids.remove(bid)
         }
-        for (broadcast <- broadcastVars.asScala) {
+        for (broadcast <- broadcastVars.asScala)
           if (!oldBids.contains(broadcast.id)) {
             // send new broadcast
             dataOut.writeLong(broadcast.id)
             PythonRDD.writeUTF(broadcast.value.path, dataOut)
             oldBids.add(broadcast.id)
           }
-        }
         dataOut.flush()
         // Serialized command:
         dataOut.writeInt(command.length)
@@ -321,17 +311,15 @@ private[spark] class PythonRunner(
           logDebug(
             "Exception thrown after task completion (likely due to cleanup)",
             e)
-          if (!worker.isClosed) {
+          if (!worker.isClosed)
             Utils.tryLog(worker.shutdownOutput())
-          }
 
         case e: Exception =>
           // We must avoid throwing exceptions here, because the thread uncaught exception handler
           // will kill the whole executor (see org.apache.spark.executor.Executor).
           _exception = e
-          if (!worker.isClosed) {
+          if (!worker.isClosed)
             Utils.tryLog(worker.shutdownOutput())
-          }
       }
     }
   }
@@ -349,10 +337,9 @@ private[spark] class PythonRunner(
     override def run() {
       // Kill the worker if it is interrupted, checking until task completion.
       // TODO: This has a race condition if interruption occurs, as completed may still become true.
-      while (!context.isInterrupted && !context.isCompleted) {
+      while (!context.isInterrupted && !context.isCompleted)
         Thread.sleep(2000)
-      }
-      if (!context.isCompleted) {
+      if (!context.isCompleted)
         try {
           logWarning(
             "Incomplete task interrupted: Attempting to kill Python Worker")
@@ -361,7 +348,6 @@ private[spark] class PythonRunner(
           case e: Exception =>
             logError("Exception when trying to kill worker", e)
         }
-      }
     }
   }
 }
@@ -453,20 +439,16 @@ private[spark] object PythonRDD extends Logging {
     val file = new DataInputStream(new FileInputStream(filename))
     try {
       val objs = new collection.mutable.ArrayBuffer[Array[Byte]]
-      try {
-        while (true) {
-          val length = file.readInt()
-          val obj = new Array[Byte](length)
-          file.readFully(obj)
-          objs.append(obj)
-        }
+      try while (true) {
+        val length = file.readInt()
+        val obj = new Array[Byte](length)
+        file.readFully(obj)
+        objs.append(obj)
       } catch {
-        case eof: EOFException => {}
+        case eof: EOFException =>
       }
       JavaRDD.fromRDD(sc.sc.parallelize(objs, parallelism))
-    } finally {
-      file.close()
-    }
+    } finally file.close()
   }
 
   def readBroadcastFromFile(
@@ -607,11 +589,10 @@ private[spark] object PythonRDD extends Logging {
     val kc = Utils.classForName(keyClass).asInstanceOf[Class[K]]
     val vc = Utils.classForName(valueClass).asInstanceOf[Class[V]]
     val fc = Utils.classForName(inputFormatClass).asInstanceOf[Class[F]]
-    if (path.isDefined) {
+    if (path.isDefined)
       sc.sc.newAPIHadoopFile[K, V, F](path.get, fc, kc, vc, conf)
-    } else {
+    else
       sc.sc.newAPIHadoopRDD[K, V, F](conf, fc, kc, vc)
-    }
   }
 
   /**
@@ -693,11 +674,10 @@ private[spark] object PythonRDD extends Logging {
     val kc = Utils.classForName(keyClass).asInstanceOf[Class[K]]
     val vc = Utils.classForName(valueClass).asInstanceOf[Class[V]]
     val fc = Utils.classForName(inputFormatClass).asInstanceOf[Class[F]]
-    if (path.isDefined) {
+    if (path.isDefined)
       sc.sc.hadoopFile(path.get, fc, kc, vc)
-    } else {
+    else
       sc.sc.hadoopRDD(new JobConf(conf), fc, kc, vc)
-    }
   }
 
   def writeUTF(str: String, dataOut: DataOutputStream) {
@@ -738,9 +718,7 @@ private[spark] object PythonRDD extends Logging {
         } catch {
           case NonFatal(e) =>
             logError(s"Error while sending iterator", e)
-        } finally {
-          serverSocket.close()
-        }
+        } finally serverSocket.close()
       }
     }.start()
 
@@ -922,11 +900,10 @@ private[spark] object PythonRDD extends Logging {
       keyConverterClass,
       valueConverterClass,
       new JavaToWritableConverter)
-    if (useNewAPI) {
+    if (useNewAPI)
       converted.saveAsNewAPIHadoopDataset(conf)
-    } else {
+    else
       converted.saveAsHadoopDataset(new JobConf(conf))
-    }
   }
 }
 
@@ -956,9 +933,8 @@ private class PythonAccumulatorParam(
   @transient var socket: Socket = _
 
   def openSocket(): Socket = synchronized {
-    if (socket == null || socket.isClosed) {
+    if (socket == null || socket.isClosed)
       socket = new Socket(serverHost, serverPort)
-    }
     socket
   }
 
@@ -986,10 +962,9 @@ private class PythonAccumulatorParam(
       out.flush()
       // Wait for a byte from the Python side as an acknowledgement
       val byteRead = in.read()
-      if (byteRead == -1) {
+      if (byteRead == -1)
         throw new SparkException(
           "EOF reached before Python server acknowledged")
-      }
       null
     }
   }
@@ -1010,11 +985,8 @@ private[spark] class PythonBroadcast(@transient var path: String)
   private def writeObject(out: ObjectOutputStream): Unit =
     Utils.tryOrIOException {
       val in = new FileInputStream(new File(path))
-      try {
-        Utils.copyStream(in, out)
-      } finally {
-        in.close()
-      }
+      try Utils.copyStream(in, out)
+      finally in.close()
     }
 
   /**
@@ -1038,11 +1010,9 @@ private[spark] class PythonBroadcast(@transient var path: String)
   override def finalize() {
     if (!path.isEmpty) {
       val file = new File(path)
-      if (file.exists()) {
-        if (!file.delete()) {
+      if (file.exists())
+        if (!file.delete())
           logWarning(s"Error deleting ${file.getPath}")
-        }
-      }
     }
   }
 }

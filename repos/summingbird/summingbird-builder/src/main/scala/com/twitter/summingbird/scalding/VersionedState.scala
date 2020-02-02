@@ -103,10 +103,9 @@ private[scalding] class VersionedState(
       available match {
         case intr @ Intersection(_, _) => // is finite:
           Right(new VersionedRunningState(intr))
-        case _ => {
+        case _ =>
           logger.info("Will not accept: %s".format(available))
           Left(outer)
-        }
       }
 
     /**

@@ -461,12 +461,11 @@ object TestUtils extends Logging {
 
       def hasNext(): Boolean = {
         while (true) {
-          if (cur == null) {
+          if (cur == null)
             if (topIterator.hasNext)
               cur = topIterator.next
             else
               return false
-          }
           if (cur.hasNext)
             return true
           cur = null
@@ -869,11 +868,10 @@ object TestUtils extends Logging {
               "Leader %d is elected for partition [%s,%d]"
                 .format(l, topic, partition))
             isLeaderElectedOrChanged = true
-          } else {
+          } else
             trace(
               "Current leader for partition [%s,%d] is %d"
                 .format(topic, partition, l))
-          }
         case None =>
           trace(
             "Leader for partition [%s,%d] is not elected yet"
@@ -896,23 +894,22 @@ object TestUtils extends Logging {
   def retry(maxWaitMs: Long)(block: => Unit) {
     var wait = 1L
     val startTime = System.currentTimeMillis()
-    while (true) {
+    while (true)
       try {
         block
         return
       } catch {
         case e: AssertionError =>
           val ellapsed = System.currentTimeMillis - startTime
-          if (ellapsed > maxWaitMs) {
+          if (ellapsed > maxWaitMs)
             throw e
-          } else {
+          else {
             info(
               "Attempt failed, sleeping for " + wait + ", and then retrying.")
             Thread.sleep(wait)
             wait += math.min(wait, 1000)
           }
       }
-    }
   }
 
   /**
@@ -1215,7 +1212,7 @@ object TestUtils extends Logging {
 
     var messages: List[String] = Nil
     val shouldGetAllMessages = nMessagesPerThread < 0
-    for ((topic, messageStreams) <- topicMessageStreams) {
+    for ((topic, messageStreams) <- topicMessageStreams)
       for (messageStream <- messageStreams) {
         val iterator = messageStream.iterator()
         try {
@@ -1230,16 +1227,14 @@ object TestUtils extends Logging {
           }
         } catch {
           case e: ConsumerTimeoutException =>
-            if (shouldGetAllMessages) {
+            if (shouldGetAllMessages)
               // swallow the exception
               debug(
                 "consumer timed out after receiving " + messages.length + " message(s).")
-            } else {
+            else
               throw e
-            }
         }
       }
-    }
 
     messages.reverse
   }
@@ -1394,9 +1389,7 @@ object TestUtils extends Logging {
     } catch {
       case ie: InterruptedException => failWithTimeout()
       case e                        => exceptions += e
-    } finally {
-      threadPool.shutdownNow()
-    }
+    } finally threadPool.shutdownNow()
     assertTrue(
       s"$message failed with exception(s) $exceptions",
       exceptions.isEmpty)

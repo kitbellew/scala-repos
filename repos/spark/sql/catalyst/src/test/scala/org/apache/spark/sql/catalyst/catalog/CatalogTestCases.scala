@@ -37,11 +37,8 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
 
   // Clear all state after each test
   override def afterEach(): Unit =
-    try {
-      resetState()
-    } finally {
-      super.afterEach()
-    }
+    try resetState()
+    finally super.afterEach()
 
   // --------------------------------------------------------------------------
   // Databases
@@ -442,10 +439,9 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
       intercept[AnalysisException] {
         catalog.alterPartitions("db2", "tbl2", Seq(badPart1, badPart2))
       }
-    } finally {
-      // Remember to restore the original current database, which we assume to be "default"
-      catalog.setCurrentDatabase("default")
-    }
+    } finally
+    // Remember to restore the original current database, which we assume to be "default"
+    catalog.setCurrentDatabase("default")
   }
 
   test("alter partitions when database/table does not exist") {

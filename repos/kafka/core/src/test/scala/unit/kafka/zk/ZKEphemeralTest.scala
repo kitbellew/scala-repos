@@ -59,9 +59,8 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
       System.setProperty(
         authProvider,
         "org.apache.zookeeper.server.auth.SASLAuthenticationProvider")
-      if (!JaasUtils.isZkSecurityEnabled()) {
+      if (!JaasUtils.isZkSecurityEnabled())
         fail("Secure access not enabled")
-      }
     }
     super.setUp
   }
@@ -84,9 +83,8 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
       config.zkConnectionTimeoutMs,
       JaasUtils.isZkSecurityEnabled())
 
-    try {
-      zkUtils.createEphemeralPathExpectConflict("/tmp/zktest", "node created")
-    } catch {
+    try zkUtils.createEphemeralPathExpectConflict("/tmp/zktest", "node created")
+    catch {
       case e: Exception =>
     }
 
@@ -126,9 +124,8 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
 
     zk.exists(path, new Watcher() {
       def process(event: WatchedEvent) {
-        if (event.getType == Watcher.Event.EventType.NodeCreated) {
+        if (event.getType == Watcher.Event.EventType.NodeCreated)
           created = true
-        }
       }
     })
     zwe.create()
@@ -161,9 +158,8 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
 
     //Bootstraps the ZKWatchedEphemeral object
     var gotException = false;
-    try {
-      zwe.create()
-    } catch {
+    try zwe.create()
+    catch {
       case e: ZkNodeExistsException =>
         gotException = true
     }
@@ -185,9 +181,8 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
       new ZKCheckedEphemeral(path, "", zk, JaasUtils.isZkSecurityEnabled())
     //Bootstraps the ZKWatchedEphemeral object
     var gotException = false;
-    try {
-      zwe.create()
-    } catch {
+    try zwe.create()
+    catch {
       case e: ZkNodeExistsException =>
         gotException = true
     }

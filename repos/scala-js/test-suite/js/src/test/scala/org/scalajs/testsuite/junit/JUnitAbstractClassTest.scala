@@ -17,9 +17,8 @@ class JUnitAbstractClassTestCheck {
   @Test def testAbstractClass1(): Unit = {
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.JUnitAbstractClassExtended1Test")
-    try {
-      boot.invoke(boot.newInstance(), "test1")
-    } catch {
+    try boot.invoke(boot.newInstance(), "test1")
+    catch {
       case e: Throwable =>
         fail(s"Could not invoke a test: ${e.getMessage}")
     }

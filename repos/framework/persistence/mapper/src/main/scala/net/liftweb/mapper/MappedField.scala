@@ -422,9 +422,8 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * The name of this field
     */
   final def name = synchronized {
-    if (_name eq null) {
+    if (_name eq null)
       fieldOwner.checkNames
-    }
     _name
   }
 
@@ -498,10 +497,9 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * If the field has a defined fieldId, append it
     */
   protected def appendFieldId(in: Elem): Elem = fieldId match {
-    case Some(i) => {
+    case Some(i) =>
       import util.Helpers._
       in % ("id" -> i)
-    }
     case _ => in
   }
 

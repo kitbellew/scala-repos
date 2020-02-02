@@ -32,17 +32,16 @@ trait Tracer extends parser.AST with typer.Binder {
       sigma: Sigma,
       expr: Expr,
       parentIdx: Option[Int]): Trace = {
-    val copied = if (trace.nodes.contains((sigma, expr))) {
-      trace
-    } else {
-      Trace.safeCopy(trace, (sigma, expr), BitSetUtil.create())
-    }
+    val copied =
+      if (trace.nodes.contains((sigma, expr)))
+        trace
+      else
+        Trace.safeCopy(trace, (sigma, expr), BitSetUtil.create())
 
     parentIdx match {
-      case Some(idx) => {
+      case Some(idx) =>
         copied.indices(idx) set copied.nodes.indexOf((sigma, expr))
         copied
-      }
       case None => copied
     }
   }
@@ -95,9 +94,9 @@ trait Tracer extends parser.AST with typer.Binder {
       case (_: TicVar) =>
         addNode(trace, sigma, expr, parentIdx)
 
-      case expr @ Dispatch(_, name, actuals) => {
+      case expr @ Dispatch(_, name, actuals) =>
         expr.binding match {
-          case LetBinding(let) => {
+          case LetBinding(let) =>
             val ids = let.params map { Identifier(Vector(), _) }
             val sigma2 = sigma ++ (ids zip Stream.continually(let) zip actuals)
 
@@ -106,10 +105,8 @@ trait Tracer extends parser.AST with typer.Binder {
               val idx = updated.nodes.indexOf((sigma, expr))
 
               loop(sigma2, updated, let.left, Some(idx))
-            } else {
+            } else
               loop(sigma2, trace, let.left, parentIdx)
-            }
-          }
 
           case FormalBinding(let) =>
             loop(sigma, trace, sigma((name, let)), parentIdx)
@@ -117,7 +114,6 @@ trait Tracer extends parser.AST with typer.Binder {
           case _ =>
             foldThrough(trace, sigma, expr, parentIdx, actuals)
         }
-      }
 
       case NaryOp(_, values) =>
         foldThrough(trace, sigma, expr, parentIdx, values)

@@ -28,11 +28,10 @@ case class Laplace(location: Double, scale: Double)(
   def draw(): Double = {
     // from numpy
     val u = rand.uniform.draw()
-    if (u < 0.5) {
+    if (u < 0.5)
       location + scale * log(2 * u)
-    } else {
+    else
       location - scale * log(2 * (1 - u))
-    }
   }
 
   def unnormalizedLogPdf(x: Double): Double =

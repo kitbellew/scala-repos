@@ -11,9 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScLiteral
   */
 class ScalaSpellcheckingStrategy extends SpellcheckingStrategy {
   override def getTokenizer(element: PsiElement): Tokenizer[_ <: PsiElement] = {
-    if (element.isInstanceOf[ScLiteral]) {
+    if (element.isInstanceOf[ScLiteral])
       return myLiteralExpressionTokenizer
-    }
     super.getTokenizer(element)
   }
 

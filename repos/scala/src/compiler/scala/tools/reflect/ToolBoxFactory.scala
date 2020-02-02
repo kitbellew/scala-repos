@@ -116,7 +116,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         })
         val expr = new Transformer {
           override def transform(tree: Tree): Tree =
-            if (tree.hasSymbolField && tree.symbol.isFreeTerm) {
+            if (tree.hasSymbolField && tree.symbol.isFreeTerm)
               tree match {
                 case Ident(_) =>
                   val freeTermRef = Ident(freeTermNames(tree.symbol.asFreeTerm))
@@ -127,9 +127,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
                     "internal error: %s (%s, %s) is not supported"
                       .format(tree, tree.productPrefix, tree.getClass))
               }
-            } else {
+            else
               super.transform(tree)
-            }
         }.transform(expr0)
         (expr, freeTermNames)
       }
@@ -477,12 +476,11 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             val instance = new ToolBoxGlobal(
               command.settings,
               frontEndToReporter(frontEnd, command.settings))
-            if (frontEnd.hasErrors) {
+            if (frontEnd.hasErrors)
               throw ToolBoxError(
                 "reflective compilation has failed: cannot initialize the compiler:" + EOL + EOL +
                   (frontEnd.infos map (_.msg) mkString EOL)
               )
-            }
             instance
           } catch {
             case ex: Throwable =>

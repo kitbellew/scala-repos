@@ -63,9 +63,8 @@ object ScalaEvaluatorBuilder extends EvaluatorBuilder {
         .asInstanceOf[ScalaCompilingEvaluator]
     }
 
-    try {
-      new ExpressionEvaluatorImpl(buildSimpleEvaluator)
-    } catch {
+    try new ExpressionEvaluatorImpl(buildSimpleEvaluator)
+    catch {
       case e: NeedCompilationException =>
         new ScalaCompilingExpressionEvaluator(buildCompilingEvaluator)
       case e: EvaluateException => throw e
@@ -150,11 +149,8 @@ private[evaluation] trait SyntheticVariablesHelper {
     val newEvaluator = new SyntheticVariablesHolderEvaluator(currentHolder)
     currentHolder = newEvaluator
     var result: Evaluator = null
-    try {
-      result = evaluatorComputation
-    } finally {
-      currentHolder = old
-    }
+    try result = evaluatorComputation
+    finally currentHolder = old
     result
   }
 

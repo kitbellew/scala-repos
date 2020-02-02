@@ -67,9 +67,8 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
     if (propertyCategories.contains(DEFAULT_PREFIX)) {
       val defaultProperty = propertyCategories(DEFAULT_PREFIX).asScala
       for ((inst, prop) <- propertyCategories if (inst != DEFAULT_PREFIX);
-           (k, v) <- defaultProperty if (prop.get(k) == null)) {
+           (k, v) <- defaultProperty if (prop.get(k) == null))
         prop.put(k, v)
-      }
     }
   }
 
@@ -108,18 +107,14 @@ private[spark] class MetricsConfig(conf: SparkConf) extends Logging {
             DEFAULT_METRICS_CONF_FILENAME)
       }
 
-      if (is != null) {
+      if (is != null)
         properties.load(is)
-      }
     } catch {
       case e: Exception =>
         val file = path.getOrElse(DEFAULT_METRICS_CONF_FILENAME)
         logError(s"Error loading configuration file $file", e)
-    } finally {
-      if (is != null) {
-        is.close()
-      }
-    }
+    } finally if (is != null)
+      is.close()
   }
 
 }

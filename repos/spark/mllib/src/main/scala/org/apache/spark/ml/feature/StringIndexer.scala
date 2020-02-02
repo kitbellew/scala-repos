@@ -162,11 +162,10 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
     validateAndTransformSchema(dataset.schema)
 
     val indexer = udf { label: String =>
-      if (labelToIndex.contains(label)) {
+      if (labelToIndex.contains(label))
         labelToIndex(label)
-      } else {
+      else
         throw new SparkException(s"Unseen label: $label.")
-      }
     }
 
     val metadata = NominalAttribute.defaultAttr
@@ -175,10 +174,9 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
       .toMetadata()
     // If we are skipping invalid records, filter them out.
     val filteredDataset = (getHandleInvalid) match {
-      case "skip" => {
+      case "skip" =>
         val filterer = udf { label: String => labelToIndex.contains(label) }
         dataset.where(filterer(dataset($(inputCol))))
-      }
       case _ => dataset
     }
     filteredDataset.select(
@@ -187,12 +185,11 @@ class StringIndexerModel(override val uid: String, val labels: Array[String])
   }
 
   override def transformSchema(schema: StructType): StructType =
-    if (schema.fieldNames.contains($(inputCol))) {
+    if (schema.fieldNames.contains($(inputCol)))
       validateAndTransformSchema(schema)
-    } else {
+    else
       // If the input column does not exist during transformation, we skip StringIndexerModel.
       schema
-    }
 
   override def copy(extra: ParamMap): StringIndexerModel = {
     val copied = new StringIndexerModel(uid, labels)
@@ -312,22 +309,21 @@ class IndexToString private[ml] (override val uid: String)
   override def transform(dataset: DataFrame): DataFrame = {
     val inputColSchema = dataset.schema($(inputCol))
     // If the labels array is empty use column metadata
-    val values = if ($(labels).isEmpty) {
-      Attribute
-        .fromStructField(inputColSchema)
-        .asInstanceOf[NominalAttribute]
-        .values
-        .get
-    } else {
-      $(labels)
-    }
+    val values =
+      if ($(labels).isEmpty)
+        Attribute
+          .fromStructField(inputColSchema)
+          .asInstanceOf[NominalAttribute]
+          .values
+          .get
+      else
+        $(labels)
     val indexer = udf { index: Double =>
       val idx = index.toInt
-      if (0 <= idx && idx < values.length) {
+      if (0 <= idx && idx < values.length)
         values(idx)
-      } else {
+      else
         throw new SparkException(s"Unseen index: $index ??")
-      }
     }
     val outputColName = $(outputCol)
     dataset.select(

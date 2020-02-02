@@ -55,9 +55,7 @@ object AndroidFacetDataService {
         for {
           module <- getIdeModuleByNode(facetNode)
           facet = getOrCreateFacet(module)
-        } {
-          configureFacet(module, facet, facetNode.getData)
-        }
+        } configureFacet(module, facet, facetNode.getData)
       }
 
     private def getOrCreateFacet(module: Module): AndroidFacet =

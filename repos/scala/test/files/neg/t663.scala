@@ -9,9 +9,9 @@ trait Test {
   trait CoreIfImpl extends MatchableImpl {
     // NO_CRASH: def asMatch(m : Matchable) = {
     def asMatch(m: Node): Any =
-      if (m.isInstanceOf[MatchableImpl]) {
+      if (m.isInstanceOf[MatchableImpl])
         null;
-      } else null;
+      else null;
     // NO_CRASH: null;
   }
 }

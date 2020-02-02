@@ -12,9 +12,8 @@ class Counter(r: Range) {
                                                          else ")")
   def apply(x: Int) = {
     cnt += 1L
-    if (cnt % 500000000L == 0L) {
+    if (cnt % 500000000L == 0L)
       println("Working: %s %d %d" format (str, cnt, x))
-    }
     if (cnt > (Int.MaxValue.toLong + 1) * 2) {
       val msg = "Count exceeds maximum possible for an Int Range: %s" format str
       println(msg) // exception is likely to be eaten by an out of memory error
@@ -79,13 +78,13 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
                                                          else ")")
 
   def expectedSize(r: Range): Long =
-    if (r.isInclusive) {
+    if (r.isInclusive)
       (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
         case (true, true) | (false, false) =>
           (r.end.toLong - r.start.toLong).abs / r.step.abs.toLong + 1L
         case _ => if (r.start == r.end) 1L else 0L
       }
-    } else {
+    else
       (r.end.toLong - r.start.toLong < 0, r.step < 0) match {
         case (true, true) | (false, false) =>
           (
@@ -96,7 +95,6 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
           )
         case _ => 0L
       }
-    }
 
   def within(r: Range, x: Int) =
     if (r.step > 0)
@@ -252,9 +250,9 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
     arbInt.arbitrary) { (r, x) =>
 //    println("takeWhile "+str(r))
     val t = (if (r.step > 0) r takeWhile (_ <= x) else r takeWhile (_ >= x))
-    if (r.size == 0) {
+    if (r.size == 0)
       (t.size == 0) :| str(r) + " / " + str(t) + ": " + x
-    } else {
+    else {
       val t2 =
         (if (r.step > 0) Range(r.start, x min r.last, r.step).inclusive
          else Range(r.start, x max r.last, r.step).inclusive)

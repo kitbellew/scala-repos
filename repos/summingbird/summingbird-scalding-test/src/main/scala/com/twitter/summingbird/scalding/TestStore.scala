@@ -95,9 +95,9 @@ class TestStore[K, V](
 
   override def readLast(exclusiveUB: BatchID, mode: Mode) = {
     val candidates = writtenBatches.filter { _ < exclusiveUB }
-    if (candidates.isEmpty) {
+    if (candidates.isEmpty)
       Left(List("No batches < :" + exclusiveUB.toString))
-    } else {
+    else {
       val batch = candidates.max
       val mappable = batches(batch)
       val rdr = Reader { (fd: (FlowDef, Mode)) => TypedPipe.from(mappable) }

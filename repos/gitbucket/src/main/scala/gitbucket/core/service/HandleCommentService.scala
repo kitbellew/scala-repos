@@ -109,21 +109,20 @@ trait HandleCommentService {
               case "close"  => "closed"
               case _        => act
             }
-            if (issue.isPullRequest) {
+            if (issue.isPullRequest)
               callPullRequestWebHook(
                 webHookAction,
                 repository,
                 issue.issueId,
                 context.baseUrl,
                 context.loginAccount.get)
-            } else {
+            else
               callIssuesWebHook(
                 webHookAction,
                 repository,
                 issue,
                 context.baseUrl,
                 context.loginAccount.get)
-            }
         }
 
         // notifications

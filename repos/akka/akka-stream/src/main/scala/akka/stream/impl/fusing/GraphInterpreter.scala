@@ -575,26 +575,22 @@ private[stream] final class GraphInterpreter(
     val previousInterpreter = currentInterpreterHolder(0)
     currentInterpreterHolder(0) = this
     var eventsRemaining = eventLimit
-    try {
-      while (eventsRemaining > 0 && queueTail != queueHead) {
-        val connection = dequeue()
-        try processEvent(connection)
-        catch {
-          case NonFatal(e) ⇒
-            if (activeStage == null) throw e
-            else {
-              val stage = assembly.stages(activeStage.stageId)
+    try while (eventsRemaining > 0 && queueTail != queueHead) {
+      val connection = dequeue()
+      try processEvent(connection)
+      catch {
+        case NonFatal(e) ⇒
+          if (activeStage == null) throw e
+          else {
+            val stage = assembly.stages(activeStage.stageId)
 
-              log.error(e, "Error in stage [{}]: {}", stage, e.getMessage)
-              activeStage.failStage(e)
-            }
-        }
-        afterStageHasRun(activeStage)
-        eventsRemaining -= 1
+            log.error(e, "Error in stage [{}]: {}", stage, e.getMessage)
+            activeStage.failStage(e)
+          }
       }
-    } finally {
-      currentInterpreterHolder(0) = previousInterpreter
-    }
+      afterStageHasRun(activeStage)
+      eventsRemaining -= 1
+    } finally currentInterpreterHolder(0) = previousInterpreter
     if (Debug)
       println(
         s"$Name ---------------- $queueStatus (running=$runningStages, shutdown=$shutdownCounters)")
@@ -645,11 +641,11 @@ private[stream] final class GraphInterpreter(
 
     // Manual fast decoding, fast paths are PUSH and PULL
     //   PUSH
-    if ((code & (Pushing | InClosed | OutClosed)) == Pushing) {
+    if ((code & (Pushing | InClosed | OutClosed)) == Pushing)
       processElement()
 
-      // PULL
-    } else if ((code & (Pulling | OutClosed | InClosed)) == Pulling) {
+    // PULL
+    else if ((code & (Pulling | OutClosed | InClosed)) == Pulling) {
       if (Debug) println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
         connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
       portStates(connection) ^= PullEndFlip
@@ -666,9 +662,8 @@ private[stream] final class GraphInterpreter(
       portStates(connection) |= OutClosed
       completeConnection(stageId)
       outHandlers(connection).onDownstreamFinish()
-    } else if ((code & (OutClosed | InClosed)) == OutClosed) {
+    } else if ((code & (OutClosed | InClosed)) == OutClosed)
       // COMPLETIONS
-
       if ((code & Pushing) == 0) {
         // Normal completion (no push pending)
         if (Debug)
@@ -689,7 +684,6 @@ private[stream] final class GraphInterpreter(
         enqueue(connection)
       }
 
-    }
   }
 
   private def dequeue(): Int = {
@@ -766,9 +760,8 @@ private[stream] final class GraphInterpreter(
   private[stream] def pull(connection: Int): Unit = {
     val currentState = portStates(connection)
     portStates(connection) = currentState ^ PullStartFlip
-    if ((currentState & OutClosed) == 0) {
+    if ((currentState & OutClosed) == 0)
       enqueue(connection)
-    }
   }
 
   private[stream] def complete(connection: Int): Unit = {

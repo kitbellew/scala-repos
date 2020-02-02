@@ -79,17 +79,15 @@ private final class Analyzer(
   }
 
   private def linkClasses(): Unit =
-    if (!_classInfos.contains(ir.Definitions.ObjectClass)) {
+    if (!_classInfos.contains(ir.Definitions.ObjectClass))
       _errors += MissingJavaLangObjectClass(fromAnalyzer)
-    } else {
-      try {
-        for (classInfo <- _classInfos.values.toList)
-          classInfo.linkClasses()
-      } catch {
+    else
+      try for (classInfo <- _classInfos.values.toList)
+        classInfo.linkClasses()
+      catch {
         case CyclicDependencyException(chain) =>
           _errors += CycleInInheritanceChain(chain, fromAnalyzer)
       }
-    }
 
   private def reachSymbolRequirement(
       requirement: SymbolRequirement,
@@ -204,9 +202,8 @@ private final class Analyzer(
 
       if (!_linked) {
         _linking = true
-        try {
-          linkClassesImpl()
-        } catch {
+        try linkClassesImpl()
+        catch {
           case CyclicDependencyException(chain) =>
             throw CyclicDependencyException(this :: chain)
         }
@@ -276,9 +273,9 @@ private final class Analyzer(
        * during the initial link. In a refiner, this must not happen anymore.
        */
       methodInfos.get(ctorName).getOrElse {
-        if (!allowAddingSyntheticMethods) {
+        if (!allowAddingSyntheticMethods)
           createNonExistentMethod(ctorName)
-        } else {
+        else {
           val inherited = lookupMethod(ctorName)
           if (inherited.owner eq this) {
             // Can happen only for non-existent constructors, at this point
@@ -317,45 +314,42 @@ private final class Analyzer(
 
       @tailrec
       def tryLookupInherited(ancestorInfo: ClassInfo): Option[MethodInfo] =
-        if (ancestorInfo ne null) {
+        if (ancestorInfo ne null)
           ancestorInfo.methodInfos.get(methodName) match {
             case Some(m) if !m.isAbstract => Some(m)
             case _                        => tryLookupInherited(ancestorInfo.superClass)
           }
-        } else {
+        else
           None
-        }
       val existing =
         if (isScalaClass) tryLookupInherited(this)
         else methodInfos.get(methodName).filter(!_.isAbstract)
 
-      if (!allowAddingSyntheticMethods) {
+      if (!allowAddingSyntheticMethods)
         existing
-      } else if (existing.exists(m => !m.isDefaultBridge || m.owner == this)) {
+      else if (existing.exists(m => !m.isDefaultBridge || m.owner == this))
         /* If we found a non-bridge, it must be the right target.
          * If we found a bridge directly in this class/interface, it must also
          * be the right target.
          */
         existing
-      } else {
+      else
         // Try and find the target of a possible default bridge
         findDefaultTarget(methodName).fold {
           assert(existing.isEmpty)
           existing
         } { defaultTarget =>
           if (existing.exists(
-                _.defaultBridgeTarget == defaultTarget.owner.encodedName)) {
+                _.defaultBridgeTarget == defaultTarget.owner.encodedName))
             /* If we found an existing bridge targeting the right method, we
              * can reuse it.
              * We also get here with None when there is no target whatsoever.
              */
             existing
-          } else {
+          else
             // Otherwise, create a new default bridge
             Some(createDefaultBridge(defaultTarget))
-          }
         }
-      }
     }
 
     /** Resolves an inherited default method.
@@ -378,7 +372,7 @@ private final class Analyzer(
         }
       }
 
-      if (notShadowed.size > 1) {
+      if (notShadowed.size > 1)
         /* Deviation from the spec: if there are several targets, the spec
          * chooses one arbitrarily. However, unless the classpath is
          * manipulated and/or corrupted, this should not happen. The Java
@@ -391,7 +385,6 @@ private final class Analyzer(
          * shouldn't, since lookup methods are not supposed to produce errors).
          */
         _errors += ConflictingDefaultMethods(notShadowed, fromAnalyzer)
-      }
 
       notShadowed.headOption
     }
@@ -412,9 +405,9 @@ private final class Analyzer(
     }
 
     def tryLookupReflProxyMethod(proxyName: String): Option[MethodInfo] =
-      if (!allowAddingSyntheticMethods) {
+      if (!allowAddingSyntheticMethods)
         tryLookupMethod(proxyName)
-      } else {
+      else {
         /* The lookup for a target method in this code implements the
          * algorithm defining `java.lang.Class.getMethod`. This mimics how
          * reflective calls are implemented on the JVM, at link time.
@@ -427,7 +420,7 @@ private final class Analyzer(
 
         @tailrec
         def loop(ancestorInfo: ClassInfo): Option[MethodInfo] =
-          if (ancestorInfo ne null) {
+          if (ancestorInfo ne null)
             ancestorInfo.methodInfos.get(proxyName) match {
               case Some(m) =>
                 assert(m.isReflProxy && !m.isAbstract)
@@ -443,9 +436,8 @@ private final class Analyzer(
                     loop(ancestorInfo.superClass)
                 }
             }
-          } else {
+          else
             None
-          }
 
         loop(this)
       }
@@ -563,24 +555,21 @@ private final class Analyzer(
       implicit val from = FromExports
 
       // Myself
-      if (isExported) {
+      if (isExported)
         if (isStaticModule) accessModule()
         else instantiated()
-      }
 
       // My methods
-      if (!isJSClass) {
-        for (methodInfo <- methodInfos.values) {
+      if (!isJSClass)
+        for (methodInfo <- methodInfos.values)
           if (methodInfo.isExported)
             callMethod(methodInfo.encodedName)
-        }
-      }
     }
 
     def accessModule()(implicit from: From): Unit =
-      if (!isStaticModule) {
+      if (!isStaticModule)
         _errors += NotAModule(this, from)
-      } else if (!isModuleAccessed) {
+      else if (!isModuleAccessed) {
         isModuleAccessed = true
         instantiated()
         if (isScalaClass)
@@ -606,19 +595,17 @@ private final class Analyzer(
           if (isJSClass)
             superClass.instantiated()
 
-          for (methodInfo <- methodInfos.values) {
+          for (methodInfo <- methodInfos.values)
             if (methodInfo.isExported)
               methodInfo.reach(this)(FromExports)
-          }
         }
       }
     }
 
     private def subclassInstantiated()(implicit from: From): Unit = {
       instantiatedFrom ::= from
-      if (!isAnySubclassInstantiated && (isScalaClass || isAnyRawJSType)) {
+      if (!isAnySubclassInstantiated && (isScalaClass || isAnyRawJSType))
         isAnySubclassInstantiated = true
-      }
     }
 
     def useInstanceTests()(implicit from: From): Unit =
@@ -652,22 +639,19 @@ private final class Analyzer(
           !isReflProxyName(methodName),
           s"Trying to call statically refl proxy $this.$methodName")
         lookupMethod(methodName).reachStatic()
-      } else {
-        for (descendentClass <- descendentClasses) {
+      } else
+        for (descendentClass <- descendentClasses)
           if (descendentClass.isInstantiated)
             descendentClass.delayedCallMethod(methodName)
           else
             descendentClass.delayedCalls += ((methodName, from))
-        }
-      }
 
     private def delayedCallMethod(methodName: String)(
         implicit from: From): Unit =
-      if (isReflProxyName(methodName)) {
+      if (isReflProxyName(methodName))
         tryLookupReflProxyMethod(methodName).foreach(_.reach(this))
-      } else {
+      else
         lookupMethod(methodName).reach(this)
-      }
 
     def callStaticMethod(methodName: String)(implicit from: From): Unit =
       lookupStaticMethod(methodName).reachStatic()
@@ -747,23 +731,19 @@ private final class Analyzer(
     private[this] def doReach(): Unit = {
       implicit val from = FromMethod(this)
 
-      for (moduleName <- data.accessedModules) {
+      for (moduleName <- data.accessedModules)
         lookupClass(moduleName).accessModule()
-      }
 
-      for (className <- data.instantiatedClasses) {
+      for (className <- data.instantiatedClasses)
         lookupClass(className).instantiated()
-      }
 
-      for (className <- data.usedInstanceTests) {
+      for (className <- data.usedInstanceTests)
         if (!Definitions.PrimitiveClasses.contains(className))
           lookupClass(className).useInstanceTests()
-      }
 
-      for (className <- data.accessedClassData) {
+      for (className <- data.accessedClassData)
         if (!Definitions.PrimitiveClasses.contains(className))
           lookupClass(className).accessData()
-      }
 
       /* `for` loops on maps are written with `while` loops to help the JIT
        * compiler to inline and stack allocate tupples created by the iterators
@@ -782,10 +762,9 @@ private final class Analyzer(
            * Object class.
            */
           val objectClass = lookupClass(Definitions.ObjectClass)
-          for (methodName <- methods) {
+          for (methodName <- methods)
             if (methodName != "clone__O")
               objectClass.callMethod(methodName, statically = true)
-          }
         } else {
           val classInfo = lookupClass(className)
           for (methodName <- methods)

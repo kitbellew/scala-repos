@@ -141,11 +141,10 @@ trait DescriptiveStats {
           }
           iter.traverse(v, visit)
           import visit._
-          if (n > 1) {
+          if (n > 1)
             MeanAndVariance(mu, s / (n - 1), n)
-          } else {
+          else
             MeanAndVariance(mu, 0, n)
-          }
         }
       }
   }
@@ -183,9 +182,9 @@ trait DescriptiveStats {
         : Impl[DenseVector[T], T] =
       new Impl[DenseVector[T], T] {
         def apply(v: DenseVector[T]): T =
-          if (isOdd(v.length)) {
+          if (isOdd(v.length))
             quickSelect(v.toArray, (v.length - 1) / 2)
-          } else {
+          else {
             val tempArray: Array[T] = v.toArray.clone()
             val secondMedianPosition = v.length / 2
             //quickSelectImpl does not clone the array, allowing us to access intermediate semi-sorted results for reuse in the second calculation
@@ -234,10 +233,9 @@ trait DescriptiveStats {
               var numRows: Long = 1
               data.tail.foreach { x =>
                 numRows += 1
-                if (mean.size != x.size) {
+                if (mean.size != x.size)
                   throw new IllegalArgumentException(
                     "Attempting to compute covariance of dataset where elements have different sizes")
-                }
                 cfor(0)(i => i < firstRow.size, i => i + 1) { i =>
                   mean(i) = mean(i) + x(i)
                 }
@@ -276,11 +274,10 @@ trait DescriptiveStats {
 
         cfor(0)(i => i < covariance.rows, i => i + 1) { i =>
           cfor(0)(j => j < covariance.rows, j => j + 1) { j =>
-            if (i != j) {
+            if (i != j)
               covariance(i, j) /= (d(i) * d(j))
-            } else {
+            else
               covariance(i, j) = 1.0
-            }
           }
         }
         covariance
@@ -361,11 +358,10 @@ trait DescriptiveStats {
             result(i) = bins.length
             var j = bins.length - 1
             while (j >= 0) {
-              if (x(i) <= bins(j)) {
+              if (x(i) <= bins(j))
                 result(i) = j
-              } else {
+              else
                 j = -1
-              }
               j -= 1
             }
           }
@@ -500,9 +496,8 @@ object DescriptiveStats {
     val i = f.toInt
     if (i == 0) arr.head
     else if (i >= arr.length) arr.last
-    else {
+    else
       arr(i - 1) + (f - i) * (arr(i) - arr(i - 1))
-    }
   }
 
   /**

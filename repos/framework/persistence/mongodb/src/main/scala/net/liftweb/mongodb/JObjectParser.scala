@@ -69,9 +69,8 @@ object JObjectParser extends SimpleInjector {
             JField(f.toString, serialize(x.get(f.toString), formats))
           }
         )
-      case x => {
+      case x =>
         JNothing
-      }
     }
   }
 
@@ -128,13 +127,12 @@ object JObjectParser extends SimpleInjector {
 
     // FIXME: This is not ideal.
     private def renderInteger(i: BigInt): Object =
-      if (i <= java.lang.Integer.MAX_VALUE && i >= java.lang.Integer.MIN_VALUE) {
+      if (i <= java.lang.Integer.MAX_VALUE && i >= java.lang.Integer.MIN_VALUE)
         new java.lang.Integer(i.intValue)
-      } else if (i <= java.lang.Long.MAX_VALUE && i >= java.lang.Long.MIN_VALUE) {
+      else if (i <= java.lang.Long.MAX_VALUE && i >= java.lang.Long.MIN_VALUE)
         new java.lang.Long(i.longValue)
-      } else {
+      else
         i.toString
-      }
 
     private def trimArr(xs: List[JValue]) = xs.filter(_ != JNothing)
     private def trimObj(xs: List[JField]) = xs.filter(_.value != JNothing)

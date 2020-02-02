@@ -81,7 +81,7 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
             val nextStates = states map {
               case SampleState(maybePrevInserters, len0, transform) =>
                 transform advance origSlice map {
-                  case (nextTransform, slice) => {
+                  case (nextTransform, slice) =>
                     val inserter = maybePrevInserters map {
                       _.withSource(slice)
                     } getOrElse RowInserter(sampleSize, slice)
@@ -90,26 +90,24 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
 
                     @tailrec
                     def loop(i: Int, len: Int): Int =
-                      if (i < slice.size) {
+                      if (i < slice.size)
                         // `k` is a number between 0 and number of rows we've seen
-                        if (!defined(i)) {
+                        if (!defined(i))
                           loop(i + 1, len)
-                        } else if (len < sampleSize) {
+                        else if (len < sampleSize) {
                           inserter.insert(src = i, dest = len)
                           loop(i + 1, len + 1)
                         } else {
                           val k = rng.nextInt(len + 1)
-                          if (k < sampleSize) {
+                          if (k < sampleSize)
                             inserter.insert(src = i, dest = k)
-                          }
                           loop(i + 1, len + 1)
                         }
-                      } else len
+                      else len
 
                     val newLength = loop(0, len0)
 
                     SampleState(Some(inserter), newLength, nextTransform)
-                  }
                 }
             }
 
@@ -260,19 +258,17 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
       protected def unsafeMove(fromRow: Int, toRow: Int): Unit
 
       final def insert(srcRow: Int, destRow: Int) {
-        if (src.isDefinedAt(srcRow)) {
+        if (src.isDefinedAt(srcRow))
           unsafeInsert(srcRow, destRow)
-        } else {
+        else
           dest.defined.clear(destRow)
-        }
       }
 
       final def move(from: Int, to: Int) {
-        if (dest.isDefinedAt(from)) {
+        if (dest.isDefinedAt(from))
           unsafeMove(from, to)
-        } else {
+        else
           dest.defined.clear(to)
-        }
       }
     }
   }

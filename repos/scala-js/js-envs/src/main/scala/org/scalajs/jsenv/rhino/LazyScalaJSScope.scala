@@ -37,12 +37,11 @@ private[rhino] class LazyScalaJSScope(
 
   {
     // Pre-fill fields with the properties of `base`
-    for (id <- base.getIds()) {
+    for (id <- base.getIds())
       (id.asInstanceOf[Any]: @unchecked) match {
         case name: String => put(name, this, base.get(name, base))
         case index: Int   => put(index, this, base.get(index, base))
       }
-    }
   }
 
   private def load(name: String): Unit =
@@ -55,7 +54,7 @@ private[rhino] class LazyScalaJSScope(
   override def getClassName(): String = "LazyScalaJSScope"
 
   override def get(name: String, start: Scriptable): AnyRef =
-    if (name == "__noSuchMethod__") {
+    if (name == "__noSuchMethod__")
       /* Automatically called by Rhino when trying to call a method fails.
        * We don't want to throw a ClassNotFoundException for this case, but
        * rather return a proper NOT_FOUND sentinel. Otherwise, this exception
@@ -63,7 +62,7 @@ private[rhino] class LazyScalaJSScope(
        * be found on the classpath.
        */
       Scriptable.NOT_FOUND
-    } else {
+    else
       fields
         .getOrElse(
           name, {
@@ -79,7 +78,6 @@ private[rhino] class LazyScalaJSScope(
           }
         )
         .asInstanceOf[AnyRef]
-    }
 
   override def get(index: Int, start: Scriptable): AnyRef =
     get(index.toString, start)

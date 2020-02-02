@@ -33,11 +33,10 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
       List(new OneToOneDependency(partitionsRDD))) {
 
   override def setName(_name: String): this.type = {
-    if (partitionsRDD.name != null) {
+    if (partitionsRDD.name != null)
       partitionsRDD.setName(partitionsRDD.name + ", " + _name)
-    } else {
+    else
       partitionsRDD.setName(_name)
-    }
     this
   }
   setName("EdgeRDD")
@@ -121,9 +120,8 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
       if (iter.hasNext) {
         val (pid, ep) = iter.next()
         Iterator(Tuple2(pid, f(pid, ep)))
-      } else {
+      } else
         Iterator.empty
-      }
     }, preservesPartitioning = true))
 
   private[graphx] def withPartitionsRDD[ED2: ClassTag, VD2: ClassTag](

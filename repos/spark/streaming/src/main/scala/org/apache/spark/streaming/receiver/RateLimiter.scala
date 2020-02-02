@@ -57,13 +57,11 @@ private[receiver] abstract class RateLimiter(conf: SparkConf) extends Logging {
     * @param newRate A new rate in events per second. It has no effect if it's 0 or negative.
     */
   private[receiver] def updateRate(newRate: Long): Unit =
-    if (newRate > 0) {
-      if (maxRateLimit > 0) {
+    if (newRate > 0)
+      if (maxRateLimit > 0)
         rateLimiter.setRate(newRate.min(maxRateLimit))
-      } else {
+      else
         rateLimiter.setRate(newRate)
-      }
-    }
 
   /**
     * Get the initial rateLimit to initial rateLimiter

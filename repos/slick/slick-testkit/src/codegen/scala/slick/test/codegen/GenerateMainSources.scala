@@ -74,14 +74,14 @@ object GenerateMainSources extends TestCodeGenerator {
               }
               override def mappingEnabled = true
               override def code =
-                if (model.name.table == "SIMPLE_AS") {
+                if (model.name.table == "SIMPLE_AS")
                   Seq("""
 import slick.test.codegen.CustomTyping._
 import slick.test.codegen.CustomTyping
 type SimpleA = CustomTyping.SimpleA
 val  SimpleA = CustomTyping.SimpleA
                   """.trim) ++ super.code
-                } else super.code
+                else super.code
               override def Column = new Column(_) {
                 override def rawType = model.name match {
                   case "A1" => "Bool"

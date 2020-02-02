@@ -161,11 +161,10 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
       if (f.dataType.isInstanceOf[NumericType] && cols.exists(col =>
-            columnEquals(f.name, col))) {
+            columnEquals(f.name, col)))
         fillCol[Double](f, value)
-      } else {
+      else
         df.col(f.name)
-      }
     }
     df.select(projections: _*)
   }
@@ -190,11 +189,10 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val projections = df.schema.fields.map { f =>
       // Only fill if the column is part of the cols list.
       if (f.dataType.isInstanceOf[StringType] && cols.exists(col =>
-            columnEquals(f.name, col))) {
+            columnEquals(f.name, col)))
         fillCol[String](f, value)
-      } else {
+      else
         df.col(f.name)
-      }
     }
     df.select(projections: _*)
   }
@@ -313,11 +311,10 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     * @since 1.3.1
     */
   def replace[T](col: String, replacement: Map[T, T]): DataFrame =
-    if (col == "*") {
+    if (col == "*")
       replace0(df.columns, replacement)
-    } else {
+    else
       replace0(Seq(col), replacement)
-    }
 
   /**
     * (Scala-specific) Replaces values matching keys in `replacement` map.
@@ -343,9 +340,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
   private def replace0[T](
       cols: Seq[String],
       replacement: Map[T, T]): DataFrame = {
-    if (replacement.isEmpty || cols.isEmpty) {
+    if (replacement.isEmpty || cols.isEmpty)
       return df
-    }
 
     // replacementMap is either Map[String, String] or Map[Double, Double] or Map[Boolean,Boolean]
     val replacementMap: Map[_, _] = replacement.head._2 match {
@@ -368,13 +364,12 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
     val projections = df.schema.fields.map { f =>
       val shouldReplace = cols.exists(colName => columnEquals(colName, f.name))
       if (f.dataType
-            .isInstanceOf[NumericType] && targetColumnType == DoubleType && shouldReplace) {
+            .isInstanceOf[NumericType] && targetColumnType == DoubleType && shouldReplace)
         replaceCol(f, replacementMap)
-      } else if (f.dataType == targetColumnType && shouldReplace) {
+      else if (f.dataType == targetColumnType && shouldReplace)
         replaceCol(f, replacementMap)
-      } else {
+      else
         df.col(f.name)
-      }
     }
     df.select(projections: _*)
   }

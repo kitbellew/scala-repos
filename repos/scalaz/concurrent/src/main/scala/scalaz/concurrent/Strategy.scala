@@ -40,11 +40,10 @@ trait Strategys extends StrategysLow {
     * The default executor service is a fixed thread pool with N daemon threads,
     * where N is equal to the number of available processors.
     */
-  val DefaultExecutorService: ExecutorService = {
+  val DefaultExecutorService: ExecutorService =
     Executors.newFixedThreadPool(
       Runtime.getRuntime.availableProcessors,
       DefaultDaemonThreadFactory)
-  }
 
   /**
     * Default scheduler used for scheduling the tasks like timeout.

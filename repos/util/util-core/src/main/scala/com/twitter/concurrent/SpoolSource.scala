@@ -112,13 +112,11 @@ class SpoolSource[A](interruptHandler: PartialFunction[Throwable, Unit]) {
       f: Promise[Spool[A]] => Unit) {
     val currentPromise = promiseRef.get
     // if the current promise is emptyPromise, then this source has already been closed
-    if (currentPromise ne emptyPromise) {
-      if (promiseRef.compareAndSet(currentPromise, newPromise)) {
+    if (currentPromise ne emptyPromise)
+      if (promiseRef.compareAndSet(currentPromise, newPromise))
         f(currentPromise)
-      } else {
+      else
         // try again
         updatingTailCall(newPromise)(f)
-      }
-    }
   }
 }

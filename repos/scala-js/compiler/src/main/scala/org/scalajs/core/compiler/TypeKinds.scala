@@ -245,9 +245,8 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
           REFERENCE(traitSym)
         else
           REFERENCE(sym)
-      } else {
+      } else
         REFERENCE(sym)
-      }
   }
 
   private def primitiveOrRefType(sym: Symbol) =

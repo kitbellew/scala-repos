@@ -112,12 +112,10 @@ class ScalaGlobalMembersCompletionContributor
       case memb: PsiMember =>
         if (containingClass == null) return false
         val qualifiedName = containingClass.qualifiedName + "." + member.name
-        for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES) {
+        for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES)
           if (qualifiedName == excluded || qualifiedName.startsWith(
-                excluded + ".")) {
+                excluded + "."))
             return false
-          }
-        }
         containingClass match {
           case o: ScObject if o.isStatic =>
             // filter out type class instances, such as scala.math.Numeric.String, to avoid too many results.
@@ -164,9 +162,7 @@ class ScalaGlobalMembersCompletionContributor
           if cClass != null
           if cClass.qualifiedName != null
           if cClass.qualifiedName == qualName
-        } {
-          return true
-        }
+        } return true
         false
       } else elemsSet.contains(elem)
 
@@ -181,12 +177,11 @@ class ScalaGlobalMembersCompletionContributor
 
     val convertible = new ScImplicitlyConvertible(ref)
     val proc = new convertible.CollectImplicitsProcessor(true)
-    for (element <- collection) {
+    for (element <- collection)
       element match {
         case v: ScValue =>
-          for (d <- v.declaredElements if isStatic(d)) {
+          for (d <- v.declaredElements if isStatic(d))
             proc.execute(d, ResolveState.initial())
-          }
         case f: ScFunction if isStatic(f) =>
           proc.execute(element, ResolveState.initial())
         case c: ScClass if isStatic(c) =>
@@ -197,7 +192,6 @@ class ScalaGlobalMembersCompletionContributor
           }
         case _ =>
       }
-    }
     val candidates = proc.candidates.map(convertible.forMap(_, originalType))
 
     ref.getVariants(implicits = false, filterNotNamedVariants = false).foreach {
@@ -249,10 +243,9 @@ class ScalaGlobalMembersCompletionContributor
         val shortcut: String =
           KeymapUtil.getFirstKeyboardShortcutText(
             ActionManager.getInstance.getAction(actionId))
-        if (shortcut != null) {
+        if (shortcut != null)
           result.addLookupAdvertisement(
             s"To import a method statically, press $shortcut")
-        }
         hintShown = true
       }
     }
@@ -284,9 +277,7 @@ class ScalaGlobalMembersCompletionContributor
           if cClass != null
           if cClass.qualifiedName != null
           if cClass.qualifiedName == qualName
-        } {
-          return true
-        }
+        } return true
         false
       } else elemsSet.contains(elem)
 
@@ -344,10 +335,10 @@ class ScalaGlobalMembersCompletionContributor
                     containingClass.getAllMethods.toSeq.filter(m =>
                       m.name == methodName)
                 }
-                if (overloads.size == 1) {
+                if (overloads.size == 1)
                   result.addElement(
                     createLookupElement(method, containingClass, shouldImport))
-                } else if (overloads.size > 1) {
+                else if (overloads.size > 1) {
                   val lookup = createLookupElement(
                     if (overloads.head.getParameterList.getParametersCount == 0)
                       overloads(1)

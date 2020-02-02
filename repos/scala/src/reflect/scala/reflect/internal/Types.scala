@@ -222,10 +222,10 @@ trait Types
   case object UnmappableTree extends TermTree {
     override def toString = "<unmappable>"
     super.setType(NoType)
-    override def tpe_=(t: Type) = if (t != NoType) {
-      throw new UnsupportedOperationException(
-        "tpe_=(" + t + ") inapplicable for <empty>")
-    }
+    override def tpe_=(t: Type) =
+      if (t != NoType)
+        throw new UnsupportedOperationException(
+          "tpe_=(" + t + ") inapplicable for <empty>")
   }
 
   abstract class TypeApiImpl extends TypeApi { this: Type =>
@@ -821,12 +821,11 @@ trait Types
     /** Is this type a subtype of that type? */
     def <:<(that: Type): Boolean =
       if (Statistics.canEnable) stat_<:<(that)
-      else {
+      else
         (this eq that) ||
         (if (explainSwitch)
            explain("<:", isSubType(_: Type, _: Type), this, that)
          else isSubType(this, that))
-      }
 
     /** Is this type a subtype of that type in a pattern context?
       *  Dummy type arguments on the right hand side are replaced with
@@ -1033,13 +1032,12 @@ trait Types
       var sym: Symbol = NoSymbol
       var e: ScopeEntry = decls.lookupEntry(name)
       while (e ne null) {
-        if (!e.sym.hasFlag(excludedFlags.toLong)) {
+        if (!e.sym.hasFlag(excludedFlags.toLong))
           if (sym == NoSymbol) sym = e.sym
           else {
             if (alts.isEmpty) alts = sym :: Nil
             alts = e.sym :: alts
           }
-        }
         e = decls.lookupNextEntry(e)
       }
       if (alts.isEmpty) sym
@@ -1091,7 +1089,7 @@ trait Types
     def skolemsExceptMethodTypeParams: List[Symbol] = {
       var boundSyms: List[Symbol] = List()
       var skolems: List[Symbol] = List()
-      for (t <- this) {
+      for (t <- this)
         t match {
           case ExistentialType(quantified, qtpe) =>
             boundSyms = boundSyms ::: quantified
@@ -1101,7 +1099,6 @@ trait Types
               skolems = sym :: skolems
           case _ =>
         }
-      }
       skolems
     }
 
@@ -1557,7 +1554,7 @@ trait Types
     val period = tpe.baseTypeSeqPeriod
     if (period != currentPeriod) {
       tpe.baseTypeSeqPeriod = currentPeriod
-      if (!isValidForBaseClasses(period)) {
+      if (!isValidForBaseClasses(period))
         if (tpe.parents exists typeContainsTypeVar) {
           // rename type vars to fresh type params, take base type sequence of
           // resulting type, and rename back all the entries in that sequence
@@ -1604,9 +1601,8 @@ trait Types
                   _.baseTypeSeq updateHead tpe.typeSymbol.tpe_*)
               else
                 compoundBaseTypeSeq(tpe)
-          } finally {
-            if (Statistics.canEnable) Statistics.popTimer(typeOpsStack, start)
-          }
+          } finally if (Statistics.canEnable)
+            Statistics.popTimer(typeOpsStack, start)
           // [Martin] suppressing memoization solves the problem with "same type after erasure" errors
           // when compiling with
           // scalac scala.collection.IterableViewLike.scala scala.collection.IterableLike.scala
@@ -1616,7 +1612,6 @@ trait Types
           // I do not yet see precisely why this would cause a problem, but it looks
           // fishy in any case.
         }
-      }
     }
     //Console.println("baseTypeSeq(" + typeSymbol + ") = " + baseTypeSeqCache.toList);//DEBUG
     if (tpe.baseTypeSeqCache eq undetBaseTypeSeq)
@@ -1684,9 +1679,8 @@ trait Types
           tpe.baseClassesCache = null
           tpe.baseClassesCache = tpe.memo(computeBaseClasses(tpe))(
             tpe.typeSymbol :: _.baseClasses.tail)
-        } finally {
-          if (Statistics.canEnable) Statistics.popTimer(typeOpsStack, start)
-        }
+        } finally if (Statistics.canEnable)
+          Statistics.popTimer(typeOpsStack, start)
       }
     }
     if (tpe.baseClassesCache eq null)
@@ -1739,17 +1733,17 @@ trait Types
         }
       }
       val flattened = flatten(parents).distinct
-      if (decls.isEmpty && hasLength(flattened, 1)) {
+      if (decls.isEmpty && hasLength(flattened, 1))
         flattened.head
-      } else if (flattened != parents) {
+      else if (flattened != parents)
         refinedType(
           flattened,
           if (typeSymbol eq NoSymbol) NoSymbol else typeSymbol.owner,
           decls,
           NoPosition)
-      } else if (isHigherKinded) {
+      else if (isHigherKinded)
         etaExpand
-      } else super.normalize
+      else super.normalize
     }
 
     final override def etaExpand: Type =
@@ -2044,14 +2038,14 @@ trait Types
     override def instantiateTypeParams(
         formals: List[Symbol],
         actuals: List[Type]): Type =
-      if (isHigherKinded) {
+      if (isHigherKinded)
         if (sameLength(formals intersect typeParams, typeParams))
           copyTypeRef(this, pre, sym, actuals)
         // partial application (needed in infer when bunching type arguments from classes and methods together)
         else
           copyTypeRef(this, pre, sym, dummyArgs)
             .instantiateTypeParams(formals, actuals)
-      } else
+      else
         super.instantiateTypeParams(formals, actuals)
 
     override def narrow =
@@ -2350,9 +2344,7 @@ trait Types
     private def baseTypeOfNonClassTypeRefLogged(clazz: Symbol) =
       if (pendingBaseTypes add this)
         try relativeInfo.baseType(clazz)
-        finally {
-          pendingBaseTypes remove this
-        }
+        finally pendingBaseTypes remove this
       // TODO: is this optimization for AnyClass worth it? (or is it playing last-ditch cycle defense?)
       // NOTE: for correctness, it only applies for non-class types
       // (e.g., a package class should not get AnyTpe as its supertype, ever)
@@ -2483,7 +2475,7 @@ trait Types
       case RepeatedParamClass | JavaRepeatedParamClass => args.head + "*"
       case ByNameParamClass                            => "=> " + args.head
       case _ =>
-        if (isFunctionTypeDirect(this)) {
+        if (isFunctionTypeDirect(this))
           // Aesthetics: printing Function1 as T => R rather than (T) => R
           // ...but only if it's not a tuple, so ((T1, T2)) => R is distinguishable
           // from (T1, T2) => R.
@@ -2505,7 +2497,7 @@ trait Types
             case xs =>
               xs.init.mkString("(", ", ", ")") + " => " + xs.last
           }
-        } else if (isTupleTypeDirect(this))
+        else if (isTupleTypeDirect(this))
           tupleTypeString
         else if (sym.isAliasType && prefixChain
                    .exists(_.termSymbol.isSynthetic) && (this ne dealias))
@@ -2559,18 +2551,16 @@ trait Types
   object TypeRef extends TypeRefExtractor {
     def apply(pre: Type, sym: Symbol, args: List[Type]): Type =
       unique({
-        if (args ne Nil) {
+        if (args ne Nil)
           if (sym.isAliasType) new AliasArgsTypeRef(pre, sym, args)
           else if (sym.isAbstractType) new AbstractArgsTypeRef(pre, sym, args)
           else new ClassArgsTypeRef(pre, sym, args)
-        } else {
-          if (sym.isAliasType) new AliasNoArgsTypeRef(pre, sym)
-          else if (sym.isAbstractType) new AbstractNoArgsTypeRef(pre, sym)
-          else if (sym.isRefinementClass) new RefinementTypeRef(pre, sym)
-          else if (sym.isPackageClass) new PackageTypeRef(pre, sym)
-          else if (sym.isModuleClass) new ModuleTypeRef(pre, sym)
-          else new ClassNoArgsTypeRef(pre, sym)
-        }
+        else if (sym.isAliasType) new AliasNoArgsTypeRef(pre, sym)
+        else if (sym.isAbstractType) new AbstractNoArgsTypeRef(pre, sym)
+        else if (sym.isRefinementClass) new RefinementTypeRef(pre, sym)
+        else if (sym.isPackageClass) new PackageTypeRef(pre, sym)
+        else if (sym.isModuleClass) new ModuleTypeRef(pre, sym)
+        else new ClassNoArgsTypeRef(pre, sym)
       })
   }
 
@@ -2578,11 +2568,10 @@ trait Types
     val period = tpe.parentsPeriod
     if (period != currentPeriod) {
       tpe.parentsPeriod = currentPeriod
-      if (!isValidForBaseClasses(period)) {
+      if (!isValidForBaseClasses(period))
         tpe.parentsCache = tpe.parentsImpl
-      } else if (tpe.parentsCache == null) { // seems this can happen if things are corrupted enough, see #2641
+      else if (tpe.parentsCache == null) // seems this can happen if things are corrupted enough, see #2641
         tpe.parentsCache = List(AnyTpe)
-      }
     }
   }
 
@@ -2599,9 +2588,8 @@ trait Types
         try {
           tpe.baseTypeSeqCache = undetBaseTypeSeq
           tpe.baseTypeSeqCache = tpe.baseTypeSeqImpl
-        } finally {
-          if (Statistics.canEnable) Statistics.popTimer(typeOpsStack, start)
-        }
+        } finally if (Statistics.canEnable)
+          Statistics.popTimer(typeOpsStack, start)
       }
     }
     if (tpe.baseTypeSeqCache == undetBaseTypeSeq)
@@ -3118,19 +3106,19 @@ trait Types
         untouchable: Boolean): TypeVar = {
       val tv =
         (
-          if (args.isEmpty && params.isEmpty) {
+          if (args.isEmpty && params.isEmpty)
             if (untouchable) new TypeVar(origin, constr) with UntouchableTypeVar
             else new TypeVar(origin, constr) {}
-          } else if (args.size == params.size) {
+          else if (args.size == params.size)
             if (untouchable)
               new AppliedTypeVar(origin, constr, params zip args)
                 with UntouchableTypeVar
             else new AppliedTypeVar(origin, constr, params zip args)
-          } else if (args.isEmpty) {
+          else if (args.isEmpty)
             if (untouchable)
               new HKTypeVar(origin, constr, params) with UntouchableTypeVar
             else new HKTypeVar(origin, constr, params)
-          } else
+          else
             throw new Error(
               "Invalid TypeVar construction: " + (
                 (
@@ -3915,7 +3903,7 @@ trait Types
       return tycon //@M! `if (args.isEmpty) tycon' is crucial (otherwise we create new types in phases after typer and then they don't get adapted (??))
 
     /* Disabled - causes cycles in tcpoly tests. */
-    if (false && isDefinitionsInitialized) {
+    if (false && isDefinitionsInitialized)
       assert(
         isUseableAsTypeArgs(args), {
           val tapp_s = s"""$tycon[${args mkString ", "}]"""
@@ -3924,7 +3912,6 @@ trait Types
           s"$tapp_s includes illegal type argument $arg_s"
         }
       )
-    }
 
     tycon match {
       case TypeRef(pre, sym @ (NothingClass | AnyClass), _) =>
@@ -4354,9 +4341,9 @@ trait Types
   final def sameLength(xs1: List[_], xs2: List[_]) =
     compareLengths(xs1, xs2) == 0
   @tailrec final def compareLengths(xs1: List[_], xs2: List[_]): Int =
-    if (xs1.isEmpty) {
+    if (xs1.isEmpty)
       if (xs2.isEmpty) 0 else -1
-    } else if (xs2.isEmpty) 1
+    else if (xs2.isEmpty) 1
     else compareLengths(xs1.tail, xs2.tail)
 
   /** Again avoiding calling length, but the lengthCompare interface is clunky.
@@ -4830,70 +4817,64 @@ trait Types
       val argss =
         tps map (_.normalize.typeArgs) // symbol equality (of the tp in tps) was checked using typeSymbol, which normalizes, so should normalize before retrieving arguments
       val capturedParams = new ListBuffer[Symbol]
-      try {
-        if (sym == ArrayClass && phase.erasedTypes) {
-          // special treatment for lubs of array types after erasure:
-          // if argss contain one value type and some other type, the lub is Object
-          // if argss contain several reference types, the lub is an array over lub of argtypes
-          if (argss exists typeListIsEmpty) {
-            NoType // something is wrong: an array without a type arg.
-          } else {
-            val args = argss map (_.head)
-            if (args.tail forall (_ =:= args.head))
-              typeRef(pre, sym, List(args.head))
-            else if (args exists (arg => isPrimitiveValueClass(arg.typeSymbol)))
-              ObjectTpe
-            else typeRef(pre, sym, List(lub(args)))
-          }
-        } else
-          transposeSafe(argss) match {
-            case None =>
-              // transpose freaked out because of irregular argss
-              // catching just in case (shouldn't happen, but also doesn't cost us)
-              // [JZ] It happens: see SI-5683.
-              debuglog(s"transposed irregular matrix!? tps=$tps argss=$argss")
-              NoType
-            case Some(argsst) =>
-              val args = map2(sym.typeParams, argsst) { (tparam, as0) =>
-                val as = as0.distinct
-                if (as.size == 1) as.head
-                else if (depth.isZero) {
-                  log(
-                    "Giving up merging args: can't unify %s under %s"
-                      .format(as.mkString(", "), tparam.fullLocationString))
-                  // Don't return "Any" (or "Nothing") when we have to give up due to
-                  // recursion depth. Return NoType, which prevents us from poisoning
-                  // lublist's results. It can recognize the recursion and deal with it, but
-                  // only if we aren't returning invalid types.
-                  NoType
-                } else {
-                  if (tparam.variance == variance) lub(as, depth.decr)
-                  else if (tparam.variance == variance.flip) glb(as, depth.decr)
-                  else {
-                    val l = lub(as, depth.decr)
-                    val g = glb(as, depth.decr)
-                    if (l <:< g) l
-                    else { // Martin: I removed this, because incomplete. Not sure there is a good way to fix it. For the moment we
-                      // just err on the conservative side, i.e. with a bound that is too high.
-                      // if(!(tparam.info.bounds contains tparam))   //@M can't deal with f-bounds, see #2251
+      try if (sym == ArrayClass && phase.erasedTypes)
+        // special treatment for lubs of array types after erasure:
+        // if argss contain one value type and some other type, the lub is Object
+        // if argss contain several reference types, the lub is an array over lub of argtypes
+        if (argss exists typeListIsEmpty)
+          NoType // something is wrong: an array without a type arg.
+        else {
+          val args = argss map (_.head)
+          if (args.tail forall (_ =:= args.head))
+            typeRef(pre, sym, List(args.head))
+          else if (args exists (arg => isPrimitiveValueClass(arg.typeSymbol)))
+            ObjectTpe
+          else typeRef(pre, sym, List(lub(args)))
+        }
+      else
+        transposeSafe(argss) match {
+          case None =>
+            // transpose freaked out because of irregular argss
+            // catching just in case (shouldn't happen, but also doesn't cost us)
+            // [JZ] It happens: see SI-5683.
+            debuglog(s"transposed irregular matrix!? tps=$tps argss=$argss")
+            NoType
+          case Some(argsst) =>
+            val args = map2(sym.typeParams, argsst) { (tparam, as0) =>
+              val as = as0.distinct
+              if (as.size == 1) as.head
+              else if (depth.isZero) {
+                log(
+                  "Giving up merging args: can't unify %s under %s"
+                    .format(as.mkString(", "), tparam.fullLocationString))
+                // Don't return "Any" (or "Nothing") when we have to give up due to
+                // recursion depth. Return NoType, which prevents us from poisoning
+                // lublist's results. It can recognize the recursion and deal with it, but
+                // only if we aren't returning invalid types.
+                NoType
+              } else if (tparam.variance == variance) lub(as, depth.decr)
+              else if (tparam.variance == variance.flip) glb(as, depth.decr)
+              else {
+                val l = lub(as, depth.decr)
+                val g = glb(as, depth.decr)
+                if (l <:< g) l
+                else { // Martin: I removed this, because incomplete. Not sure there is a good way to fix it. For the moment we
+                  // just err on the conservative side, i.e. with a bound that is too high.
+                  // if(!(tparam.info.bounds contains tparam))   //@M can't deal with f-bounds, see #2251
 
-                      val qvar =
-                        commonOwner(as) freshExistential "" setInfo TypeBounds(
-                          g,
-                          l)
-                      capturedParams += qvar
-                      qvar.tpe
-                    }
-                  }
+                  val qvar =
+                    commonOwner(as) freshExistential "" setInfo TypeBounds(g, l)
+                  capturedParams += qvar
+                  qvar.tpe
                 }
               }
-              if (args contains NoType) NoType
-              else
-                existentialAbstraction(
-                  capturedParams.toList,
-                  typeRef(pre, sym, args))
-          }
-      } catch {
+            }
+            if (args contains NoType) NoType
+            else
+              existentialAbstraction(
+                capturedParams.toList,
+                typeRef(pre, sym, args))
+        } catch {
         case ex: MalformedType => NoType
       }
     case SingleType(_, sym) :: rest =>
@@ -4996,9 +4977,7 @@ trait Types
     val s = explainSwitch
     try {
       explainSwitch = true; op
-    } finally {
-      explainSwitch = s
-    }
+    } finally explainSwitch = s
   }
 
   def isUnboundedGeneric(tp: Type) = tp match {
@@ -5039,9 +5018,8 @@ trait Types
   def invalidateTreeTpeCaches(tree: Tree, updatedSyms: List[Symbol]) =
     if (updatedSyms.nonEmpty)
       for (t <- tree if t.tpe != null)
-        for (tp <- t.tpe) {
+        for (tp <- t.tpe)
           invalidateCaches(tp, updatedSyms)
-        }
 
   def invalidateCaches(t: Type, updatedSyms: List[Symbol]) =
     t match {

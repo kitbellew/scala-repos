@@ -28,17 +28,15 @@ private[streaming] object HdfsUtils {
     val dfs = getFileSystemForPath(dfsPath, conf)
     // If the file exists and we have append support, append instead of creating a new file
     val stream: FSDataOutputStream = {
-      if (dfs.isFile(dfsPath)) {
+      if (dfs.isFile(dfsPath))
         if (conf.getBoolean("hdfs.append.support", false) || dfs
-              .isInstanceOf[RawLocalFileSystem]) {
+              .isInstanceOf[RawLocalFileSystem])
           dfs.append(dfsPath)
-        } else {
+        else
           throw new IllegalStateException(
             "File exists and there is no append support!")
-        }
-      } else {
+      else
         dfs.create(dfsPath)
-      }
     }
     stream
   }
@@ -46,25 +44,22 @@ private[streaming] object HdfsUtils {
   def getInputStream(path: String, conf: Configuration): FSDataInputStream = {
     val dfsPath = new Path(path)
     val dfs = getFileSystemForPath(dfsPath, conf)
-    if (dfs.isFile(dfsPath)) {
-      try {
-        dfs.open(dfsPath)
-      } catch {
+    if (dfs.isFile(dfsPath))
+      try dfs.open(dfsPath)
+      catch {
         case e: IOException =>
           // If we are really unlucky, the file may be deleted as we're opening the stream.
           // This can happen as clean up is performed by daemon threads that may be left over from
           // previous runs.
           if (!dfs.isFile(dfsPath)) null else throw e
       }
-    } else {
+    else
       null
-    }
   }
 
   def checkState(state: Boolean, errorMsg: => String) {
-    if (!state) {
+    if (!state)
       throw new IllegalStateException(errorMsg)
-    }
   }
 
   /** Get the locations of the HDFS blocks containing the given file segment. */

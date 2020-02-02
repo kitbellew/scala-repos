@@ -76,14 +76,12 @@ private class ThresholdFailureDetector(
   def status: Status = state.get
 
   private[this] def markBusy(): Unit =
-    if (state.compareAndSet(Status.Open, Status.Busy)) {
+    if (state.compareAndSet(Status.Open, Status.Busy))
       busyCounter.incr()
-    }
 
   private[this] def markOpen(): Unit =
-    if (state.compareAndSet(Status.Busy, Status.Open)) {
+    if (state.compareAndSet(Status.Busy, Status.Open))
       revivalCounter.incr()
-    }
 
   private[this] def markClosed(): Unit = {
     closeCounter.incr()
@@ -134,9 +132,8 @@ private[mux] class WindowedMax(windowSize: Int) {
 
   // Amortized 0(1)
   def add(value: Long): Unit = synchronized {
-    if (value > currentMax) {
+    if (value > currentMax)
       currentMax = value
-    }
 
     val prev = buf(index)
     buf(index) = value

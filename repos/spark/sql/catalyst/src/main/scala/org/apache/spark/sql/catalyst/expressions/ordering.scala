@@ -38,11 +38,11 @@ class InterpretedOrdering(ordering: Seq[SortOrder])
 
       if (left == null && right == null) {
         // Both null, continue looking.
-      } else if (left == null) {
+      } else if (left == null)
         return if (order.direction == Ascending) -1 else 1
-      } else if (right == null) {
+      else if (right == null)
         return if (order.direction == Ascending) 1 else -1
-      } else {
+      else {
         val comparison = order.dataType match {
           case dt: AtomicType if order.direction == Ascending =>
             dt.ordering.asInstanceOf[Ordering[Any]].compare(left, right)
@@ -70,9 +70,8 @@ class InterpretedOrdering(ordering: Seq[SortOrder])
             throw new IllegalArgumentException(
               s"Type $other does not support ordered operations")
         }
-        if (comparison != 0) {
+        if (comparison != 0)
           return comparison
-        }
       }
       i += 1
     }

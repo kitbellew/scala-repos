@@ -259,12 +259,11 @@ class CoarseMesosSchedulerBackendSuite
       driver: SchedulerDriver,
       offerId: OfferID,
       filter: Boolean = false): Unit =
-    if (filter) {
+    if (filter)
       verify(driver, times(1))
         .declineOffer(Matchers.eq(offerId), anyObject[Filters])
-    } else {
+    else
       verify(driver, times(1)).declineOffer(Matchers.eq(offerId))
-    }
 
   private def offerResources(
       offers: List[(Int, Int)],
@@ -383,11 +382,9 @@ class CoarseMesosSchedulerBackendSuite
       .setSparkHome("/path")
       .set("spark.mesos.driver.webui.url", "http://webui")
 
-    if (sparkConfVars != null) {
-      for (attr <- sparkConfVars) {
+    if (sparkConfVars != null)
+      for (attr <- sparkConfVars)
         sparkConf.set(attr._1, attr._2)
-      }
-    }
 
     sc = new SparkContext(sparkConf)
 

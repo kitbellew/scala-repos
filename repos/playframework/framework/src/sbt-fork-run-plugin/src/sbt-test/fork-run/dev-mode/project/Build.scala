@@ -38,12 +38,11 @@ object DevModeBuild {
         catch {
           case _: java.io.IOException => 0
         }
-      if (expected == actual) {
+      if (expected == actual)
         println(s"Expected and got $expected reloads")
-      } else {
+      else
         throw new RuntimeException(
           s"Expected $expected reloads but got $actual")
-      }
     },
     DevModeKeys.verifyResourceContains := {
       val args = Def.spaceDelimited("<path> <status> <words> ...").parsed
@@ -107,18 +106,17 @@ object DevModeBuild {
       conn.setConnectTimeout(ConnectTimeout)
       conn.setReadTimeout(ReadTimeout)
 
-      if (status == conn.getResponseCode) {
+      if (status == conn.getResponseCode)
         messages += s"Resource at $path returned $status as expected"
-      } else {
+      else
         throw new RuntimeException(
           s"Resource at $path returned ${conn.getResponseCode} instead of $status")
-      }
 
-      val is = if (conn.getResponseCode >= 400) {
-        conn.getErrorStream
-      } else {
-        conn.getInputStream
-      }
+      val is =
+        if (conn.getResponseCode >= 400)
+          conn.getErrorStream
+        else
+          conn.getInputStream
 
       // The input stream may be null if there's no body
       val contents = if (is != null) {
@@ -129,12 +127,11 @@ object DevModeBuild {
       conn.disconnect()
 
       assertions.foreach { assertion =>
-        if (contents.contains(assertion)) {
+        if (contents.contains(assertion))
           messages += s"Resource at $path contained $assertion"
-        } else {
+        else
           throw new RuntimeException(
             s"Resource at $path didn't contain '$assertion':\n$contents")
-        }
       }
 
       messages.foreach(println)

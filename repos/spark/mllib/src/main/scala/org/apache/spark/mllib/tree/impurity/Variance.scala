@@ -53,9 +53,8 @@ object Variance extends Impurity {
       count: Double,
       sum: Double,
       sumSquares: Double): Double = {
-    if (count == 0) {
+    if (count == 0)
       return 0
-    }
     val squaredLoss = sumSquares - (sum * sum) / count
     squaredLoss / count
   }
@@ -136,11 +135,10 @@ private[spark] class VarianceCalculator(stats: Array[Double])
     * Prediction which should be made based on the sufficient statistics.
     */
   def predict: Double =
-    if (count == 0) {
+    if (count == 0)
       0
-    } else {
+    else
       stats(1) / count
-    }
 
   override def toString: String =
     s"VarianceAggregator(cnt = ${stats(0)}, sum = ${stats(1)}, sum2 = ${stats(2)})"

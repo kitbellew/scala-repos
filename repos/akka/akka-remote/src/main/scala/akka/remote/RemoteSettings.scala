@@ -102,13 +102,12 @@ final class RemoteSettings(val config: Config) {
     config.getMillisDuration("akka.remote.quarantine-after-silence")
   } requiring (_ > Duration.Zero, "quarantine-after-silence must be > 0")
 
-  val QuarantineDuration: FiniteDuration = {
+  val QuarantineDuration: FiniteDuration =
     config
       .getMillisDuration("akka.remote.prune-quarantine-marker-after")
       .requiring(
         _ > Duration.Zero,
         "prune-quarantine-marker-after must be > 0 ms")
-  }
 
   val CommandAckTimeout: Timeout = {
     Timeout(config.getMillisDuration("akka.remote.command-ack-timeout"))

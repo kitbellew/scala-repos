@@ -229,9 +229,9 @@ private[parquet] class CatalystSchemaConverter(
           repeatedType.isRepetition(REPEATED),
           s"Invalid list type $field")
 
-        if (isElementType(repeatedType, field.getName)) {
+        if (isElementType(repeatedType, field.getName))
           ArrayType(convertField(repeatedType), containsNull = false)
-        } else {
+        else {
           val elementType = repeatedType.asGroupType().getType(0)
           val optional = elementType.isRepetition(OPTIONAL)
           ArrayType(convertField(elementType), containsNull = optional)
@@ -580,15 +580,13 @@ private[parquet] object CatalystSchemaConverter {
   }
 
   def checkConversionRequirement(f: => Boolean, message: String): Unit =
-    if (!f) {
+    if (!f)
       throw new AnalysisException(message)
-    }
 
   private def computeMinBytesForPrecision(precision: Int): Int = {
     var numBytes = 1
-    while (math.pow(2.0, 8 * numBytes - 1) < math.pow(10.0, precision)) {
+    while (math.pow(2.0, 8 * numBytes - 1) < math.pow(10.0, precision))
       numBytes += 1
-    }
     numBytes
   }
 

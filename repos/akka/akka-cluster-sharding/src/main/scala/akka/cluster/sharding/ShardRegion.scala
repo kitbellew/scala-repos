@@ -622,10 +622,9 @@ class ShardRegion(
       } else {
         // if persist fails it will stop
         log.debug("Shard [{}]  terminated while not being handed off", shardId)
-        if (rememberEntities) {
+        if (rememberEntities)
           context.system.scheduler
             .scheduleOnce(shardFailureBackoff, self, RestartShard(shardId))
-        }
       }
 
       tryCompleteGracefulShutdown()
@@ -801,7 +800,7 @@ class ShardRegion(
   def getShard(id: ShardId): Option[ActorRef] =
     if (startingShards.contains(id))
       None
-    else {
+    else
       shards
         .get(id)
         .orElse(entityProps match {
@@ -832,7 +831,6 @@ class ShardRegion(
             throw new IllegalStateException(
               "Shard must not be allocated to a proxy only ShardRegion")
         })
-    }
 
   def sendGracefulShutdownToCoordinator(): Unit =
     if (gracefulShutdownInProgress)

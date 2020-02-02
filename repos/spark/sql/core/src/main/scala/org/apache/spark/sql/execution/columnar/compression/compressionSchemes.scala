@@ -109,14 +109,12 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
         columnType.copyField(row, ordinal, lastValue, 0)
         lastRun = 1
         _compressedSize += actualSize + 4
-      } else {
-        if (columnType.getField(lastValue, 0) == value) {
-          lastRun += 1
-        } else {
-          _compressedSize += actualSize + 4
-          columnType.copyField(row, ordinal, lastValue, 0)
-          lastRun = 1
-        }
+      } else if (columnType.getField(lastValue, 0) == value)
+        lastRun += 1
+      else {
+        _compressedSize += actualSize + 4
+        columnType.copyField(row, ordinal, lastValue, 0)
+        lastRun = 1
       }
     }
 
@@ -135,9 +133,9 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
 
           if (value.get(0, columnType.dataType) == currentValue.get(
                 0,
-                columnType.dataType)) {
+                columnType.dataType))
             currentRun += 1
-          } else {
+          else {
             // Writes current run
             columnType.append(currentValue, 0, to)
             to.putInt(currentRun)
@@ -172,9 +170,8 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
         currentValue = columnType.extract(buffer)
         run = ByteBufferHelper.getInt(buffer)
         valueCount = 1
-      } else {
+      } else
         valueCount += 1
-      }
 
       columnType.setField(row, ordinal, currentValue)
     }
@@ -236,7 +233,7 @@ private[columnar] case object DictionaryEncoding extends CompressionScheme {
         count += 1
         _uncompressedSize += actualSize
 
-        if (!dictionary.contains(value)) {
+        if (!dictionary.contains(value))
           if (dictionary.size < MAX_DICT_SIZE) {
             val clone = columnType.clone(value)
             values += clone
@@ -247,15 +244,13 @@ private[columnar] case object DictionaryEncoding extends CompressionScheme {
             values.clear()
             dictionary.clear()
           }
-        }
       }
     }
 
     override def compress(from: ByteBuffer, to: ByteBuffer): ByteBuffer = {
-      if (overflow) {
+      if (overflow)
         throw new IllegalStateException(
           "Dictionary encoding should not be used because of dictionary overflow.")
-      }
 
       to.putInt(DictionaryEncoding.typeId)
         .putInt(dictionary.size)
@@ -266,9 +261,8 @@ private[columnar] case object DictionaryEncoding extends CompressionScheme {
         i += 1
       }
 
-      while (from.hasRemaining) {
+      while (from.hasRemaining)
         to.putShort(dictionary(columnType.extract(from)))
-      }
 
       to.rewind()
       to
@@ -335,9 +329,8 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
         var i = 0
 
         while (i < BITS_PER_LONG) {
-          if (BOOLEAN.extract(from)) {
+          if (BOOLEAN.extract(from))
             word |= (1: Long) << i
-          }
           i += 1
         }
 
@@ -349,9 +342,8 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
         var i = 0
 
         while (from.hasRemaining) {
-          if (BOOLEAN.extract(from)) {
+          if (BOOLEAN.extract(from))
             word |= (1: Long) << i
-          }
           i += 1
         }
 
@@ -382,9 +374,8 @@ private[columnar] case object BooleanBitSet extends CompressionScheme {
       val bit = visited % BITS_PER_LONG
 
       visited += 1
-      if (bit == 0) {
+      if (bit == 0)
         currentWord = ByteBufferHelper.getLong(buffer)
-      }
 
       row.setBoolean(ordinal, ((currentWord >> bit) & 1) != 0)
     }
@@ -426,9 +417,8 @@ private[columnar] case object IntDelta extends CompressionScheme {
 
       // If this is the first integer to be compressed, or the delta is out of byte range, then give
       // up compressing this integer.
-      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte.MaxValue) {
+      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte.MaxValue)
         _compressedSize += INT.defaultSize
-      }
 
       _uncompressedSize += INT.defaultSize
       prevValue = value
@@ -447,9 +437,9 @@ private[columnar] case object IntDelta extends CompressionScheme {
           val delta = current - prev
           prev = current
 
-          if (Byte.MinValue < delta && delta <= Byte.MaxValue) {
+          if (Byte.MinValue < delta && delta <= Byte.MaxValue)
             to.put(delta.toByte)
-          } else {
+          else {
             to.put(Byte.MinValue)
             to.putInt(current)
           }
@@ -512,9 +502,8 @@ private[columnar] case object LongDelta extends CompressionScheme {
 
       // If this is the first long integer to be compressed, or the delta is out of byte range, then
       // give up compressing this long integer.
-      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte.MaxValue) {
+      if (_uncompressedSize == 0 || delta <= Byte.MinValue || delta > Byte.MaxValue)
         _compressedSize += LONG.defaultSize
-      }
 
       _uncompressedSize += LONG.defaultSize
       prevValue = value
@@ -533,9 +522,9 @@ private[columnar] case object LongDelta extends CompressionScheme {
           val delta = current - prev
           prev = current
 
-          if (Byte.MinValue < delta && delta <= Byte.MaxValue) {
+          if (Byte.MinValue < delta && delta <= Byte.MaxValue)
             to.put(delta.toByte)
-          } else {
+          else {
             to.put(Byte.MinValue)
             to.putLong(current)
           }

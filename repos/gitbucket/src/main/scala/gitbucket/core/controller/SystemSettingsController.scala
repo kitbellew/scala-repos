@@ -79,12 +79,12 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     )
   )(SystemSettings.apply).verifying { settings =>
     Vector(
-      if (settings.ssh && settings.baseUrl.isEmpty) {
+      if (settings.ssh && settings.baseUrl.isEmpty)
         Some("baseUrl" -> "Base URL is required if SSH access is enabled.")
-      } else None,
-      if (settings.ssh && settings.sshHost.isEmpty) {
+      else None,
+      if (settings.ssh && settings.sshHost.isEmpty)
         Some("sshHost" -> "SSH host is required if SSH access is enabled.")
-      } else None
+      else None
     ).flatten
   }
 
@@ -241,7 +241,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     val userName = params("userName")
     getAccountByUserName(userName, true).map {
       account =>
-        if (form.isRemoved) {
+        if (form.isRemoved)
           // Remove repositories
           //        getRepositoryNamesOfUser(userName).foreach { repositoryName =>
           //          deleteRepository(userName, repositoryName)
@@ -251,7 +251,6 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           //        }
           // Remove from GROUP_MEMBER, COLLABORATOR and REPOSITORY
           removeUserRelatedData(userName)
-        }
 
         updateAccount(
           account.copy(

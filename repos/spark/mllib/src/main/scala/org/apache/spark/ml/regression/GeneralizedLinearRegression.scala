@@ -96,17 +96,15 @@ private[regression] trait GeneralizedLinearRegressionBase
       schema: StructType,
       fitting: Boolean,
       featuresDataType: DataType): StructType = {
-    if ($(solver) == "irls") {
+    if ($(solver) == "irls")
       setDefault(maxIter -> 25)
-    }
-    if (isDefined(link)) {
+    if (isDefined(link))
       require(
         supportedFamilyAndLinkPairs.contains(
           Family.fromName($(family)) -> Link.fromName($(link))),
         "Generalized Linear Regression " +
           s"with ${$(family)} family does not support ${$(link)} link function."
       )
-    }
     super.validateAndTransformSchema(schema, fitting, featuresDataType)
   }
 }
@@ -215,11 +213,11 @@ class GeneralizedLinearRegression @Since("2.0.0") (
   override protected def train(
       dataset: DataFrame): GeneralizedLinearRegressionModel = {
     val familyObj = Family.fromName($(family))
-    val linkObj = if (isDefined(link)) {
-      Link.fromName($(link))
-    } else {
-      familyObj.defaultLink
-    }
+    val linkObj =
+      if (isDefined(link))
+        Link.fromName($(link))
+      else
+        familyObj.defaultLink
     val familyAndLink = new FamilyAndLink(familyObj, linkObj)
 
     val numFeatures = dataset
@@ -469,13 +467,12 @@ object GeneralizedLinearRegression
     }
 
     override def project(mu: Double): Double =
-      if (mu.isNegInfinity) {
+      if (mu.isNegInfinity)
         Double.MinValue
-      } else if (mu.isPosInfinity) {
+      else if (mu.isPosInfinity)
         Double.MaxValue
-      } else {
+      else
         mu
-      }
   }
 
   /**
@@ -516,13 +513,12 @@ object GeneralizedLinearRegression
         .sum()
 
     override def project(mu: Double): Double =
-      if (mu < epsilon) {
+      if (mu < epsilon)
         epsilon
-      } else if (mu > 1.0 - epsilon) {
+      else if (mu > 1.0 - epsilon)
         1.0 - epsilon
-      } else {
+      else
         mu
-      }
   }
 
   /**
@@ -559,13 +555,12 @@ object GeneralizedLinearRegression
         .sum()
 
     override def project(mu: Double): Double =
-      if (mu < epsilon) {
+      if (mu < epsilon)
         epsilon
-      } else if (mu.isInfinity) {
+      else if (mu.isInfinity)
         Double.MaxValue
-      } else {
+      else
         mu
-      }
   }
 
   /**
@@ -604,13 +599,12 @@ object GeneralizedLinearRegression
     }
 
     override def project(mu: Double): Double =
-      if (mu < epsilon) {
+      if (mu < epsilon)
         epsilon
-      } else if (mu.isInfinity) {
+      else if (mu.isInfinity)
         Double.MaxValue
-      } else {
+      else
         mu
-      }
   }
 
   /**
@@ -735,11 +729,11 @@ class GeneralizedLinearRegressionModel private[ml] (
   import GeneralizedLinearRegression._
 
   lazy val familyObj = Family.fromName($(family))
-  lazy val linkObj = if (isDefined(link)) {
-    Link.fromName($(link))
-  } else {
-    familyObj.defaultLink
-  }
+  lazy val linkObj =
+    if (isDefined(link))
+      Link.fromName($(link))
+    else
+      familyObj.defaultLink
   lazy val familyAndLink = new FamilyAndLink(familyObj, linkObj)
 
   override protected def predict(features: Vector): Double = {
@@ -880,22 +874,22 @@ class GeneralizedLinearRegressionSummary private[regression] (
   import GeneralizedLinearRegression._
 
   private lazy val family = Family.fromName(model.getFamily)
-  private lazy val link = if (model.isDefined(model.getParam("link"))) {
-    Link.fromName(model.getLink)
-  } else {
-    family.defaultLink
-  }
+  private lazy val link =
+    if (model.isDefined(model.getParam("link")))
+      Link.fromName(model.getLink)
+    else
+      family.defaultLink
 
   /** Number of instances in DataFrame predictions */
   private lazy val numInstances: Long = predictions.count()
 
   /** The numeric rank of the fitted linear model */
   @Since("2.0.0")
-  lazy val rank: Long = if (model.getFitIntercept) {
-    model.coefficients.size + 1
-  } else {
-    model.coefficients.size
-  }
+  lazy val rank: Long =
+    if (model.getFitIntercept)
+      model.coefficients.size + 1
+    else
+      model.coefficients.size
 
   /** Degrees of freedom */
   @Since("2.0.0")
@@ -909,11 +903,11 @@ class GeneralizedLinearRegressionSummary private[regression] (
 
   /** The residual degrees of freedom for the null model */
   @Since("2.0.0")
-  lazy val residualDegreeOfFreedomNull: Long = if (model.getFitIntercept) {
-    numInstances - 1
-  } else {
-    numInstances
-  }
+  lazy val residualDegreeOfFreedomNull: Long =
+    if (model.getFitIntercept)
+      numInstances - 1
+    else
+      numInstances
 
   private lazy val devianceResiduals: DataFrame = {
     val drUDF = udf { (y: Double, mu: Double, weight: Double) =>
@@ -945,10 +939,9 @@ class GeneralizedLinearRegressionSummary private[regression] (
       wrUDF(col(model.getLabelCol), col(predictionCol)).as("workingResiduals"))
   }
 
-  private lazy val responseResiduals: DataFrame = {
+  private lazy val responseResiduals: DataFrame =
     predictions.select(
       col(model.getLabelCol).minus(col(predictionCol)).as("responseResiduals"))
-  }
 
   /**
     * Get the default residuals(deviance residuals) of the fitted model.
@@ -984,9 +977,8 @@ class GeneralizedLinearRegressionSummary private[regression] (
       val agg =
         predictions.agg(sum(w.multiply(col(model.getLabelCol))), sum(w)).first()
       agg.getDouble(0) / agg.getDouble(1)
-    } else {
+    } else
       link.unlink(0.0)
-    }
     predictions
       .select(col(model.getLabelCol), w)
       .rdd
@@ -1022,9 +1014,9 @@ class GeneralizedLinearRegressionSummary private[regression] (
     */
   @Since("2.0.0")
   lazy val dispersion: Double =
-    if (model.getFamily == Binomial.name || model.getFamily == Poisson.name) {
+    if (model.getFamily == Binomial.name || model.getFamily == Poisson.name)
       1.0
-    } else {
+    else {
       val rss = pearsonResiduals
         .agg(sum(pow(col("pearsonResiduals"), 2.0)))
         .first()
@@ -1052,20 +1044,19 @@ class GeneralizedLinearRegressionSummary private[regression] (
     * Standard error of estimated coefficients and intercept.
     */
   @Since("2.0.0")
-  lazy val coefficientStandardErrors: Array[Double] = {
+  lazy val coefficientStandardErrors: Array[Double] =
     diagInvAtWA.map(_ * dispersion).map(math.sqrt)
-  }
 
   /**
     * T-statistic of estimated coefficients and intercept.
     */
   @Since("2.0.0")
   lazy val tValues: Array[Double] = {
-    val estimate = if (model.getFitIntercept) {
-      Array.concat(model.coefficients.toArray, Array(model.intercept))
-    } else {
-      model.coefficients.toArray
-    }
+    val estimate =
+      if (model.getFitIntercept)
+        Array.concat(model.coefficients.toArray, Array(model.intercept))
+      else
+        model.coefficients.toArray
     estimate.zip(coefficientStandardErrors).map { x => x._1 / x._2 }
   }
 
@@ -1074,14 +1065,13 @@ class GeneralizedLinearRegressionSummary private[regression] (
     */
   @Since("2.0.0")
   lazy val pValues: Array[Double] = {
-    if (model.getFamily == Binomial.name || model.getFamily == Poisson.name) {
+    if (model.getFamily == Binomial.name || model.getFamily == Poisson.name)
       tValues.map { x =>
         2.0 * (1.0 - dist.Gaussian(0.0, 1.0).cdf(math.abs(x)))
       }
-    } else {
+    else
       tValues.map { x =>
         2.0 * (1.0 - dist.StudentsT(degreesOfFreedom.toDouble).cdf(math.abs(x)))
       }
-    }
   }
 }

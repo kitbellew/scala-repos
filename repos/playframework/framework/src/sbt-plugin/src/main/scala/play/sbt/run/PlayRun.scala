@@ -215,9 +215,8 @@ object PlayRun {
 
       // Call back myself
       twiddleRunMonitor(watched, newState, reloader, Some(newWatchState))
-    } else {
+    } else
       ()
-    }
   }
 
   val playPrefixAndAssetsSetting = playPrefixAndAssets := {
@@ -311,11 +310,10 @@ object PlayRun {
         val builder = new java.lang.ProcessBuilder(args.asJava)
         new Thread {
           override def run() {
-            if (noExitSbt) {
+            if (noExitSbt)
               Process(builder).!
-            } else {
+            else
               System.exit(Process(builder).!)
-            }
           }
         }.start()
 
@@ -329,11 +327,10 @@ object PlayRun {
 
         println()
 
-        if (noExitSbt) {
+        if (noExitSbt)
           state
-        } else {
+        else
           state.copy(remainingCommands = Seq.empty)
-        }
     }
 
   }
@@ -343,9 +340,9 @@ object PlayRun {
       val extracted = Project.extract(state)
 
       val pidFile = extracted.get(stagingDirectory in Universal) / "RUNNING_PID"
-      if (!pidFile.exists) {
+      if (!pidFile.exists)
         println("No PID file found. Are you sure the app is running?")
-      } else {
+      else {
         val pid = IO.read(pidFile)
         s"kill $pid".!
         // PID file will be deleted by a shutdown hook attached on start in ServerStart.scala
@@ -353,10 +350,9 @@ object PlayRun {
       }
       println()
 
-      if (args.contains("--no-exit-sbt")) {
+      if (args.contains("--no-exit-sbt"))
         state
-      } else {
+      else
         state.copy(remainingCommands = Seq.empty)
-      }
   }
 }

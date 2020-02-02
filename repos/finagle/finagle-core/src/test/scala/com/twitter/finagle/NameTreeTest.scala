@@ -125,9 +125,8 @@ class NameTreeTest extends FunSuite {
 
     val trees = Seq.fill(100) { newTree(2) }
     for (tree <- trees)
-      try {
-        assert(NameTree.read(tree.show) == tree)
-      } catch {
+      try assert(NameTree.read(tree.show) == tree)
+      catch {
         case NonFatal(exc) =>
           fail("Exception %s while parsing %s: %s".format(exc, tree.show, tree))
       }

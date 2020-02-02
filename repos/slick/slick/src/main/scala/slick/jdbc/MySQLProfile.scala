@@ -96,9 +96,9 @@ trait MySQLProfile extends JdbcProfile { profile =>
           }
           .getOrElse {
             val d = super.default
-            if (meta.nullable == Some(true) && d == None) {
+            if (meta.nullable == Some(true) && d == None)
               Some(None)
-            } else d
+            else d
           }
       override def length: Option[Int] = {
         val l = super.length
@@ -290,14 +290,14 @@ trait MySQLProfile extends JdbcProfile { profile =>
       if (!seq._cycle && (seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc))
         throw new SlickException(
           "Sequences with limited size and without CYCLE are not supported by MySQLProfile's sequence emulation")
-      val incExpr = if (seq._cycle) {
-        if (desc)
-          "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
+      val incExpr =
+        if (seq._cycle)
+          if (desc)
+            "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
+          else
+            "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
         else
-          "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
-      } else {
-        "id+(" + increment + ")"
-      }
+          "id+(" + increment + ")"
       DDL(
         Iterable(
           "create table " + quoteIdentifier(seq.name + "_seq") + " (id " + t + ")",

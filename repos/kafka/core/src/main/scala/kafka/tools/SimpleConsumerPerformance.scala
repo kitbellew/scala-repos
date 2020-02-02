@@ -39,14 +39,13 @@ object SimpleConsumerPerformance {
     val config = new ConsumerPerfConfig(args)
     logger.info("Starting SimpleConsumer...")
 
-    if (!config.hideHeader) {
+    if (!config.hideHeader)
       if (!config.showDetailedStats)
         println(
           "start.time, end.time, fetch.size, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
       else
         println(
           "time, fetch.size, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
-    }
 
     val consumer = new SimpleConsumer(
       config.url.getHost,

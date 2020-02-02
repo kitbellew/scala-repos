@@ -31,9 +31,8 @@ object AutoUpdate {
       override def update(conn: Connection, cl: ClassLoader): Unit = {
         super.update(conn, cl)
         val settings = loadSystemSettings()
-        if (settings.notification) {
+        if (settings.notification)
           saveSystemSettings(settings.copy(useSMTP = true))
-        }
       }
     },
     new Version(3, 6),
@@ -54,40 +53,35 @@ object AutoUpdate {
             val repoName = rs.getString("REPOSITORY_NAME")
             defining(Directory.getAttachedDir(userName, repoName)) { newDir =>
               val oldDir = new File(newDir.getParentFile, "issues")
-              if (oldDir.exists && oldDir.isDirectory) {
+              if (oldDir.exists && oldDir.isDirectory)
                 oldDir.renameTo(newDir)
-              }
             }
             // Update ORIGIN_USER_NAME and ORIGIN_REPOSITORY_NAME if it does not exist
             val originalUserName = rs.getString("ORIGIN_USER_NAME")
             val originalRepoName = rs.getString("ORIGIN_REPOSITORY_NAME")
-            if (originalUserName != null && originalRepoName != null) {
+            if (originalUserName != null && originalRepoName != null)
               if (conn.selectInt(
                     "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
                     originalUserName,
-                    originalRepoName) == 0) {
+                    originalRepoName) == 0)
                 conn.update(
                   "UPDATE REPOSITORY SET ORIGIN_USER_NAME = NULL, ORIGIN_REPOSITORY_NAME = NULL " +
                     "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
                   userName,
                   repoName)
-              }
-            }
             // Update PARENT_USER_NAME and PARENT_REPOSITORY_NAME if it does not exist
             val parentUserName = rs.getString("PARENT_USER_NAME")
             val parentRepoName = rs.getString("PARENT_REPOSITORY_NAME")
-            if (parentUserName != null && parentRepoName != null) {
+            if (parentUserName != null && parentRepoName != null)
               if (conn.selectInt(
                     "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
                     parentUserName,
-                    parentRepoName) == 0) {
+                    parentRepoName) == 0)
                 conn.update(
                   "UPDATE REPOSITORY SET PARENT_USER_NAME = NULL, PARENT_REPOSITORY_NAME = NULL " +
                     "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
                   userName,
                   repoName)
-              }
-            }
         }
       }
     },
@@ -105,12 +99,11 @@ object AutoUpdate {
               .split("\n")
               .filter(_ matches "^[0-9a-z]{40}:.*")
               .mkString("\n")
-            if (curInfo != newInfo) {
+            if (curInfo != newInfo)
               conn.update(
                 "UPDATE ACTIVITY SET ADDITIONAL_INFO = ? WHERE ACTIVITY_ID = ?",
                 newInfo,
                 rs.getInt("ACTIVITY_ID"))
-            }
         }
         ignore {
           FileUtils.deleteDirectory(Directory.getPluginCacheDir())
@@ -134,10 +127,10 @@ object AutoUpdate {
             defining(
               Directory.getAttachedDir(
                 rs.getString("USER_NAME"),
-                rs.getString("REPOSITORY_NAME"))) {
-              dir =>
-                if (dir.exists && dir.isDirectory) {
-                  dir.listFiles.foreach {
+                rs.getString("REPOSITORY_NAME"))) { dir =>
+              if (dir.exists && dir.isDirectory)
+                dir.listFiles
+                  .foreach {
                     file =>
                       if (file.getName.indexOf('.') < 0) {
                         val mimeType = MimeUtil2
@@ -146,15 +139,13 @@ object AutoUpdate {
                               file,
                               new MimeType("application/octet-stream")))
                           .toString
-                        if (mimeType.startsWith("image/")) {
+                        if (mimeType.startsWith("image/"))
                           file.renameTo(
                             new File(
                               file.getParent,
                               file.getName + "." + mimeType.split("/")(1)))
-                        }
                       }
                   }
-                }
             }
         }
       }
@@ -210,17 +201,16 @@ object AutoUpdate {
     * Returns the current version from the version file.
     */
   def getCurrentVersion(): Version =
-    if (versionFile.exists) {
+    if (versionFile.exists)
       FileUtils.readFileToString(versionFile, "UTF-8").trim.split("\\.") match {
-        case Array(majorVersion, minorVersion) => {
+        case Array(majorVersion, minorVersion) =>
           versions
             .find { v =>
               v.majorVersion == majorVersion.toInt && v.minorVersion == minorVersion.toInt
             }
             .getOrElse(Version(0, 0))
-        }
         case _ => Version(0, 0)
       }
-    } else Version(0, 0)
+    else Version(0, 0)
 
 }

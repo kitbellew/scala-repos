@@ -109,13 +109,12 @@ class DefaultGitUploadPack(owner: String, repoName: String)
       repositoryInfo =>
         if (!repositoryInfo.repository.isPrivate || isWritableUser(
               user,
-              repositoryInfo)) {
+              repositoryInfo))
           using(Git.open(getRepositoryDir(owner, repoName))) { git =>
             val repository = git.getRepository
             val upload = new UploadPack(repository)
             upload.upload(in, out, err)
           }
-        }
     }
 }
 
@@ -128,7 +127,7 @@ class DefaultGitReceivePack(owner: String, repoName: String, baseUrl: String)
       implicit session: Session): Unit =
     getRepository(owner, repoName.replaceFirst("\\.wiki\\Z", "")).foreach {
       repositoryInfo =>
-        if (isWritableUser(user, repositoryInfo)) {
+        if (isWritableUser(user, repositoryInfo))
           using(Git.open(getRepositoryDir(owner, repoName))) { git =>
             val repository = git.getRepository
             val receive = new ReceivePack(repository)
@@ -139,7 +138,6 @@ class DefaultGitReceivePack(owner: String, repoName: String, baseUrl: String)
             }
             receive.receive(in, out, err)
           }
-        }
     }
 }
 

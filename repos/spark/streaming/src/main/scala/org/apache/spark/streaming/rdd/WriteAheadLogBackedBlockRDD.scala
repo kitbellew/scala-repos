@@ -150,17 +150,14 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
           throw new SparkException(
             s"Could not read data from write ahead log record ${partition.walRecordHandle}",
             e)
-      } finally {
-        if (writeAheadLog != null) {
-          writeAheadLog.close()
-          writeAheadLog = null
-        }
+      } finally if (writeAheadLog != null) {
+        writeAheadLog.close()
+        writeAheadLog = null
       }
-      if (dataRead == null) {
+      if (dataRead == null)
         throw new SparkException(
           s"Could not read data from write ahead log record ${partition.walRecordHandle}, " +
             s"read returned null")
-      }
       logInfo(
         s"Read partition data of $this from write ahead log, record handle " +
           partition.walRecordHandle)
@@ -176,11 +173,10 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
       blockManager.dataDeserialize(blockId, dataRead).asInstanceOf[Iterator[T]]
     }
 
-    if (partition.isBlockIdValid) {
+    if (partition.isBlockIdValid)
       getBlockFromBlockManager().getOrElse { getBlockFromWriteAheadLog() }
-    } else {
+    else
       getBlockFromWriteAheadLog()
-    }
   }
 
   /**
@@ -190,22 +186,21 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
     */
   override def getPreferredLocations(split: Partition): Seq[String] = {
     val partition = split.asInstanceOf[WriteAheadLogBackedBlockRDDPartition]
-    val blockLocations = if (partition.isBlockIdValid) {
-      getBlockIdLocations().get(partition.blockId)
-    } else {
-      None
-    }
+    val blockLocations =
+      if (partition.isBlockIdValid)
+        getBlockIdLocations().get(partition.blockId)
+      else
+        None
 
     blockLocations.getOrElse {
       partition.walRecordHandle match {
         case fileSegment: FileBasedWriteAheadLogSegment =>
-          try {
-            HdfsUtils.getFileSegmentLocations(
-              fileSegment.path,
-              fileSegment.offset,
-              fileSegment.length,
-              hadoopConfig)
-          } catch {
+          try HdfsUtils.getFileSegmentLocations(
+            fileSegment.path,
+            fileSegment.offset,
+            fileSegment.length,
+            hadoopConfig)
+          catch {
             case NonFatal(e) =>
               logError("Error getting WAL file segment locations", e)
               Seq.empty

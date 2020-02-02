@@ -89,13 +89,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
   }
 
   override def afterAll(): Unit =
-    try {
-      if (testUtils != null) {
-        testUtils.deleteStream()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try if (testUtils != null)
+      testUtils.deleteStream()
+    finally super.afterAll()
 
   testIfEnabled("Basic reading from Kinesis") {
     // Verify all data using multiple ranges in a single RDD partition
@@ -130,9 +126,8 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       .map { bytes => new String(bytes).toInt }
       .collectPartitions()
     assert(receivedData3.length === allRanges.size)
-    for (i <- 0 until allRanges.size) {
+    for (i <- 0 until allRanges.size)
       assert(receivedData3(i).toSeq === shardIdToData(allRanges(i).shardId))
-    }
   }
 
   testIfEnabled("Read data available in both block manager and Kinesis") {

@@ -154,13 +154,12 @@ trait ResolvableStableCodeReferenceElement
                 fromType.get,
                 ResolvableStableCodeReferenceElement.this,
                 state)
-            } else {
+            } else
               td.processDeclarations(
                 processor,
                 state,
                 null,
                 ResolvableStableCodeReferenceElement.this)
-            }
           case _: ScClass | _: ScTrait =>
             td.processDeclarations(
               processor,
@@ -231,7 +230,7 @@ trait ResolvableStableCodeReferenceElement
     if (importStmt != null) {
       val importHolder =
         PsiTreeUtil.getContextOfType(importStmt, true, classOf[ScImportsHolder])
-      if (importHolder != null) {
+      if (importHolder != null)
         importHolder.getImportStatements.takeWhile(_ != importStmt).foreach {
           case stmt: ScImportStmt =>
             stmt.importExprs.foreach {
@@ -243,7 +242,6 @@ trait ResolvableStableCodeReferenceElement
               case _ =>
             }
         }
-      }
     }
     if (!accessibilityCheck) processor.doNotCheckAccessibility()
     var x = false

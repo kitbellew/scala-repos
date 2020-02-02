@@ -66,9 +66,8 @@ trait KeyValidation {
 
   def badKey(key: Buf): Boolean =
     if (key == null) true
-    else {
+    else
       tooLong(key) || invalidByteIndex(key) != -1
-    }
 }
 
 sealed abstract class Command(val name: String)

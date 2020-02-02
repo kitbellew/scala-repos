@@ -156,9 +156,9 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
     else {
       val aliasedRef: Option[ScReferenceElement] =
         ScalaPsiUtil.importAliasFor(element, this)
-      if (aliasedRef.isDefined) {
+      if (aliasedRef.isDefined)
         this.replace(aliasedRef.get)
-      } else {
+      else {
         def bindToType(c: ScalaImportTypeFix.TypeToImport): PsiElement = {
           val suitableKinds = getKinds(incomplete = false)
           if (!ResolveUtils.kindMatches(element, suitableKinds))
@@ -257,12 +257,11 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
         element match {
           case c: PsiClass => bindToType(ClassTypeToImport(c))
           case ta: ScTypeAlias =>
-            if (ta.containingClass != null && ScalaPsiUtil.hasStablePath(ta)) {
+            if (ta.containingClass != null && ScalaPsiUtil.hasStablePath(ta))
               bindToType(TypeAliasToImport(ta))
-            } else {
+            else
               //todo: nothing to do yet, probably in future it would be great to implement something context-specific
               this
-            }
           case binding: ScBindingPattern =>
             binding.nameContext match {
               case member: ScMember =>

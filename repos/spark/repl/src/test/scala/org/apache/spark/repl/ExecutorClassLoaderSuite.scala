@@ -77,15 +77,12 @@ class ExecutorClassLoaderSuite
 
   override def afterAll() {
     try {
-      if (classServer != null) {
+      if (classServer != null)
         classServer.stop()
-      }
       Utils.deleteRecursively(tempDir1)
       Utils.deleteRecursively(tempDir2)
       SparkEnv.set(null)
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
   }
 
   test("child first") {
@@ -189,9 +186,8 @@ class ExecutorClassLoaderSuite
       // The number of trials here should be much larger than Jetty's thread / connection limit
       // in order to expose thread or connection leaks
       for (i <- 1 to 1000) {
-        if (Thread.currentThread().isInterrupted) {
+        if (Thread.currentThread().isInterrupted)
           throw new InterruptedException()
-        }
         // Incorporate the iteration number into the class name in order to avoid any response
         // caching that might be added in the future
         intercept[ClassNotFoundException] {

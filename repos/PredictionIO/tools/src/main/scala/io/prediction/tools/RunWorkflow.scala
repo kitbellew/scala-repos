@@ -48,38 +48,33 @@ object RunWorkflow extends Logging {
     val driverClassPathIndex =
       ca.common.sparkPassThrough.indexOf("--driver-class-path")
     val driverClassPathPrefix =
-      if (driverClassPathIndex != -1) {
+      if (driverClassPathIndex != -1)
         Seq(ca.common.sparkPassThrough(driverClassPathIndex + 1))
-      } else {
+      else
         Seq()
-      }
     val extraClasspaths =
       driverClassPathPrefix ++ WorkflowUtils.thirdPartyClasspaths
 
     val deployModeIndex =
       ca.common.sparkPassThrough.indexOf("--deploy-mode")
-    val deployMode = if (deployModeIndex != -1) {
-      ca.common.sparkPassThrough(deployModeIndex + 1)
-    } else {
-      "client"
-    }
+    val deployMode =
+      if (deployModeIndex != -1)
+        ca.common.sparkPassThrough(deployModeIndex + 1)
+      else
+        "client"
 
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
 
     val mainJar =
-      if (ca.build.uberJar) {
-        if (deployMode == "cluster") {
+      if (ca.build.uberJar)
+        if (deployMode == "cluster")
           em.files.filter(_.startsWith("hdfs")).head
-        } else {
+        else
           em.files.filterNot(_.startsWith("hdfs")).head
-        }
-      } else {
-        if (deployMode == "cluster") {
-          em.files.filter(_.contains("pio-assembly")).head
-        } else {
-          core.getCanonicalPath
-        }
-      }
+      else if (deployMode == "cluster")
+        em.files.filter(_.contains("pio-assembly")).head
+      else
+        core.getCanonicalPath
 
     val workMode =
       ca.common.evaluation.map(_ => "Evaluation").getOrElse("Training")
@@ -103,26 +98,23 @@ object RunWorkflow extends Logging {
           "io.prediction.workflow.CreateWorkflow",
           "--name",
           s"PredictionIO $workMode: ${em.id} ${em.version} (${ca.common.batch})") ++
-        (if (!ca.build.uberJar) {
+        (if (!ca.build.uberJar)
            Seq("--jars", em.files.mkString(","))
-         } else Seq()) ++
-        (if (extraFiles.size > 0) {
+         else Seq()) ++
+        (if (extraFiles.size > 0)
            Seq("--files", extraFiles.mkString(","))
-         } else {
-           Seq()
-         }) ++
-        (if (extraClasspaths.size > 0) {
+         else
+           Seq()) ++
+        (if (extraClasspaths.size > 0)
            Seq("--driver-class-path", extraClasspaths.mkString(":"))
-         } else {
-           Seq()
-         }) ++
-        (if (ca.common.sparkKryo) {
+         else
+           Seq()) ++
+        (if (ca.common.sparkKryo)
            Seq(
              "--conf",
              "spark.serializer=org.apache.spark.serializer.KryoSerializer")
-         } else {
-           Seq()
-         }) ++
+         else
+           Seq()) ++
         Seq(
           mainJar,
           "--env",
@@ -132,14 +124,13 @@ object RunWorkflow extends Logging {
           "--engine-version",
           em.version,
           "--engine-variant",
-          if (deployMode == "cluster") {
+          if (deployMode == "cluster")
             hdfs
               .makeQualified(new Path((engineLocation :+ variantJson.getName)
                 .mkString(Path.SEPARATOR)))
               .toString
-          } else {
-            variantJson.getCanonicalPath
-          },
+          else
+            variantJson.getCanonicalPath,
           "--verbosity",
           ca.common.verbosity.toString
         ) ++
@@ -155,11 +146,10 @@ object RunWorkflow extends Logging {
         (if (ca.common.verbose) Seq("--verbose") else Seq()) ++
         (if (ca.common.skipSanityCheck) Seq("--skip-sanity-check") else Seq()) ++
         (if (ca.common.stopAfterRead) Seq("--stop-after-read") else Seq()) ++
-        (if (ca.common.stopAfterPrepare) {
+        (if (ca.common.stopAfterPrepare)
            Seq("--stop-after-prepare")
-         } else {
-           Seq()
-         }) ++
+         else
+           Seq()) ++
         ca.common.evaluation
           .map(x => Seq("--evaluation-class", x))
           .getOrElse(Seq()) ++
@@ -200,11 +190,10 @@ object RunWorkflow extends Logging {
       (if (ca.common.verbose) Seq("--verbose") else Seq()) ++
       (if (ca.common.skipSanityCheck) Seq("--skip-sanity-check") else Seq()) ++
       (if (ca.common.stopAfterRead) Seq("--stop-after-read") else Seq()) ++
-      (if (ca.common.stopAfterPrepare) {
+      (if (ca.common.stopAfterPrepare)
          Seq("--stop-after-prepare")
-       } else {
-         Seq()
-       }) ++
+       else
+         Seq()) ++
       ca.common.evaluation
         .map(x => Seq("--evaluation-class", x))
         .getOrElse(Seq()) ++

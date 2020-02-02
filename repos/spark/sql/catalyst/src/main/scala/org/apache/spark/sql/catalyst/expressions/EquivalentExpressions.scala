@@ -59,9 +59,8 @@ class EquivalentExpressions {
         equivalenceMap.put(e, mutable.MutableList(expr))
         false
       }
-    } else {
+    } else
       false
-    }
 
   /**
     * Adds the expression to this data structure recursively. Stops if a matching expression
@@ -71,9 +70,8 @@ class EquivalentExpressions {
   def addExprTree(root: Expression, ignoreLeaf: Boolean = true): Unit = {
     val skip = root.isInstanceOf[LeafExpression] && ignoreLeaf
     // the children of CodegenFallback will not be used to generate code (call eval() instead)
-    if (!skip && !addExpr(root) && !root.isInstanceOf[CodegenFallback]) {
+    if (!skip && !addExpr(root) && !root.isInstanceOf[CodegenFallback])
       root.children.foreach(addExprTree(_, ignoreLeaf))
-    }
   }
 
   /**
@@ -97,11 +95,9 @@ class EquivalentExpressions {
     val sb: mutable.StringBuilder = new StringBuilder()
     sb.append("Equivalent expressions:\n")
     equivalenceMap.foreach {
-      case (k, v) => {
-        if (all || v.length > 1) {
+      case (k, v) =>
+        if (all || v.length > 1)
           sb.append("  " + v.mkString(", ")).append("\n")
-        }
-      }
     }
     sb.toString()
   }

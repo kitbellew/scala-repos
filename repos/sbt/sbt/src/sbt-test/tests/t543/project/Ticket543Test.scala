@@ -19,14 +19,13 @@ object Ticket543Test extends Build {
       testListeners += new TestReportListener {
         def testEvent(event: TestEvent): Unit =
           for (e <- event.detail
-                 .filter(_.status == sbt.testing.Status.Failure)) {
+                 .filter(_.status == sbt.testing.Status.Failure))
             if (e.throwable != null && e.throwable.isDefined) {
               val caw = new CharArrayWriter
               e.throwable.get.printStackTrace(new PrintWriter(caw))
               if (caw.toString.contains("Test.scala:"))
                 marker.createNewFile()
             }
-          }
         def startGroup(name: String): Unit = ()
         def endGroup(name: String, t: Throwable): Unit = ()
         def endGroup(name: String, result: TestResult.Value): Unit = ()

@@ -88,28 +88,26 @@ private[spark] object JettyUtils extends Logging {
       override def doGet(
           request: HttpServletRequest,
           response: HttpServletResponse) {
-        try {
-          if (securityMgr.checkUIViewPermissions(request.getRemoteUser)) {
-            response.setContentType(
-              "%s;charset=utf-8".format(servletParams.contentType))
-            response.setStatus(HttpServletResponse.SC_OK)
-            val result = servletParams.responder(request)
-            response.setHeader(
-              "Cache-Control",
-              "no-cache, no-store, must-revalidate")
-            response.setHeader("X-Frame-Options", xFrameOptionsValue)
-            // scalastyle:off println
-            response.getWriter.println(servletParams.extractFn(result))
-            // scalastyle:on println
-          } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)
-            response.setHeader(
-              "Cache-Control",
-              "no-cache, no-store, must-revalidate")
-            response.sendError(
-              HttpServletResponse.SC_UNAUTHORIZED,
-              "User is not authorized to access this page.")
-          }
+        try if (securityMgr.checkUIViewPermissions(request.getRemoteUser)) {
+          response.setContentType(
+            "%s;charset=utf-8".format(servletParams.contentType))
+          response.setStatus(HttpServletResponse.SC_OK)
+          val result = servletParams.responder(request)
+          response.setHeader(
+            "Cache-Control",
+            "no-cache, no-store, must-revalidate")
+          response.setHeader("X-Frame-Options", xFrameOptionsValue)
+          // scalastyle:off println
+          response.getWriter.println(servletParams.extractFn(result))
+          // scalastyle:on println
+        } else {
+          response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)
+          response.setHeader(
+            "Cache-Control",
+            "no-cache, no-store, must-revalidate")
+          response.sendError(
+            HttpServletResponse.SC_UNAUTHORIZED,
+            "User is not authorized to access this page.")
         } catch {
           case e: IllegalArgumentException =>
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage)
@@ -143,11 +141,11 @@ private[spark] object JettyUtils extends Logging {
       path: String,
       servlet: HttpServlet,
       basePath: String): ServletContextHandler = {
-    val prefixedPath = if (basePath == "" && path == "/") {
-      path
-    } else {
-      (basePath + path).stripSuffix("/")
-    }
+    val prefixedPath =
+      if (basePath == "" && path == "/")
+        path
+      else
+        (basePath + path).stripSuffix("/")
     val contextHandler = new ServletContextHandler
     val holder = new ServletHolder(servlet)
     contextHandler.setContextPath(prefixedPath)
@@ -167,19 +165,17 @@ private[spark] object JettyUtils extends Logging {
       override def doGet(
           request: HttpServletRequest,
           response: HttpServletResponse): Unit =
-        if (httpMethods.contains("GET")) {
+        if (httpMethods.contains("GET"))
           doRequest(request, response)
-        } else {
+        else
           response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
-        }
       override def doPost(
           request: HttpServletRequest,
           response: HttpServletResponse): Unit =
-        if (httpMethods.contains("POST")) {
+        if (httpMethods.contains("POST"))
           doRequest(request, response)
-        } else {
+        else
           response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED)
-        }
       private def doRequest(
           request: HttpServletRequest,
           response: HttpServletResponse): Unit = {
@@ -305,11 +301,10 @@ private[spark] object JettyUtils extends Logging {
       sslOptions.createJettySslContextFactory().foreach { factory =>
         // If the new port wraps around, do not try a privileged port.
         val securePort =
-          if (currentPort != 0) {
+          if (currentPort != 0)
             (currentPort + 400 - 1024) % (65536 - 1024) + 1024
-          } else {
+          else
             0
-          }
         val scheme = "https"
         // Create a connector on port securePort to listen for HTTPS requests
         val connector = new SslSelectChannelConnector(factory)
@@ -336,9 +331,8 @@ private[spark] object JettyUtils extends Logging {
       server.setConnectors(connectors.toArray)
 
       val pool = new QueuedThreadPool
-      if (serverName.nonEmpty) {
+      if (serverName.nonEmpty)
         pool.setName(serverName)
-      }
       pool.setMaxThreads(math.max(pool.getMaxThreads, minThreads))
       pool.setDaemon(true)
       server.setThreadPool(pool)
@@ -373,9 +367,8 @@ private[spark] object JettyUtils extends Logging {
           baseRequest: Request,
           request: HttpServletRequest,
           response: HttpServletResponse): Unit = {
-        if (baseRequest.isSecure) {
+        if (baseRequest.isSecure)
           return
-        }
         val httpsURI = createRedirectURI(
           scheme,
           baseRequest.getServerName,
@@ -398,11 +391,11 @@ private[spark] object JettyUtils extends Logging {
       port: Int,
       path: String,
       query: String) = {
-    val redirectServer = if (server.contains(":") && !server.startsWith("[")) {
-      s"[$server]"
-    } else {
-      server
-    }
+    val redirectServer =
+      if (server.contains(":") && !server.startsWith("["))
+        s"[$server]"
+      else
+        server
     val authority = s"$redirectServer:$port"
     new URI(scheme, authority, path, query, null).toString
   }

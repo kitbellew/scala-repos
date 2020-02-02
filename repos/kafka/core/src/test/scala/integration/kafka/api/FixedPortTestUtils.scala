@@ -33,9 +33,8 @@ object FixedPortTestUtils {
       sockets.foreach(_.close())
       ports
     } catch {
-      case e: IOException => {
+      case e: IOException =>
         throw new RuntimeException(e)
-      }
     }
 
   def createBrokerConfigs(

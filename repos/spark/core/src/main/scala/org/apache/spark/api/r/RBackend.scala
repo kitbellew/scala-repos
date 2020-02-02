@@ -87,12 +87,10 @@ private[spark] class RBackend {
       channelFuture.channel().close().awaitUninterruptibly(10, TimeUnit.SECONDS)
       channelFuture = null
     }
-    if (bootstrap != null && bootstrap.group() != null) {
+    if (bootstrap != null && bootstrap.group() != null)
       bootstrap.group().shutdownGracefully()
-    }
-    if (bootstrap != null && bootstrap.childGroup() != null) {
+    if (bootstrap != null && bootstrap.childGroup() != null)
       bootstrap.childGroup().shutdownGracefully()
-    }
     bootstrap = null
   }
 

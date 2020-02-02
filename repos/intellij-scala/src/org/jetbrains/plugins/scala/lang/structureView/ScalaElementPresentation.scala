@@ -61,12 +61,12 @@ object ScalaElementPresentation {
         StructureViewUtil
           .getParametersAsString(function.paramClauses, fast, subst))
 
-    if (fast) {
+    if (fast)
       function.returnTypeElement match {
         case Some(rt) => presentableText.append(": ").append(rt.getText)
         case _        => //do nothing
       }
-    } else {
+    else {
       presentableText.append(": ")
       try {
         val typez = subst.subst(function.returnType.getOrAny)

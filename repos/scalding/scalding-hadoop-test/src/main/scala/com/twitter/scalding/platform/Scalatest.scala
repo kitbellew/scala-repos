@@ -47,13 +47,12 @@ trait HadoopPlatformTest extends BeforeAndAfterEach { this: Suite =>
   // get lost in the logging
   override def afterEach() {
     try super.afterEach()
-    finally {
-      // Necessary because afterAll can be called from a different thread and we want to make sure that the state
-      // is visible. Note that this assumes there is no contention for LocalCluster (which LocalCluster ensures),
-      // otherwise there could be deadlock.
-      cluster.synchronized {
-        cluster.shutdown()
-      }
+    finally
+    // Necessary because afterAll can be called from a different thread and we want to make sure that the state
+    // is visible. Note that this assumes there is no contention for LocalCluster (which LocalCluster ensures),
+    // otherwise there could be deadlock.
+    cluster.synchronized {
+      cluster.shutdown()
     }
   }
 }

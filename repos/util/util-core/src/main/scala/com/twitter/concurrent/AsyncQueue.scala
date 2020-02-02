@@ -52,9 +52,9 @@ class AsyncQueue[T](maxPendingOffers: Int) {
 
   private[this] def pollExcepting(s: Excepting[T]): Future[T] = {
     val q = s.q
-    if (q.isEmpty) {
+    if (q.isEmpty)
       Future.exception(s.exc)
-    } else {
+    else {
       val (elem, nextq) = q.dequeue
       val nextState = Excepting(nextq, s.exc)
       if (state.compareAndSet(s, nextState)) Future.value(elem) else poll()
@@ -110,9 +110,8 @@ class AsyncQueue[T](maxPendingOffers: Int) {
       if (state.compareAndSet(s, nextState)) {
         waiter.setValue(elem)
         true
-      } else {
+      } else
         offer(elem)
-      }
 
     case Excepting(_, _) =>
       false // Drop.

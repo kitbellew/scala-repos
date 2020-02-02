@@ -36,7 +36,7 @@ class ScalaMoveDirectoryWithClassesHelper
 
     val packageNames: util.Set[String] = new util.HashSet[String]
     import scala.collection.JavaConversions._
-    for (psiFile <- filesToMove) {
+    for (psiFile <- filesToMove)
       psiFile match {
         case sf: ScalaFile =>
           val (packObj, classes) = sf.typeDefinitions.partition {
@@ -51,9 +51,7 @@ class ScalaMoveDirectoryWithClassesHelper
               searchInComments,
               searchInNonJavaFiles,
               aClass.name)
-          } {
-            usages.add(usage)
-          }
+          } usages.add(usage)
 
           for {
             obj <- packObj
@@ -74,7 +72,6 @@ class ScalaMoveDirectoryWithClassesHelper
           packageNames.add(packageName(sf))
         case _ =>
       }
-    }
 
     val psiFacade: JavaPsiFacade = JavaPsiFacade.getInstance(project)
     import scala.collection.JavaConversions._
@@ -92,9 +89,8 @@ class ScalaMoveDirectoryWithClassesHelper
             val element: PsiElement = reference.getElement
             val importStmt =
               PsiTreeUtil.getParentOfType(element, classOf[ScImportStmt])
-            if (importStmt != null) {
+            if (importStmt != null)
               usages.add(new ImportStatementToRemoveUsage(importStmt))
-            }
           }
         }
       }

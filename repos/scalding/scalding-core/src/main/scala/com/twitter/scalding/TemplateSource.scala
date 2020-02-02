@@ -48,24 +48,20 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
     readOrWrite match {
       case Read =>
         throw new InvalidSourceException("Cannot use TemplateSource for input")
-      case Write => {
+      case Write =>
         mode match {
-          case Local(_) => {
+          case Local(_) =>
             val localTap = new FileTap(localScheme, basePath, sinkMode)
             new LTemplateTap(localTap, template, pathFields)
-          }
-          case hdfsMode @ Hdfs(_, _) => {
+          case hdfsMode @ Hdfs(_, _) =>
             val hfsTap = createHfsTap(hdfsScheme, basePath, sinkMode)
             new HTemplateTap(hfsTap, template, pathFields)
-          }
-          case hdfsTest @ HadoopTest(_, _) => {
+          case hdfsTest @ HadoopTest(_, _) =>
             val hfsTap =
               createHfsTap(hdfsScheme, hdfsTest.getWritePathFor(this), sinkMode)
             new HTemplateTap(hfsTap, template, pathFields)
-          }
           case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
         }
-      }
     }
 
   /**
@@ -74,13 +70,12 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
     * @param mode The mode of the job.
     */
   override def validateTaps(mode: Mode): Unit =
-    if (basePath == null) {
+    if (basePath == null)
       throw new InvalidSourceException(
         "basePath cannot be null for TemplateTap")
-    } else if (template == null) {
+    else if (template == null)
       throw new InvalidSourceException(
         "template cannot be null for TemplateTap")
-    }
 }
 
 /**

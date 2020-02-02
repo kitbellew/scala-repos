@@ -270,10 +270,9 @@ class FileHandlerTest extends WordSpec with TempFolder {
           handler.publish(record1)
           assert(new File(folderName).list().length == 2)
           handler.close()
-        } finally {
-          // restore user.dir to its original configuration
-          System.setProperty("user.dir", wdir)
-        }
+        } finally
+        // restore user.dir to its original configuration
+        System.setProperty("user.dir", wdir)
 
       }
     }

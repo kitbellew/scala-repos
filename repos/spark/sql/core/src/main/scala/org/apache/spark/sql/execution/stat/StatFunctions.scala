@@ -139,11 +139,10 @@ private[sql] object StatFunctions extends Logging {
       */
     def insert(x: Double): QuantileSummaries = {
       headSampled.append(x)
-      if (headSampled.size >= defaultHeadSize) {
+      if (headSampled.size >= defaultHeadSize)
         this.withHeadBufferInserted
-      } else {
+      else
         this
-      }
     }
 
     /**
@@ -155,9 +154,8 @@ private[sql] object StatFunctions extends Logging {
       * @return a new quantile summary object.
       */
     private def withHeadBufferInserted: QuantileSummaries = {
-      if (headSampled.isEmpty) {
+      if (headSampled.isEmpty)
         return this
-      }
       var currentCount = count
       val sorted = headSampled.toArray.sorted
       val newSamples: ArrayBuffer[Stats] = new ArrayBuffer[Stats]()
@@ -176,11 +174,10 @@ private[sql] object StatFunctions extends Logging {
         // If it is the first one to insert, of if it is the last one
         currentCount += 1
         val delta =
-          if (newSamples.isEmpty || (sampleIdx == sampled.size && opsIdx == sorted.length - 1)) {
+          if (newSamples.isEmpty || (sampleIdx == sampled.size && opsIdx == sorted.length - 1))
             0
-          } else {
+          else
             math.floor(2 * relativeError * currentCount).toInt
-          }
 
         val tuple = Stats(currentSample, 1, delta)
         newSamples.append(tuple)
@@ -242,11 +239,11 @@ private[sql] object StatFunctions extends Logging {
       require(
         other.headSampled.isEmpty,
         "Other buffer needs to be compressed before merge")
-      if (other.count == 0) {
+      if (other.count == 0)
         this.shallowCopy
-      } else if (count == 0) {
+      else if (count == 0)
         other.shallowCopy
-      } else {
+      else {
         // Merge the two buffers.
         // The GK algorithm is a bit unclear about it, but it seems there is no need to adjust the
         // statistics during the merging: the invariants are still respected after the merge.
@@ -280,13 +277,11 @@ private[sql] object StatFunctions extends Logging {
         headSampled.isEmpty,
         "Cannot operate on an uncompressed summary, call compress() first")
 
-      if (quantile <= relativeError) {
+      if (quantile <= relativeError)
         return sampled.head.value
-      }
 
-      if (quantile >= 1 - relativeError) {
+      if (quantile >= 1 - relativeError)
         return sampled.last.value
-      }
 
       // Target rank
       val rank = math.ceil(quantile * count).toInt
@@ -298,9 +293,8 @@ private[sql] object StatFunctions extends Logging {
         val curSample = sampled(i)
         minRank += curSample.g
         val maxRank = minRank + curSample.delta
-        if (maxRank - targetError <= rank && rank <= minRank + targetError) {
+        if (maxRank - targetError <= rank && rank <= minRank + targetError)
           return curSample.value
-        }
         i += 1
       }
       sampled.last.value
@@ -338,9 +332,8 @@ private[sql] object StatFunctions extends Logging {
         currentSamples: IndexedSeq[Stats],
         mergeThreshold: Double): ArrayBuffer[Stats] = {
       val res: ArrayBuffer[Stats] = ArrayBuffer.empty
-      if (currentSamples.isEmpty) {
+      if (currentSamples.isEmpty)
         return res
-      }
       // Start for the last element, which is always part of the set.
       // The head contains the current new head, that may be merged with the current element.
       var head = currentSamples.last
@@ -350,10 +343,10 @@ private[sql] object StatFunctions extends Logging {
         // The current sample:
         val sample1 = currentSamples(i)
         // Do we need to compress?
-        if (sample1.g + head.g + head.delta < mergeThreshold) {
+        if (sample1.g + head.g + head.delta < mergeThreshold)
           // Do not insert yet, just merge the current element into the head.
           head = head.copy(g = head.g + sample1.g)
-        } else {
+        else {
           // Prepend the current head, and keep the current sample as target for merging.
           res.prepend(head)
           head = sample1
@@ -460,11 +453,10 @@ private[sql] object StatFunctions extends Logging {
       col2: String): DataFrame = {
     val tableName = s"${col1}_$col2"
     val counts = df.groupBy(col1, col2).agg(count("*")).take(1e6.toInt)
-    if (counts.length == 1e6.toInt) {
+    if (counts.length == 1e6.toInt)
       logWarning(
         "The maximum limit of 1e6 pairs have been collected, which may not be all of " +
           "the pairs. Please try reducing the amount of distinct items in your columns.")
-    }
     def cleanElement(element: Any): String =
       if (element == null) "null" else element.toString
     // get the distinct values of column 2, so that we can make them the column names

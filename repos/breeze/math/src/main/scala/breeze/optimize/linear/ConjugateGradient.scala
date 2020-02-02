@@ -72,11 +72,11 @@ class ConjugateGradient[T, M](
           val normSquare = maxNormValue * maxNormValue
 
           val radius = math.sqrt(xtd * xtd + dtd * (normSquare - xtx))
-          val alphaNext = if (xtd >= 0) {
-            (normSquare - xtx) / (xtd + radius)
-          } else {
-            (radius - xtd) / dtd
-          }
+          val alphaNext =
+            if (xtd >= 0)
+              (normSquare - xtx) / (xtd + radius)
+            else
+              (radius - xtd) / dtd
 
           assert(
             !alphaNext.isNaN,
@@ -104,10 +104,9 @@ class ConjugateGradient[T, M](
             else
               logger.info(
                 f"$iter converged! norm(residual): $normr%.3f <= tolerance $tolerance.")
-          } else {
+          } else
             logger.info(
               f"$iter: norm(residual): $normr%.3f > tolerance $tolerance.")
-          }
           State(x, r, d, iter + 1, converged)
         }
 

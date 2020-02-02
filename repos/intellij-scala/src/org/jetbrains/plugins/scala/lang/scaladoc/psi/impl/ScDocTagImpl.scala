@@ -49,17 +49,15 @@ class ScDocTagImpl(node: ASTNode)
     findChildByClass(classOf[PsiDocTagValue])
 
   override def getName: String =
-    if (getNameElement != null) {
+    if (getNameElement != null)
       getNameElement.getText
-    } else {
+    else
       null
-    }
 
   def setName(name: String): PsiElement = {
-    if (findChildByType[PsiElement](ScalaDocTokenType.DOC_TAG_NAME) != null) {
+    if (findChildByType[PsiElement](ScalaDocTokenType.DOC_TAG_NAME) != null)
       findChildByType[PsiElement](ScalaDocTokenType.DOC_TAG_NAME)
         .replace(ScalaPsiElementFactory.createDocTagName(name, getManager))
-    }
 
     this
   }

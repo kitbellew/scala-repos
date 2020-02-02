@@ -24,24 +24,22 @@ object Type {
       star: Boolean = false,
       isPattern: Boolean = false): Boolean = {
     val typeMarker = builder.mark
-    if (!InfixType.parse(builder, star, isPattern)) {
+    if (!InfixType.parse(builder, star, isPattern))
       builder.getTokenType match {
         case ScalaTokenTypes.tUNDER =>
           builder.advanceLexer()
           builder.getTokenText match {
             case ">:" =>
               builder.advanceLexer()
-              if (!Type.parse(builder)) {
+              if (!Type.parse(builder))
                 builder error ScalaBundle.message("wrong.type")
-              }
             case _ => //nothing
           }
           builder.getTokenText match {
             case "<:" =>
               builder.advanceLexer()
-              if (!Type.parse(builder)) {
+              if (!Type.parse(builder))
                 builder error ScalaBundle.message("wrong.type")
-              }
             case _ => //nothing
           }
           typeMarker.done(ScalaElementTypes.WILDCARD_TYPE)
@@ -49,9 +47,8 @@ object Type {
             case ScalaTokenTypes.tFUNTYPE =>
               val funMarker = typeMarker.precede()
               builder.advanceLexer() //Ate =>
-              if (!Type.parse(builder, star = false, isPattern = isPattern)) {
+              if (!Type.parse(builder, star = false, isPattern = isPattern))
                 builder error ScalaBundle.message("wrong.type")
-              }
               funMarker.done(ScalaElementTypes.TYPE)
             case _ =>
           }
@@ -60,14 +57,12 @@ object Type {
           typeMarker.drop()
           return false
       }
-    }
 
     builder.getTokenType match {
       case ScalaTokenTypes.tFUNTYPE =>
         builder.advanceLexer() //Ate =>
-        if (!Type.parse(builder, star = false, isPattern = isPattern)) {
+        if (!Type.parse(builder, star = false, isPattern = isPattern))
           builder error ScalaBundle.message("wrong.type")
-        }
         typeMarker.done(ScalaElementTypes.TYPE)
       case ScalaTokenTypes.kFOR_SOME =>
         ExistentialClause parse builder

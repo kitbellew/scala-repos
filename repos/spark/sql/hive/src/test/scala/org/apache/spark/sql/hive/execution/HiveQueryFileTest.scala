@@ -58,12 +58,12 @@ abstract class HiveQueryFileTest extends HiveComparisonTest {
     case (testCaseName, testCaseFile) =>
       if (blackList
             .map(_.r.pattern.matcher(testCaseName).matches())
-            .reduceLeft(_ || _)) {
+            .reduceLeft(_ || _))
         logDebug(s"Blacklisted test skipped $testCaseName")
-      } else if (realWhiteList
-                   .map(_.r.pattern.matcher(testCaseName).matches())
-                   .reduceLeft(_ || _) ||
-                 runAll) {
+      else if (realWhiteList
+                 .map(_.r.pattern.matcher(testCaseName).matches())
+                 .reduceLeft(_ || _) ||
+               runAll) {
         // Build a test case and submit it to scala test framework...
         val queriesString = fileToString(testCaseFile)
         createQueryTest(
@@ -71,12 +71,10 @@ abstract class HiveQueryFileTest extends HiveComparisonTest {
           queriesString,
           reset = true,
           tryWithoutResettingFirst = true)
-      } else {
-        // Only output warnings for the built in whitelist as this clutters the output when the user
-        // trying to execute a single test from the commandline.
-        if (System.getProperty(whiteListProperty) == null && !runAll) {
-          ignore(testCaseName) {}
-        }
-      }
+      } else
+      // Only output warnings for the built in whitelist as this clutters the output when the user
+      // trying to execute a single test from the commandline.
+      if (System.getProperty(whiteListProperty) == null && !runAll)
+        ignore(testCaseName) {}
   }
 }

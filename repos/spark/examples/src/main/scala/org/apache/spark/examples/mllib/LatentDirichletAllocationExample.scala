@@ -48,9 +48,8 @@ object LatentDirichletAllocationExample {
     val topics = ldaModel.topicsMatrix
     for (topic <- Range(0, 3)) {
       print("Topic " + topic + ":")
-      for (word <- Range(0, ldaModel.vocabSize)) {
+      for (word <- Range(0, ldaModel.vocabSize))
         print(" " + topics(word, topic));
-      }
       println()
     }
 

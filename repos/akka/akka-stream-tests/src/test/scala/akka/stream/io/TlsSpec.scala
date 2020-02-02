@@ -386,42 +386,40 @@ class TlsSpec
     for {
       commPattern ← communicationPatterns
       scenario ← scenarios
-    } {
-      s"work in mode ${commPattern.name} while sending ${scenario.name}" in assertAllStagesStopped {
-        val onRHS = debug.via(scenario.flow)
-        val f =
-          Source(scenario.inputs)
-            .via(commPattern
-              .decorateFlow(scenario.leftClosing, scenario.rightClosing, onRHS))
-            .transform(() ⇒
-              new PushStage[SslTlsInbound, SslTlsInbound] {
-                override def onPush(
-                    elem: SslTlsInbound,
-                    ctx: Context[SslTlsInbound]) =
-                  ctx.push(elem)
-                override def onDownstreamFinish(ctx: Context[SslTlsInbound]) = {
-                  system.log.debug("me cancelled")
-                  ctx.finish()
-                }
-              })
-            .via(debug)
-            .collect { case SessionBytes(_, b) ⇒ b }
-            .scan(ByteString.empty)(_ ++ _)
-            .via(new Timeout(6.seconds))
-            .dropWhile(_.size < scenario.output.size)
-            .runWith(Sink.head)
+    } s"work in mode ${commPattern.name} while sending ${scenario.name}" in assertAllStagesStopped {
+      val onRHS = debug.via(scenario.flow)
+      val f =
+        Source(scenario.inputs)
+          .via(commPattern
+            .decorateFlow(scenario.leftClosing, scenario.rightClosing, onRHS))
+          .transform(() ⇒
+            new PushStage[SslTlsInbound, SslTlsInbound] {
+              override def onPush(
+                  elem: SslTlsInbound,
+                  ctx: Context[SslTlsInbound]) =
+                ctx.push(elem)
+              override def onDownstreamFinish(ctx: Context[SslTlsInbound]) = {
+                system.log.debug("me cancelled")
+                ctx.finish()
+              }
+            })
+          .via(debug)
+          .collect { case SessionBytes(_, b) ⇒ b }
+          .scan(ByteString.empty)(_ ++ _)
+          .via(new Timeout(6.seconds))
+          .dropWhile(_.size < scenario.output.size)
+          .runWith(Sink.head)
 
-        Await.result(f, 8.seconds).utf8String should be(
-          scenario.output.utf8String)
+      Await.result(f, 8.seconds).utf8String should be(
+        scenario.output.utf8String)
 
-        commPattern.cleanup()
+      commPattern.cleanup()
 
-        // flush log so as to not mix up logs of different test cases
-        if (log.isDebugEnabled)
-          EventFilter.debug("stopgap", occurrences = 1) intercept {
-            log.debug("stopgap")
-          }
-      }
+      // flush log so as to not mix up logs of different test cases
+      if (log.isDebugEnabled)
+        EventFilter.debug("stopgap", occurrences = 1) intercept {
+          log.debug("stopgap")
+        }
     }
 
     "emit an error if the TLS handshake fails certificate checks" in assertAllStagesStopped {

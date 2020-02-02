@@ -19,11 +19,10 @@ class ThreadTest {
       val t = Thread.currentThread()
       assertEquals("main", t.getName) // default name of the main thread
       t.setName("foo")
-      try {
-        assertEquals("foo", t.getName)
-      } finally {
-        t.setName("main") // don't pollute the rest of the world with this test
-      }
+      try assertEquals("foo", t.getName)
+      finally t.setName(
+        "main"
+      ) // don't pollute the rest of the world with this test
       assertEquals("main", t.getName)
     }
 

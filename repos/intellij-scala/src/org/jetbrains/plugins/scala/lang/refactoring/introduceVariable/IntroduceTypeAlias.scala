@@ -95,19 +95,17 @@ trait IntroduceTypeAlias {
       val currentDataObject =
         editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
 
-      if (currentDataObject.possibleScopes == null) {
+      if (currentDataObject.possibleScopes == null)
         currentDataObject.setPossibleScopes(
           ScopeSuggester
             .suggestScopes(this, project, editor, file, typeElement))
-      }
 
-      if (currentDataObject.possibleScopes.isEmpty) {
+      if (currentDataObject.possibleScopes.isEmpty)
         showErrorMessageWithException(
           ScalaBundle.message("cannot.refactor.scope.not.found"),
           project,
           editor,
           INTRODUCE_TYPEALIAS_REFACTORING_NAME)
-      }
 
       def runWithDialog(
           fromInplace: Boolean,
@@ -123,19 +121,17 @@ trait IntroduceTypeAlias {
               classOf[ScTypeElement]) match {
               case simpleType: ScSimpleTypeElement =>
                 if (simpleType.getNextSiblingNotWhitespace
-                      .isInstanceOf[ScTypeArgs]) {
+                      .isInstanceOf[ScTypeArgs])
                   PsiTreeUtil.getParentOfType(
                     simpleType,
                     classOf[ScParameterizedTypeElement])
-                } else {
+                else
                   simpleType
-                }
               case typeElement: ScTypeElement =>
                 typeElement
             }
-          } else {
+          } else
             typeElement
-          }
 
         val updatedMainScope = mainScope match {
           case simpleScope: SimpleScopeItem if fromInplace =>
@@ -270,9 +266,8 @@ trait IntroduceTypeAlias {
             TemplateManagerImpl.getTemplateState(
               InjectedLanguageUtil.getTopLevelEditor(editor))
 
-          if (templateState != null) {
+          if (templateState != null)
             templateState.cancelTemplate()
-          }
 
           val enteredName = currentDataObject.getNamedElement.getName
           ScalaInplaceTypeAliasIntroducer.revertState(
@@ -372,11 +367,10 @@ trait IntroduceTypeAlias {
 
     val typeAlias =
       addTypeAliasDefinition(typeName, occurrences.getAllOccurrences(0), parent)
-    if (editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO) != null) {
+    if (editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO) != null)
       editor
         .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
         .setTypeAlias(typeAlias)
-    }
 
     val typeElementIdx =
       occurrences.getUsualOccurrences.indexWhere(_ == typeElement)
@@ -397,11 +391,11 @@ trait IntroduceTypeAlias {
       className + "." + typeName,
       typeAlias)
 
-    val resultTypeElement = if (typeElementIdx == -1) {
-      replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
-    } else {
-      usualOccurrences.apply(typeElementIdx)
-    }
+    val resultTypeElement =
+      if (typeElementIdx == -1)
+        replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
+      else
+        usualOccurrences.apply(typeElementIdx)
 
     (
       SmartPointerManager
@@ -495,11 +489,10 @@ trait IntroduceTypeAlias {
       }
 
       //avoid replacing typeelement that was replaced
-      if (typeElement.calcType.presentableText == inName) {
+      if (typeElement.calcType.presentableText == inName)
         typeElement
-      } else {
+      else
         typeElement.replace(replacement).asInstanceOf[ScTypeElement]
-      }
     }
 
     def bindHelper(typeElement: ScTypeElement) = {
@@ -533,14 +526,14 @@ trait IntroduceTypeAlias {
       var selectionHighlighter: RangeHighlighter = null
       val markupModel = editor.getMarkupModel
 
-      def addHighlighter() = if (selectionHighlighter == null) {
-        selectionHighlighter = markupModel.addRangeHighlighter(
-          start,
-          end,
-          HighlighterLayer.SELECTION + 1,
-          textAttributes,
-          HighlighterTargetArea.EXACT_RANGE)
-      }
+      def addHighlighter() =
+        if (selectionHighlighter == null)
+          selectionHighlighter = markupModel.addRangeHighlighter(
+            start,
+            end,
+            HighlighterLayer.SELECTION + 1,
+            textAttributes,
+            HighlighterTargetArea.EXACT_RANGE)
 
       def removeHighlighter() =
         if (selectionHighlighter != null)
@@ -550,9 +543,8 @@ trait IntroduceTypeAlias {
     val selection = new Selection
     val highlighter: ScopeHighlighter = new ScopeHighlighter(editor)
     val model = JListCompatibility.createDefaultListModel()
-    for (element <- elements) {
+    for (element <- elements)
       JListCompatibility.addElement(model, element)
-    }
     val list = JListCompatibility.createJListFromModel(model)
     JListCompatibility.setCellRenderer(
       list,
@@ -614,18 +606,18 @@ trait IntroduceTypeAlias {
       suggestedDirectory: PsiDirectory,
       needCreateDirectory: Boolean,
       inNewDirectoryName: String): ScTemplateBody = {
-    val newDirectoryName = if (needCreateDirectory) {
-      inNewDirectoryName
-    } else {
-      "package"
-    }
+    val newDirectoryName =
+      if (needCreateDirectory)
+        inNewDirectoryName
+      else
+        "package"
 
     val currentDirectory = suggestedDirectory
-    val newDir = if (needCreateDirectory) {
-      currentDirectory.createSubdirectory(newDirectoryName)
-    } else {
-      currentDirectory
-    }
+    val newDir =
+      if (needCreateDirectory)
+        currentDirectory.createSubdirectory(newDirectoryName)
+      else
+        currentDirectory
 
     val packageObject: ScTypeDefinition =
       ScalaDirectoryService
@@ -670,14 +662,12 @@ trait IntroduceTypeAlias {
       this,
       editor)
     dialog.show()
-    if (!dialog.isOK) {
-      if (occurrences.length > 1) {
+    if (!dialog.isOK)
+      if (occurrences.length > 1)
         WindowManager.getInstance
           .getStatusBar(project)
           .setInfo(
             ScalaBundle.message("press.escape.to.remove.the.highlighting"))
-      }
-    }
 
     dialog
   }

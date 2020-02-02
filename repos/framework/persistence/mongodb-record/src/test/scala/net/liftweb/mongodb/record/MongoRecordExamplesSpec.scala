@@ -472,9 +472,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
       l.objidlist.value must_== ld1.objidlist.value
       l.dtlist.value must_== ld1.dtlist.value
       l.jsonobjlist.value must_== ld1.jsonobjlist.value
-      for (i <- List.range(0, l.patternlist.value.size - 1)) {
+      for (i <- List.range(0, l.patternlist.value.size - 1))
         l.patternlist.value(i).pattern must_== ld1.patternlist.value(i).pattern
-      }
       l.maplist.value must_== ld1.maplist.value
       for (i <- List.range(0, l.jsonobjlist.value.size - 1)) {
         l.jsonobjlist.value(i).id must_== ld1.jsonobjlist.value(i).id

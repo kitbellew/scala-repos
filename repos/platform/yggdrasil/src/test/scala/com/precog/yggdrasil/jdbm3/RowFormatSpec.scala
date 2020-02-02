@@ -159,7 +159,7 @@ class RowFormatSpec
   "SortingKeyRowFormat" should {
     checkRoundTrips(RowFormat.forSortingKey(_))
 
-    "sort encoded as ValueFormat does" in {
+    "sort encoded as ValueFormat does" in
       check { refs: List[ColumnRef] =>
         val valueRowFormat = RowFormat.forValues(refs)
         val sortingKeyRowFormat = RowFormat.forSortingKey(refs)
@@ -181,8 +181,7 @@ class RowFormatSpec
 
           sortedA must_== sortedB
         }
-      }
-    }.set(minTestsOk -> 500, maxDiscarded -> 500)
+      }.set(minTestsOk -> 500, maxDiscarded -> 500)
   }
 
   def checkRoundTrips(toRowFormat: List[ColumnRef] => RowFormat) {

@@ -189,7 +189,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
       }
 
   // java/lang/Boolean -> MethodNameAndType(valueOf,(Z)Ljava/lang/Boolean;)
-  lazy val javaBoxMethods: Map[InternalName, MethodNameAndType] = {
+  lazy val javaBoxMethods: Map[InternalName, MethodNameAndType] =
     ScalaValueClassesNoUnit.map { primitive =>
       val boxed = boxedClass(primitive)
       val method = methodNameAndType(
@@ -199,10 +199,9 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
         filterOverload = singleParamOfClass(primitive))
       (classBTypeFromSymbol(boxed).internalName, method)
     }(collection.breakOut)
-  }
 
   // java/lang/Boolean -> MethodNameAndType(booleanValue,()Z)
-  lazy val javaUnboxMethods: Map[InternalName, MethodNameAndType] = {
+  lazy val javaUnboxMethods: Map[InternalName, MethodNameAndType] =
     ScalaValueClassesNoUnit.map { primitive =>
       val boxed = boxedClass(primitive)
       val name = primitive.name.toString.toLowerCase + "Value"
@@ -210,7 +209,6 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
         classBTypeFromSymbol(boxed).internalName,
         methodNameAndType(boxed, newTermName(name)))
     }(collection.breakOut)
-  }
 
   private def predefBoxingMethods(
       getName: (String, String) => String): Map[String, MethodBType] =
@@ -248,7 +246,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     staticRefMethods(nme.zero)
 
   // java/lang/Boolean -> MethodNameAndType(<init>,(Z)V)
-  lazy val primitiveBoxConstructors: Map[InternalName, MethodNameAndType] = {
+  lazy val primitiveBoxConstructors: Map[InternalName, MethodNameAndType] =
     ScalaValueClassesNoUnit.map { primitive =>
       val boxed = boxedClass(primitive)
       (
@@ -258,7 +256,6 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
           nme.CONSTRUCTOR,
           filterOverload = singleParamOfClass(primitive)))
     }(collection.breakOut)
-  }
 
   private def nonOverloadedConstructors(
       classes: Iterable[Symbol]): Map[InternalName, MethodNameAndType] =

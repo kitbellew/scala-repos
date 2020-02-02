@@ -111,9 +111,8 @@ class ScalaInplaceVariableIntroducer(
             setDeclaration(declaration)
             if (nameIsValid != (named.isDefined && isIdentifier(
                   input.trim,
-                  myFile.getLanguage))) {
+                  myFile.getLanguage)))
               nameIsValid = !nameIsValid
-            }
             resetBalloonPanel(nameIsValid)
           } else {
             nameIsValid = false
@@ -296,11 +295,10 @@ class ScalaInplaceVariableIntroducer(
             protected def run(result: Result[Unit]): Unit = {
               commitDocument()
               setGreedyToRightToFalse()
-              if (needInferType) {
+              if (needInferType)
                 addTypeAnnotation(selectedType)
-              } else {
+              else
                 removeTypeAnnotation()
-              }
             }
           }
           writeAction.execute()
@@ -357,42 +355,39 @@ class ScalaInplaceVariableIntroducer(
   protected override def moveOffsetAfter(success: Boolean): Unit =
     try {
       myBalloon.hide()
-      if (success) {
+      if (success)
         if (myExprMarker != null) {
           val startOffset: Int = myExprMarker.getStartOffset
           val elementAt: PsiElement = myFile.findElementAt(startOffset)
-          if (elementAt != null) {
+          if (elementAt != null)
             myEditor.getCaretModel.moveToOffset(
               elementAt.getTextRange.getEndOffset)
-          } else {
+          else
             myEditor.getCaretModel.moveToOffset(myExprMarker.getEndOffset)
-          }
         } else if (getDeclaration != null) {
           val declaration = getDeclaration
           myEditor.getCaretModel.moveToOffset(
             declaration.getTextRange.getEndOffset)
-        }
-      } else if (getDeclaration != null && !UndoManager
-                   .getInstance(myProject)
-                   .isUndoInProgress) {
-        val revertInfo =
-          myEditor.getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
-        if (revertInfo != null) {
-          extensions.inWriteAction {
-            myEditor.getDocument.replaceString(
-              0,
-              myFile.getTextLength,
-              revertInfo.fileText)
+        } else if (getDeclaration != null && !UndoManager
+                     .getInstance(myProject)
+                     .isUndoInProgress) {
+          val revertInfo =
+            myEditor.getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
+          if (revertInfo != null) {
+            extensions.inWriteAction {
+              myEditor.getDocument.replaceString(
+                0,
+                myFile.getTextLength,
+                revertInfo.fileText)
+            }
+            myEditor.getCaretModel.moveToOffset(revertInfo.caretOffset)
+            myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
           }
-          myEditor.getCaretModel.moveToOffset(revertInfo.caretOffset)
-          myEditor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
         }
-      }
     } finally {
       import scala.collection.JavaConversions._
-      for (occurrenceMarker <- getOccurrenceMarkers) {
+      for (occurrenceMarker <- getOccurrenceMarkers)
         occurrenceMarker.dispose()
-      }
       if (getExprMarker != null) getExprMarker.dispose()
     }
 
@@ -438,9 +433,7 @@ class ScalaInplaceVariableIntroducer(
     } catch {
       //templateState can contain null private fields
       case exc: NullPointerException =>
-    } finally {
-      myEditor.getSelectionModel.removeSelection()
-    }
+    } finally myEditor.getSelectionModel.removeSelection()
     super.finish(success)
   }
 }

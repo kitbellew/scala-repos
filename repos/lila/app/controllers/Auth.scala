@@ -93,12 +93,11 @@ object Auth extends LilaController {
   def signup = Open { implicit ctx =>
     if (Env.security.tor isExitNode ctx.req.remoteAddress)
       Unauthorized(html.auth.tor()).fuccess
-    else {
+    else
       forms.signup.websiteWithCaptcha map {
         case (form, captcha) =>
           Ok(html.auth.signup(form, captcha, env.RecaptchaPublicKey))
       }
-    }
   }
 
   private def doSignup(

@@ -86,9 +86,8 @@ case class GlobifierOps(implicit tz: TimeZone, dp: DateParser) {
                   }
                   .getOrElse(Hours(0))
                 (durationLists :+ (base, duration), mappings.tail, doContinue)
-              } else {
+              } else
                 (durationLists, mappings.tail, false)
-              }
           }
         val baseDate = lists.foldLeft(RichDate("1970-01-01T00")) {
           case (curDate, (base, _)) =>

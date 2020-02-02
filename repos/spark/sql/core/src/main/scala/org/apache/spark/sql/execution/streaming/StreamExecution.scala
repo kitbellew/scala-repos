@@ -276,37 +276,34 @@ class StreamExecution(
   }
 
   override def awaitTermination(): Unit = {
-    if (state == INITIALIZED) {
+    if (state == INITIALIZED)
       throw new IllegalStateException(
         "Cannot wait for termination on a query that has not started")
-    }
     terminationLatch.await()
-    if (streamDeathCause != null) {
+    if (streamDeathCause != null)
       throw streamDeathCause
-    }
   }
 
   override def awaitTermination(timeoutMs: Long): Boolean = {
-    if (state == INITIALIZED) {
+    if (state == INITIALIZED)
       throw new IllegalStateException(
         "Cannot wait for termination on a query that has not started")
-    }
     require(timeoutMs > 0, "Timeout has to be positive")
     terminationLatch.await(timeoutMs, TimeUnit.MILLISECONDS)
-    if (streamDeathCause != null) {
+    if (streamDeathCause != null)
       throw streamDeathCause
-    } else {
+    else
       !isActive
-    }
   }
 
   override def toString: String =
     s"Continuous Query - $name [state = $state]"
 
   def toDebugString: String = {
-    val deathCauseStr = if (streamDeathCause != null) {
-      "Error:\n" + stackTraceToString(streamDeathCause.cause)
-    } else ""
+    val deathCauseStr =
+      if (streamDeathCause != null)
+        "Error:\n" + stackTraceToString(streamDeathCause.cause)
+      else ""
     s"""
        |=== Continuous Query ===
        |Name: $name

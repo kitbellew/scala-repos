@@ -112,12 +112,11 @@ object MultilineStringUtil {
       document: Document,
       literal: ScLiteral,
       marginChar: Char) {
-    if (needAddStripMargin(literal, "" + marginChar)) {
+    if (needAddStripMargin(literal, "" + marginChar))
       document.insertString(
         literal.getTextRange.getEndOffset,
         if (marginChar == '|') ".stripMargin"
         else ".stripMargin(\'" + marginChar + "\')")
-    }
   }
 
   def getMarginChar(element: PsiElement): Char = {
@@ -161,9 +160,8 @@ object MultilineStringUtil {
             case _ =>
           }
         case exp: ScReferenceExpression =>
-          if (!exp.getParent.isInstanceOf[ScMethodCall]) {
+          if (!exp.getParent.isInstanceOf[ScMethodCall])
             calls += Array[ScExpression]()
-          }
         case _: ScParenthesisedExpr =>
         case _                      => return callsArray
       }
@@ -257,18 +255,16 @@ object MultilineStringUtil {
               document.getText.substring(startLineOffset, literalStart))
             val marginIndent =
               quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
-            for (lineNumber <- startLineNumber + 1 to endLineNumber) {
+            for (lineNumber <- startLineNumber + 1 to endLineNumber)
               insertIndent(lineNumber, marginIndent, Some(marginChar))
-            }
           } else {
             val oldIndent = settings.prefixLength(
               document.getText.substring(startLineOffset, literalStart))
             val quotesIndent = oldIndent + settings.regularIndent
             val marginIndent =
               quotesIndent + interpolatorPrefixLength(literal) + settings.marginIndent
-            for (lineNumber <- startLineNumber + 1 to endLineNumber) {
+            for (lineNumber <- startLineNumber + 1 to endLineNumber)
               insertIndent(lineNumber, marginIndent, Some(marginChar))
-            }
             document.insertString(literalStart, "\n")
             insertIndent(startLineNumber + 1, quotesIndent, None)
           }
@@ -303,13 +299,12 @@ class MultilineStringSettings(project: Project) {
     }
 
   def getSmartSpaces(count: Int) =
-    if (useTabs) {
+    if (useTabs)
       StringUtil.repeat("\t", count / tabSize) + StringUtil.repeat(
         " ",
         count % tabSize)
-    } else {
+    else
       StringUtil.repeat(" ", count)
-    }
 
   def getSmartLength(line: String) =
     if (useTabs) line.length + line.count(_ == '\t') * (tabSize - 1)
@@ -319,9 +314,8 @@ class MultilineStringSettings(project: Project) {
     if (useTabs) {
       val tabsCount = line prefixLength (_ == '\t')
       tabsCount * tabSize + line.substring(tabsCount).prefixLength(_ == ' ')
-    } else {
+    } else
       line prefixLength (_ == ' ')
-    }
 
   def getPrefix(line: String) = getSmartSpaces(prefixLength(line))
 }

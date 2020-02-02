@@ -58,9 +58,8 @@ class Heapster(klass: Class[_]) {
 object Heapster {
   val instance: Option[Heapster] = {
     val loader = ClassLoader.getSystemClassLoader()
-    try {
-      Some(new Heapster(loader.loadClass("Heapster")))
-    } catch {
+    try Some(new Heapster(loader.loadClass("Heapster")))
+    catch {
       case _: ClassNotFoundException =>
         None
     }

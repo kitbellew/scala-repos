@@ -18,9 +18,8 @@ object Test extends App {
   val tlazee = tb.typecheck(lazee.tree)
   println(tlazee)
   val rtlazee = tb.untypecheck(tlazee)
-  try {
-    println(tb.eval(rtlazee))
-  } catch {
+  try println(tb.eval(rtlazee))
+  catch {
     // this is the current behaviour, rather than the desired behavior; see SI-5466
     case _: ToolBoxError => println("error!")
   }

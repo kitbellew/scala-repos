@@ -69,9 +69,8 @@ object Codec {
       * Add a signal flag to this outbound message.
       */
     def then(flag: Flag): this.type = {
-      if (getClass.getName.endsWith("$")) {
+      if (getClass.getName.endsWith("$"))
         throw new Exception("Singletons can't be used for streaming.")
-      }
       flags = flag :: flags
       this
     }
@@ -119,9 +118,9 @@ class Codec[A: Manifest](
       context: ChannelHandlerContext,
       event: ChannelEvent) {
     event match {
-      case message: DownstreamMessageEvent => {
+      case message: DownstreamMessageEvent =>
         val obj = message.getMessage
-        if (manifest[A].runtimeClass.isAssignableFrom(obj.getClass)) {
+        if (manifest[A].runtimeClass.isAssignableFrom(obj.getClass))
           encode(obj.asInstanceOf[A]) match {
             case Some(buffer) =>
               Channels.write(
@@ -132,19 +131,16 @@ class Codec[A: Manifest](
             case None =>
               message.getFuture.setSuccess()
           }
-        } else {
+        else
           context.sendDownstream(event)
-        }
         obj match {
-          case signalling: Codec.Signalling => {
+          case signalling: Codec.Signalling =>
             signalling.signals.foreach {
               case Codec.Disconnect => context.getChannel.close()
               case _                =>
             }
-          }
           case _ =>
         }
-      }
       case _ => context.sendDownstream(event)
     }
   }
@@ -156,9 +152,8 @@ class Codec[A: Manifest](
       buffer: ChannelBuffer) = {
     val readableBytes = buffer.readableBytes()
     val nextStep =
-      try {
-        stage(buffer)
-      } catch {
+      try stage(buffer)
+      catch {
         case e: Throwable =>
           // reset state before throwing.
           stage = firstStage

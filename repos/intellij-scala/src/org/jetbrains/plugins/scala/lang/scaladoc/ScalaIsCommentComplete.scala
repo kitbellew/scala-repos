@@ -58,21 +58,19 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
       }
     while (true) {
       val tokenType: IElementType = lexer.getTokenType
-      if (tokenType eq null) {
+      if (tokenType eq null)
         return false
-      }
       if (javaLikeQuoteHandler != null && javaLikeQuoteHandler.getStringTokenTypes != null &&
           javaLikeQuoteHandler.getStringTokenTypes.contains(tokenType)) {
         val text: String =
           commentText.substring(lexer.getTokenStart, lexer.getTokenEnd)
         val endOffset: Int = comment.getTextRange.getEndOffset
         if (text.endsWith(expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText
-              .charAt(endOffset) == '\n') {
+              .charAt(endOffset) == '\n')
           return true
-        }
       }
       var continue = false
-      if (lexer.getTokenEnd == commentText.length) {
+      if (lexer.getTokenEnd == commentText.length)
         if (lexer.getTokenType eq commenter.getLineCommentTokenType) {
           lexer.start(
             commentText,
@@ -80,18 +78,15 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
             commentText.length)
           lexer.advance()
           continue = true
-        } else if (isInvalidPsi(comment)) {
+        } else if (isInvalidPsi(comment))
           return false
-        } else {
+        else
           return lexer.getTokenEnd - lexer.getTokenStart == 2 //difference from EnterHandler
-        }
-      }
       if (!continue && (tokenType == commenter.getDocumentationCommentTokenType ||
-          tokenType == commenter.getBlockCommentTokenType)) {
+          tokenType == commenter.getBlockCommentTokenType))
         return false
-      } else if (!continue) {
+      else if (!continue)
         lexer.advance()
-      }
     }
     false
   }
@@ -107,9 +102,8 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
   private def isInvalidPsi(base: PsiElement): Boolean = {
     var current: PsiElement = base.getNextSibling
     while (current != null) {
-      if (current.getTextLength != 0) {
+      if (current.getTextLength != 0)
         return current.isInstanceOf[PsiErrorElement]
-      }
       current = current.getNextSibling
     }
     false

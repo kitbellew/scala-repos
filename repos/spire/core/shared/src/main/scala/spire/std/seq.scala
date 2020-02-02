@@ -24,17 +24,16 @@ class SeqModule[A, SA <: SeqLike[A, SA]](
       if (it.hasNext) {
         b += it.next()
         add1(it, b)
-      } else {
+      } else
         b.result
-      }
 
     @tailrec
     def add2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA =
-      if (!xi.hasNext) {
+      if (!xi.hasNext)
         add1(yi, b)
-      } else if (!yi.hasNext) {
+      else if (!yi.hasNext)
         add1(xi, b)
-      } else {
+      else {
         b += scalar.plus(xi.next(), yi.next())
         add2(xi, yi, b)
       }
@@ -48,26 +47,24 @@ class SeqModule[A, SA <: SeqLike[A, SA]](
       if (it.hasNext) {
         b += it.next()
         subl(it, b)
-      } else {
+      } else
         b.result
-      }
 
     @tailrec
     def subr(it: Iterator[A], b: Builder[A, SA]): SA =
       if (it.hasNext) {
         b += scalar.negate(it.next())
         subr(it, b)
-      } else {
+      } else
         b.result
-      }
 
     @tailrec
     def sub2(xi: Iterator[A], yi: Iterator[A], b: Builder[A, SA]): SA =
-      if (!xi.hasNext) {
+      if (!xi.hasNext)
         subr(yi, b)
-      } else if (!yi.hasNext) {
+      else if (!yi.hasNext)
         subl(xi, b)
-      } else {
+      else {
         b += scalar.minus(xi.next(), yi.next())
         sub2(xi, yi, b)
       }
@@ -95,11 +92,10 @@ class SeqInnerProductSpace[A: Field, SA <: SeqLike[A, SA]](
   def dot(x: SA, y: SA): A = {
     @tailrec
     def loop(xi: Iterator[A], yi: Iterator[A], acc: A): A =
-      if (xi.hasNext && yi.hasNext) {
+      if (xi.hasNext && yi.hasNext)
         loop(xi, yi, scalar.plus(acc, scalar.times(xi.next(), yi.next())))
-      } else {
+      else
         acc
-      }
 
     loop(x.toIterator, y.toIterator, scalar.zero)
   }
@@ -145,11 +141,10 @@ class SeqLpNormedVectorSpace[A: Field: NRoot: Signed, SA <: SeqLike[A, SA]](
   def norm(v: SA): A = {
     @tailrec
     def loop(xi: Iterator[A], acc: A): A =
-      if (xi.hasNext) {
+      if (xi.hasNext)
         loop(xi, scalar.plus(acc, Signed[A].abs(scalar.pow(xi.next(), p))))
-      } else {
+      else
         NRoot[A].nroot(acc, p)
-      }
 
     loop(v.toIterator, scalar.zero)
   }
@@ -171,9 +166,8 @@ class SeqMaxNormedVectorSpace[A: Field: Order: Signed, SA <: SeqLike[A, SA]](
       if (xi.hasNext) {
         val x = Signed[A].abs(xi.next())
         loop(xi, if (Order[A].gt(x, acc)) x else acc)
-      } else {
+      } else
         acc
-      }
 
     loop(v.toIterator, scalar.zero)
   }
@@ -184,15 +178,14 @@ private object SeqSupport {
   final def forall[A](x: Iterator[A], y: Iterator[A])(
       f: (A, A) => Boolean,
       g: A => Boolean): Boolean =
-    if (x.hasNext && y.hasNext) {
+    if (x.hasNext && y.hasNext)
       f(x.next(), y.next()) && forall(x, y)(f, g)
-    } else if (x.hasNext) {
+    else if (x.hasNext)
       g(x.next()) && forall(x, y)(f, g)
-    } else if (y.hasNext) {
+    else if (y.hasNext)
       g(y.next()) && forall(x, y)(f, g)
-    } else {
+    else
       true
-    }
 
   private val falsef: Any => Boolean = _ => false
 
@@ -222,13 +215,12 @@ class SeqOrder[A: Order, SA <: SeqLike[A, SA]]
       if (xi.hasNext && yi.hasNext) {
         val cmp = Order[A].compare(xi.next(), yi.next())
         if (cmp == 0) loop(xi, yi) else cmp
-      } else if (xi.hasNext) {
+      } else if (xi.hasNext)
         1
-      } else if (yi.hasNext) {
+      else if (yi.hasNext)
         -1
-      } else {
+      else
         0
-      }
 
     loop(x.toIterator, y.toIterator)
   }
@@ -257,13 +249,12 @@ class SeqVectorOrder[A: Order, SA <: SeqLike[A, SA]](
       if (xi.hasNext && yi.hasNext) {
         val cmp = Order[A].compare(xi.next(), yi.next())
         if (cmp == 0) loop(xi, yi) else cmp
-      } else if (xi.hasNext) {
+      } else if (xi.hasNext)
         if (Order[A].eqv(xi.next(), scalar.zero)) loop(xi, yi) else 1
-      } else if (yi.hasNext) {
+      else if (yi.hasNext)
         if (Order[A].eqv(yi.next(), scalar.zero)) loop(xi, yi) else -1
-      } else {
+      else
         0
-      }
 
     loop(x.toIterator, y.toIterator)
   }

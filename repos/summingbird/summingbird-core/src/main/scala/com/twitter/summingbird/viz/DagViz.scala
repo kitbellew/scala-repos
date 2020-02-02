@@ -38,9 +38,9 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
     val preferredName = requestedName.getOrElse(defaultName(node))
     nodeLookupTable.get(node) match {
       case Some(name) => (curLookupTable, name)
-      case None => {
+      case None =>
         nameLookupTable.get(preferredName) match {
-          case Some(count) => {
+          case Some(count) =>
             val newNum = count + 1
             val newName = preferredName + "[" + newNum + "]"
             (
@@ -48,16 +48,13 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
                 (nodeLookupTable + (node -> newName)),
                 (nameLookupTable + (preferredName -> newNum))),
               newName)
-          }
-          case None => {
+          case None =>
             (
               (
                 (nodeLookupTable + (node -> preferredName)),
                 (nameLookupTable + (preferredName -> 1))),
               preferredName)
-          }
         }
-      }
     }
   }
 

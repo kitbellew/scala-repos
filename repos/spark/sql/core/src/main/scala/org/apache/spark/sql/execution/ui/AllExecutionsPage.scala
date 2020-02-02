@@ -37,7 +37,7 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
     val currentTime = System.currentTimeMillis()
     val content = listener.synchronized {
       val _content = mutable.ListBuffer[Node]()
-      if (listener.getRunningExecutions.nonEmpty) {
+      if (listener.getRunningExecutions.nonEmpty)
         _content ++=
           new RunningExecutionTable(
             parent,
@@ -46,8 +46,7 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
             listener.getRunningExecutions
               .sortBy(_.submissionTime)
               .reverse).toNodeSeq
-      }
-      if (listener.getCompletedExecutions.nonEmpty) {
+      if (listener.getCompletedExecutions.nonEmpty)
         _content ++=
           new CompletedExecutionTable(
             parent,
@@ -56,8 +55,7 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
             listener.getCompletedExecutions
               .sortBy(_.submissionTime)
               .reverse).toNodeSeq
-      }
-      if (listener.getFailedExecutions.nonEmpty) {
+      if (listener.getFailedExecutions.nonEmpty)
         _content ++=
           new FailedExecutionTable(
             parent,
@@ -66,7 +64,6 @@ private[ui] class AllExecutionsPage(parent: SQLTab)
             listener.getFailedExecutions
               .sortBy(_.submissionTime)
               .reverse).toNodeSeq
-      }
       _content
     }
     UIUtils.headerSparkPage("SQL", content, parent, Some(5000))
@@ -118,70 +115,66 @@ private[ui] abstract class ExecutionTable(
         {UIUtils.formatDuration(duration)}
       </td>
       {
-      if (showRunningJobs) {
+      if (showRunningJobs)
         <td>
           {runningJobs}
         </td>
-      }
     }
       {
-      if (showSucceededJobs) {
+      if (showSucceededJobs)
         <td>
           {succeededJobs}
         </td>
-      }
     }
       {
-      if (showFailedJobs) {
+      if (showFailedJobs)
         <td>
           {failedJobs}
         </td>
-      }
     }
       {detailCell(executionUIData.physicalPlanDescription)}
     </tr>
   }
 
   private def descriptionCell(execution: SQLExecutionUIData): Seq[Node] = {
-    val details = if (execution.details.nonEmpty) {
-      <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
+    val details =
+      if (execution.details.nonEmpty)
+        <span onclick="this.parentNode.querySelector('.stage-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stage-details collapsed">
+          <div class="stage-details collapsed">
         <pre>{execution.details}</pre>
       </div>
-    } else {
-      Nil
-    }
+      else
+        Nil
 
-    val desc = {
+    val desc =
       <a href={executionURL(execution.executionId)}>{execution.description}</a>
-    }
-
+    
     <div>{desc} {details}</div>
   }
 
   private def detailCell(physicalPlan: String): Seq[Node] = {
     val isMultiline = physicalPlan.indexOf('\n') >= 0
-    val summary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      physicalPlan.substring(0, physicalPlan.indexOf('\n'))
-    } else {
-      physicalPlan
-    })
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val summary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline)
+        physicalPlan.substring(0, physicalPlan.indexOf('\n'))
+      else
+        physicalPlan)
+    val details =
+      if (isMultiline)
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{physicalPlan}</pre>
         </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+      else
+        ""
     <td>{summary}{details}</td>
   }
 

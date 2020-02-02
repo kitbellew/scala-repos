@@ -81,8 +81,7 @@ class Actor2(actor: ActorRef, expected: Long) extends Actor {
       actor ! Ping(self)
     case Pong =>
       cnt += 1
-      if (cnt >= expected) {
+      if (cnt >= expected)
         println("Time: %.02f".format((System.nanoTime - start) / 1000000.0))
-      }
   }
 }

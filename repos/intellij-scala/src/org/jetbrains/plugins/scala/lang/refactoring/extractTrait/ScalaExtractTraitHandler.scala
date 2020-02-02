@@ -68,9 +68,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
     if (dataContext != null) {
       val editor: Editor = CommonDataKeys.EDITOR.getData(dataContext)
-      if (editor != null && clazz != null) {
+      if (editor != null && clazz != null)
         invokeOnClass(clazz, project, editor)
-      }
     }
   }
 

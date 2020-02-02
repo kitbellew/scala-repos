@@ -243,7 +243,7 @@ class ScalaResolveResult(
             }
             //val clazz = PsiTreeUtil.getParentOfType(result.getActualElement, classOf[PsiClass])
             if (clazz == null) return OTHER_MEMBERS
-            else {
+            else
               clazz.qualifiedName match {
                 case "scala.Predef"               => return SCALA_PREDEF
                 case "scala.LowPriorityImplicits" => return SCALA_PREDEF
@@ -264,7 +264,6 @@ class ScalaResolveResult(
                     case _ => return OTHER_MEMBERS
                   }
               }
-            }
           case _ =>
         }
         return OTHER_MEMBERS
@@ -288,24 +287,22 @@ class ScalaResolveResult(
             case _                                => IMPORT
           }
         case ImportExprUsed(expr) =>
-          if (expr.singleWildcard) {
+          if (expr.singleWildcard)
             getActualElement match {
               case p: PsiPackage                    => WILDCARD_IMPORT_PACKAGE
               case o: ScObject if o.isPackageObject => WILDCARD_IMPORT_PACKAGE
               case _                                => WILDCARD_IMPORT
             }
-          } else {
+          else
             getActualElement match {
               case p: PsiPackage                    => IMPORT_PACKAGE
               case o: ScObject if o.isPackageObject => IMPORT_PACKAGE
               case _                                => IMPORT
             }
-          }
       }
     }
-    if (precedence == -1) {
+    if (precedence == -1)
       precedence = getPrecedenceInner
-    }
     precedence
   }
 

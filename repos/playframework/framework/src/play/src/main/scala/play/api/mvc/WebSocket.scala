@@ -99,17 +99,16 @@ object WebSocket {
   object MessageFlowTransformer {
 
     implicit val identityMessageFlowTransformer
-        : MessageFlowTransformer[Message, Message] = {
+        : MessageFlowTransformer[Message, Message] =
       new MessageFlowTransformer[Message, Message] {
         def transform(flow: Flow[Message, Message, _]) = flow
       }
-    }
 
     /**
       * Converts text messages to/from Strings.
       */
     implicit val stringMessageFlowTransformer
-        : MessageFlowTransformer[String, String] = {
+        : MessageFlowTransformer[String, String] =
       new MessageFlowTransformer[String, String] {
         def transform(flow: Flow[String, String, _]) =
           AkkaStreams.bypassWith[Message, String, Message](
@@ -122,13 +121,12 @@ object WebSocket {
                     "This WebSocket only supports text frames"))
             })(flow map TextMessage.apply)
       }
-    }
 
     /**
       * Converts binary messages to/from ByteStrings.
       */
     implicit val byteStringMessageFlowTransformer
-        : MessageFlowTransformer[ByteString, ByteString] = {
+        : MessageFlowTransformer[ByteString, ByteString] =
       new MessageFlowTransformer[ByteString, ByteString] {
         def transform(flow: Flow[ByteString, ByteString, _]) =
           AkkaStreams.bypassWith[Message, ByteString, Message](
@@ -141,15 +139,13 @@ object WebSocket {
                     "This WebSocket only supports binary frames"))
             })(flow map BinaryMessage.apply)
       }
-    }
 
     /**
       * Converts binary messages to/from byte arrays.
       */
     implicit val byteArrayMessageFlowTransformer
-        : MessageFlowTransformer[Array[Byte], Array[Byte]] = {
+        : MessageFlowTransformer[Array[Byte], Array[Byte]] =
       byteStringMessageFlowTransformer.map(_.toArray, ByteString.apply)
-    }
 
     /**
       * Converts messages to/from JsValue
@@ -157,9 +153,8 @@ object WebSocket {
     implicit val jsonMessageFlowTransformer
         : MessageFlowTransformer[JsValue, JsValue] = {
       def closeOnException[T](block: => T) =
-        try {
-          Left(block)
-        } catch {
+        try Left(block)
+        catch {
           case NonFatal(e) =>
             Right(
               CloseMessage(

@@ -103,9 +103,8 @@ class ConsumerIterator[K, V](
     }
     var item = localCurrent.next()
     // reject the messages that have already been consumed
-    while (item.offset < currentTopicInfo.getConsumeOffset && localCurrent.hasNext) {
+    while (item.offset < currentTopicInfo.getConsumeOffset && localCurrent.hasNext)
       item = localCurrent.next()
-    }
     consumedOffset = item.nextOffset
 
     item.message

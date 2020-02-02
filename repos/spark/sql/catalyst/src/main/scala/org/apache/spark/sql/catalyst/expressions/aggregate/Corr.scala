@@ -90,12 +90,11 @@ case class Corr(x: Expression, y: Expression) extends DeclarativeAggregate {
     Seq(newN, newXAvg, newYAvg, newCk, newXMk, newYMk)
   }
 
-  override val evaluateExpression: Expression = {
+  override val evaluateExpression: Expression =
     If(
       n === Literal(0.0),
       Literal.create(null, DoubleType),
       If(n === Literal(1.0), Literal(Double.NaN), ck / Sqrt(xMk * yMk)))
-  }
 
   override def prettyName: String = "corr"
 }

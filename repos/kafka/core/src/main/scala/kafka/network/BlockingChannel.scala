@@ -48,7 +48,7 @@ class BlockingChannel(
   private var connectionId: String = ""
 
   def connect() = lock synchronized {
-    if (!connected) {
+    if (!connected)
       try {
         channel = SocketChannel.open()
         if (readBufferSize > 0)
@@ -90,7 +90,6 @@ class BlockingChannel(
       } catch {
         case e: Throwable => disconnect()
       }
-    }
   }
 
   def disconnect() = lock synchronized {

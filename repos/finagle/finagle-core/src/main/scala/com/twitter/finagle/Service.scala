@@ -13,9 +13,8 @@ object Service {
   def rescue[Req, Rep](service: Service[Req, Rep]) =
     new ServiceProxy[Req, Rep](service) {
       override def apply(request: Req): Future[Rep] =
-        try {
-          service(request)
-        } catch {
+        try service(request)
+        catch {
           case NonFatal(e) => Future.exception(e)
         }
     }
@@ -273,9 +272,8 @@ object FactoryToService {
                 conn: ClientConnection): Future[ServiceProxy[Req, Rep]] =
               service
           }
-        } else {
+        } else
           next
-        }
     }
 }
 

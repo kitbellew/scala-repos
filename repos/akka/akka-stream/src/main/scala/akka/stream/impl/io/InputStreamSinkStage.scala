@@ -139,34 +139,32 @@ private[akka] class InputStreamAdapter(
       "begin + length must be smaller or equal to the array length")
 
     executeIfNotClosed(() ⇒
-      if (isStageAlive) {
+      if (isStageAlive)
         detachedChunk match {
           case None ⇒
-            try {
-              sharedBuffer
-                .poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
-                case Data(data) ⇒
-                  detachedChunk = Some(data)
-                  readBytes(a, begin, length)
-                case Finished ⇒
-                  isStageAlive = false
-                  -1
-                case Failed(ex) ⇒
-                  isStageAlive = false
-                  throw new IOException(ex)
-                case null ⇒
-                  throw new IOException("Timeout on waiting for new data")
-                case Initialized ⇒
-                  throw new IllegalStateException(
-                    "message 'Initialized' must come first")
-              }
+            try sharedBuffer
+              .poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
+              case Data(data) ⇒
+                detachedChunk = Some(data)
+                readBytes(a, begin, length)
+              case Finished ⇒
+                isStageAlive = false
+                -1
+              case Failed(ex) ⇒
+                isStageAlive = false
+                throw new IOException(ex)
+              case null ⇒
+                throw new IOException("Timeout on waiting for new data")
+              case Initialized ⇒
+                throw new IllegalStateException(
+                  "message 'Initialized' must come first")
             } catch {
               case ex: InterruptedException ⇒ throw new IOException(ex)
             }
           case Some(data) ⇒
             readBytes(a, begin, length)
         }
-      } else -1)
+      else -1)
   }
 
   private[this] def readBytes(a: Array[Byte], begin: Int, length: Int): Int = {
@@ -210,13 +208,12 @@ private[akka] class InputStreamAdapter(
     }
 
   private[this] def waitIfNotInitialized(): Unit =
-    if (!isInitialized) {
+    if (!isInitialized)
       sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
         case Initialized ⇒ isInitialized = true
         case _ ⇒
           require(false, "First message must be Initialized notification")
       }
-    }
 
   private[this] def grabDataChunk(): Option[ByteString] =
     detachedChunk match {

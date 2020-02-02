@@ -101,9 +101,9 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
         val b = alu(k)
         if (count < buf.length) {
           buf(count) = b; count = count + 1
-        } else {
+        } else
           write(b)
-        } // flush buffer
+        // flush buffer
         k = k + 1
         i = i + 1
       }
@@ -124,17 +124,17 @@ class FastaOutputStream(out: OutputStream) extends BufferedOutputStream(out) {
         val b = selectRandom(distribution)
         if (count < buf.length) {
           buf(count) = b; count = count + 1
-        } else {
+        } else
           write(b)
-        } // flush buffer
+        // flush buffer
         i = i + 1
       }
 
       if (count < buf.length) {
         buf(count) = nl; count = count + 1
-      } else {
+      } else
         write(nl)
-      } // flush buffer
+      // flush buffer
       n = n - LineLength
     }
   }

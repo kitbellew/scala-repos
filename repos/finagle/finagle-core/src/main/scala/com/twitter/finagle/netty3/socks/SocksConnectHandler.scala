@@ -195,9 +195,8 @@ class SocksConnectHandler(
       }
       discardBytes(2)
       true
-    } else {
+    } else
       false
-    }
   }
 
   private[this] def discardBytes(numBytes: Int) {
@@ -284,42 +283,36 @@ class SocksConnectHandler(
     buf.writeBytes(e.getMessage.asInstanceOf[ChannelBuffer])
     buf.markReaderIndex()
 
-    try {
-      state match {
-        case Connected =>
-          readInit() match {
-            case Some(Unauthenticated) =>
-              state = Requested
-              writeRequest(ctx)
-            case Some(UsernamePassAuthenticationSetting(username, pass)) =>
-              state = Authenticating
-              writeUserNameAndPass(ctx, username, pass)
-            case None =>
-              fail(
-                e.getChannel,
-                new ConnectionFailedException(InvalidInit, addr))
-          }
-
-        case Authenticating =>
-          if (readAuthenticated()) {
+    try state match {
+      case Connected =>
+        readInit() match {
+          case Some(Unauthenticated) =>
             state = Requested
             writeRequest(ctx)
-          } else {
-            fail(
-              e.getChannel,
-              new ConnectionFailedException(InvalidResponse, addr))
-          }
+          case Some(UsernamePassAuthenticationSetting(username, pass)) =>
+            state = Authenticating
+            writeUserNameAndPass(ctx, username, pass)
+          case None =>
+            fail(e.getChannel, new ConnectionFailedException(InvalidInit, addr))
+        }
 
-        case Requested =>
-          if (readResponse()) {
-            ctx.getPipeline.remove(this)
-            connectFuture.get.setSuccess()
-          } else {
-            fail(
-              e.getChannel,
-              new ConnectionFailedException(InvalidResponse, addr))
-          }
-      }
+      case Authenticating =>
+        if (readAuthenticated()) {
+          state = Requested
+          writeRequest(ctx)
+        } else
+          fail(
+            e.getChannel,
+            new ConnectionFailedException(InvalidResponse, addr))
+
+      case Requested =>
+        if (readResponse()) {
+          ctx.getPipeline.remove(this)
+          connectFuture.get.setSuccess()
+        } else
+          fail(
+            e.getChannel,
+            new ConnectionFailedException(InvalidResponse, addr))
     } catch {
       case ReplayError => buf.resetReaderIndex()
     }

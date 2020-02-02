@@ -75,9 +75,8 @@ object LAScheduler extends LAScheduler with Loggable {
       def execute(f: () => Unit): Unit =
         es.execute(new Runnable {
           def run() {
-            try {
-              f()
-            } catch {
+            try f()
+            catch {
               case e: Exception => logger.error("Lift Actor Scheduler", e)
             }
           }
@@ -98,18 +97,16 @@ object LAScheduler extends LAScheduler with Loggable {
     */
   def execute(f: () => Unit) {
     synchronized {
-      if (exec eq null) {
+      if (exec eq null)
         exec = createExecutor()
-      }
       exec.execute(f)
     }
   }
 
   def shutdown() {
     synchronized {
-      if (exec ne null) {
+      if (exec ne null)
         exec.shutdown()
-      }
 
       exec = null
     }
@@ -185,18 +182,16 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
   def !(msg: T): Unit = {
     val toDo: () => Unit = baseMailbox.synchronized {
       msgList ::= msg
-      if (!processing) {
+      if (!processing)
         if (LAScheduler.onSameThread) {
           processing = true
           () => processMailbox(true)
-        } else {
-          if (startCnt == 0) {
-            startCnt += 1
-            () => LAScheduler.execute(() => processMailbox(false))
-          } else
-            () => {}
-        }
-      } else () => {}
+        } else if (startCnt == 0) {
+          startCnt += 1
+          () => LAScheduler.execute(() => processMailbox(false))
+        } else
+          () => {}
+      else () => {}
     }
     toDo()
   }
@@ -209,18 +204,16 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
   protected def insertMsgAtHeadOfQueue_!(msg: T): Unit = {
     val toDo: () => Unit = baseMailbox.synchronized {
       this.priorityMsgList ::= msg
-      if (!processing) {
+      if (!processing)
         if (LAScheduler.onSameThread) {
           processing = true
           () => processMailbox(true)
-        } else {
-          if (startCnt == 0) {
-            startCnt += 1
-            () => LAScheduler.execute(() => processMailbox(false))
-          } else
-            () => {}
-        }
-      } else () => {}
+        } else if (startCnt == 0) {
+          startCnt += 1
+          () => LAScheduler.execute(() => processMailbox(false))
+        } else
+          () => {}
+      else () => {}
     }
     toDo()
   }
@@ -268,64 +261,58 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
       }
     }
 
-    try {
-      while (true) {
-        baseMailbox.synchronized {
-          putListIntoMB()
-        }
+    try while (true) {
+      baseMailbox.synchronized {
+        putListIntoMB()
+      }
 
-        var keepOnDoingHighPriory = true
+      var keepOnDoingHighPriory = true
 
-        while (keepOnDoingHighPriory) {
-          val hiPriPfBox = highPriorityReceive
-          hiPriPfBox
-            .map { hiPriPf =>
-              findMailboxItem(
-                baseMailbox.next,
-                mb => testTranslate(hiPriPf.isDefinedAt)(mb.item)) match {
-                case Full(mb) =>
-                  mb.remove()
-                  try {
-                    execTranslate(hiPriPf)(mb.item)
-                  } catch {
-                    case e: Exception => if (eh.isDefinedAt(e)) eh(e)
-                  }
-                case _ =>
-                  baseMailbox.synchronized {
-                    if (msgList.isEmpty) {
-                      keepOnDoingHighPriory = false
-                    } else {
-                      putListIntoMB()
-                    }
-                  }
-              }
+      while (keepOnDoingHighPriory) {
+        val hiPriPfBox = highPriorityReceive
+        hiPriPfBox
+          .map { hiPriPf =>
+            findMailboxItem(
+              baseMailbox.next,
+              mb => testTranslate(hiPriPf.isDefinedAt)(mb.item)) match {
+              case Full(mb) =>
+                mb.remove()
+                try execTranslate(hiPriPf)(mb.item)
+                catch {
+                  case e: Exception => if (eh.isDefinedAt(e)) eh(e)
+                }
+              case _ =>
+                baseMailbox.synchronized {
+                  if (msgList.isEmpty)
+                    keepOnDoingHighPriory = false
+                  else
+                    putListIntoMB()
+                }
             }
-            .openOr { keepOnDoingHighPriory = false }
-        }
+          }
+          .openOr { keepOnDoingHighPriory = false }
+      }
 
-        val pf = messageHandler
+      val pf = messageHandler
 
-        findMailboxItem(
-          baseMailbox.next,
-          mb => testTranslate(pf.isDefinedAt)(mb.item)) match {
-          case Full(mb) =>
-            mb.remove()
-            try {
-              execTranslate(pf)(mb.item)
-            } catch {
-              case e: Exception => if (eh.isDefinedAt(e)) eh(e)
-            }
-          case _ =>
-            baseMailbox.synchronized {
-              if (msgList.isEmpty) {
-                processing = false
-                clearProcessing = false
-                return
-              } else {
-                putListIntoMB()
-              }
-            }
-        }
+      findMailboxItem(
+        baseMailbox.next,
+        mb => testTranslate(pf.isDefinedAt)(mb.item)) match {
+        case Full(mb) =>
+          mb.remove()
+          try execTranslate(pf)(mb.item)
+          catch {
+            case e: Exception => if (eh.isDefinedAt(e)) eh(e)
+          }
+        case _ =>
+          baseMailbox.synchronized {
+            if (msgList.isEmpty) {
+              processing = false
+              clearProcessing = false
+              return
+            } else
+              putListIntoMB()
+          }
       }
     } catch {
       case exception: Throwable =>
@@ -333,13 +320,10 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
           eh(exception)
 
         throw exception
-    } finally {
-      if (clearProcessing) {
-        baseMailbox.synchronized {
-          processing = false
-        }
+    } finally if (clearProcessing)
+      baseMailbox.synchronized {
+        processing = false
       }
-    }
   }
 
   protected def testTranslate(f: T => Boolean)(v: T): Boolean = f(v)
@@ -413,13 +397,13 @@ trait LiftActor
   protected final def forwardMessageTo(
       msg: Any,
       forwardTo: TypedActor[Any, Any]) {
-    if (null ne responseFuture) {
+    if (null ne responseFuture)
       forwardTo match {
         case la: LiftActor => la ! MsgWithResp(msg, responseFuture)
         case other =>
           reply(other !? msg)
       }
-    } else forwardTo ! msg
+    else forwardTo ! msg
   }
 
   /**
@@ -501,11 +485,8 @@ trait LiftActor
   override protected def execTranslate(f: Any => Unit)(v: Any) = v match {
     case MsgWithResp(msg, future) =>
       responseFuture = future
-      try {
-        f(msg)
-      } finally {
-        responseFuture = null
-      }
+      try f(msg)
+      finally responseFuture = null
     case v => f(v)
   }
 
@@ -514,9 +495,8 @@ trait LiftActor
     * to the message
     */
   protected def reply(v: Any) {
-    if (null ne responseFuture) {
+    if (null ne responseFuture)
       responseFuture.satisfy(v)
-    }
   }
 }
 
@@ -541,11 +521,10 @@ object LiftActorJ {
       val clz = what.getClass
       methods.get(clz) match {
         case Some(pf) => pf.vend(what)
-        case _ => {
+        case _ =>
           val pf = buildPF(clz)
           methods += clz -> pf
           pf.vend(what)
-        }
       }
     }
 
@@ -587,11 +566,10 @@ private final class DispatchVendor(map: Map[Class[_], Method]) {
         val clz = v.asInstanceOf[Object].getClass
         theMap.get(clz) match {
           case Some(Some(_)) => true
-          case None => {
+          case None =>
             val answer = findClass(clz)
             theMap += clz -> answer
             answer.isDefined
-          }
           case _ => false
         }
       }

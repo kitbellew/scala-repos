@@ -159,9 +159,10 @@ class BrowseServiceHandler[A](
           children <- if (legacy) children(apiKey, path)
           else browse(apiKey, path)
           struct <- structure(apiKey, path, CPath.Identity)
-        } yield {
-          JObject("size" -> sz, "children" -> children, "structure" -> struct).normalize
-        }
+        } yield JObject(
+          "size" -> sz,
+          "children" -> children,
+          "structure" -> struct).normalize
       } map { content0 =>
         HttpResponse[JValue](OK, content = Some(content0))
       } valueOr {

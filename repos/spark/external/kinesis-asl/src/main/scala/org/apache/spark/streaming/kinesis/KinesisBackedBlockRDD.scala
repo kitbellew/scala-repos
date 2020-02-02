@@ -119,11 +119,10 @@ private[kinesis] class KinesisBackedBlockRDD[T: ClassTag](
           retryTimeoutMs).map(messageHandler)
       }
     }
-    if (partition.isBlockIdValid) {
+    if (partition.isBlockIdValid)
       getBlockFromBlockManager().getOrElse { getBlockFromKinesis() }
-    } else {
+    else
       getBlockFromKinesis()
-    }
   }
 }
 
@@ -153,23 +152,20 @@ private[kinesis] class KinesisSequenceRangeIterator(
 
   override protected def getNext(): Record = {
     var nextRecord: Record = null
-    if (toSeqNumberReceived) {
+    if (toSeqNumberReceived)
       finished = true
-    } else {
+    else {
 
-      if (internalIterator == null) {
-
+      if (internalIterator == null)
         // If the internal iterator has not been initialized,
         // then fetch records from starting sequence number
         internalIterator =
           getRecords(ShardIteratorType.AT_SEQUENCE_NUMBER, range.fromSeqNumber)
-      } else if (!internalIterator.hasNext) {
-
+      else if (!internalIterator.hasNext)
         // If the internal iterator does not have any more records,
         // then fetch more records after the last consumed sequence number
         internalIterator =
           getRecords(ShardIteratorType.AFTER_SEQUENCE_NUMBER, lastSeqNumber)
-      }
 
       if (!internalIterator.hasNext) {
 
@@ -186,9 +182,8 @@ private[kinesis] class KinesisSequenceRangeIterator(
 
         // If the this record's sequence number matches the stopping sequence number, then make sure
         // the iterator is marked finished next time getNext() is called
-        if (nextRecord.getSequenceNumber == range.toSeqNumber) {
+        if (nextRecord.getSequenceNumber == range.toSeqNumber)
           toSeqNumberReceived = true
-        }
       }
     }
     nextRecord
@@ -266,9 +261,8 @@ private[kinesis] class KinesisSequenceRangeIterator(
         Thread.sleep(waitTimeMs)
         waitTimeMs *= 2 // if you have waited, then double wait time for next round
       }
-      try {
-        result = Some(body)
-      } catch {
+      try result = Some(body)
+      catch {
         case NonFatal(t) =>
           lastError = t
           t match {
@@ -283,15 +277,14 @@ private[kinesis] class KinesisSequenceRangeIterator(
       retryCount += 1
     }
     result.getOrElse {
-      if (isTimedOut) {
+      if (isTimedOut)
         throw new SparkException(
           s"Timed out after $retryTimeoutMs ms while $message, last exception: ",
           lastError)
-      } else {
+      else
         throw new SparkException(
           s"Gave up after $retryCount retries while $message, last exception: ",
           lastError)
-      }
     }
   }
 }

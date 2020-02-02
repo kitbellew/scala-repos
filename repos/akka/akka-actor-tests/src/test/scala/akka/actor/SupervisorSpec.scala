@@ -242,9 +242,8 @@ class SupervisorSpec
           postStops += 1; testActor ! ("postStop" + postStops)
         }
         def receive = {
-          case "crash" ⇒ {
+          case "crash" ⇒
             testActor ! "crashed"; throw new RuntimeException("Expected")
-          }
           case "ping" ⇒ sender() ! "pong"
         }
       }
@@ -468,10 +467,9 @@ class SupervisorSpec
               override def postRestart(reason: Throwable): Unit =
                 testActor ! "child restarted"
               def receive = {
-                case l: TestLatch ⇒ {
+                case l: TestLatch ⇒
                   Await.ready(l, 5 seconds);
                   throw new IllegalStateException("OHNOES")
-                }
                 case "test" ⇒ sender() ! "child green"
               }
             }),

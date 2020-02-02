@@ -150,7 +150,7 @@ object User extends LilaController {
         filter = GameFilterMenu.currentOf(GameFilterMenu.all, filterName),
         me = ctx.me,
         page = page
-      )(ctx.body) map { filterName -> _ }
+      )(ctx.body) map filterName -> _
     }
   }
 

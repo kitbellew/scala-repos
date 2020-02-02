@@ -60,18 +60,17 @@ private[streaming] object MapWithStateRDDRecord {
         wrappedState.wrap(newStateMap.get(key))
         val returned =
           mappingFunction(batchTime, key, Some(value), wrappedState)
-        if (wrappedState.isRemoved) {
+        if (wrappedState.isRemoved)
           newStateMap.remove(key)
-        } else if (wrappedState.isUpdated
-                   || (wrappedState.exists && timeoutThresholdTime.isDefined)) {
+        else if (wrappedState.isUpdated
+                 || (wrappedState.exists && timeoutThresholdTime.isDefined))
           newStateMap.put(key, wrappedState.get(), batchTime.milliseconds)
-        }
         mappedData ++= returned
     }
 
     // Get the timed out state records, call the mapping function on each and collect the
     // data returned
-    if (removeTimedoutData && timeoutThresholdTime.isDefined) {
+    if (removeTimedoutData && timeoutThresholdTime.isDefined)
       newStateMap.getByTime(timeoutThresholdTime.get).foreach {
         case (key, state, _) =>
           wrappedState.wrapTimingOutState(state)
@@ -79,7 +78,6 @@ private[streaming] object MapWithStateRDDRecord {
           mappedData ++= returned
           newStateMap.remove(key)
       }
-    }
 
     MapWithStateRDDRecord(newStateMap, mappedData)
   }

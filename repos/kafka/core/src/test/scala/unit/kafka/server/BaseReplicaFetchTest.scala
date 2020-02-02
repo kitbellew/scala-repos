@@ -60,14 +60,13 @@ abstract class BaseReplicaFetchTest extends ZooKeeperTestHarness {
     val testMessageList2 = List("test5", "test6", "test7", "test8")
 
     // create a topic and partition and await leadership
-    for (topic <- List(topic1, topic2)) {
+    for (topic <- List(topic1, topic2))
       createTopic(
         zkUtils,
         topic,
         numPartitions = 1,
         replicationFactor = 2,
         servers = brokers)
-    }
 
     // send test messages to leader
     val producer = TestUtils.createNewProducer(

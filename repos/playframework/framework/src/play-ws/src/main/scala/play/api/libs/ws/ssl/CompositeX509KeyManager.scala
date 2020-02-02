@@ -40,9 +40,8 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
     val clientAliases = new ArrayBuffer[String]
     withKeyManagers { keyManager =>
       val aliases = keyManager.getClientAliases(keyType, issuers)
-      if (aliases != null) {
+      if (aliases != null)
         clientAliases.appendAll(aliases)
-      }
     }
     logger.debug(s"getCertificateChain: clientAliases = $clientAliases")
 
@@ -123,9 +122,8 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
     val serverAliases = new ArrayBuffer[String]
     withKeyManagers { keyManager =>
       val aliases = keyManager.getServerAliases(keyType, issuers)
-      if (aliases != null) {
+      if (aliases != null)
         serverAliases.appendAll(aliases)
-      }
     }
     logger.debug(s"getServerAliases: serverAliases = $serverAliases")
 
@@ -179,9 +177,8 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       block: (X509KeyManager => T)): Seq[CertificateException] = {
     val exceptionList = ArrayBuffer[CertificateException]()
     keyManagers.foreach { keyManager =>
-      try {
-        block(keyManager)
-      } catch {
+      try block(keyManager)
+      catch {
         case certEx: CertificateException =>
           exceptionList.append(certEx)
       }

@@ -23,9 +23,8 @@ trait MatrixGenericOps { this: Matrix.type =>
       require(a.cols == b.cols, "Col dimension mismatch!")
       val bb = subtype(b)
       // TODO: might make sense to have a "am I sparse?" check and use activeIterator instead?
-      for (i <- 0 until a.rows; j <- 0 until a.cols) {
+      for (i <- 0 until a.rows; j <- 0 until a.cols)
         a(i, j) = bb(i, j)
-      }
 
     }
   }
@@ -166,11 +165,14 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand
   implicit def m_m_UpdateOp[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
-    f.-(_, _)
-  }, { f.*(_, _) }, { f./(_, _) }, { (a, b) => b }, { f.%(_, _) }, {
-    f.pow(_, _)
-  }) op: Op.Impl2[T, T, T])
+      T: Field: Zero: ClassTag](
+      implicit @expand.sequence[Op](
+        f.+(_, _),
+        f.-(_, _),
+        f.*(_, _),
+        f./(_, _), { (a, b) => b },
+        f.%(_, _),
+        f.pow(_, _)) op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type] =
     new BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type] {
       val f = implicitly[Field[T]]
@@ -227,11 +229,15 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand
   implicit def m_s_UpdateOp[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
-    f.-(_, _)
-  }, { f.*(_, _) }, { f.*(_, _) }, {
-    f./(_, _)
-  }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: Zero: ClassTag](
+      implicit @expand.sequence[Op](
+        f.+(_, _),
+        f.-(_, _),
+        f.*(_, _),
+        f.*(_, _),
+        f./(_, _),
+        f.%(_, _),
+        f.pow(_, _)) op: Op.Impl2[T, T, T])
       : BinaryUpdateRegistry[Matrix[T], T, Op.type] =
     new BinaryUpdateRegistry[Matrix[T], T, Op.type] {
       val f = implicitly[Field[T]]
@@ -319,11 +325,15 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
   @expand
   implicit def op_S_M[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: Zero: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
-    f.-(_, _)
-  }, { f.*(_, _) }, { f.*(_, _) }, {
-    f./(_, _)
-  }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: Zero: ClassTag](
+      implicit @expand.sequence[Op](
+        f.+(_, _),
+        f.-(_, _),
+        f.*(_, _),
+        f.*(_, _),
+        f./(_, _),
+        f.%(_, _),
+        f.pow(_, _)) op: Op.Impl2[T, T, T])
       : BinaryRegistry[T, Matrix[T], Op.type, Matrix[T]] = {
     val f = implicitly[Field[T]]
     new BinaryRegistry[T, Matrix[T], Op.type, Matrix[T]] {

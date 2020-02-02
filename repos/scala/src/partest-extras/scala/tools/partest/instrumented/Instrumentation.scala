@@ -63,9 +63,8 @@ object Instrumentation {
 
   def getStatistics: Statistics = {
     val isProfiling = Profiler.isProfiling()
-    if (isProfiling) {
+    if (isProfiling)
       Profiler.stopProfiling()
-    }
     val stats = Profiler.getStatistics().asScala.toSeq.map {
       case (trace, count) =>
         MethodCallTrace(
@@ -74,9 +73,8 @@ object Instrumentation {
           trace.methodDescriptor) -> count.intValue
     }
     val res = Map(stats: _*)
-    if (isProfiling) {
+    if (isProfiling)
       Profiler.startProfiling()
-    }
     res
   }
 

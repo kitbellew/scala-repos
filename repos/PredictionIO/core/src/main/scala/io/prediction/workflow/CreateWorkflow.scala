@@ -132,9 +132,8 @@ object CreateWorkflow extends Logging {
     WorkflowUtils.modifyLogging(wfc.verbose)
 
     val evaluation = wfc.evaluationClass.map { ec =>
-      try {
-        WorkflowUtils.getEvaluation(ec, getClass.getClassLoader)._2
-      } catch {
+      try WorkflowUtils.getEvaluation(ec, getClass.getClassLoader)._2
+      catch {
         case e @ (_: ClassNotFoundException | _: NoSuchMethodException) =>
           error(s"Unable to obtain evaluation $ec. Aborting workflow.", e)
           sys.exit(1)
@@ -142,9 +141,10 @@ object CreateWorkflow extends Logging {
     }
 
     val engineParamsGenerator = wfc.engineParamsGeneratorClass.map { epg =>
-      try {
-        WorkflowUtils.getEngineParamsGenerator(epg, getClass.getClassLoader)._2
-      } catch {
+      try WorkflowUtils
+        .getEngineParamsGenerator(epg, getClass.getClassLoader)
+        ._2
+      catch {
         case e @ (_: ClassNotFoundException | _: NoSuchMethodException) =>
           error(
             s"Unable to obtain engine parameters generator $epg. " +
@@ -167,16 +167,17 @@ object CreateWorkflow extends Logging {
 
     if (evaluation.isEmpty) {
       val variantJson = parse(stringFromFile(wfc.engineVariant))
-      val engineFactory = if (wfc.engineFactory == "") {
-        variantJson \ "engineFactory" match {
-          case JString(s) => s
-          case _ =>
-            error(
-              "Unable to read engine factory class name from " +
-                s"${wfc.engineVariant}. Aborting.")
-            sys.exit(1)
-        }
-      } else wfc.engineFactory
+      val engineFactory =
+        if (wfc.engineFactory == "")
+          variantJson \ "engineFactory" match {
+            case JString(s) => s
+            case _ =>
+              error(
+                "Unable to read engine factory class name from " +
+                  s"${wfc.engineVariant}. Aborting.")
+              sys.exit(1)
+          }
+        else wfc.engineFactory
       val variantId = variantJson \ "id" match {
         case JString(s) => s
         case _ =>
@@ -186,9 +187,8 @@ object CreateWorkflow extends Logging {
           sys.exit(1)
       }
       val (engineLanguage, engineFactoryObj) =
-        try {
-          WorkflowUtils.getEngine(engineFactory, getClass.getClassLoader)
-        } catch {
+        try WorkflowUtils.getEngine(engineFactory, getClass.getClassLoader)
+        catch {
           case e @ (_: ClassNotFoundException | _: NoSuchMethodException) =>
             error(
               s"Unable to obtain engine: ${e.getMessage}. Aborting workflow.")
@@ -207,17 +207,16 @@ object CreateWorkflow extends Logging {
       )
 
       // Evaluator Not Specified. Do training.
-      if (!engine.isInstanceOf[Engine[_, _, _, _, _, _]]) {
+      if (!engine.isInstanceOf[Engine[_, _, _, _, _, _]])
         throw new NoSuchMethodException(s"Engine $engine is not trainable")
-      }
 
       val trainableEngine = engine.asInstanceOf[Engine[_, _, _, _, _, _]]
 
-      val engineParams = if (wfc.engineParamsKey == "") {
-        trainableEngine.jValueToEngineParams(variantJson, wfc.jsonExtractor)
-      } else {
-        engineFactoryObj.engineParams(wfc.engineParamsKey)
-      }
+      val engineParams =
+        if (wfc.engineParamsKey == "")
+          trainableEngine.jValueToEngineParams(variantJson, wfc.jsonExtractor)
+        else
+          engineFactoryObj.engineParams(wfc.engineParamsKey)
 
       val engineInstance = EngineInstance(
         id = "",

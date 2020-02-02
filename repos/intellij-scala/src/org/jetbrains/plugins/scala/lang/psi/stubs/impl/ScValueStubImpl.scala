@@ -103,11 +103,11 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
         return patterns
     }
     val res: Option[ScPatternList] =
-      if (getBindingsContainerText != "") {
+      if (getBindingsContainerText != "")
         Some(
           ScalaPsiElementFactory
             .createPatterListFromText(getBindingsContainerText, getPsi, null))
-      } else None
+      else None
     myPatterns = new SofterReference(res)
     res
   }
@@ -121,11 +121,11 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
         return body
     }
     val res: Option[ScExpression] =
-      if (getBodyText != "") {
+      if (getBodyText != "")
         Some(
           ScalaPsiElementFactory
             .createExpressionWithContextFromText(getBodyText, getPsi, null))
-      } else None
+      else None
     myBodyExpression = new SofterReference(res)
     res
   }
@@ -154,11 +154,11 @@ class ScValueStubImpl[ParentPsi <: PsiElement](
         return ids
     }
     val res: Option[ScIdList] =
-      if (getBindingsContainerText != "") {
+      if (getBindingsContainerText != "")
         Some(
           ScalaPsiElementFactory
             .createIdsListFromText(getBindingsContainerText, getPsi, null))
-      } else None
+      else None
     myIds = new SofterReference[Option[ScIdList]](res)
     res
   }

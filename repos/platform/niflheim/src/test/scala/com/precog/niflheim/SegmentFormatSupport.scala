@@ -79,13 +79,12 @@ trait SegmentFormatSupport {
   def genCValueType(maxDepth: Int = 2): Gen[CValueType[_]] = {
     val basic: Gen[CValueType[_]] = oneOf(
       Seq(CBoolean, CString, CLong, CDouble, CNum, CDate))
-    if (maxDepth > 0) {
+    if (maxDepth > 0)
       frequency(
         6 -> basic,
         1 -> (genCValueType(maxDepth - 1) map (CArrayType(_))))
-    } else {
+    else
       basic
-    }
   }
 
   def genArray[A: Manifest](length: Int, g: Gen[A]): Gen[Array[A]] =
@@ -211,13 +210,12 @@ final class InMemoryReadableByteChannel(bytes: Array[Byte])
   var isOpen = true
   def close() { isOpen = false }
   def read(dst: ByteBuffer): Int =
-    if (buffer.remaining() == 0) {
+    if (buffer.remaining() == 0)
       -1
-    } else {
+    else {
       val written = math.min(dst.remaining(), buffer.remaining())
-      while (dst.remaining() > 0 && buffer.remaining() > 0) {
+      while (dst.remaining() > 0 && buffer.remaining() > 0)
         dst.put(buffer.get())
-      }
       written
     }
 }
@@ -227,9 +225,8 @@ final class InMemoryWritableByteChannel extends WritableByteChannel {
 
   def write(buf: ByteBuffer): Int = {
     val read = buf.remaining()
-    while (buf.remaining() > 0) {
+    while (buf.remaining() > 0)
       buffer += buf.get()
-    }
     read
   }
 

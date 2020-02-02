@@ -39,9 +39,7 @@ class MongoSpec extends Specification {
     MongoDB.defineDb(id, mc, db)
 
     // make sure mongo is running
-    try {
-      MongoDB.use(id) { db => db.getCollectionNames }
-    } catch {
+    try MongoDB.use(id) { db => db.getCollectionNames } catch {
       case e: Exception => skipped("MongoDB is not running")
     }
 

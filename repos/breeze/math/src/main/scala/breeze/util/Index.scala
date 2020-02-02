@@ -184,9 +184,8 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
       objects += t
       indices.put(t, ind)
       ind
-    } else {
+    } else
       indices(t)
-    }
 
   def pairs = indices.iterator
 }
@@ -241,9 +240,8 @@ object Index {
   def apply[T: OptManifest](iterator: Iterator[T]): Index[T] = {
     val index = Index[T]()
     // read through all iterator now -- don't lazily defer evaluation
-    for (element <- iterator) {
+    for (element <- iterator)
       index.index(element)
-    }
     index
   }
 
@@ -251,9 +249,8 @@ object Index {
   def apply[T](iterable: Iterable[T]): Index[T] = {
     val index = Index[T]()
     // read through all iterator now -- don't lazily defer evaluation
-    for (element <- iterable) {
+    for (element <- iterable)
       index.index(element)
-    }
     index
   }
 
@@ -351,9 +348,8 @@ final class CompositeIndex[U](indices: Index[_ <: U]*) extends Index[(Int, U)] {
 
   def apply(t: (Int, U)) =
     if (t._1 >= indices.length || t._1 < 0) -1
-    else {
+    else
       indices(t._1).asInstanceOf[Index[U]](t._2) + offsets(t._1)
-    }
 
   def unapply(i: Int) =
     if (i < 0 || i >= size) None

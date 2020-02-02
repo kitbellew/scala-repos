@@ -67,7 +67,7 @@ object ScTemplateParents {
 
           def refTail(ref: ScStableCodeReferenceElement): PsiClass = {
             val resolve = ref.resolveNoConstructor
-            if (resolve.length == 1) {
+            if (resolve.length == 1)
               resolve(0) match {
                 case ScalaResolveResult(c: PsiClass, _) => c
                 case ScalaResolveResult(ta: ScTypeAliasDefinition, _) =>
@@ -81,7 +81,7 @@ object ScTemplateParents {
                   }
                 case _ => tail()
               }
-            } else tail()
+            else tail()
           }
           element match {
             case s: ScSimpleTypeElement =>

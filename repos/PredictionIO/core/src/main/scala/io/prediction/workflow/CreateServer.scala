@@ -218,11 +218,11 @@ object CreateServer extends Logging {
         .get
         .asInstanceOf[Seq[Any]]
 
-    val batch = if (engineInstance.batch.nonEmpty) {
-      s"${engineInstance.engineFactory} (${engineInstance.batch})"
-    } else {
-      engineInstance.engineFactory
-    }
+    val batch =
+      if (engineInstance.batch.nonEmpty)
+        s"${engineInstance.engineFactory} (${engineInstance.batch})"
+      else
+        engineInstance.engineFactory
 
     val sparkContext = WorkflowContext(
       batch = batch,
@@ -404,9 +404,8 @@ class MasterActor(
     val engine = engineFactory()
 
     // EngineFactory return a base engine, which may not be deployable.
-    if (!engine.isInstanceOf[Engine[_, _, _, _, _, _]]) {
+    if (!engine.isInstanceOf[Engine[_, _, _, _, _, _]])
       throw new NoSuchMethodException(s"Engine $engine is not deployable")
-    }
 
     val deployableEngine = engine.asInstanceOf[Engine[_, _, _, _, _, _]]
 
@@ -455,24 +454,23 @@ class ServerActor[Q, P](
 
   def receive: Actor.Receive = runRoute(myRoute)
 
-  val feedbackEnabled = if (args.feedback) {
-    if (args.accessKey.isEmpty) {
-      log.error("Feedback loop cannot be enabled because accessKey is empty.")
-      false
-    } else {
-      true
-    }
-  } else false
+  val feedbackEnabled =
+    if (args.feedback)
+      if (args.accessKey.isEmpty) {
+        log.error("Feedback loop cannot be enabled because accessKey is empty.")
+        false
+      } else
+        true
+    else false
 
   def remoteLog(logUrl: String, logPrefix: String, message: String): Unit = {
     implicit val formats = Utils.json4sDefaultFormats
-    try {
-      scalaj.http
-        .Http(logUrl)
-        .postData(logPrefix + write(
-          Map("engineInstance" -> engineInstance, "message" -> message)))
-        .asString
-    } catch {
+    try scalaj.http
+      .Http(logUrl)
+      .postData(logPrefix + write(
+        Map("engineInstance" -> engineInstance, "message" -> message)))
+      .asString
+    catch {
       case e: Throwable =>
         log.error(s"Unable to send remote log: ${e.getMessage}")
     }
@@ -610,25 +608,21 @@ class ServerActor[Q, P](
                       .code
                   }
                   f onComplete {
-                    case Success(code) => {
-                      if (code != 201) {
+                    case Success(code) =>
+                      if (code != 201)
                         log.error(s"Feedback event failed. Status code: $code."
                           + s"Data: ${write(data)}.")
-                      }
-                    }
-                    case Failure(t) => {
+                    case Failure(t) =>
                       log.error(s"Feedback event failed: ${t.getMessage}")
-                    }
                   }
                   // overwrite prId in predictedResult
                   // - if it is WithPrId,
                   //   then overwrite with new prId
                   // - if it is not WithPrId, no prId injection
-                  if (prediction.isInstanceOf[WithPrId]) {
+                  if (prediction.isInstanceOf[WithPrId])
                     predictionJValue merge parse(s"""{"prId" : "$newPrId"}""")
-                  } else {
+                  else
                     predictionJValue
-                  }
                 } else predictionJValue
 
                 val pluginResult =

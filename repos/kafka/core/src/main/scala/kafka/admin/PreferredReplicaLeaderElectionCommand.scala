@@ -87,10 +87,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
       case e: Throwable =>
         println("Failed to start preferred replica election")
         println(Utils.stackTrace(e))
-    } finally {
-      if (zkClient != null)
-        zkClient.close()
-    }
+    } finally if (zkClient != null)
+      zkClient.close()
   }
 
   def parsePreferredReplicaElectionData(
@@ -172,9 +170,9 @@ class PreferredReplicaLeaderElectionCommand(
     val partitionsOpt = zkUtils.getPartitionsForTopics(List(topic)).get(topic)
     partitionsOpt match {
       case Some(partitions) =>
-        if (partitions.contains(partition)) {
+        if (partitions.contains(partition))
           true
-        } else {
+        else {
           error(
             "Skipping preferred replica leader election for partition [%s,%d] "
               .format(topic, partition) +

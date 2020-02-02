@@ -58,9 +58,9 @@ trait DefaultReadWriteTest extends TempDirectory { self: Suite =>
     val newInstance = loader.load(path)
 
     assert(newInstance.uid === instance.uid)
-    if (testParams) {
+    if (testParams)
       instance.params.foreach { p =>
-        if (instance.isDefined(p)) {
+        if (instance.isDefined(p))
           (instance.getOrDefault(p), newInstance.getOrDefault(p)) match {
             case (Array(values), Array(newValues)) =>
               assert(
@@ -71,13 +71,11 @@ trait DefaultReadWriteTest extends TempDirectory { self: Suite =>
                 value === newValue,
                 s"Values do not match on param ${p.name}.")
           }
-        } else {
+        else
           assert(
             !newInstance.isDefined(p),
             s"Param ${p.name} shouldn't be defined.")
-        }
       }
-    }
 
     val load = instance.getClass.getMethod("load", classOf[String])
     val another = load.invoke(instance, path).asInstanceOf[T]

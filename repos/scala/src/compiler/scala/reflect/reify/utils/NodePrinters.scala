@@ -93,19 +93,16 @@ trait NodePrinters {
         printout += s"val $name = {"
         printout ++= (rtree map ("  " + _))
         printout += "}"
-      } else {
+      } else
         printout += s"val $name = " + rtree(0)
-      }
-      if (isExpr) {
+      if (isExpr)
         if (mirror contains ".getClassLoader") {
           printout += "import scala.tools.reflect.ToolBox"
           printout += s"println(${nme.MIRROR_SHORT}.mkToolBox().eval(tree))"
-        } else {
+        } else
           printout += "println(tree)"
-        }
-      } else {
+      else
         printout += "println(tpe)"
-      }
 
       // printout mkString EOL
       val prefix = "// produced from " + reifier.defaultErrorPosition

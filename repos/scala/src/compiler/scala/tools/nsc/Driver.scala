@@ -46,14 +46,13 @@ abstract class Driver {
     if (processSettingsHook()) {
       val compiler = newCompiler()
       reporter = compiler.reporter // adopt the configured reporter
-      try {
-        if (reporter.hasErrors)
-          reporter.flush()
-        else if (command.shouldStopWithInfo)
-          reporter.echo(command.getInfoMessage(compiler))
-        else
-          doCompile(compiler)
-      } catch {
+      try if (reporter.hasErrors)
+        reporter.flush()
+      else if (command.shouldStopWithInfo)
+        reporter.echo(command.getInfoMessage(compiler))
+      else
+        doCompile(compiler)
+      catch {
         case ex: Throwable =>
           compiler.reportThrowable(ex)
           ex match {

@@ -131,9 +131,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
       attribs: List[cf.Attribute]) {
     if (getName(name) == "<init>")
       print(flagsToStr(false, flags))
-    if (getName(name) == "<init>") {
+    if (getName(name) == "<init>")
       print("def this" + getType(tpe) + ";").newline
-    } else {
+    else {
       print("def " + NameTransformer.decode(getName(name)))
       print(getType(tpe) + ";").newline
     }
@@ -154,9 +154,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
   }
 
   def printClassHeader() {
-    if (isInterface(cf.flags)) {
+    if (isInterface(cf.flags))
       print("trait " + getSimpleClassName(cf.classname))
-    } else {
+    else {
       print("class " + getSimpleClassName(cf.classname))
       if (cf.pool(cf.superclass) != null)
         print(" extends " + nameToClass0(getName(cf.superclass)))

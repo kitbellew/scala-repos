@@ -2,9 +2,8 @@ object Test {
   def foo(a: Int) {
     var bar: Int = 0
     bar =
-      try {
-        0
-      } catch { case ex: Throwable => 0 }
+      try 0
+      catch { case ex: Throwable => 0 }
     new { foo(bar) }
   }
 

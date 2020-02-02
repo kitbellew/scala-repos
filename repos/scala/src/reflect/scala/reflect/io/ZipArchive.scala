@@ -39,9 +39,8 @@ object ZipArchive {
     */
   def fromFile(file: File): FileZipArchive = fromFile(file.jfile)
   def fromFile(file: JFile): FileZipArchive =
-    try {
-      new FileZipArchive(file)
-    } catch { case _: IOException => null }
+    try new FileZipArchive(file)
+    catch { case _: IOException => null }
 
   /**
     * @param   url  the url of a zip file
@@ -138,9 +137,8 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
     val root = new DirEntry("/")
     val dirs = mutable.HashMap[String, DirEntry]("/" -> root)
     val zipFile =
-      try {
-        new ZipFile(file)
-      } catch {
+      try new ZipFile(file)
+      catch {
         case ioe: IOException =>
           throw new IOException("Error accessing " + file.getPath, ioe)
       }

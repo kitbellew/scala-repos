@@ -91,11 +91,10 @@ object StronglyConnectedComponents {
         activeDirection = EdgeDirection.Out)(
         (vid, myScc, neighborScc) => (math.min(myScc._1, neighborScc), myScc._2),
         e =>
-          if (e.srcAttr._1 < e.dstAttr._1) {
+          if (e.srcAttr._1 < e.dstAttr._1)
             Iterator((e.dstId, e.srcAttr._1))
-          } else {
-            Iterator()
-          },
+          else
+            Iterator(),
         (vid1, vid2) => math.min(vid1, vid2)
       )
 
@@ -115,11 +114,10 @@ object StronglyConnectedComponents {
         e => {
           val sameColor = e.dstAttr._1 == e.srcAttr._1
           val onlyDstIsFinal = e.dstAttr._2 && !e.srcAttr._2
-          if (sameColor && onlyDstIsFinal) {
+          if (sameColor && onlyDstIsFinal)
             Iterator((e.srcId, e.dstAttr._2))
-          } else {
+          else
             Iterator()
-          }
         },
         (final1, final2) => final1 || final2
       )

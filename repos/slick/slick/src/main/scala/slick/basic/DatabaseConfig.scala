@@ -96,11 +96,10 @@ object DatabaseConfig {
     }
 
     val untypedP =
-      try {
-        if (n.endsWith("$"))
-          classLoader.loadClass(n).getField("MODULE$").get(null)
-        else classLoader.loadClass(n).newInstance()
-      } catch {
+      try if (n.endsWith("$"))
+        classLoader.loadClass(n).getField("MODULE$").get(null)
+      else classLoader.loadClass(n).newInstance()
+      catch {
         case NonFatal(ex) =>
           throw new SlickException(
             s"""Error getting instance of profile "$n"""",

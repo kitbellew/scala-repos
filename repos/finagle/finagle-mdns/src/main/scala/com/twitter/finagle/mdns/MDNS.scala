@@ -67,9 +67,8 @@ class MDNSAnnouncer extends Announcer {
   val scheme = "mdns"
 
   private[this] val announcer: MDNSAnnouncerIface =
-    try {
-      new DNSSDAnnouncer
-    } catch {
+    try new DNSSDAnnouncer
+    catch {
       case _: ClassNotFoundException => new JmDNSAnnouncer
     }
 
@@ -93,9 +92,8 @@ class MDNSResolver extends Resolver {
   val scheme = "mdns"
 
   private[this] val resolver: MDNSResolverIface =
-    try {
-      new DNSSDResolver
-    } catch {
+    try new DNSSDResolver
+    catch {
       case _: ClassNotFoundException => new JmDNSResolver
     }
 

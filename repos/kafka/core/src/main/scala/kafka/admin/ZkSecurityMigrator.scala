@@ -137,9 +137,8 @@ object ZkSecurityMigrator extends Logging {
   }
 
   def main(args: Array[String]) {
-    try {
-      run(args)
-    } catch {
+    try run(args)
+    catch {
       case e: Exception =>
         e.printStackTrace()
     }
@@ -288,7 +287,5 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
       }
       recurse()
 
-    } finally {
-      zkUtils.close
-    }
+    } finally zkUtils.close
 }

@@ -98,7 +98,7 @@ class SQLContext private[sql] (
 
   // Assert no root SQLContext is running when allowMultipleContexts is false.
   {
-    if (!allowMultipleContexts && isRootContext) {
+    if (!allowMultipleContexts && isRootContext)
       SQLContext.getInstantiatedContextOption() match {
         case Some(rootSQLContext) =>
           val errMsg =
@@ -109,7 +109,6 @@ class SQLContext private[sql] (
           throw new SparkException(errMsg)
         case None => // OK
       }
-    }
   }
 
   /**
@@ -454,9 +453,8 @@ class SQLContext private[sql] (
     val catalystRows = if (needsConversion) {
       val converter = CatalystTypeConverters.createToCatalystConverter(schema)
       rowRDD.map(converter(_).asInstanceOf[InternalRow])
-    } else {
+    } else
       rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) }
-    }
     val logicalPlan = LogicalRDD(schema.toAttributes, catalystRows)(self)
     Dataset.newDataFrame(this, logicalPlan)
   }
@@ -966,17 +964,15 @@ object SQLContext {
     */
   def getOrCreate(sparkContext: SparkContext): SQLContext = {
     val ctx = activeContext.get()
-    if (ctx != null && !ctx.sparkContext.isStopped) {
+    if (ctx != null && !ctx.sparkContext.isStopped)
       return ctx
-    }
 
     synchronized {
       val ctx = instantiatedContext.get()
-      if (ctx == null || ctx.sparkContext.isStopped) {
+      if (ctx == null || ctx.sparkContext.isStopped)
         new SQLContext(sparkContext)
-      } else {
+      else
         ctx
-      }
     }
   }
 
@@ -986,9 +982,8 @@ object SQLContext {
   private[sql] def setInstantiatedContext(sqlContext: SQLContext): Unit =
     synchronized {
       val ctx = instantiatedContext.get()
-      if (ctx == null || ctx.sparkContext.isStopped) {
+      if (ctx == null || ctx.sparkContext.isStopped)
         instantiatedContext.set(sqlContext)
-      }
     }
 
   private[sql] def getInstantiatedContextOption(): Option[SQLContext] =

@@ -84,9 +84,9 @@ private class DeploymentActor(
   }
 
   def performStep(step: DeploymentStep): Future[Unit] =
-    if (step.actions.isEmpty) {
+    if (step.actions.isEmpty)
       Future.successful(())
-    } else {
+    else {
       eventBus.publish(DeploymentStatus(plan, step))
 
       val futures = step.actions.map { action =>
@@ -190,9 +190,9 @@ private class DeploymentActor(
   }
 
   def restartApp(app: AppDefinition): Future[Unit] =
-    if (app.instances == 0) {
+    if (app.instances == 0)
       Future.successful(())
-    } else {
+    else {
       val promise = Promise[Unit]()
       context.actorOf(
         Props(

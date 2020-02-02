@@ -87,9 +87,8 @@ object HB_0_8_0 {
   object RowKey {
     // get RowKey from string representation
     def apply(s: String): RowKey =
-      try {
-        apply(Base64.decodeBase64(s))
-      } catch {
+      try apply(Base64.decodeBase64(s))
+      catch {
         case e: Exception =>
           throw new RowKeyException(
             s"Failed to convert String $s to RowKey because $e",
@@ -142,11 +141,10 @@ object HB_0_8_0 {
 
     def getOptStringCol(col: String): Option[String] = {
       val r = result.getValue(eBytes, colNames(col))
-      if (r == null) {
+      if (r == null)
         None
-      } else {
+      else
         Some(Bytes.toString(r))
-      }
     }
 
     def getTimestamp(col: String): Long =

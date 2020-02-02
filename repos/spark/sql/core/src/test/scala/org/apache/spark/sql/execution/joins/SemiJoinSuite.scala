@@ -59,11 +59,10 @@ class SemiJoinSuite extends SparkPlanTest with SharedSQLContext {
     new StructType().add("c", IntegerType).add("d", DoubleType)
   )
 
-  private lazy val condition = {
+  private lazy val condition =
     And(
       (left.col("a") === right.col("c")).expr,
       LessThan(left.col("b").expr, right.col("d").expr))
-  }
 
   // Note: the input dataframes and expression must be evaluated lazily because
   // the SQLContext should be used only within a test to keep SQL tests stable

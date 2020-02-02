@@ -193,11 +193,8 @@ private[spark] class LocalBackend(
 
   private def stop(finalState: SparkAppHandle.State): Unit = {
     localEndpoint.ask(StopExecutor)
-    try {
-      launcherBackend.setState(finalState)
-    } finally {
-      launcherBackend.close()
-    }
+    try launcherBackend.setState(finalState)
+    finally launcherBackend.close()
   }
 
 }

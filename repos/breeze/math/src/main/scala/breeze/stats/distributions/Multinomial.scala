@@ -46,12 +46,10 @@ case class Multinomial[T, I](params: T)(
   private lazy val aliasTable = buildAliasTable()
 
   // check rep
-  for ((k, v) <- params.activeIterator) {
-    if (v < 0) {
+  for ((k, v) <- params.activeIterator)
+    if (v < 0)
       throw new IllegalArgumentException(
         "Multinomial has negative mass at index " + k)
-    }
-  }
 
   def draw(): I = {
     // if this is the first sample, use linear-time sampling algorithm
@@ -113,13 +111,11 @@ case class Multinomial[T, I](params: T)(
     import wrapped._
     import wrapped.mutaVspace._
     var acc: Wrapper = null.asInstanceOf[Wrapper]
-    for ((k, v) <- params.activeIterator) {
-      if (acc == null) {
+    for ((k, v) <- params.activeIterator)
+      if (acc == null)
         acc = wrap(f(k)) * (v / sum)
-      } else {
+      else
         axpy(v / sum, wrap(f(k)), acc)
-      }
-    }
     assert(acc != null)
     unwrap(acc)
   }
@@ -162,9 +158,8 @@ object Multinomial {
         prior: conjugateFamily.Parameter,
         evidence: TraversableOnce[I]) = {
       val localCopy: T = space.copy(prior)
-      for (e <- evidence) {
+      for (e <- evidence)
         localCopy(e) += 1.0
-      }
       localCopy
 
     }

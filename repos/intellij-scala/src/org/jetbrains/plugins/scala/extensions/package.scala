@@ -511,9 +511,8 @@ package object extensions {
   }
 
   private def preservingControlFlow(body: => Unit) {
-    try {
-      body
-    } catch {
+    try body
+    catch {
       case e: InvocationTargetException =>
         e.getTargetException match {
           case control: NonLocalReturnControl[_] => throw control
@@ -580,18 +579,12 @@ package object extensions {
   }
 
   def using[A <: Closeable, B](resource: A)(block: A => B): B =
-    try {
-      block(resource)
-    } finally {
-      if (resource != null) resource.close()
-    }
+    try block(resource)
+    finally if (resource != null) resource.close()
 
   def using[B](source: Source)(block: Source => B): B =
-    try {
-      block(source)
-    } finally {
-      source.close()
-    }
+    try block(source)
+    finally source.close()
 
   val ChildOf = Parent
 }

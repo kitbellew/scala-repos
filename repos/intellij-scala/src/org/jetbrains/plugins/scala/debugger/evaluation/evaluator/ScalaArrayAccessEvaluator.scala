@@ -26,19 +26,16 @@ class ScalaArrayAccessEvaluator(
     val indexValue: Value = indexEvaluator.evaluate(context).asInstanceOf[Value]
     val arrayValue: Value =
       arrayReferenceEvaluator.evaluate(context).asInstanceOf[Value]
-    if (!arrayValue.isInstanceOf[ArrayReference]) {
+    if (!arrayValue.isInstanceOf[ArrayReference])
       throw EvaluationException(
         DebuggerBundle.message("evaluation.error.array.reference.expected"))
-    }
     myEvaluatedArrayReference = arrayValue.asInstanceOf[ArrayReference]
-    if (!DebuggerUtils.isInteger(indexValue)) {
+    if (!DebuggerUtils.isInteger(indexValue))
       throw EvaluationException(
         DebuggerBundle.message("evaluation.error.invalid.index.expression"))
-    }
     myEvaluatedIndex = indexValue.asInstanceOf[PrimitiveValue].intValue
-    try {
-      myEvaluatedArrayReference.getValue(myEvaluatedIndex)
-    } catch {
+    try myEvaluatedArrayReference.getValue(myEvaluatedIndex)
+    catch {
       case e: Exception =>
         throw EvaluationException(e)
     }
@@ -46,7 +43,7 @@ class ScalaArrayAccessEvaluator(
 
   def getModifier: Modifier = {
     var modifier: Modifier = null
-    if (myEvaluatedArrayReference != null) {
+    if (myEvaluatedArrayReference != null)
       modifier = new Modifier {
         def canInspect: Boolean = true
         def canSetValue: Boolean = true
@@ -68,7 +65,6 @@ class ScalaArrayAccessEvaluator(
             myEvaluatedArrayReference,
             myEvaluatedIndex)
       }
-    }
     modifier
   }
 

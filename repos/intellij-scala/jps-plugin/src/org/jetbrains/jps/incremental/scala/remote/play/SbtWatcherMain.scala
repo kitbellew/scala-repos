@@ -46,9 +46,8 @@ object SbtWatcherMain {
           val watcher = new LocalSbtWatcherExec
           watcher.startSbtExec(argsTail.toArray, messageConsumer)
 
-          if (watcher.isRunning) {
+          if (watcher.isRunning)
             currentExec = Some((watcher, argsTail))
-          }
         }
 
         currentExec foreach {

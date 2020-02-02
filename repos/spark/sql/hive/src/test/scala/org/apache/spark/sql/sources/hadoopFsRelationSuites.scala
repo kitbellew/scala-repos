@@ -130,7 +130,7 @@ abstract class HadoopFsRelationTest
     new MyDenseVectorUDT()
   ).filter(supportsDataType)
 
-  for (dataType <- supportedDataTypes) {
+  for (dataType <- supportedDataTypes)
     test(s"test all data types - $dataType") {
       withTempPath { file =>
         val path = file.getCanonicalPath
@@ -171,7 +171,6 @@ abstract class HadoopFsRelationTest
         checkAnswer(loadedDF, df)
       }
     }
-  }
 
   test("save()/load() - non-partitioned table - Overwrite") {
     withTempPath { file =>
@@ -761,26 +760,24 @@ abstract class HadoopFsRelationTest
       sqlContext.sparkContext.conf
         .getBoolean("spark.speculation", defaultValue = false)
 
-    try {
-      withTempPath { dir =>
-        // Enables task speculation
-        sqlContext.sparkContext.conf.set("spark.speculation", "true")
+    try withTempPath { dir =>
+      // Enables task speculation
+      sqlContext.sparkContext.conf.set("spark.speculation", "true")
 
-        // Uses a customized output committer which always fails
-        hadoopConfiguration.set(
-          SQLConf.OUTPUT_COMMITTER_CLASS.key,
-          classOf[AlwaysFailOutputCommitter].getName)
+      // Uses a customized output committer which always fails
+      hadoopConfiguration.set(
+        SQLConf.OUTPUT_COMMITTER_CLASS.key,
+        classOf[AlwaysFailOutputCommitter].getName)
 
-        // Code below shouldn't throw since customized output committer should be disabled.
-        val df = sqlContext.range(10).toDF().coalesce(1)
-        df.write.format(dataSourceName).save(dir.getCanonicalPath)
-        checkAnswer(
-          sqlContext.read
-            .format(dataSourceName)
-            .option("dataSchema", df.schema.json)
-            .load(dir.getCanonicalPath),
-          df)
-      }
+      // Code below shouldn't throw since customized output committer should be disabled.
+      val df = sqlContext.range(10).toDF().coalesce(1)
+      df.write.format(dataSourceName).save(dir.getCanonicalPath)
+      checkAnswer(
+        sqlContext.read
+          .format(dataSourceName)
+          .option("dataSchema", df.schema.json)
+          .load(dir.getCanonicalPath),
+        df)
     } finally {
       // Hadoop 1 doesn't have `Configuration.unset`
       hadoopConfiguration.clear()

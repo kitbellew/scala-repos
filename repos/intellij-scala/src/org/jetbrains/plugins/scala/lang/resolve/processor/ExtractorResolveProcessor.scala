@@ -72,11 +72,10 @@ class ExtractorResolveProcessor(
           })
         }
         resultsFor("unapply")
-        if (candidatesSet.isEmpty) {
+        if (candidatesSet.isEmpty)
           // unapply has higher priority then unapplySeq
           resultsFor("unapplySeq")
-        }
-        if (candidatesSet.isEmpty) {
+        if (candidatesSet.isEmpty)
           obj match {
             case FakeCompanionClassOrCompanionClass(cl: ScClass)
                 if cl.tooBigForUnapply && cl.scalaLanguageLevel.exists(
@@ -91,7 +90,6 @@ class ExtractorResolveProcessor(
                   isAccessible = accessible))
             case _ =>
           }
-        }
       }
 
       named match {
@@ -114,26 +112,24 @@ class ExtractorResolveProcessor(
               if (clauses.length != 0 && clauses
                     .apply(0)
                     .parameters
-                    .length == 1) {
+                    .length == 1)
                 for (paramType <- clauses(0).parameters
                        .apply(0)
                        .getType(TypingContext.empty)
                      if tp conforms r.substitutor.subst(paramType)) return true
-              }
               false
             case _ => true
           }
         val filtered = candidates.filter(t => isApplicable(t))
         if (filtered.size == 0) candidates
         else if (filtered.size == 1) filtered
-        else {
+        else
           new MostSpecificUtil(ref, 1).mostSpecificForResolveResult(
             filtered,
             expandInnerResult = false) match {
             case Some(r) => mutable.HashSet(r)
             case None    => candidates
           }
-        }
       case _ => candidates
     }
   }

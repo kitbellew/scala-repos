@@ -155,14 +155,13 @@ class PermissionsFinder[M[+_]: Monad](
       }
       accountId <- accountFinder.findAccountByAPIKey(apiKey)
       accountPath <- accountId.traverse(accountFinder.findAccountDetailsById)
-    } yield {
-      // FIXME: Not comprehensive/exhaustive in terms of finding all possible data you could read
-      permissions flatMap {
-        case perm @ WrittenByPermission(p0, _) if p0.isEqualOrParentOf(path) =>
-          if (perm.path == Path.Root) accountPath.flatten.map(_.rootPath)
-          else Some(perm.path)
+    } yield
+    // FIXME: Not comprehensive/exhaustive in terms of finding all possible data you could read
+    permissions flatMap {
+      case perm @ WrittenByPermission(p0, _) if p0.isEqualOrParentOf(path) =>
+        if (perm.path == Path.Root) accountPath.flatten.map(_.rootPath)
+        else Some(perm.path)
 
-        case _ => None
-      }
+      case _ => None
     }
 }

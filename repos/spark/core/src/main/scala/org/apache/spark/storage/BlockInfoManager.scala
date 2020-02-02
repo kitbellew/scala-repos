@@ -198,9 +198,8 @@ private[storage] class BlockInfoManager extends Logging {
             return Some(info)
           }
       }
-      if (blocking) {
+      if (blocking)
         wait()
-      }
     } while (blocking)
     None
   }
@@ -229,10 +228,10 @@ private[storage] class BlockInfoManager extends Logging {
       infos.get(blockId) match {
         case None => return None
         case Some(info) =>
-          if (info.writerTask == currentTaskAttemptId) {
+          if (info.writerTask == currentTaskAttemptId)
             throw new IllegalStateException(
               s"Task $currentTaskAttemptId has already locked $blockId for writing")
-          } else if (info.writerTask == BlockInfo.NO_WRITER && info.readerCount == 0) {
+          else if (info.writerTask == BlockInfo.NO_WRITER && info.readerCount == 0) {
             info.writerTask = currentTaskAttemptId
             writeLocksByTask.addBinding(currentTaskAttemptId, blockId)
             logTrace(
@@ -240,9 +239,8 @@ private[storage] class BlockInfoManager extends Logging {
             return Some(info)
           }
       }
-      if (blocking) {
+      if (blocking)
         wait()
-      }
     } while (blocking)
     None
   }
@@ -255,12 +253,11 @@ private[storage] class BlockInfoManager extends Logging {
     synchronized {
       infos.get(blockId) match {
         case Some(info) =>
-          if (info.writerTask != currentTaskAttemptId) {
+          if (info.writerTask != currentTaskAttemptId)
             throw new SparkException(
               s"Task $currentTaskAttemptId has not locked block $blockId for writing")
-          } else {
+          else
             info
-          }
         case None =>
           throw new SparkException(s"Block $blockId does not exist")
       }
@@ -419,10 +416,10 @@ private[storage] class BlockInfoManager extends Logging {
     logTrace(s"Task $currentTaskAttemptId trying to remove block $blockId")
     infos.get(blockId) match {
       case Some(blockInfo) =>
-        if (blockInfo.writerTask != currentTaskAttemptId) {
+        if (blockInfo.writerTask != currentTaskAttemptId)
           throw new IllegalStateException(
             s"Task $currentTaskAttemptId called remove() on block $blockId without a write lock")
-        } else {
+        else {
           infos.remove(blockId)
           blockInfo.readerCount = 0
           blockInfo.writerTask = BlockInfo.NO_WRITER

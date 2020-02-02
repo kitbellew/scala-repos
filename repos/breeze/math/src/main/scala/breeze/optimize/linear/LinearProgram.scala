@@ -46,10 +46,10 @@ class LinearProgram {
 
     override def toString = (
       "maximize    " + objective + {
-        if (constraints.nonEmpty) {
+        if (constraints.nonEmpty)
           "\nsubject to  " + constraints.mkString(
             "\n" + " " * "subject to  ".length)
-        } else ""
+        else ""
       }
     )
   }
@@ -272,14 +272,13 @@ object LinearProgram {
     def minimize(lp: LinearProgram)(obj: lp.Problem): lp.Result
   }
 
-  implicit val mySolver = {
+  implicit val mySolver =
 //    NativeLPSolver
 //  } catch {
 //    case ex: SecurityException =>
     ApacheSimplexSolver
 //    case ex: UnsatisfiedLinkError =>
 //      ApacheSimplexSolver
-  }
 
   object ApacheSimplexSolver extends Solver {
     def maximize(lp: LinearProgram)(objective: lp.Problem): lp.Result = {

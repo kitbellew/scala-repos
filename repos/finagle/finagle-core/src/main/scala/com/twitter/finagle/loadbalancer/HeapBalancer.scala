@@ -150,16 +150,15 @@ class HeapBalancer[Req, Rep](
 
       // expand the heap again
       fixUp(heap, size)
-    } else {
+    } else
       fixUp(heap, n.index)
-    }
   }
 
   @tailrec
   private[this] def get(): Node = {
     var n = downq
     var m = null: Node
-    while (n != null) {
+    while (n != null)
       if (n.index < 0) { // discarded node
         n = n.downq
         if (m == null) downq = n
@@ -176,7 +175,6 @@ class HeapBalancer[Req, Rep](
         m = n
         n = n.downq
       }
-    }
 
     n = heap(1)
     if (n.factory.status == Status.Open || n.load >= 0) n

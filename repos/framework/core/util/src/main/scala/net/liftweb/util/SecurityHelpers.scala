@@ -118,7 +118,7 @@ trait SecurityHelpers {
     case (null, null) => true
     case (null, _)    => false
     case (_, null)    => false
-    case (a, b) => {
+    case (a, b) =>
       val la = a.length
       val lb = b.length
       var ret = true
@@ -128,7 +128,6 @@ trait SecurityHelpers {
         pos += 1
       }
       ret && la == lb
-    }
   }
 
   /** create a SHA-256 hash from a Byte array */

@@ -128,14 +128,13 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
                   leader,
                   replicaInfo.asJava,
                   isrInfo.asJava)
-              } else {
+              } else
                 new MetadataResponse.PartitionMetadata(
                   Errors.NONE,
                   partitionId,
                   leader,
                   replicaInfo.asJava,
                   isrInfo.asJava)
-              }
           }
       }
     }

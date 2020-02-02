@@ -44,11 +44,11 @@ class ChannelBufferUsageTracker(
   }
 
   def increase(size: Long) = synchronized {
-    if (state.currentUsage + size > state.usageLimit.inBytes) {
+    if (state.currentUsage + size > state.usageLimit.inBytes)
       throw new ChannelBufferUsageException(
         "Channel buffer usage exceeded limit ("
           + currentUsage + ", " + size + " vs. " + usageLimit + ")")
-    } else {
+    else {
       state.currentUsage += size
       if (currentUsage > maxUsage)
         state.maxUsage = state.currentUsage
@@ -56,13 +56,12 @@ class ChannelBufferUsageTracker(
   }
 
   def decrease(size: Long) = synchronized {
-    if (state.currentUsage < size) {
+    if (state.currentUsage < size)
       throw new ChannelBufferUsageException(
         "invalid ChannelBufferUsageTracker decrease operation ("
           + size + " vs. " + currentUsage + ")")
-    } else {
+    else
       state.currentUsage -= size
-    }
   }
 }
 

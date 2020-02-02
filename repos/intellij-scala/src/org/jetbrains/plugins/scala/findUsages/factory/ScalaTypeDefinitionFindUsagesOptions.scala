@@ -41,17 +41,14 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
   }
 
   protected override def addUsageTypes(strings: util.LinkedHashSet[String]) {
-    if (isUsages || isMembersUsages) {
+    if (isUsages || isMembersUsages)
       strings.add(FindBundle.message("find.usages.panel.title.usages"))
-    }
 
-    if (isImplementingTypeDefinitions) {
+    if (isImplementingTypeDefinitions)
       strings.add(
         ScalaBundle.message("find.usages.implementing.type.definition"))
-    }
 
-    if (isSearchCompanionModule) {
+    if (isSearchCompanionModule)
       strings.add(ScalaBundle.message("find.usages.companin.module"))
-    }
   }
 }

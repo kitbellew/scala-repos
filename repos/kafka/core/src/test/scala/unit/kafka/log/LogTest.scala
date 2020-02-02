@@ -180,9 +180,8 @@ class LogTest extends JUnitSuite {
     assertEquals("There should be exactly 1 segment.", 1, log.numberOfSegments)
 
     // segments expire in size
-    for (i <- 1 to (msgPerSeg + 1)) {
+    for (i <- 1 to (msgPerSeg + 1))
       log.append(set)
-    }
     assertEquals("There should be exactly 2 segments.", 2, log.numberOfSegments)
   }
 

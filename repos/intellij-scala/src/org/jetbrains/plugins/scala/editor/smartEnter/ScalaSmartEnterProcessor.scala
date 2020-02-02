@@ -54,9 +54,7 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
         SMART_ENTER_TIMESTAMP,
         editor.getDocument.getModificationStamp.asInstanceOf[Long])
       processImpl(project, editor, psiFile)
-    } finally {
-      editor.putUserData(SMART_ENTER_TIMESTAMP, null)
-    }
+    } finally editor.putUserData(SMART_ENTER_TIMESTAMP, null)
 
     true
   }
@@ -68,7 +66,7 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       val atCaret = getStatementAtCaret(editor, file)
       if (atCaret == null) return
 
-      for (psiElement <- collectAllAtCaret(atCaret)) {
+      for (psiElement <- collectAllAtCaret(atCaret))
         for (fixer <- ScalaSmartEnterProcessor.myFixers) {
           val go = fixer.apply(editor, this, psiElement)
 
@@ -89,7 +87,6 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
             case _ =>
           }
         }
-      }
 
       doEnter(atCaret, editor)
     } catch {
@@ -128,12 +125,11 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
       rangeMarker.getEndOffset,
       atCaret.getClass)
 
-    for (processor <- ScalaSmartEnterProcessor.myEnterProcessors) {
+    for (processor <- ScalaSmartEnterProcessor.myEnterProcessors)
       if (atCaret != null && processor.doEnter(
             editor,
             atCaret,
             isModified(editor))) return
-    }
 
     if (!isModified(editor)) plainEnter(editor)
     else editor.getCaretModel.moveToOffset(rangeMarker.getEndOffset)
@@ -183,11 +179,9 @@ class ScalaSmartEnterProcessor extends SmartEnterProcessor {
     if (statementAtCaret.isInstanceOf[PsiBlockStatement]) return null
 
     if (statementAtCaret != null && statementAtCaret.getParent
-          .isInstanceOf[ScForStatement]) {
-      if (!PsiTreeUtil.hasErrorElements(statementAtCaret)) {
+          .isInstanceOf[ScForStatement])
+      if (!PsiTreeUtil.hasErrorElements(statementAtCaret))
         statementAtCaret = statementAtCaret.getParent
-      }
-    }
 
     statementAtCaret match {
       case _: ScPatternDefinition | _: ScIfStmt | _: ScWhileStmt |

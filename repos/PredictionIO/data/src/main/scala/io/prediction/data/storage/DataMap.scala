@@ -49,9 +49,8 @@ class DataMap(
     * @param name The property name
     */
   def require(name: String): Unit =
-    if (!fields.contains(name)) {
+    if (!fields.contains(name))
       throw new DataMapException(s"The field $name is required.")
-    }
 
   /** Check if this DataMap contains a specific property.
     *
@@ -217,11 +216,10 @@ object DataMap {
     * @return a new DataMap initialized by a JObject
     */
   def apply(jObj: JObject): DataMap =
-    if (jObj == null) {
+    if (jObj == null)
       apply()
-    } else {
+    else
       new DataMap(jObj.obj.toMap)
-    }
 
   /** Create an DataMap from a JSON String
     * @param js JSON String. eg """{ "a": 1, "b": "foo" }"""

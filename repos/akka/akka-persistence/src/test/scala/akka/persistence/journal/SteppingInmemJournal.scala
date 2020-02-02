@@ -163,7 +163,6 @@ final class SteppingInmemJournal extends InmemJournal {
       val tokenRecipient +: rest = queuedTokenRecipients
       queuedTokenRecipients = rest
       completed.onComplete(_ ⇒ tokenRecipient ! TokenConsumed)
-    } else {
+    } else
       queuedOps = queuedOps :+ op
-    }
 }

@@ -41,7 +41,7 @@ private[lobby] final class Lobby(
         }
       }
 
-    case msg @ AddHook(hook) => {
+    case msg @ AddHook(hook) =>
       lila.mon.lobby.hook.create()
       HookRepo byUid hook.uid foreach remove
       hook.sid ?? { sid => HookRepo bySid sid foreach remove }
@@ -49,7 +49,6 @@ private[lobby] final class Lobby(
         case Some(h) => self ! BiteHook(h.id, hook.uid, hook.user)
         case None    => self ! SaveHook(msg)
       }
-    }
 
     case msg @ AddSeek(seek) =>
       lila.mon.lobby.seek.create()
@@ -67,9 +66,8 @@ private[lobby] final class Lobby(
         socket ! msg
       }
 
-    case CancelHook(uid) => {
+    case CancelHook(uid) =>
       HookRepo byUid uid foreach remove
-    }
 
     case CancelSeek(seekId, user) =>
       seekApi.removeBy(seekId, user.id) >>- {
@@ -124,10 +122,9 @@ private[lobby] final class Lobby(
       }.toSet
       // logger.debug(
       //   s"broom uids:${uids.size} before:${createdBefore} hooks:${hooks.map(_.id)}")
-      if (hooks.nonEmpty) {
+      if (hooks.nonEmpty)
         // logger.debug(s"remove ${hooks.size} hooks")
         self ! RemoveHooks(hooks)
-      }
       lila.mon.lobby.socket.member(uids.size)
       lila.mon.lobby.hook.size(HookRepo.size)
 

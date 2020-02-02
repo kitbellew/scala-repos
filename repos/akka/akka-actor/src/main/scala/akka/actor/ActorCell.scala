@@ -478,23 +478,21 @@ private[akka] class ActorCell(
       val rest = messages.tail
       val message = messages.head
       message.unlink()
-      try {
-        message match {
-          case message: SystemMessage if shouldStash(message, currentState) ⇒
-            stash(message)
-          case f: Failed ⇒ handleFailure(f)
-          case DeathWatchNotification(a, ec, at) ⇒
-            watchedActorTerminated(a, ec, at)
-          case Create(failure) ⇒ create(failure)
-          case Watch(watchee, watcher) ⇒ addWatcher(watchee, watcher)
-          case Unwatch(watchee, watcher) ⇒ remWatcher(watchee, watcher)
-          case Recreate(cause) ⇒ faultRecreate(cause)
-          case Suspend() ⇒ faultSuspend()
-          case Resume(inRespToFailure) ⇒ faultResume(inRespToFailure)
-          case Terminate() ⇒ terminate()
-          case Supervise(child, async) ⇒ supervise(child, async)
-          case NoMessage ⇒ // only here to suppress warning
-        }
+      try message match {
+        case message: SystemMessage if shouldStash(message, currentState) ⇒
+          stash(message)
+        case f: Failed ⇒ handleFailure(f)
+        case DeathWatchNotification(a, ec, at) ⇒
+          watchedActorTerminated(a, ec, at)
+        case Create(failure) ⇒ create(failure)
+        case Watch(watchee, watcher) ⇒ addWatcher(watchee, watcher)
+        case Unwatch(watchee, watcher) ⇒ remWatcher(watchee, watcher)
+        case Recreate(cause) ⇒ faultRecreate(cause)
+        case Suspend() ⇒ faultSuspend()
+        case Resume(inRespToFailure) ⇒ faultResume(inRespToFailure)
+        case Terminate() ⇒ terminate()
+        case Supervise(child, async) ⇒ supervise(child, async)
+        case NoMessage ⇒ // only here to suppress warning
       } catch handleNonFatalOrInterruptedException { e ⇒
         handleInvokeFailure(Nil, e)
       }
@@ -526,10 +524,8 @@ private[akka] class ActorCell(
       currentMessage = null // reset current message after successful invocation
     } catch handleNonFatalOrInterruptedException { e ⇒
       handleInvokeFailure(Nil, e)
-    } finally {
-      if (influenceReceiveTimeout)
-        checkReceiveTimeout // Reschedule receive timeout
-    }
+    } finally if (influenceReceiveTimeout)
+      checkReceiveTimeout // Reschedule receive timeout
   }
 
   def autoReceiveMessage(msg: Envelope): Unit = {
@@ -669,7 +665,7 @@ private[akka] class ActorCell(
   }
 
   private def supervise(child: ActorRef, async: Boolean): Unit =
-    if (!isTerminating) {
+    if (!isTerminating)
       // Supervise is the first thing we get from a new child, so store away the UID for later use in handleFailure()
       initChild(child) match {
         case Some(crs) ⇒
@@ -687,7 +683,6 @@ private[akka] class ActorCell(
               clazz(actor),
               "received Supervise from unregistered child " + child + ", this will not end well"))
       }
-    }
 
   // future extension point
   protected def handleSupervise(child: ActorRef, async: Boolean): Unit =
@@ -721,7 +716,7 @@ private[akka] class ActorCell(
       actorInstance: Actor,
       context: ActorContext,
       self: ActorRef): Unit =
-    if (actorInstance ne null) {
+    if (actorInstance ne null)
       if (!Reflect.lookupAndSetField(
             actorInstance.getClass,
             actorInstance,
@@ -734,7 +729,6 @@ private[akka] class ActorCell(
             self))
         throw new IllegalActorStateException(
           actorInstance.getClass + " is not an Actor since it have not mixed in the 'Actor' trait")
-    }
 
   // logging is not the main purpose, and if it fails there’s nothing we can do
   protected final def publish(e: LogEvent): Unit =

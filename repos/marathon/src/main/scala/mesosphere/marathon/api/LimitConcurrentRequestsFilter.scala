@@ -20,13 +20,10 @@ class LimitConcurrentRequestsFilter(concurrentOption: Option[Int])
       request: ServletRequest,
       response: ServletResponse,
       chain: FilterChain): Unit =
-    if (semaphore.tryAcquire()) {
-      try {
-        chain.doFilter(request, response)
-      } finally {
-        semaphore.release()
-      }
-    } else {
+    if (semaphore.tryAcquire())
+      try chain.doFilter(request, response)
+      finally semaphore.release()
+    else
       response match {
         //scalastyle:off magic.number
         case r: HttpServletResponse =>
@@ -37,7 +34,6 @@ class LimitConcurrentRequestsFilter(concurrentOption: Option[Int])
           throw new IllegalArgumentException(
             s"Expected http response but got $response")
       }
-    }
 
   def pass(
       request: ServletRequest,

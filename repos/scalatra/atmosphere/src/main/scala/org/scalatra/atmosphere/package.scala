@@ -62,13 +62,12 @@ package object atmosphere {
     implicit val execContext = system.dispatcher
     if (maybeTimeout.exists(_.isOverdue())) javaFuture.cancel(true)
 
-    if (javaFuture.isDone || javaFuture.isCancelled) {
+    if (javaFuture.isDone || javaFuture.isCancelled)
       promise.complete(allCatch withTry { javaFuture.get }).future
-    } else {
+    else
       system.scheduler.scheduleOnce(10 milliseconds) {
         pollJavaFutureUntilDoneOrCancelled(javaFuture, promise, maybeTimeout)
       }
-    }
   }
 
   //  private[atmoshpere] val atmoScheduler = Executors.newScheduledThreadPool(1)

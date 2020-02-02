@@ -59,19 +59,14 @@ private[sql] object SQLExecution {
               SparkPlanInfo.fromSparkPlan(queryExecution.executedPlan),
               System.currentTimeMillis()
             ))
-          try {
-            body
-          } finally {
-            sqlContext.sparkContext.listenerBus.post(
-              SparkListenerSQLExecutionEnd(
-                executionId,
-                System.currentTimeMillis()))
-          }
-        } finally {
-          sc.setLocalProperty(EXECUTION_ID_KEY, null)
-        }
+          try body
+          finally sqlContext.sparkContext.listenerBus.post(
+            SparkListenerSQLExecutionEnd(
+              executionId,
+              System.currentTimeMillis()))
+        } finally sc.setLocalProperty(EXECUTION_ID_KEY, null)
       r
-    } else {
+    } else
       // Don't support nested `withNewExecutionId`. This is an example of the nested
       // `withNewExecutionId`:
       //
@@ -87,7 +82,6 @@ private[sql] object SQLExecution {
       //
       // A real case is the `DataFrame.count` method.
       throw new IllegalArgumentException(s"$EXECUTION_ID_KEY is already set")
-    }
   }
 
   /**
@@ -101,8 +95,6 @@ private[sql] object SQLExecution {
     try {
       sc.setLocalProperty(SQLExecution.EXECUTION_ID_KEY, executionId)
       body
-    } finally {
-      sc.setLocalProperty(SQLExecution.EXECUTION_ID_KEY, oldExecutionId)
-    }
+    } finally sc.setLocalProperty(SQLExecution.EXECUTION_ID_KEY, oldExecutionId)
   }
 }

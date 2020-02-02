@@ -106,13 +106,12 @@ abstract class ScalaRenameTestBase
         result
       }
       val result = findOffsets(text).map(offset => CaretPosition(file, offset))
-      if (result.nonEmpty) {
+      if (result.nonEmpty)
         inWriteAction(
           FileDocumentManager
             .getInstance()
             .getDocument(file)
             .replaceString(0, fileLength, text))
-      }
       result
     }
     files.flatMap(caretsInFile)

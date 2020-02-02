@@ -78,21 +78,19 @@ object MakeJar {
       source: File,
       result: List[String] = List.empty): Option[File] =
     Option(source) match {
-      case Some(src) => {
-        if (parent == src) {
+      case Some(src) =>
+        if (parent == src)
           result.foldLeft(None: Option[File]) { (cum, part) =>
             Some(cum match {
               case Some(p) => new File(p, part)
               case None    => new File(part)
             })
           }
-        } else {
+        else
           getRelativeFileBetween(
             parent,
             src.getParentFile,
             src.getName :: result)
-        }
-      }
       case None => None
     }
 }

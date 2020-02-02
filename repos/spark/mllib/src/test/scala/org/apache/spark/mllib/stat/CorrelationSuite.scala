@@ -145,17 +145,16 @@ class CorrelationSuite
   }
 
   def approxEqual(v1: Double, v2: Double, threshold: Double = 1e-6): Boolean =
-    if (v1.isNaN) {
+    if (v1.isNaN)
       v2.isNaN
-    } else {
+    else
       math.abs(v1 - v2) <= threshold
-    }
 
   def matrixApproxEqual(
       A: BM[Double],
       B: BM[Double],
       threshold: Double = 1e-6): Boolean = {
-    for (i <- 0 until A.rows; j <- 0 until A.cols) {
+    for (i <- 0 until A.rows; j <- 0 until A.cols)
       if (!approxEqual(A(i, j), B(i, j), threshold)) {
         logInfo(
           "i, j = " + i + ", " + j + " actual: " + A(i, j) + " expected:" + B(
@@ -163,7 +162,6 @@ class CorrelationSuite
             j))
         return false
       }
-    }
     true
   }
 }

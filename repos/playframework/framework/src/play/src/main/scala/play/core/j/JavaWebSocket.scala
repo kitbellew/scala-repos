@@ -35,9 +35,7 @@ object JavaWebSocket extends JavaHelpers {
         try {
           JContext.current.set(javaContext)
           FutureConverters.toScala(retrieveWebSocket)
-        } finally {
-          JContext.current.remove()
-        }
+        } finally JContext.current.remove()
 
       javaWebSocket.map { jws =>
         val reject = Option(jws.rejectWith())
@@ -50,9 +48,9 @@ object JavaWebSocket extends JavaHelpers {
           implicit val mat = current.materializer
 
           Right(
-            if (jws.isActor) {
+            if (jws.isActor)
               transformer.transform(ActorFlow.actorRef(jws.actorProps))
-            } else {
+            else {
 
               val socketIn = new JWebSocket.In[A]
 

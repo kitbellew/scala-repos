@@ -34,12 +34,11 @@ class RedundantBlockInspection extends AbstractInspection {
         "Remove redundant braces",
         new InCaseClauseQuickFix(block))
     case block: ScBlockExpr if block.getChildren.length == 3 =>
-      if (RedundantBlockInspection.isRedundantBlock(block)) {
+      if (RedundantBlockInspection.isRedundantBlock(block))
         holder.registerProblem(
           block,
           "The enclosing block is redundant",
           new QuickFix(block))
-      }
   }
 
   private class QuickFix(e: PsiElement)
@@ -55,9 +54,8 @@ class RedundantBlockInspection extends AbstractInspection {
     def doApplyFix(project: Project): Unit = {
       val bl = getElement
       val children = bl.getChildren.drop(1).dropRight(1)
-      for (child <- children) {
+      for (child <- children)
         bl.getParent.addBefore(child, bl)
-      }
       bl.delete()
     }
   }

@@ -27,16 +27,15 @@ object Parameter {
 
   implicit def wrap[_A](_value: _A)(
       implicit _evidence: CanBeParameter[_A]): Parameter =
-    if (_value == null) {
+    if (_value == null)
       NullParameter
-    } else {
+    else
       new Parameter {
         type A = _A
         def value: A = _value
         def evidence: CanBeParameter[A] = _evidence
         override def toString = s"Parameter($value)"
       }
-    }
 
   private val log = Logger.getLogger("finagle-mysql")
 

@@ -89,12 +89,10 @@ object Test {
     val sets2 =
       setneg1 ++ setneg1b ++ setneg2 ++ setneg2b ++ List(zero) ++ setpos1 ++ setpos1b ++ setpos2 ++ setpos2b
 
-    for (set <- sets2; x <- set; y <- set) {
-      if (!isIffy(x, y)) {
+    for (set <- sets2; x <- set; y <- set)
+      if (!isIffy(x, y))
         assert(x == y, "%s/%s != %s/%s".format(x, x.getClass, y, y.getClass))
-        // The following is blocked by SI-8150
-        // if (!isIffyB(x,y)) assert(x.## == y.##, "%x/%s != %x/%s from %s.## and %s.##".format(x.##, x.getClass, y.##, y.getClass, x, y))
-      }
-    }
+    // The following is blocked by SI-8150
+    // if (!isIffyB(x,y)) assert(x.## == y.##, "%x/%s != %x/%s from %s.## and %s.##".format(x.##, x.getClass, y.##, y.getClass, x, y))
   }
 }

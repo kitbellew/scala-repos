@@ -174,9 +174,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
             sameInfosWithUpdatedRanges()
           else optimized
 
-        for ((range, importInfos) <- ranges.reverseIterator) {
+        for ((range, importInfos) <- ranges.reverseIterator)
           replaceWithNewImportInfos(range, importInfos, settings, document)
-        }
         documentManager.commitDocument(document)
       }
 
@@ -292,7 +291,7 @@ class ScalaImportOptimizer extends ImportOptimizer {
       rangeEnd = psi.getTextRange.getEndOffset
     }
 
-    for (child <- holder.getNode.getChildren(null)) {
+    for (child <- holder.getNode.getChildren(null))
       child.getPsi match {
         case whitespace: PsiWhiteSpace =>
         case d: ScDocComment           => addRange()
@@ -317,13 +316,11 @@ class ScalaImportOptimizer extends ImportOptimizer {
               case _ => initRange(imp)
             }
             namesAtStart = namesAtRangeStart(imp)
-          } else {
+          } else
             rangeEnd = imp.getTextRange.getEndOffset
-          }
           infos ++= createInfo(imp)
         case _ => addRange()
       }
-    }
     addRange()
     result.toMap
   }
@@ -354,9 +351,8 @@ object ScalaImportOptimizer {
     val i = optimizers.iterator()
     while (i.hasNext) {
       val opt = i.next()
-      if (opt supports topLevelFile) {
+      if (opt supports topLevelFile)
         return Some(opt)
-      }
     }
     None
   }
@@ -513,12 +509,11 @@ object ScalaImportOptimizer {
       } else false
     }
 
-    for ((info, i) <- infos.zipWithIndex) {
+    for ((info, i) <- infos.zipWithIndex)
       if (shouldUpdate(info)) {
         val newInfo = info.toWildcardInfo
         infos.update(i, newInfo)
       }
-    }
   }
 
   def insertInto(
@@ -534,9 +529,8 @@ object ScalaImportOptimizer {
       infos.insert(i, newInfo)
       while (i > 0 && greater(infos(i - 1), infos(i), settings) && swapWithNext(
                infos,
-               i - 1)) {
+               i - 1))
         i -= 1
-      }
     }
 
     def replace(oldInfos: Seq[ImportInfo], newInfos: Seq[ImportInfo]) = {
@@ -546,9 +540,8 @@ object ScalaImportOptimizer {
         val minIndex = oldIndices.last
         oldIndices.foreach(infos.remove)
         infos.insert(minIndex, newInfos: _*)
-      } else {
+      } else
         newInfos.foreach(addLastAndMoveUpwards)
-      }
     }
 
     def withAliasedQualifier(info: ImportInfo): ImportInfo = {
@@ -606,14 +599,13 @@ object ScalaImportOptimizer {
         val simpleMerged =
           ImportInfo.merge(simpleInfosToRemain ++ notSimpleMerged)
         replace(samePrefixInfos, simpleMerged.toSeq)
-      } else {
+      } else
         replace(samePrefixInfos, simpleInfosToRemain ++ notSimpleMerged)
-      }
     }
 
-    if (actuallyInserted.hasWildcard) {
+    if (actuallyInserted.hasWildcard)
       insertInfoWithWildcard()
-    } else if (simpleInfos.size >= settings.classCountToUseImportOnDemand && !actuallyInserted.wildcardHasUnusedImplicit) {
+    else if (simpleInfos.size >= settings.classCountToUseImportOnDemand && !actuallyInserted.wildcardHasUnusedImplicit) {
       notSimpleInfos += actuallyInserted.toWildcardInfo
       insertInfoWithWildcard()
     } else if (collectImports) {
@@ -629,14 +621,14 @@ object ScalaImportOptimizer {
     val firstPart: String = getFirstId(firstPrefix)
     val secondPrefix = second.relative.getOrElse(second.prefixQualifier)
     val secondPart = getFirstId(secondPrefix)
-    if (first.rootUsed || !second.allNames.contains(firstPart)) {
+    if (first.rootUsed || !second.allNames.contains(firstPart))
       if (second.rootUsed || !first.allNames.contains(secondPart)) {
         val t = first
         buffer(i) = second
         buffer(i + 1) = t
         true
       } else false
-    } else false
+    else false
   }
 
   private def mergeImportInfos(
@@ -652,27 +644,25 @@ object ScalaImportOptimizer {
     var i = 0
     while (i < buffer.length - 1) {
       val prefixIndex: Int = samePrefixAfter(i)
-      if (prefixIndex != -1) {
+      if (prefixIndex != -1)
         if (prefixIndex == i + 1) {
           val merged = buffer(i).merge(buffer(i + 1))
           buffer(i) = merged
           buffer.remove(i + 1)
-        } else {
-          if (swapWithNext(buffer, i)) {
-            var j = i + 1
-            var break = false
-            while (!break && j != prefixIndex - 1) {
-              if (!swapWithNext(buffer, j)) break = true
-              j += 1
-            }
-            if (!break) {
-              val merged = buffer(i).merge(buffer(j + 1))
-              buffer(j) = merged
-              buffer.remove(j + 1)
-            }
-          } else i += 1
-        }
-      } else i += 1
+        } else if (swapWithNext(buffer, i)) {
+          var j = i + 1
+          var break = false
+          while (!break && j != prefixIndex - 1) {
+            if (!swapWithNext(buffer, j)) break = true
+            j += 1
+          }
+          if (!break) {
+            val merged = buffer(i).merge(buffer(j + 1))
+            buffer(j) = merged
+            buffer.remove(j + 1)
+          }
+        } else i += 1
+      else i += 1
     }
     buffer
   }
@@ -744,9 +734,8 @@ object ScalaImportOptimizer {
 
     expr.findImplicitParameters match {
       case Some(seq) =>
-        for (rr <- seq if rr != null) {
+        for (rr <- seq if rr != null)
           res ++= rr.importsUsed
-        }
       case _ =>
     }
     res.toSet

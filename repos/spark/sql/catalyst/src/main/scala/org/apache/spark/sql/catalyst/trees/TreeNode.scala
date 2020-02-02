@@ -62,9 +62,7 @@ object CurrentOrigin {
     set(o)
     val ret =
       try f
-      finally {
-        reset()
-      }
+      finally reset()
     reset()
     ret
   }
@@ -174,9 +172,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     val newArgs = productIterator.map {
       case arg: TreeNode[_] if containsChild(arg) =>
         val newChild = f(arg.asInstanceOf[BaseType])
-        if (newChild fastEquals arg) {
+        if (newChild fastEquals arg)
           arg
-        } else {
+        else {
           changed = true
           newChild
         }
@@ -204,9 +202,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           case arg: TreeNode[_] if containsChild(arg) =>
             val newChild = remainingNewChildren.remove(0)
             val oldChild = remainingOldChildren.remove(0)
-            if (newChild fastEquals oldChild) {
+            if (newChild fastEquals oldChild)
               oldChild
-            } else {
+            else {
               changed = true
               newChild
             }
@@ -218,9 +216,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
             case arg: TreeNode[_] if containsChild(arg) =>
               val newChild = remainingNewChildren.remove(0)
               val oldChild = remainingOldChildren.remove(0)
-              if (newChild fastEquals oldChild) {
+              if (newChild fastEquals oldChild)
                 oldChild
-              } else {
+              else {
                 changed = true
                 newChild
               }
@@ -232,9 +230,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
       case arg: TreeNode[_] if containsChild(arg) =>
         val newChild = remainingNewChildren.remove(0)
         val oldChild = remainingOldChildren.remove(0)
-        if (newChild fastEquals oldChild) {
+        if (newChild fastEquals oldChild)
           oldChild
-        } else {
+        else {
           changed = true
           newChild
         }
@@ -268,11 +266,10 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     }
 
     // Check if unchanged and then possibly return old copy to avoid gc churn.
-    if (this fastEquals afterRule) {
+    if (this fastEquals afterRule)
       transformChildren(rule, (t, r) => t.transformDown(r))
-    } else {
+    else
       afterRule.transformChildren(rule, (t, r) => t.transformDown(r))
-    }
   }
 
   /**
@@ -285,15 +282,14 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
   def transformUp(rule: PartialFunction[BaseType, BaseType]): BaseType = {
     val afterRuleOnChildren =
       transformChildren(rule, (t, r) => t.transformUp(r))
-    if (this fastEquals afterRuleOnChildren) {
+    if (this fastEquals afterRuleOnChildren)
       CurrentOrigin.withOrigin(origin) {
         rule.applyOrElse(this, identity[BaseType])
       }
-    } else {
+    else
       CurrentOrigin.withOrigin(origin) {
         rule.applyOrElse(afterRuleOnChildren, identity[BaseType])
       }
-    }
   }
 
   /**
@@ -312,17 +308,15 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
         if (!(newChild fastEquals arg)) {
           changed = true
           newChild
-        } else {
+        } else
           arg
-        }
       case Some(arg: TreeNode[_]) if containsChild(arg) =>
         val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
         if (!(newChild fastEquals arg)) {
           changed = true
           Some(newChild)
-        } else {
+        } else
           Some(arg)
-        }
       case m: Map[_, _] =>
         m.mapValues {
             case arg: TreeNode[_] if containsChild(arg) =>
@@ -330,9 +324,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
               if (!(newChild fastEquals arg)) {
                 changed = true
                 newChild
-              } else {
+              } else
                 arg
-              }
             case other => other
           }
           .view
@@ -345,18 +338,16 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
             if (!(newChild fastEquals arg)) {
               changed = true
               newChild
-            } else {
+            } else
               arg
-            }
           case tuple @ (arg1: TreeNode[_], arg2: TreeNode[_]) =>
             val newChild1 = nextOperation(arg1.asInstanceOf[BaseType], rule)
             val newChild2 = nextOperation(arg2.asInstanceOf[BaseType], rule)
             if (!(newChild1 fastEquals arg1) || !(newChild2 fastEquals arg2)) {
               changed = true
               (newChild1, newChild2)
-            } else {
+            } else
               tuple
-            }
           case other => other
         }
       case nonChild: AnyRef => nonChild
@@ -381,22 +372,18 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
   def makeCopy(newArgs: Array[AnyRef]): BaseType =
     attachTree(this, "makeCopy") {
       val ctors = getClass.getConstructors.filter(_.getParameterTypes.size != 0)
-      if (ctors.isEmpty) {
+      if (ctors.isEmpty)
         sys.error(s"No valid constructor for $nodeName")
-      }
       val defaultCtor = ctors.maxBy(_.getParameterTypes.size)
 
-      try {
-        CurrentOrigin.withOrigin(origin) {
-          // Skip no-arg constructors that are just there for kryo.
-          if (otherCopyArgs.isEmpty) {
-            defaultCtor.newInstance(newArgs: _*).asInstanceOf[BaseType]
-          } else {
-            defaultCtor
-              .newInstance((newArgs ++ otherCopyArgs).toArray: _*)
-              .asInstanceOf[BaseType]
-          }
-        }
+      try CurrentOrigin.withOrigin(origin) {
+        // Skip no-arg constructors that are just there for kryo.
+        if (otherCopyArgs.isEmpty)
+          defaultCtor.newInstance(newArgs: _*).asInstanceOf[BaseType]
+        else
+          defaultCtor
+            .newInstance((newArgs ++ otherCopyArgs).toArray: _*)
+            .asInstanceOf[BaseType]
       } catch {
         case e: java.lang.IllegalArgumentException =>
           throw new TreeNodeException(
@@ -460,11 +447,11 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
   def apply(number: Int): BaseType = getNodeNumbered(new MutableInt(number))
 
   protected def getNodeNumbered(number: MutableInt): BaseType =
-    if (number.i < 0) {
+    if (number.i < 0)
       null.asInstanceOf[BaseType]
-    } else if (number.i == 0) {
+    else if (number.i == 0)
       this
-    } else {
+    else {
       number.i -= 1
       children
         .map(_.getNodeNumbered(number))
@@ -698,11 +685,11 @@ object TreeNode {
       val nextNode = jsonNodes.pop()
 
       val cls = Utils.classForName((nextNode \ "class").asInstanceOf[JString].s)
-      if (cls == classOf[Literal]) {
+      if (cls == classOf[Literal])
         Literal.fromJSON(nextNode)
-      } else if (cls.getName.endsWith("$")) {
+      else if (cls.getName.endsWith("$"))
         cls.getField("MODULE$").get(cls).asInstanceOf[TreeNode[_]]
-      } else {
+      else {
         val numChildren =
           (nextNode \ "num-children").asInstanceOf[JInt].num.toInt
 
@@ -723,12 +710,13 @@ object TreeNode {
               case (cls, tpe) => cls == getClassFromType(tpe)
             }
         }
-        if (maybeCtor.isEmpty) {
+        if (maybeCtor.isEmpty)
           sys.error(s"No valid constructor for ${cls.getName}")
-        } else {
-          try {
-            maybeCtor.get.newInstance(parameters: _*).asInstanceOf[TreeNode[_]]
-          } catch {
+        else
+          try maybeCtor.get
+            .newInstance(parameters: _*)
+            .asInstanceOf[TreeNode[_]]
+          catch {
             case e: java.lang.IllegalArgumentException =>
               throw new RuntimeException(
                 s"""
@@ -739,7 +727,6 @@ object TreeNode {
                 """.stripMargin,
                 e)
           }
-        }
       }
     }
 
@@ -802,9 +789,9 @@ object TreeNode {
               s"$value is not a valid json value for tree node.")
         }
       case t if t <:< localTypeOf[Option[_]] =>
-        if (value == JNothing) {
+        if (value == JNothing)
           None
-        } else {
+        else {
           val TypeRef(_, _, Seq(optType)) = t
           Option(parseFromJson(value, optType, children, sc))
         }

@@ -35,42 +35,33 @@ class ScalaFileStructureViewElement(
 
   def getChildren: Array[TreeElement] = {
     val children = new ArrayBuffer[ScalaStructureViewElement]
-    for (child <- findRightFile().getChildren) {
+    for (child <- findRightFile().getChildren)
       child match {
-        case td: ScTypeDefinition => {
+        case td: ScTypeDefinition =>
           children += new ScalaTypeDefinitionStructureViewElement(td)
-        }
-        case packaging: ScPackaging => {
+        case packaging: ScPackaging =>
           def getChildren(
               pack: ScPackaging): Array[ScalaStructureViewElement] = {
             val children = new ArrayBuffer[ScalaStructureViewElement]
-            for (td <- pack.immediateTypeDefinitions) {
+            for (td <- pack.immediateTypeDefinitions)
               children += new ScalaTypeDefinitionStructureViewElement(td)
-            }
-            for (p <- pack.packagings) {
+            for (p <- pack.packagings)
               children ++= getChildren(p)
-            }
             children.toArray
           }
           children ++= getChildren(packaging)
-        }
-        case member: ScVariable => {
+        case member: ScVariable =>
           for (f <- member.declaredElements)
             children += new ScalaVariableStructureViewElement(f.nameId, false)
-        }
-        case member: ScValue => {
+        case member: ScValue =>
           for (f <- member.declaredElements)
             children += new ScalaValueStructureViewElement(f.nameId, false)
-        }
-        case member: ScTypeAlias => {
+        case member: ScTypeAlias =>
           children += new ScalaTypeAliasStructureViewElement(member, false)
-        }
-        case func: ScFunction => {
+        case func: ScFunction =>
           children += new ScalaFunctionStructureViewElement(func, false)
-        }
         case _ =>
       }
-    }
     children.toArray
   }
 
@@ -83,7 +74,6 @@ class ScalaFileStructureViewElement(
         buffer.toString(),
         file.getManager)
       newFile
-    } else {
+    } else
       file
-    }
 }

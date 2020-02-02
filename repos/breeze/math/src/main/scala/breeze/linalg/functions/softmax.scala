@@ -31,9 +31,9 @@ object softmax extends UFunc {
     */
   def array(arr: Array[Double], length: Int) = {
     val m = max.array(arr, length)
-    if (m.isInfinite) {
+    if (m.isInfinite)
       m
-    } else {
+    else {
       var accum = 0.0
       var i = 0
       while (i < length) {
@@ -51,9 +51,8 @@ object softmax extends UFunc {
 
       val max = if (!iter.isTraversableAgain(v)) 0.0 else maxImpl(v)
 
-      if (max.isInfinite) {
+      if (max.isInfinite)
         return Double.NegativeInfinity
-      }
 
       val visit = new ValuesVisitor[Double] {
         var accum = 0.0
@@ -61,9 +60,8 @@ object softmax extends UFunc {
           accum += scala.math.exp(a - max)
 
         def zeros(numZero: Int, zeroValue: Double): Unit =
-          if (numZero != 0) {
+          if (numZero != 0)
             accum += (numZero * scala.math.exp(zeroValue - max))
-          }
 
         override def visitArray(
             arr: Array[Double],
@@ -95,9 +93,8 @@ object softmax extends UFunc {
 
       val max = if (!iter.isTraversableAgain(v)) 0.0f else maxImpl(v)
 
-      if (max.isInfinite) {
+      if (max.isInfinite)
         return Float.NegativeInfinity
-      }
 
       val visit = new ValuesVisitor[Float] {
         var accum = 0.0f
@@ -105,9 +102,8 @@ object softmax extends UFunc {
           accum += scala.math.exp(a - max).toFloat
 
         def zeros(numZero: Int, zeroValue: Float): Unit =
-          if (numZero != 0) {
+          if (numZero != 0)
             accum += (numZero * scala.math.exp(zeroValue - max)).toFloat
-          }
 
         override def visitArray(
             arr: Array[Float],

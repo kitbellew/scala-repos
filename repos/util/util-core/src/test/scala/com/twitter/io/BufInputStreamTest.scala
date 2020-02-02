@@ -29,9 +29,8 @@ class BufInputStreamTest extends FunSuite {
 
     val i = is.read()
     assert(i != -1)
-    try {
-      is.close()
-    } catch {
+    try is.close()
+    catch {
       case e: IOException =>
         fail("Test 1: Failed to close the input stream.")
     }

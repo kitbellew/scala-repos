@@ -318,12 +318,11 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
   object ErrorHandlingFilter extends EssentialFilter {
     def apply(next: EssentialAction) = EssentialAction { request =>
-      try {
-        next(request).recover {
-          case t: Throwable =>
-            Results.InternalServerError(t.getMessage)
-        }(play.api.libs.concurrent.Execution.Implicits.defaultContext)
-      } catch {
+      try next(request).recover {
+        case t: Throwable =>
+          Results.InternalServerError(t.getMessage)
+      }(play.api.libs.concurrent.Execution.Implicits.defaultContext)
+      catch {
         case t: Throwable =>
           Accumulator.done(Results.InternalServerError(t.getMessage))
       }
@@ -340,13 +339,12 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
     def apply(next: EssentialAction) = new EssentialAction {
       override def apply(request: Http.RequestHeader) =
-        try {
-          next
-            .apply(request)
-            .recover(new java.util.function.Function[Throwable, Result]() {
-              def apply(t: Throwable) = getResult(t)
-            }, play.core.Execution.internalContext)
-        } catch {
+        try next
+          .apply(request)
+          .recover(new java.util.function.Function[Throwable, Result]() {
+            def apply(t: Throwable) = getResult(t)
+          }, play.core.Execution.internalContext)
+        catch {
           case t: Throwable => Accumulator.done(getResult(t))
         }
     }

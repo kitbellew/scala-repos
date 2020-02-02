@@ -110,10 +110,10 @@ class CompileSocket extends CompileOutputCommon {
 
   /** Poll for a server port number; return -1 if none exists yet */
   private def pollPort(): Int =
-    if (fixPort > 0) {
+    if (fixPort > 0)
       if (portsDir.list.toList.exists(_.name == fixPort.toString)) fixPort
       else -1
-    } else
+    else
       portsDir.list.toList match {
         case Nil => -1
         case x :: xs =>
@@ -207,9 +207,8 @@ class CompileSocket extends CompileOutputCommon {
 
   // XXX way past time for this to be central
   def parseInt(x: String): Option[Int] =
-    try {
-      Some(x.toInt)
-    } catch { case _: NumberFormatException => None }
+    try Some(x.toInt)
+    catch { case _: NumberFormatException => None }
 
   def getSocket(serverAdr: String): Option[Socket] =
     (

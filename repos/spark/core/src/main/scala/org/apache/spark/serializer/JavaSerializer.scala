@@ -45,9 +45,8 @@ private[spark] class JavaSerializationStream(
     * the stream 'resets' object class descriptions have to be re-written)
     */
   def writeObject[T: ClassTag](t: T): SerializationStream = {
-    try {
-      objOut.writeObject(t)
-    } catch {
+    try objOut.writeObject(t)
+    catch {
       case e: NotSerializableException if extraDebugInfo =>
         throw SerializationDebugger.improveException(t, e)
     }
@@ -70,11 +69,11 @@ private[spark] class JavaDeserializationStream(
 
   private val objIn = new ObjectInputStream(in) {
     override def resolveClass(desc: ObjectStreamClass): Class[_] =
-      try {
-        // scalastyle:off classforname
-        Class.forName(desc.getName, false, loader)
-        // scalastyle:on classforname
-      } catch {
+      try
+      // scalastyle:off classforname
+      Class.forName(desc.getName, false, loader)
+      // scalastyle:on classforname
+      catch {
         case e: ClassNotFoundException =>
           JavaDeserializationStream.primitiveMappings
             .getOrElse(desc.getName, throw e)

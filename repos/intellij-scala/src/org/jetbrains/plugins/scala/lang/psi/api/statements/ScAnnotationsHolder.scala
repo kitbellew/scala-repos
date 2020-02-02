@@ -41,9 +41,9 @@ trait ScAnnotationsHolder extends ScalaPsiElement with PsiAnnotationOwner {
         stub.getChildrenByType(
           TokenSet.create(ScalaElementTypes.ANNOTATIONS),
           JavaArrayFactoryUtil.ScAnnotationsFactory)
-      if (annots.length > 0) {
+      if (annots.length > 0)
         return annots(0).getAnnotations.toSeq
-      } else return Seq.empty
+      else return Seq.empty
     }
     if (findChildByClassScala(classOf[ScAnnotations]) != null)
       findChildByClassScala(classOf[ScAnnotations]).getAnnotations.toSeq

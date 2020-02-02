@@ -25,9 +25,8 @@ object ScalaSuppressableInspectionTool {
           SuppressionUtil.SUPPRESS_IN_LINE_COMMENT_PATTERN.matcher(text)
         if (matcher.matches && SuppressionUtil.isInspectionToolIdMentioned(
               matcher.group(1),
-              toolId)) {
+              toolId))
           return Some(comment)
-        }
       }
       None
     }

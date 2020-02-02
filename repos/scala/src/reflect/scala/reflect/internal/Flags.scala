@@ -494,13 +494,13 @@ class Flags extends ModifierFlags {
   }
 
   private def accessString(flags: Long, privateWithin: String) = (
-    if (privateWithin == "") {
+    if (privateWithin == "")
       if ((flags & PrivateLocal) == PrivateLocal) "private[this]"
       else if ((flags & ProtectedLocal) == ProtectedLocal) "protected[this]"
       else if ((flags & PRIVATE) != 0) "private"
       else if ((flags & PROTECTED) != 0) "protected"
       else ""
-    } else if ((flags & PROTECTED) != 0) "protected[" + privateWithin + "]"
+    else if ((flags & PROTECTED) != 0) "protected[" + privateWithin + "]"
     else "private[" + privateWithin + "]"
   )
 
@@ -525,11 +525,10 @@ class Flags extends ModifierFlags {
         val mask = rawFlagPickledOrder(i)
         if ((flags & mask) != 0L) {
           val s = flagToString(mask)
-          if (s.length > 0) {
+          if (s.length > 0)
             if (sb eq null) sb = new StringBuilder append s
             else if (sb.length == 0) sb append s
             else sb append " " append s
-          }
         }
         i += 1
       }

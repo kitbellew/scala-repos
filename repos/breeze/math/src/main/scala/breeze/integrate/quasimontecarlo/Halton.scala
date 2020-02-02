@@ -92,11 +92,10 @@ class BaseUniformHaltonGenerator(val dimension: Int)
         lIndex += 1
       }
 
-      if (lIndex == counters(j).size()) {
+      if (lIndex == counters(j).size())
         counters(j).add(1)
-      } else {
+      else
         counters(j).set(lIndex, counters(j).get(lIndex) + 1)
-      }
 
       var lCountSizeI: Int = counters(j).size()
       var lBasesPow: Long = bases(j)

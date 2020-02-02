@@ -82,11 +82,10 @@ private[akka] trait MetricsKit extends MetricsKitOps {
           graphite,
           settings.GraphiteReporter.Verbose)
 
-        if (settings.GraphiteReporter.ScheduledReportInterval > Duration.Zero) {
+        if (settings.GraphiteReporter.ScheduledReportInterval > Duration.Zero)
           akkaGraphiteReporter.start(
             settings.GraphiteReporter.ScheduledReportInterval.toMillis,
             TimeUnit.MILLISECONDS)
-        }
 
         reporters ::= akkaGraphiteReporter
       }

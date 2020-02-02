@@ -223,9 +223,8 @@ class MarathonSchedulerActor private (
       origSender: ActorRef,
       cancellationHandler: Cancellable): Receive =
     sharedHandlers.andThen[Unit] { _ =>
-      if (tryDeploy(plan, origSender)) {
+      if (tryDeploy(plan, origSender))
         cancellationHandler.cancel()
-      }
     } orElse {
       case CancellationTimeoutExceeded =>
         val reason = new TimeoutException(
@@ -252,9 +251,8 @@ class MarathonSchedulerActor private (
       unstashAll()
       context.become(started)
       true
-    } else {
+    } else
       false
-    }
   }
 
   /**
@@ -269,9 +267,8 @@ class MarathonSchedulerActor private (
     if (conflicts.isEmpty) {
       lockedApps ++= appIds
       Try(f)
-    } else {
+    } else
       Failure(new LockingFailedException("Failed to acquire locks."))
-    }
   }
 
   /**
@@ -556,10 +553,9 @@ class SchedulerActions(
         log.info(
           s"Queueing $toQueue new tasks for ${app.id} ($queuedOrRunning queued or running)")
         taskQueue.add(app, toQueue)
-      } else {
+      } else
         log.info(
           s"Already queued or started $queuedOrRunning tasks for ${app.id}. Not scaling.")
-      }
     } else if (targetCount < launchedCount) {
       log.info(
         s"Scaling ${app.id} from $launchedCount down to $targetCount instances")
@@ -570,13 +566,11 @@ class SchedulerActions(
         .take(launchedCount - targetCount)
       val taskIds: Iterable[TaskID] = toKill.flatMap(_.launchedMesosId)
       log.info(s"Killing tasks: ${taskIds.map(_.getValue)}")
-      for (taskId <- taskIds) {
+      for (taskId <- taskIds)
         driver.killTask(taskId)
-      }
-    } else {
+    } else
       log.info(
         s"Already running ${app.instances} instances of ${app.id}. Not scaling.")
-    }
   }
 
   def scale(driver: SchedulerDriver, appId: PathId): Future[Unit] =

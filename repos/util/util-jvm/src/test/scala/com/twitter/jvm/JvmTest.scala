@@ -46,11 +46,10 @@ class JvmTest extends WordSpec with TestLogging {
       val osIsSupported =
         Option(System.getProperty("os.name")).exists(supported.contains)
 
-      if (osIsSupported) {
+      if (osIsSupported)
         "define process id on supported platforms" in {
           assert(Jvm.ProcessId.isDefined)
         }
-      }
     }
 
     "foreachGc" should {

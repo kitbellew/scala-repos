@@ -48,10 +48,9 @@ class CatalystTypeConvertersSuite extends SparkFunSuite {
   }
 
   test("null handling for individual values") {
-    for (dataType <- simpleTypes) {
+    for (dataType <- simpleTypes)
       assert(
         CatalystTypeConverters.createToScalaConverter(dataType)(null) === null)
-    }
   }
 
   test("option handling in convertToCatalyst") {

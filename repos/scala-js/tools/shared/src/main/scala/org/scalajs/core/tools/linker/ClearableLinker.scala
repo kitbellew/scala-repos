@@ -59,18 +59,16 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
   private[this] def linkerOp[T](op: GenLinker => T): T = {
     ensureLinker()
 
-    try {
-      op(_linker)
-    } catch {
+    try op(_linker)
+    catch {
       // Clear if we throw
       case t: Throwable =>
         clear()
         throw t
-    } finally {
-      // Clear if we are in batch mode
-      if (batchMode)
-        clear()
-    }
+    } finally
+    // Clear if we are in batch mode
+    if (batchMode)
+      clear()
   }
 
   private def ensureLinker(): Unit =

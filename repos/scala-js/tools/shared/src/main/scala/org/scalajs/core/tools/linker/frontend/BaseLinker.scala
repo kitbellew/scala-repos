@@ -116,7 +116,7 @@ final class BaseLinker(
       bypassLinkingErrors: Boolean,
       checkIR: Boolean): LinkingUnit = {
 
-    if (checkIR) {
+    if (checkIR)
       logger.time("Linker: Check Infos") {
         val infoAndTrees =
           infoInput.map(info => (info, getTree(info.encodedName)._1))
@@ -124,7 +124,6 @@ final class BaseLinker(
         if (errorCount != 0)
           sys.error(s"There were $errorCount Info checking errors.")
       }
-    }
 
     val analysis = logger.time("Linker: Compute reachability") {
       Analyzer.computeReachability(
@@ -153,17 +152,15 @@ final class BaseLinker(
       assemble(infoInput, getTree, analysis)
     }
 
-    if (checkIR) {
+    if (checkIR)
       logger.time("Linker: Check IR") {
         if (linkResult.isComplete) {
           val errorCount = IRChecker.check(linkResult, logger)
           if (errorCount != 0)
             sys.error(s"There were $errorCount IR checking errors.")
-        } else {
+        } else
           sys.error("Could not check IR because there were linking errors.")
-        }
       }
-    }
 
     linkResult
   }
@@ -261,14 +258,13 @@ final class BaseLinker(
 
       // Normal methods
       case m: MethodDef =>
-        if (analyzerInfo.methodInfos(m.name.name).isReachable) {
+        if (analyzerInfo.methodInfos(m.name.name).isReachable)
           if (m.name.isInstanceOf[StringLiteral])
             exportedMembers += linkedMethod(m)
           else if (m.body == EmptyTree)
             abstractMethods += linkedMethod(m)
           else
             memberMethods += linkedMethod(m)
-        }
 
       case m: PropertyDef =>
         if (analyzerInfo.isAnySubclassInstantiated)
@@ -291,35 +287,33 @@ final class BaseLinker(
     for {
       m <- analyzerInfo.methodInfos.valuesIterator
       if m.isReachable
-    } {
-      m.syntheticKind match {
-        case MethodSyntheticKind.None =>
-        // nothing to do
+    } m.syntheticKind match {
+      case MethodSyntheticKind.None =>
+      // nothing to do
 
-        case MethodSyntheticKind.InheritedConstructor =>
-          val syntheticMDef =
-            synthesizeInheritedConstructor(analyzerInfo, m, getTree, analysis)(
-              classDef.pos)
-          memberMethods += linkedSyntheticMethod(syntheticMDef)
+      case MethodSyntheticKind.InheritedConstructor =>
+        val syntheticMDef =
+          synthesizeInheritedConstructor(analyzerInfo, m, getTree, analysis)(
+            classDef.pos)
+        memberMethods += linkedSyntheticMethod(syntheticMDef)
 
-        case MethodSyntheticKind.ReflectiveProxy(targetName) =>
-          val syntheticMDef = synthesizeReflectiveProxy(
-            analyzerInfo,
-            m,
-            targetName,
-            getTree,
-            analysis)
-          memberMethods += linkedSyntheticMethod(syntheticMDef)
+      case MethodSyntheticKind.ReflectiveProxy(targetName) =>
+        val syntheticMDef = synthesizeReflectiveProxy(
+          analyzerInfo,
+          m,
+          targetName,
+          getTree,
+          analysis)
+        memberMethods += linkedSyntheticMethod(syntheticMDef)
 
-        case MethodSyntheticKind.DefaultBridge(targetInterface) =>
-          val syntheticMDef = synthesizeDefaultBridge(
-            analyzerInfo,
-            m,
-            targetInterface,
-            getTree,
-            analysis)
-          memberMethods += linkedSyntheticMethod(syntheticMDef)
-      }
+      case MethodSyntheticKind.DefaultBridge(targetInterface) =>
+        val syntheticMDef = synthesizeDefaultBridge(
+          analyzerInfo,
+          m,
+          targetInterface,
+          getTree,
+          analysis)
+        memberMethods += linkedSyntheticMethod(syntheticMDef)
     }
 
     val classExportInfo =
@@ -406,18 +400,18 @@ final class BaseLinker(
     val call = Apply(This()(currentClassType), targetIdent, params.map(_.ref))(
       targetMDef.resultType)
 
-    val body = if (targetName.endsWith("__C")) {
-      // A Char needs to be boxed
-      New(
-        ClassType(Definitions.BoxedCharacterClass),
-        Ident("init___C"),
-        List(call))
-    } else if (targetName.endsWith("__V")) {
-      // Materialize an `undefined` result for void methods
-      Block(call, Undefined())
-    } else {
-      call
-    }
+    val body =
+      if (targetName.endsWith("__C"))
+        // A Char needs to be boxed
+        New(
+          ClassType(Definitions.BoxedCharacterClass),
+          Ident("init___C"),
+          List(call))
+      else if (targetName.endsWith("__V"))
+        // Materialize an `undefined` result for void methods
+        Block(call, Undefined())
+      else
+        call
 
     MethodDef(static = false, proxyIdent, params, AnyType, body)(
       OptimizerHints.empty,
@@ -465,11 +459,10 @@ final class BaseLinker(
         s"Could not find $methodName anywhere in ${classInfo.encodedName}")
 
       val inherited = ancestorInfo.methodInfos.get(methodName)
-      if (inherited.exists(p)) {
+      if (inherited.exists(p))
         findMethodDef(ancestorInfo, methodName, getTree)
-      } else {
+      else
         loop(ancestorInfo.superClass)
-      }
     }
 
     loop(classInfo)

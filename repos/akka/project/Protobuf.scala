@@ -98,10 +98,9 @@ object Protobuf {
       log: Logger): Unit = {
     val res = callProtoc(protoc, Seq("--version"), log, { (p, l) => p !! l })
     val version = res.split(" ").last.trim
-    if (version != protocVersion) {
+    if (version != protocVersion)
       sys.error(
         "Wrong protoc version! Expected %s but got %s" format (protocVersion, version))
-    }
   }
 
   private def generate(

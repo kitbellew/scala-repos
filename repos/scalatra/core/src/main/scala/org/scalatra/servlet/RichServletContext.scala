@@ -24,9 +24,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
     * at that path.
     */
   def resource(path: String): Option[URL] =
-    try {
-      Option(sc.getResource(path))
-    } catch {
+    try Option(sc.getResource(path))
+    catch {
       case e: MalformedURLException => throw e
     }
 
@@ -109,18 +108,17 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
       case s                     => s + "/*"
     }
 
-    if (classOf[HttpServlet].isAssignableFrom(handlerClass)) {
+    if (classOf[HttpServlet].isAssignableFrom(handlerClass))
       mountServlet(
         handlerClass.asInstanceOf[Class[HttpServlet]],
         pathMap,
         name,
         loadOnStartup)
-    } else if (classOf[Filter].isAssignableFrom(handlerClass)) {
+    else if (classOf[Filter].isAssignableFrom(handlerClass))
       mountFilter(handlerClass.asInstanceOf[Class[Filter]], pathMap, name)
-    } else {
+    else
       sys.error(
         "Don't know how to mount this service to a servletContext: " + handlerClass)
-    }
   }
 
   def mount[T](handlerClass: Class[T], urlPattern: String): Unit =
@@ -162,9 +160,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
       val r = sc.addServlet(name, servletClass)
       // since we only have a Class[_] here, we can't access the MultipartConfig value
       // if (classOf[HasMultipartConfig].isAssignableFrom(servletClass))
-      if (classOf[ScalatraAsyncSupport].isAssignableFrom(servletClass)) {
+      if (classOf[ScalatraAsyncSupport].isAssignableFrom(servletClass))
         r.setAsyncSupported(true)
-      }
       r.setLoadOnStartup(loadOnStartup)
       r
     }
@@ -193,9 +190,8 @@ case class RichServletContext(sc: ServletContext) extends AttributesMap {
       name: String): Unit = {
     val reg = Option(sc.getFilterRegistration(name)) getOrElse {
       val r = sc.addFilter(name, filterClass)
-      if (classOf[ScalatraAsyncSupport].isAssignableFrom(filterClass)) {
+      if (classOf[ScalatraAsyncSupport].isAssignableFrom(filterClass))
         r.setAsyncSupported(true)
-      }
       r
     }
     // We don't have an elegant way of threading this all the way through

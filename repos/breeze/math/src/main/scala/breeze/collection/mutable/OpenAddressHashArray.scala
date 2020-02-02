@@ -103,9 +103,8 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
       if (load * 4 > _index.length * 3) {
         rehash()
         update(i, v)
-      } else {
+      } else
         _index(pos) = i
-      }
     }
   }
 
@@ -122,9 +121,8 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
     var hash = hashCodeFor(i) & (len - 1)
     while (index(hash) != i && index(hash) >= 0) {
       hash += 1
-      if (hash >= len) {
+      if (hash >= len)
         hash = 0
-      }
     }
     hash
   }
@@ -151,9 +149,8 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
     load = 0
     var i = 0
     while (i < oldIndex.length) {
-      if (oldIndex(i) >= 0) {
+      if (oldIndex(i) >= 0)
         update(oldIndex(i), oldValues(i))
-      }
       i += 1
     }
   }
@@ -184,15 +181,13 @@ final class OpenAddressHashArray[@specialized(Int, Float, Long, Double) V] priva
     case that: OpenAddressHashArray[V] =>
       (this eq that) ||
         (this.size == that.size) && {
-          try {
-            this.iterator forall {
-              case (k, v) =>
-                that(k) match {
-                  case `v` =>
-                    true
-                  case _ => false
-                }
-            }
+          try this.iterator forall {
+            case (k, v) =>
+              that(k) match {
+                case `v` =>
+                  true
+                case _ => false
+              }
           } catch {
             case ex: ClassCastException =>
               false
@@ -209,9 +204,8 @@ object OpenAddressHashArray {
       values: T*) = {
     val rv = new OpenAddressHashArray[T](values.length)
     val zero = implicitly[Zero[T]].zero
-    for ((v, i) <- values.zipWithIndex if v != zero) {
+    for ((v, i) <- values.zipWithIndex if v != zero)
       rv(i) = v
-    }
     rv
   }
 

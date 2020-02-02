@@ -21,7 +21,7 @@ object iFourierTr extends UFunc {
     *
     */
   implicit val dvDoubleIFFT
-      : iFourierTr.Impl[DenseVector[Double], DenseVector[Complex]] = {
+      : iFourierTr.Impl[DenseVector[Double], DenseVector[Complex]] =
     new iFourierTr.Impl[DenseVector[Double], DenseVector[Complex]] {
       def apply(v: DenseVector[Double]) = {
         //reformat for input: note difference in format for input to complex fft
@@ -35,13 +35,12 @@ object iFourierTr extends UFunc {
         tempToDenseVector(tempArr)
       }
     }
-  }
 
   /** Use via implicit delegate syntax ifft(x: DenseVector)
     *
     */
   implicit val dvComplexIFFT
-      : iFourierTr.Impl[DenseVector[Complex], DenseVector[Complex]] = {
+      : iFourierTr.Impl[DenseVector[Complex], DenseVector[Complex]] =
     new iFourierTr.Impl[DenseVector[Complex], DenseVector[Complex]] {
       def apply(v: DenseVector[Complex]) = {
         //reformat for input: note difference in format for input to real fft
@@ -55,13 +54,12 @@ object iFourierTr extends UFunc {
         tempToDenseVector(tempArr)
       }
     }
-  }
 
   /** Use via implicit delegate syntax ifft(x: DenseMatrix)
     *
     */
   implicit val dmComplex2DIFFT
-      : iFourierTr.Impl[DenseMatrix[Complex], DenseMatrix[Complex]] = {
+      : iFourierTr.Impl[DenseMatrix[Complex], DenseMatrix[Complex]] =
     new iFourierTr.Impl[DenseMatrix[Complex], DenseMatrix[Complex]] {
       def apply(v: DenseMatrix[Complex]) = {
         //reformat for input: note difference in format for input to real fft
@@ -75,13 +73,12 @@ object iFourierTr extends UFunc {
         tempToDenseMatrix(tempMat, v.rows, v.cols)
       }
     }
-  }
 
   /** Use via implicit delegate syntax ifft(x: DenseMatrix)
     *
     */
   implicit val dmDouble2DIFFT
-      : iFourierTr.Impl[DenseMatrix[Double], DenseMatrix[Complex]] = {
+      : iFourierTr.Impl[DenseMatrix[Double], DenseMatrix[Complex]] =
     new iFourierTr.Impl[DenseMatrix[Double], DenseMatrix[Complex]] {
       def apply(v: DenseMatrix[Double]) = {
         //reformat for input
@@ -96,5 +93,4 @@ object iFourierTr extends UFunc {
         tempToDenseMatrix(tempMat, v.rows, v.cols)
       }
     }
-  }
 }

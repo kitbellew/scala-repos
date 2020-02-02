@@ -74,19 +74,17 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
          (pathToPoint(
            SourceFileInfo(info.file, Some(patched), None),
            indexAfterTarget - 1) map {
-           case (info: CompilationInfo, path: TreePath) => {
+           case (info: CompilationInfo, path: TreePath) =>
              memberCandidates(info, path.getLeaf, defaultPrefix, true, caseSens)
-           }
          })
-       } else if (ImportRegexp.findFirstMatchIn(preceding).isDefined) {
+       } else if (ImportRegexp.findFirstMatchIn(preceding).isDefined)
          (pathToPoint(info, indexAfterTarget) flatMap {
-           case (info: CompilationInfo, path: TreePath) => {
+           case (info: CompilationInfo, path: TreePath) =>
              getEnclosingMemberSelectTree(path).map { m =>
                packageMemberCandidates(info, m, defaultPrefix, caseSens)
              }
-           }
          })
-       } else if (isMemberAccess) {
+       else if (isMemberAccess) {
          // TODO how to avoid allocating a new string? buffer of immutable string slices?
          // Erase the trailing partial member (it breaks type resolution).
          val patched = s.substring(0, indexAfterTarget) + ".wait()" + s
@@ -94,7 +92,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
          (pathToPoint(
            SourceFileInfo(info.file, Some(patched), None),
            indexAfterTarget + 1) flatMap {
-           case (info: CompilationInfo, path: TreePath) => {
+           case (info: CompilationInfo, path: TreePath) =>
              getEnclosingMemberSelectTree(path).map { m =>
                memberCandidates(
                  info,
@@ -103,26 +101,24 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
                  false,
                  caseSens)
              }
-           }
          })
        } else {
 
          // Kick off an index search if the name looks like a type.
          val typeSearch =
-           if (TypeNameRegex.findFirstMatchIn(defaultPrefix).isDefined) {
+           if (TypeNameRegex.findFirstMatchIn(defaultPrefix).isDefined)
              Some(
                fetchTypeSearchCompletions(defaultPrefix, maxResults, indexer))
-           } else None
+           else None
 
          (scopeForPoint(info, indexAfterTarget) map {
-           case (info: CompilationInfo, s: Scope) => {
+           case (info: CompilationInfo, s: Scope) =>
              scopeMemberCandidates(
                info,
                s,
                defaultPrefix,
                caseSens,
                constructing)
-           }
          }) map { scopeCandidates =>
            val typeSearchResult =
              typeSearch.flatMap(Await.result(_, Duration.Inf)).getOrElse(List())
@@ -147,7 +143,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     while (p != null) {
       p.getLeaf match {
         case m: MemberSelectTree => return Some(m)
-        case _                   => {}
+        case _                   =>
       }
       p = p.getParentPath
     }
@@ -194,7 +190,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       if (s.startsWith(prefix)) baseRelevance + 50 else baseRelevance
 
     if (matchesPrefix(s, prefix, matchEntire = false, caseSens = caseSense) && !s
-          .contains("$")) {
+          .contains("$"))
       e match {
         case e: ExecutableElement if !typesOnly =>
           List(methodInfo(e, relevance + 5))
@@ -205,7 +201,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
           else List(typeInfo(e, relevance))
         case _ => List()
       }
-    } else List()
+    else List()
   }
 
   private def scopeMemberCandidates(
@@ -221,7 +217,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     // enclosing classes. Need to add those manually.
     //
     def addTypeMembers(tel: TypeElement, relevance: Int): Unit =
-      for (el <- info.getElements().getAllMembers(tel)) {
+      for (el <- info.getElements().getAllMembers(tel))
         for (info <- filterElement(
                info,
                el,
@@ -229,10 +225,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
                caseSense,
                false,
                constructing,
-               relevance)) {
+               relevance))
           candidates += info
-        }
-      }
 
     var relavence = 0
     for (tel <- Option(scope.getEnclosingClass())) {
@@ -251,7 +245,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     relavence = 0
     var s = scope
     while (s != null) {
-      for (el <- s.getLocalElements()) {
+      for (el <- s.getLocalElements())
         for (info <- filterElement(
                info,
                el,
@@ -259,10 +253,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
                caseSense,
                false,
                constructing,
-               relavence)) {
+               relavence))
           candidates += info
-        }
-      }
       s = s.getEnclosingScope()
       relavence -= 10
     }
@@ -279,16 +271,14 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     val candidates = typeElement(info, target)
       .map { el =>
         el match {
-          case tel: TypeElement => {
+          case tel: TypeElement =>
             val elements: Elements = info.getElements()
             elements.getAllMembers(tel).flatMap { e =>
               filterElement(info, e, prefix, caseSense, importing, false)
             }
-          }
-          case e => {
+          case e =>
             log.warn("Unrecognized type element " + e)
             List()
-          }
         }
       }
       .getOrElse(List())

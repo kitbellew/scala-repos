@@ -344,11 +344,10 @@ trait TimeLikeSpec[T <: TimeLike[T]]
 
   "from*" should {
     "never over/under flow nanos" in {
-      for (v <- Seq(Long.MinValue, Long.MaxValue)) {
+      for (v <- Seq(Long.MinValue, Long.MaxValue))
         fromNanoseconds(v) match {
           case Nanoseconds(ns) => assert(ns == v)
         }
-      }
     }
 
     "overflow millis" in {

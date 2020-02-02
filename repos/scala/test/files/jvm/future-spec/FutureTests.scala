@@ -708,11 +708,11 @@ class FutureTests extends MinimalScalaTest {
       }
       val timeout = 10000 millis
 
-      val futures = (0 to 9) map { async }
+      val futures = (0 to 9) map async
       val reduced = Future.reduce(futures)(_ + _)
       Await.result(reduced, timeout) mustBe (45)
 
-      val futuresit = (0 to 9) map { async }
+      val futuresit = (0 to 9) map async
       val reducedit = Future.reduce(futuresit)(_ + _)
       Await.result(reducedit, timeout) mustBe (45)
     }

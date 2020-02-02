@@ -136,9 +136,8 @@ case class TakeOrderedAndProject(
     if (projectList.isDefined) {
       val proj = UnsafeProjection.create(projectList.get, child.output)
       data.map(r => proj(r).copy())
-    } else {
+    } else
       data
-    }
   }
 
   private val serializer: Serializer = new UnsafeRowSerializer(
@@ -146,11 +145,10 @@ case class TakeOrderedAndProject(
 
   protected override def doExecute(): RDD[InternalRow] = {
     val ord = new LazilyGeneratedOrdering(sortOrder, child.output)
-    val localTopK: RDD[InternalRow] = {
+    val localTopK: RDD[InternalRow] =
       child.execute().map(_.copy()).mapPartitions { iter =>
         org.apache.spark.util.collection.Utils.takeOrdered(iter, limit)(ord)
       }
-    }
     val shuffled = new ShuffledRowRDD(
       ShuffleExchange.prepareShuffleDependency(
         localTopK,
@@ -163,9 +161,8 @@ case class TakeOrderedAndProject(
       if (projectList.isDefined) {
         val proj = UnsafeProjection.create(projectList.get, child.output)
         topK.map(r => proj(r))
-      } else {
+      } else
         topK
-      }
     }
   }
 

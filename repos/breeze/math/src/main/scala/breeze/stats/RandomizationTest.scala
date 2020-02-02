@@ -47,7 +47,7 @@ class RandomizationTest[L](
     for (i <- 1 to numSamples) {
       val l1 = new ArrayBuffer[L]();
       val l2 = new ArrayBuffer[L]();
-      for ((a, b) <- lpairs) {
+      for ((a, b) <- lpairs)
         if (Rand.uniform.get < .5) {
           l1 += a;
           l2 += b;
@@ -55,10 +55,8 @@ class RandomizationTest[L](
           l1 += b;
           l2 += a;
         }
-      }
-      if (baseDiff < diff(l1, l2)) {
+      if (baseDiff < diff(l1, l2))
         numBetter += 1;
-      }
     }
     (numBetter + 1.0) / (numSamples + 1.0);
   }

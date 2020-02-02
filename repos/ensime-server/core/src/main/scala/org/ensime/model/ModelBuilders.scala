@@ -32,31 +32,30 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       needPos: PosNeeded): Option[SourcePosition] =
     if (sym == NoSymbol || needPos == PosNeededNo)
       None
-    else if (sym.pos != NoPosition) {
-      if (needPos == PosNeededYes || needPos == PosNeededAvail) {
+    else if (sym.pos != NoPosition)
+      if (needPos == PosNeededYes || needPos == PosNeededAvail)
         OffsetSourcePositionHelper.fromPosition(sym.pos)
-      } else
+      else
         Some(EmptySourcePosition())
-    } else {
-      // only perform operations is actively requested - this is comparatively expensive
-      if (needPos == PosNeededYes) {
-        // we might need this for some Java fqns but we need some evidence
-        // val name = genASM.jsymbol(sym).fullName
-        val name = symbolIndexerName(sym)
-        val hit = search.findUnique(name)
-        logger.debug(s"search: $name = $hit")
-        hit
-          .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
-          .flatMap { sourcePos =>
-            if (sourcePos.file.getName.endsWith(".scala"))
-              askLinkPos(sym, AbstractFile.getFile(sourcePos.file)).flatMap(
-                pos => OffsetSourcePositionHelper.fromPosition(pos))
-            else
-              Some(sourcePos)
-          }
-      } else
-        None
-    }
+    else
+    // only perform operations is actively requested - this is comparatively expensive
+    if (needPos == PosNeededYes) {
+      // we might need this for some Java fqns but we need some evidence
+      // val name = genASM.jsymbol(sym).fullName
+      val name = symbolIndexerName(sym)
+      val hit = search.findUnique(name)
+      logger.debug(s"search: $name = $hit")
+      hit
+        .flatMap(LineSourcePositionHelper.fromFqnSymbol(_)(config, vfs))
+        .flatMap { sourcePos =>
+          if (sourcePos.file.getName.endsWith(".scala"))
+            askLinkPos(sym, AbstractFile.getFile(sourcePos.file)).flatMap(pos =>
+              OffsetSourcePositionHelper.fromPosition(pos))
+          else
+            Some(sourcePos)
+        }
+    } else
+      None
 
   // When inspecting a type, transform a raw list of TypeMembers to a sorted
   // list of InterfaceInfo objects, each with its own list of sorted member infos.
@@ -85,11 +84,11 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         // provided by the same view, remember that
         // view for later display to user.
         val byView = members.groupBy(_.viaView)
-        val viaView = if (byView.size == 1) {
-          byView.keys.headOption.filter(_ != NoSymbol)
-        } else {
-          None
-        }
+        val viaView =
+          if (byView.size == 1)
+            byView.keys.headOption.filter(_ != NoSymbol)
+          else
+            None
 
         // Do one top level sort by name on members, before
         // subdividing into kinds of members.
@@ -108,18 +107,16 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         for (tm <- sortedMembers) {
           val info = NamedTypeMemberInfo(tm)
           val decl = info.declAs
-          if (decl == DeclaredAs.Method) {
-            if (info.name == "this") {
+          if (decl == DeclaredAs.Method)
+            if (info.name == "this")
               constructors += info
-            } else {
+            else
               methods += info
-            }
-          } else if (decl == DeclaredAs.Field) {
+          else if (decl == DeclaredAs.Field)
             fields += info
-          } else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
-                     decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
+          else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
+                   decl == DeclaredAs.Interface || decl == DeclaredAs.Object)
             nestedTypes += info
-          }
         }
 
         val sortedInfos = nestedTypes ++ fields ++ constructors ++ methods
@@ -150,30 +147,26 @@ trait ModelBuilders { self: RichPresentationCompiler =>
     def fromSymbol(sym: Symbol): PackageInfo = {
       val members = sortedMembers(
         packageMembers(sym).flatMap(packageMemberInfoFromSym))
-      if (sym.isRoot || sym.isRootPackage) {
+      if (sym.isRoot || sym.isRootPackage)
         new PackageInfo("root", "_root_", members)
-      } else {
+      else
         new PackageInfo(sym.name.toString, sym.fullName, members)
-      }
     }
 
     def packageMemberInfoFromSym(sym: Symbol): Option[EntityInfo] =
-      try {
-        if (sym == RootPackage) {
-          Some(root)
-        } else if (sym.hasPackageFlag) {
-          Some(fromSymbol(sym))
-        } else if (!sym.nameString.contains("$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
-          if (sym.isClass || sym.isTrait || sym.isModule ||
-              sym.isModuleClass || sym.isPackageClass) {
-            Some(TypeInfo(sym.tpe, PosNeededAvail))
-          } else {
-            None
-          }
-        } else {
+      try if (sym == RootPackage)
+        Some(root)
+      else if (sym.hasPackageFlag)
+        Some(fromSymbol(sym))
+      else if (!sym.nameString.contains("$") && (sym != NoSymbol) && (sym.tpe != NoType))
+        if (sym.isClass || sym.isTrait || sym.isModule ||
+            sym.isModuleClass || sym.isPackageClass)
+          Some(TypeInfo(sym.tpe, PosNeededAvail))
+        else
           None
-        }
-      } catch {
+      else
+        None
+      catch {
         case e: Throwable => None
       }
   }
@@ -242,14 +235,14 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       val nameString = sym.nameString
       val (name, localName) =
         if (sym.isClass || sym.isTrait || sym.isModule ||
-            sym.isModuleClass || sym.isPackageClass) {
+            sym.isModuleClass || sym.isPackageClass)
           (typeFullName(tpe), nameString)
-        } else {
+        else
           (nameString, nameString)
-        }
-      val ownerTpe = if (sym.owner != NoSymbol && sym.owner.tpe != NoType) {
-        Some(sym.owner.tpe)
-      } else None
+      val ownerTpe =
+        if (sym.owner != NoSymbol && sym.owner.tpe != NoType)
+          Some(sym.owner.tpe)
+        else None
       new SymbolInfo(
         name,
         localName,

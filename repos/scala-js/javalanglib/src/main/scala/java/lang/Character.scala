@@ -254,9 +254,9 @@ object Character {
 
   // ported from https://github.com/gwtproject/gwt/blob/master/user/super/com/google/gwt/emul/java/lang/Character.java
   def forDigit(digit: Int, radix: Int): Char =
-    if (radix < MIN_RADIX || radix > MAX_RADIX || digit < 0 || digit >= radix) {
+    if (radix < MIN_RADIX || radix > MAX_RADIX || digit < 0 || digit >= radix)
       0
-    } else {
+    else {
       val overBaseTen = digit - 10
       val result = if (overBaseTen < 0) '0' + digit else 'a' + overBaseTen
       result.toChar
@@ -277,15 +277,14 @@ object Character {
   def isWhitespace(codePoint: scala.Int): scala.Boolean = {
     def isSeparator(tpe: Int): scala.Boolean =
       tpe == SPACE_SEPARATOR || tpe == LINE_SEPARATOR || tpe == PARAGRAPH_SEPARATOR
-    if (codePoint < 256) {
+    if (codePoint < 256)
       codePoint == '\t' || codePoint == '\n' || codePoint == '\u000B' ||
       codePoint == '\f' || codePoint == '\r' ||
       ('\u001C' <= codePoint && codePoint <= '\u001F') ||
       (codePoint != '\u00A0' && isSeparator(getTypeLT256(codePoint)))
-    } else {
+    else
       (codePoint != '\u2007' && codePoint != '\u202F') &&
       isSeparator(getTypeGE256(codePoint))
-    }
   }
 
   def isSpaceChar(ch: scala.Char): scala.Boolean =
@@ -520,9 +519,8 @@ object Character {
       val high = 0xD800 | ((cpPrime >> 10) & 0x3FF)
       val low = 0xDC00 | (cpPrime & 0x3FF)
       Array(high.toChar, low.toChar)
-    } else {
+    } else
       Array(codePoint.toChar)
-    }
   }
 
   @inline def toString(c: scala.Char): String =

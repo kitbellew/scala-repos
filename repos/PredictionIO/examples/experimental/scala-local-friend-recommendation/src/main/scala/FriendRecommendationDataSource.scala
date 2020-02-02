@@ -85,13 +85,12 @@ class FriendRecommendationDataSource(
       if (userIdMap.contains(data(0)) && userIdMap.contains(data(1))) {
         val srcInternalId = userIdMap(data(0))
         val destInternalId = userIdMap(data(1))
-        if (adjArray(srcInternalId) == null) {
+        if (adjArray(srcInternalId) == null)
           adjArray(srcInternalId) = (destInternalId, data.slice(2, 5).sum) ::
             List()
-        } else {
+        else
           adjArray(srcInternalId) = (destInternalId, data.slice(2, 5).sum) ::
             adjArray(srcInternalId)
-        }
       }
     }
     adjArray

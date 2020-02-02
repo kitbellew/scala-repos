@@ -35,10 +35,9 @@ object CanZipAndTraverseValues {
     def visit(a: A, b: B)
     def visitArray(arr: Array[A], arr2: Array[B]): Unit = {
       var i = 0
-      if (arr.size != arr2.size) {
+      if (arr.size != arr2.size)
         throw new IllegalArgumentException(
           "Arrays to be visited must have same size")
-      }
       while (i < arr.size) {
         visit(arr(i), arr2(i))
         i += 1

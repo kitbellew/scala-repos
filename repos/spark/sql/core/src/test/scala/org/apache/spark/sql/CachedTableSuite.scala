@@ -428,7 +428,7 @@ class CachedTableSuite
 
     // Set up two tables distributed in the same way. Try this with the data distributed into
     // different number of partitions.
-    for (numPartitions <- 1 until 10 by 4) {
+    for (numPartitions <- 1 until 10 by 4)
       withTempTable("t1", "t2") {
         testData.repartition(numPartitions, $"key").registerTempTable("t1")
         testData2.repartition(numPartitions, $"a").registerTempTable("t2")
@@ -452,7 +452,6 @@ class CachedTableSuite
         sqlContext.uncacheTable("t1")
         sqlContext.uncacheTable("t2")
       }
-    }
 
     // Distribute the tables into non-matching number of partitions. Need to shuffle one side.
     withTempTable("t1", "t2") {

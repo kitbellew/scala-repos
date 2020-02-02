@@ -60,13 +60,12 @@ private[spark] class DirectTaskResult[T](
     valueBytes = ByteBuffer.wrap(byteVal)
 
     val numUpdates = in.readInt
-    if (numUpdates == 0) {
+    if (numUpdates == 0)
       accumUpdates = null
-    } else {
+    else {
       val _accumUpdates = new ArrayBuffer[AccumulableInfo]
-      for (i <- 0 until numUpdates) {
+      for (i <- 0 until numUpdates)
         _accumUpdates += in.readObject.asInstanceOf[AccumulableInfo]
-      }
       accumUpdates = _accumUpdates
     }
     valueObjectDeserialized = false
@@ -80,9 +79,9 @@ private[spark] class DirectTaskResult[T](
     * After the first time, `value()` is trivial and just returns the deserialized `valueObject`.
     */
   def value(): T =
-    if (valueObjectDeserialized) {
+    if (valueObjectDeserialized)
       valueObject
-    } else {
+    else {
       // This should not run when holding a lock because it may cost dozens of seconds for a large
       // value.
       val resultSer = SparkEnv.get.serializer.newInstance()

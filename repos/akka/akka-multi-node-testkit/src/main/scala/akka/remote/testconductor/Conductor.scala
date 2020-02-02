@@ -479,9 +479,8 @@ private[akka] class Controller(
     case BarrierTimeout(data) ⇒ failBarrier(data)
     case FailedBarrier(data) ⇒ failBarrier(data)
     case BarrierEmpty(data, msg) ⇒ SupervisorStrategy.Resume
-    case WrongBarrier(name, client, data) ⇒ {
+    case WrongBarrier(name, client, data) ⇒
       client ! ToClient(BarrierResult(name, false)); failBarrier(data)
-    }
     case ClientLost(data, node) ⇒ failBarrier(data)
     case DuplicateNode(data, node) ⇒ failBarrier(data)
   }
@@ -655,7 +654,7 @@ private[akka] class BarrierCoordinator
     case Event(ClientDisconnected(name), d @ Data(clients, _, arrived, _)) ⇒
       if (arrived.isEmpty)
         stay using d.copy(clients = clients.filterNot(_.name == name))
-      else {
+      else
         (clients find (_.name == name)) match {
           case None ⇒ stay
           case Some(c) ⇒
@@ -665,7 +664,6 @@ private[akka] class BarrierCoordinator
                 arrived = arrived filterNot (_ == c.fsm)),
               name)
         }
-      }
   }
 
   when(Idle) {
@@ -676,12 +674,11 @@ private[akka] class BarrierCoordinator
         stay replying ToClient(BarrierResult(name, true))
       else if (clients.find(_.fsm == sender()).isEmpty)
         stay replying ToClient(BarrierResult(name, false))
-      else {
+      else
         goto(Waiting) using d.copy(
           barrier = name,
           arrived = sender() :: Nil,
           deadline = getDeadline(timeout))
-      }
     case Event(RemoveClient(name), d @ Data(clients, _, _, _)) ⇒
       if (clients.isEmpty)
         throw BarrierEmpty(d, "cannot remove " + name + ": no client to remove")
@@ -728,14 +725,13 @@ private[akka] class BarrierCoordinator
 
   def handleBarrier(data: Data): State = {
     log.debug("handleBarrier({})", data)
-    if (data.arrived.isEmpty) {
+    if (data.arrived.isEmpty)
       goto(Idle) using data.copy(barrier = "")
-    } else if ((data.clients.map(_.fsm) -- data.arrived).isEmpty) {
+    else if ((data.clients.map(_.fsm) -- data.arrived).isEmpty) {
       data.arrived foreach (_ ! ToClient(BarrierResult(data.barrier, true)))
       goto(Idle) using data.copy(barrier = "", arrived = Nil)
-    } else {
+    } else
       stay using data
-    }
   }
 
   def getDeadline(timeout: Option[FiniteDuration]): Deadline =

@@ -55,7 +55,7 @@ object InterpolatedStringFormatter extends StringFormatter {
 
   def noBraces(parts: Seq[StringPart], it: Injection): Boolean = {
     val ind = parts.indexOf(it)
-    if (ind + 1 < parts.size) {
+    if (ind + 1 < parts.size)
       parts(ind + 1) match {
         case Text(s) =>
           return s.isEmpty || !ScalaNamesUtil.isIdentifier(
@@ -63,7 +63,6 @@ object InterpolatedStringFormatter extends StringFormatter {
             s.startsWith("`") || s.exists(_ == '$')
         case _ =>
       }
-    }
     true
   }
 }

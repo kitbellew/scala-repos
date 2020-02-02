@@ -59,9 +59,8 @@ class ScalaTypeValidator(
 
     buf ++= getForbiddenNames(container, name)
 
-    if (buf.isEmpty) {
+    if (buf.isEmpty)
       buf ++= getForbiddenNamesInBlock(container, name)
-    }
 
     buf.toArray
   }
@@ -80,9 +79,8 @@ class ScalaTypeValidator(
             buf += ((typeParametr, messageForTypeAliasMember(name)))
             true
           case typeDefinition: ScTypeDefinition =>
-            if (typeDefinition.getName == name) {
+            if (typeDefinition.getName == name)
               buf += ((typeDefinition, messageForClassMember(name)))
-            }
             true
           case _ => true
         }
@@ -108,9 +106,8 @@ class ScalaTypeValidator(
         if ((typeDefinition.getName == name) &&
             (PsiTreeUtil.getParentOfType(
               typeDefinition,
-              classOf[ScFunctionDefinition]) == null)) {
+              classOf[ScFunctionDefinition]) == null))
           buf += ((typeDefinition, messageForClassMember(name)))
-        }
         true
       case _ => true
     }

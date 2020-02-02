@@ -123,9 +123,8 @@ class QueueingHandlerTest
           if (mustError) {
             mustError = false
             throw new Exception("Unable to log for whatever reason.")
-          } else {
+          } else
             didLog = true
-          }
         }
       }
 

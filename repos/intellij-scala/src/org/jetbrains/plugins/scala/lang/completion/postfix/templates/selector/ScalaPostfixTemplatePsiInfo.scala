@@ -23,7 +23,7 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
 
   private val notSurrounder = new ScalaWithUnaryNotSurrounder() {
     override def getTemplateAsString(elements: Array[PsiElement]) =
-      if (elements.length == 1) {
+      if (elements.length == 1)
         elements(0) match {
           case literal: ScLiteral if literal.getText == "true"  => "false"
           case literal: ScLiteral if literal.getText == "false" => "true"
@@ -36,9 +36,8 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
             "!" + id.getText
           case _ => super.getTemplateAsString(elements)
         }
-      } else {
+      else
         super.getTemplateAsString(elements)
-      }
   }
 
   override def getNegatedExpression(element: PsiElement): PsiElement =
@@ -46,12 +45,10 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
       case expr if notSurrounder.isApplicable(Array(expr)) =>
         var res =
           notSurrounder.surroundPsi(Array(element)).asInstanceOf[ScExpression]
-        if (DoubleNegationUtil.hasDoubleNegation(res)) {
+        if (DoubleNegationUtil.hasDoubleNegation(res))
           res = DoubleNegationUtil.removeDoubleNegation(res)
-        }
-        if (SimplifyBooleanUtil.canBeSimplified(res)) {
+        if (SimplifyBooleanUtil.canBeSimplified(res))
           res = SimplifyBooleanUtil.simplify(res)
-        }
         res
       case _ =>
         throw new IllegalArgumentException(

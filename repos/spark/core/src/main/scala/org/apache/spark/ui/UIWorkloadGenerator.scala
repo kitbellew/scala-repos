@@ -49,16 +49,14 @@ private[spark] object UIWorkloadGenerator {
     val conf = new SparkConf().setMaster(args(0)).setAppName("Spark UI tester")
 
     val schedulingMode = SchedulingMode.withName(args(1))
-    if (schedulingMode == SchedulingMode.FAIR) {
+    if (schedulingMode == SchedulingMode.FAIR)
       conf.set("spark.scheduler.mode", "FAIR")
-    }
     val nJobSet = args(2).toInt
     val sc = new SparkContext(conf)
 
     def setProperties(s: String): Unit = {
-      if (schedulingMode == SchedulingMode.FAIR) {
+      if (schedulingMode == SchedulingMode.FAIR)
         sc.setLocalProperty("spark.scheduler.pool", s)
-      }
       sc.setLocalProperty(SparkContext.SPARK_JOB_DESCRIPTION, s)
     }
 
@@ -72,25 +70,20 @@ private[spark] object UIWorkloadGenerator {
         "Single Shuffle",
         baseData.map(x => (x % 10, x)).reduceByKey(_ + _).count),
       ("Entirely failed phase", baseData.map(x => throw new Exception).count),
-      ("Partially failed phase", {
-        baseData.map { x =>
-          val probFailure = (4.0 / NUM_PARTITIONS)
-          if (nextFloat() < probFailure) {
-            throw new Exception("This is a task failure")
-          }
-          1
-        }.count
-      }),
-      ("Partially failed phase (longer tasks)", {
-        baseData.map { x =>
-          val probFailure = (4.0 / NUM_PARTITIONS)
-          if (nextFloat() < probFailure) {
-            Thread.sleep(100)
-            throw new Exception("This is a task failure")
-          }
-          1
-        }.count
-      }),
+      ("Partially failed phase", baseData.map { x =>
+        val probFailure = (4.0 / NUM_PARTITIONS)
+        if (nextFloat() < probFailure)
+          throw new Exception("This is a task failure")
+        1
+      }.count),
+      ("Partially failed phase (longer tasks)", baseData.map { x =>
+        val probFailure = (4.0 / NUM_PARTITIONS)
+        if (nextFloat() < probFailure) {
+          Thread.sleep(100)
+          throw new Exception("This is a task failure")
+        }
+        1
+      }.count),
       ("Job with delays", baseData.map(x => Thread.sleep(100)).count)
     )
 
@@ -108,9 +101,7 @@ private[spark] object UIWorkloadGenerator {
             } catch {
               case e: Exception =>
                 println("Job Failed: " + desc)
-            } finally {
-              barrier.release()
-            }
+            } finally barrier.release()
             // scalastyle:on println
           }
         }.start

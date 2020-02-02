@@ -41,7 +41,7 @@ abstract class MultiNodeConfig {
     */
   def nodeConfig(roles: RoleName*)(configs: Config*): Unit = {
     val c = configs.reduceLeft(_ withFallback _)
-    _nodeConf ++= roles map { _ -> c }
+    _nodeConf ++= roles map _ -> c
   }
 
   /**
@@ -366,9 +366,8 @@ abstract class MultiNodeSpec(
     * to the `roleMap`).
     */
   def runOn(nodes: RoleName*)(thunk: ⇒ Unit): Unit =
-    if (isNode(nodes: _*)) {
+    if (isNode(nodes: _*))
       thunk
-    }
 
   /**
     * Verify that the running node matches one of the given nodes

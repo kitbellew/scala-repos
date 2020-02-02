@@ -124,11 +124,10 @@ object ObjectProperty {
   def fillProperty[J <: AnyRef](
       property: ObjectProperty[J],
       value: SFXDelegate[J]) {
-    if (value == null) {
+    if (value == null)
       property.delegate.setValue(null.asInstanceOf[J])
-    } else {
+    else
       property() = value.delegate
-    }
   }
 
   /**
@@ -143,11 +142,10 @@ object ObjectProperty {
     * @param value Value to be injected in $OP.
     */
   def fillProperty[J <: AnyRef](property: ObjectProperty[J], value: J) {
-    if (value == null) {
+    if (value == null)
       property.delegate.setValue(null.asInstanceOf[J])
-    } else {
+    else
       property() = value
-    }
   }
 }
 

@@ -258,9 +258,8 @@ trait ItemsListEditor[T <: Mapper[T]] {
   def onInsert: Unit = items.add
   def onRemove(item: T): Unit = items.remove(item)
   def onSubmit: Unit =
-    try {
-      items.save
-    } catch {
+    try items.save
+    catch {
       case e: java.sql.SQLException =>
         S.error("Not all items could be saved!")
     }
@@ -288,11 +287,10 @@ trait ItemsListEditor[T <: Mapper[T]] {
     val noPrompt = "onclick" -> "safeToContinue=true"
     val optScript =
       if ((items.added.length + items.removed.length == 0) &&
-          items.current.forall(!_.dirty_?)) {
+          items.current.forall(!_.dirty_?))
         NodeSeq.Empty
-      } else {
+      else
         unsavedScript
-      }
 
     val bindRemovedItems =
       items.removed.map { item =>

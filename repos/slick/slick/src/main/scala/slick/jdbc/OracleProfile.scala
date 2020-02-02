@@ -247,9 +247,8 @@ trait OracleProfile extends JdbcProfile {
       sb append qname append ' '
       appendType(sb)
       appendOptions(sb)
-      if (jdbcType.isInstanceOf[JdbcTypes#BooleanJdbcType]) {
+      if (jdbcType.isInstanceOf[JdbcTypes#BooleanJdbcType])
         sb append " check (" append qname append " in (0, 1))"
-      }
     }
 
     override protected def appendOptions(sb: StringBuilder) {

@@ -45,18 +45,17 @@ class DocServerStart {
           .maybeHandleDocRequest(request)
           .asInstanceOf[Option[Result]]
           .orElse(
-            if (request.path == "/@report") {
+            if (request.path == "/@report")
               if (request.getQueryString("force").isDefined) {
                 forceTranslationReport.call()
                 Some(Results.Redirect("/@report"))
-              } else {
+              } else
                 Some(
                   Results.Ok.sendFile(
                     translationReport.call(),
                     inline = true,
                     fileName = _ => "report.html"))
-              }
-            } else None
+            else None
           )
           .orElse(
             Some(Results.Redirect("/@documentation"))

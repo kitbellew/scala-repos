@@ -141,11 +141,8 @@ private[persistence] class LocalSnapshotStore
       p)
 
   private def withStream[A <: Closeable, B](stream: A, p: A ⇒ B): B =
-    try {
-      p(stream)
-    } finally {
-      stream.close()
-    }
+    try p(stream)
+    finally stream.close()
 
   /** Only by persistenceId and sequenceNr, timestamp is informational - accomodates for 2.13.x series files */
   private def snapshotFileForWrite(
@@ -180,13 +177,11 @@ private[persistence] class LocalSnapshotStore
   }
 
   private def snapshotDir(): File = {
-    if (!dir.isDirectory) {
+    if (!dir.isDirectory)
       // try to create the directory, on failure double check if someone else beat us to it
-      if (!dir.mkdirs() && !dir.isDirectory) {
+      if (!dir.mkdirs() && !dir.isDirectory)
         throw new IOException(
           s"Failed to create snapshot directory [${dir.getCanonicalPath}]")
-      }
-    }
     dir
   }
 

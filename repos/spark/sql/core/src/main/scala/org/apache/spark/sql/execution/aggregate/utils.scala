@@ -62,7 +62,7 @@ object Utils {
       child: SparkPlan): SparkPlan = {
     val usesTungstenAggregate = TungstenAggregate.supportsAggregate(
       aggregateExpressions.flatMap(_.aggregateFunction.aggBufferAttributes))
-    if (usesTungstenAggregate) {
+    if (usesTungstenAggregate)
       TungstenAggregate(
         requiredChildDistributionExpressions =
           requiredChildDistributionExpressions,
@@ -73,7 +73,7 @@ object Utils {
         resultExpressions = resultExpressions,
         child = child
       )
-    } else {
+    else
       SortBasedAggregate(
         requiredChildDistributionExpressions =
           requiredChildDistributionExpressions,
@@ -84,7 +84,6 @@ object Utils {
         resultExpressions = resultExpressions,
         child = child
       )
-    }
   }
 
   def planAggregateWithoutDistinct(

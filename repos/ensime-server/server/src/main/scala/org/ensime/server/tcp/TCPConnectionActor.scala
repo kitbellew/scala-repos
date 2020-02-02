@@ -80,9 +80,8 @@ class TCPConnectionActor(
 
   def sendMessage(envelope: RpcResponseEnvelope): Unit = {
     val msg =
-      try {
-        protocol.encode(envelope)
-      } catch {
+      try protocol.encode(envelope)
+      catch {
         case NonFatal(t) =>
           log.error(t, s"Problem serialising $envelope")
           protocol.encode(
@@ -100,9 +99,8 @@ class TCPConnectionActor(
     broadcaster ! Broadcaster.Register
 
   final def attemptProcess(): Unit =
-    try {
-      repeatedDecode()
-    } catch {
+    try repeatedDecode()
+    catch {
       case e: Throwable =>
         log.error(
           e,

@@ -68,13 +68,11 @@ case class KetamaShardingServiceBuilder[Req, Rep](
     copy(_hash = Some(f))
 
   def buildFactory() = {
-    if (_nodes.isEmpty) {
+    if (_nodes.isEmpty)
       throw new Exception("Nodes unspecified for KetamaShardingServiceBuilder")
-    }
-    if (_hash.isEmpty) {
+    if (_hash.isEmpty)
       throw new Exception(
         "Key function unspecified for KetamaShardingServiceBuilder")
-    }
 
     val distributor = new KetamaDistributor(_nodes.get, _numReps)
 

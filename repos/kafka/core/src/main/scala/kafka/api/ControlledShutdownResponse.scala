@@ -51,11 +51,10 @@ case class ControlledShutdownResponse(
       4 /* correlation id */ +
         2 /* error code */ +
         4 /* number of responses */
-    for (topicAndPartition <- partitionsRemaining) {
+    for (topicAndPartition <- partitionsRemaining)
       size +=
         2 + topicAndPartition.topic.length /* topic */ +
           4 /* partition */
-    }
     size
   }
 

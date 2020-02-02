@@ -10,9 +10,8 @@ trait TypedStatementAnnotator {
       typedStatement: ScTypedStmt,
       holder: AnnotationHolder,
       highlightErrors: Boolean) {
-    if (highlightErrors) {
+    if (highlightErrors)
       for (element <- typedStatement.typeElement)
         checkConformance(typedStatement.expr, element, holder)
-    }
   }
 }

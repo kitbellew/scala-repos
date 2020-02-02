@@ -95,13 +95,10 @@ class ChiSqSelectorModel @Since("1.3.0") (
             newValues += values(i)
             j += 1
             i += 1
-          } else {
-            if (indicesIdx > filterIndicesIdx) {
-              j += 1
-            } else {
-              i += 1
-            }
-          }
+          } else if (indicesIdx > filterIndicesIdx)
+            j += 1
+          else
+            i += 1
         }
         // TODO: Sparse representation might be ineffective if (newSize ~= newValues.size)
         Vectors.sparse(newSize, newIndices.result(), newValues.result())

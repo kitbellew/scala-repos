@@ -11,9 +11,8 @@ package xml
   */
 trait ScXmlStartTag extends ScXmlPairedTag {
   def getClosingTag: ScXmlEndTag = {
-    if (getParent != null && getParent.getLastChild.isInstanceOf[ScXmlEndTag]) {
+    if (getParent != null && getParent.getLastChild.isInstanceOf[ScXmlEndTag])
       return getParent.getLastChild.asInstanceOf[ScXmlEndTag]
-    }
     null
   }
 

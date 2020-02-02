@@ -537,10 +537,10 @@ object Serializers {
         writeInt(pos.column)
       }
 
-      if (pos == Position.NoPosition) {
+      if (pos == Position.NoPosition)
         writeByte(FormatNoPositionValue)
-      } else if (lastPosition == Position.NoPosition ||
-                 pos.source != lastPosition.source) {
+      else if (lastPosition == Position.NoPosition ||
+               pos.source != lastPosition.source) {
         writeFull()
         lastPosition = pos
       } else {
@@ -550,18 +550,17 @@ object Serializers {
         val columnDiff = column - lastPosition.column
         val columnIsByte = column >= 0 && column < 256
 
-        if (lineDiff == 0 && columnDiff >= -64 && columnDiff < 64) {
+        if (lineDiff == 0 && columnDiff >= -64 && columnDiff < 64)
           writeByte((columnDiff << Format1Shift) | Format1MaskValue)
-        } else if (lineDiff >= -32 && lineDiff < 32 && columnIsByte) {
+        else if (lineDiff >= -32 && lineDiff < 32 && columnIsByte) {
           writeByte((lineDiff << Format2Shift) | Format2MaskValue)
           writeByte(column)
         } else if (lineDiff >= Short.MinValue && lineDiff <= Short.MaxValue && columnIsByte) {
           writeByte(Format3MaskValue)
           writeShort(lineDiff)
           writeByte(column)
-        } else {
+        } else
           writeFull()
-        }
 
         lastPosition = pos
       }
@@ -734,16 +733,16 @@ object Serializers {
           val parents = readIdents()
           val jsName = Some(readString()).filter(_ != "")
           val defs0 = readTrees()
-          val defs = if (useHacks065) {
-            defs0.filter {
-              case MethodDef(_, Ident(name, _), _, _, _) =>
-                !Definitions.isReflProxyName(name)
-              case _ =>
-                true
-            }
-          } else {
-            defs0
-          }
+          val defs =
+            if (useHacks065)
+              defs0.filter {
+                case MethodDef(_, Ident(name, _), _, _, _) =>
+                  !Definitions.isReflProxyName(name)
+                case _ =>
+                  true
+              }
+            else
+              defs0
           val optimizerHints = new OptimizerHints(readInt())
           ClassDef(name, kind, superClass, parents, jsName, defs)(
             optimizerHints)
@@ -773,17 +772,15 @@ object Serializers {
           val result2 = if (foundArguments) {
             foundArguments = false
             new RewriteArgumentsTransformer().transformMethodDef(result1)
-          } else {
+          } else
             result1
-          }
           if (useHacks065 && result2.resultType != NoType &&
-              isConstructorName(result2.name.name)) {
+              isConstructorName(result2.name.name))
             result2.copy(resultType = NoType, body = result2.body)(
               result2.optimizerHints,
               result2.hash)(result2.pos)
-          } else {
+          else
             result2
-          }
         case TagPropertyDef =>
           PropertyDef(
             readPropertyName(),
@@ -797,9 +794,8 @@ object Serializers {
             foundArguments = false
             new RewriteArgumentsTransformer()
               .transformConstructorExportDef(result)
-          } else {
+          } else
             result
-          }
         case TagJSClassExportDef =>
           JSClassExportDef(readString())
         case TagModuleExportDef =>
@@ -886,40 +882,47 @@ object Serializers {
 
       val first = readByte()
 
-      val result = if (first == FormatNoPositionValue) {
-        Position.NoPosition
-      } else {
-        val result = if ((first & FormatFullMask) == FormatFullMaskValue) {
-          val file = files(readInt())
-          val line = readInt()
-          val column = readInt()
-          Position(file, line, column)
-        } else {
-          assert(
-            lastPosition != NoPosition,
-            "Position format error: first position must be full")
-          if ((first & Format1Mask) == Format1MaskValue) {
-            val columnDiff = first >> Format1Shift
-            Position(
-              lastPosition.source,
-              lastPosition.line,
-              lastPosition.column + columnDiff)
-          } else if ((first & Format2Mask) == Format2MaskValue) {
-            val lineDiff = first >> Format2Shift
-            val column = readByte() & 0xff // unsigned
-            Position(lastPosition.source, lastPosition.line + lineDiff, column)
+      val result =
+        if (first == FormatNoPositionValue)
+          Position.NoPosition
+        else {
+          val result = if ((first & FormatFullMask) == FormatFullMaskValue) {
+            val file = files(readInt())
+            val line = readInt()
+            val column = readInt()
+            Position(file, line, column)
           } else {
             assert(
-              (first & Format3Mask) == Format3MaskValue,
-              s"Position format error: first byte $first does not match any format")
-            val lineDiff = readShort()
-            val column = readByte() & 0xff // unsigned
-            Position(lastPosition.source, lastPosition.line + lineDiff, column)
+              lastPosition != NoPosition,
+              "Position format error: first position must be full")
+            if ((first & Format1Mask) == Format1MaskValue) {
+              val columnDiff = first >> Format1Shift
+              Position(
+                lastPosition.source,
+                lastPosition.line,
+                lastPosition.column + columnDiff)
+            } else if ((first & Format2Mask) == Format2MaskValue) {
+              val lineDiff = first >> Format2Shift
+              val column = readByte() & 0xff // unsigned
+              Position(
+                lastPosition.source,
+                lastPosition.line + lineDiff,
+                column)
+            } else {
+              assert(
+                (first & Format3Mask) == Format3MaskValue,
+                s"Position format error: first byte $first does not match any format")
+              val lineDiff = readShort()
+              val column = readByte() & 0xff // unsigned
+              Position(
+                lastPosition.source,
+                lastPosition.line + lineDiff,
+                column)
+            }
           }
+          lastPosition = result
+          result
         }
-        lastPosition = result
-        result
-      }
 
       if (UseDebugMagic) {
         val magic = readInt()

@@ -39,9 +39,8 @@ class SbtProjectOpenProcessor(builder: SbtProjectImportBuilder)
 
     if (StringUtil.isEmpty(wizardContext.getProjectName)) {
       val projectName = dialog.getWizardContext.getProjectName
-      if (!StringUtil.isEmpty(projectName)) {
+      if (!StringUtil.isEmpty(projectName))
         wizardContext.setProjectName(projectName)
-      }
     }
 
     dialog.show()

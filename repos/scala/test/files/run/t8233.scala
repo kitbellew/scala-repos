@@ -16,17 +16,15 @@ object Test {
     if (b) {
       val x = 12
       ()
-    } else {
+    } else
       // here expected type is (unboxed) Unit
       null
-    }
     true
   }
 
   def main(args: Array[String]): Unit = {
-    try {
-      nullReference
-    } catch { case _: NoSuchElementException => }
+    try nullReference
+    catch { case _: NoSuchElementException => }
     literal
     expectedUnitInABranch(true) // Was: VerifyError under GenICode
   }

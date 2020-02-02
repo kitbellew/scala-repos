@@ -40,9 +40,8 @@ trait SharedSparkContext extends BeforeAndAfterAll {
 
 object LocalSparkContext {
   def stop(sc: SparkContext) {
-    if (sc != null) {
+    if (sc != null)
       sc.stop()
-    }
     // To avoid Akka rebinding to the same port, since it doesn't unbind
     // immediately on shutdown
     System.clearProperty("spark.driver.port")

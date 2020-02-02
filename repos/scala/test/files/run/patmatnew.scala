@@ -667,15 +667,12 @@ object Test {
     def run() {
       Array[Throwable](new Exception("abc"), new MyException1, new MyException2)
         .foreach { e =>
-          try {
-            throw e
-          } catch {
-            case e: SpecialException => {
+          try throw e
+          catch {
+            case e: SpecialException =>
               assume(e.isInstanceOf[SpecialException])
-            }
-            case e => {
+            case e =>
               assume(e.isInstanceOf[Throwable])
-            }
           }
         }
     }
@@ -711,8 +708,8 @@ object Test {
   object Ticket211 {
     def run() {
       (Some(123): Option[Int]) match {
-        case (x: Option[a]) if false => {};
-        case (y: Option[b])          => {};
+        case (x: Option[a]) if false => ;
+        case (y: Option[b])          => ;
       }
     }
   }

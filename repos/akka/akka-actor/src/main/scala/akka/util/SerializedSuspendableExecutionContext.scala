@@ -66,7 +66,7 @@ private[akka] final class SerializedSuspendableExecutionContext(throughput: Int)
 
   final def run(): Unit = {
     @tailrec def run(done: Int): Unit =
-      if (done < throughput && state.get == On) {
+      if (done < throughput && state.get == On)
         poll() match {
           case null ⇒ ()
           case some ⇒
@@ -74,7 +74,6 @@ private[akka] final class SerializedSuspendableExecutionContext(throughput: Int)
             catch { case NonFatal(t) ⇒ context reportFailure t }
             run(done + 1)
         }
-      }
     try run(0)
     finally remState(On)
   }

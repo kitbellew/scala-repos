@@ -152,13 +152,11 @@ object ReachingDefintionsCollector {
       if !innerInstructions.contains(read)
       reaching <- rdset
       if innerInstructions.contains(reaching)
-    } {
-      reaching match {
-        case DefinitionInstruction(_, named, _)
-            if !buffer.contains(named) && (named == definitionToRead) =>
-          buffer += named
-        case _ =>
-      }
+    } reaching match {
+      case DefinitionInstruction(_, named, _)
+          if !buffer.contains(named) && (named == definitionToRead) =>
+        buffer += named
+      case _ =>
     }
     buffer.sortBy(_.getTextRange.getStartOffset).map(VariableInfo)
   }

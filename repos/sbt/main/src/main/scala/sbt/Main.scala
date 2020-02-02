@@ -243,9 +243,8 @@ object BuiltinCommands {
     case Some(si.version) => si.version; case _ => si.actualVersion
   }
   private[this] def quiet[T](t: => T): Option[T] =
-    try {
-      Some(t)
-    } catch { case e: Exception => None }
+    try Some(t)
+    catch { case e: Exception => None }
 
   def settingsCommand =
     showSettingLike(
@@ -501,9 +500,7 @@ object BuiltinCommands {
         catch {
           case e: Exception =>
             try export0(s)
-            finally {
-              throw e
-            }
+            finally throw e
         }
       export0(newS)
     }

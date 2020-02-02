@@ -174,7 +174,7 @@ case class Place(name: String, location: Location)
 
 object Place {
 
-  var list: List[Place] = {
+  var list: List[Place] =
     List(
       Place(
         "Sandleford",
@@ -185,7 +185,6 @@ object Place {
         Location(51.235685, -1.309197)
       )
     )
-  }
 
   def save(place: Place) =
     list = list ::: List(place)

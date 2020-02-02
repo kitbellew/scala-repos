@@ -216,9 +216,8 @@ object SafeLong extends SafeLongInstances {
     else SafeLongBigInteger(x.bigInteger)
 
   private[math] def apply(s: String): SafeLong =
-    try {
-      SafeLong(java.lang.Long.parseLong(s))
-    } catch {
+    try SafeLong(java.lang.Long.parseLong(s))
+    catch {
       case _: Exception => SafeLong(new BigInteger(s))
     }
 
@@ -230,26 +229,25 @@ object SafeLong extends SafeLongInstances {
 
     if (x == 0) absWrap(y)
     else if (y == 0) absWrap(x)
-    else if (x == Long.MinValue) {
+    else if (x == Long.MinValue)
       if (y == Long.MinValue) SafeLong.safe64
       else spire.math.gcd(y, x % y)
-    } else if (y == Long.MinValue) SafeLongLong(spire.math.gcd(x, y % x))
+    else if (y == Long.MinValue) SafeLongLong(spire.math.gcd(x, y % x))
     else SafeLongLong(spire.math.gcd(x, y % x))
   }
 
   def mixedGcd(x: Long, y: BigInteger): SafeLong =
-    if (y.signum == 0) {
+    if (y.signum == 0)
       if (x >= 0) SafeLongLong(x)
       else if (x == Long.MinValue) SafeLong.safe64
       else SafeLongLong(-x)
-    } else if (x == 0L) {
+    else if (x == 0L)
       SafeLong(y.abs)
-    } else if (x == Long.MinValue) {
+    else if (x == Long.MinValue)
       SafeLong(SafeLong.big64 gcd y)
-    } else {
+    else
       SafeLongLong(
         spire.math.gcd(x, (y remainder BigInteger.valueOf(x)).longValue))
-    }
 }
 
 private[math] final case class SafeLongLong(x: Long) extends SafeLong {
@@ -357,13 +355,10 @@ private[math] final case class SafeLongLong(x: Long) extends SafeLong {
   def <<(n: Int): SafeLong = {
     if (x == 0) return this
     if (n < 0) return this >> -n
-    if (n < 64) {
+    if (n < 64)
       if (x >= 0) {
         if (x <= (0x7FFFFFFFFFFFFFFFL >> n)) return SafeLongLong(x << n)
-      } else {
-        if (x >= (0x8000000000000000L >> n)) return SafeLongLong(x << n)
-      }
-    }
+      } else if (x >= (0x8000000000000000L >> n)) return SafeLongLong(x << n)
     SafeLongBigInteger(BigInteger.valueOf(x).shiftLeft(n))
   }
 

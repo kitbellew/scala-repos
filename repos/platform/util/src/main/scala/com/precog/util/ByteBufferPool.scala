@@ -78,9 +78,8 @@ final class ByteBufferPool(
       buffer =
         if (direct) ByteBuffer.allocateDirect(capacity)
         else ByteBuffer.allocate(capacity)
-    } else {
+    } else
       _hits.incrementAndGet()
-    }
 
     buffer.clear()
     buffer
@@ -92,9 +91,8 @@ final class ByteBufferPool(
     * should.
     */
   def release(buffer: ByteBuffer): Unit =
-    if (!(fixedBufferQueue offer buffer)) {
+    if (!(fixedBufferQueue offer buffer))
       flexBufferQueue offer (new SoftReference(buffer))
-    }
 
   def toStream: Stream[ByteBuffer] = Stream.continually(acquire)
 

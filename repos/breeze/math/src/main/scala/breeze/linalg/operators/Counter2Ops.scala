@@ -29,9 +29,8 @@ trait Counter2Ops {
     new OpAdd.InPlaceImpl2[Counter2[K1, K2, V], Counter2[K1, K2, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter2[K1, K2, V], b: Counter2[K1, K2, V]) {
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = field.+(a(k), v)
-        }
       }
     }
 
@@ -40,9 +39,8 @@ trait Counter2Ops {
     new scaleAdd.InPlaceImpl3[Counter2[K1, K2, V], V, Counter2[K1, K2, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter2[K1, K2, V], s: V, b: Counter2[K1, K2, V]) {
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = field.+(a(k), field.*(s, v))
-        }
       }
     }
 
@@ -57,9 +55,8 @@ trait Counter2Ops {
     new OpAdd.InPlaceImpl2[Counter2[K1, K2, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter2[K1, K2, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.+(v, b)
-        }
       }
     }
 
@@ -72,9 +69,8 @@ trait Counter2Ops {
     new OpSub.InPlaceImpl2[Counter2[K1, K2, V], Counter2[K1, K2, V]] {
       val field = implicitly[Ring[V]]
       def apply(a: Counter2[K1, K2, V], b: Counter2[K1, K2, V]) {
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = field.-(a(k), v)
-        }
       }
     }
 
@@ -89,9 +85,8 @@ trait Counter2Ops {
     new OpSub.InPlaceImpl2[Counter2[K1, K2, V], V] {
       val field = implicitly[Ring[V]]
       def apply(a: Counter2[K1, K2, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.-(v, b)
-        }
       }
     }
 
@@ -104,9 +99,8 @@ trait Counter2Ops {
     new OpMulScalar.InPlaceImpl2[Counter2[K1, K2, V], Counter2[K1, K2, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter2[K1, K2, V], b: Counter2[K1, K2, V]) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.*(v, b(k))
-        }
       }
     }
 
@@ -135,9 +129,8 @@ trait Counter2Ops {
     new OpMulScalar.InPlaceImpl2[Counter2[K1, K2, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter2[K1, K2, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.*(v, b)
-        }
       }
     }
 
@@ -146,9 +139,8 @@ trait Counter2Ops {
     new OpMulMatrix.InPlaceImpl2[Counter2[K1, K2, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter2[K1, K2, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.*(v, b)
-        }
       }
     }
 
@@ -183,9 +175,8 @@ trait Counter2Ops {
     new OpDiv.InPlaceImpl2[Counter2[K1, K2, V], Counter2[K1, K2, V]] {
       val field = implicitly[Field[V]]
       def apply(a: Counter2[K1, K2, V], b: Counter2[K1, K2, V]) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field./(v, b(k))
-        }
       }
     }
 
@@ -229,9 +220,8 @@ trait Counter2Ops {
     new OpDiv.InPlaceImpl2[Counter2[K1, K2, V], V] {
       val field = implicitly[Field[V]]
       def apply(a: Counter2[K1, K2, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field./(v, b)
-        }
       }
     }
 
@@ -240,9 +230,8 @@ trait Counter2Ops {
     new OpSet.InPlaceImpl2[Counter2[K1, K2, V], Counter2[K1, K2, V]] {
       def apply(a: Counter2[K1, K2, V], b: Counter2[K1, K2, V]) {
         a.data.clear()
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = v
-        }
       }
     }
 
@@ -250,9 +239,8 @@ trait Counter2Ops {
       : OpSet.InPlaceImpl2[Counter2[K1, K2, V], V] =
     new OpSet.InPlaceImpl2[Counter2[K1, K2, V], V] {
       def apply(a: Counter2[K1, K2, V], b: V) {
-        for (k <- a.keysIterator) {
+        for (k <- a.keysIterator)
           a(k) = b
-        }
       }
     }
 
@@ -299,9 +287,8 @@ trait Counter2Ops {
     new OpMulMatrix.Impl2[Counter2[K1, K2, V], Counter[K2, V], Counter[K1, V]] {
       override def apply(a: Counter2[K1, K2, V], b: Counter[K2, V]) = {
         val r = Counter[K1, V]()
-        for ((row, ctr) <- a.data.iterator) {
+        for ((row, ctr) <- a.data.iterator)
           r(row) = ctr dot b
-        }
         r
       }
     }
@@ -318,9 +305,8 @@ trait Counter2Ops {
       override def apply(a: Counter2[K1, K2, V], b: Counter2[K2, K3, V]) = {
         val r = Counter2[K1, K3, V]()
         for ((row, ctr) <- a.data.iterator; (k2, v) <- ctr.activeIterator;
-             (k3, v2) <- b(k2, ::).data) {
+             (k3, v2) <- b(k2, ::).data)
           r(row, k3) = semiring.+(r(row, k3), semiring.*(v, v2))
-        }
         r
       }
     }
@@ -334,9 +320,8 @@ trait Counter2Ops {
         from2: Counter2[K1, K2, V],
         fn: (V, V) => RV) = {
       val result = Counter2[K1, K2, RV]
-      for (k <- (from.keySet ++ from2.keySet)) {
+      for (k <- (from.keySet ++ from2.keySet))
         result(k) = fn(from(k), from2(k))
-      }
       result
     }
   }

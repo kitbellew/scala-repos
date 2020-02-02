@@ -56,7 +56,7 @@ private[thrift] class TTwitterClientFilter(
 
     val contexts = Contexts.broadcast.marshal().iterator
     val ctxs = new ArrayList[thrift.RequestContext]()
-    if (contexts.hasNext) {
+    if (contexts.hasNext)
       while (contexts.hasNext) {
         val (k, buf) = contexts.next()
 
@@ -72,7 +72,6 @@ private[thrift] class TTwitterClientFilter(
           ctxs.add(c)
         }
       }
-    }
     clientIdBuf match {
       case Some(buf) =>
         val ctx = new thrift.RequestContext(
@@ -120,20 +119,19 @@ private[thrift] class TTwitterClientFilter(
 
     val reply = service(thriftRequest)
 
-    if (thriftRequest.oneway) {
+    if (thriftRequest.oneway)
       // Oneway requests don't contain replies, so they can't be traced.
       reply
-    } else {
+    else
       reply map { response =>
-        if (isUpgraded) {
+        if (isUpgraded)
           // Peel off the ResponseHeader.
           InputBuffer.peelMessage(
             response,
             new thrift.ResponseHeader,
             protocolFactory)
-        } else
+        else
           response
       }
-    }
   }
 }

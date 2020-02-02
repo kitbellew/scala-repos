@@ -118,7 +118,7 @@ object PairingRepo {
       .map {
         _.documents.flatMap { doc =>
           doc.getAs[String]("_id") flatMap { uid =>
-            doc.getAs[Int]("nb") map { uid -> _ }
+            doc.getAs[Int]("nb") map uid -> _
           }
         }.toMap
       }

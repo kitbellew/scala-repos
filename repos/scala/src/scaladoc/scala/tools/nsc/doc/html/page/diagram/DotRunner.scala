@@ -23,7 +23,7 @@ class DotRunner(settings: doc.Settings) {
 
   def feedToDot(dotInput: String, template: DocTemplateEntity): String = {
 
-    if (dotProcess == null) {
+    if (dotProcess == null)
       if (dotAttempts < settings.docDiagramsDotRestart.value + 1) {
         if (dotAttempts > 0)
           settings.printMsg("Graphviz will be restarted...\n")
@@ -31,7 +31,6 @@ class DotRunner(settings: doc.Settings) {
         dotProcess = new DotProcess(settings)
       } else
         return null
-    }
 
     val tStart = System.currentTimeMillis
     val result = dotProcess.feedToDot(dotInput, template.qualifiedName)
@@ -142,7 +141,7 @@ class DotProcess(settings: doc.Settings) {
       if (outputString.isSet) outputString.take()
     }
 
-    if (_error) {
+    if (_error)
       if (settings.docDiagramsDebug.value) {
         settings.printMsg(
           "\n**********************************************************************")
@@ -170,7 +169,6 @@ class DotProcess(settings: doc.Settings) {
         settings.printMsg(
           "a diagram, please use the " + settings.docDiagramsDebug.name + " flag and report a bug with the output.")
       }
-    }
   }
 
   /* The standard input passing function */

@@ -490,7 +490,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
     override def isDocTemplate = true
     private[this] lazy val companionSymbol =
-      if (sym.isAliasType || sym.isAbstractType) {
+      if (sym.isAliasType || sym.isAbstractType)
         inTpl.sym.info.member(sym.name.toTermName) match {
           case NoSymbol => NoSymbol
           case s =>
@@ -502,7 +502,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
                 s.info.resultType.typeSymbol
             }
         }
-      } else
+      else
         sym.companionSymbol
 
     def companion =
@@ -755,11 +755,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         else {
           import Streamable._
           Path(settings.docRootContent.value) match {
-            case f: File => {
+            case f: File =>
               val rootComment = closing(f.inputStream())(is =>
                 parse(slurp(is), "", NoPosition, inTpl))
               Some(rootComment)
-            }
             case _ => None
           }
         }
@@ -1069,7 +1068,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     new ParameterImpl(aSym, inTpl) with ValueParam {
       override val name = newName
       def defaultValue =
-        if (aSym.hasDefault) {
+        if (aSym.hasDefault)
           // units.filter should return only one element
           (currentRun.units filter (_.source.file == aSym.sourceFile)).toList match {
             case List(unit) =>
@@ -1087,7 +1086,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
               }
             case _ => None
           }
-        } else None
+        else None
       def resultType =
         makeTypeInTemplateContext(aSym.tpe, inTpl, aSym)
       def isImplicit = aSym.isImplicit

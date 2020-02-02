@@ -102,9 +102,9 @@ class MutableList[A]
   }
 
   protected def appendElem(elem: A) {
-    if (len == 0) {
+    if (len == 0)
       prependElem(elem)
-    } else {
+    else {
       last0.next = new LinkedList[A]
       last0 = last0.next
       last0.elem = elem

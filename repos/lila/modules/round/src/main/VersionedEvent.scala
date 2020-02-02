@@ -21,10 +21,10 @@ case class VersionedEvent(
   }
 
   def jsFor(m: Member): JsObject =
-    if (visibleBy(m)) {
+    if (visibleBy(m))
       if (decoded == JsNull) Json.obj("v" -> version, "t" -> typ)
       else Json.obj("v" -> version, "t" -> typ, "d" -> decoded)
-    } else Json.obj("v" -> version)
+    else Json.obj("v" -> version)
 
   private def visibleBy(m: Member): Boolean =
     if (watcher && m.owner) false

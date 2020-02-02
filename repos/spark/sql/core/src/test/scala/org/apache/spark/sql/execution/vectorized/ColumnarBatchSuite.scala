@@ -620,11 +620,10 @@ class ColumnarBatchSuite extends SparkFunSuite {
   }
 
   private def doubleEquals(d1: Double, d2: Double): Boolean =
-    if (d1.isNaN && d2.isNaN) {
+    if (d1.isNaN && d2.isNaN)
       true
-    } else {
+    else
       d1 == d2
-    }
 
   private def compareStruct(
       fields: Seq[StructField],
@@ -633,7 +632,7 @@ class ColumnarBatchSuite extends SparkFunSuite {
       seed: Long) {
     fields.zipWithIndex.foreach { v =>
       assert(r1.isNullAt(v._2) == r2.isNullAt(v._2), "Seed = " + seed)
-      if (!r1.isNullAt(v._2)) {
+      if (!r1.isNullAt(v._2))
         v._1.dataType match {
           case BooleanType =>
             assert(r1.getBoolean(v._2) == r2.getBoolean(v._2), "Seed = " + seed)
@@ -669,7 +668,7 @@ class ColumnarBatchSuite extends SparkFunSuite {
             val a2 = r2.getList(v._2).toArray
             assert(a1.length == a2.length, "Seed = " + seed)
             childType match {
-              case DoubleType => {
+              case DoubleType =>
                 var i = 0
                 while (i < a1.length) {
                   assert(
@@ -679,8 +678,7 @@ class ColumnarBatchSuite extends SparkFunSuite {
                     "Seed = " + seed)
                   i += 1
                 }
-              }
-              case FloatType => {
+              case FloatType =>
                 var i = 0
                 while (i < a1.length) {
                   assert(
@@ -690,7 +688,6 @@ class ColumnarBatchSuite extends SparkFunSuite {
                     "Seed = " + seed)
                   i += 1
                 }
-              }
 
               case t: DecimalType =>
                 var i = 0
@@ -715,7 +712,6 @@ class ColumnarBatchSuite extends SparkFunSuite {
           case _ =>
             throw new NotImplementedError("Not implemented " + v._1.dataType)
         }
-      }
     }
   }
 
@@ -741,9 +737,8 @@ class ColumnarBatchSuite extends SparkFunSuite {
 
       val it = batch.rowIterator()
       val referenceIt = rows.iterator
-      while (it.hasNext) {
+      while (it.hasNext)
         compareStruct(schema, it.next(), referenceIt.next(), 0)
-      }
       batch.close()
     }
   }
@@ -771,11 +766,11 @@ class ColumnarBatchSuite extends SparkFunSuite {
     val random = new Random(seed)
     var i = 0
     while (i < NUM_ITERS) {
-      val schema = if (flatSchema) {
-        RandomDataGenerator.randomSchema(random, numFields, types)
-      } else {
-        RandomDataGenerator.randomNestedSchema(random, numFields, types)
-      }
+      val schema =
+        if (flatSchema)
+          RandomDataGenerator.randomSchema(random, numFields, types)
+        else
+          RandomDataGenerator.randomNestedSchema(random, numFields, types)
       val rows = mutable.ArrayBuffer.empty[Row]
       var j = 0
       while (j < NUM_ROWS) {

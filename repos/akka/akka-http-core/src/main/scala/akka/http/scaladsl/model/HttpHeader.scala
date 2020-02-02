@@ -64,17 +64,15 @@ object HttpHeader {
       val parser = new HeaderParser(value, settings)
       parser.`header-field-value`.run() match {
         case Success(preProcessedValue) ⇒
-          try {
-            HeaderParser.parseFull(
-              name.toLowerCase,
-              preProcessedValue,
-              settings) match {
-              case Right(header) ⇒ ParsingResult.Ok(header, Nil)
-              case Left(info) ⇒
-                val errors = info.withSummaryPrepended(
-                  s"Illegal HTTP header '$name'") :: Nil
-                ParsingResult.Ok(RawHeader(name, preProcessedValue), errors)
-            }
+          try HeaderParser.parseFull(
+            name.toLowerCase,
+            preProcessedValue,
+            settings) match {
+            case Right(header) ⇒ ParsingResult.Ok(header, Nil)
+            case Left(info) ⇒
+              val errors =
+                info.withSummaryPrepended(s"Illegal HTTP header '$name'") :: Nil
+              ParsingResult.Ok(RawHeader(name, preProcessedValue), errors)
           } catch {
             case HeaderParser.RuleNotFoundException ⇒
               ParsingResult.Ok(RawHeader(name, preProcessedValue), Nil)

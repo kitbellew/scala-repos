@@ -26,9 +26,8 @@ class MaxFailuresCheck[T, U](val maxFailures: Int)(
 
   private val failures = new AtomicInteger(0)
   def apply(input: U): Option[T] =
-    try {
-      Some(injection.invert(input).get)
-    } catch {
+    try Some(injection.invert(input).get)
+    catch {
       case e: Exception =>
         // TODO: use proper logging
         e.printStackTrace()

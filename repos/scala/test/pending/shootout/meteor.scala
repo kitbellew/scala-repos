@@ -49,43 +49,35 @@ final class Solver(n: Int) {
     if (unplaced.size > 0) {
       val emptyCellIndex = board.firstEmptyCellIndex
 
-      for (k <- Iterator.range(0, pieces.length)) {
+      for (k <- Iterator.range(0, pieces.length))
         if (unplaced.contains(k)) {
           unplaced -= k
 
           for (i <- Iterator.range(0, Piece.orientations)) {
             val piece = pieces(k).nextOrientation
 
-            for (j <- Iterator.range(0, Piece.size)) {
+            for (j <- Iterator.range(0, Piece.size))
               if (board.add(j, emptyCellIndex, piece)) {
 
                 if (!shouldPrune) findSolutions
 
                 board.remove(piece)
               }
-            }
           }
           unplaced += k
         }
-      }
-    } else {
+    } else
       puzzleSolved
-    }
   }
 
   private def puzzleSolved() = {
     val b = board.asString
     if (first == null) {
       first = b; last = b
-    } else {
-      if (b < first) {
-        first = b
-      } else {
-        if (b > last) {
-          last = b
-        }
-      }
-    }
+    } else if (b < first)
+      first = b
+    else if (b > last)
+      last = b
     countdown = countdown - 1
   }
 
@@ -449,9 +441,8 @@ final class BoardCell(_number: Int) extends {
           count = count + neighbour.contiguousEmptyCells
 
       count
-    } else {
+    } else
       0
-    }
 }
 
 // PieceCell.scala

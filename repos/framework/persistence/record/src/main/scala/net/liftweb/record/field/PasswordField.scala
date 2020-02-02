@@ -72,10 +72,9 @@ trait PasswordTypedField extends TypedField[String] {
         setBoxPlain(Full(h1))
       case (hash: String) if (hash.startsWith("$2a$"))     => setBox(Full(hash))
       case Full(hash: String) if (hash.startsWith("$2a$")) => setBox(Full(hash))
-      case _ => {
+      case _ =>
         invalidPw = true; invalidMsg = S.?("passwords.do.not.match");
         Failure(invalidMsg)
-      }
     }
 
   def setFromString(s: String): Box[String] = s match {
@@ -108,14 +107,12 @@ trait PasswordTypedField extends TypedField[String] {
 
   protected def validatePassword(pwdValue: Box[String]): Boolean = {
     pwdValue match {
-      case Empty | Full("" | null) if !optional_? => {
+      case Empty | Full("" | null) if !optional_? =>
         invalidPw = true; invalidMsg = notOptionalErrorMessage
-      }
       case Full(s)
-          if s == "" || s == PasswordField.blankPw || s.length < PasswordField.minPasswordLength => {
+          if s == "" || s == PasswordField.blankPw || s.length < PasswordField.minPasswordLength =>
         invalidPw = true; invalidMsg = S.?("password.too.short")
-      }
-      case _ => { invalidPw = false; invalidMsg = "" }
+      case _ => invalidPw = false; invalidMsg = ""
     }
     invalidPw
   }
@@ -150,9 +147,8 @@ class PasswordField[OwnerType <: Record[OwnerType]](rec: OwnerType)
     if (owner.meta.mutable_?) {
       this.setBoxPlain(in)
       owner
-    } else {
+    } else
       owner.meta.createWithMutableField(owner, this, in)
-    }
 
 }
 
@@ -172,7 +168,6 @@ class OptionalPasswordField[OwnerType <: Record[OwnerType]](rec: OwnerType)
     if (owner.meta.mutable_?) {
       this.setBoxPlain(in)
       owner
-    } else {
+    } else
       owner.meta.createWithMutableField(owner, this, in)
-    }
 }

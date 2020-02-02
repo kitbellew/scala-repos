@@ -227,19 +227,15 @@ trait NIHDBQueryExecutorComponent {
       def asyncExecutorFor(apiKey: APIKey) =
         for {
           executionContext0 <- threadPooling.getAccountExecutionContext(apiKey)
-        } yield {
-          new AsyncQueryExecutor {
-            val executionContext: ExecutionContext = executionContext0
-          }
+        } yield new AsyncQueryExecutor {
+          val executionContext: ExecutionContext = executionContext0
         }
 
       def syncExecutorFor(apiKey: APIKey) =
         for {
           executionContext0 <- threadPooling.getAccountExecutionContext(apiKey)
-        } yield {
-          new SyncQueryExecutor {
-            val executionContext: ExecutionContext = executionContext0
-          }
+        } yield new SyncQueryExecutor {
+          val executionContext: ExecutionContext = executionContext0
         }
 
       override def executor(implicit shardQueryMonad: JobQueryTFMonad)

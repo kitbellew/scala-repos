@@ -167,9 +167,9 @@ class DataInputStream(in: InputStream)
       i += 1
 
       val char = {
-        if ((a & 0x80) == 0x00) { // 0xxxxxxx
+        if ((a & 0x80) == 0x00) // 0xxxxxxx
           a.toChar
-        } else if ((a & 0xE0) == 0xC0 && i < length) { // 110xxxxx
+        else if ((a & 0xE0) == 0xC0 && i < length) { // 110xxxxx
           val b = read()
           i += 1
 

@@ -336,9 +336,7 @@ object EnumeratorsSpec
           out.close()
           val enumerator = Enumerator.fromFile(f)(fromFileEC).map(new String(_))
           mustEnumerateTo(s)(enumerator)
-        } finally {
-          f.delete()
-        }
+        } finally f.delete()
       }
     }
   }
@@ -354,9 +352,7 @@ object EnumeratorsSpec
           out.close()
           val enumerator = Enumerator.fromPath(f)(fromPathEC).map(new String(_))
           mustEnumerateTo(s)(enumerator)
-        } finally {
-          Files.delete(f)
-        }
+        } finally Files.delete(f)
       }
     }
   }

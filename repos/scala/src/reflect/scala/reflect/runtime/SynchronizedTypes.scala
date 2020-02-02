@@ -36,9 +36,8 @@ private[reflect] trait SynchronizedTypes extends internal.Types {
         uniques(tp) = new jWeakRef(tp)
         tp
       }
-    } else {
+    } else
       super.unique(tp)
-    }
   }
 
   private lazy val _skolemizationLevel = mkThreadLocalStorage(0)

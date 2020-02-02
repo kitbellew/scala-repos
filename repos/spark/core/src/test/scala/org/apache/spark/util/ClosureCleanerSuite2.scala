@@ -51,9 +51,7 @@ class ClosureCleanerSuite2
       sc.stop()
       sc = null
       closureSerializer = null
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   // Some fields and methods to reference in inner closures later
   private val someSerializableValue = 1
@@ -63,13 +61,12 @@ class ClosureCleanerSuite2
 
   /** Assert that the given closure is serializable (or not). */
   private def assertSerializable(closure: AnyRef, serializable: Boolean): Unit =
-    if (serializable) {
+    if (serializable)
       closureSerializer.serialize(closure)
-    } else {
+    else
       intercept[NotSerializableException] {
         closureSerializer.serialize(closure)
       }
-    }
 
   /**
     * Helper method for testing whether closure cleaning works as expected.
@@ -106,13 +103,12 @@ class ClosureCleanerSuite2
     assertSerializable(closure, serializableBefore)
     // If the resulting closure is not serializable even after
     // cleaning, we expect ClosureCleaner to throw a SparkException
-    if (serializableAfter) {
+    if (serializableAfter)
       ClosureCleaner.clean(closure, checkSerializable = true, transitive)
-    } else {
+    else
       intercept[SparkException] {
         ClosureCleaner.clean(closure, checkSerializable = true, transitive)
       }
-    }
     assertSerializable(closure, serializableAfter)
   }
 
@@ -667,10 +663,10 @@ class ClosureCleanerSuite2
     val test3 = () => { () => test1() }
     val test4 = () => { () => test2() }
     val test5 = () => {
-      () => { () => test3() }
+      () => () => test3()
     }
     val test6 = () => {
-      () => { () => test4() }
+      () => () => test4()
     }
 
     test1()

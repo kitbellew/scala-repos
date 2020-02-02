@@ -53,9 +53,8 @@ object Number extends NumberInstances {
       FloatNumber(n)
 
   def apply(s: String): Number =
-    try {
-      Number(SafeLong(s))
-    } catch {
+    try Number(SafeLong(s))
+    catch {
       case _: Exception => Number(BigDecimal(s))
     }
 
@@ -540,11 +539,10 @@ private[math] case class DecimalNumber(n: BigDecimal) extends Number { lhs =>
   }
 
   def pow(rhs: Number): Number =
-    if (rhs.canBeInt) {
+    if (rhs.canBeInt)
       Number(n.pow(rhs.intValue))
-    } else {
+    else
       Number(spire.math.pow(n, rhs.toBigDecimal))
-    }
 
   def sqrt: Number = Number(n.sqrt)
   def nroot(k: Int): Number = Number(n.nroot(k))
@@ -627,12 +625,11 @@ private[math] case class RationalNumber(n: Rational) extends Number { lhs =>
   }
 
   def pow(rhs: Number): Number =
-    if (rhs.canBeInt) {
+    if (rhs.canBeInt)
       Number(n.pow(rhs.intValue))
-    } else {
+    else
       // FIXME: we should actually try to return values with a meaningful approximation context
       Number(spire.math.pow(n.toDouble, rhs.toDouble))
-    }
 
   import spire.algebra.Field
 

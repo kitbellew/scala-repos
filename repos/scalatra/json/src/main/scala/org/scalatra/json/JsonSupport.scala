@@ -51,10 +51,9 @@ trait JsonSupport[T] extends JsonOutput[T] {
         transformRequestBody(bd)
       } else JNothing
     } catch {
-      case t: Throwable ⇒ {
+      case t: Throwable ⇒
         logger.error(s"Parsing the request body failed, because:", t)
         JNothing
-      }
     }
 
   protected def readJsonFromBody(bd: String): JValue
@@ -96,9 +95,8 @@ trait JsonSupport[T] extends JsonOutput[T] {
       val mt = request.contentType.fold("application/x-www-form-urlencoded")(
         _.split(";").head)
       val fmt = mimeTypes get mt getOrElse "html"
-      if (shouldParseBody(fmt)) {
+      if (shouldParseBody(fmt))
         request(ParsedBodyKey) = parseRequestBody(fmt).asInstanceOf[AnyRef]
-      }
       super.invoke(matchedRoute)
     }
 

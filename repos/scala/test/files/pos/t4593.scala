@@ -10,7 +10,7 @@ trait A {
 
     def y = synchronized {
       x match {
-        case D => {}
+        case D =>
       }
     }
 

@@ -226,7 +226,7 @@ private[collection] object RedBlackTree {
       tree: Tree[A, B],
       node: Node[A, B]): Unit = {
     var z = node
-    while (isRed(z.parent)) {
+    while (isRed(z.parent))
       if (z.parent eq z.parent.parent.left) {
         val y = z.parent.parent.right
         if (isRed(y)) {
@@ -260,7 +260,6 @@ private[collection] object RedBlackTree {
           rotateLeft(tree, z.parent.parent)
         }
       }
-    }
     tree.root.red = false
   }
 
@@ -599,11 +598,9 @@ private[collection] object RedBlackTree {
 
     def hasProperParentRefs(node: Node[A, B]): Boolean =
       if (node eq null) true
-      else {
-        if ((node.left ne null) && (node.left.parent ne node) ||
-            (node.right ne null) && (node.right.parent ne node)) false
-        else hasProperParentRefs(node.left) && hasProperParentRefs(node.right)
-      }
+      else if ((node.left ne null) && (node.left.parent ne node) ||
+               (node.right ne null) && (node.right.parent ne node)) false
+      else hasProperParentRefs(node.left) && hasProperParentRefs(node.right)
 
     if (tree.root eq null) true
     else (tree.root.parent eq null) && hasProperParentRefs(tree.root)
@@ -615,12 +612,10 @@ private[collection] object RedBlackTree {
   private[this] def isValidBST[A, B](node: Node[A, B])(
       implicit ord: Ordering[A]): Boolean =
     if (node eq null) true
-    else {
-      if ((node.left ne null) && (ord.compare(node.key, node.left.key) <= 0) ||
-          (node.right ne null) && (ord.compare(node.key, node.right.key) >= 0))
-        false
-      else isValidBST(node.left) && isValidBST(node.right)
-    }
+    else if ((node.left ne null) && (ord.compare(node.key, node.left.key) <= 0) ||
+             (node.right ne null) && (ord.compare(node.key, node.right.key) >= 0))
+      false
+    else isValidBST(node.left) && isValidBST(node.right)
 
   /**
     * Returns true if the tree has all the red-black tree properties: if the root node is black, if all children of red

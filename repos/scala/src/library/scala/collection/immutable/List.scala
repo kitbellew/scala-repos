@@ -168,10 +168,10 @@ sealed abstract class List[+A]
         mapped: ListBuffer[B],
         unchanged: List[A],
         pending: List[A]): List[B] =
-      if (pending.isEmpty) {
+      if (pending.isEmpty)
         if (mapped eq null) unchanged
         else mapped.prependToList(unchanged)
-      } else {
+      else {
         val head0 = pending.head
         val head1 = f(head0)
 
@@ -275,7 +275,7 @@ sealed abstract class List[+A]
 
   final override def map[B, That](f: A => B)(
       implicit bf: CanBuildFrom[List[A], B, That]): That =
-    if (bf eq List.ReusableCBF) {
+    if (bf eq List.ReusableCBF)
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
         val h = new ::[B](f(head), Nil)
@@ -289,11 +289,11 @@ sealed abstract class List[+A]
         }
         h.asInstanceOf[That]
       }
-    } else super.map(f)
+    else super.map(f)
 
   final override def collect[B, That](pf: PartialFunction[A, B])(
       implicit bf: CanBuildFrom[List[A], B, That]): That =
-    if (bf eq List.ReusableCBF) {
+    if (bf eq List.ReusableCBF)
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
         var rest = this
@@ -319,11 +319,11 @@ sealed abstract class List[+A]
         } while (rest ne Nil)
         h.asInstanceOf[That]
       }
-    } else super.collect(pf)
+    else super.collect(pf)
 
   final override def flatMap[B, That](f: A => GenTraversableOnce[B])(
       implicit bf: CanBuildFrom[List[A], B, That]): That =
-    if (bf eq List.ReusableCBF) {
+    if (bf eq List.ReusableCBF)
       if (this eq Nil) Nil.asInstanceOf[That]
       else {
         var rest = this
@@ -346,7 +346,7 @@ sealed abstract class List[+A]
         }
         (if (!found) Nil else h).asInstanceOf[That]
       }
-    } else super.flatMap(f)
+    else super.flatMap(f)
 
   @inline final override def takeWhile(p: A => Boolean): List[A] = {
     val b = new ListBuffer[A]

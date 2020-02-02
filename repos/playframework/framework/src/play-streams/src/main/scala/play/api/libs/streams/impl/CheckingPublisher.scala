@@ -30,16 +30,16 @@ private[streams] abstract class CheckingPublisher[T] extends Publisher[T] {
     @tailrec
     def addSubscription(): Unit = {
       val oldSubscriptions = subscriptions.get
-      if (oldSubscriptions.exists(s => (s.subscriber eq subr) && s.isActive)) {
+      if (oldSubscriptions.exists(s => (s.subscriber eq subr) && s.isActive))
         subr.onError(
           new IllegalStateException(
             "Subscriber is already subscribed to this Publisher"))
-      } else {
+      else {
         val newSubscriptions: List[SubscriptionHandle[_]] =
           handle :: oldSubscriptions
-        if (subscriptions.compareAndSet(oldSubscriptions, newSubscriptions)) {
+        if (subscriptions.compareAndSet(oldSubscriptions, newSubscriptions))
           handle.start()
-        } else addSubscription()
+        else addSubscription()
       }
     }
     addSubscription()

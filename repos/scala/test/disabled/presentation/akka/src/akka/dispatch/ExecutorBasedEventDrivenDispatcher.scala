@@ -137,14 +137,13 @@ class ExecutorBasedEventDrivenDispatcher(
   }
 
   private[akka] def executeFuture(invocation: FutureInvocation[_]): Unit =
-    if (active.isOn) {
+    if (active.isOn)
       try executorService.get() execute invocation
       catch {
         case e: RejectedExecutionException =>
           EventHandler.warning(this, e.toString)
           throw e
       }
-    }
 
   /**
     * @return the mailbox associated with the actor
@@ -179,28 +178,24 @@ class ExecutorBasedEventDrivenDispatcher(
   private[akka] def shutdown {
     val old =
       executorService.getAndSet(config.createLazyExecutorService(threadFactory))
-    if (old ne null) {
+    if (old ne null)
       old.shutdownNow()
-    }
   }
 
   private[akka] def registerForExecution(
       mbox: MessageQueue with ExecutableMailbox): Unit =
-    if (mbox.dispatcherLock.tryLock()) {
-      if (active.isOn && !mbox.suspended.locked) { //If the dispatcher is active and the actor not suspended
-        try {
-          executorService.get() execute mbox
-        } catch {
+    if (mbox.dispatcherLock.tryLock())
+      if (active.isOn && !mbox.suspended.locked) //If the dispatcher is active and the actor not suspended
+        try executorService.get() execute mbox
+        catch {
           case e: RejectedExecutionException =>
             EventHandler.warning(this, e.toString)
             mbox.dispatcherLock.unlock()
             throw e
         }
-      } else {
+      else
         mbox.dispatcherLock
           .unlock() //If the dispatcher isn't active or if the actor is suspended, unlock the dispatcher lock
-      }
-    }
 
   private[akka] def reRegisterForExecution(
       mbox: MessageQueue with ExecutableMailbox): Unit =
@@ -227,13 +222,10 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
   def dispatcher: ExecutorBasedEventDrivenDispatcher
 
   final def run = {
-    try {
-      processMailbox()
-    } catch {
+    try processMailbox()
+    catch {
       case ie: InterruptedException =>
-    } finally {
-      dispatcherLock.unlock()
-    }
+    } finally dispatcherLock.unlock()
     if (!self.isEmpty)
       dispatcher.reRegisterForExecution(this)
   }
@@ -246,7 +238,7 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
   final def processMailbox() {
     if (!self.suspended.locked) {
       var nextMessage = self.dequeue
-      if (nextMessage ne null) { //If we have a message
+      if (nextMessage ne null) //If we have a message
         if (dispatcher.throughput <= 1) //If we only run one message per process
           nextMessage.invoke //Just run it
         else { //But otherwise, if we are throttled, we need to do some book-keeping
@@ -259,17 +251,17 @@ trait ExecutableMailbox extends Runnable { self: MessageQueue =>
             else 0
           do {
             nextMessage.invoke
-            nextMessage = if (self.suspended.locked) {
-              null // If we are suspended, abort
-            } else { // If we aren't suspended, we need to make sure we're not overstepping our boundaries
-              processedMessages += 1
-              if ((processedMessages >= dispatcher.throughput) || (isDeadlineEnabled && System.nanoTime >= deadlineNs)) // If we're throttled, break out
-                null //We reached our boundaries, abort
-              else self.dequeue //Dequeue the next message
-            }
+            nextMessage =
+              if (self.suspended.locked)
+                null // If we are suspended, abort
+              else { // If we aren't suspended, we need to make sure we're not overstepping our boundaries
+                processedMessages += 1
+                if ((processedMessages >= dispatcher.throughput) || (isDeadlineEnabled && System.nanoTime >= deadlineNs)) // If we're throttled, break out
+                  null //We reached our boundaries, abort
+                else self.dequeue //Dequeue the next message
+              }
           } while (nextMessage ne null)
         }
-      }
     }
   }
 }

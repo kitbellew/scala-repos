@@ -83,9 +83,8 @@ object RawZipkinTracer {
       override def run() {
         val tracers = RawZipkinTracer.synchronized(map.values.toSeq)
         val joined = Future.join(tracers map (_.flush()))
-        try {
-          Await.result(joined, 100.milliseconds)
-        } catch {
+        try Await.result(joined, 100.milliseconds)
+        catch {
           case _: TimeoutException =>
             System.err.println("Failed to flush all traces before quitting")
         }
@@ -145,9 +144,8 @@ private[thrift] class RawZipkinTracer(
       private[this] val writer = new CharArrayWriter(initialSizeInBytes) {
         override def reset(): Unit = {
           super.reset()
-          if (buf.length > maxSizeInBytes) {
+          if (buf.length > maxSizeInBytes)
             buf = new Array[Char](initialSizeInBytes)
-          }
         }
       }
       @volatile private[this] var outStream = encoder.encodingStream(writer)

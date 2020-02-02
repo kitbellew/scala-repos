@@ -195,9 +195,9 @@ class Partition(
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
       val isNewLeader =
-        if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt.get == localBrokerId) {
+        if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt.get == localBrokerId)
           false
-        } else {
+        else {
           leaderReplicaIdOpt = Some(localBrokerId)
           true
         }
@@ -242,9 +242,9 @@ class Partition(
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
 
-      if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt.get == newLeaderBrokerId) {
+      if (leaderReplicaIdOpt.isDefined && leaderReplicaIdOpt.get == newLeaderBrokerId)
         false
-      } else {
+      else {
         leaderReplicaIdOpt = Some(newLeaderBrokerId)
         true
       }
@@ -352,17 +352,16 @@ class Partition(
 
         val minIsr = leaderReplica.log.get.config.minInSyncReplicas
 
-        if (leaderReplica.highWatermark.messageOffset >= requiredOffset) {
+        if (leaderReplica.highWatermark.messageOffset >= requiredOffset)
           /*
            * The topic may be configured not to accept messages if there are not enough replicas in ISR
            * in this scenario the request was already appended locally and then added to the purgatory before the ISR was shrunk
            */
-          if (minIsr <= curInSyncReplicas.size) {
+          if (minIsr <= curInSyncReplicas.size)
             (true, Errors.NONE.code)
-          } else {
+          else
             (true, Errors.NOT_ENOUGH_REPLICAS_AFTER_APPEND.code)
-          }
-        } else
+        else
           (false, Errors.NONE.code)
       case None =>
         (false, Errors.NOT_LEADER_FOR_PARTITION.code)
@@ -435,9 +434,8 @@ class Partition(
 
             replicaManager.isrShrinkRate.mark()
             maybeIncrementLeaderHW(leaderReplica)
-          } else {
+          } else
             false
-          }
 
         case None => false // do nothing if no longer leader
       }
@@ -489,11 +487,10 @@ class Partition(
           val inSyncSize = inSyncReplicas.size
 
           // Avoid writing to leader if there are not enough insync replicas to make it safe
-          if (inSyncSize < minIsr && requiredAcks == -1) {
+          if (inSyncSize < minIsr && requiredAcks == -1)
             throw new NotEnoughReplicasException(
               "Number of insync replicas for partition [%s,%d] is [%d], below required minimum [%d]"
                 .format(topic, partitionId, inSyncSize, minIsr))
-          }
 
           val info = log.append(messages, assignOffsets = true)
           // probably unblock some follower fetch requests since log end offset has been updated
@@ -537,11 +534,10 @@ class Partition(
       trace(
         "ISR updated to [%s] and zkVersion updated to [%d]"
           .format(newIsr.mkString(","), zkVersion))
-    } else {
+    } else
       info(
         "Cached zkVersion [%d] not equal to that in zookeeper, skip updating ISR"
           .format(zkVersion))
-    }
   }
 
   /**

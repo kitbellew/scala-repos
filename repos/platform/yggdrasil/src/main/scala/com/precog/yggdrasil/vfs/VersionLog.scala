@@ -65,7 +65,7 @@ object VersionLog {
     val currentFile = new File(dir, currentVersionFilename)
     EitherT {
       IO {
-        if (currentFile.exists) {
+        if (currentFile.exists)
           for {
             jv <- JParser
               .parseFromFile(currentFile)
@@ -83,9 +83,8 @@ object VersionLog {
                 }
             }
           } yield version
-        } else {
+        else
           \/.left(NotFound("No data found for path %s.".format(dir)))
-        }
       }
     }
   }
@@ -97,18 +96,17 @@ object VersionLog {
   }
 
   def open(baseDir: File): IO[Validation[Error, VersionLog]] = IO {
-    if (!baseDir.isDirectory) {
+    if (!baseDir.isDirectory)
       if (!baseDir.mkdirs)
         throw new IllegalStateException(
           baseDir + " cannot be created as a directory.")
-    }
 
     val logFiles = new LogFiles(baseDir)
     import logFiles._
 
     // Read in the list of versions as well as the current version
     val currentVersion: Validation[Error, Option[VersionEntry]] =
-      if (headFile.exists) {
+      if (headFile.exists)
         for {
           jv <- JParser.parseFromFile(headFile).leftMap(Error.thrown)
           version <- jv match {
@@ -116,33 +114,30 @@ object VersionLog {
             case other                    => other.validated[VersionEntry].map(Some(_))
           }
         } yield version
-      } else {
+      else
         Success(None)
-      }
 
     val allVersions: Validation[Error, List[VersionEntry]] =
-      if (logFile.exists) {
+      if (logFile.exists)
         for {
           jvs <- JParser.parseManyFromFile(logFile).leftMap(Error.thrown)
           versions <- jvs.toList
             .traverse[({ type λ[α] = Validation[Error, α] })#λ, VersionEntry](
               _.validated[VersionEntry])
         } yield versions
-      } else {
+      else
         Success(Nil)
-      }
 
     val completedVersions: Validation[Error, Set[UUID]] =
-      if (completedFile.exists) {
+      if (completedFile.exists)
         for {
           jvs <- JParser.parseManyFromFile(completedFile).leftMap(Error.thrown)
           versions <- jvs.toList
             .traverse[({ type λ[α] = Validation[Error, α] })#λ, UUID](
               _.validated[UUID])
         } yield versions.toSet
-      } else {
+      else
         Success(Set.empty)
-      }
 
     (currentVersion |@| allVersions |@| completedVersions) {
       new VersionLog(logFiles, _, _, _)
@@ -189,18 +184,17 @@ class VersionLog(
     }
 
   def completeVersion(version: UUID): IO[PrecogUnit] =
-    if (allVersions.exists(_.id == version)) {
+    if (allVersions.exists(_.id == version))
       !isCompleted(version) whenM {
         logger.debug("Completing version " + version)
         IOUtils.writeToFile(
           version.serialize.renderCompact + "\n",
           completedFile)
       } map { _ => PrecogUnit }
-    } else {
+    else
       IO.throwIO(
         new IllegalStateException(
           "Cannot make nonexistent version %s current" format version))
-    }
 
   def setHead(newHead: UUID): IO[PrecogUnit] =
     currentVersion.exists(_.id == newHead) unlessM {

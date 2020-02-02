@@ -64,10 +64,9 @@ private[sql] object DataSourceAnalysis extends Rule[LogicalPlan] {
           false)
         if query.resolved && t.schema.asNullable == query.schema.asNullable =>
       // Sanity checks
-      if (t.location.paths.size != 1) {
+      if (t.location.paths.size != 1)
         throw new AnalysisException(
           "Can only write data to relations with a single path.")
-      }
 
       val outputPath = t.location.paths.head
       val inputPaths = query.collect {
@@ -75,10 +74,9 @@ private[sql] object DataSourceAnalysis extends Rule[LogicalPlan] {
       }.flatten
 
       val mode = if (overwrite) SaveMode.Overwrite else SaveMode.Append
-      if (overwrite && inputPaths.contains(outputPath)) {
+      if (overwrite && inputPaths.contains(outputPath))
         throw new AnalysisException(
           "Cannot overwrite a path that is also being read from.")
-      }
 
       InsertIntoHadoopFsRelation(
         outputPath,
@@ -166,11 +164,10 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       val partitionAndNormalColumnAttrs = AttributeSet(
         partitionAndNormalColumnFilters)
       val partitionAndNormalColumnProjs =
-        if (partitionAndNormalColumnAttrs.isEmpty) {
+        if (partitionAndNormalColumnAttrs.isEmpty)
           projects
-        } else {
+        else
           (partitionAndNormalColumnAttrs ++ projects).toSeq
-        }
 
       // Prune the buckets based on the pushed filters that do not contain partitioning key
       // since the bucketing key is not allowed to use the columns in partitioning key
@@ -191,12 +188,11 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       partitionAndNormalColumnFilters
         .reduceLeftOption(expressions.And)
         .map(cf =>
-          if (projects.isEmpty || projects == partitionAndNormalColumnProjs) {
+          if (projects.isEmpty || projects == partitionAndNormalColumnProjs)
             // if the original projection is empty, no need for the additional Project either
             execution.Filter(cf, scan)
-          } else {
-            execution.Project(projects, execution.Filter(cf, scan))
-          })
+          else
+            execution.Project(projects, execution.Filter(cf, scan)))
         .getOrElse(scan) :: Nil
 
     // TODO: The code for planning bucketed/unbucketed/partitioned/unpartitioned tables contains
@@ -438,12 +434,11 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
             .length == 1)
         var partitionIdx = 0
         partitionColumnSchema.fields.foreach { f =>
-          if (f.name.equals(attr.name)) {
+          if (f.name.equals(attr.name))
             ColumnVectorUtils.populate(
               result.column(resultIdx),
               partitionValues,
               partitionIdx)
-          }
           partitionIdx += 1
         }
       }
@@ -489,12 +484,12 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           var mergedBatch: ColumnarBatch = null
 
           iterator.map { input =>
-            if (input.isInstanceOf[InternalRow]) {
+            if (input.isInstanceOf[InternalRow])
               unsafeProjection(
                 mutableJoinedRow(
                   input.asInstanceOf[InternalRow],
                   unsafePartitionValues))
-            } else {
+            else {
               require(input.isInstanceOf[ColumnarBatch])
               val inputBatch = input.asInstanceOf[ColumnarBatch]
               if (inputBatch != mergedBatch) {
@@ -523,9 +518,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
             preservesPartitioning = false)
         }
         .asInstanceOf[RDD[InternalRow]]
-    } else {
+    } else
       dataRows
-    }
 
   // Get the bucket ID based on the bucketing values.
   // Restriction: Bucket pruning works iff the bucketing column has one and only one column.
@@ -548,10 +542,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
     if (bucketSpec.isEmpty ||
         bucketSpec.get.numBuckets == 1 ||
-        bucketSpec.get.bucketColumnNames.length != 1) {
+        bucketSpec.get.bucketColumnNames.length != 1)
       // None means all the buckets need to be scanned
       return None
-    }
 
     // Just get the first because bucketing pruning only works when the column has one column
     val bucketColumnName = bucketSpec.get.bucketColumnNames.head
@@ -661,9 +654,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     val metadata: Map[String, String] = {
       val pairs = ArrayBuffer.empty[(String, String)]
 
-      if (pushedFilters.nonEmpty) {
+      if (pushedFilters.nonEmpty)
         pairs += (PUSHED_FILTERS -> pushedFilters.mkString("[", ", ", "]"))
-      }
 
       relation.relation match {
         case r: HadoopFsRelation =>
@@ -717,11 +709,10 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       relation: LogicalRelation,
       output: Seq[Attribute],
       rdd: RDD[Row]): RDD[InternalRow] =
-    if (relation.relation.needConversion) {
+    if (relation.relation.needConversion)
       execution.RDDConversions.rowToRowRdd(rdd, output.map(_.dataType))
-    } else {
+    else
       rdd.asInstanceOf[RDD[InternalRow]]
-    }
 
   /**
     * Convert RDD of Row into RDD of InternalRow with objects in catalyst types

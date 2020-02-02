@@ -50,12 +50,11 @@ class BufferingPool[Req, Rep](underlying: ServiceFactory[Req, Rep], size: Int)
 
   private[this] def drain() {
     draining = true
-    while (true) {
+    while (true)
       buffer.tryGet() match {
         case Some(service) => service.releaseSelf()
         case None          => return
       }
-    }
   }
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =

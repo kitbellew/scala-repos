@@ -212,9 +212,8 @@ class ArrayStack[T] private (
     val oldIndex = index
     val oldTable = ArrayStack.clone(table)
 
-    try {
-      action
-    } finally {
+    try action
+    finally {
       index = oldIndex
       table = oldTable
     }

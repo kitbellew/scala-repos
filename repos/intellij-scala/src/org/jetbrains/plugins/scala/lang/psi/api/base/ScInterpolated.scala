@@ -40,10 +40,9 @@ trait ScInterpolated extends ScalaPsiElement {
       case sl: ScInterpolatedStringLiteral =>
         Option(sl.getFirstChild.getNextSibling).toArray
     }
-    for (child <- children) {
+    for (child <- children)
       if (accepted.contains(child.getNode.getElementType))
         res += new ScInterpolatedStringPartReference(child.getNode)
-    }
     res.toArray
   }
 
@@ -78,31 +77,29 @@ trait ScInterpolated extends ScalaPsiElement {
     val emptyString = ""
     for {
       child <- childNodes
-    } {
-      child.getElementType match {
-        case ScalaTokenTypes.tINTERPOLATED_STRING =>
-          child.getText.headOption match {
-            case Some('"') => result += child.getText.substring(1)
-            case Some(_)   => result += child.getText
-            case None      => result += emptyString
-          }
-        case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
-          child.getText match {
-            case s if s.startsWith("\"\"\"") => result += s.substring(3)
-            case s: String                   => result += s
-            case _                           => result += emptyString
-          }
-        case ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
-            ScalaTokenTypes.tINTERPOLATED_STRING_END =>
-          val prev = child.getTreePrev
-          if (prev != null) prev.getElementType match {
-            case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING |
-                ScalaTokenTypes.tINTERPOLATED_STRING =>
-            case _ =>
-              result += emptyString //insert empty string between injections
-          }
-        case _ =>
-      }
+    } child.getElementType match {
+      case ScalaTokenTypes.tINTERPOLATED_STRING =>
+        child.getText.headOption match {
+          case Some('"') => result += child.getText.substring(1)
+          case Some(_)   => result += child.getText
+          case None      => result += emptyString
+        }
+      case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING =>
+        child.getText match {
+          case s if s.startsWith("\"\"\"") => result += s.substring(3)
+          case s: String                   => result += s
+          case _                           => result += emptyString
+        }
+      case ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION |
+          ScalaTokenTypes.tINTERPOLATED_STRING_END =>
+        val prev = child.getTreePrev
+        if (prev != null) prev.getElementType match {
+          case ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING |
+              ScalaTokenTypes.tINTERPOLATED_STRING =>
+          case _ =>
+            result += emptyString //insert empty string between injections
+        }
+      case _ =>
     }
     result.toSeq
   }

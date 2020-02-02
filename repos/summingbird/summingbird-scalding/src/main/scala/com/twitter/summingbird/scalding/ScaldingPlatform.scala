@@ -182,10 +182,9 @@ object Scalding {
           DateRange(
             desired.start,
             RichDate(findEnd(start.timestamp, end.timestamp))))
-    } else {
+    } else
       // No good data
       None
-    }
   }
 
   /**
@@ -382,7 +381,7 @@ object Scalding {
       case Some(pf) => (pf.asInstanceOf[PipeFactory[T]], built)
       case None =>
         val (pf, m) = producer match {
-          case Source(src) => {
+          case Source(src) =>
             val shards =
               getOrElse(options, names, producer, FlatMapShards.default).count
             val srcPf =
@@ -392,7 +391,6 @@ object Scalding {
                 src.mapPipe(_.shard(shards))
 
             (srcPf, built)
-          }
           case IdentityKeyedProducer(producer) =>
             recurse(producer)
           case NamedProducer(producer, newId) =>
@@ -570,7 +568,7 @@ object Scalding {
             } match {
               case List(sAny: Summer[_, _, _]) =>
                 val s = sAny.asInstanceOf[Summer[Scalding, Any, Any]]
-                if (downStream.forall(d => Producer.isNoOp(d) || d == s)) {
+                if (downStream.forall(d => Producer.isNoOp(d) || d == s))
                   //only downstream are no-ops and the summer GO!
                   getCommutativity(names, options, s) match {
                     case Commutative =>
@@ -581,7 +579,7 @@ object Scalding {
                         "not enabling flatMapKeys mapside caching, due to non-commutativity")
                       fmp
                   }
-                } else
+                else
                   fmp
               case _ => fmp
             }
@@ -614,7 +612,7 @@ object Scalding {
                 }
               }
             }, m)
-          case MergedProducer(l, r) => {
+          case MergedProducer(l, r) =>
             val (pfl, ml) = recurse(l)
             val (pfr, mr) = recurse(r, built = ml)
             val merged = for {
@@ -623,14 +621,13 @@ object Scalding {
               maxAvailable <- StateWithError.getState // read the latest state, which is the time
             } yield Scalding.limitTimes(maxAvailable._1, merged)
             (merged, mr)
-          }
 
           /**
             * The logic here is identical to a merge except we ignore what comes out of
             * the left side, BUT NOT THE TIME. we can't let the right get ahead of what the
             * left could do to be consistent with the rest of this code.
             */
-          case AlsoProducer(l, r) => {
+          case AlsoProducer(l, r) =>
             val (pfl, ml) = recurse(l)
             val (pfr, mr) = recurse(r, built = ml)
             val onlyRight = for {
@@ -639,7 +636,6 @@ object Scalding {
               maxAvailable <- StateWithError.getState // read the latest state, which is the time
             } yield Scalding.limitTimes(maxAvailable._1, justRight)
             (onlyRight, mr)
-          }
         }
         // Make sure that we end any chains of nodes at fanned out nodes:
         val res = memoize(forceNode(pf))
@@ -781,9 +777,9 @@ class Scalding(
     import com.twitter.chill.config.ScalaMapConfig
     val conf = Config.hadoopWithDefaults(hConf)
 
-    if (passedRegistrars.isEmpty) {
+    if (passedRegistrars.isEmpty)
       conf.setSerialization(Right(classOf[serialization.KryoHadoop]))
-    } else {
+    else {
       val kryoReg = new IterableRegistrar(passedRegistrars)
       val initKryo = conf.getKryo match {
         case None =>
@@ -828,13 +824,11 @@ class Scalding(
       .flatMap {
         case (ts, pipe) =>
           // Now we have a populated flowDef, time to let Cascading do it's thing:
-          try {
-            if (flowDef.getSinks.isEmpty) {
-              Right((ts, None))
-            } else {
-              Right((ts, Some(mode.newFlowConnector(config).connect(flowDef))))
-            }
-          } catch {
+          try if (flowDef.getSinks.isEmpty)
+            Right((ts, None))
+          else
+            Right((ts, Some(mode.newFlowConnector(config).connect(flowDef))))
+          catch {
             case NonFatal(e) => toTry(e)
           }
       }
@@ -875,27 +869,23 @@ class Scalding(
         flowOpt.foreach(flow => mutate(flow))
         prepareState.willAccept(ts) match {
           case Right(runningState) =>
-            try {
-              flowOpt match {
-                case None =>
-                  Scalding.logger.warn(
-                    "No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
-                  runningState.succeed
-                case Some(flow) =>
-                  options.get(jobName).foreach { jopt =>
-                    jopt.get[WriteDot].foreach { o =>
-                      flow.writeDOT(o.filename)
-                    }
-                    jopt.get[WriteStepsDot].foreach { o =>
-                      flow.writeStepsDOT(o.filename)
-                    }
+            try flowOpt match {
+              case None =>
+                Scalding.logger.warn(
+                  "No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
+                runningState.succeed
+              case Some(flow) =>
+                options.get(jobName).foreach { jopt =>
+                  jopt.get[WriteDot].foreach { o => flow.writeDOT(o.filename) }
+                  jopt.get[WriteStepsDot].foreach { o =>
+                    flow.writeStepsDOT(o.filename)
                   }
-                  flow.complete
-                  if (flow.getFlowStats.isSuccessful)
-                    runningState.succeed
-                  else
-                    throw new Exception("Flow did not complete.")
-              }
+                }
+                flow.complete
+                if (flow.getFlowStats.isSuccessful)
+                  runningState.succeed
+                else
+                  throw new Exception("Flow did not complete.")
             } catch {
               case NonFatal(e) => runningState.fail(e)
             }

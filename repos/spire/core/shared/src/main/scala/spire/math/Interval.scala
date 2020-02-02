@@ -257,11 +257,10 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     }
 
   def --(rhs: Interval[A]): List[Interval[A]] =
-    if (lhs intersects rhs) {
+    if (lhs intersects rhs)
       (~rhs).map(lhs & _).filter(_.nonEmpty)
-    } else {
-      if (lhs.isEmpty) Nil else List(lhs)
-    }
+    else if (lhs.isEmpty) Nil
+    else List(lhs)
 
   def split(t: A): (Interval[A], Interval[A]) =
     (this intersect Interval.below(t), this intersect Interval.above(t))
@@ -301,7 +300,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
   }
 
   def abs(implicit m: AdditiveGroup[A]): Interval[A] =
-    if (crossesZero) { // only Bounded, Above or Below can cross zero
+    if (crossesZero) // only Bounded, Above or Below can cross zero
       this match {
         case Bounded(lower, upper, fs) =>
           val x = -lower
@@ -311,11 +310,10 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         case _ => // Above or Below
           Interval.atOrAbove(m.zero)
       }
-    } else if (hasBelow(m.zero)) {
+    else if (hasBelow(m.zero))
       -this
-    } else {
+    else
       this
-    }
 
   // for all a in A, and all b in B, (A vmin B) is the interval that contains all (a min b)
   def vmin(rhs: Interval[A])(implicit m: AdditiveMonoid[A]): Interval[A] =
@@ -399,7 +397,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       val hasBelowZero2 = lower2s < 0
       val hasAboveZero2 = upper2s > 0
       if (hasBelowZero2 && hasAboveZero2) All() // bounded interval crosses zero
-      else if (hasAboveZero2) { // bounded interval is fully above zero
+      else if (hasAboveZero2) // bounded interval is fully above zero
         if (hasBelowZero1) // the minimal point is lower1(-) * upper2(+)
           Above(lower1 * upper2, lf1 | upperFlagToLower(flags2))
         else { // the minimal point is lower1(+) * lower2(+)
@@ -409,7 +407,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
           val flags = if (strongZero) 0 else lf1 | lowerFlag(flags2)
           Above(lower1 * lower2, flags)
         }
-      } else { // bounded interval is fully below zero
+      else { // bounded interval is fully below zero
         assert(hasBelowZero2)
         if (hasBelowZero1) { // the maximal point is lower1(-) * lower2(-)
           val strongZero =
@@ -443,7 +441,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       val hasBelowZero2 = lower2s < 0
       val hasAboveZero2 = upper2s > 0
       if (hasBelowZero2 && hasAboveZero2) All() // bounded interval crosses zero
-      else if (hasAboveZero2) { // bounded interval is fully above zero
+      else if (hasAboveZero2) // bounded interval is fully above zero
         if (hasAboveZero1) // the maximal point is upper1(+) * upper2(+)
           Below(upper1 * upper2, uf1 | upperFlag(flags2))
         else { // the maximal point is upper1(+) * lower2(-)
@@ -453,21 +451,20 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
           val flags = if (strongZero) 0 else uf1 | lowerFlagToUpper(flags2)
           Below(upper1 * lower2, flags)
         }
-      } else { // bounded interval is fully below zero
-        if (hasAboveZero1) { // the minimal point is upper1(+) * lower2(-)
-          val strongZero = (lower2s == 0 && isClosedLower(flags2))
-          val flags =
-            if (strongZero) 0 else upperFlagToLower(uf1) | lowerFlag(flags2)
-          Above(upper1 * lower2, flags)
-        } else { // the minimal point is upper1(-) * upper2(-)
-          val strongZero =
-            (upper1s == 0 && isClosedUpper(uf1)) || (upper2s == 0 && isClosedUpper(
-              flags2))
-          val flags =
-            if (strongZero) 0
-            else upperFlagToLower(uf1) | upperFlagToLower(flags2)
-          Above(upper1 * upper2, flags)
-        }
+      else // bounded interval is fully below zero
+      if (hasAboveZero1) { // the minimal point is upper1(+) * lower2(-)
+        val strongZero = (lower2s == 0 && isClosedLower(flags2))
+        val flags =
+          if (strongZero) 0 else upperFlagToLower(uf1) | lowerFlag(flags2)
+        Above(upper1 * lower2, flags)
+      } else { // the minimal point is upper1(-) * upper2(-)
+        val strongZero =
+          (upper1s == 0 && isClosedUpper(uf1)) || (upper2s == 0 && isClosedUpper(
+            flags2))
+        val flags =
+          if (strongZero) 0
+          else upperFlagToLower(uf1) | upperFlagToLower(flags2)
+        Above(upper1 * upper2, flags)
       }
     }
 
@@ -597,7 +594,7 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     }
 
   def *(rhs: A)(implicit ev: Semiring[A]): Interval[A] =
-    if (rhs < ev.zero) {
+    if (rhs < ev.zero)
       this match {
         case Point(v)         => Point(v * rhs)
         case Bounded(l, u, f) => Bounded(u * rhs, l * rhs, swapFlags(f))
@@ -605,9 +602,9 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         case Below(u, uf)     => Above(u * rhs, upperFlagToLower(uf))
         case All() | Empty()  => this
       }
-    } else if (rhs === ev.zero) {
+    else if (rhs === ev.zero)
       Interval.zero
-    } else {
+    else
       this match {
         case Point(v)             => Point(v * rhs)
         case Bounded(l, u, flags) => Bounded(l * rhs, u * rhs, flags)
@@ -615,7 +612,6 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         case Below(u, uf)         => Below(u * rhs, uf)
         case All() | Empty()      => this
       }
-    }
 
   def pow(k: Int)(implicit r: Ring[A]): Interval[A] = {
     def loop(b: Interval[A], k: Int, extra: Interval[A]): Interval[A] =
@@ -624,27 +620,26 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
       else
         loop(b * b, k >>> 1, if ((k & 1) == 1) b * extra else extra)
 
-    if (k < 0) {
+    if (k < 0)
       throw new IllegalArgumentException(s"negative exponent: $k")
-    } else if (k == 0) {
+    else if (k == 0)
       Interval.point(r.one)
-    } else if (k == 1) {
+    else if (k == 1)
       this
-    } else if ((k & 1) == 0) {
+    else if ((k & 1) == 0) {
       val t = abs
       loop(t, k - 1, t)
-    } else {
+    } else
       loop(this, k - 1, this)
-    }
   }
 
   def nroot(k: Int)(implicit r: Ring[A], n: NRoot[A]): Interval[A] =
-    if (k == 1) {
+    if (k == 1)
       this
-    } else if ((k & 1) == 0 && hasBelow(r.zero)) {
+    else if ((k & 1) == 0 && hasBelow(r.zero))
       throw new IllegalArgumentException(
         "can't take even root of negative number")
-    } else {
+    else
       this match {
         case All() | Empty()      => this
         case Point(v)             => Point(v.nroot(k))
@@ -652,7 +647,6 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         case Below(u, uf)         => Below(u.nroot(k), uf)
         case Bounded(l, u, flags) => Bounded(l.nroot(k), u.nroot(k), flags)
       }
-    }
 
   def sqrt(implicit r: Ring[A], n: NRoot[A]): Interval[A] = nroot(2)
 
@@ -796,11 +790,10 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         def next: A = {
           val r = x
           val next = x + step
-          if (test(x, next)) {
+          if (test(x, next))
             x = next
-          } else {
+          else
             ok = false
-          }
           r
         }
       }
@@ -810,18 +803,17 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
         safe: Boolean,
         continue: A => Boolean,
         test: (A, A) => Boolean): Iterator[A] =
-      if (nt.overflows && !safe) {
+      if (nt.overflows && !safe)
         iter1(start, continue, test)
-      } else {
+      else
         iter0(start, continue)
-      }
 
     // build the actual iterator, which primarily relies on figuring
     // out which "direction" we are moving (based on the sign of the
     // step) as well as what kind of limiting bounds we have.
-    if (step === ev.zero) {
+    if (step === ev.zero)
       throw new IllegalArgumentException("zero step")
-    } else if (step > ev.zero) {
+    else if (step > ev.zero) {
       val x = getStart(lowerBound, step, "positive step with no lower bound")
       val test = (x1: A, x2: A) => x1 < x2
       upperBound match {
@@ -931,13 +923,13 @@ object Interval {
     *         NaN => Interval.empty
     */
   def errorBounds(d: Double): Interval[Rational] =
-    if (d == Double.PositiveInfinity) {
+    if (d == Double.PositiveInfinity)
       Interval.above(Double.MaxValue)
-    } else if (d == Double.NegativeInfinity) {
+    else if (d == Double.NegativeInfinity)
       Interval.below(Double.MinValue)
-    } else if (isNaN(d)) {
+    else if (isNaN(d))
       Interval.empty[Rational]
-    } else {
+    else {
       val n0 = Rational(Math.nextAfter(d, -1.0))
       val n1 = Rational(d)
       val n2 = Rational(Math.nextUp(d))

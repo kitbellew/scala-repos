@@ -29,9 +29,8 @@ private[finagle] object FinagleScheduler {
 
   private object Integer {
     def unapply(str: String): Option[Int] =
-      try {
-        Some(str.toInt)
-      } catch {
+      try Some(str.toInt)
+      catch {
         case _: java.lang.NumberFormatException => None
       }
   }
@@ -45,11 +44,10 @@ private[finagle] object FinagleScheduler {
         .newInstance
         .asInstanceOf[BlockingQueue[Runnable]]
       catch {
-        case _: ClassNotFoundException => {
+        case _: ClassNotFoundException =>
           log.info(
             "bridged scheduler is not available on pre java 7, using local instead")
           return
-        }
       }
 
     Scheduler.setUnsafe(

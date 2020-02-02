@@ -203,11 +203,10 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         lastResponseSent = lastResponseSent.flatMap { _ =>
           // Need an explicit cast to Future[Unit] to help scalac out.
           val f: Future[Unit] = future.map { httpResponse =>
-            if (requestsInFlight.decrementAndGet() == 0) {
+            if (requestsInFlight.decrementAndGet() == 0)
               // Since we've now gone down to zero, we need to issue a
               // read, in case we ignored an earlier read complete
               ctx.read()
-            }
             ctx.writeAndFlush(httpResponse)
           }
 
@@ -232,13 +231,12 @@ private[play] class PlayRequestHandler(val server: NettyServer)
     // we don't get in the way of the request body reactive streams,
     // which will be using channel read complete and read to implement
     // their own back pressure
-    if (requestsInFlight.get() == 0) {
+    if (requestsInFlight.get() == 0)
       ctx.read()
-    } else {
+    else
       // otherwise forward it, so that any handler publishers downstream
       // can handle it
       ctx.fireChannelReadComplete()
-    }
   }
 
   override def exceptionCaught(

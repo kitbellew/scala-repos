@@ -21,11 +21,8 @@ package object test {
       def router = play.api.routing.Router.empty
     }.application
     Play.start(app)
-    try {
-      block
-    } finally {
-      Play.stop(app)
-    }
+    try block
+    finally Play.stop(app)
   }
 
 }

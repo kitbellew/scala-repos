@@ -145,16 +145,15 @@ private[sql] abstract class BaseWriterContainer(
   protected def newOutputWriter(
       path: String,
       bucketId: Option[Int] = None): OutputWriter =
-    try {
-      outputWriterFactory.newInstance(
-        path,
-        bucketId,
-        dataSchema,
-        taskAttemptContext)
-    } catch {
+    try outputWriterFactory.newInstance(
+      path,
+      bucketId,
+      dataSchema,
+      taskAttemptContext)
+    catch {
       case e: org.apache.hadoop.fs.FileAlreadyExistsException =>
         if (outputCommitter
-              .isInstanceOf[parquet.DirectParquetOutputCommitter]) {
+              .isInstanceOf[parquet.DirectParquetOutputCommitter])
           // Spark-11382: DirectParquetOutputCommitter is not idempotent, meaning on retry
           // attempts, the task will fail because the output file is created from a prior attempt.
           // This often means the most visible error to the user is misleading. Augment the error
@@ -163,7 +162,6 @@ private[sql] abstract class BaseWriterContainer(
             "The output file already exists but this could be due to a " +
               "failure from an earlier attempt. Look through the earlier logs or stage page for " +
               "the first error.\n  File exists error: " + e)
-        }
         throw e
     }
 
@@ -256,9 +254,8 @@ private[sql] abstract class BaseWriterContainer(
       taskId.getId)
 
   def abortTask(): Unit = {
-    if (outputCommitter != null) {
+    if (outputCommitter != null)
       outputCommitter.abortTask(taskAttemptContext)
-    }
     logError(s"Task attempt $taskAttemptId aborted.")
   }
 
@@ -268,9 +265,8 @@ private[sql] abstract class BaseWriterContainer(
   }
 
   def abortJob(): Unit = {
-    if (outputCommitter != null) {
+    if (outputCommitter != null)
       outputCommitter.abortJob(jobContext, JobStatus.State.FAILED)
-    }
     logError(s"Job $jobId aborted.")
   }
 }
@@ -325,13 +321,9 @@ private[sql] class DefaultWriterContainer(
       }
 
     def abortTask(): Unit =
-      try {
-        if (writer != null) {
-          writer.close()
-        }
-      } finally {
-        super.abortTask()
-      }
+      try if (writer != null)
+        writer.close()
+      finally super.abortTask()
   }
 }
 
@@ -450,15 +442,15 @@ private[sql] class DynamicPartitionWriterContainer(
     }
     logInfo(s"Sorting complete. Writing out partition files one at a time.")
 
-    val getBucketingKey: InternalRow => InternalRow = if (sortColumns.isEmpty) {
-      identity
-    } else {
-      UnsafeProjection.create(
-        sortingExpressions.dropRight(sortColumns.length).zipWithIndex.map {
-          case (expr, ordinal) =>
-            BoundReference(ordinal, expr.dataType, expr.nullable)
-        })
-    }
+    val getBucketingKey: InternalRow => InternalRow =
+      if (sortColumns.isEmpty)
+        identity
+      else
+        UnsafeProjection.create(
+          sortingExpressions.dropRight(sortColumns.length).zipWithIndex.map {
+            case (expr, ordinal) =>
+              BoundReference(ordinal, expr.dataType, expr.nullable)
+          })
 
     val sortedIterator = sorter.sortedIterator()
 
@@ -492,9 +484,8 @@ private[sql] class DynamicPartitionWriterContainer(
         logError("Aborting task.", cause)
         // call failure callbacks first, so we could have a chance to cleanup the writer.
         TaskContext.get().asInstanceOf[TaskContextImpl].markTaskFailed(cause)
-        if (currentWriter != null) {
+        if (currentWriter != null)
           currentWriter.close()
-        }
         abortTask()
         throw new SparkException("Task failed while writing rows.", cause)
     }

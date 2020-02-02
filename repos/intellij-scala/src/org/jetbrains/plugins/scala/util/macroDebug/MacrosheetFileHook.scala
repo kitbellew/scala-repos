@@ -98,9 +98,8 @@ class MacrosheetFileHook(private val project: Project)
             val sourcEditor =
               FileEditorManager.getInstance(project).getSelectedTextEditor
             val macroEditor = WorksheetViewerInfo.getViewer(sourcEditor)
-            if (macroEditor != null && macroEditor.getDocument.getTextLength > 0) {
+            if (macroEditor != null && macroEditor.getDocument.getTextLength > 0)
               ScalaMacroDebuggingUtil.expandMacros(sourcEditor.getProject)
-            }
           }
         },
         RUN_DELAY_MS,

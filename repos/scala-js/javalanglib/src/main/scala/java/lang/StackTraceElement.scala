@@ -41,12 +41,12 @@ final class StackTraceElement(
     if (declaringClass != "<jscode>")
       result += declaringClass + "."
     result += methodName
-    if (fileName eq null) {
+    if (fileName eq null)
       if (isNativeMethod)
         result += "(Native Method)"
       else
         result += "(Unknown Source)"
-    } else {
+    else {
       result += s"($fileName"
       if (lineNumber >= 0) {
         result += s":$lineNumber"

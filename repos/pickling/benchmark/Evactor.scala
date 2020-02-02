@@ -86,9 +86,7 @@ object EvactorKryoBench extends scala.pickling.testing.PicklingBenchmark {
       ser.toBytes(evt, arr)
     }
 
-    val results = for (pickle <- pickles) yield {
-      ser.fromBytes[DataEvent](pickle)
-    }
+    val results = for (pickle <- pickles) yield ser.fromBytes[DataEvent](pickle)
   }
 }
 

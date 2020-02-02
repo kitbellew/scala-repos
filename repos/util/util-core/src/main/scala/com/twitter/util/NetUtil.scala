@@ -32,33 +32,26 @@ object NetUtil {
     // Fast IPv4 address to integer.  This is fast because it avoids split,
     // regular expressions, and String.toInt, which can throw an exception.
     val dot1 = ip.indexOf('.')
-    if (dot1 <= 0) {
+    if (dot1 <= 0)
       return None
-    }
     val dot2 = ip.indexOf('.', dot1 + 1)
-    if (dot2 == -1) {
+    if (dot2 == -1)
       return None
-    }
     val dot3 = ip.indexOf('.', dot2 + 1)
-    if (dot3 == -1) {
+    if (dot3 == -1)
       return None
-    }
     val num1 = ipv4DecimalToInt(ip.substring(0, dot1))
-    if (num1 < 0) {
+    if (num1 < 0)
       return None
-    }
     val num2 = ipv4DecimalToInt(ip.substring(dot1 + 1, dot2))
-    if (num2 < 0) {
+    if (num2 < 0)
       return None
-    }
     val num3 = ipv4DecimalToInt(ip.substring(dot2 + 1, dot3))
-    if (num3 < 0) {
+    if (num3 < 0)
       return None
-    }
     val num4 = ipv4DecimalToInt(ip.substring(dot3 + 1))
-    if (num4 < 0) {
+    if (num4 < 0)
       return None
-    }
     Some((num1 << 24) | (num2 << 16) | (num3 << 8) | num4)
   }
 
@@ -67,24 +60,21 @@ object NetUtil {
     * exception on invalid strings, which is expensive.
     */
   private[this] def ipv4DecimalToInt(s: String): Int = {
-    if (s.isEmpty || s.length > 3) {
+    if (s.isEmpty || s.length > 3)
       return -1
-    }
     var i = 0
     var num = 0
     while (i < s.length) {
       val c = s.charAt(i).toInt
-      if (c < '0' || c > '9') {
+      if (c < '0' || c > '9')
         return -1
-      }
       num = (num * 10) + (c - '0')
       i += 1
     }
-    if (num >= 0 && num <= 255) {
+    if (num >= 0 && num <= 255)
       num
-    } else {
+    else
       -1
-    }
   }
 
   def inetAddressToInt(inetAddress: InetAddress): Int =
@@ -143,9 +133,8 @@ object NetUtil {
     isIpInBlocks(inetAddressToInt(inetAddress), ipBlocks)
 
   def getLocalHostName(): String =
-    try {
-      InetAddress.getLocalHost().getHostName()
-    } catch {
+    try InetAddress.getLocalHost().getHostName()
+    catch {
       case uhe: UnknownHostException =>
         Option(uhe.getMessage) match {
           case Some(host) =>

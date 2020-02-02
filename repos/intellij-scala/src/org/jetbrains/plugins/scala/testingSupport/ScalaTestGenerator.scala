@@ -294,20 +294,18 @@ object ScalaTestGenerator {
               beforeAndAfterTypeDef.asInstanceOf[ScTypeDefinition])
             val closingBrace = body.getLastChild
             val psiManager = PsiManager.getInstance(project)
-            if (generateBefore) {
+            if (generateBefore)
               body.addBefore(
                 ScalaPsiElementFactory.createMethodFromText(
                   "override def beforeEach() {\n\n}",
                   psiManager),
                 closingBrace)
-            }
-            if (generateAfter) {
+            if (generateAfter)
               body.addBefore(
                 ScalaPsiElementFactory.createMethodFromText(
                   "override def afterEach() {\n\n}",
                   psiManager),
                 closingBrace)
-            }
           case _ =>
         }
       case _ =>
@@ -374,7 +372,7 @@ object ScalaTestGenerator {
       methods: List[MemberInfo],
       psiManager: PsiManager,
       templateBody: ScTemplateBody) {
-    if (methods.nonEmpty) {
+    if (methods.nonEmpty)
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
           methods
@@ -383,7 +381,6 @@ object ScalaTestGenerator {
           psiManager),
         templateBody.getLastChild
       )
-    }
   }
 
   private def addScalaTestFlatSpecMethods(
@@ -417,7 +414,7 @@ object ScalaTestGenerator {
       methods: List[MemberInfo],
       psiManager: PsiManager,
       templateBody: ScTemplateBody) {
-    if (methods.nonEmpty) {
+    if (methods.nonEmpty)
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
           methods
@@ -426,7 +423,6 @@ object ScalaTestGenerator {
           psiManager),
         templateBody.getLastChild
       )
-    }
   }
 
   private def addScalaTestFunSpecMethods(
@@ -434,7 +430,7 @@ object ScalaTestGenerator {
       psiManager: PsiManager,
       templateBody: ScTemplateBody,
       className: String) {
-    if (methods.nonEmpty) {
+    if (methods.nonEmpty)
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
           methods
@@ -443,7 +439,6 @@ object ScalaTestGenerator {
           psiManager),
         templateBody.getLastChild
       )
-    }
   }
 
   private def addScalaTestFunSuiteMethods(
@@ -487,7 +482,7 @@ object ScalaTestGenerator {
       psiManager: PsiManager,
       templateBody: ScTemplateBody,
       className: String) {
-    if (methods.nonEmpty) {
+    if (methods.nonEmpty)
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
           methods
@@ -496,7 +491,6 @@ object ScalaTestGenerator {
           psiManager),
         templateBody.getLastChild
       )
-    }
   }
 
   private def addSpecs2SpecificationMethods(
@@ -567,7 +561,7 @@ object ScalaTestGenerator {
               "\n" + doubleIndent + "\"\"\"",
             psiManager),
           closingBrace)
-        if (methods.nonEmpty) {
+        if (methods.nonEmpty)
           templateBody.addBefore(
             ScalaPsiElementFactory.createExpressionFromText(
               testNames
@@ -576,7 +570,6 @@ object ScalaTestGenerator {
               psiManager),
             closingBrace
           )
-        }
       case _ =>
     }
   }
@@ -586,7 +579,7 @@ object ScalaTestGenerator {
       psiManager: PsiManager,
       templateBody: ScTemplateBody,
       className: String) {
-    if (methods.nonEmpty) {
+    if (methods.nonEmpty)
       templateBody.addBefore(
         ScalaPsiElementFactory.createExpressionFromText(
           methods
@@ -595,7 +588,6 @@ object ScalaTestGenerator {
           psiManager),
         templateBody.getLastChild
       )
-    }
   }
 
   private def generateUTestMethods(
@@ -609,7 +601,7 @@ object ScalaTestGenerator {
       ScalaPsiElementFactory
         .createElement("val tests = TestSuite{}", psiManager, Def.parse(_)),
       templateBody.getLastChild)
-    if (methods.nonEmpty) {
+    if (methods.nonEmpty)
       templateBody.addBefore(
         ScalaPsiElementFactory.createElement(
           methods
@@ -620,7 +612,6 @@ object ScalaTestGenerator {
           Def.parse(_)),
         templateBody.getLastChild
       )
-    }
   }
 
 }

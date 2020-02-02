@@ -380,16 +380,14 @@ object \/ extends DisjunctionInstances {
 
   def fromTryCatchThrowable[T, E <: Throwable](
       a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): E \/ T =
-    try {
-      \/-(a)
-    } catch {
+    try \/-(a)
+    catch {
       case e if ex.runtimeClass.isInstance(e) => -\/(e.asInstanceOf[E])
     }
 
   def fromTryCatchNonFatal[T](a: => T): Throwable \/ T =
-    try {
-      \/-(a)
-    } catch {
+    try \/-(a)
+    catch {
       case NonFatal(t) => -\/(t)
     }
 

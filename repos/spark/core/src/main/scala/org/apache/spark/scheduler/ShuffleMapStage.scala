@@ -95,18 +95,16 @@ private[spark] class ShuffleMapStage(
   def addOutputLoc(partition: Int, status: MapStatus): Unit = {
     val prevList = outputLocs(partition)
     outputLocs(partition) = status :: prevList
-    if (prevList == Nil) {
+    if (prevList == Nil)
       _numAvailableOutputs += 1
-    }
   }
 
   def removeOutputLoc(partition: Int, bmAddress: BlockManagerId): Unit = {
     val prevList = outputLocs(partition)
     val newList = prevList.filterNot(_.location == bmAddress)
     outputLocs(partition) = newList
-    if (prevList != Nil && newList == Nil) {
+    if (prevList != Nil && newList == Nil)
       _numAvailableOutputs -= 1
-    }
   }
 
   /**
@@ -133,9 +131,8 @@ private[spark] class ShuffleMapStage(
         _numAvailableOutputs -= 1
       }
     }
-    if (becameUnavailable) {
+    if (becameUnavailable)
       logInfo("%s is now unavailable on executor %s (%d/%d, %s)"
         .format(this, execId, _numAvailableOutputs, numPartitions, isAvailable))
-    }
   }
 }

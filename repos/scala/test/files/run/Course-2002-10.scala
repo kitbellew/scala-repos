@@ -122,7 +122,7 @@ object M2 {
   def test = {
     val i = (new PrimeIterator()).take(30);
     Console.print("prime numbers:");
-    while (i.hasNext) { Console.print(" " + i.next); }
+    while (i.hasNext) Console.print(" " + i.next);
     Console.println;
   }
 }

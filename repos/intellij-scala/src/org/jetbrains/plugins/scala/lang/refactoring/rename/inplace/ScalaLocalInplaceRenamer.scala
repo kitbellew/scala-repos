@@ -54,21 +54,19 @@ class ScalaLocalInplaceRenamer(
     val stringToSearch: String = ScalaNamesUtil.scalaName(elementToRename)
     val currentFile: PsiFile =
       PsiDocumentManager.getInstance(myProject).getPsiFile(myEditor.getDocument)
-    if (stringToSearch != null) {
+    if (stringToSearch != null)
       TextOccurrencesUtil.processUsagesInStringsAndComments(
         elementToRename,
         stringToSearch,
         true,
         new PairProcessor[PsiElement, TextRange] {
           def process(psiElement: PsiElement, textRange: TextRange): Boolean = {
-            if (psiElement.getContainingFile == currentFile) {
+            if (psiElement.getContainingFile == currentFile)
               stringUsages.add(Pair.create(psiElement, textRange))
-            }
             true
           }
         }
       )
-    }
   }
 
   override def isIdentifier(newName: String, language: Language): Boolean =

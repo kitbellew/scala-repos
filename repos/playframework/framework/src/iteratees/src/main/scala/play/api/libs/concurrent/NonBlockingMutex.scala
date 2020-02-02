@@ -61,7 +61,7 @@ private[play] final class NonBlockingMutex {
         Vector.empty // This is very cheap because Vector.empty is only allocated once
       case pending => pending :+ op
     }
-    if (state.compareAndSet(prevState, newState)) {
+    if (state.compareAndSet(prevState, newState))
       prevState match {
         case null =>
           // We've update the state to say that we're running an op,
@@ -69,7 +69,7 @@ private[play] final class NonBlockingMutex {
           executeAll(op)
         case _ =>
       }
-    } else schedule(op) // Try again
+    else schedule(op) // Try again
   }
 
   @tailrec

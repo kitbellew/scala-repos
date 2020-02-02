@@ -60,11 +60,9 @@ object ParquetReadBenchmark {
       keys.map(key => Try(sqlContext.conf.getConfString(key)).toOption)
     (keys, values).zipped.foreach(sqlContext.conf.setConfString)
     try f
-    finally {
-      keys.zip(currentValues).foreach {
-        case (key, Some(value)) => sqlContext.conf.setConfString(key, value)
-        case (key, None)        => sqlContext.conf.unsetConf(key)
-      }
+    finally keys.zip(currentValues).foreach {
+      case (key, Some(value)) => sqlContext.conf.setConfString(key, value)
+      case (key, None)        => sqlContext.conf.unsetConf(key)
     }
   }
 
@@ -114,9 +112,7 @@ object ParquetReadBenchmark {
                   i += 1
                 }
               }
-            } finally {
-              reader.close()
-            }
+            } finally reader.close()
           }
         }
 
@@ -136,9 +132,7 @@ object ParquetReadBenchmark {
                     if (!record.isNullAt(0)) sum += record.getInt(0)
                   }
                 }
-              } finally {
-                reader.close()
-              }
+              } finally reader.close()
             }
         }
 
@@ -318,9 +312,7 @@ object ParquetReadBenchmark {
                     sum += value.numBytes()
                 }
               }
-            } finally {
-              reader.close()
-            }
+            } finally reader.close()
           }
         }
 
@@ -335,13 +327,10 @@ object ParquetReadBenchmark {
               batch.filterNullsInColumn(1)
               while (reader.nextBatch()) {
                 val rowIterator = batch.rowIterator()
-                while (rowIterator.hasNext) {
+                while (rowIterator.hasNext)
                   sum += rowIterator.next().getUTF8String(0).numBytes()
-                }
               }
-            } finally {
-              reader.close()
-            }
+            } finally reader.close()
           }
         }
 
@@ -377,8 +366,7 @@ object ParquetReadBenchmark {
     intStringScanBenchmark(1024 * 1024 * 10)
     stringDictionaryScanBenchmark(1024 * 1024 * 10)
     partitionTableScanBenchmark(1024 * 1024 * 15)
-    for (fractionOfNulls <- List(0.0, 0.50, 0.95)) {
+    for (fractionOfNulls <- List(0.0, 0.50, 0.95))
       stringWithNullsScanBenchmark(1024 * 1024 * 10, fractionOfNulls)
-    }
   }
 }

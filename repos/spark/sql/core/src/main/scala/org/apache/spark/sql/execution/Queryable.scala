@@ -38,13 +38,11 @@ private[sql] trait Queryable {
       }
       builder.append("[")
       builder.append(fields.mkString(", "))
-      if (schema.length > 2) {
-        if (schema.length - fields.size == 1) {
+      if (schema.length > 2)
+        if (schema.length - fields.size == 1)
           builder.append(" ... 1 more field")
-        } else {
+        else
           builder.append(" ... " + (schema.length - 2) + " more fields")
-        }
-      }
       builder.append("]").toString()
     } catch {
       case NonFatal(e) =>
@@ -79,11 +77,9 @@ private[sql] trait Queryable {
     val colWidths = Array.fill(numCols)(3)
 
     // Compute the width of each column
-    for (row <- rows) {
-      for ((cell, i) <- row.zipWithIndex) {
+    for (row <- rows)
+      for ((cell, i) <- row.zipWithIndex)
         colWidths(i) = math.max(colWidths(i), cell.length)
-      }
-    }
 
     // Create SeparateLine
     val sep: String =
@@ -93,11 +89,10 @@ private[sql] trait Queryable {
     rows.head.zipWithIndex
       .map {
         case (cell, i) =>
-          if (truncate) {
+          if (truncate)
             StringUtils.leftPad(cell, colWidths(i))
-          } else {
+          else
             StringUtils.rightPad(cell, colWidths(i))
-          }
       }
       .addString(sb, "|", "|", "|\n")
 
@@ -108,11 +103,10 @@ private[sql] trait Queryable {
       _.zipWithIndex
         .map {
           case (cell, i) =>
-            if (truncate) {
+            if (truncate)
               StringUtils.leftPad(cell.toString, colWidths(i))
-            } else {
+            else
               StringUtils.rightPad(cell.toString, colWidths(i))
-            }
         }
         .addString(sb, "|", "|", "|\n")
     }

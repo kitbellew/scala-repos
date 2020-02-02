@@ -171,55 +171,53 @@ class SerializationSpecs extends Specification {
       (for {
         jv <- JParser.parseFromString(inputs)
         records <- jv.validated[List[Grant]]
-      } yield {
-        records mustEqual List(
-          Grant(
-            "4068840",
-            None,
-            None,
-            "(undefined)",
-            Set(),
-            Set(DeletePermission(Path("/"), WrittenByAny)),
-            i0,
-            None),
-          Grant(
-            "0d736d3",
-            None,
-            None,
-            "(undefined)",
-            Set(),
-            Set(ReadPermission(Path("/"), WrittenByAccount("12345678"))),
-            i0,
-            None),
-          Grant(
-            "91cb868",
-            None,
-            None,
-            "(undefined)",
-            Set(),
-            Set(WritePermission(Path("/"), WriteAsAny)),
-            i0,
-            None),
-          Grant(
-            "776a6b7",
-            None,
-            None,
-            "(undefined)",
-            Set(),
-            Set(ReducePermission(Path("/"), WrittenByAccount("12345678"))),
-            i0,
-            None),
-          Grant(
-            "da22fe7",
-            None,
-            None,
-            "(undefined)",
-            Set("91cb868"),
-            Set(WritePermission(Path("/test/"), WriteAsAny)),
-            i0,
-            None)
-        )
-      }).fold({ error => throw new Exception(error.toString) }, _ => ok)
+      } yield records mustEqual List(
+        Grant(
+          "4068840",
+          None,
+          None,
+          "(undefined)",
+          Set(),
+          Set(DeletePermission(Path("/"), WrittenByAny)),
+          i0,
+          None),
+        Grant(
+          "0d736d3",
+          None,
+          None,
+          "(undefined)",
+          Set(),
+          Set(ReadPermission(Path("/"), WrittenByAccount("12345678"))),
+          i0,
+          None),
+        Grant(
+          "91cb868",
+          None,
+          None,
+          "(undefined)",
+          Set(),
+          Set(WritePermission(Path("/"), WriteAsAny)),
+          i0,
+          None),
+        Grant(
+          "776a6b7",
+          None,
+          None,
+          "(undefined)",
+          Set(),
+          Set(ReducePermission(Path("/"), WrittenByAccount("12345678"))),
+          i0,
+          None),
+        Grant(
+          "da22fe7",
+          None,
+          None,
+          "(undefined)",
+          Set("91cb868"),
+          Set(WritePermission(Path("/test/"), WriteAsAny)),
+          i0,
+          None)
+      )).fold({ error => throw new Exception(error.toString) }, _ => ok)
     }
 
     "Handle V1 formats" in {
@@ -263,55 +261,53 @@ class SerializationSpecs extends Specification {
       (for {
         jv <- JParser.parseFromString(inputs)
         records <- jv.validated[List[Grant]]
-      } yield {
-        records mustEqual List(
-          Grant(
-            "6f89110c953940cbbccc397f68c4cc9293af764c4d034719bf35b4736ee702daaef154314d5441ba8a69ed65e4ffa581",
-            Some("root-grant"),
-            Some("The root grant"),
-            "(undefined)",
-            Set(),
-            Set(
-              ReadPermission(Path("/"), WrittenByAny),
-              ReducePermission(Path("/"), WrittenByAny),
-              WritePermission(Path("/"), WriteAsAny),
-              DeletePermission(Path("/"), WrittenByAny)
-            ),
-            i0,
-            None
+      } yield records mustEqual List(
+        Grant(
+          "6f89110c953940cbbccc397f68c4cc9293af764c4d034719bf35b4736ee702daaef154314d5441ba8a69ed65e4ffa581",
+          Some("root-grant"),
+          Some("The root grant"),
+          "(undefined)",
+          Set(),
+          Set(
+            ReadPermission(Path("/"), WrittenByAny),
+            ReducePermission(Path("/"), WrittenByAny),
+            WritePermission(Path("/"), WriteAsAny),
+            DeletePermission(Path("/"), WrittenByAny)
           ),
-          Grant(
-            "e5fa39314ca748818e52c50d2d445a6f4d9f9a224ddb4e55bf7c03e2a21fb36ff2bbff861aec43a18cccf2ee7f38841e",
-            Some("root-grant"),
-            Some("The root grant"),
-            "(undefined)",
-            Set(),
-            Set(
-              ReadPermission(Path("/"), WrittenByAny),
-              ReducePermission(Path("/"), WrittenByAny),
-              WritePermission(Path("/"), WriteAsAny),
-              DeletePermission(Path("/"), WrittenByAny)
-            ),
-            i0,
-            None
+          i0,
+          None
+        ),
+        Grant(
+          "e5fa39314ca748818e52c50d2d445a6f4d9f9a224ddb4e55bf7c03e2a21fb36ff2bbff861aec43a18cccf2ee7f38841e",
+          Some("root-grant"),
+          Some("The root grant"),
+          "(undefined)",
+          Set(),
+          Set(
+            ReadPermission(Path("/"), WrittenByAny),
+            ReducePermission(Path("/"), WrittenByAny),
+            WritePermission(Path("/"), WriteAsAny),
+            DeletePermission(Path("/"), WrittenByAny)
           ),
-          Grant(
-            "75826da768b64748b8423cdd047d7e8f6361e5bb50d8428080feaf1c0c6269600982be9e1c9f4299bf521aac95065ace",
-            None,
-            None,
-            "17D42117-EF8E-4F43-B833-005F4EBB262C",
-            Set("6f89110c953940cbbccc397f68c4cc9293af764c4d034719bf35b4736ee702daaef154314d5441ba8a69ed65e4ffa581"),
-            Set(
-              ReadPermission(Path("/"), WrittenByAccount("0000000001")),
-              ReducePermission(Path("/"), WrittenByAccount("0000000001")),
-              WritePermission(Path("/0000000001/"), WriteAsAny),
-              DeletePermission(Path("/0000000001/"), WrittenByAny)
-            ),
-            i0,
-            None
-          )
+          i0,
+          None
+        ),
+        Grant(
+          "75826da768b64748b8423cdd047d7e8f6361e5bb50d8428080feaf1c0c6269600982be9e1c9f4299bf521aac95065ace",
+          None,
+          None,
+          "17D42117-EF8E-4F43-B833-005F4EBB262C",
+          Set("6f89110c953940cbbccc397f68c4cc9293af764c4d034719bf35b4736ee702daaef154314d5441ba8a69ed65e4ffa581"),
+          Set(
+            ReadPermission(Path("/"), WrittenByAccount("0000000001")),
+            ReducePermission(Path("/"), WrittenByAccount("0000000001")),
+            WritePermission(Path("/0000000001/"), WriteAsAny),
+            DeletePermission(Path("/0000000001/"), WrittenByAny)
+          ),
+          i0,
+          None
         )
-      }).fold({ error => throw new Exception(error.toString) }, _ => ok)
+      )).fold({ error => throw new Exception(error.toString) }, _ => ok)
     }
 
     "Deserialize NewGrantRequest without parentIds" in {

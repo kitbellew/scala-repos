@@ -66,15 +66,14 @@ trait TraitActivity[+This <: Activity] {
   def find[V <: View](id: Int): V = basis.findViewById(id).asInstanceOf[V]
 
   def runOnUiThread(f: => Unit) {
-    if (uiThread == Thread.currentThread) {
+    if (uiThread == Thread.currentThread)
       f
-    } else {
+    else
       handler.post(new Runnable() {
         def run() {
           f
         }
       })
-    }
   }
 }
 

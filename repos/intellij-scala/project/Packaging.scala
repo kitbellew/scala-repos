@@ -49,9 +49,8 @@ object Packaging {
     Option(System.getProperty("plugin.version")).getOrElse("SNAPSHOT")
 
   def replaceInFile(f: File, source: String, target: String) =
-    if (!(source == null) && !(target == null)) {
+    if (!(source == null) && !(target == null))
       IO.writeLines(f, IO.readLines(f) map { _.replace(source, target) })
-    }
 
   def patchedPluginXML(mapping: (File, String)): (File, String) = {
     val (f, path) = mapping

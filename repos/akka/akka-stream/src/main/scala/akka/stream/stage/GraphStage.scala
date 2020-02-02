@@ -155,7 +155,7 @@ object GraphStageLogic {
           s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
     }
 
-    private val functionRef: FunctionRef = {
+    private val functionRef: FunctionRef =
       cell.addFunctionRef {
         case (_, m @ (PoisonPill | Kill)) ⇒
           materializer.logger.warning(
@@ -166,7 +166,6 @@ object GraphStageLogic {
           )
         case pair ⇒ callback.invoke(pair)
       }
-    }
 
     /**
       * The ActorRef by which this StageActor can be contacted from the outside.
@@ -377,9 +376,9 @@ abstract class GraphStageLogic private[stream] (
     * query whether pull is allowed to be called or not. This method will also fail if the port is already closed.
     */
   final protected def pull[T](in: Inlet[T]): Unit =
-    if ((interpreter.portStates(conn(in)) & (InReady | InClosed)) == InReady) {
+    if ((interpreter.portStates(conn(in)) & (InReady | InClosed)) == InReady)
       interpreter.pull(conn(in))
-    } else {
+    else {
       // Detailed error information should not add overhead to the hot path
       require(!isClosed(in), s"Cannot pull closed port ($in)")
       require(!hasBeenPulled(in), s"Cannot pull port ($in) twice")
@@ -451,16 +450,15 @@ abstract class GraphStageLogic private[stream] (
     // Fast path
     if (normalArrived)
       interpreter.connectionSlots(connection).asInstanceOf[AnyRef] ne Empty
-    else {
-      // Slow path on failure
-      if ((interpreter.portStates(conn(in)) & (InReady | InFailed)) == (InReady | InFailed)) {
-        interpreter.connectionSlots(connection) match {
-          case Failed(_, elem) ⇒ elem.asInstanceOf[AnyRef] ne Empty
-          case _ ⇒
-            false // This can only be Empty actually (if a cancel was concurrent with a failure)
-        }
-      } else false
-    }
+    else
+    // Slow path on failure
+    if ((interpreter.portStates(conn(in)) & (InReady | InFailed)) == (InReady | InFailed))
+      interpreter.connectionSlots(connection) match {
+        case Failed(_, elem) ⇒ elem.asInstanceOf[AnyRef] ne Empty
+        case _ ⇒
+          false // This can only be Empty actually (if a cancel was concurrent with a failure)
+      }
+    else false
   }
 
   /**
@@ -475,9 +473,9 @@ abstract class GraphStageLogic private[stream] (
     * used to check if the port is ready to be pushed or not.
     */
   final protected def push[T](out: Outlet[T], elem: T): Unit =
-    if ((interpreter.portStates(conn(out)) & (OutReady | OutClosed)) == OutReady && (elem != null)) {
+    if ((interpreter.portStates(conn(out)) & (OutReady | OutClosed)) == OutReady && (elem != null))
       interpreter.push(conn(out), elem)
-    } else {
+    else {
       // Detailed error information should not add overhead to the hot path
       ReactiveStreamsCompliance.requireNonNullElement(elem)
       require(isAvailable(out), s"Cannot push port ($out) twice")
@@ -622,9 +620,9 @@ abstract class GraphStageLogic private[stream] (
     if (isAvailable(in)) {
       val elem = grab(in)
       andThen(elem)
-    } else if (isClosed(in)) {
+    } else if (isClosed(in))
       onClose()
-    } else {
+    else {
       requireNotReading(in)
       if (!hasBeenPulled(in)) pull(in)
       setHandler(in, new Reading(in, 1, getHandler(in))(andThen, onClose))
@@ -755,7 +753,7 @@ abstract class GraphStageLogic private[stream] (
       out: Outlet[T],
       elems: Iterator[T],
       andThen: () ⇒ Unit): Unit =
-    if (elems.hasNext) {
+    if (elems.hasNext)
       if (isAvailable(out)) {
         push(out, elems.next())
         if (elems.hasNext)
@@ -767,12 +765,11 @@ abstract class GraphStageLogic private[stream] (
               getNonEmittingHandler(out),
               andThen))
         else andThen()
-      } else {
+      } else
         setOrAddEmitting(
           out,
           new EmittingIterator(out, elems, getNonEmittingHandler(out), andThen))
-      }
-    } else andThen()
+    else andThen()
 
   /**
     * Emit a sequence of elements through the given outlet, suspending execution if necessary.
@@ -798,11 +795,10 @@ abstract class GraphStageLogic private[stream] (
     if (isAvailable(out)) {
       push(out, elem)
       andThen()
-    } else {
+    } else
       setOrAddEmitting(
         out,
         new EmittingSingle(out, elem, getNonEmittingHandler(out), andThen))
-    }
 
   /**
     * Emit an element through the given outlet, suspending execution if necessary.
@@ -845,7 +841,7 @@ abstract class GraphStageLogic private[stream] (
     protected def followUp(): Unit = {
       setHandler(out, previous)
       andThen()
-      if (followUps != null) {
+      if (followUps != null)
         getHandler(out) match {
           case e: Emitting[_] ⇒ e.as[T].addFollowUps(this)
           case _ ⇒
@@ -853,7 +849,6 @@ abstract class GraphStageLogic private[stream] (
             if (next.isInstanceOf[EmittingCompletion[_]]) complete(out)
             else setHandler(out, next)
         }
-      }
     }
 
     def addFollowUp(e: Emitting[T]): Unit =
@@ -910,9 +905,8 @@ abstract class GraphStageLogic private[stream] (
 
     override def onPull(): Unit = {
       push(out, elems.next())
-      if (!elems.hasNext) {
+      if (!elems.hasNext)
         followUp()
-      }
     }
   }
 

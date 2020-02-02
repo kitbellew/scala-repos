@@ -225,13 +225,13 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
   def evalOnce(expr: Tree, owner: Symbol, unit: CompilationUnit)(
       within: (() => Tree) => Tree): Tree = {
     var used = false
-    if (treeInfo.isExprSafeToInline(expr)) {
+    if (treeInfo.isExprSafeToInline(expr))
       within(() =>
         if (used) expr.duplicate
         else {
           used = true; expr
         })
-    } else {
+    else {
       val (valDef, identFn) =
         mkPackedValDef(expr, owner, unit.freshTermName("ev$"))
       val containing = within(identFn)
@@ -247,7 +247,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     val used = new Array[Boolean](exprs.length)
     var i = 0
     for (expr <- exprs) {
-      if (treeInfo.isExprSafeToInline(expr)) {
+      if (treeInfo.isExprSafeToInline(expr))
         exprs1 += {
           val idx = i
           () =>
@@ -256,7 +256,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
               used(idx) = true; expr
             }
         }
-      } else {
+      else {
         val (valDef, identFn) =
           mkPackedValDef(expr, owner, unit.freshTermName("ev$"))
         vdefs += valDef

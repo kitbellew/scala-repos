@@ -131,10 +131,9 @@ private[streaming] class BlockGenerator(
       blockIntervalTimer.start()
       blockPushingThread.start()
       logInfo("Started BlockGenerator")
-    } else {
+    } else
       throw new SparkException(
         s"Cannot start BlockGenerator as its not in the Initialized state [state = $state]")
-    }
   }
 
   /**
@@ -147,9 +146,9 @@ private[streaming] class BlockGenerator(
   def stop(): Unit = {
     // Set the state to stop adding data
     synchronized {
-      if (state == Active) {
+      if (state == Active)
         state = StoppedAddingData
-      } else {
+      else {
         logWarning(
           s"Cannot stop BlockGenerator as its not in the Active state [state = $state]")
         return
@@ -175,17 +174,15 @@ private[streaming] class BlockGenerator(
     if (state == Active) {
       waitToPush()
       synchronized {
-        if (state == Active) {
+        if (state == Active)
           currentBuffer += data
-        } else {
+        else
           throw new SparkException(
             "Cannot add data as BlockGenerator has not been started or has been stopped")
-        }
       }
-    } else {
+    } else
       throw new SparkException(
         "Cannot add data as BlockGenerator has not been started or has been stopped")
-    }
 
   /**
     * Push a single data item into the buffer. After buffering the data, the
@@ -198,15 +195,13 @@ private[streaming] class BlockGenerator(
         if (state == Active) {
           currentBuffer += data
           listener.onAddData(data, metadata)
-        } else {
+        } else
           throw new SparkException(
             "Cannot add data as BlockGenerator has not been started or has been stopped")
-        }
       }
-    } else {
+    } else
       throw new SparkException(
         "Cannot add data as BlockGenerator has not been started or has been stopped")
-    }
 
   /**
     * Push multiple data items into the buffer. After buffering the data, the
@@ -227,15 +222,13 @@ private[streaming] class BlockGenerator(
         if (state == Active) {
           currentBuffer ++= tempBuffer
           listener.onAddData(tempBuffer, metadata)
-        } else {
+        } else
           throw new SparkException(
             "Cannot add data as BlockGenerator has not been started or has been stopped")
-        }
       }
-    } else {
+    } else
       throw new SparkException(
         "Cannot add data as BlockGenerator has not been started or has been stopped")
-    }
 
   def isActive(): Boolean = state == Active
 
@@ -255,9 +248,8 @@ private[streaming] class BlockGenerator(
         }
       }
 
-      if (newBlock != null) {
+      if (newBlock != null)
         blocksForPushing.put(newBlock) // put is blocking when queue is full
-      }
     } catch {
       case ie: InterruptedException =>
         logInfo("Block updating timer thread was interrupted")
@@ -275,12 +267,11 @@ private[streaming] class BlockGenerator(
 
     try {
       // While blocks are being generated, keep polling for to-be-pushed blocks and push them.
-      while (areBlocksBeingGenerated) {
+      while (areBlocksBeingGenerated)
         Option(blocksForPushing.poll(10, TimeUnit.MILLISECONDS)) match {
           case Some(block) => pushBlock(block)
           case None        =>
         }
-      }
 
       // At this point, state is StoppedGeneratingBlock. So drain the queue of to-be-pushed blocks.
       logInfo("Pushing out the last " + blocksForPushing.size() + " blocks")

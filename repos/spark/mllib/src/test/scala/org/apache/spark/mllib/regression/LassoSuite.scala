@@ -167,9 +167,7 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
       val sameModel = LassoModel.load(sc, path)
       assert(model.weights == sameModel.weights)
       assert(model.intercept == sameModel.intercept)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 }
 

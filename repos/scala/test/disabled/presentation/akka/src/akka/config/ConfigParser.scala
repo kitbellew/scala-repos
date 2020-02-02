@@ -63,9 +63,9 @@ class ConfigParser(
   }
 
   def sectionClose = "}" ^^ { _ =>
-    if (sections.isEmpty) {
+    if (sections.isEmpty)
       failure("dangling close tag")
-    } else {
+    else {
       sections.pop
       createPrefix
     }

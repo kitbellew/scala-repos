@@ -57,10 +57,9 @@ class ScalaMethodFilter(
       className == locationTypeName.stripSuffix("$class")
     else if (myTargetMethodSignature != null && method
                .signature() != myTargetMethodSignature.getName(process)) false
-    else {
+    else
       DebuggerUtilsEx.isAssignableFrom(locationTypeName, location.declaringType) &&
       !ScalaPositionManager.shouldSkip(location, process)
-    }
   }
 
   override def getCallingExpressionLines = callingExpressionLines

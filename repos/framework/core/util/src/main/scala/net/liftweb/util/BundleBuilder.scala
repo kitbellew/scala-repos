@@ -58,10 +58,10 @@ object BundleBuilder {
 
     val vals: List[ResourceBundle] =
       nodes.toList.flatMap {
-        case e: Elem => {
+        case e: Elem =>
           val all: List[(EntryInfo, NodeSeq)] =
             e.child.toList.flatMap {
-              case e: Elem => {
+              case e: Elem =>
                 e.attribute("name")
                   .toList
                   .map(attr =>
@@ -73,7 +73,6 @@ object BundleBuilder {
                         .map(_.text)
                         .flatMap(Helpers.asBoolean) getOrElse false
                     ) -> (e.child: NodeSeq))
-              }
 
               case _ => Nil
             }
@@ -93,11 +92,11 @@ object BundleBuilder {
             lst.reduceLeft { (a, b) =>
               val ap = points(a._1)
               val bp = points(b._1)
-              if (ap > bp) {
+              if (ap > bp)
                 a
-              } else if (bp > ap) {
+              else if (bp > ap)
                 b
-              } else if (a._1.default) a
+              else if (a._1.default) a
               else b
             }._2
 
@@ -121,7 +120,6 @@ object BundleBuilder {
                 case _                 => null
               }
           })
-        }
 
         case _ => Nil
       }

@@ -93,9 +93,7 @@ class IsotonicRegressionSuite
       assert(model.boundaries === sameModel.boundaries)
       assert(model.predictions === sameModel.predictions)
       assert(model.isotonic === model.isotonic)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 
   test("isotonic regression with size 0") {

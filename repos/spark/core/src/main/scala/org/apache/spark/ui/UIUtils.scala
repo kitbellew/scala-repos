@@ -46,22 +46,18 @@ private[spark] object UIUtils extends Logging {
     dateFormat.get.format(new Date(timestamp))
 
   def formatDuration(milliseconds: Long): String = {
-    if (milliseconds < 100) {
+    if (milliseconds < 100)
       return "%d ms".format(milliseconds)
-    }
     val seconds = milliseconds.toDouble / 1000
-    if (seconds < 1) {
+    if (seconds < 1)
       return "%.1f s".format(seconds)
-    }
-    if (seconds < 60) {
+    if (seconds < 60)
       return "%.0f s".format(seconds)
-    }
     val minutes = seconds / 60
-    if (minutes < 10) {
+    if (minutes < 10)
       return "%.1f min".format(minutes)
-    } else if (minutes < 60) {
+    else if (minutes < 60)
       return "%.0f min".format(minutes)
-    }
     val hours = minutes / 60
     "%.1f h".format(hours)
   }
@@ -77,13 +73,12 @@ private[spark] object UIUtils extends Logging {
       val year = 365 * day
 
       def toString(num: Long, unit: String): String =
-        if (num == 0) {
+        if (num == 0)
           ""
-        } else if (num == 1) {
+        else if (num == 1)
           s"$num $unit"
-        } else {
+        else
           s"$num ${unit}s"
-        }
 
       val millisecondsString =
         if (ms >= second && ms % second == 0) "" else s"${ms % second} ms"
@@ -103,10 +98,9 @@ private[spark] object UIUtils extends Logging {
         year -> s"$weekString $dayString $hourString"
       ).foreach {
         case (durationLimit, durationString) =>
-          if (ms < durationLimit) {
+          if (ms < durationLimit)
             // if time is less than the limit (upto year)
             return durationString
-          }
       }
       // if time is more than a year
       return s"$yearString $weekString $dayString"
@@ -125,23 +119,21 @@ private[spark] object UIUtils extends Logging {
     val thousand = 1e3
 
     val (value, unit) = {
-      if (records >= 2 * trillion) {
+      if (records >= 2 * trillion)
         (records / trillion, " T")
-      } else if (records >= 2 * billion) {
+      else if (records >= 2 * billion)
         (records / billion, " B")
-      } else if (records >= 2 * million) {
+      else if (records >= 2 * million)
         (records / million, " M")
-      } else if (records >= 2 * thousand) {
+      else if (records >= 2 * thousand)
         (records / thousand, " K")
-      } else {
+      else
         (records, "")
-      }
     }
-    if (unit.isEmpty) {
+    if (unit.isEmpty)
       "%d".formatLocal(Locale.US, value.toInt)
-    } else {
+    else
       "%.1f%s".formatLocal(Locale.US, value, unit)
-    }
   }
 
   // Yarn has to go through a proxy so the base uri is provided and has to be on all links
@@ -296,37 +288,33 @@ private[spark] object UIUtils extends Logging {
     val listingTableClass = {
       val _tableClass =
         if (stripeRowsWithCss) TABLE_CLASS_STRIPED else TABLE_CLASS_NOT_STRIPED
-      if (sortable) {
+      if (sortable)
         _tableClass + " sortable"
-      } else {
+      else
         _tableClass
-      }
     }
     val colWidth = 100.toDouble / headers.size
     val colWidthAttr = if (fixedWidth) colWidth + "%" else ""
 
     def getClass(index: Int): String =
-      if (index < headerClasses.size) {
+      if (index < headerClasses.size)
         headerClasses(index)
-      } else {
+      else
         ""
-      }
 
     val newlinesInHeader = headers.exists(_.contains("\n"))
     def getHeaderContent(header: String): Seq[Node] =
-      if (newlinesInHeader) {
+      if (newlinesInHeader)
         <ul class="unstyled">
           {header.split("\n").map { case t => <li> {t} </li> }}
         </ul>
-      } else {
+      else
         Text(header)
-      }
 
-    val headerRow: Seq[Node] = {
+    val headerRow: Seq[Node] =
       headers.view.zipWithIndex.map { x =>
         <th width={colWidthAttr} class={getClass(x._2)}>{getHeaderContent(x._1)}</th>
       }
-    }
     <table class={listingTableClass} id={id.map(Text.apply)}>
       <thead>{headerRow}</thead>
       <tbody>
@@ -449,24 +437,22 @@ private[spark] object UIUtils extends Logging {
         case node: Node =>
           allowedNodeLabels.contains(node.label)
       }
-      if (illegalNodes.nonEmpty) {
+      if (illegalNodes.nonEmpty)
         throw new IllegalArgumentException(
           "Only HTML anchors allowed in job descriptions\n" +
             illegalNodes
               .map { n => s"${n.label} in $n" }
               .mkString("\n\t"))
-      }
 
       // Verify that all links are relative links starting with "/"
       val allLinks =
-        xml \\ "a" flatMap { _.attributes } filter { _.key == "href" } map {
+        xml \\ "a" flatMap { _.attributes } filter _.key == "href" map {
           _.value.toString
         }
-      if (allLinks.exists { !_.startsWith("/") }) {
+      if (allLinks.exists { !_.startsWith("/") })
         throw new IllegalArgumentException(
           "Links in job descriptions must be root-relative:\n" + allLinks
             .mkString("\n\t"))
-      }
 
       // Prepend the relative links with basePathUri
       val rule = new RewriteRule() {

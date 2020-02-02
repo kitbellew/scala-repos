@@ -285,10 +285,9 @@ case class CacheTableCommand(
     }
     sqlContext.cacheTable(tableName)
 
-    if (!isLazy) {
+    if (!isLazy)
       // Performs eager caching
       sqlContext.table(tableName).count()
-    }
 
     Seq.empty[Row]
   }
@@ -420,11 +419,10 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
   }
 
   private def replaceFunctionName(usage: String, functionName: String): String =
-    if (usage == null) {
+    if (usage == null)
       "To be added."
-    } else {
+    else
       usage.replaceAll("_FUNC_", functionName)
-    }
 
   override def run(sqlContext: SQLContext): Seq[Row] =
     sqlContext.sessionState.functionRegistry
@@ -435,12 +433,11 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
             Row(s"Class: ${info.getClassName}") ::
             Row(s"Usage: ${replaceFunctionName(info.getUsage(), info.getName)}") :: Nil
 
-        if (isExtended) {
+        if (isExtended)
           result :+ Row(
             s"Extended Usage:\n${replaceFunctionName(info.getExtended, info.getName)}")
-        } else {
+        else
           result
-        }
 
       case None => Seq(Row(s"Function: $functionName not found."))
     }

@@ -38,10 +38,10 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
       val udfs = plan.expressions.flatMap(_.collect {
         case udf: PythonUDF => udf
       })
-      if (udfs.isEmpty) {
+      if (udfs.isEmpty)
         // If there aren't any, we are done.
         plan
-      } else {
+      else
         // Pick the UDF we are going to evaluate (TODO: Support evaluating multiple UDFs at a time)
         // If there is more than one, we will add another evaluation operator in a subsequent pass.
         udfs.find(_.resolved) match {
@@ -56,12 +56,11 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
               if (udf.references.subsetOf(child.outputSet)) {
                 evaluation = EvaluatePython(udf, child)
                 evaluation
-              } else if (udf.references.intersect(child.outputSet).nonEmpty) {
+              } else if (udf.references.intersect(child.outputSet).nonEmpty)
                 sys.error(
                   s"Invalid PythonUDF $udf, requires attributes from more than one child.")
-              } else {
+              else
                 child
-              }
             }
 
             assert(
@@ -82,6 +81,5 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
             // If there is no Python UDF that is resolved, skip this round.
             plan
         }
-      }
   }
 }

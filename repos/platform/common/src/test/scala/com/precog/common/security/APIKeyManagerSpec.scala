@@ -56,9 +56,7 @@ trait APIKeyManagerSpec[M[+_]] extends Specification {
           rootKey,
           Set(grantRequest))
         grants <- record.toList.flatMap(_.grants).map(mgr.findGrant).sequence
-      } yield {
-        (grants.flatten.flatMap(_.parentIds), rootGrantId)
-      }
+      } yield (grants.flatten.flatMap(_.parentIds), rootGrantId)
 
       val (grantParents, rootGrantId) = grantParentage.copoint
 

@@ -31,13 +31,13 @@ object System {
     import js.DynamicImplicits.truthValue
 
     // We've got to use selectDynamic explicitly not to crash Scala 2.10
-    if (global.selectDynamic("performance")) {
+    if (global.selectDynamic("performance"))
       if (global.performance.selectDynamic("now")) { () =>
         global.performance.now().asInstanceOf[scala.Double]
       } else if (global.performance.selectDynamic("webkitNow")) { () =>
         global.performance.webkitNow().asInstanceOf[scala.Double]
       } else { () => new js.Date().getTime() }
-    } else { () => new js.Date().getTime() }
+    else { () => new js.Date().getTime() }
   }
 
   def nanoTime(): scala.Long =
@@ -96,9 +96,9 @@ object System {
       }
     }
 
-    if (src == null || dest == null) {
+    if (src == null || dest == null)
       throw new NullPointerException()
-    } else
+    else
       (src match {
         case src: Array[AnyRef] =>
           dest match {
@@ -157,28 +157,28 @@ object System {
         x.hashCode()
       case _ =>
         import IDHashCode._
-        if (x.getClass == null) {
+        if (x.getClass == null)
           // This is not a Scala.js object: delegate to x.hashCode()
           x.hashCode()
-        } else if (assumingES6 || idHashCodeMap != null) {
+        else if (assumingES6 || idHashCodeMap != null) {
           // Use the global WeakMap of attributed id hash codes
           val hash = idHashCodeMap.get(x.asInstanceOf[js.Any])
-          if (!js.isUndefined(hash)) {
+          if (!js.isUndefined(hash))
             hash.asInstanceOf[Int]
-          } else {
+          else {
             val newHash = nextIDHashCode()
             idHashCodeMap.set(x.asInstanceOf[js.Any], newHash)
             newHash
           }
         } else {
           val hash = x.asInstanceOf[js.Dynamic].selectDynamic("$idHashCode$0")
-          if (!js.isUndefined(hash)) {
+          if (!js.isUndefined(hash))
             /* Note that this can work even if x is sealed, if
              * identityHashCode() was called for the first time before x was
              * sealed.
              */
             hash.asInstanceOf[Int]
-          } else if (!js.Object.isSealed(x.asInstanceOf[js.Object])) {
+          else if (!js.Object.isSealed(x.asInstanceOf[js.Object])) {
             /* If x is not sealed, we can (almost) safely create an additional
              * field with a bizarre and relatively long name, even though it is
              * technically undefined behavior.
@@ -186,10 +186,9 @@ object System {
             val newHash = nextIDHashCode()
             x.asInstanceOf[js.Dynamic].updateDynamic("$idHashCode$0")(newHash)
             newHash
-          } else {
+          } else
             // Otherwise, we unfortunately have to return a constant.
             42
-          }
         }
     }
 
@@ -235,9 +234,7 @@ object System {
       for {
         jsEnvProperties <- environmentInfo.javaSystemProperties
         (key, value) <- jsEnvProperties
-      } {
-        sysProp.setProperty(key, value)
-      }
+      } sysProp.setProperty(key, value)
       sysProp
     }
   }
@@ -352,12 +349,11 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
     import js.DynamicImplicits.truthValue
 
     // We've got to use selectDynamic explicitly not to crash Scala 2.10
-    if (global.selectDynamic("console")) {
+    if (global.selectDynamic("console"))
       if (isErr && global.console.selectDynamic("error"))
         global.console.error(line)
       else
         global.console.log(line)
-    }
   }
 }
 

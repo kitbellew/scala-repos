@@ -112,10 +112,9 @@ class ReplyCodec extends UnifiedProtocolCodec {
       case replySz =>
         readBytes(replySz) { bytes =>
           readBytes(2) { eol =>
-            if (eol(0) != '\r' || eol(1) != '\n') {
+            if (eol(0) != '\r' || eol(1) != '\n')
               throw new ServerError(
                 "Expected EOL after line data and didn't find it")
-            }
             emit(BulkReply(ChannelBuffers.wrappedBuffer(bytes)))
           }
         }
@@ -139,28 +138,26 @@ class ReplyCodec extends UnifiedProtocolCodec {
         case Nil                 => emit(reply)
         case (i, lines) :: stack => decodeMBulkLines(i, stack, reply :: lines)
       }
-    } else {
+    } else
       readLine { line =>
         val header = line(0)
         header match {
           case ARG_SIZE_MARKER =>
             val size = NumberFormat.toInt(line.drop(1))
-            if (size < 0) {
+            if (size < 0)
               decodeMBulkLines(i - 1, stack, EmptyBulkReply() :: lines)
-            } else {
+            else
               readBytes(size) { byteArray =>
                 readBytes(2) { eol =>
-                  if (eol(0) != '\r' || eol(1) != '\n') {
+                  if (eol(0) != '\r' || eol(1) != '\n')
                     throw new ProtocolError(
                       "Expected EOL after line data and didn't find it")
-                  }
                   decodeMBulkLines(
                     i - 1,
                     stack,
                     BulkReply(ChannelBuffers.wrappedBuffer(byteArray)) :: lines)
                 }
               }
-            }
           case STATUS_REPLY =>
             decodeMBulkLines(
               i - 1,
@@ -184,5 +181,4 @@ class ReplyCodec extends UnifiedProtocolCodec {
             throw new ProtocolError("Expected size marker $, got " + b)
         }
       }
-    }
 }

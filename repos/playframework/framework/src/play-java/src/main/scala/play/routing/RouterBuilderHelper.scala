@@ -38,18 +38,17 @@ private[routing] object RouterBuilderHelper {
               if (matcher.matches()) {
 
                 // Extract groups into a Seq
-                val groups = for (i <- 1 to matcher.groupCount()) yield {
-                  matcher.group(i)
-                }
+                val groups =
+                  for (i <- 1 to matcher.groupCount()) yield matcher.group(i)
 
                 // Bind params if required
                 val params = groups.zip(route.params).map {
                   case (param, routeParam) =>
-                    val rawParam = if (routeParam.decode) {
-                      UriEncoding.decodePathSegment(param, "utf-8")
-                    } else {
-                      param
-                    }
+                    val rawParam =
+                      if (routeParam.decode)
+                        UriEncoding.decodePathSegment(param, "utf-8")
+                      else
+                        param
                     routeParam.pathBindable.bind(routeParam.name, rawParam)
                 }
 
@@ -85,9 +84,7 @@ private[routing] object RouterBuilderHelper {
                           case promise: CompletionStage[Result] =>
                             FutureConverters.toScala(promise).map(_.asScala)
                         }
-                      } finally {
-                        Context.current.remove()
-                      }
+                      } finally Context.current.remove()
                     }
                 }
 

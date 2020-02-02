@@ -203,17 +203,16 @@ class SyncProducerTest extends KafkaServerTestHarness {
     // Send another message whose size is large enough to exceed the buffer size so
     // the socket buffer will be flushed immediately;
     // this send should fail since the socket has been closed
-    try {
-      producer.send(
-        produceRequest(
-          "test",
-          0,
-          new ByteBufferMessageSet(
-            compressionCodec = NoCompressionCodec,
-            messages =
-              new Message(new Array[Byte](configs(0).messageMaxBytes + 1))),
-          acks = 0))
-    } catch {
+    try producer.send(
+      produceRequest(
+        "test",
+        0,
+        new ByteBufferMessageSet(
+          compressionCodec = NoCompressionCodec,
+          messages =
+            new Message(new Array[Byte](configs(0).messageMaxBytes + 1))),
+        acks = 0))
+    catch {
       case e: java.io.IOException => // success
       case e2: Throwable          => throw e2
     }

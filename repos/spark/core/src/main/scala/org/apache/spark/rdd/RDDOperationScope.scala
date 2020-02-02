@@ -138,19 +138,17 @@ private[spark] object RDDOperationScope extends Logging {
     val oldScope = Option(oldScopeJson).map(RDDOperationScope.fromJson)
     val oldNoOverride = sc.getLocalProperty(noOverrideKey)
     try {
-      if (ignoreParent) {
+      if (ignoreParent)
         // Ignore all parent settings and scopes and start afresh with our own root scope
         sc.setLocalProperty(scopeKey, new RDDOperationScope(name).toJson)
-      } else if (sc.getLocalProperty(noOverrideKey) == null) {
+      else if (sc.getLocalProperty(noOverrideKey) == null)
         // Otherwise, set the scope only if the higher level caller allows us to do so
         sc.setLocalProperty(
           scopeKey,
           new RDDOperationScope(name, oldScope).toJson)
-      }
       // Optionally disallow the child body to override our scope
-      if (!allowNesting) {
+      if (!allowNesting)
         sc.setLocalProperty(noOverrideKey, "true")
-      }
       body
     } finally {
       // Remember to restore any state that was modified before exiting

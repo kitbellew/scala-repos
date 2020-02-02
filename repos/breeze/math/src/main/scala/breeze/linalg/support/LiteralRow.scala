@@ -32,9 +32,8 @@ trait LiteralRow[R, @specialized V] {
 object LiteralRow {
   implicit def array[V]: LiteralRow[Array[V], V] = new LiteralRow[Array[V], V] {
     def foreach[X](arr: Array[V], fn: ((Int, V) => X)) =
-      for (i <- 0 until arr.length) {
+      for (i <- 0 until arr.length)
         fn(i, arr(i))
-      }
 
     def length(arr: Array[V]) = arr.length
   }
@@ -42,9 +41,8 @@ object LiteralRow {
   implicit def dv[V]: LiteralRow[DenseVector[V], V] =
     new LiteralRow[DenseVector[V], V] {
       def foreach[X](arr: DenseVector[V], fn: ((Int, V) => X)) =
-        for (i <- 0 until arr.length) {
+        for (i <- 0 until arr.length)
           fn(i, arr(i))
-        }
 
       def length(arr: DenseVector[V]) = arr.length
     }
@@ -52,9 +50,8 @@ object LiteralRow {
   implicit def seq[V, S](implicit ev: S <:< Seq[V]): LiteralRow[S, V] =
     new LiteralRow[S, V] {
       def foreach[X](arr: S, fn: ((Int, V) => X)) =
-        for (i <- 0 until arr.length) {
+        for (i <- 0 until arr.length)
           fn(i, arr(i))
-        }
 
       def length(arr: S) = arr.length
     }
@@ -73,9 +70,8 @@ object LiteralRow {
       def foreach[X](
           tup: Tuple[V @arityize.repeat] @arityize.relative(tuple),
           fn: ((Int, V) => X)) =
-        for ((v, i) <- tup.productIterator.zipWithIndex) {
+        for ((v, i) <- tup.productIterator.zipWithIndex)
           fn(i, v.asInstanceOf[V])
-        }
 
       def length(tup: Tuple[V @arityize.repeat] @arityize.relative(tuple)) =
         __order__

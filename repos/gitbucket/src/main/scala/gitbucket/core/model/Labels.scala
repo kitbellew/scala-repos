@@ -35,10 +35,9 @@ case class Label(
 
     if (Integer.parseInt(r, 16) + Integer.parseInt(g, 16) + Integer.parseInt(
           b,
-          16) > 408) {
+          16) > 408)
       "000000"
-    } else {
+    else
       "ffffff"
-    }
   }
 }

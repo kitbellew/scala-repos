@@ -59,17 +59,13 @@ private[this] object JsonPathParser extends RegexParsers {
   def subscript: Parser[List[PathInstruction]] =
     for {
       operand <- '[' ~> ('*' ^^^ Wildcard | long ^^ Index) <~ ']'
-    } yield {
-      Subscript :: operand :: Nil
-    }
+    } yield Subscript :: operand :: Nil
 
   // parse `.name` or `['name']` child expressions
   def named: Parser[List[PathInstruction]] =
     for {
       name <- '.' ~> "[^\\.\\[]+".r | "[\\'" ~> "[^\\'\\?]+" <~ "\\']"
-    } yield {
-      Key :: Named(name) :: Nil
-    }
+    } yield Key :: Named(name) :: Nil
 
   // child wildcards: `..`, `.*` or `['*']`
   def wildcard: Parser[List[PathInstruction]] =
@@ -80,9 +76,8 @@ private[this] object JsonPathParser extends RegexParsers {
       named |
       subscript
 
-  val expression: Parser[List[PathInstruction]] = {
+  val expression: Parser[List[PathInstruction]] =
     phrase(root ~> rep(node) ^^ (x => x.flatten))
-  }
 
   def parse(str: String): Option[List[PathInstruction]] =
     this.parseAll(expression, str) match {
@@ -128,47 +123,41 @@ case class GetJsonObject(json: Expression, path: Expression)
 
   override def eval(input: InternalRow): Any = {
     val jsonStr = json.eval(input).asInstanceOf[UTF8String]
-    if (jsonStr == null) {
+    if (jsonStr == null)
       return null
-    }
 
-    val parsed = if (path.foldable) {
-      parsedPath
-    } else {
-      parsePath(path.eval(input).asInstanceOf[UTF8String])
-    }
+    val parsed =
+      if (path.foldable)
+        parsedPath
+      else
+        parsePath(path.eval(input).asInstanceOf[UTF8String])
 
-    if (parsed.isDefined) {
-      try {
-        Utils.tryWithResource(jsonFactory.createParser(jsonStr.getBytes)) {
-          parser =>
-            val output = new ByteArrayOutputStream()
-            val matched = Utils.tryWithResource(
-              jsonFactory.createGenerator(output, JsonEncoding.UTF8)) {
-              generator =>
-                parser.nextToken()
-                evaluatePath(parser, generator, RawStyle, parsed.get)
-            }
-            if (matched) {
-              UTF8String.fromBytes(output.toByteArray)
-            } else {
-              null
-            }
-        }
+    if (parsed.isDefined)
+      try Utils.tryWithResource(jsonFactory.createParser(jsonStr.getBytes)) {
+        parser =>
+          val output = new ByteArrayOutputStream()
+          val matched = Utils.tryWithResource(
+            jsonFactory.createGenerator(output, JsonEncoding.UTF8)) {
+            generator =>
+              parser.nextToken()
+              evaluatePath(parser, generator, RawStyle, parsed.get)
+          }
+          if (matched)
+            UTF8String.fromBytes(output.toByteArray)
+          else
+            null
       } catch {
         case _: JsonProcessingException => null
       }
-    } else {
+    else
       null
-    }
   }
 
   private def parsePath(path: UTF8String): Option[List[PathInstruction]] =
-    if (path != null) {
+    if (path != null)
       JsonPathParser.parse(path.toString)
-    } else {
+    else
       None
-    }
 
   // advance to the desired array index, assumes to start at the START_ARRAY token
   private def arrayIndex(p: JsonParser, f: () => Boolean): Long => Boolean = {
@@ -180,10 +169,9 @@ case class GetJsonObject(json: Expression, path: Expression)
       // we've reached the desired index
       val dirty = f()
 
-      while (p.nextToken() != END_ARRAY) {
+      while (p.nextToken() != END_ARRAY)
         // advance the token stream to the end of the array
         p.skipChildren()
-      }
 
       dirty
 
@@ -206,19 +194,17 @@ case class GetJsonObject(json: Expression, path: Expression)
     (p.getCurrentToken, path) match {
       case (VALUE_STRING, Nil) if style == RawStyle =>
         // there is no array wildcard or slice parent, emit this string without quotes
-        if (p.hasTextCharacters) {
+        if (p.hasTextCharacters)
           g.writeRaw(p.getTextCharacters, p.getTextOffset, p.getTextLength)
-        } else {
+        else
           g.writeRaw(p.getText)
-        }
         true
 
       case (START_ARRAY, Nil) if style == FlattenStyle =>
         // flatten this array into the parent
         var dirty = false
-        while (p.nextToken() != END_ARRAY) {
+        while (p.nextToken() != END_ARRAY)
           dirty |= evaluatePath(p, g, style, Nil)
-        }
         dirty
 
       case (_, Nil) =>
@@ -228,14 +214,12 @@ case class GetJsonObject(json: Expression, path: Expression)
 
       case (START_OBJECT, Key :: xs) =>
         var dirty = false
-        while (p.nextToken() != END_OBJECT) {
-          if (dirty) {
+        while (p.nextToken() != END_OBJECT)
+          if (dirty)
             // once a match has been found we can skip other fields
             p.skipChildren()
-          } else {
+          else
             dirty = evaluatePath(p, g, style, xs)
-          }
-        }
         dirty
 
       case (
@@ -244,9 +228,8 @@ case class GetJsonObject(json: Expression, path: Expression)
         // special handling for the non-structure preserving double wildcard behavior in Hive
         var dirty = false
         g.writeStartArray()
-        while (p.nextToken() != END_ARRAY) {
+        while (p.nextToken() != END_ARRAY)
           dirty |= evaluatePath(p, g, FlattenStyle, xs)
-        }
         g.writeEndArray()
         dirty
 
@@ -267,32 +250,30 @@ case class GetJsonObject(json: Expression, path: Expression)
           flattenGenerator =>
             flattenGenerator.writeStartArray()
 
-            while (p.nextToken() != END_ARRAY) {
+            while (p.nextToken() != END_ARRAY)
               // track the number of array elements and only emit an outer array if
               // we've written more than one element, this matches Hive's behavior
               dirty += (if (evaluatePath(p, flattenGenerator, nextStyle, xs)) 1
                         else 0)
-            }
             flattenGenerator.writeEndArray()
         }
 
         val buf = buffer.getBuffer
-        if (dirty > 1) {
+        if (dirty > 1)
           g.writeRawValue(buf.toString)
-        } else if (dirty == 1) {
+        else if (dirty == 1)
           // remove outer array tokens
           g.writeRawValue(buf.substring(1, buf.length() - 1))
-        } // else do not write anything
+        // else do not write anything
 
         dirty > 0
 
       case (START_ARRAY, Subscript :: Wildcard :: xs) =>
         var dirty = false
         g.writeStartArray()
-        while (p.nextToken() != END_ARRAY) {
+        while (p.nextToken() != END_ARRAY)
           // wildcards can have multiple matches, continually update the dirty count
           dirty |= evaluatePath(p, g, QuotedStyle, xs)
-        }
         g.writeEndArray()
 
         dirty
@@ -310,11 +291,10 @@ case class GetJsonObject(json: Expression, path: Expression)
 
       case (FIELD_NAME, Named(name) :: xs) if p.getCurrentName == name =>
         // exact field match
-        if (p.nextToken() != JsonToken.VALUE_NULL) {
+        if (p.nextToken() != JsonToken.VALUE_NULL)
           evaluatePath(p, g, style, xs)
-        } else {
+        else
           false
-        }
 
       case (FIELD_NAME, Wildcard :: xs) =>
         // wildcard field match
@@ -349,13 +329,12 @@ case class JsonTuple(children: Seq[Expression])
   @transient private lazy val fieldExpressions: Seq[Expression] = children.tail
 
   // eagerly evaluate any foldable the field names
-  @transient private lazy val foldableFieldNames: IndexedSeq[String] = {
+  @transient private lazy val foldableFieldNames: IndexedSeq[String] =
     fieldExpressions.map {
       case expr if expr.foldable =>
         expr.eval().asInstanceOf[UTF8String].toString
       case _ => null
     }.toIndexedSeq
-  }
 
   // and count the number of foldable fields, we'll use this later to optimize evaluation
   @transient private lazy val constantFields: Int =
@@ -369,26 +348,22 @@ case class JsonTuple(children: Seq[Expression])
   override def prettyName: String = "json_tuple"
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (children.length < 2) {
+    if (children.length < 2)
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName requires at least two arguments")
-    } else if (children.forall(child => StringType.acceptsType(child.dataType))) {
+    else if (children.forall(child => StringType.acceptsType(child.dataType)))
       TypeCheckResult.TypeCheckSuccess
-    } else {
+    else
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName requires that all arguments are strings")
-    }
 
   override def eval(input: InternalRow): TraversableOnce[InternalRow] = {
     val json = jsonExpr.eval(input).asInstanceOf[UTF8String]
-    if (json == null) {
+    if (json == null)
       return nullRow
-    }
 
-    try {
-      Utils.tryWithResource(jsonFactory.createParser(json.getBytes)) { parser =>
-        parseRow(parser, input)
-      }
+    try Utils.tryWithResource(jsonFactory.createParser(json.getBytes)) {
+      parser => parseRow(parser, input)
     } catch {
       case _: JsonProcessingException =>
         nullRow
@@ -399,27 +374,27 @@ case class JsonTuple(children: Seq[Expression])
       parser: JsonParser,
       input: InternalRow): Seq[InternalRow] = {
     // only objects are supported
-    if (parser.nextToken() != JsonToken.START_OBJECT) {
+    if (parser.nextToken() != JsonToken.START_OBJECT)
       return nullRow
-    }
 
     // evaluate the field names as String rather than UTF8String to
     // optimize lookups from the json token, which is also a String
-    val fieldNames = if (constantFields == fieldExpressions.length) {
-      // typically the user will provide the field names as foldable expressions
-      // so we can use the cached copy
-      foldableFieldNames
-    } else if (constantFields == 0) {
-      // none are foldable so all field names need to be evaluated from the input row
-      fieldExpressions.map(_.eval(input).asInstanceOf[UTF8String].toString)
-    } else {
-      // if there is a mix of constant and non-constant expressions
-      // prefer the cached copy when available
-      foldableFieldNames.zip(fieldExpressions).map {
-        case (null, expr)   => expr.eval(input).asInstanceOf[UTF8String].toString
-        case (fieldName, _) => fieldName
-      }
-    }
+    val fieldNames =
+      if (constantFields == fieldExpressions.length)
+        // typically the user will provide the field names as foldable expressions
+        // so we can use the cached copy
+        foldableFieldNames
+      else if (constantFields == 0)
+        // none are foldable so all field names need to be evaluated from the input row
+        fieldExpressions.map(_.eval(input).asInstanceOf[UTF8String].toString)
+      else
+        // if there is a mix of constant and non-constant expressions
+        // prefer the cached copy when available
+        foldableFieldNames.zip(fieldExpressions).map {
+          case (null, expr) =>
+            expr.eval(input).asInstanceOf[UTF8String].toString
+          case (fieldName, _) => fieldName
+        }
 
     val row = Array.ofDim[Any](fieldNames.length)
 

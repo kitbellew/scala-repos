@@ -35,9 +35,8 @@ object MemcachedProxy {
   }
 
   private[this] def assertMemcachedRunning() {
-    try {
-      new Socket("localhost", 11211)
-    } catch {
+    try new Socket("localhost", 11211)
+    catch {
       case e: ConnectException =>
         println("Error: memcached must be running on port 11211")
         System.exit(1)

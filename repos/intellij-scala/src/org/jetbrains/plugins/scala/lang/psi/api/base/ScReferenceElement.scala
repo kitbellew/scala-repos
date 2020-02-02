@@ -146,7 +146,7 @@ trait ScReferenceElement
               if Set("apply", "unapply", "unapplySeq").contains(method.name) =>
             var break = false
             val methods = td.allMethods
-            for (n <- methods if !break) {
+            for (n <- methods if !break)
               if (n.method.name == method.name) {
                 val methodContainingClass: ScTemplateDefinition =
                   method.containingClass
@@ -158,16 +158,14 @@ trait ScReferenceElement
                 if (classesEquiv)
                   break = true
               }
-            }
 
             if (!break && td.isInstanceOf[ScClass] && td
                   .asInstanceOf[ScClass]
-                  .isCase && method.isSynthetic) {
+                  .isCase && method.isSynthetic)
               ScalaPsiUtil.getCompanionModule(td) match {
                 case Some(typeDef) => return isReferenceTo(typeDef)
                 case _             =>
               }
-            }
             if (break) return true
           case obj: ScObject if obj.isSyntheticObject =>
             ScalaPsiUtil.getCompanionModule(td) match {
@@ -274,7 +272,7 @@ trait ScReferenceElement
       getContainingFile.accept(new ScalaRecursiveElementVisitor {
         override def visitReference(ref: ScReferenceElement) {
           if (reject) return
-          if (usedNames.contains(ref.refName)) {
+          if (usedNames.contains(ref.refName))
             ref.bind() match {
               case Some(r: ScalaResolveResult)
                   if ref != ScReferenceElement.this && r.importsUsed.isEmpty =>
@@ -282,7 +280,6 @@ trait ScReferenceElement
                 return
               case _ =>
             }
-          }
           super.visitReference(ref)
         }
       })
@@ -291,9 +288,9 @@ trait ScReferenceElement
     val prefixImport = ScalaCodeStyleSettings
       .getInstance(getProject)
       .hasImportWithPrefix(qualName)
-    if (!prefixImport && checkForPredefinedTypes()) {
+    if (!prefixImport && checkForPredefinedTypes())
       simpleImport
-    } else {
+    else {
       if (qualName.contains(".")) {
         var index =
           if (ScalaCodeStyleSettings
@@ -325,9 +322,8 @@ trait ScReferenceElement
                     ref.qualifier match {
                       case Some(_) =>
                       case None =>
-                        if (!ref.getParent.isInstanceOf[ScImportSelector]) {
+                        if (!ref.getParent.isInstanceOf[ScImportSelector])
                           if (ref.refName == parts(index)) res = false
-                        }
                     }
                   }
                 })

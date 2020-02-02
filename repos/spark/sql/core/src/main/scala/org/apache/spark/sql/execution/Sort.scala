@@ -86,9 +86,8 @@ case class Sort(
       prefixComparator,
       prefixComputer,
       pageSize)
-    if (testSpillFrequency > 0) {
+    if (testSpillFrequency > 0)
       sorter.setTestSpillFrequency(testSpillFrequency)
-    }
     sorter
   }
 
@@ -186,9 +185,9 @@ case class Sort(
       ctx: CodegenContext,
       input: Seq[ExprCode],
       row: String): String =
-    if (row != null) {
+    if (row != null)
       s"$sorterVariable.insertRow((UnsafeRow)$row);"
-    } else {
+    else {
       val colExprs = child.output.zipWithIndex.map {
         case (attr, i) =>
           BoundReference(i, attr.dataType, attr.nullable)

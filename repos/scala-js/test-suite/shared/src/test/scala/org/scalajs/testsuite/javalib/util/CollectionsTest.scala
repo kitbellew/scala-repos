@@ -43,11 +43,10 @@ class CollectionsTest extends CollectionsTestBase {
     }
     assertFalse(coll.removeAll(List.empty[E]))
 
-    if (coll.nonEmpty) {
+    if (coll.nonEmpty)
       expectThrows(classOf[Throwable], coll.clear())
-    } else {
+    else
       coll.clear() // Should not throw
-    }
   }
 
   private def checkImmutablilityOfSetApi[E](set: ju.Set[E], elem: E): Unit =
@@ -193,11 +192,10 @@ class CollectionsTest extends CollectionsTestBase {
       assertEquals(0, zeroCopies.iterator.size)
       checkImmutablilityOfListApi(zeroCopies, toElem(0))
 
-      for (n <- Seq(-1, -4, -543)) {
+      for (n <- Seq(-1, -4, -543))
         expectThrows(
           classOf[IllegalArgumentException],
           ju.Collections.nCopies(n, toElem(0)))
-      }
     }
 
     test[Int](_.toInt)
@@ -252,7 +250,7 @@ class CollectionsTest extends CollectionsTestBase {
       assertEquals(0, rCmp2.compare(num, num))
     }
 
-    for (i <- range) {
+    for (i <- range)
       for (_ <- 1 to 10) {
         val num = scala.util.Random.nextInt(10000) + 1
         assertTrue(rCmp1.compare(i, i + num) > 0)
@@ -260,7 +258,6 @@ class CollectionsTest extends CollectionsTestBase {
         assertTrue(rCmp1.compare(i, i - num) < 0)
         assertTrue(rCmp2.compare(i, i - num) < 0)
       }
-    }
 
     for (_ <- 1 to 100) {
       val num1 = scala.util.Random.nextInt(10000)

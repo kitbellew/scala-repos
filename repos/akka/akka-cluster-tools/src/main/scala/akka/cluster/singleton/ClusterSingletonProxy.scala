@@ -271,10 +271,9 @@ final class ClusterSingletonProxy(
         context.actorSelection(singletonAddress) ! Identify(identifyId)
       }
     case Terminated(ref) ⇒
-      if (singleton.exists(_ == ref)) {
+      if (singleton.exists(_ == ref))
         // buffering mode, identification of new will start when old node is removed
         singleton = None
-      }
 
     // forwarding/stashing logic
     case msg: Any ⇒

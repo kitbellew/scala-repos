@@ -45,21 +45,17 @@ private[streaming] object UIUtils {
     * after converting, also with its TimeUnit.
     */
   def normalizeDuration(milliseconds: Long): (Double, TimeUnit) = {
-    if (milliseconds < 1000) {
+    if (milliseconds < 1000)
       return (milliseconds, TimeUnit.MILLISECONDS)
-    }
     val seconds = milliseconds.toDouble / 1000
-    if (seconds < 60) {
+    if (seconds < 60)
       return (seconds, TimeUnit.SECONDS)
-    }
     val minutes = seconds / 60
-    if (minutes < 60) {
+    if (minutes < 60)
       return (minutes, TimeUnit.MINUTES)
-    }
     val hours = minutes / 60
-    if (hours < 24) {
+    if (hours < 24)
       return (hours, TimeUnit.HOURS)
-    }
     val days = hours / 24
     (days, TimeUnit.DAYS)
   }
@@ -116,34 +112,29 @@ private[streaming] object UIUtils {
     }
     try {
       val formattedBatchTime =
-        if (batchInterval < 1000) {
+        if (batchInterval < 1000)
           batchTimeFormatWithMilliseconds.get.format(batchTime)
-        } else {
+        else
           // If batchInterval >= 1 second, don't show milliseconds
           batchTimeFormat.get.format(batchTime)
-        }
-      if (showYYYYMMSS) {
+      if (showYYYYMMSS)
         formattedBatchTime
-      } else {
+      else
         formattedBatchTime.substring(formattedBatchTime.indexOf(' ') + 1)
-      }
-    } finally {
-      if (timezone != null) {
-        batchTimeFormat.get.setTimeZone(oldTimezones._1)
-        batchTimeFormatWithMilliseconds.get.setTimeZone(oldTimezones._2)
-      }
+    } finally if (timezone != null) {
+      batchTimeFormat.get.setTimeZone(oldTimezones._1)
+      batchTimeFormatWithMilliseconds.get.setTimeZone(oldTimezones._2)
     }
   }
 
   def createOutputOperationFailureForUI(failure: String): String =
-    if (failure.startsWith("org.apache.spark.Spark")) {
+    if (failure.startsWith("org.apache.spark.Spark"))
       // SparkException or SparkDriverExecutionException
       "Failed due to Spark job error\n" + failure
-    } else {
+    else {
       var nextLineIndex = failure.indexOf("\n")
-      if (nextLineIndex < 0) {
+      if (nextLineIndex < 0)
         nextLineIndex = failure.length
-      }
       val firstLine = failure.substring(0, nextLineIndex)
       s"Failed due to error: $firstLine\n$failure"
     }
@@ -154,40 +145,38 @@ private[streaming] object UIUtils {
       includeFirstLineInExpandDetails: Boolean = true): Seq[Node] = {
     val isMultiline = failureReason.indexOf('\n') >= 0
     // Display the first line by default
-    val failureReasonSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      failureReason.substring(0, failureReason.indexOf('\n'))
-    } else {
-      failureReason
-    })
+    val failureReasonSummary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline)
+        failureReason.substring(0, failureReason.indexOf('\n'))
+      else
+        failureReason)
     val failureDetails =
-      if (isMultiline && !includeFirstLineInExpandDetails) {
+      if (isMultiline && !includeFirstLineInExpandDetails)
         // Skip the first line
         failureReason.substring(failureReason.indexOf('\n') + 1)
-      } else {
+      else
         failureReason
-      }
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val details =
+      if (isMultiline)
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{failureDetails}</pre>
         </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+      else
+        ""
 
-    if (rowspan == 1) {
+    if (rowspan == 1)
       <td valign="middle" style="max-width: 300px">{failureReasonSummary}{
         details
       }</td>
-    } else {
+    else
       <td valign="middle" style="max-width: 300px" rowspan={rowspan.toString}>
         {failureReasonSummary}{details}
       </td>
-    }
   }
 }

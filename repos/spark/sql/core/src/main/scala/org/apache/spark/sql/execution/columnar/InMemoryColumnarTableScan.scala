@@ -80,12 +80,11 @@ private[sql] case class InMemoryRelation(
   override def producedAttributes: AttributeSet = outputSet
 
   private val batchStats: Accumulable[ArrayBuffer[InternalRow], InternalRow] =
-    if (_batchStats == null) {
+    if (_batchStats == null)
       child.sqlContext.sparkContext
         .accumulableCollection(ArrayBuffer.empty[InternalRow])
-    } else {
+    else
       _batchStats
-    }
 
   @transient val partitionStatistics = new PartitionStatistics(output)
 
@@ -107,33 +106,30 @@ private[sql] case class InMemoryRelation(
     if (_statistics == null) {
       val updatedStats = statistics
       if (_statistics == null) null else updatedStats
-    } else {
+    } else
       _statistics
-    }
 
   override def statistics: Statistics =
-    if (_statistics == null) {
-      if (batchStats.value.isEmpty) {
+    if (_statistics == null)
+      if (batchStats.value.isEmpty)
         // Underlying columnar RDD hasn't been materialized, no useful statistics information
         // available, return the default statistics.
         Statistics(sizeInBytes = child.sqlContext.conf.defaultSizeInBytes)
-      } else {
+      else {
         // Underlying columnar RDD has been materialized, required information has also been
         // collected via the `batchStats` accumulator, compute the final statistics,
         // and update `_statistics`.
         _statistics = Statistics(sizeInBytes = computeSizeInBytes)
         _statistics
       }
-    } else {
+    else
       // Pre-computed statistics
       _statistics
-    }
 
   // If the cached column buffers were not passed in, we calculate them in the constructor.
   // As in Spark, the actual work of caching is lazy.
-  if (_cachedColumnBuffers == null) {
+  if (_cachedColumnBuffers == null)
     buildBuffers()
-  }
 
   def recache(): Unit = {
     _cachedColumnBuffers.unpersist()
@@ -298,7 +294,7 @@ private[sql] case class InMemoryColumnarTableScan(
       statsFor(a).count - statsFor(a).nullCount > 0
   }
 
-  val partitionFilters: Seq[Expression] = {
+  val partitionFilters: Seq[Expression] =
     predicates.flatMap { p =>
       val filter = buildFilter.lift(p)
       val boundFilter =
@@ -315,7 +311,6 @@ private[sql] case class InMemoryColumnarTableScan(
       // If the filter can't be resolved then we are missing required statistics.
       boundFilter.filter(_.resolved)
     }
-  }
 
   lazy val enableAccumulators: Boolean =
     sqlContext
@@ -357,7 +352,7 @@ private[sql] case class InMemoryColumnarTableScan(
 
       // Do partition batch pruning if enabled
       val cachedBatchesToScan =
-        if (inMemoryPartitionPruningEnabled) {
+        if (inMemoryPartitionPruningEnabled)
           cachedBatchIterator.filter { cachedBatch =>
             if (!partitionFilter(cachedBatch.stats)) {
               def statsString: String =
@@ -371,15 +366,13 @@ private[sql] case class InMemoryColumnarTableScan(
               logInfo(s"Skipping partition based on stats $statsString")
               false
             } else {
-              if (enableAccumulators) {
+              if (enableAccumulators)
                 readBatches += 1
-              }
               true
             }
           }
-        } else {
+        else
           cachedBatchIterator
-        }
 
       // update SQL metrics
       val withMetrics = cachedBatchesToScan.map { batch =>
@@ -396,9 +389,8 @@ private[sql] case class InMemoryColumnarTableScan(
         withMetrics,
         columnTypes,
         requestedColumnIndices.toArray)
-      if (enableAccumulators && columnarIterator.hasNext) {
+      if (enableAccumulators && columnarIterator.hasNext)
         readPartitions += 1
-      }
       columnarIterator
     }
   }

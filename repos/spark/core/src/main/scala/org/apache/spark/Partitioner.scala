@@ -58,14 +58,12 @@ object Partitioner {
   def defaultPartitioner(rdd: RDD[_], others: RDD[_]*): Partitioner = {
     val bySize = (Seq(rdd) ++ others).sortBy(_.partitions.length).reverse
     for (r <- bySize
-         if r.partitioner.isDefined && r.partitioner.get.numPartitions > 0) {
+         if r.partitioner.isDefined && r.partitioner.get.numPartitions > 0)
       return r.partitioner.get
-    }
-    if (rdd.context.conf.contains("spark.default.parallelism")) {
+    if (rdd.context.conf.contains("spark.default.parallelism"))
       new HashPartitioner(rdd.context.defaultParallelism)
-    } else {
+    else
       new HashPartitioner(bySize.head.partitions.length)
-    }
   }
 }
 
@@ -122,9 +120,9 @@ class RangePartitioner[K: Ordering: ClassTag, V](
 
   // An array of upper bounds for the first (partitions - 1) partitions
   private var rangeBounds: Array[K] = {
-    if (partitions <= 1) {
+    if (partitions <= 1)
       Array.empty
-    } else {
+    else {
       // This is the sample size we need to have roughly balanced output partitions, capped at 1M.
       val sampleSize = math.min(20.0 * partitions, 1e6)
       // Assume the input partitions are roughly balanced and over-sample a little bit.
@@ -132,9 +130,9 @@ class RangePartitioner[K: Ordering: ClassTag, V](
         math.ceil(3.0 * sampleSize / rdd.partitions.length).toInt
       val (numItems, sketched) =
         RangePartitioner.sketch(rdd.map(_._1), sampleSizePerPartition)
-      if (numItems == 0L) {
+      if (numItems == 0L)
         Array.empty
-      } else {
+      else {
         // If a partition contains much more than the average number of items, we re-sample from it
         // to ensure that enough items are collected from that partition.
         val fraction = math.min(sampleSize / math.max(numItems, 1L), 1.0)
@@ -142,14 +140,13 @@ class RangePartitioner[K: Ordering: ClassTag, V](
         val imbalancedPartitions = mutable.Set.empty[Int]
         sketched.foreach {
           case (idx, n, sample) =>
-            if (fraction * n > sampleSizePerPartition) {
+            if (fraction * n > sampleSizePerPartition)
               imbalancedPartitions += idx
-            } else {
+            else {
               // The weight is 1 over the sampling probability.
               val weight = (n.toDouble / sample.length).toFloat
-              for (key <- sample) {
+              for (key <- sample)
                 candidates += ((key, weight))
-              }
             }
         }
         if (imbalancedPartitions.nonEmpty) {
@@ -176,29 +173,25 @@ class RangePartitioner[K: Ordering: ClassTag, V](
   def getPartition(key: Any): Int = {
     val k = key.asInstanceOf[K]
     var partition = 0
-    if (rangeBounds.length <= 128) {
+    if (rangeBounds.length <= 128)
       // If we have less than 128 partitions naive search
       while (partition < rangeBounds.length && ordering.gt(
                k,
-               rangeBounds(partition))) {
+               rangeBounds(partition)))
         partition += 1
-      }
-    } else {
+    else {
       // Determine which binary search method to use only once.
       partition = binarySearch(rangeBounds, k)
       // binarySearch either returns the match location or -[insertion point]-1
-      if (partition < 0) {
+      if (partition < 0)
         partition = -partition - 1
-      }
-      if (partition > rangeBounds.length) {
+      if (partition > rangeBounds.length)
         partition = rangeBounds.length
-      }
     }
-    if (ascending) {
+    if (ascending)
       partition
-    } else {
+    else
       rangeBounds.length - partition
-    }
   }
 
   override def equals(other: Any): Boolean = other match {
@@ -311,7 +304,7 @@ private[spark] object RangePartitioner {
     while ((i < numCandidates) && (j < partitions - 1)) {
       val (key, weight) = ordered(i)
       cumWeight += weight
-      if (cumWeight >= target) {
+      if (cumWeight >= target)
         // Skip duplicate values.
         if (previousBound.isEmpty || ordering.gt(key, previousBound.get)) {
           bounds += key
@@ -319,7 +312,6 @@ private[spark] object RangePartitioner {
           j += 1
           previousBound = Some(key)
         }
-      }
       i += 1
     }
     bounds.toArray

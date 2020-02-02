@@ -68,9 +68,8 @@ class VotingServiceSpec
       val N = 1000
       runOn(node1) {
         votingService ! Open
-        for (n ← 1 to N) {
+        for (n ← 1 to N)
           votingService ! Vote("#" + ((n % 20) + 1))
-        }
       }
       runOn(node2, node3) {
         // wait for it to open
@@ -79,9 +78,8 @@ class VotingServiceSpec
           votingService.tell(GetVotes, p.ref)
           p.expectMsgPF(3.seconds) { case Votes(_, true) ⇒ true }
         }
-        for (n ← 1 to N) {
+        for (n ← 1 to N)
           votingService ! Vote("#" + ((n % 20) + 1))
-        }
       }
       enterBarrier("voting-done")
       runOn(node3) {

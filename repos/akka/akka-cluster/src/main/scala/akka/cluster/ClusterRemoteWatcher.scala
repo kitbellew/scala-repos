@@ -96,9 +96,8 @@ private[cluster] class ClusterRemoteWatcher(
   def memberRemoved(m: Member, previousStatus: MemberStatus): Unit =
     if (m.address != selfAddress) {
       clusterNodes -= m.address
-      if (previousStatus == MemberStatus.Down) {
+      if (previousStatus == MemberStatus.Down)
         quarantine(m.address, Some(m.uniqueAddress.uid))
-      }
       publishAddressTerminated(m.address)
     }
 

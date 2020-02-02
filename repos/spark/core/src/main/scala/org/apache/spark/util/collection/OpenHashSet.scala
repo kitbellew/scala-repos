@@ -74,13 +74,12 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
     //         at scala.tools.nsc.typechecker.Infer$Inferencer.error(Infer.scala:207)
     //         ...
     val mt = classTag[T]
-    if (mt == ClassTag.Long) {
+    if (mt == ClassTag.Long)
       (new LongHasher).asInstanceOf[Hasher[T]]
-    } else if (mt == ClassTag.Int) {
+    else if (mt == ClassTag.Int)
       (new IntHasher).asInstanceOf[Hasher[T]]
-    } else {
+    else
       new Hasher[T]
-    }
   }
 
   protected var _capacity = nextPowerOf2(initialCapacity)
@@ -117,9 +116,8 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
 
   def union(other: OpenHashSet[T]): OpenHashSet[T] = {
     val iterator = other.iterator
-    while (iterator.hasNext) {
+    while (iterator.hasNext)
       add(iterator.next())
-    }
     this
   }
 
@@ -136,22 +134,21 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
   def addWithoutResize(k: T): Int = {
     var pos = hashcode(hasher.hash(k)) & _mask
     var delta = 1
-    while (true) {
+    while (true)
       if (!_bitset.get(pos)) {
         // This is a new key.
         _data(pos) = k
         _bitset.set(pos)
         _size += 1
         return pos | NONEXISTENCE_MASK
-      } else if (_data(pos) == k) {
+      } else if (_data(pos) == k)
         // Found an existing key.
         return pos
-      } else {
+      else {
         // quadratic probing with values increase by 1, 2, 3, ...
         pos = (pos + delta) & _mask
         delta += 1
       }
-    }
     throw new RuntimeException("Should never reach here.")
   }
 
@@ -167,9 +164,8 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
       k: T,
       allocateFunc: (Int) => Unit,
       moveFunc: (Int, Int) => Unit) {
-    if (_size > _growThreshold) {
+    if (_size > _growThreshold)
       rehash(k, allocateFunc, moveFunc)
-    }
   }
 
   /**
@@ -178,17 +174,16 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
   def getPos(k: T): Int = {
     var pos = hashcode(hasher.hash(k)) & _mask
     var delta = 1
-    while (true) {
-      if (!_bitset.get(pos)) {
+    while (true)
+      if (!_bitset.get(pos))
         return INVALID_POS
-      } else if (k == _data(pos)) {
+      else if (k == _data(pos))
         return pos
-      } else {
+      else {
         // quadratic probing with values increase by 1, 2, 3, ...
         pos = (pos + delta) & _mask
         delta += 1
       }
-    }
     throw new RuntimeException("Should never reach here.")
   }
 
@@ -249,7 +244,7 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
         var keepGoing = true
         // No need to check for equality here when we insert so this has one less if branch than
         // the similar code path in addWithoutResize.
-        while (keepGoing) {
+        while (keepGoing)
           if (!newBitset.get(newPos)) {
             // Inserting the key at newPos
             newData(newPos) = key
@@ -261,7 +256,6 @@ class OpenHashSet[@specialized(Long, Int) T: ClassTag](
             newPos = (newPos + delta) & newMask
             i += 1
           }
-        }
       }
       oldPos += 1
     }

@@ -211,10 +211,9 @@ class StreamingKMeans @Since("1.2.0") (
     */
   @Since("1.2.0")
   def setHalfLife(halfLife: Double, timeUnit: String): this.type = {
-    if (timeUnit != StreamingKMeans.BATCHES && timeUnit != StreamingKMeans.POINTS) {
+    if (timeUnit != StreamingKMeans.BATCHES && timeUnit != StreamingKMeans.POINTS)
       throw new IllegalArgumentException(
         "Invalid time unit for decay: " + timeUnit)
-    }
     this.decayFactor = math.exp(math.log(0.5) / halfLife)
     logInfo("Setting decay factor to: %g ".format(this.decayFactor))
     this.timeUnit = timeUnit
@@ -329,10 +328,9 @@ class StreamingKMeans @Since("1.2.0") (
 
   /** Check whether cluster centers have been initialized. */
   private[this] def assertInitialized(): Unit =
-    if (model.clusterCenters == null) {
+    if (model.clusterCenters == null)
       throw new IllegalStateException(
         "Initial cluster centers must be set before starting predictions")
-    }
 }
 
 private[clustering] object StreamingKMeans {

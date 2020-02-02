@@ -69,7 +69,7 @@ class ScArgumentExprListImpl(node: ASTNode)
     }
 
   override def addBefore(element: PsiElement, anchor: PsiElement): PsiElement =
-    if (anchor == null) {
+    if (anchor == null)
       if (exprs.isEmpty) {
         val par: PsiElement =
           findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)
@@ -83,9 +83,8 @@ class ScArgumentExprListImpl(node: ASTNode)
         super.addAfter(par, comma)
         super.addAfter(par, element)
       }
-    } else {
+    else
       super.addBefore(element, anchor)
-    }
 
   def addExpr(expr: ScExpression): ScArgumentExprList = {
     val par = findChildByType[PsiElement](ScalaTokenTypes.tLPARENTHESIS)

@@ -248,11 +248,10 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     case class VectorWithCompare(x: Vector) extends Ordered[VectorWithCompare] {
       override def compare(that: VectorWithCompare): Int =
         if (this.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x) >
-              that.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x)) {
+              that.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x))
           -1
-        } else {
+        else
           1
-        }
     }
 
     val points = Seq(
@@ -331,9 +330,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
           model.save(sc, path)
           val sameModel = KMeansModel.load(sc, path)
           KMeansSuite.checkEqual(model, sameModel)
-        } finally {
-          Utils.deleteRecursively(tempDir)
-        }
+        } finally Utils.deleteRecursively(tempDir)
     }
   }
 

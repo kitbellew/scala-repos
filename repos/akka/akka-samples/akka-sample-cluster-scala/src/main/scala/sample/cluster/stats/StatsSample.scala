@@ -19,9 +19,8 @@ object StatsSample {
     if (args.isEmpty) {
       startup(Seq("2551", "2552", "0"))
       StatsSampleClient.main(Array.empty)
-    } else {
+    } else
       startup(args)
-    }
 
   def startup(ports: Seq[String]): Unit =
     ports foreach { port =>

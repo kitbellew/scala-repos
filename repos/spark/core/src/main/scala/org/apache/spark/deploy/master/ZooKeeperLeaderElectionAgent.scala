@@ -59,9 +59,8 @@ private[master] class ZooKeeperLeaderElectionAgent(
   override def isLeader() {
     synchronized {
       // could have lost leadership by now.
-      if (!leaderLatch.hasLeadership) {
+      if (!leaderLatch.hasLeadership)
         return
-      }
 
       logInfo("We have gained leadership")
       updateLeadershipStatus(true)
@@ -71,9 +70,8 @@ private[master] class ZooKeeperLeaderElectionAgent(
   override def notLeader() {
     synchronized {
       // could have gained leadership by now.
-      if (leaderLatch.hasLeadership) {
+      if (leaderLatch.hasLeadership)
         return
-      }
 
       logInfo("We have lost leadership")
       updateLeadershipStatus(false)

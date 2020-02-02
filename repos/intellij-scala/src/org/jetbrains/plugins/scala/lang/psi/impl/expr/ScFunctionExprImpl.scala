@@ -47,9 +47,8 @@ class ScFunctionExprImpl(node: ASTNode)
             x == lastParent
               .asInstanceOf[ScalaPsiElement]
               .getDeepSameElementInContext) =>
-        for (p <- parameters) {
+        for (p <- parameters)
           if (!processor.execute(p, state)) return false
-        }
         true
       case _ => true
     }

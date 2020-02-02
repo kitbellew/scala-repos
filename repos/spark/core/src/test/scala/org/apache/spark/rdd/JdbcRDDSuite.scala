@@ -73,9 +73,7 @@ class JdbcRDDSuite
         // table exists
       }
 
-    } finally {
-      conn.close()
-    }
+    } finally conn.close()
   }
 
   test("basic functionality") {
@@ -108,10 +106,9 @@ class JdbcRDDSuite
   }
 
   after {
-    try {
-      DriverManager.getConnection(
-        "jdbc:derby:target/JdbcRDDSuiteDb;shutdown=true")
-    } catch {
+    try DriverManager.getConnection(
+      "jdbc:derby:target/JdbcRDDSuiteDb;shutdown=true")
+    catch {
       case se: SQLException if se.getSQLState == "08006" =>
       // Normal single database shutdown
       // https://db.apache.org/derby/docs/10.2/ref/rrefexcept71493.html

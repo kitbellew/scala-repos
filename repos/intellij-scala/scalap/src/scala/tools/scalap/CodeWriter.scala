@@ -53,9 +53,8 @@ class CodeWriter(writer: Writer) {
     if (step == null)
       newspace
     else if (!line) {
-      try {
-        writer.write(nl)
-      } catch {
+      try writer.write(nl)
+      catch {
         case e: Throwable => sys.error("IO error")
       }
       line = align

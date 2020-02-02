@@ -12,25 +12,23 @@ trait Helpers { self: Global =>
 
   def applySynonyms(sym: Symbol): List[Symbol] = {
     val members =
-      if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
+      if (sym.isModule || sym.isModuleClass || sym.isPackageObject)
         sym.tpe.members
-      } else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
+      else if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass)
         sym.companionModule.tpe.members
-      } else {
+      else
         List.empty
-      }
     members.toList.filter { _.name.toString == "apply" }
   }
 
   def constructorSynonyms(sym: Symbol): List[Symbol] = {
     val members =
-      if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass) {
+      if (sym.isClass || sym.isPackageClass || sym.isPackageObjectClass)
         sym.tpe.members
-      } else if (sym.isModule || sym.isModuleClass || sym.isPackageObject) {
+      else if (sym.isModule || sym.isModuleClass || sym.isPackageObject)
         sym.companionClass.tpe.members
-      } else {
+      else
         List.empty
-      }
     members.toList.filter { _.isConstructor }
   }
 
@@ -56,7 +54,7 @@ trait Helpers { self: Global =>
     }
 
   def completionSignatureForType(tpe: Type): CompletionSignature =
-    if (isArrowType(tpe)) {
+    if (isArrowType(tpe))
       CompletionSignature(
         tpe.paramss.map { sect =>
           sect.map { p => (p.name.toString, typeFullName(p.tpe, true)) }
@@ -64,7 +62,7 @@ trait Helpers { self: Global =>
         typeFullName(tpe.finalResultType, true),
         tpe.paramss.exists { sect => sect.exists(_.isImplicit) }
       )
-    } else CompletionSignature(List.empty, typeFullName(tpe, true), false)
+    else CompletionSignature(List.empty, typeFullName(tpe, true), false)
 
   /**
     *  Return the string used to index a symbol
@@ -72,22 +70,21 @@ trait Helpers { self: Global =>
   def symbolIndexerName(sym: Symbol): String = {
     def typeIndexerName(sym: Symbol): String = {
       val owner = sym.owner
-      if (owner.isRoot || owner.isRootPackage) {
+      if (owner.isRoot || owner.isRootPackage)
         sym.encodedName
-      } else if (owner.hasPackageFlag) {
+      else if (owner.hasPackageFlag)
         owner.fullName + "." + sym.encodedName
-      } else {
+      else
         typeIndexerName(owner) + "$" + sym.encodedName
-      }
     }
 
-    val name = if (sym.isType) {
-      typeIndexerName(sym)
-    } else if (sym.isModule) {
-      typeIndexerName(sym) + "$"
-    } else {
-      symbolIndexerName(sym.owner) + "." + sym.encodedName
-    }
+    val name =
+      if (sym.isType)
+        typeIndexerName(sym)
+      else if (sym.isModule)
+        typeIndexerName(sym) + "$"
+      else
+        symbolIndexerName(sym.owner) + "." + sym.encodedName
     name
       .replaceAll("\\.package\\$\\$", ".")
       .replaceAll("\\.package\\$\\.", ".")
@@ -113,22 +110,21 @@ trait Helpers { self: Global =>
         ""
       else typeSym.enclosingPackage.fullName + "."
 
-    val withoutArgs = if (typeSym.isNestedClass) {
-      prefix + nestedClassName(typeSym)
-    } else {
-      prefix + typeShortName(typeSym)
-    }
-    if (withTpeArgs) {
-      withoutArgs + (if (tpe.typeArgs.size > 0) {
+    val withoutArgs =
+      if (typeSym.isNestedClass)
+        prefix + nestedClassName(typeSym)
+      else
+        prefix + typeShortName(typeSym)
+    if (withTpeArgs)
+      withoutArgs + (if (tpe.typeArgs.size > 0)
                        "[" +
                          tpe.typeArgs
                            .map(typeFullName(_, true))
                            .mkString(", ") +
                          "]"
-                     } else {
-                       ""
-                     })
-    } else withoutArgs
+                     else
+                       "")
+    else withoutArgs
   }
 
   def typeShortName(tpe: Type): String =
@@ -148,9 +144,8 @@ trait Helpers { self: Global =>
       rootSymbol: Symbol = RootClass): Option[Symbol] = {
     def segments(name: String): List[Name] = {
       val len = name.length
-      if (len == 0) {
+      if (len == 0)
         throw new IllegalArgumentException("Empty symbol name")
-      }
 
       val idx = name.indexWhere(ch => ch == '.' || ch == '$')
       idx match {
@@ -163,26 +158,22 @@ trait Helpers { self: Global =>
 
       val (cur, div, rest) =
         (name.take(idx), name.charAt(idx), name.drop(idx + 1))
-      if (div == '.') {
-        if (rest == "") {
+      if (div == '.')
+        if (rest == "")
           throw new IllegalArgumentException(
             "Unexpected period at end of symbol name")
-        } else {
+        else
           // part ends with '.' : a package
           newTermName(cur) :: segments(rest)
-        }
-      } else {
-        if (rest == "") {
-          // Last part ends with '$': an object or package
-          List(newTermName(cur))
-        } else if (rest.charAt(0) == '$') {
-          // Part ends with "$$": an object
-          newTermName(cur) :: segments(rest.drop(1))
-        } else {
-          // Part ends with "$": a class
-          newTypeName(cur) :: segments(rest)
-        }
-      }
+      else if (rest == "")
+        // Last part ends with '$': an object or package
+        List(newTermName(cur))
+      else if (rest.charAt(0) == '$')
+        // Part ends with "$$": an object
+        newTermName(cur) :: segments(rest.drop(1))
+      else
+        // Part ends with "$": a class
+        newTypeName(cur) :: segments(rest)
     }
     // Special convenience handling for the case where name is a top-level
     // package, e.g., 'java'.
@@ -190,12 +181,10 @@ trait Helpers { self: Global =>
     val sym = s.foldLeft[Symbol](rootSymbol) { (sym, name) =>
       sym.info.member(name)
     }
-    try {
-      sym match {
-        case NoSymbol    => None
-        case sym: Symbol => Some(sym)
-        case _           => None
-      }
+    try sym match {
+      case NoSymbol    => None
+      case sym: Symbol => Some(sym)
+      case _           => None
     } catch {
       case e: Throwable => None
     }
@@ -203,11 +192,10 @@ trait Helpers { self: Global =>
 
   /* Give the outerClass of a symbol representing a nested type */
   def outerClass(typeSym: Symbol): Option[Symbol] =
-    try {
-      if (typeSym.isNestedClass) {
-        Some(typeSym.outerClass)
-      } else None
-    } catch {
+    try if (typeSym.isNestedClass)
+      Some(typeSym.outerClass)
+    else None
+    catch {
       // TODO accessing outerClass sometimes throws java.lang.Error
       // Notably, when tpe = scala.Predef$Class
       case e: java.lang.Error => None
@@ -215,19 +203,19 @@ trait Helpers { self: Global =>
 
   def companionTypeOf(tpe: Type): Option[Type] = {
     val sym = tpe.typeSymbol
-    if (sym != NoSymbol) {
+    if (sym != NoSymbol)
       if (sym.isModule || sym.isModuleClass) {
         val comp = sym.companionClass
-        if (comp != NoSymbol && comp.tpe != tpe) {
+        if (comp != NoSymbol && comp.tpe != tpe)
           Some(comp.tpe)
-        } else None
+        else None
       } else if (sym.isTrait || sym.isClass || sym.isPackageClass) {
         val comp = sym.companionModule
-        if (comp != NoSymbol && comp.tpe != tpe) {
+        if (comp != NoSymbol && comp.tpe != tpe)
           Some(comp.tpe)
-        } else None
+        else None
       } else None
-    } else None
+    else None
   }
 
   /**
@@ -261,11 +249,10 @@ trait Helpers { self: Global =>
       vsPairsAsList.sortBy(_._1).map(_._2)
     }
 
-    if (isRoot(parent)) {
+    if (isRoot(parent))
       filterAndSort(parent.info.members ++ EmptyPackage.info.members)
-    } else {
+    else
       filterAndSort(parent.info.members)
-    }
   }
 
   import scala.tools.nsc.symtab.Flags._

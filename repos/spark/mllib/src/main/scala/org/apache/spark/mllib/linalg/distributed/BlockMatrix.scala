@@ -230,11 +230,10 @@ class BlockMatrix @Since("1.3.0") (
     // Check if there are multiple MatrixBlocks with the same index.
     blockInfo.countByKey().foreach {
       case (key, cnt) =>
-        if (cnt > 1) {
+        if (cnt > 1)
           throw new SparkException(
             s"Found multiple MatrixBlocks with the indices $key. Please " +
               "remove blocks with duplicate indices.")
-        }
     }
     logDebug("MatrixBlock indices are okay...")
     // Check if each MatrixBlock (except edges) has the dimensions rowsPerBlock x colsPerBlock
@@ -246,17 +245,15 @@ class BlockMatrix @Since("1.3.0") (
     blockInfo.foreach {
       case ((blockRowIndex, blockColIndex), (m, n)) =>
         if ((blockRowIndex < numRowBlocks - 1 && m != rowsPerBlock) ||
-            (blockRowIndex == numRowBlocks - 1 && (m <= 0 || m > rowsPerBlock))) {
+            (blockRowIndex == numRowBlocks - 1 && (m <= 0 || m > rowsPerBlock)))
           throw new SparkException(
             s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
               dimensionMsg)
-        }
         if ((blockColIndex < numColBlocks - 1 && n != colsPerBlock) ||
-            (blockColIndex == numColBlocks - 1 && (n <= 0 || n > colsPerBlock))) {
+            (blockColIndex == numColBlocks - 1 && (n <= 0 || n > colsPerBlock)))
           throw new SparkException(
             s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
               dimensionMsg)
-        }
     }
     logDebug("MatrixBlock dimensions are okay...")
     logDebug("BlockMatrix is valid!")
@@ -386,20 +383,19 @@ class BlockMatrix @Since("1.3.0") (
         .cogroup(other.blocks, createPartitioner())
         .map {
           case ((blockRowIndex, blockColIndex), (a, b)) =>
-            if (a.size > 1 || b.size > 1) {
+            if (a.size > 1 || b.size > 1)
               throw new SparkException(
                 "There are multiple MatrixBlocks with indices: " +
                   s"($blockRowIndex, $blockColIndex). Please remove them.")
-            }
             if (a.isEmpty) {
               val zeroBlock = BM.zeros[Double](b.head.numRows, b.head.numCols)
               val result = binMap(zeroBlock, b.head.toBreeze)
               new MatrixBlock(
                 (blockRowIndex, blockColIndex),
                 Matrices.fromBreeze(result))
-            } else if (b.isEmpty) {
+            } else if (b.isEmpty)
               new MatrixBlock((blockRowIndex, blockColIndex), a.head)
-            } else {
+            else {
               val result = binMap(a.head.toBreeze, b.head.toBreeze)
               new MatrixBlock(
                 (blockRowIndex, blockColIndex),
@@ -412,10 +408,9 @@ class BlockMatrix @Since("1.3.0") (
         colsPerBlock,
         numRows(),
         numCols())
-    } else {
+    } else
       throw new SparkException(
         "Cannot perform on matrices with different block dimensions")
-    }
   }
 
   /**
@@ -551,10 +546,9 @@ class BlockMatrix @Since("1.3.0") (
         other.colsPerBlock,
         numRows(),
         other.numCols())
-    } else {
+    } else
       throw new SparkException(
         "colsPerBlock of A doesn't match rowsPerBlock of B. " +
           s"A.colsPerBlock: $colsPerBlock, B.rowsPerBlock: ${other.rowsPerBlock}")
-    }
   }
 }

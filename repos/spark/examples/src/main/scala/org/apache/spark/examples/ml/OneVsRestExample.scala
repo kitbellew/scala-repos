@@ -99,12 +99,11 @@ object OneVsRestExample {
         .text(s"the ElasticNet mixing parameter for Logistic Regression.")
         .action((x, c) => c.copy(elasticNetParam = Some(x)))
       checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest >= 1) {
+        if (params.fracTest < 0 || params.fracTest >= 1)
           failure(
             s"fracTest ${params.fracTest} value incorrect; should be in [0,1).")
-        } else {
+        else
           success
-        }
       }
     }
     parser
@@ -124,7 +123,7 @@ object OneVsRestExample {
     val inputData = sqlContext.read.format("libsvm").load(params.input)
     // compute the train/test split: if testInput is not provided use part of input.
     val data = params.testInput match {
-      case Some(t) => {
+      case Some(t) =>
         // compute the number of features in the training set.
         val numFeatures = inputData.first().getAs[Vector](1).size
         val testData = sqlContext.read
@@ -132,11 +131,9 @@ object OneVsRestExample {
           .format("libsvm")
           .load(t)
         Array[DataFrame](inputData, testData)
-      }
-      case None => {
+      case None =>
         val f = params.fracTest
         inputData.randomSplit(Array(1 - f, f), seed = 12345)
-      }
     }
     val Array(train, test) = data.map(_.cache())
 

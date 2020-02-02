@@ -65,11 +65,11 @@ class IntroduceExplicitParameterIntention
         underscores(0).getTextRange.getStartOffset
       else expr.getTextRange.getStartOffset
     val parentEndOffset =
-      if (ApplicationManager.getApplication.isUnitTestMode) {
+      if (ApplicationManager.getApplication.isUnitTestMode)
         if (underscores.nonEmpty)
           underscores(underscores.size - 1).getTextRange.getEndOffset
         else underscores(0).getTextRange.getEndOffset
-      } else expr.getTextRange.getEndOffset
+      else expr.getTextRange.getEndOffset
 
     val underscoreToParam: mutable.HashMap[ScUnderscoreSection, ScParameter] =
       new mutable.HashMap[ScUnderscoreSection, ScParameter]
@@ -79,9 +79,8 @@ class IntroduceExplicitParameterIntention
     var needComma = false
     var needBraces = false
 
-    for (m <- Extensions.getExtensions(Macro.EP_NAME)) {
+    for (m <- Extensions.getExtensions(Macro.EP_NAME))
       macros.add(m.getName)
-    }
 
     for (u <- underscores) {
       if (needComma) buf.append(",")
@@ -106,12 +105,10 @@ class IntroduceExplicitParameterIntention
               val indexStr = res.replaceAll(name, "")
               if (indexStr != "") index = Integer.valueOf(indexStr)
 
-              while (usedNames.contains(name + index)) {
+              while (usedNames.contains(name + index))
                 index = index + 1
-              }
-            } else {
+            } else
               return res
-            }
             res = name + index
             res
           }
@@ -119,13 +116,11 @@ class IntroduceExplicitParameterIntention
       )
 
       var un = names(0)
-      if (macros.contains(un)) {
-        if (names.length > 1) {
+      if (macros.contains(un))
+        if (names.length > 1)
           un = names(1)
-        } else {
+        else
           un = "value"
-        }
-      }
 
       usedNames.add(un)
       buf.append(un)
@@ -284,13 +279,12 @@ class IntroduceExplicitParameterIntention
                 val segmentOffset: TextRange = templateState.getSegmentRange(i)
                 val name: String = template.getSegmentName(i)
                 var attributes: TextAttributes = null
-                if (name == params.get(index).get) {
+                if (name == params.get(index).get)
                   attributes = colorsManager.getGlobalScheme.getAttributes(
                     EditorColors.WRITE_SEARCH_RESULT_ATTRIBUTES)
-                } else if (name == depends.get(index).get) {
+                else if (name == depends.get(index).get)
                   attributes = colorsManager.getGlobalScheme.getAttributes(
                     EditorColors.SEARCH_RESULT_ATTRIBUTES)
-                }
                 if (attributes != null)
                   rangesToHighlight.put(segmentOffset, attributes)
                 i += 1
@@ -321,13 +315,12 @@ class IntroduceExplicitParameterIntention
       _element: PsiElement,
       editor: Editor): Option[ScExpression] = {
     var element: PsiElement = _element
-    if (!element.getParent.isInstanceOf[ScUnderscoreSection]) {
+    if (!element.getParent.isInstanceOf[ScUnderscoreSection])
       if (element.getTextRange.getStartOffset == editor.getCaretModel.getOffset) {
         val offset = element.getTextRange.getStartOffset - 1
         if (offset < 0) return None
         element = element.getContainingFile.findElementAt(offset)
       }
-    }
 
     while (element != null) {
       element match {

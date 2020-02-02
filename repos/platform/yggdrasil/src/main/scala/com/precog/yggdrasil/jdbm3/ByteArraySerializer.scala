@@ -30,18 +30,16 @@ object ByteArraySerializer extends Serializer[Array[Byte]] with Serializable {
     if ((n & ~0x7F) != 0) {
       out.writeByte(n & 0x7F | 0x80)
       writePackedInt(out, n >> 7)
-    } else {
+    } else
       out.writeByte(n & 0x7F)
-    }
 
   private def readPackedInt(in: DataInput): Int = {
     @tailrec def loop(n: Int, offset: Int): Int = {
       val b = in.readByte()
-      if ((b & 0x80) != 0) {
+      if ((b & 0x80) != 0)
         loop(n | ((b & 0x7F) << offset), offset + 7)
-      } else {
+      else
         n | ((b & 0x7F) << offset)
-      }
     }
     loop(0, 0)
   }

@@ -41,7 +41,7 @@ object BlockStat {
         return true
       case ScalaTokenTypes.kDEF | ScalaTokenTypes.kVAL | ScalaTokenTypes.kVAR |
           ScalaTokenTypes.kTYPE =>
-        if (!Def.parse(builder, isMod = false, isImplicit = true)) {
+        if (!Def.parse(builder, isMod = false, isImplicit = true))
           if (Dcl.parse(builder)) {
             builder error ErrMsg("wrong.declaration.in.block")
             return true
@@ -50,28 +50,22 @@ object BlockStat {
             builder error ErrMsg("wrong.declaration.in.block")
             return true
           }
-        }
       case ScalaTokenTypes.kCLASS | ScalaTokenTypes.kTRAIT |
           ScalaTokenTypes.kOBJECT =>
         return TmplDef.parse(builder)
       case _ if patcher.parse(builder) => parse(builder)
       case _ =>
-        if (!Expr1.parse(builder)) {
-          if (!Def.parse(builder, isMod = false, isImplicit = true)) {
-            if (!TmplDef.parse(builder)) {
+        if (!Expr1.parse(builder))
+          if (!Def.parse(builder, isMod = false, isImplicit = true))
+            if (!TmplDef.parse(builder))
               if (Dcl.parse(builder)) {
                 builder error ErrMsg("wrong.declaration.in.block")
                 return true
-              } else {
-                if (EmptyDcl.parse(builder)) {
-                  builder error ErrMsg("wrong.declaration.in.block")
-                  return true
-                } else
-                  return false
-              }
-            }
-          }
-        }
+              } else if (EmptyDcl.parse(builder)) {
+                builder error ErrMsg("wrong.declaration.in.block")
+                return true
+              } else
+                return false
     }
     true
   }

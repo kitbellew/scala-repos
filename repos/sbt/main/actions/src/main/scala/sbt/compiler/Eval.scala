@@ -200,11 +200,8 @@ final class Eval(
         val extra = ev.read(cacheFile(back, moduleName))
         (extra, loader)
       case _ =>
-        try {
-          compileAndLoad(run, unit, imports, backing, moduleName, ev)
-        } finally {
-          unlinkAll()
-        }
+        try compileAndLoad(run, unit, imports, backing, moduleName, ev)
+        finally unlinkAll()
     }
 
     val generatedFiles = getGeneratedFiles(backing, moduleName)

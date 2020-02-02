@@ -73,9 +73,8 @@ class MessageTest extends JUnitSuite {
       if (v.payload == null) {
         assertTrue(v.message.isNull)
         assertEquals("Payload should be null", null, v.message.payload)
-      } else {
+      } else
         TestUtils.checkEquals(ByteBuffer.wrap(v.payload), v.message.payload)
-      }
       // check timestamp
       if (v.magicValue > Message.MagicValue_V0)
         assertEquals(
@@ -166,25 +165,22 @@ class MessageTest extends JUnitSuite {
       if (v.payload == null) {
         assertTrue(convertedMessage.isNull)
         assertEquals("Payload should be null", null, convertedMessage.payload)
-      } else {
+      } else
         assertEquals(
           "Message payload should not change",
           convertedMessage.payload,
           ByteBuffer.wrap(v.payload))
-      }
       assertEquals(
         "Compression codec should not change",
         convertedMessage.compressionCodec,
         v.codec)
     }
 
-    for (v <- messages) {
-      if (v.magicValue == Message.MagicValue_V0) {
+    for (v <- messages)
+      if (v.magicValue == Message.MagicValue_V0)
         convertAndVerify(v, Message.MagicValue_V0, Message.MagicValue_V1)
-      } else if (v.magicValue == Message.MagicValue_V1) {
+      else if (v.magicValue == Message.MagicValue_V1)
         convertAndVerify(v, Message.MagicValue_V1, Message.MagicValue_V0)
-      }
-    }
   }
 
   @Test(expected = classOf[IllegalArgumentException])

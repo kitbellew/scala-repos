@@ -95,13 +95,13 @@ object QueueLaws extends Properties("Queue") {
       .map { i =>
         q.put(i)
         val size = q.size
-        if (i % 2 == 0) {
+        if (i % 2 == 0)
           // do a poll test
           q.poll match {
             case None    => q.size == 0
             case Some(_) => q.size == (size - 1)
           }
-        } else true
+        else true
       }
       .forall(identity)
   }

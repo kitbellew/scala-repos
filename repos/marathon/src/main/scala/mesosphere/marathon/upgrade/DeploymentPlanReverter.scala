@@ -47,10 +47,9 @@ private[upgrade] object DeploymentPlanReverter {
       changesOnIds(original.transitiveGroups, target.transitiveGroups)(_.id)
 
     /* a sequence of tuples with the old and the new app definition */
-    val appChanges: Seq[(Option[AppDefinition], Option[AppDefinition])] = {
+    val appChanges: Seq[(Option[AppDefinition], Option[AppDefinition])] =
       changesOnIds(original.transitiveApps, target.transitiveApps)(_.id)
         .filter { case (oldOpt, newOpt) => oldOpt != newOpt }
-    }
 
     // We need to revert app changes first so that apps have already been deleted when we check
     // a group is empty and can be removed.
@@ -75,13 +74,12 @@ private[upgrade] object DeploymentPlanReverter {
       log.debug(
         "re-adding group {} with dependencies {}",
         Seq(oldGroup.id, oldGroup.dependencies): _*)
-      if ((oldGroup.dependencies -- existingGroup.dependencies).nonEmpty) {
+      if ((oldGroup.dependencies -- existingGroup.dependencies).nonEmpty)
         existingGroup
           .copy(dependencies =
             existingGroup.dependencies ++ oldGroup.dependencies)
-      } else {
+      else
         existingGroup
-      }
     }
 
     def revertDependencyChanges(oldGroup: Group, newGroup: Group)(
@@ -99,10 +97,9 @@ private[upgrade] object DeploymentPlanReverter {
         group
           .copy(dependencies =
             group.dependencies ++ removedDependencies -- addedDependencies)
-      } else {
+      } else
         // common case, unchanged
         group
-      }
     }
 
     def revertGroupAddition(result: Group, newGroup: Group): Group = {

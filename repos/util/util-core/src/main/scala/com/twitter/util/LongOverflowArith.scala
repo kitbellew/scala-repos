@@ -25,21 +25,20 @@ object LongOverflowArith {
 
   @deprecated("Use Java 8's Math.multiplyExact instead", "2015-11-16")
   def mul(a: Long, b: Long): Long = {
-    if (a > b) {
+    if (a > b)
       // normalize so that a <= b to keep conditionals to a minimum
       mul(b, a)
-    } else if (a < 0L) {
+    else if (a < 0L)
       if (b < 0L) {
         if (a < Long.MaxValue / b)
           throw new LongOverflowException(a + " * " + b)
-      } else if (b > 0L) {
+      } else if (b > 0L)
         if (Long.MinValue / b > a)
           throw new LongOverflowException(a + " * " + b)
-      }
-    } else if (a > 0L) {
-      // and b > 0L
-      if (a > Long.MaxValue / b) throw new LongOverflowException(a + " * " + b)
-    }
+        else if (a > 0L)
+          // and b > 0L
+          if (a > Long.MaxValue / b)
+            throw new LongOverflowException(a + " * " + b)
 
     a * b
   }

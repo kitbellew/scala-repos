@@ -71,9 +71,8 @@ class SparkHadoopUtil extends Logging {
   def transferCredentials(
       source: UserGroupInformation,
       dest: UserGroupInformation) {
-    for (token <- source.getTokens.asScala) {
+    for (token <- source.getTokens.asScala)
       dest.addToken(token)
-    }
   }
 
   /**
@@ -102,9 +101,8 @@ class SparkHadoopUtil extends Logging {
       // Copy any "spark.hadoop.foo=bar" system properties into conf as "foo=bar"
       conf.getAll.foreach {
         case (key, value) =>
-          if (key.startsWith("spark.hadoop.")) {
+          if (key.startsWith("spark.hadoop."))
             hadoopConf.set(key.substring("spark.hadoop.".length), value)
-          }
       }
       val bufferSize = conf.get("spark.buffer.size", "65536")
       hadoopConf.set("io.file.buffer.size", bufferSize)
@@ -150,12 +148,11 @@ class SparkHadoopUtil extends Logging {
       val baselineBytesRead = f()
       Some(() => f() - baselineBytesRead)
     } catch {
-      case e @ (_: NoSuchMethodException | _: ClassNotFoundException) => {
+      case e @ (_: NoSuchMethodException | _: ClassNotFoundException) =>
         logDebug(
           "Couldn't find method for retrieving thread-level FileSystem input data",
           e)
         None
-      }
     }
 
   /**
@@ -175,12 +172,11 @@ class SparkHadoopUtil extends Logging {
       val baselineBytesWritten = f()
       Some(() => f() - baselineBytesWritten)
     } catch {
-      case e @ (_: NoSuchMethodException | _: ClassNotFoundException) => {
+      case e @ (_: NoSuchMethodException | _: ClassNotFoundException) =>
         logDebug(
           "Couldn't find method for retrieving thread-level FileSystem output data",
           e)
         None
-      }
     }
 
   private def getFileSystemThreadStatistics(): Seq[AnyRef] =
@@ -250,11 +246,10 @@ class SparkHadoopUtil extends Logging {
   }
 
   def globPathIfNecessary(pattern: Path): Seq[Path] =
-    if (pattern.toString.exists("{}[]*?\\".toSet.contains)) {
+    if (pattern.toString.exists("{}[]*?\\".toSet.contains))
       globPath(pattern)
-    } else {
+    else
       Seq(pattern)
-    }
 
   /**
     * Lists all the files in a directory with the specified prefix, and does not end with the
@@ -335,7 +330,7 @@ class SparkHadoopUtil extends Logging {
       text: String,
       hadoopConf: Configuration): String =
     text match {
-      case HADOOP_CONF_PATTERN(matched) => {
+      case HADOOP_CONF_PATTERN(matched) =>
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
         val key = matched.substring(13, matched.length() - 1) // remove ${hadoopconf- .. }
         val eval = Option[String](hadoopConf.get(key))
@@ -343,18 +338,15 @@ class SparkHadoopUtil extends Logging {
             logDebug("Substituted " + matched + " with " + value)
             text.replace(matched, value)
           }
-        if (eval.isEmpty) {
+        if (eval.isEmpty)
           // The variable was not found in Hadoop configs, so return text as is.
           text
-        } else {
+        else
           // Continue to substitute more variables.
           substituteHadoopVariables(eval.get, hadoopConf)
-        }
-      }
-      case _ => {
+      case _ =>
         logDebug(text + " didn't match " + HADOOP_CONF_PATTERN)
         text
-      }
     }
 
   /**
@@ -386,12 +378,11 @@ object SparkHadoopUtil {
 
   private lazy val hadoop = new SparkHadoopUtil
   private lazy val yarn =
-    try {
-      Utils
-        .classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
-        .newInstance()
-        .asInstanceOf[SparkHadoopUtil]
-    } catch {
+    try Utils
+      .classForName("org.apache.spark.deploy.yarn.YarnSparkHadoopUtil")
+      .newInstance()
+      .asInstanceOf[SparkHadoopUtil]
+    catch {
       case e: Exception =>
         throw new SparkException("Unable to load YARN support", e)
     }
@@ -412,10 +403,9 @@ object SparkHadoopUtil {
     // Check each time to support changing to/from YARN
     val yarnMode = java.lang.Boolean.valueOf(
       System.getProperty("SPARK_YARN_MODE", System.getenv("SPARK_YARN_MODE")))
-    if (yarnMode) {
+    if (yarnMode)
       yarn
-    } else {
+    else
       hadoop
-    }
   }
 }

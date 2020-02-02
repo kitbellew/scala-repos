@@ -59,15 +59,14 @@ object AttributeType {
     * @param name attribute type name: "numeric", "nominal", or "binary"
     */
   def fromName(name: String): AttributeType =
-    if (name == Numeric.name) {
+    if (name == Numeric.name)
       Numeric
-    } else if (name == Nominal.name) {
+    else if (name == Nominal.name)
       Nominal
-    } else if (name == Binary.name) {
+    else if (name == Binary.name)
       Binary
-    } else if (name == Unresolved.name) {
+    else if (name == Unresolved.name)
       Unresolved
-    } else {
+    else
       throw new IllegalArgumentException(s"Cannot recognize type $name.")
-    }
 }

@@ -76,13 +76,11 @@ class Dispatcher(
     * INTERNAL API
     */
   protected[akka] def executeTask(invocation: TaskInvocation) {
-    try {
-      executorService execute invocation
-    } catch {
+    try executorService execute invocation
+    catch {
       case e: RejectedExecutionException ⇒
-        try {
-          executorService execute invocation
-        } catch {
+        try executorService execute invocation
+        catch {
           case e2: RejectedExecutionException ⇒
             eventStream.publish(
               Error(
@@ -127,8 +125,11 @@ class Dispatcher(
       mbox: Mailbox,
       hasMessageHint: Boolean,
       hasSystemMessageHint: Boolean): Boolean =
-    if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { //This needs to be here to ensure thread safety and no races
-      if (mbox.setAsScheduled()) {
+    if (mbox.canBeScheduledForExecution(
+          hasMessageHint,
+          hasSystemMessageHint
+        )) //This needs to be here to ensure thread safety and no races
+      if (mbox.setAsScheduled())
         try {
           executorService execute mbox
           true
@@ -149,8 +150,8 @@ class Dispatcher(
                 throw e
             }
         }
-      } else false
-    } else false
+      else false
+    else false
 
   override val toString: String = Logging.simpleName(this) + "[" + id + "]"
 }

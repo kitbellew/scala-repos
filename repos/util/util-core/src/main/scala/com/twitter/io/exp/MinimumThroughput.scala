@@ -29,11 +29,10 @@ object MinimumThroughput {
     /** Calculate and return the current bps */
     def bps: Double = {
       val elapsedSecs = elapsed.inSeconds
-      if (elapsedSecs == 0) {
+      if (elapsedSecs == 0)
         BpsNoElapsed
-      } else {
+      else
         bytes.toDouble / elapsedSecs.toDouble
-      }
     }
 
     /**
@@ -86,9 +85,9 @@ object MinimumThroughput {
           case Return(Some(buf)) =>
             // read some bytes, see if we're still good in terms of bps
             bytes += buf.length
-            if (throughputOk) {
+            if (throughputOk)
               read
-            } else {
+            else {
               discard()
               Future.exception(newBelowThroughputException)
             }
@@ -124,9 +123,9 @@ object MinimumThroughput {
           case Return(_) =>
             // wrote some bytes, see if we're still good in terms of bps
             bytes += numBytes
-            if (throughputOk) {
+            if (throughputOk)
               write
-            } else {
+            else {
               val ex = newBelowThroughputException
               fail(ex)
               Future.exception(ex)

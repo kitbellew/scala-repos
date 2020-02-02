@@ -355,13 +355,12 @@ trait ListTest extends CollectionTest {
     assertEquals("nine", al1.get(0))
     for (i <- 0 until 3) {
       assertEquals(al.get(2 + i), al1.get(i))
-      if (!executingInJVM) {
+      if (!executingInJVM)
         /* CopyOnWriteArrayList throws a ConcurrentModificationException
          * on the JVM.
          * issue #2064: not solved
          */
         assertEquals(al0.get(2 + i), al1.get(i))
-      }
     }
     assertEquals("nine", al1.get(0))
     assertEquals("zero", al1.get(1))

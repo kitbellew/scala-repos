@@ -56,7 +56,7 @@ trait NormalizationSpecs[M[+_]]
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(obj)) => {
+        case (ids, SObject(obj)) =>
           ids must haveSize(0)
           obj.keySet mustEqual Set("model1")
 
@@ -90,7 +90,6 @@ trait NormalizationSpecs[M[+_]]
                   d.toDouble mustEqual (9999)
               }
           }
-        }
 
         case _ => ko
       }

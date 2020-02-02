@@ -225,9 +225,8 @@ class MatCheck extends Specification with ScalaCheck {
             val matC = matA.multiply(matB)
 
             res.contents must_== flatten(matC.getData)
-          } else {
+          } else
             res.numRows must_== 0
-          }
         }
       }
     }
@@ -244,9 +243,9 @@ class MatCheck extends Specification with ScalaCheck {
       forAll { (ma: Mat[Double]) =>
         import org.apache.commons.math.stat.correlation.Covariance
 
-        if (ma.numRows < 2 || ma.numCols < 2) {
+        if (ma.numRows < 2 || ma.numCols < 2)
           MatMath.cov(ma) must throwAn[IllegalArgumentException]
-        } else {
+        else {
           val aCov = new Covariance(ma.rows().map(_.toArray).toArray)
           val exp = aCov.getCovarianceMatrix
           val res = MatMath.cov(ma).contents

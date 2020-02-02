@@ -75,12 +75,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       }
     val groupPrio = groupPrio0 flatMap {
       case (group, body) =>
-        try {
-          body match {
-            case Body(List(Paragraph(Chain(List(Summary(Text(prio))))))) =>
-              List(group -> prio.trim.toInt)
-            case _ => List()
-          }
+        try body match {
+          case Body(List(Paragraph(Chain(List(Summary(Text(prio))))))) =>
+            List(group -> prio.trim.toInt)
+          case _ => List()
         } catch {
           case _: java.lang.NumberFormatException => List()
         }
@@ -302,7 +300,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
                 inCodeBlock = true)
           }
 
-      case CodeBlockEndRegex(before, marker, after) :: ls => {
+      case CodeBlockEndRegex(before, marker, after) :: ls =>
         if (!before.trim.isEmpty && !after.trim.isEmpty)
           parse0(
             docBody,
@@ -346,27 +344,23 @@ trait CommentFactoryBase { this: MemberLookupBase =>
                 ls,
                 inCodeBlock = false)
           }
-      }
 
-      case SymbolTagRegex(name, sym, body) :: ls if (!inCodeBlock) => {
+      case SymbolTagRegex(name, sym, body) :: ls if (!inCodeBlock) =>
         val key = SymbolTagKey(name, sym)
         val value = body :: tags.getOrElse(key, Nil)
         parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
-      }
 
-      case SimpleTagRegex(name, body) :: ls if (!inCodeBlock) => {
+      case SimpleTagRegex(name, body) :: ls if (!inCodeBlock) =>
         val key = SimpleTagKey(name)
         val value = body :: tags.getOrElse(key, Nil)
         parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
-      }
 
-      case SingleTagRegex(name) :: ls if (!inCodeBlock) => {
+      case SingleTagRegex(name) :: ls if (!inCodeBlock) =>
         val key = SimpleTagKey(name)
         val value = "" :: tags.getOrElse(key, Nil)
         parse0(docBody, tags + (key -> value), Some(key), ls, inCodeBlock)
-      }
 
-      case line :: ls if (lastTagKey.isDefined) => {
+      case line :: ls if (lastTagKey.isDefined) =>
         val newtags = if (!line.isEmpty) {
           val key = lastTagKey.get
           val value =
@@ -377,15 +371,13 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           tags + (key -> value)
         } else tags
         parse0(docBody, newtags, lastTagKey, ls, inCodeBlock)
-      }
 
-      case line :: ls => {
+      case line :: ls =>
         if (docBody.length > 0) docBody append endOfLine
         docBody append line
         parse0(docBody, tags, lastTagKey, ls, inCodeBlock)
-      }
 
-      case Nil => {
+      case Nil =>
         // Take the {inheritance, content} diagram keys aside, as it doesn't need any parsing
         val inheritDiagramTag = SimpleTagKey("inheritanceDiagram")
         val contentDiagramTag = SimpleTagKey("contentDiagram")
@@ -504,7 +496,6 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           reporter.warning(pos, s"Tag '@${key.name}' is not recognised")
 
         com
-      }
     }
 
     parse0(
@@ -555,9 +546,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         hrule()
       else if (checkList)
         listBlock
-      else {
+      else
         para()
-      }
 
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
       * Characters used to build lists and their constructors */
@@ -689,16 +679,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         list += str
 
         str match {
-          case OPEN_TAG(s, _, standalone) => {
-            if (standalone != "/") {
+          case OPEN_TAG(s, _, standalone) =>
+            if (standalone != "/")
               stack += s
-            }
-          }
-          case CLOSE_TAG(s) => {
-            if (s == stack.last) {
+          case CLOSE_TAG(s) =>
+            if (s == stack.last)
               stack.remove(stack.length - 1)
-            }
-          }
           case _ => ;
         }
       } while (stack.length > 0 && char != endOfText)
@@ -734,9 +720,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           val skipEndOfLine = if (char == endOfLine) {
             nextChar()
             true
-          } else {
+          } else
             false
-          }
 
           val current = inline0()
           (iss.last, current) match {
@@ -796,11 +781,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     def superscript(): Inline = {
       jump("^")
       val i = inline(check("^"))
-      if (jump("^")) {
+      if (jump("^"))
         Superscript(i)
-      } else {
+      else
         Chain(Seq(Text("^"), i))
-      }
     }
 
     def subscript(): Inline = {
@@ -1015,9 +999,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     final def readUntil(c: Char): String =
       withRead {
-        while (char != c && char != endOfText) {
+        while (char != c && char != endOfText)
           nextChar()
-        }
       }
 
     final def readUntil(chars: String): String = {
@@ -1033,9 +1016,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     final def readUntil(pred: => Boolean): String =
       withRead {
-        while (char != endOfText && !pred) {
+        while (char != endOfText && !pred)
           nextChar()
-        }
       }
 
     private def withRead(read: => Unit): String = {

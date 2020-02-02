@@ -62,9 +62,8 @@ package net.liftweb {
         useLiftRulesGlobally || useLiftRules.box == Full(true)
 
       private def withLiftRules[T](f: => T) =
-        if (liftRulesEnabled) {
+        if (liftRulesEnabled)
           f
-        }
 
       /**
         * Executes a given function against a new Req constructed
@@ -93,7 +92,7 @@ package net.liftweb {
         }
 
         val r =
-          if (liftRulesEnabled) {
+          if (liftRulesEnabled)
             // Apply stateless rewrites
             Req(
               req,
@@ -101,9 +100,8 @@ package net.liftweb {
               Nil,
               LiftRules.statelessReqTest.toList,
               System.nanoTime)
-          } else {
+          else
             Req(req, Nil, System.nanoTime)
-          }
 
         f(r)
       }

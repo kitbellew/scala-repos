@@ -221,9 +221,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     try {
       nodePrinters.infolevel = infolevel
       op
-    } finally {
-      nodePrinters.infolevel = saved
-    }
+    } finally nodePrinters.infolevel = saved
   }
 
   /** Representing ASTs as graphs */
@@ -450,10 +448,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           task
         }
         currentRun.advanceUnit()
-      } finally {
-        //assert(currentUnit == unit)
-        currentRun.currentUnit = unit0
-      }
+      } finally
+      //assert(currentUnit == unit)
+      currentRun.currentUnit = unit0
     }
 
     final def applyPhase(unit: CompilationUnit) =
@@ -981,13 +978,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       cp.packages find (cp1 => getName(cp1) == name)
 
     val classesFound = hasClasses(oldEntries) || newEntries.classes.nonEmpty
-    if (classesFound && !isSystemPackageClass(root)) {
+    if (classesFound && !isSystemPackageClass(root))
       invalidateOrRemove(root)
-    } else {
-      if (classesFound) {
+    else {
+      if (classesFound)
         if (root.isRoot) invalidateOrRemove(EmptyPackageClass)
         else failed += root
-      }
       if (!oldEntries.isDefined) invalidateOrRemove(root)
       else
         for (pstr <- newEntries.packages.map(getName)) {
@@ -1574,12 +1570,11 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         // progress update
         informTime(globalPhase.description, startTime)
         if ((settings.Xprint containsPhase globalPhase) || settings.printLate && runIsAt(
-              cleanupPhase)) {
+              cleanupPhase))
           // print trees
           if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
             nodePrinters.printAll()
           else printAllUnits()
-        }
 
         // print the symbols presently attached to AST nodes
         if (settings.Yshowsyms)
@@ -1616,14 +1611,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       if (settings.Yshow.isDefault)
         showMembers()
 
-      if (reporter.hasErrors) {
+      if (reporter.hasErrors)
         for ((sym, file) <- symSource.iterator) {
           if (file != null)
             sym.reset(new loaders.SourcefileLoader(file))
           if (sym.isTerm)
             sym.moduleClass reset loaders.moduleClassLoader
         }
-      }
       symSource.keys foreach (x => resetPackageClass(x.owner))
 
       informTime("total", startTime)

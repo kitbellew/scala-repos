@@ -59,8 +59,8 @@ class RouteRegistry {
       method: HttpMethod,
       requestPath: String): Set[HttpMethod] = {
     val p: HttpMethod => Boolean = method match {
-      case Get | Head => { m => m == Get || m == Head }
-      case _          => { _ == method }
+      case Get | Head => m => m == Get || m == Head
+      case _          => _ == method
     }
     matchingMethodsExcept(requestPath)(p)
   }

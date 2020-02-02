@@ -67,9 +67,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
           i += 1
         }
         val psiClass: PsiClass = nameRef.get
-        if (psiClass != null) {
+        if (psiClass != null)
           return ScType.designator(psiClass)
-        }
       }
       null
     }
@@ -99,10 +98,9 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
     createCodeFragment(item, context, project)
 
   def isContextAccepted(contextElement: PsiElement): Boolean = {
-    if (contextElement.isInstanceOf[PsiCodeBlock]) {
+    if (contextElement.isInstanceOf[PsiCodeBlock])
       return contextElement.getContext != null && contextElement.getContext.getContext != null &&
         contextElement.getContext.getContext.getLanguage == ScalaFileType.SCALA_LANGUAGE
-    }
     if (contextElement == null) return false
     contextElement.getLanguage == ScalaFileType.SCALA_LANGUAGE
   }
@@ -145,9 +143,8 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
           }
         })
         val newContext: PsiElement = codeFragment.findElementAt(offset)
-        if (newContext != null) {
+        if (newContext != null)
           context = newContext
-        }
       }
     }
     context

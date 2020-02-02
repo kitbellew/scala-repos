@@ -41,9 +41,8 @@ private[spark] class SerializableBuffer(@transient var buffer: ByteBuffer)
     val channel = Channels.newChannel(in)
     while (amountRead < length) {
       val ret = channel.read(buffer)
-      if (ret == -1) {
+      if (ret == -1)
         throw new EOFException("End of file before fully reading buffer")
-      }
       amountRead += ret
     }
     buffer.rewind() // Allow us to read it later
@@ -52,9 +51,8 @@ private[spark] class SerializableBuffer(@transient var buffer: ByteBuffer)
   private def writeObject(out: ObjectOutputStream): Unit =
     Utils.tryOrIOException {
       out.writeInt(buffer.limit())
-      if (Channels.newChannel(out).write(buffer) != buffer.limit()) {
+      if (Channels.newChannel(out).write(buffer) != buffer.limit())
         throw new IOException("Could not fully write buffer to output stream")
-      }
       buffer.rewind() // Allow us to write it again later
     }
 }

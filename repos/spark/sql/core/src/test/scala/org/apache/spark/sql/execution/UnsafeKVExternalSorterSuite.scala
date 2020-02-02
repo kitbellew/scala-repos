@@ -167,9 +167,8 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
     val out =
       new scala.collection.mutable.ArrayBuffer[(InternalRow, InternalRow)]
     val iter = sorter.sortedIterator()
-    while (iter.next()) {
+    while (iter.next())
       out += Tuple2(iter.getKey.copy(), iter.getValue.copy())
-    }
     sorter.cleanupResources()
 
     val keyOrdering = InterpretedOrdering.forSchema(keySchema.map(_.dataType))
@@ -189,7 +188,7 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
     var prevK: InternalRow = null
     out.zipWithIndex.foreach {
       case ((k, v), i) =>
-        if (prevK != null) {
+        if (prevK != null)
           assert(
             keyOrdering.compare(prevK, k) <= 0,
             s"""
@@ -198,7 +197,6 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
              |current key : $k
              """.stripMargin
           )
-        }
         prevK = k
     }
 

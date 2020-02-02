@@ -65,18 +65,16 @@ object FixCertpathDebugLogging {
       val debugValue = if (isUsingDebug) newDebug else null
       var isPatched = false
       for (debugClass <- findClasses;
-           debugField <- debugClass.getDeclaredFields) {
+           debugField <- debugClass.getDeclaredFields)
         if (isValidField(debugField, debugType)) {
           logger.debug(s"run: Patching $debugClass with $debugValue")
           monkeyPatchField(debugField, debugValue)
           isPatched = true
         }
-      }
 
       // Add an assertion here in case the class location changes, so the tests fail...
-      if (!isPatched) {
+      if (!isPatched)
         throw new IllegalStateException("No debug classes found!")
-      }
 
       // Switch out the args (for certpath loggers that AREN'T static and final)
       // This will result in those classes using the base Debug class which will write to System.out, but
@@ -94,15 +92,13 @@ object FixCertpathDebugLogging {
   class SunSecurityUtilDebugLogger(logger: org.slf4j.Logger)
       extends sun.security.util.Debug {
     override def println(message: String) {
-      if (logger.isDebugEnabled) {
+      if (logger.isDebugEnabled)
         logger.debug(message)
-      }
     }
 
     override def println() {
-      if (logger.isDebugEnabled) {
+      if (logger.isDebugEnabled)
         logger.debug("")
-      }
     }
   }
 

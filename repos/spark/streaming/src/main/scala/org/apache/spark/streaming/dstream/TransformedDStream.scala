@@ -50,12 +50,11 @@ private[streaming] class TransformedDStream[U: ClassTag](
             s"Couldn't generate RDD from parent at time $validTime"))
     }
     val transformedRDD = transformFunc(parentRDDs, validTime)
-    if (transformedRDD == null) {
+    if (transformedRDD == null)
       throw new SparkException(
         "Transform function must not return null. " +
           "Return SparkContext.emptyRDD() instead to represent no element " +
           "as the result of transformation.")
-    }
     Some(transformedRDD)
   }
 

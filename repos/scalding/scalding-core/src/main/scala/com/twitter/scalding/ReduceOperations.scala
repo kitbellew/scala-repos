@@ -257,11 +257,8 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
 
   private def extremum(max: Boolean, fieldDef: (Fields, Fields)): Self = {
     //CTuple's have unknown arity so we have to put them into a Tuple1 in the middle phase:
-    val select = if (max) {
-      { (a: CTuple, b: CTuple) => (a.compareTo(b) >= 0) }
-    } else {
-      { (a: CTuple, b: CTuple) => (a.compareTo(b) <= 0) }
-    }
+    val select = if (max) { (a: CTuple, b: CTuple) => (a.compareTo(b) >= 0) }
+    else { (a: CTuple, b: CTuple) => (a.compareTo(b) <= 0) }
 
     mapReduceMap(fieldDef) { ctuple: CTuple => Tuple1(ctuple) } {
       (oldVal, newVal) => if (select(oldVal._1, newVal._1)) oldVal else newVal

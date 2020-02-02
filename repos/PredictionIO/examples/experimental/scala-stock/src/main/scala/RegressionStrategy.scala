@@ -106,11 +106,10 @@ class RegressionStrategy(params: RegressionStrategyParams)
       dataView: DataView): Double = {
 
     val vecArray = params.indicators.map {
-      case (name, indicator) => {
+      case (name, indicator) =>
         val price = dataView.priceFrame(indicator.getMinWindowSize())
         val logPrice = price.mapValues(math.log)
         indicator.getOne(logPrice.firstCol(ticker))
-      }
     }.toArray
 
     val densVecArray = vecArray ++ Array[Double](1)

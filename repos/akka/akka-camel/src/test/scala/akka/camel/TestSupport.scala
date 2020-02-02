@@ -44,11 +44,10 @@ private[camel] object TestSupport {
       * This is to reduce cases when unit-tests block infinitely.
       */
     def sendTo(to: String, msg: String, timeout: Duration = 1 second): AnyRef =
-      try {
-        camel.template
-          .asyncRequestBody(to, msg)
-          .get(timeout.toNanos, TimeUnit.NANOSECONDS)
-      } catch {
+      try camel.template
+        .asyncRequestBody(to, msg)
+        .get(timeout.toNanos, TimeUnit.NANOSECONDS)
+      catch {
         case e: ExecutionException ⇒ throw e.getCause
         case e: TimeoutException ⇒
           throw new AssertionError(

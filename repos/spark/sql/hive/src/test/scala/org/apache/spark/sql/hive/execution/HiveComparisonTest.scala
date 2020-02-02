@@ -92,36 +92,31 @@ abstract class HiveComparisonTest
   protected val answerCache = new File(
     "src" + File.separator + "test" +
       File.separator + "resources" + File.separator + "golden")
-  if (!answerCache.exists) {
+  if (!answerCache.exists)
     answerCache.mkdir()
-  }
 
   /** The [[ClassLoader]] that contains test dependencies.  Used to look for golden answers. */
   protected val testClassLoader = this.getClass.getClassLoader
 
   /** Directory containing a file for each test case that passes. */
   val passedDirectory = new File(targetDir, s"$suiteName.passed")
-  if (!passedDirectory.exists()) {
+  if (!passedDirectory.exists())
     passedDirectory.mkdir() // Not atomic!
-  }
 
   /** Directory containing output of tests that fail to execute with Catalyst. */
   val failedDirectory = new File(targetDir, s"$suiteName.failed")
-  if (!failedDirectory.exists()) {
+  if (!failedDirectory.exists())
     failedDirectory.mkdir() // Not atomic!
-  }
 
   /** Directory containing output of tests where catalyst produces the wrong answer. */
   val wrongDirectory = new File(targetDir, s"$suiteName.wrong")
-  if (!wrongDirectory.exists()) {
+  if (!wrongDirectory.exists())
     wrongDirectory.mkdir() // Not atomic!
-  }
 
   /** Directory containing output of tests where we fail to generate golden output with Hive. */
   val hiveFailedDirectory = new File(targetDir, s"$suiteName.hiveFailed")
-  if (!hiveFailedDirectory.exists()) {
+  if (!hiveFailedDirectory.exists())
     hiveFailedDirectory.mkdir() // Not atomic!
-  }
 
   /** All directories that contain per-query output files */
   val outputDirectories =
@@ -138,11 +133,8 @@ abstract class HiveComparisonTest
   }
 
   override protected def afterAll(): Unit =
-    try {
-      TestHive.reset()
-    } finally {
-      super.afterAll()
-    }
+    try TestHive.reset()
+    finally super.afterAll()
 
   protected def prepareAnswer(
       hiveQuery: TestHive.type#QueryExecution,
@@ -284,10 +276,9 @@ abstract class HiveComparisonTest
           .filterNot(_ contains "hive.outerjoin.supports.filters")
           .filterNot(_ contains "hive.exec.post.hooks")
 
-      if (allQueries != queryList) {
+      if (allQueries != queryList)
         logWarning(
           s"Simplifications made on unsupported operations for test $testCaseName")
-      }
 
       lazy val consoleTestCase = {
         val quotes = "\"\"\""
@@ -306,9 +297,8 @@ abstract class HiveComparisonTest
           .filter(_.exists())
           .foreach(_.delete())
 
-        if (reset) {
+        if (reset)
           TestHive.reset()
-        }
 
         // Many tests drop indexes on src and srcpart at the beginning, so we need to load those
         // tables here. Since DROP INDEX DDL is just passed to Hive, it bypasses the analyzer and
@@ -324,9 +314,8 @@ abstract class HiveComparisonTest
             normalizedQuery.contains(s"from $table") ||
             normalizedQuery.contains(s"from default.$table")
           }
-          if (hasShowTableCommand || hasMatchingQuery) {
+          if (hasShowTableCommand || hasMatchingQuery)
             TestHive.loadTestTable(table)
-          }
         }
 
         val hiveCacheFiles = queryList.zipWithIndex.map {
@@ -338,9 +327,9 @@ abstract class HiveComparisonTest
         val hiveCachedResults = hiveCacheFiles
           .flatMap { cachedAnswerFile =>
             logDebug(s"Looking for cached answer file $cachedAnswerFile.")
-            if (cachedAnswerFile.exists) {
+            if (cachedAnswerFile.exists)
               Some(fileToString(cachedAnswerFile))
-            } else {
+            else {
               logDebug(s"File $cachedAnswerFile not found")
               None
             }
@@ -370,9 +359,8 @@ abstract class HiveComparisonTest
                     // even try running them.
                     if (installHooksCommand
                           .findAllMatchIn(queryString)
-                          .nonEmpty) {
+                          .nonEmpty)
                       sys.error("hive exec hooks not supported for tests.")
-                    }
 
                     logWarning(
                       s"Running query ${i + 1}/${queryList.size} with hive.")
@@ -406,9 +394,8 @@ abstract class HiveComparisonTest
                       fail(errorMessage)
                   }
               }.toSeq
-            if (reset) {
+            if (reset)
               TestHive.reset()
-            }
 
             computedResults
           }
@@ -427,13 +414,12 @@ abstract class HiveComparisonTest
                     case _: LogicalInsertIntoHiveTable => ()
                   }.nonEmpty
 
-                  if (containsCommands) {
+                  if (containsCommands)
                     originalQuery
-                  } else {
+                  else {
                     val convertedSQL =
-                      try {
-                        new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
-                      } catch {
+                      try new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
+                      catch {
                         case NonFatal(e) =>
                           fail(
                             s"""Cannot convert the following HiveQL query plan back to SQL query string:
@@ -573,11 +559,10 @@ abstract class HiveComparisonTest
               stringToFile(
                 new File(wrongDirectory, testCaseName),
                 errorMessage + consoleTestCase)
-              if (isSpeculative && !reset) {
+              if (isSpeculative && !reset)
                 fail("Failed on first run; retrying")
-              } else {
+              else
                 fail(errorMessage)
-              }
             }
         }
 
@@ -596,26 +581,21 @@ abstract class HiveComparisonTest
         }
       }
 
-      try {
-        try {
+      try try if (tryWithoutResettingFirst && canSpeculativelyTryWithoutReset)
+        doTest(reset = false, isSpeculative = true)
+      else
+        doTest(reset)
+      catch {
+        case tf: org.scalatest.exceptions.TestFailedException =>
           if (tryWithoutResettingFirst && canSpeculativelyTryWithoutReset) {
-            doTest(reset = false, isSpeculative = true)
-          } else {
-            doTest(reset)
-          }
-        } catch {
-          case tf: org.scalatest.exceptions.TestFailedException =>
-            if (tryWithoutResettingFirst && canSpeculativelyTryWithoutReset) {
-              logWarning("Test failed without reset(); retrying with reset()")
-              doTest(reset = true)
-            } else {
-              throw tf
-            }
-        }
+            logWarning("Test failed without reset(); retrying with reset()")
+            doTest(reset = true)
+          } else
+            throw tf
       } catch {
         case tf: org.scalatest.exceptions.TestFailedException => throw tf
         case originalException: Exception =>
-          if (System.getProperty("spark.hive.canarytest") != null) {
+          if (System.getProperty("spark.hive.canarytest") != null)
             // When we encounter an error we check to see if the environment is still
             // okay by running a simple query. If this fails then we halt testing since
             // something must have gone seriously wrong.
@@ -631,7 +611,6 @@ abstract class HiveComparisonTest
                 // can see when things started to go wrong.
                 Thread.sleep(1000000)
             }
-          }
 
           // If the canary query didn't fail then the environment is still okay,
           // so just throw the original exception.

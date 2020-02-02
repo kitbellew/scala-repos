@@ -108,10 +108,9 @@ abstract class ReadOnlyShortViewOfByteBufferTest(
     order: ByteOrder)
     extends ShortBufferTest {
 
-  val factory: BufferFactory.ShortBufferFactory = {
+  val factory: BufferFactory.ShortBufferFactory =
     new ByteBufferShortViewFactory(byteBufferFactory, order)
       with BufferFactory.ReadOnlyBufferFactory
-  }
 }
 
 class ReadOnlyShortViewOfAllocByteBufferBigEndianTest

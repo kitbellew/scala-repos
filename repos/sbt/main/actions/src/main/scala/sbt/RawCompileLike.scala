@@ -51,11 +51,10 @@ object RawCompileLike {
     @annotation.tailrec
     def loop(opt: List[String], result: List[File]): List[File] =
       opt.dropWhile(!fileInputOpts.contains(_)) match {
-        case List(_, fileOpt, tail @ _*) => {
+        case List(_, fileOpt, tail @ _*) =>
           val file = new File(fileOpt)
           if (file.isFile) loop(tail.toList, file :: result)
           else loop(tail.toList, result)
-        }
         case Nil | List(_) => result
       }
     loop(options.toList, Nil)

@@ -39,9 +39,8 @@ abstract class UnPickler {
       classRoot: Symbol,
       moduleRoot: Symbol,
       filename: String) {
-    try {
-      new Scan(bytes, offset, classRoot, moduleRoot, filename).run()
-    } catch {
+    try new Scan(bytes, offset, classRoot, moduleRoot, filename).run()
+    catch {
       case ex: IOException =>
         throw ex
       case ex: MissingRequirementError =>
@@ -107,12 +106,11 @@ abstract class UnPickler {
       // read children last, fix for #3951
       i = 0
       while (i < index.length) {
-        if (entries(i) == null) {
+        if (entries(i) == null)
           if (isSymbolAnnotationEntry(i))
             runAtIndex(i)(readSymbolAnnotation())
           else if (isChildrenEntry(i))
             runAtIndex(i)(readChildren())
-        }
         i += 1
       }
     }
@@ -368,10 +366,10 @@ abstract class UnPickler {
         case CLASSsym =>
           val sym =
             (
-              if (isClassRoot) {
+              if (isClassRoot)
                 if (isModuleFlag) moduleRoot.moduleClass setFlag pflags
                 else classRoot setFlag pflags
-              } else owner.newClassSymbol(name.toTypeName, NoPosition, pflags)
+              else owner.newClassSymbol(name.toTypeName, NoPosition, pflags)
             )
           if (!atEnd)
             sym.typeOfThis = newLazyTypeRef(readNat())
@@ -382,9 +380,9 @@ abstract class UnPickler {
           if (isModuleRoot) moduleRoot setFlag pflags
           else owner.newLinkedModule(clazz, pflags)
         case VALsym =>
-          if (isModuleRoot) {
+          if (isModuleRoot)
             abort(s"VALsym at module root: owner = $owner, name = $name")
-          } else owner.newTermSymbol(name.toTermName, NoPosition, pflags)
+          else owner.newTermSymbol(name.toTermName, NoPosition, pflags)
 
         case _ =>
           errorBadSignature("bad symbol tag: " + tag)
@@ -796,9 +794,8 @@ abstract class UnPickler {
           }
           else tp
 
-          if (p ne null) {
+          if (p ne null)
             slowButSafeEnteringPhase(p)(sym setInfo fixLocalChildTp)
-          }
           if (currentRunId != definedAtRunId)
             sym.setInfo(adaptToNewRunMap(fixLocalChildTp))
         } catch {

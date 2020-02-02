@@ -22,14 +22,14 @@ case class ScalaTool(
     val platformClasspath =
       if (forWindows)
         classpath.mkString(";").replace('/', '\\').replaceAll(varRegex, "%$1%")
-      else if (SystemUtils.IS_OS_WINDOWS) {
+      else if (SystemUtils.IS_OS_WINDOWS)
         // When building on Windows, use a Windows classpath in the shell script (for MSYS/Cygwin).
         // This is only used for "quick", which uses absolute paths, so it is not portable anyway.
         classpath
           .mkString(";")
           .replace("\\", "\\\\")
           .replaceAll(varRegex, """\${$1}""")
-      } else
+      else
         classpath
           .mkString(":")
           .replace('\\', '/')

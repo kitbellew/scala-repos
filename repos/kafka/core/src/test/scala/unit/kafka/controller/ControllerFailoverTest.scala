@@ -73,9 +73,8 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     val epochMap: mutable.Map[Int, Int] = mutable.Map.empty
     for (server <- this.servers) {
       epochMap += (server.config.brokerId -> server.kafkaController.epoch)
-      if (server.kafkaController.isActive()) {
+      if (server.kafkaController.isActive())
         controller = server
-      }
     }
     // Create topic with one partition
     kafka.admin.AdminUtils.createTopic(controller.zkUtils, topic, 1, 1)
@@ -117,17 +116,15 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
               channelManager.queueCapacity(0),
               channelManager.queueSize(0)))
         } catch {
-          case e: Exception => {
+          case e: Exception =>
             log.info("Thread interrupted")
-          }
         }
       }
     })
     thread.setName("mythread")
     thread.start()
-    while (thread.getState() != Thread.State.WAITING) {
+    while (thread.getState() != Thread.State.WAITING)
       Thread.sleep(100)
-    }
     // Assume that the thread is WAITING because it is
     // blocked on the queue, so interrupt and move forward
     thread.interrupt()
@@ -160,13 +157,11 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
       }
     }
     // Give it a shot to make sure that sending isn't blocking
-    try {
-      controller.kafkaController
-        .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
-    } catch {
-      case e: Throwable => {
+    try controller.kafkaController
+      .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
+    catch {
+      case e: Throwable =>
         fail(e)
-      }
     }
   }
 }

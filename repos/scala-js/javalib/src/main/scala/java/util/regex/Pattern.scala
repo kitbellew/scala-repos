@@ -16,9 +16,9 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
 
   private[regex] def newJSRegExp(): js.RegExp = {
     val r = new js.RegExp(jsRegExp)
-    if (r ne jsRegExp) {
+    if (r ne jsRegExp)
       r
-    } else {
+    else {
       /* Workaround for the PhantomJS 1.x bug
        * https://github.com/ariya/phantomjs/issues/11494
        * which causes new js.RegExp(jsRegExp) to return the same object,
@@ -58,13 +58,12 @@ final class Pattern private (jsRegExp: js.RegExp, _pattern: String, _flags: Int)
 
     // Remove a leading empty element iff the first match was zero-length
     // and there is no other place the regex matches
-    if (prevEnd == 0 && result.length == 2 && (lim > 2 || !matcher.find())) {
+    if (prevEnd == 0 && result.length == 2 && (lim > 2 || !matcher.find()))
       Array(inputStr)
-    } else {
+    else {
       var len = result.length
-      if (limit == 0) {
+      if (limit == 0)
         while (len > 1 && result(len - 1).isEmpty) len -= 1
-      }
 
       val actualResult = new Array[String](len)
       result.copyToArray(actualResult)
@@ -86,13 +85,12 @@ object Pattern {
 
   def compile(regex: String, flags: Int): Pattern = {
     val (jsPattern, flags1) = {
-      if ((flags & LITERAL) != 0) {
+      if ((flags & LITERAL) != 0)
         (quote(regex), flags)
-      } else {
+      else
         trySplitHack(regex, flags) orElse
           tryFlagHack(regex, flags) getOrElse
           (regex, flags)
-      }
     }
 
     val jsFlags = {

@@ -205,12 +205,11 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       mandatory.asJValue mustEqual jvalue
     }
 
-    if (canCheckSetFromJValue) {
+    if (canCheckSetFromJValue)
       "get set from JValue" in {
         mandatory.setFromJValue(jvalue) mustEqual Full(example)
         mandatory.value mustEqual example
       }
-    }
 
     "convert to form XML" in {
       formPattern foreach { fp =>

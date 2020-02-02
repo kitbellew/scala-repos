@@ -29,9 +29,8 @@ class LongOverflowArithTest extends WordSpec {
           assert(LongOverflowArith.add(a, b) == bigC.toLong)
       }
 
-      for (i <- 0 until 1000) {
+      for (i <- 0 until 1000)
         test(randLong(), randLong())
-      }
     }
 
     "sub" in {
@@ -45,9 +44,8 @@ class LongOverflowArithTest extends WordSpec {
           assert(LongOverflowArith.sub(a, b) == bigC.toLong)
       }
 
-      for (i <- 0 until 1000) {
+      for (i <- 0 until 1000)
         test(randLong(), randLong())
-      }
     }
 
     "mul" in {
@@ -105,13 +103,11 @@ class LongOverflowArithTest extends WordSpec {
       for (i <- 0 until 1000) {
         val a = randLong()
         val b = randLong()
-        try {
-          test(a, b)
-        } catch {
-          case x: Throwable => {
+        try test(a, b)
+        catch {
+          case x: Throwable =>
             println(a + " * " + b + " failed")
             throw x
-          }
         }
       }
     }

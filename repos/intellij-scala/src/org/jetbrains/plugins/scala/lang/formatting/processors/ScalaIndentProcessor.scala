@@ -33,12 +33,11 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       parent.getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
     val node = parent.getNode
     if (child.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS ||
-        child.getElementType == ScalaDocTokenType.DOC_COMMENT_END) {
+        child.getElementType == ScalaDocTokenType.DOC_COMMENT_END)
       return Indent.getSpaceIndent(
         if (scalaSettings.USE_SCALADOC2_FORMATTING) 2 else 1)
-    }
     if ((node.getElementType == ScalaTokenTypes.kIF || node.getElementType == ScalaTokenTypes.kELSE) &&
-        parent.myLastNode != null) {
+        parent.myLastNode != null)
       child.getPsi match {
         case _: ScBlockExpr
             if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
@@ -50,10 +49,8 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           return Indent.getNormalIndent(scalaSettings.ALIGN_IF_ELSE)
         case _ => return Indent.getSpaceIndent(0, scalaSettings.ALIGN_IF_ELSE)
       }
-    }
-    if (node.getElementType == ScalaTokenTypes.kYIELD && child.getElementType != ScalaTokenTypes.kYIELD) {
+    if (node.getElementType == ScalaTokenTypes.kYIELD && child.getElementType != ScalaTokenTypes.kYIELD)
       return Indent.getNormalIndent
-    }
 
     def processFunExpr(expr: ScFunctionExpr): Indent = expr.result match {
       case Some(e) if e == child.getPsi =>
@@ -103,14 +100,13 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           .map(_.getElementType)
           .exists(Set[IElementType](
             ScalaElementTypes.TRY_BLOCK,
-            ScalaElementTypes.PACKAGING).contains)) {
+            ScalaElementTypes.PACKAGING).contains))
       return if (child.getElementType == ScalaTokenTypes.tLBRACE ||
                  child.getElementType == ScalaTokenTypes.tRBRACE)
         Indent.getNoneIndent
       else if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
         Indent.getNoneIndent
       else Indent.getNormalIndent()
-    }
 
     node.getPsi match {
       case expr: ScFunctionExpr => processFunExpr(expr)
@@ -284,11 +280,9 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           if scalaSettings.NOT_CONTINUATION_INDENT_FOR_PARAMS =>
         val parent = node.getTreeParent
         if (parent != null && parent.getPsi
-              .isInstanceOf[ScParameters] && parent.getTreeParent != null) {
-          if (parent.getTreeParent.getPsi.isInstanceOf[ScFunctionExpr]) {
+              .isInstanceOf[ScParameters] && parent.getTreeParent != null)
+          if (parent.getTreeParent.getPsi.isInstanceOf[ScFunctionExpr])
             return Indent.getNoneIndent
-          }
-        }
         Indent.getNormalIndent
       case _: ScParenthesisedExpr | _: ScParenthesisedPattern |
           _: ScParenthesisedExpr =>

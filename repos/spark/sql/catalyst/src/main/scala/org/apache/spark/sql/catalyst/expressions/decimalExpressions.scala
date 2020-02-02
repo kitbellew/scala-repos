@@ -90,11 +90,10 @@ case class CheckOverflow(child: Expression, dataType: DecimalType)
 
   override def nullSafeEval(input: Any): Any = {
     val d = input.asInstanceOf[Decimal].clone()
-    if (d.changePrecision(dataType.precision, dataType.scale)) {
+    if (d.changePrecision(dataType.precision, dataType.scale))
       d
-    } else {
+    else
       null
-    }
   }
 
   override protected def genCode(ctx: CodegenContext, ev: ExprCode): String =

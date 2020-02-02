@@ -53,11 +53,10 @@ object FieldSpec extends Specification {
       implicit m: scala.reflect.Manifest[A]) = {
     def commonBehaviorsForMandatory(in: MandatoryTypedField[A]): Unit = {
 
-      if (canCheckDefaultValues) {
+      if (canCheckDefaultValues)
         "which have the correct initial value" in S.initIfUninitted(session) {
           in.get must_== in.defaultValue
         }
-      }
 
       "which are readable and writable" in {
         in.set(example)
@@ -70,33 +69,31 @@ object FieldSpec extends Specification {
         success
       }
 
-      if (canCheckDefaultValues) {
+      if (canCheckDefaultValues)
         "which correctly clear back to the default value" in {
           in.set(example)
           in.clear
           in.get must_== in.defaultValue
         }
-      }
 
-      if (!in.optional_?) {
+      if (!in.optional_?)
         "which fail when set with an empty string when not optional" in {
           in.setFromString(null)
           in.valueBox must beLike { case f: Failure => ok }
           in.setFromString("")
           in.valueBox must beLike { case f: Failure => ok }
         }
-      } else {
+      else
         "which don't fail when set with an empty string when optional" in {
           in.setFromString(null)
           in.valueBox must_== Empty
           in.setFromString("")
           in.valueBox must_== Empty
         }
-      }
     }
 
     def commonBehaviorsForAllFlavors(in: TypedField[A]): Unit = {
-      if (canCheckDefaultValues) {
+      if (canCheckDefaultValues)
         "which have the correct initial boxed value" in {
           in match {
             case mandatory: MandatoryTypedField[_] =>
@@ -105,7 +102,6 @@ object FieldSpec extends Specification {
           }
           in.valueBox must_== in.defaultValueBox
         }
-      }
 
       "which have readable and writable boxed values" in S.initIfUninitted(
         session) {
@@ -116,7 +112,7 @@ object FieldSpec extends Specification {
         in.valueBox must_!= Full(example)
       }
 
-      if (canCheckDefaultValues) {
+      if (canCheckDefaultValues)
         "which correctly clear back to the default box value" in S
           .initIfUninitted(session) {
             in.setBox(Full(example))
@@ -124,7 +120,6 @@ object FieldSpec extends Specification {
             in.clear
             in.valueBox must_== in.defaultValueBox
           }
-      }
 
       "which capture error conditions set in" in {
         val old = in.valueBox
@@ -274,12 +269,11 @@ object FieldSpec extends Specification {
     }
 
     // toInternetDate doesn't retain millisecond data so, dates can't be compared accurately.
-    if (!mandatory.defaultValue.isInstanceOf[Calendar]) {
+    if (!mandatory.defaultValue.isInstanceOf[Calendar])
       "get set from JValue" in {
         mandatory.setFromJValue(jvalue) mustEqual Full(example)
         mandatory.value mustEqual example
       }
-    }
 
     formPattern foreach { fp =>
       "convert to form XML" in {

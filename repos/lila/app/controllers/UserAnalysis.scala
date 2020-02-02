@@ -136,7 +136,7 @@ object UserAnalysis extends LilaController with TheftPrevention {
       import lila.round.Forecast
       OptionFuResult(GameRepo pov fullId) { pov =>
         if (isTheft(pov)) fuccess(theftResponse)
-        else {
+        else
           ctx.body.body
             .validate[Forecast.Steps]
             .fold(
@@ -149,7 +149,6 @@ object UserAnalysis extends LilaController with TheftPrevention {
                   }
               }
             )
-        }
       }
     }
 }

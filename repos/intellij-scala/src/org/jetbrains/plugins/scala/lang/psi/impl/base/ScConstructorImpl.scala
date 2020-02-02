@@ -77,7 +77,7 @@ class ScConstructorImpl(node: ASTNode)
     getContext match {
       case parents: ScClassParents =>
         if (parents.allTypeElements.length != 1) None
-        else {
+        else
           parents.getContext match {
             case e: ScExtendsBlock =>
               e.getContext match {
@@ -87,7 +87,6 @@ class ScConstructorImpl(node: ASTNode)
               }
             case _ => None
           }
-        }
       case _ => None
     }
 
@@ -107,14 +106,13 @@ class ScConstructorImpl(node: ASTNode)
 
   //todo: duplicate ScSimpleTypeElementImpl
   def parameterize(tp: ScType, clazz: PsiClass, subst: ScSubstitutor): ScType =
-    if (clazz.getTypeParameters.isEmpty) {
+    if (clazz.getTypeParameters.isEmpty)
       tp
-    } else {
+    else
       ScParameterizedType(tp, clazz.getTypeParameters.map {
         case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
         case ptp             => new ScTypeParameterType(ptp, subst)
       })
-    }
 
   def shapeType(i: Int): TypeResult[ScType] = {
     val seq = shapeMultiType(i)
@@ -190,21 +188,19 @@ class ScConstructorImpl(node: ASTNode)
           var nonValueType = ScTypePolymorphicType(res, typeParameters)
           expectedType match {
             case Some(expected) =>
-              try {
-                nonValueType = InferUtil.localTypeInference(
-                  nonValueType.internalType,
-                  Seq(
-                    new Parameter("", None, expected, false, false, false, 0)),
-                  Seq(
-                    new Expression(
-                      InferUtil
-                        .undefineSubstitutor(nonValueType.typeParameters)
-                        .subst(subst.subst(tp).inferValueType))),
-                  nonValueType.typeParameters,
-                  shouldUndefineParameters = false,
-                  filterTypeParams = false
-                )
-              } catch {
+              try nonValueType = InferUtil.localTypeInference(
+                nonValueType.internalType,
+                Seq(new Parameter("", None, expected, false, false, false, 0)),
+                Seq(
+                  new Expression(
+                    InferUtil
+                      .undefineSubstitutor(nonValueType.typeParameters)
+                      .subst(subst.subst(tp).inferValueType))),
+                nonValueType.typeParameters,
+                shouldUndefineParameters = false,
+                filterTypeParams = false
+              )
+              catch {
                 case s: SafeCheckException => //ignore
               }
             case _ =>
@@ -293,17 +289,15 @@ class ScConstructorImpl(node: ASTNode)
     (for {
       (paramClause, argList) <- paramClauses.zip(arguments)
       (arg, idx) <- argList.exprs.zipWithIndex
-    } yield {
-      arg match {
-        case ScAssignStmt(refToParam: ScReferenceExpression, Some(expr)) =>
-          val param = paramClause
-            .find(_.getName == refToParam.refName)
-            .orElse(refToParam.resolve().asOptionOf[ScParameter])
-          param.map(p => (expr, new Parameter(p))).toSeq
-        case expr =>
-          val paramIndex = Math.min(idx, paramClause.size - 1)
-          paramClause.lift(paramIndex).map(p => (expr, new Parameter(p))).toSeq
-      }
+    } yield arg match {
+      case ScAssignStmt(refToParam: ScReferenceExpression, Some(expr)) =>
+        val param = paramClause
+          .find(_.getName == refToParam.refName)
+          .orElse(refToParam.resolve().asOptionOf[ScParameter])
+        param.map(p => (expr, new Parameter(p))).toSeq
+      case expr =>
+        val paramIndex = Math.min(idx, paramClause.size - 1)
+        paramClause.lift(paramIndex).map(p => (expr, new Parameter(p))).toSeq
     }).flatten
   }
 }

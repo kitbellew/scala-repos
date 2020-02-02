@@ -208,16 +208,15 @@ trait RepositoryService { self: AccountService =>
               repositoryName = newRepositoryName
             )): _*)
 
-        if (account.isGroupAccount) {
+        if (account.isGroupAccount)
           Collaborators.insertAll(getGroupMembers(newUserName).map(m =>
             Collaborator(newUserName, newRepositoryName, m.userName)): _*)
-        } else {
+        else
           Collaborators.insertAll(
             collaborators.map(
               _.copy(
                 userName = newUserName,
                 repositoryName = newRepositoryName)): _*)
-        }
 
         // Update activity messages
         Activities
@@ -384,14 +383,13 @@ trait RepositoryService { self: AccountService =>
       .list
       .map { repository =>
         new RepositoryInfo(
-          if (withoutPhysicalInfo) {
+          if (withoutPhysicalInfo)
             new JGitUtil.RepositoryInfo(
               repository.userName,
               repository.repositoryName)
-          } else {
+          else
             JGitUtil
-              .getRepositoryInfo(repository.userName, repository.repositoryName)
-          },
+              .getRepositoryInfo(repository.userName, repository.repositoryName),
           repository,
           getForkedCount(
             repository.originUserName.getOrElse(repository.userName),
@@ -437,14 +435,13 @@ trait RepositoryService { self: AccountService =>
       .list
       .map { repository =>
         new RepositoryInfo(
-          if (withoutPhysicalInfo) {
+          if (withoutPhysicalInfo)
             new JGitUtil.RepositoryInfo(
               repository.userName,
               repository.repositoryName)
-          } else {
+          else
             JGitUtil
-              .getRepositoryInfo(repository.userName, repository.repositoryName)
-          },
+              .getRepositoryInfo(repository.userName, repository.repositoryName),
           repository,
           getForkedCount(
             repository.originUserName.getOrElse(repository.userName),
@@ -455,13 +452,12 @@ trait RepositoryService { self: AccountService =>
 
   private def getRepositoryManagers(userName: String)(
       implicit s: Session): Seq[String] =
-    if (getAccountByUserName(userName).exists(_.isGroupAccount)) {
+    if (getAccountByUserName(userName).exists(_.isGroupAccount))
       getGroupMembers(userName).collect {
         case x if (x.isManager) => x.userName
       }
-    } else {
+    else
       Seq(userName)
-    }
 
   /**
     * Updates the last activity date of the repository.
@@ -648,13 +644,13 @@ object RepositoryService {
     s"${context.baseUrl}/git/$owner/$name.git"
   def sshUrl(owner: String, name: String)(
       implicit context: Context): Option[String] =
-    if (context.settings.ssh) {
+    if (context.settings.ssh)
       context.loginAccount.flatMap { loginAccount =>
         context.settings.sshAddress.map { x =>
           s"ssh://${loginAccount.userName}@${x.host}:${x.port}/$owner/$name.git"
         }
       }
-    } else None
+    else None
   def openRepoUrl(openUrl: String)(implicit context: Context): String =
     s"github-${context.platform}://openRepo/$openUrl"
 

@@ -245,9 +245,8 @@ object Execution {
         if (availablePermits > 0) {
           availablePermits -= 1
           setAcquired()
-        } else {
+        } else
           waiters.enqueue(setAcquired)
-        }
       }
 
       promise.future
@@ -359,10 +358,9 @@ object Execution {
         def go(): Unit = messageQueue.take match {
           case Stop => ()
           case RunFlowDef(conf, mode, fd, promise) =>
-            try {
-              promise.completeWith(
-                ExecutionContext.newContext(conf)(fd, mode).run)
-            } catch {
+            try promise.completeWith(
+              ExecutionContext.newContext(conf)(fd, mode).run)
+            catch {
               case t: Throwable =>
                 // something bad happened, but this thread is a daemon
                 // that should only stop if all others have stopped or
@@ -531,12 +529,10 @@ object Execution {
             */
           val finished = Promise[(T, ExecutionCounters)]()
           res.onComplete { tryT =>
-            try {
-              fn(tryT.map(_._1))
-            } finally {
-              // Do our best to signal when we are done
-              finished.complete(tryT)
-            }
+            try fn(tryT.map(_._1))
+            finally
+            // Do our best to signal when we are done
+            finished.complete(tryT)
           }
           finished.future
         }
@@ -576,7 +572,7 @@ object Execution {
 
     ft.onComplete {
       case f @ Failure(err) =>
-        if (!middleState.tryFailure(err)) {
+        if (!middleState.tryFailure(err))
           // the right has already succeeded
           middleState.future.foreach {
             case Right((_, pt)) => pt.complete(f)
@@ -584,11 +580,10 @@ object Execution {
               sys.error(
                 s"Logic error: tried to set Failure($err) but Left($t1) already set")
           }
-        }
       case Success(t) =>
         // Create the next promise:
         val pu = Promise[U]()
-        if (!middleState.trySuccess(Left((t, pu)))) {
+        if (!middleState.trySuccess(Left((t, pu))))
           // we can't set, so the other promise beat us here.
           middleState.future.foreach {
             case Right((_, pt)) => pt.success(t)
@@ -596,11 +591,10 @@ object Execution {
               sys.error(
                 s"Logic error: tried to set Left($t) but Left($t1) already set")
           }
-        }
     }
     fu.onComplete {
       case f @ Failure(err) =>
-        if (!middleState.tryFailure(err)) {
+        if (!middleState.tryFailure(err))
           // we can't set, so the other promise beat us here.
           middleState.future.foreach {
             case Left((_, pu)) => pu.complete(f)
@@ -608,11 +602,10 @@ object Execution {
               sys.error(
                 s"Logic error: tried to set Failure($err) but Right($u1) already set")
           }
-        }
       case Success(u) =>
         // Create the next promise:
         val pt = Promise[T]()
-        if (!middleState.trySuccess(Right((u, pt)))) {
+        if (!middleState.trySuccess(Right((u, pt))))
           // we can't set, so the other promise beat us here.
           middleState.future.foreach {
             case Left((_, pu)) => pu.success(u)
@@ -620,7 +613,6 @@ object Execution {
               sys.error(
                 s"Logic error: tried to set Right($u) but Right($u1) already set")
           }
-        }
     }
 
     middleState.future.flatMap {
@@ -1101,10 +1093,10 @@ object ExecutionCounters {
       } yield StatKey(counter, group)).toSet
 
       def get(k: StatKey) =
-        if (keys(k)) {
+        if (keys(k))
           // Yes, cascading is reversed frow what we did in Stats. :/
           Some(cs.getCounterValue(k.group, k.counter))
-        } else None
+        else None
     }
 
   /**

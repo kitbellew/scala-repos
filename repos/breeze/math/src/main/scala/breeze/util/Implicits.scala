@@ -17,9 +17,8 @@ object Implicits extends DoubleImplicits with IteratorImplicits {
         val r = cbf(__this); result.update(a, r); r
       }
 
-      for ((a, b) <- view(__this)) {
+      for ((a, b) <- view(__this))
         result(a) += b
-      }
 
       result.mapValues(_.result()).toMap
     }
@@ -33,9 +32,8 @@ object Implicits extends DoubleImplicits with IteratorImplicits {
         val r = cbf(__this); result.update(a, r); r
       }
 
-      for ((a, b) <- __this) {
+      for ((a, b) <- __this)
         result(a) += b
-      }
 
       result.mapValues(_.result()).toMap
     }
@@ -82,9 +80,8 @@ trait IteratorImplicits {
 
     def last = {
       var x = iter.next()
-      while (iter.hasNext) {
+      while (iter.hasNext)
         x = iter.next()
-      }
       x
     }
   }

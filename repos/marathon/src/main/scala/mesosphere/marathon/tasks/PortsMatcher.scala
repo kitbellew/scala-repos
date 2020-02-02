@@ -128,9 +128,8 @@ class PortsMatcher(
               s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
                 s"Insufficient ports in offer for app [${app.id}]")
             None
-          } else {
+          } else
             Option(availablePortsWithoutStaticHostPorts.next())
-          }
         case pm: PortMapping =>
           offeredPortRanges.find(_.contains(pm.hostPort)) match {
             case Some(PortRange(role, _, _, reservation)) =>
@@ -264,11 +263,10 @@ object PortsMatcher {
         offeredPortRanges: Seq[PortRange]): Iterator[PortWithRole] = {
       val numberOfOfferedPorts = offeredPortRanges.map(_.size).sum
 
-      if (numberOfOfferedPorts == 0) {
+      if (numberOfOfferedPorts == 0)
         //scalastyle:off return
         return Iterator.empty
-        //scalastyle:on
-      }
+      //scalastyle:on
 
       def findStartPort(
           shuffled: Vector[PortRange],

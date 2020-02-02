@@ -51,10 +51,9 @@ private[spark] class BlockStatusListener extends SparkListener {
 
   override def onBlockUpdated(blockUpdated: SparkListenerBlockUpdated): Unit = {
     val blockId = blockUpdated.blockUpdatedInfo.blockId
-    if (!blockId.isInstanceOf[StreamBlockId]) {
+    if (!blockId.isInstanceOf[StreamBlockId])
       // Now we only monitor StreamBlocks
       return
-    }
     val blockManagerId = blockUpdated.blockUpdatedInfo.blockManagerId
     val storageLevel = blockUpdated.blockUpdatedInfo.storageLevel
     val memSize = blockUpdated.blockUpdatedInfo.memSize
@@ -63,7 +62,7 @@ private[spark] class BlockStatusListener extends SparkListener {
     synchronized {
       // Drop the update info if the block manager is not registered
       blockManagers.get(blockManagerId).foreach { blocksInBlockManager =>
-        if (storageLevel.isValid) {
+        if (storageLevel.isValid)
           blocksInBlockManager.put(
             blockId,
             BlockUIData(
@@ -72,10 +71,9 @@ private[spark] class BlockStatusListener extends SparkListener {
               storageLevel,
               memSize,
               diskSize))
-        } else {
+        else
           // If isValid is not true, it means we should drop the block.
           blocksInBlockManager -= blockId
-        }
       }
     }
   }

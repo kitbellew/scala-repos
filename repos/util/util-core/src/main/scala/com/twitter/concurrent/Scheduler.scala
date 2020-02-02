@@ -145,9 +145,8 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
       } else if (r1 != null) {
         r2 = r1
         r1 = r0
-      } else if (r0 != null) {
+      } else if (r0 != null)
         r1 = r0
-      }
       r0 = r
     }
 
@@ -172,11 +171,8 @@ class LocalScheduler(lifo: Boolean) extends Scheduler {
     private[this] def run(): Unit = {
       val save = running
       running = true
-      try {
-        while (hasNext) next().run()
-      } finally {
-        running = save
-      }
+      try while (hasNext) next().run()
+      finally running = save
     }
 
     def blocking[T](f: => T)(implicit perm: CanAwait): T = f

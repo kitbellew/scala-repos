@@ -227,13 +227,12 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
             clazz.symbol)
         }
 
-        val bootBody = {
+        val bootBody =
           List(
             getJUnitMetadataDef,
             newInstanceDef,
             invokeJUnitMethodDef,
             invokeJUnitMethodOnInstanceDef)
-        }
         val bootParents = List(
           TypeTree(definitions.ObjectTpe),
           TypeTree(jUnitTestMetadataType)
@@ -307,11 +306,10 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         invokeJUnitMethodSym.setInfo(MethodType(paramSyms, definitions.UnitTpe))
 
         def callLocally(methodSymbol: Symbol): Tree = {
-          val methodSymbolLocal = {
+          val methodSymbolLocal =
             modClassSym.fold(methodSymbol) { sym =>
               methodSymbol.cloneSymbol(newOwner = sym)
             }
-          }
           gen.mkMethodCall(methodSymbolLocal, Nil)
         }
 
@@ -431,7 +429,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         def mkMethodList(tpe: TypeTree)(testMethods: List[MethodSymbol]): Tree =
           mkList(testMethods.map(defaultMethodMetadata(tpe)))
 
-        val getJUnitMethodRhs = {
+        val getJUnitMethodRhs =
           mkNewInstance(
             TypeTree(jUnitClassMetadataType),
             List(
@@ -442,7 +440,6 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                 mkMethodList(jUnitMethodMetadataTypeTree))
             )
           )
-        }
 
         val getJUnitMetadataSym = clSym.newMethod(newTermName("metadata"))
         getJUnitMetadataSym.setInfo(MethodType(Nil, jUnitClassMetadataType))

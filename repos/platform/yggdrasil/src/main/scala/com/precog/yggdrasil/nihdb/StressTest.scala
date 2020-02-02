@@ -141,11 +141,8 @@ class StressTest {
         if (n >= 0) loop(parser)
       }
 
-      try {
-        loop(AsyncParser.stream())
-      } finally {
-        ch.close()
-      }
+      try loop(AsyncParser.stream())
+      finally ch.close()
       timeit("  finished ingesting")
 
       while (fromFuture(nihdb.status).pending > 0) Thread.sleep(100)
@@ -178,20 +175,13 @@ class StressTest {
 
     val t0 = System.currentTimeMillis()
 
-    try {
-      try {
-        for (i <- 1 to 100) {
-          println("iteration %d" format i)
-          eventid = ctxt.runNihAsync(i, f, 8 * 1024 * 1024, eventid)
-          val t = System.currentTimeMillis()
-          println(
-            "total rows: %dM, total time: %.3fs" format (i, (t - t0) / 1000.0))
-        }
-      } finally {
-        ctxt.finish()
-      }
-    } finally {
-      shutdown()
-    }
+    try try for (i <- 1 to 100) {
+      println("iteration %d" format i)
+      eventid = ctxt.runNihAsync(i, f, 8 * 1024 * 1024, eventid)
+      val t = System.currentTimeMillis()
+      println(
+        "total rows: %dM, total time: %.3fs" format (i, (t - t0) / 1000.0))
+    } finally ctxt.finish()
+    finally shutdown()
   }
 }

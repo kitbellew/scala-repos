@@ -13,8 +13,8 @@ object Test {
     val rng = new scala.util.Random(java.lang.Integer.parseInt("kmp", 36))
 
     // Make sure we agree with naive implementation
-    for (h <- Array(2, 5, 1000)) {
-      for (i <- 0 to 100) {
+    for (h <- Array(2, 5, 1000))
+      for (i <- 0 to 100)
         for (j <- 0 to 10) {
           val xs = (0 to j).map(_ => (rng.nextInt & 0x7FFFFFFF) % h)
           val xsa = xs.toArray
@@ -40,8 +40,6 @@ object Test {
             assert(bkw_fast.forall(_ == bkw_slow))
           }
         }
-      }
-    }
 
     // Check performance^Wcorrectness of common small test cases
     val haystacks = List[Seq[Int]](

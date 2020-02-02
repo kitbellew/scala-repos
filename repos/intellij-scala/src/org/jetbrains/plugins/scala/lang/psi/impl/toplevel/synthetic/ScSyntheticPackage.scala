@@ -65,16 +65,13 @@ abstract class ScSyntheticPackage(name: String, manager: PsiManager)
           val subPackages =
             if (lastParent != null) getSubPackages(lastParent.getResolveScope)
             else getSubPackages
-          for (subp <- subPackages) {
+          for (subp <- subPackages)
             if (!processor.execute(subp, state)) return false
-          }
         }
         if (bp.kinds.contains(CLASS) || bp.kinds.contains(OBJECT) || bp.kinds
-              .contains(METHOD)) {
-          for (clazz <- getClasses) {
+              .contains(METHOD))
+          for (clazz <- getClasses)
             if (!processor.execute(clazz, state)) return false
-          }
-        }
         true
       case _ => true
     }
@@ -99,7 +96,7 @@ object ScSyntheticPackage {
       )
       .toSeq
 
-    if (packages.isEmpty) {
+    if (packages.isEmpty)
       StubIndex
         .getElements(
           ScalaIndexKeys.PACKAGE_OBJECT_KEY
@@ -132,7 +129,7 @@ object ScSyntheticPackage {
           }
         case None => null
       }
-    } else {
+    else {
       val pkgs = packages.filter { pc =>
         pc.fqn.startsWith(fqn) && fqn.startsWith(pc.prefix)
       }

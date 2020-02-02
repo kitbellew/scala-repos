@@ -177,7 +177,7 @@ object ScalaExtractMethodUtils {
                 !named.name.startsWith("_")) {
               val oldName = named.name
               var break = false
-              for (param <- settings.parameters if !break) {
+              for (param <- settings.parameters if !break)
                 if (param.oldName == oldName) {
                   def tail() {
                     if (param.oldName != param.newName) {
@@ -222,7 +222,6 @@ object ScalaExtractMethodUtils {
                   }
                   break = true
                 }
-              }
             }
           case _ =>
         }
@@ -297,12 +296,10 @@ object ScalaExtractMethodUtils {
     val returnStmtType = settings.returnType
     val outputs = settings.outputs
     val lastExprType = settings.lastExprType
-    if (settings.lastReturn) {
+    if (settings.lastReturn)
       return prepareResult(returnStmtType.get)
-    }
-    if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType.isDefined) {
+    if (outputs.length == 0 && returnStmtType.isEmpty && lastExprType.isDefined)
       return prepareResult(lastExprType.get)
-    }
     def byOutputsSize[T](ifZero: => T, ifOne: => T, ifMany: => T): T =
       outputs.length match {
         case 0 => ifZero
@@ -360,9 +357,8 @@ object ScalaExtractMethodUtils {
     val data = buffer.toArray
     var list: ArrayBuffer[ExtractMethodParameter] =
       new ArrayBuffer[ExtractMethodParameter]
-    for (d <- data) {
+    for (d <- data)
       list += ExtractMethodParameter.from(d.asInstanceOf[ScalaVariableData])
-    }
     val res = list.toArray
     Sorting.stableSort[ExtractMethodParameter](
       res,
@@ -589,9 +585,8 @@ object ScalaExtractMethodUtils {
             expr,
             manager)
           addElement(stmt)
-        } else {
+        } else
           addExtractorsFromClass()
-        }
       }
 
       def addExtractorsFromClass() {

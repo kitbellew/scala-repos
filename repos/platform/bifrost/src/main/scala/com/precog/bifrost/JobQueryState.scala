@@ -68,23 +68,21 @@ trait JobQueryStateMonad extends SwappableMonad[JobQueryState] {
     }
 
   def point[A](a: => A): JobQueryState[A] =
-    if (isCancelled()) {
+    if (isCancelled())
       Cancelled
-    } else if (hasExpired()) {
+    else if (hasExpired())
       Expired
-    } else {
+    else
       Running(Set.empty, a)
-    }
 
   def maybeCancel[A](q: JobQueryState[A]): JobQueryState[A] =
-    if (isCancelled()) {
+    if (isCancelled())
       // Free resources from q.
       Cancelled
-    } else if (hasExpired()) {
+    else if (hasExpired())
       Expired
-    } else {
+    else
       q
-    }
 
   override def map[A, B](fa: JobQueryState[A])(f: A => B): JobQueryState[B] =
     maybeCancel(fa) match {

@@ -118,9 +118,8 @@ trait SingleMarathonIntegrationTest
 
       waitForCleanSlateInMesos()
       log.info("Setting up local mesos/marathon infrastructure: done.")
-    } else {
+    } else
       log.info("Using already running Marathon at {}", config.marathonUrl)
-    }
 
     startCallbackEndpoint(config.httpPort, config.cwd)
   }
@@ -324,9 +323,8 @@ trait SingleMarathonIntegrationTest
 
     val deleteResult: RestResult[ITDeploymentResult] =
       marathon.deleteGroup(testBasePath, force = true)
-    if (deleteResult.code != 404) {
+    if (deleteResult.code != 404)
       waitForChange(deleteResult)
-    }
 
     waitForCleanSlateInMesos()
 

@@ -58,18 +58,16 @@ object JDBMSlice {
       if (source.hasNext) {
         val entry = source.next
         val rowKey = entry.getKey
-        if (row == 0) {
+        if (row == 0)
           firstKey = rowKey
-        }
         lastKey = rowKey
 
         keyDecoder.decodeToRow(row, rowKey)
         valDecoder.decodeToRow(row, entry.getValue)
 
         consumeRows(source, row + 1)
-      } else {
+      } else
         row
-      }
 
     val rows = {
       // FIXME: Looping here is a blatantly poor way to work around ConcurrentModificationExceptions
@@ -77,21 +75,19 @@ object JDBMSlice {
       var finalCount = -1
       var tries = 0
       while (tries < JDBMProjection.MAX_SPINS && finalCount == -1) {
-        try {
-          finalCount = consumeRows(source().take(size), 0)
-        } catch {
+        try finalCount = consumeRows(source().take(size), 0)
+        catch {
           case t: Throwable =>
             logger.warn("Error during block read, retrying")
             Thread.sleep(50)
         }
         tries += 1
       }
-      if (finalCount == -1) {
+      if (finalCount == -1)
         throw new VicciniException(
           "Block read failed with too many concurrent mods.")
-      } else {
+      else
         finalCount
-      }
     }
 
     (firstKey, lastKey, rows)

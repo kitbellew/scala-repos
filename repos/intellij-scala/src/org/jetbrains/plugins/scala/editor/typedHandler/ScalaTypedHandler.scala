@@ -75,48 +75,49 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       }
     }
 
-    if (isInDocComment(element)) { //we don't have to check offset >= 3 because "/**" is already has 3 characters
+    if (isInDocComment(
+          element
+        )) //we don't have to check offset >= 3 because "/**" is already has 3 characters
       myTask = getScaladocTask(text, offset)
-    } else if (c == ' ' && offset >= 6 && offset < text.length && text
-                 .substring(offset - 6, offset) == " case ") {
+    else if (c == ' ' && offset >= 6 && offset < text.length && text
+               .substring(offset - 6, offset) == " case ")
       myTask = indentCase(file)
-    } else if (c == ' ' && offset >= 6 && offset < text.length && text
-                 .substring(offset - 6, offset) == " else ") {
+    else if (c == ' ' && offset >= 6 && offset < text.length && text
+               .substring(offset - 6, offset) == " else ")
       myTask = indentElse(file)
-    } else if (c == '{' && offset >= 2 && offset < text.length && text
-                 .substring(offset - 2, offset) == " {") {
+    else if (c == '{' && offset >= 2 && offset < text.length && text
+               .substring(offset - 2, offset) == " {")
       myTask = indentValBraceStyle(file)
-    } else if (isInPlace(element, classOf[ScXmlExpr], classOf[ScXmlPattern])) {
+    else if (isInPlace(element, classOf[ScXmlExpr], classOf[ScXmlPattern]))
       chooseXmlTask(withAttr = true)
-    } else if (file.findElementAt(offset - 2) match {
-                 case i: PsiElement
-                     if !ScalaNamesUtil.isOperatorName(i.getText) && i.getText != "=" =>
-                   c == '>' || c == '/'; case _                                       => false
-               }) {
+    else if (file.findElementAt(offset - 2) match {
+               case i: PsiElement
+                   if !ScalaNamesUtil.isOperatorName(i.getText) && i.getText != "=" =>
+                 c == '>' || c == '/'; case _                                       => false
+             })
       chooseXmlTask(withAttr = false)
-    } else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
+    else if (element.getPrevSibling != null && element.getPrevSibling.getNode.getElementType == ScalaElementTypes.CASE_CLAUSES) {
       val ltIndex = element.getPrevSibling.getText.indexOf("<")
       if (ltIndex > "case ".length - 1 && element.getPrevSibling.getText
             .substring(0, ltIndex)
-            .trim() == "case") {
+            .trim() == "case")
         chooseXmlTask(withAttr = false)
-      }
     } else if (c == '{' && (element.getParent match {
                  case l: ScInterpolatedStringLiteral => !l.isMultiLineString;
                  case _                              => false
-               })) {
+               }))
       myTask = completeInterpolatedStringBraces
-    } else if (c == '>' || c == '-') {
+    else if (c == '>' || c == '-')
       myTask = replaceArrowTask(file, editor)
-    } else if (c == '$') {
+    else if (c == '$')
       myTask = startAutopopupCompletion(file, editor)
-    } else if (c == '{') {
+    else if (c == '{')
       myTask = convertToInterpolated(file, editor)
-    } else if (c == '.') {
+    else if (c == '.')
       myTask = startAutopopupCompletionInInterpolatedString(file, editor)
-    } else if (offset > 1) {
+    else if (offset > 1) {
       val prevPositionElement = file.findElementAt(offset - 2)
-      if (ScalaPsiUtil.isLineTerminator(prevPositionElement)) {
+      if (ScalaPsiUtil.isLineTerminator(prevPositionElement))
         prevPositionElement
           .getPrevSiblingCondition(_.getTextLength != 0)
           .foreach(_.getNode.getElementType match {
@@ -126,7 +127,6 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
               myTask = indentDefinitionAssign(file)
             case _ =>
           })
-      }
     }
 
     if (myTask == null) return Result.CONTINUE
@@ -187,23 +187,22 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     } else if (c == '>' && elementType == ScalaXmlTokenTypes.XML_TAG_END) {
       moveCaret()
       return Result.STOP
-    } else if (c == '>' && prevElement != null && prevElement.getNode.getElementType == ScalaXmlTokenTypes.XML_EMPTY_ELEMENT_END) {
+    } else if (c == '>' && prevElement != null && prevElement.getNode.getElementType == ScalaXmlTokenTypes.XML_EMPTY_ELEMENT_END)
       return Result.STOP
-    } else if (c == '>' && settings.REPLACE_CASE_ARROW_WITH_UNICODE_CHAR && prevElement != null &&
-               prevElement.getNode.getElementType == ScalaTokenTypes.tFUNTYPE) {
+    else if (c == '>' && settings.REPLACE_CASE_ARROW_WITH_UNICODE_CHAR && prevElement != null &&
+             prevElement.getNode.getElementType == ScalaTokenTypes.tFUNTYPE)
       return Result.STOP
-    } else if (c == '"' && prevElement != null && ScalaApplicationSettings
-                 .getInstance()
-                 .INSERT_MULTILINE_QUOTES) {
+    else if (c == '"' && prevElement != null && ScalaApplicationSettings
+               .getInstance()
+               .INSERT_MULTILINE_QUOTES) {
       val prevType = prevElement.getNode.getElementType
 
       if (elementType != ScalaTokenTypes.tSTRING && prevType == ScalaTokenTypes.tSTRING &&
-          prevElement.getParent.getText == "\"\"") {
+          prevElement.getParent.getText == "\"\"")
         completeMultilineString(editor, project, element, offset)
-      } else if (prevType == ScalaTokenTypes.tINTERPOLATED_STRING_END && elementType != ScalaTokenTypes.tINTERPOLATED_STRING_END &&
-                 Set("f\"\"", "s\"\"").contains(prevElement.getParent.getText)) {
+      else if (prevType == ScalaTokenTypes.tINTERPOLATED_STRING_END && elementType != ScalaTokenTypes.tINTERPOLATED_STRING_END &&
+               Set("f\"\"", "s\"\"").contains(prevElement.getParent.getText))
         completeMultilineString(editor, project, element, offset)
-      }
     } else if (c == '.' && ScalaPsiUtil.isLineTerminator(prevElement)) {
       //hacky way to introduce indent without calling formatter; this is better then turning formatting model into a mess
       val indent = CodeStyleSettingsManager
@@ -244,9 +243,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       element: PsiElement,
       offset: Int) {
     if (element.getNode.getElementType
-          .isInstanceOf[ScaladocSyntaxElementType] || tagToInsert == "}}}") {
+          .isInstanceOf[ScaladocSyntaxElementType] || tagToInsert == "}}}")
       insertAndCommit(offset, tagToInsert, document, project)
-    }
   }
 
   private def completeScalaDocBoldSyntaxElement(
@@ -255,9 +253,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       element: PsiElement,
       offset: Int) {
     if (element.getNode.getElementType
-          .isInstanceOf[ScaladocSyntaxElementType]) {
+          .isInstanceOf[ScaladocSyntaxElementType])
       insertAndCommit(offset, "'", document, project)
-    }
   }
 
   private def completeXmlTag(insert: ScXmlStartTag => String)(
@@ -280,15 +277,14 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
 
     element.getParent match {
       case tag: ScXmlStartTag =>
-        if (tag.getParent != null && tag.getParent.getParent != null) {
+        if (tag.getParent != null && tag.getParent.getParent != null)
           tag.getParent.getParent.getFirstChild match {
             case st: ScXmlStartTag if st.getTagName == tag.getTagName =>
               doInsert(tag)
             case _ => check(tag)
           }
-        } else {
+        else
           check(tag)
-        }
       case _ =>
     }
   }
@@ -304,9 +300,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     if (element.getNode.getElementType == tLBRACE &&
         Option(element.getParent.getPrevSibling)
           .exists(_.getNode.getElementType == tINTERPOLATED_STRING_INJECTION) &&
-        (element.getNextSibling == null || element.getNextSibling.getNode.getElementType != tRBRACE)) {
+        (element.getNextSibling == null || element.getNextSibling.getNode.getElementType != tRBRACE))
       insertAndCommit(offset, "}", document, project)
-    }
   }
 
   private def completeXmlAttributeQuote(editor: Editor)(
@@ -355,18 +350,17 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       case _                              => return null
     }
 
-    if (text.substring(offset - 3, offset) == "'''") {
+    if (text.substring(offset - 3, offset) == "'''")
       completeScalaDocBoldSyntaxElement
-    } else if (wiki1LTagMatch.contains(text.substring(offset - 1, offset))) {
+    else if (wiki1LTagMatch.contains(text.substring(offset - 1, offset)))
       completeScalaDocWikiSyntax(text.substring(offset - 1, offset))
-    } else if (wiki2LTagMatch.contains(text.substring(offset - 2, offset))) {
+    else if (wiki2LTagMatch.contains(text.substring(offset - 2, offset)))
       completeScalaDocWikiSyntax(
         wiki2LTagMatch.get(text.substring(offset - 2, offset)).get)
-    } else if (text.substring(offset - 3, offset) == "{{{") {
+    else if (text.substring(offset - 3, offset) == "{{{")
       completeScalaDocWikiSyntax("}}}")
-    } else {
+    else
       null
-    }
   }
 
   private def indentCase(file: PsiFile)(
@@ -473,14 +467,13 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           element)) {
     if (condition(element)) {
       val anotherElement = file.findElementAt(offset - 2)
-      if (prevCondition(anotherElement)) {
+      if (prevCondition(anotherElement))
         extensions.inWriteAction {
           PsiDocumentManager.getInstance(project).commitDocument(document)
           CodeStyleManager
             .getInstance(project)
             .adjustLineIndent(file, anotherElement.getTextRange)
         }
-      }
     }
   }
 
@@ -520,7 +513,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    if (CodeInsightSettings.getInstance().AUTO_POPUP_COMPLETION_LOOKUP) {
+    if (CodeInsightSettings.getInstance().AUTO_POPUP_COMPLETION_LOOKUP)
       element.getParent match {
         case l: ScLiteral =>
           element.getNode.getElementType match {
@@ -531,7 +524,6 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           }
         case _ =>
       }
-    }
   }
 
   private def scheduleAutopopup(
@@ -554,7 +546,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    if (CodeInsightSettings.getInstance().AUTO_POPUP_COMPLETION_LOOKUP) {
+    if (CodeInsightSettings.getInstance().AUTO_POPUP_COMPLETION_LOOKUP)
       element.getParent match {
         case l: ScLiteral =>
           element.getNode.getElementType match {
@@ -569,7 +561,6 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
           }
         case _ =>
       }
-    }
   }
 
   private def convertToInterpolated(file: PsiFile, editor: Editor)(
@@ -577,30 +568,27 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       project: Project,
       element: PsiElement,
       offset: Int) {
-    if (ScalaApplicationSettings.getInstance().UPGRADE_TO_INTERPOLATED) {
+    if (ScalaApplicationSettings.getInstance().UPGRADE_TO_INTERPOLATED)
       element.getParent match {
         case l: ScLiteral =>
           element.getNode.getElementType match {
             case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
               if (l.getText.filter(_ == '$').length == 1 && file.getText.charAt(
-                    offset - 2) == '$') {
+                    offset - 2) == '$')
                 extensions.inWriteAction {
                   if (file.getText.charAt(offset) != '}' && CodeInsightSettings
                         .getInstance()
-                        .AUTOINSERT_PAIR_BRACKET) {
+                        .AUTOINSERT_PAIR_BRACKET)
                     document.insertString(offset, "}")
-                  }
                   document.insertString(l.getTextRange.getStartOffset, "s")
                   PsiDocumentManager
                     .getInstance(project)
                     .commitDocument(document)
                 }
-              }
             case _ =>
           }
         case _ =>
       }
-    }
   }
 
   private def completeEmptyXmlTag(editor: Editor)(
@@ -618,9 +606,8 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
       if (xmlLexer.getTokenType != ScalaXmlTokenTypes.XML_START_TAG_START)
         return
 
-      while (xmlLexer.getTokenEnd < xmlLexer.getBufferEnd) {
+      while (xmlLexer.getTokenEnd < xmlLexer.getBufferEnd)
         xmlLexer.advance()
-      }
 
       if (xmlLexer.getTokenType != ScalaXmlTokenTypes.XML_EMPTY_ELEMENT_END)
         return

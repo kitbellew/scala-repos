@@ -114,7 +114,7 @@ final class PersistencePluginProxy(config: Config)
     } else {
       val targetAddressKey = s"target-${pluginType.qualifier}-address"
       val targetAddress = config.getString(targetAddressKey)
-      if (targetAddress != "") {
+      if (targetAddress != "")
         try {
           log.info(
             "Setting target {} address to {}",
@@ -130,7 +130,6 @@ final class PersistencePluginProxy(config: Config)
               pluginType.qualifier,
               targetAddress)
         }
-      }
 
       context.system.scheduler.scheduleOnce(initTimeout, self, InitTimeout)(
         context.dispatcher)

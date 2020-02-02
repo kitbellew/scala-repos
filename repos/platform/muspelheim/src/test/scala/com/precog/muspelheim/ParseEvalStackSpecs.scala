@@ -95,7 +95,7 @@ trait TestStackLike[M[+_]]
     val config = Configuration parse {
       Option(System.getProperty("precog.storage.root")) map {
         "precog.storage.root = " + _
-      } getOrElse { "" }
+      } getOrElse ""
     }
 
     val sortWorkDir = scratchDir

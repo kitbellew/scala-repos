@@ -58,22 +58,20 @@ class ScSelfTypeElementImpl private (
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScSelfTypeElementStub].getTypeElementText match {
         case "" => None
         case text =>
           Some(
             ScalaPsiElementFactory.createTypeElementFromText(text, this, this))
       }
-    }
     findChild(classOf[ScTypeElement])
   }
 
   def getClassNames: Array[String] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScSelfTypeElementStub].getClassNames
-    }
     val names = new ArrayBuffer[String]()
     def fillNames(typeElement: ScTypeElement) {
       typeElement match {

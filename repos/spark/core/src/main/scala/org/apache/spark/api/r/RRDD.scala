@@ -84,26 +84,21 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
     dataStream = new DataInputStream(inputStream)
     serverSocket.close()
 
-    try {
+    try return new Iterator[U] {
+      def next(): U = {
+        val obj = _nextObj
+        if (hasNext)
+          _nextObj = read()
+        obj
+      }
 
-      return new Iterator[U] {
-        def next(): U = {
-          val obj = _nextObj
-          if (hasNext) {
-            _nextObj = read()
-          }
-          obj
-        }
+      var _nextObj = read()
 
-        var _nextObj = read()
-
-        def hasNext(): Boolean = {
-          val hasMore = (_nextObj != null)
-          if (!hasMore) {
-            dataStream.close()
-          }
-          hasMore
-        }
+      def hasNext(): Boolean = {
+        val hasMore = (_nextObj != null)
+        if (!hasMore)
+          dataStream.close()
+        hasMore
       }
     } catch {
       case e: Exception =>
@@ -154,11 +149,10 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
 
           dataOut.writeInt(numPartitions)
 
-          if (!iter.hasNext) {
+          if (!iter.hasNext)
             dataOut.writeInt(0)
-          } else {
+          else
             dataOut.writeInt(1)
-          }
 
           val printOut = new PrintStream(stream)
 
@@ -167,16 +161,15 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
               val elemArr = elem.asInstanceOf[Array[Byte]]
               dataOut.writeInt(elemArr.length)
               dataOut.write(elemArr)
-            } else if (deserializer == SerializationFormats.ROW) {
+            } else if (deserializer == SerializationFormats.ROW)
               dataOut.write(elem.asInstanceOf[Array[Byte]])
-            } else if (deserializer == SerializationFormats.STRING) {
+            else if (deserializer == SerializationFormats.STRING)
               // write string(for StringRRDD)
               // scalastyle:off println
               printOut.println(elem)
-              // scalastyle:on println
-            }
+          // scalastyle:on println
 
-          for (elem <- iter) {
+          for (elem <- iter)
             elem match {
               case (key, value) =>
                 writeElem(key)
@@ -184,15 +177,12 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
               case _ =>
                 writeElem(elem)
             }
-          }
           stream.flush()
         } catch {
           // TODO: We should propogate this error to the task thread
           case e: Exception =>
             logError("R Writer thread got an exception", e)
-        } finally {
-          Try(output.close())
-        }
+        } finally Try(output.close())
     }.start()
   }
 
@@ -377,20 +367,17 @@ private[r] object RRDD {
       .setSparkHome(sparkHome)
 
     // Override `master` if we have a user-specified value
-    if (master != "") {
+    if (master != "")
       sparkConf.setMaster(master)
-    } else {
+    else
       // If conf has no master set it to "local" to maintain
       // backwards compatibility
       sparkConf.setIfMissing("spark.master", "local")
-    }
 
-    for ((name, value) <- sparkEnvirMap.asScala) {
+    for ((name, value) <- sparkEnvirMap.asScala)
       sparkConf.set(name.toString, value.toString)
-    }
-    for ((name, value) <- sparkExecutorEnvMap.asScala) {
+    for ((name, value) <- sparkExecutorEnvMap.asScala)
       sparkConf.setExecutorEnv(name.toString, value.toString)
-    }
 
     val jsc = new JavaSparkContext(sparkConf)
     jars.foreach { jar => jsc.addJar(jar) }
@@ -443,7 +430,7 @@ private[r] object RRDD {
   def createRWorker(port: Int): BufferedStreamThread = {
     val useDaemon =
       SparkEnv.get.conf.getBoolean("spark.sparkr.use.daemon", true)
-    if (!Utils.isWindows && useDaemon) {
+    if (!Utils.isWindows && useDaemon)
       synchronized {
         if (daemonChannel == null) {
           // we expect one connections
@@ -472,9 +459,8 @@ private[r] object RRDD {
         }
         errThread
       }
-    } else {
+    else
       createRProcess(port, "worker.R")
-    }
   }
 
   /**

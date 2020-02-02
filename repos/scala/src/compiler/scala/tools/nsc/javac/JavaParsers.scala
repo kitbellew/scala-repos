@@ -171,13 +171,12 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     }
 
     def skipTo(tokens: Int*) {
-      while (!(tokens contains in.token) && in.token != EOF) {
+      while (!(tokens contains in.token) && in.token != EOF)
         if (in.token == LBRACE) {
           skipAhead(); accept(RBRACE)
         } else if (in.token == LPAREN) {
           skipAhead(); accept(RPAREN)
         } else in.nextToken()
-      }
     }
 
     /** Consume one token of the specified type, or
@@ -298,9 +297,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             t = typeArgs(atPos(in.currentPos)(typeSelect(t, ident())))
           }
           convertToTypeId(t)
-        } else {
+        } else
           basicType()
-        }
       }
 
     def typeArgs(t: Tree): Tree = {
@@ -324,9 +322,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           }
           wildcards += tdef
           atPos(pos) { Ident(tdef.name) }
-        } else {
+        } else
           typ()
-        }
       if (in.token == LT) {
         in.nextToken()
         val t1 = convertToTypeId(t)
@@ -367,7 +364,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       var annots: List[Tree] = Nil
       def addAnnot(sym: Symbol) = annots :+= New(sym.tpe)
 
-      while (true) {
+      while (true)
         in.token match {
           case AT if (in.lookaheadToken != INTERFACE) =>
             in.nextToken()
@@ -412,7 +409,6 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
             return Modifiers(flags, privateWithin) withAnnotations annots
         }
-      }
       abort("should not be here")
     }
 
@@ -536,26 +532,22 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           val bodyOk =
             !(mods1 hasFlag Flags.DEFERRED) && isConcreteInterfaceMethod
           val body =
-            if (bodyOk && in.token == LBRACE) {
+            if (bodyOk && in.token == LBRACE)
               methodBody()
+            else if (parentToken == AT && in.token == DEFAULT) {
+              val annot =
+                atPos(pos) {
+                  New(
+                    Select(scalaDot(nme.runtime), tpnme.AnnotationDefaultATTR),
+                    Nil)
+                }
+              mods1 = mods1 withAnnotations annot :: Nil
+              skipTo(SEMI)
+              accept(SEMI)
+              blankExpr
             } else {
-              if (parentToken == AT && in.token == DEFAULT) {
-                val annot =
-                  atPos(pos) {
-                    New(
-                      Select(
-                        scalaDot(nme.runtime),
-                        tpnme.AnnotationDefaultATTR),
-                      Nil)
-                  }
-                mods1 = mods1 withAnnotations annot :: Nil
-                skipTo(SEMI)
-                accept(SEMI)
-                blankExpr
-              } else {
-                accept(SEMI)
-                EmptyTree
-              }
+              accept(SEMI)
+              EmptyTree
             }
           // for abstract methods (of classes), the `DEFERRED` flag is already set.
           // here we also set it for interface methods that are not static and not default.
@@ -598,13 +590,13 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             buf ++= maybe
             buf += varDecl(in.currentPos, mods, tpt.duplicate, name.toTermName)
             maybe.clear()
-          } else if (in.token == COMMA) { // ... if there's a comma after the ident, it could be a real vardef or not.
+          } else if (in.token == COMMA) // ... if there's a comma after the ident, it could be a real vardef or not.
             maybe += varDecl(
               in.currentPos,
               mods,
               tpt.duplicate,
               name.toTermName)
-          } else { // ... if there's something else we were still in the initializer of the
+          else { // ... if there's something else we were still in the initializer of the
             // previous var def; skip to next comma or semicolon.
             skipTo(COMMA, SEMI)
             maybe.clear()
@@ -615,9 +607,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           maybe.clear()
         }
       }
-      if (in.token == SEMI) {
+      if (in.token == SEMI)
         buf ++= maybe // every potential vardef that survived until here is real.
-      }
       buf.toList
     }
 
@@ -723,9 +714,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       if (in.token == IMPLEMENTS) {
         in.nextToken()
         repsep(typ, COMMA)
-      } else {
+      } else
         List()
-      }
 
     def classDecl(mods: Modifiers): List[Tree] = {
       accept(CLASS)
@@ -736,9 +726,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == EXTENDS) {
           in.nextToken()
           typ()
-        } else {
+        } else
           javaLangObject()
-        }
       val interfaces = interfacesOpt()
       val (statics, body) = typeBody(CLASS, name)
       addCompanionObject(statics, atPos(pos) {
@@ -759,9 +748,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == EXTENDS) {
           in.nextToken()
           repsep(typ, COMMA)
-        } else {
+        } else
           List(javaLangObject())
-        }
       val (statics, body) = typeBody(INTERFACE, name)
       addCompanionObject(statics, atPos(pos) {
         ClassDef(
@@ -792,9 +780,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == LBRACE) {
           skipAhead() // skip init block, we just assume we have seen only static
           accept(RBRACE)
-        } else if (in.token == SEMI) {
+        } else if (in.token == SEMI)
           in.nextToken()
-        } else {
+        else {
           if (in.token == ENUM || definesInterface(in.token))
             mods |= Flags.STATIC
           val decls = memberDecl(mods, parentToken)
@@ -863,9 +851,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == SEMI) {
           in.nextToken()
           typeBodyDecls(ENUM, name)
-        } else {
+        } else
           (List(), List())
-        }
       val predefs = List(
         DefDef(
           Modifiers(Flags.JAVA | Flags.STATIC),
@@ -948,9 +935,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           val pkg = qualId()
           accept(SEMI)
           pkg
-        } else {
+        } else
           Ident(nme.EMPTY_PACKAGE_NAME)
-        }
       thisPackageName = gen.convertToTypeName(pkg) match {
         case Some(t) => t.name.toTypeName
         case _       => tpnme.EMPTY

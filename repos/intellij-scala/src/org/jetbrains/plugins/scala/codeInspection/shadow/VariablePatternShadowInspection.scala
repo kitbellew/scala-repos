@@ -47,13 +47,12 @@ class VariablePatternShadowInspection
         case named: PsiNamedElement => proc.isAccessible(named, refPat)
         case _                      => false
       }
-      if (results.exists(isAccessible)) {
+      if (results.exists(isAccessible))
         holder.registerProblem(
           refPat.nameId,
           getDisplayName,
           new ConvertToStableIdentifierPatternFix(refPat),
           new RenameVariablePatternFix(refPat))
-      }
     }
   }
 }

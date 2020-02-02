@@ -130,18 +130,17 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
         .reduce { (maxmin1, maxmin2) =>
           (maxmin1._1.max(maxmin2._1), maxmin1._2.min(maxmin2._2))
         }
-      if (min.isNaN || max.isNaN || max.isInfinity || min.isInfinity) {
+      if (min.isNaN || max.isNaN || max.isInfinity || min.isInfinity)
         throw new UnsupportedOperationException(
           "Histogram on either an empty RDD or RDD containing +/-infinity or NaN")
-      }
-      val range = if (min != max) {
-        // Range.Double.inclusive(min, max, increment)
-        // The above code doesn't always work. See Scala bug #SI-8782.
-        // https://issues.scala-lang.org/browse/SI-8782
-        customRange(min, max, bucketCount)
-      } else {
-        List(min, min)
-      }
+      val range =
+        if (min != max)
+          // Range.Double.inclusive(min, max, increment)
+          // The above code doesn't always work. See Scala bug #SI-8782.
+          // https://issues.scala-lang.org/browse/SI-8782
+          customRange(min, max, bucketCount)
+        else
+          List(min, min)
       val buckets = range.toArray
       (buckets, histogram(buckets, true))
     }
@@ -166,10 +165,9 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
   def histogram(
       buckets: Array[Double],
       evenBuckets: Boolean = false): Array[Long] = self.withScope {
-    if (buckets.length < 2) {
+    if (buckets.length < 2)
       throw new IllegalArgumentException(
         "buckets array must have at least two elements")
-    }
     // The histogramPartition function computes the partail histogram for a given
     // partition. The provided bucketFunction determines which bucket in the array
     // to increment or returns None if there is no bucket. This is done so we can
@@ -178,12 +176,11 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
     def histogramPartition(bucketFunction: (Double) => Option[Int])(
         iter: Iterator[Double]): Iterator[Array[Long]] = {
       val counters = new Array[Long](buckets.length - 1)
-      while (iter.hasNext) {
+      while (iter.hasNext)
         bucketFunction(iter.next()) match {
-          case Some(x: Int) => { counters(x) += 1 }
-          case _            => {}
+          case Some(x: Int) => counters(x) += 1
+          case _            =>
         }
-      }
       Iterator(counters)
     }
     // Merge the counters.
@@ -203,26 +200,24 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
         // its out of bounds.
         // We do this rather than buckets.lengthCompare(insertionPoint)
         // because Array[Double] fails to override it (for now).
-        if (insertionPoint > 0 && insertionPoint < buckets.length) {
+        if (insertionPoint > 0 && insertionPoint < buckets.length)
           Some(insertionPoint - 1)
-        } else {
+        else
           None
-        }
-      } else if (location < buckets.length - 1) {
+      } else if (location < buckets.length - 1)
         // Exact match, just insert here
         Some(location)
-      } else {
+      else
         // Exact match to the last element
         Some(location - 1)
-      }
     }
     // Determine the bucket function in constant time. Requires that buckets are evenly spaced
     def fastBucketFunction(min: Double, max: Double, count: Int)(
         e: Double): Option[Int] =
       // If our input is not a number unless the increment is also NaN then we fail fast
-      if (e.isNaN || e < min || e > max) {
+      if (e.isNaN || e < min || e > max)
         None
-      } else {
+      else {
         // Compute ratio of e's distance along range to total range first, for better precision
         val bucketNumber = (((e - min) / (max - min)) * count).toInt
         // should be less than count, but will equal count if e == max, in which case
@@ -232,21 +227,20 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
     // Decide which bucket function to pass to histogramPartition. We decide here
     // rather than having a general function so that the decision need only be made
     // once rather than once per shard
-    val bucketFunction = if (evenBuckets) {
-      fastBucketFunction(buckets.head, buckets.last, buckets.length - 1) _
-    } else {
-      basicBucketFunction _
-    }
-    if (self.partitions.length == 0) {
+    val bucketFunction =
+      if (evenBuckets)
+        fastBucketFunction(buckets.head, buckets.last, buckets.length - 1) _
+      else
+        basicBucketFunction _
+    if (self.partitions.length == 0)
       new Array[Long](buckets.length - 1)
-    } else {
+    else
       // reduce() requires a non-empty RDD. This works because the mapPartitions will make
       // non-empty partitions out of empty ones. But it doesn't handle the no-partitions case,
       // which is below
       self
         .mapPartitions(histogramPartition(bucketFunction))
         .reduce(mergeCounters)
-    }
   }
 
 }

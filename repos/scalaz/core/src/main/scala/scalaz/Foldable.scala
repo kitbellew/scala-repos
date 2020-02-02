@@ -312,7 +312,7 @@ trait Foldable[F[_]] { self =>
   def selectSplit[A](fa: F[A])(p: A => Boolean): List[NonEmptyList[A]] =
     foldRight(fa, (List[NonEmptyList[A]](), false))((a, xb) =>
       xb match {
-        case (x, b) => {
+        case (x, b) =>
           val pa = p(a)
           (
             if (pa)
@@ -322,7 +322,6 @@ trait Foldable[F[_]] { self =>
                 NonEmptyList(a) :: x
             else x,
             pa)
-        }
       })._1
 
   /** ``O(n log n)`` complexity */

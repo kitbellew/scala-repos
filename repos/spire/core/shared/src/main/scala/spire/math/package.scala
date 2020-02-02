@@ -165,11 +165,10 @@ package object math {
         term = (kpow / factorial).setScale(precision, HALF_UP)
       }
 
-      if (i <= leeway) {
+      if (i <= leeway)
         sum.setScale(k.mc.getPrecision - sum.precision + sum.scale, FLOOR)
-      } else {
+      else
         doit(precision + 3, leeway * 1000)
-      }
     }
 
     val r = doit(k.mc.getPrecision + 3, 1000)
@@ -239,17 +238,16 @@ package object math {
       else if (e.testBit(0)) bigIntPow(t * b, b * b, e >> 1)
       else bigIntPow(t, b * b, e >> 1)
 
-    if (ex.signum < 0) {
+    if (ex.signum < 0)
       if (base.signum == 0)
         throw new ArithmeticException("zero can't be raised to negative power")
       else if (base == 1) base
       else if (base == -1) if (ex.testBit(0)) BigInt(1) else base
       else BigInt(0)
-    } else if (ex.isValidInt) {
+    else if (ex.isValidInt)
       base.pow(ex.toInt)
-    } else {
+    else
       bigIntPow(BigInt(1), base, ex)
-    }
   }
 
   /**
@@ -264,15 +262,14 @@ package object math {
       else if ((e & 1) == 1) longPow(t * b, b * b, e >> 1L)
       else longPow(t, b * b, e >> 1L)
 
-    if (exponent < 0L) {
+    if (exponent < 0L)
       if (base == 0L)
         throw new ArithmeticException("zero can't be raised to negative power")
       else if (base == 1L) 1L
       else if (base == -1L) if ((exponent & 1L) == 0L) -1L else 1L
       else 0L
-    } else {
+    else
       longPow(1L, base, exponent)
-    }
   }
 
   final def pow(base: Double, exponent: Double): Double =
@@ -295,7 +292,7 @@ package object math {
     var yz = numberOfTrailingZeros(y)
     y = Math.abs(y >> yz)
 
-    while (x != y) {
+    while (x != y)
       if (x > y) {
         x -= y
         x >>= numberOfTrailingZeros(x)
@@ -303,7 +300,6 @@ package object math {
         y -= x
         y >>= numberOfTrailingZeros(y)
       }
-    }
 
     if (xz < yz) x << xz else x << yz
   }

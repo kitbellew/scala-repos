@@ -23,7 +23,7 @@ class PackageFilter extends ElementFilter {
 
     if (leaf != null) {
       val parent = leaf.getParent
-      if (parent.isInstanceOf[ScalaFile] || parent.isInstanceOf[ScPackaging]) {
+      if (parent.isInstanceOf[ScalaFile] || parent.isInstanceOf[ScPackaging])
         if (leaf.getNextSibling != null && leaf.getNextSibling.getNextSibling
               .isInstanceOf[ScPackaging] &&
             leaf.getNextSibling.getNextSibling.getText.indexOf('{') == -1)
@@ -41,7 +41,6 @@ class PackageFilter extends ElementFilter {
             case _ => return true
           }
         }
-      }
     }
 
     false

@@ -84,9 +84,9 @@ object SparkHadoopMapRedUtil extends Logging {
         val canCommit =
           outputCommitCoordinator.canCommit(jobId, splitId, taskAttemptNumber)
 
-        if (canCommit) {
+        if (canCommit)
           performCommit()
-        } else {
+        else {
           val message =
             s"$mrTaskAttemptID: Not committed because the driver did not authorize commit"
           logInfo(message)
@@ -98,14 +98,12 @@ object SparkHadoopMapRedUtil extends Logging {
             splitId,
             taskAttemptNumber)
         }
-      } else {
+      } else
         // Speculation is disabled or a user has chosen to manually bypass the commit coordination
         performCommit()
-      }
-    } else {
+    } else
       // Some other attempt committed the output, so we do nothing and signal success
       logInfo(
         s"No need to commit output of task because needsTaskCommit=false: $mrTaskAttemptID")
-    }
   }
 }

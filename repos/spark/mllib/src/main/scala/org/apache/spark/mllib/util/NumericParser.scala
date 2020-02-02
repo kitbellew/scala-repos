@@ -37,17 +37,15 @@ private[mllib] object NumericParser {
     val tokenizer = new StringTokenizer(s, "()[],", true)
     if (tokenizer.hasMoreTokens()) {
       val token = tokenizer.nextToken()
-      if (token == "(") {
+      if (token == "(")
         parseTuple(tokenizer)
-      } else if (token == "[") {
+      else if (token == "[")
         parseArray(tokenizer)
-      } else {
+      else
         // expecting a number
         parseDouble(token)
-      }
-    } else {
+    } else
       throw new SparkException(s"Cannot find any token from the input string.")
-    }
   }
 
   private def parseArray(tokenizer: StringTokenizer): Array[Double] = {
@@ -57,23 +55,21 @@ private[mllib] object NumericParser {
     var token: String = null
     while (parsing && tokenizer.hasMoreTokens()) {
       token = tokenizer.nextToken()
-      if (token == "]") {
+      if (token == "]")
         parsing = false
-      } else if (token == ",") {
-        if (allowComma) {
+      else if (token == ",")
+        if (allowComma)
           allowComma = false
-        } else {
+        else
           throw new SparkException("Found a ',' at a wrong position.")
-        }
-      } else {
+      else {
         // expecting a number
         values += parseDouble(token)
         allowComma = true
       }
     }
-    if (parsing) {
+    if (parsing)
       throw new SparkException(s"An array must end with ']'.")
-    }
     values.result()
   }
 
@@ -90,15 +86,14 @@ private[mllib] object NumericParser {
       } else if (token == "[") {
         items.append(parseArray(tokenizer))
         allowComma = true
-      } else if (token == ",") {
-        if (allowComma) {
+      } else if (token == ",")
+        if (allowComma)
           allowComma = false
-        } else {
+        else
           throw new SparkException("Found a ',' at a wrong position.")
-        }
-      } else if (token == ")") {
+      else if (token == ")")
         parsing = false
-      } else if (token.trim.isEmpty) {
+      else if (token.trim.isEmpty) {
         // ignore whitespaces between delim chars, e.g. ", ["
       } else {
         // expecting a number
@@ -106,16 +101,14 @@ private[mllib] object NumericParser {
         allowComma = true
       }
     }
-    if (parsing) {
+    if (parsing)
       throw new SparkException(s"A tuple must end with ')'.")
-    }
     items
   }
 
   private def parseDouble(s: String): Double =
-    try {
-      java.lang.Double.parseDouble(s)
-    } catch {
+    try java.lang.Double.parseDouble(s)
+    catch {
       case e: NumberFormatException =>
         throw new SparkException(s"Cannot parse a double from: $s", e)
     }

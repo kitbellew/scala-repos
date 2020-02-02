@@ -40,16 +40,15 @@ private[graphx] object BytecodeUtils {
       closure: AnyRef,
       targetClass: Class[_],
       targetMethod: String): Boolean =
-    if (_invokedMethod(closure.getClass, "apply", targetClass, targetMethod)) {
+    if (_invokedMethod(closure.getClass, "apply", targetClass, targetMethod))
       true
-    } else {
+    else {
       // look at closures enclosed in this closure
       for (f <- closure.getClass.getDeclaredFields
            if f.getType.getName.startsWith("scala.Function")) {
         f.setAccessible(true)
-        if (invokedMethod(f.get(closure), targetClass, targetMethod)) {
+        if (invokedMethod(f.get(closure), targetClass, targetMethod))
           return true
-        }
       }
       return false
     }
@@ -69,13 +68,11 @@ private[graphx] object BytecodeUtils {
       seen.add((c, m))
       val finder = new MethodInvocationFinder(c.getName, m)
       getClassReader(c).accept(finder, 0)
-      for (classMethod <- finder.methodsInvoked) {
-        if (classMethod._1 == targetClass && classMethod._2 == targetMethod) {
+      for (classMethod <- finder.methodsInvoked)
+        if (classMethod._1 == targetClass && classMethod._2 == targetMethod)
           return true
-        } else if (!seen.contains(classMethod)) {
+        else if (!seen.contains(classMethod))
           stack = classMethod :: stack
-        }
-      }
     }
     return false
   }
@@ -124,7 +121,7 @@ private[graphx] object BytecodeUtils {
         desc: String,
         sig: String,
         exceptions: Array[String]): MethodVisitor =
-      if (name == methodName) {
+      if (name == methodName)
         new MethodVisitor(ASM5) {
           override def visitMethodInsn(
               op: Int,
@@ -132,16 +129,13 @@ private[graphx] object BytecodeUtils {
               name: String,
               desc: String,
               itf: Boolean) {
-            if (op == INVOKEVIRTUAL || op == INVOKESPECIAL || op == INVOKESTATIC) {
-              if (!skipClass(owner)) {
+            if (op == INVOKEVIRTUAL || op == INVOKESPECIAL || op == INVOKESTATIC)
+              if (!skipClass(owner))
                 methodsInvoked.add(
                   (Utils.classForName(owner.replace("/", ".")), name))
-              }
-            }
           }
         }
-      } else {
+      else
         null
-      }
   }
 }

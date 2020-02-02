@@ -94,9 +94,9 @@ private[tests] trait CoreTestDefs
     override def runTest() {
       askAllSources(HyperlinkMarker) { pos => askTypeAt(pos)(NullReporter) } {
         (pos, tree) =>
-          if (tree.symbol == compiler.NoSymbol || tree.symbol == null) {
+          if (tree.symbol == compiler.NoSymbol || tree.symbol == null)
             reporter.println("\nNo symbol is associated with tree: " + tree)
-          } else {
+          else {
             reporter.println(
               "\naskHyperlinkPos for `" + tree.symbol.name + "` at " + format(
                 pos) + " " + pos.source.file.name)

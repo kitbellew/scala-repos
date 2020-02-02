@@ -244,9 +244,8 @@ class ExecuteRequest(
         Buffer(Array(newParamsBound)),
         types,
         values)
-    } else {
+    } else
       Buffer(bw, Buffer(nullBitmap), Buffer(Array(newParamsBound)), values)
-    }
     Packet(seq, composite)
   }
 }

@@ -70,9 +70,8 @@ object ScalaBuilder {
         val result = using(
           new DataInputStream(
             new BufferedInputStream(new FileInputStream(file)))) { in =>
-          try {
-            Some(IncrementalityType.valueOf(in.readUTF()))
-          } catch {
+          try Some(IncrementalityType.valueOf(in.readUTF()))
+          catch {
             case _: IOException | _: IllegalArgumentException |
                 _: NullPointerException =>
               None
@@ -132,10 +131,9 @@ object ScalaBuilder {
         }
       case Some(_) =>
         if (ScalaBuilder.isScalaProject(
-              context.getProjectDescriptor.getProject)) {
+              context.getProjectDescriptor.getProject))
           throw new ProjectBuildException(
             "scala: type of incremental compiler has been changed, full rebuild is required")
-        }
     }
   }
 
@@ -166,9 +164,7 @@ object ScalaBuilder {
           .getSortedTargetChunks(context)
           .asScala
         target <- chunk.getTargets.asScala
-      } {
-        if (!context.getScope.isAffected(target)) return false
-      }
+      } if (!context.getScope.isAffected(target)) return false
       true
     }
 
@@ -225,8 +221,7 @@ object ScalaBuilder {
       new RemoteServer(
         InetAddress.getByName(null),
         settings.getCompileServerPort)
-    } else {
+    } else
       localServer
-    }
   }
 }

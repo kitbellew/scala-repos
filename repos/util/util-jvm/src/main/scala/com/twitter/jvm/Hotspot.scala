@@ -29,12 +29,12 @@ class Hotspot extends Jvm {
 
   private[this] val jvm: VMManagement = {
     val fld =
-      try {
-        // jdk5/6 have jvm field in ManagementFactory class
-        Class
-          .forName("sun.management.ManagementFactory")
-          .getDeclaredField("jvm")
-      } catch {
+      try
+      // jdk5/6 have jvm field in ManagementFactory class
+      Class
+        .forName("sun.management.ManagementFactory")
+        .getDeclaredField("jvm")
+      catch {
         case _: NoSuchFieldException =>
           // jdk7 moves jvm field to ManagementFactoryHelper class
           Class
@@ -140,13 +140,12 @@ class Hotspot extends Jvm {
 
   private[this] val safepointBean = {
     val runtimeBean =
-      try {
-        Class
-          .forName("sun.management.ManagementFactory")
-          .getMethod("getHotspotRuntimeMBean")
-          .invoke(null)
-        // jdk 6 has HotspotRuntimeMBean in the ManagementFactory class
-      } catch {
+      try Class
+        .forName("sun.management.ManagementFactory")
+        .getMethod("getHotspotRuntimeMBean")
+        .invoke(null)
+      // jdk 6 has HotspotRuntimeMBean in the ManagementFactory class
+      catch {
         case _: Throwable =>
           Class
             .forName("sun.management.ManagementFactoryHelper")
@@ -161,9 +160,8 @@ class Hotspot extends Jvm {
         def getTotalSafepointTime: Long;
         def getSafepointCount: Long
       }]
-    try {
-      asSafepointBean(runtimeBean)
-    } catch {
+    try asSafepointBean(runtimeBean)
+    catch {
       // Handles possible name changes in new jdk versions
       case t: Throwable =>
         log.log(Level.WARNING, "failed to get runtimeBean", t)

@@ -183,9 +183,8 @@ final class RhinoJSEnv private (
     def send(msg: String): Unit = channel.sendToJS(msg)
 
     def receive(timeout: Duration): String =
-      try {
-        channel.recvJVM(timeout)
-      } catch {
+      try channel.recvJVM(timeout)
+      catch {
         case _: ChannelClosedException =>
           throw new ComJSEnv.ComClosedException
       }
@@ -220,14 +219,13 @@ final class RhinoJSEnv private (
 
       // Optionally setup scalaJSCom
       var recvCallback: Option[String => Unit] = None
-      for (channel <- optChannel) {
+      for (channel <- optChannel)
         setupCom(
           context,
           scope,
           channel,
           setCallback = cb => recvCallback = Some(cb),
           clrCallback = () => recvCallback = None)
-      }
 
       try {
         // Evaluate pre JS libs
@@ -244,13 +242,12 @@ final class RhinoJSEnv private (
 
         // Start the event loop
 
-        for (channel <- optChannel) {
+        for (channel <- optChannel)
           comEventLoop(
             taskQ,
             channel,
             () => recvCallback.get,
             () => recvCallback.isDefined)
-        }
 
         // Channel is closed. Fall back to basic event loop
         basicEventLoop(taskQ)
@@ -520,7 +517,7 @@ final class RhinoJSEnv private (
         if (task.canceled) {
           taskQ.dequeue()
           loop()
-        } else {
+        } else
           waitFct(task.deadline) match {
             case result @ Some(_) => result
 
@@ -536,7 +533,6 @@ final class RhinoJSEnv private (
 
               loop()
           }
-        }
       }
     }
 

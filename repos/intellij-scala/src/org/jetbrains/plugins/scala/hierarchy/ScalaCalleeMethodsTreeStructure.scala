@@ -62,7 +62,7 @@ class ScalaCalleeMethodsTreeStructure(
     val result: ArrayBuffer[CallHierarchyNodeDescriptor] =
       new ArrayBuffer[CallHierarchyNodeDescriptor]
     for (calledMethod <- methods
-         if isInScope(baseClass, calledMethod, myScopeType)) {
+         if isInScope(baseClass, calledMethod, myScopeType))
       methodToDescriptorMap.get(calledMethod) match {
         case Some(d) => d.incrementUsageCount()
         case _ =>
@@ -75,7 +75,6 @@ class ScalaCalleeMethodsTreeStructure(
           methodToDescriptorMap.put(calledMethod, d)
           result += d
       }
-    }
     val overridingMethods: Array[PsiMethod] =
       OverridingMethodsSearch
         .search(method, method.getUseScope, true)
@@ -111,18 +110,15 @@ object ScalaCalleeMethodsTreeStructure {
         val methodExpression: PsiReferenceExpression =
           callExpression.getMethodExpression
         val method: PsiMethod = methodExpression.resolve.asInstanceOf[PsiMethod]
-        if (method != null) {
+        if (method != null)
           methods += method
-        }
       case newExpression: PsiNewExpression =>
         val method: PsiMethod = newExpression.resolveConstructor
-        if (method != null) {
+        if (method != null)
           methods += method
-        }
       case _ =>
     }
-    for (child <- element.getChildren) {
+    for (child <- element.getChildren)
       visitor(child, methods)
-    }
   }
 }

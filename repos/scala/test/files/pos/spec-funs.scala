@@ -20,9 +20,8 @@ final class IntTest {
     val f = new AbsFunction1[Int, Int] {
       def apply(x: Int): Int = x * x
     }
-    for (j <- 0 until niters) {
+    for (j <- 0 until niters)
       transF(xs, f)
-    }
     var acc = 0
     for (i <- 0 until xs.length) acc += xs(i)
     println(acc)
@@ -45,9 +44,8 @@ final class ClosureTest {
   def run() {
     val xs = new Array[Int](10000)
 //    val f = (x: Int) => x * x
-    for (j <- 0 until niters) {
+    for (j <- 0 until niters)
       transF(xs, x => x * x)
-    }
     var acc = 0
     for (i <- 0 until xs.length) acc += xs(i)
     println(acc)

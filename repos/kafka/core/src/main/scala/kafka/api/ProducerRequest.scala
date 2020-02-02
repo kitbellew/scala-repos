@@ -145,9 +145,9 @@ case class ProducerRequest(
       e: Throwable,
       requestChannel: RequestChannel,
       request: RequestChannel.Request): Unit =
-    if (request.requestObj.asInstanceOf[ProducerRequest].requiredAcks == 0) {
+    if (request.requestObj.asInstanceOf[ProducerRequest].requiredAcks == 0)
       requestChannel.closeConnection(request.processor, request)
-    } else {
+    else {
       val producerResponseStatus = data.map {
         case (topicAndPartition, data) =>
           (

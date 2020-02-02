@@ -31,9 +31,8 @@ class WorksheetFoldGroup(
     val key: Int = unfolded floorKey left
 
     if (key == 0) left
-    else {
+    else
       unfolded.get(key) + left
-    }
   }
 
   def addRegion(

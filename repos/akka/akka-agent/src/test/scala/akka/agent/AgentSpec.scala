@@ -110,11 +110,9 @@ class AgentSpec extends AkkaSpec {
 
       val agent = Agent(5)
 
-      try {
-        atomic { t ⇒
-          agent send (_ * 2)
-          throw new RuntimeException("Expected failure")
-        }
+      try atomic { t ⇒
+        agent send (_ * 2)
+        throw new RuntimeException("Expected failure")
       } catch { case NonFatal(_) ⇒ }
 
       agent send countDown
@@ -151,9 +149,8 @@ class AgentSpec extends AkkaSpec {
       val agent = Agent(3)
       var result = 0
 
-      for (value ← agent) {
+      for (value ← agent)
         result += value
-      }
 
       result should ===(3)
     }

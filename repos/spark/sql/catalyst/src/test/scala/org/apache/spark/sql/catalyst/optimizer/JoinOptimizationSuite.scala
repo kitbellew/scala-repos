@@ -86,11 +86,10 @@ class JoinOptimizationSuite extends PlanTest {
     val y = testRelation1.subquery('y)
     val z = testRelation.subquery('z)
 
-    val originalQuery = {
+    val originalQuery =
       x.join(y)
         .join(z)
         .where(("x.b".attr === "z.b".attr) && ("y.d".attr === "z.a".attr))
-    }
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =

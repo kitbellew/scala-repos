@@ -82,10 +82,9 @@ class BoneConnectionPool @Inject() (environment: Environment)
     datasource.setConnectionHook(new AbstractConnectionHook {
 
       override def onCheckIn(connection: ConnectionHandle) {
-        if (logger.isTraceEnabled) {
+        if (logger.isTraceEnabled)
           logger.trace(
             s"Check in connection $connection [${datasource.getTotalLeased} leased]")
-        }
       }
 
       override def onCheckOut(connection: ConnectionHandle) {
@@ -93,10 +92,9 @@ class BoneConnectionPool @Inject() (environment: Environment)
         isolation.foreach(connection.setTransactionIsolation)
         connection.setReadOnly(readOnly)
         catalog.foreach(connection.setCatalog)
-        if (logger.isTraceEnabled) {
+        if (logger.isTraceEnabled)
           logger.trace(
             s"Check out connection $connection [${datasource.getTotalLeased} leased]")
-        }
       }
 
       override def onQueryExecuteTimeLimitExceeded(

@@ -53,10 +53,9 @@ trait DensePolynomial {
        *  the other way around.
        */
       def apply(k: PolyDenseUFuncWrapper, v: DenseMatrix[Double]) = {
-        if (v.rows != v.cols) {
+        if (v.rows != v.cols)
           throw new IllegalArgumentException(
             "Can only apply polynomial to square matrix.")
-        }
         val n = v.rows
         val coeffs: Array[Double] = k.p.coeffs
         var i = coeffs.length - 1

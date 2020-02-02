@@ -46,20 +46,19 @@ case class ImportData(pgn: String, analyse: Option[String]) {
             val initBoard = tag(_.FEN) flatMap Forsyth.<< map (_.board)
             val fromPosition =
               initBoard.nonEmpty && tag(_.FEN) != Forsyth.initial.some
-            val variant = {
+            val variant =
               tag(_.Variant)
                 .map(Chess960.fixVariantName)
                 .flatMap(chess.variant.Variant.byName) | {
                 fromPosition.fold(
                   chess.variant.FromPosition,
                   chess.variant.Standard)
+              } match {
+                case chess.variant.Chess960
+                    if !Chess960.isStartPosition(setup.board) =>
+                  chess.variant.FromPosition
+                case v => v
               }
-            } match {
-              case chess.variant.Chess960
-                  if !Chess960.isStartPosition(setup.board) =>
-                chess.variant.FromPosition
-              case v => v
-            }
 
             val result = tag(_.Result) ifFalse game.situation.end collect {
               case "1-0"     => Result(Status.UnknownFinish, Color.White.some)

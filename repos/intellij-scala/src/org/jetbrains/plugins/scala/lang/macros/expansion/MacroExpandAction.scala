@@ -82,9 +82,8 @@ class MacroExpandAction extends AnAction {
   def expandMacroUnderCursor(expansion: ResolvedMacroExpansion)(
       implicit e: AnActionEvent) =
     inWriteCommandAction(e.getProject) {
-      try {
-        applyExpansion(expansion)
-      } catch {
+      try applyExpansion(expansion)
+      catch {
         case e: UnresolvedExpansion =>
           LOG.warn(
             s"unable to expand ${expansion.expansion.place}, cannot resolve place, skipping")
@@ -139,10 +138,9 @@ class MacroExpandAction extends AnAction {
         if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
           val file = element.getContainingFile
           val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
-          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains(
-                "\n")) {
+          if (nextLeaf
+                .isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains("\n"))
             tobeDeleted += element
-          }
         }
         element.acceptChildren(this)
       }
@@ -317,9 +315,8 @@ class MacroExpandAction extends AnAction {
     val fs = new BufferedInputStream(new FileInputStream(file))
     val os = new ObjectInputStream(fs)
     val res = scala.collection.mutable.ListBuffer[MacroExpansion]()
-    while (fs.available() > 0) {
+    while (fs.available() > 0)
       res += os.readObject().asInstanceOf[MacroExpansion]
-    }
     res
   }
 

@@ -122,16 +122,15 @@ object Ratatoskr {
     commands.map(c => (c.name, c))(collection.breakOut)
 
   def main(args: Array[String]) {
-    if (args.length > 0) {
+    if (args.length > 0)
       commandMap
         .get(args(0))
         .map { c => c.run(args.slice(1, args.length)) }
         .getOrElse {
           die(usage("Unknown command: [%s]".format(args(0))))
         }
-    } else {
+    else
       die(usage())
-    }
   }
 
   def die(msg: String, code: Int = 1) {
@@ -226,11 +225,10 @@ object KafkaTools extends Command {
         config.files = config.files :+ (new File(s))
       })
     }
-    if (parser.parse(args)) {
+    if (parser.parse(args))
       process(config)
-    } else {
+    else
       parser
-    }
   }
 
   def process(config: Config) {
@@ -247,13 +245,11 @@ object KafkaTools extends Command {
         i: Int = 0): Unit =
       if (itr.hasNext && !range.done(i)) {
         val next = itr.next
-        if (range.contains(i)) {
+        if (range.contains(i))
           format.dump(i, next)
-        }
         traverse(itr, range, format, i + 1)
-      } else {
+      } else
         ()
-      }
 
     val ms = new FileMessageSet(file, false)
 
@@ -345,10 +341,10 @@ object KafkaTools extends Command {
         state: ReportState,
         msg: IngestMessage) = {
       // Track timestamps
-      (if (msg.timestamp != EventMessage.defaultTimestamp) {
+      (if (msg.timestamp != EventMessage.defaultTimestamp)
          //println("Exact timestamp found: " + msg.timestamp)
          Some(ExactTime(msg.timestamp.getMillis, state.index))
-       } else {
+       else {
          // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
          val timestamps = (msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
            _.value \ "timestamp"))
@@ -362,13 +358,12 @@ object KafkaTools extends Command {
            .flatMap { date =>
              try {
                val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
-               if (ts.getMillis > lastTimestamp.time) {
+               if (ts.getMillis > lastTimestamp.time)
                  //println("Assigning new timestamp: " + ts)
                  Some(ts)
-               } else {
+               else
                  //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
                  None
-               }
              } catch {
                case t =>
                  //println("Error on datetime parse: " + t)
@@ -404,9 +399,8 @@ object KafkaTools extends Command {
       }
 
       import msg._
-      if (state.index % trackInterval == 0) {
+      if (state.index % trackInterval == 0)
         trackState(state)
-      }
 
       if (path.length > 0) {
         val size = data.map(_.value.renderCompact.length).sum
@@ -415,9 +409,8 @@ object KafkaTools extends Command {
           state.index + 1,
           state.pathSize + (path -> (state.pathSize
             .getOrElse(path, 0L) + size)))
-      } else {
+      } else
         state.inc
-      }
     }
 
     def process(config: Config, range: MessageRange) = {
@@ -459,18 +452,17 @@ object KafkaTools extends Command {
                     processIngest(config.trackInterval, state, imessage)
 
                   case Success(ArchiveMessage(_, path, _, _, _)) =>
-                    if (config.cumulative) {
+                    if (config.cumulative)
                       state.inc
-                    } else {
+                    else {
                       trackState(state)
 
-                      if (path.length > 0) {
+                      if (path.length > 0)
                         //println("Deleting from path " + path)
                         ReportState(index + 1, currentPathSize + (path -> 0L))
                           .unsafeTap { newState => trackState(newState) }
-                      } else {
+                      else
                         state.inc
-                      }
                     }
 
                   case other =>
@@ -506,7 +498,7 @@ object KafkaTools extends Command {
                   accountTotals.mkString(",")))
             }
         }
-      } else {
+      } else
         slices.foreach {
           case (index, byAccount) =>
             (index match {
@@ -520,18 +512,16 @@ object KafkaTools extends Command {
                   "account" -> JString("total"),
                   "size" -> JNum(byAccount.map(_._2).sum)).renderCompact)
               trackedAccounts.foreach { account =>
-                if (byAccount.contains(account)) {
+                if (byAccount.contains(account))
                   println(
                     JObject(
                       "index" -> JNum(timestamp),
                       "account" -> JString(
                         accountLookup.getOrElse(account, account)),
                       "size" -> JNum(byAccount.getOrElse(account, 0L))).renderCompact)
-                }
               }
             }
         }
-      }
       sys.exit(0) // due to BlueEyes holding things open for mongo
     }
   }
@@ -563,24 +553,22 @@ object KafkaTools extends Command {
 
     def parse(s: String): Option[MessageRange] = {
       val parts = s.split(":")
-      if (parts.length == 2) {
+      if (parts.length == 2)
         (parseOffset(parts(0)), parseOffset(parts(1))) match {
           case (Right(s), Right(f)) => Some(MessageRange(s, f))
           case _                    => None
         }
-      } else {
+      else
         None
-      }
     }
 
     def parseOffset(s: String): Either[Unit, Option[Int]] =
-      try {
-        Right(if (s.trim.length == 0) {
+      try Right(
+        if (s.trim.length == 0)
           None
-        } else {
-          Some(s.toInt)
-        })
-      } catch {
+        else
+          Some(s.toInt))
+      catch {
         case ex => Left("Parse error for: " + s)
       }
   }
@@ -695,14 +683,10 @@ object ZookeeperTools extends Command {
     if (parser.parse(args)) {
       val conn: ZkConnection = new ZkConnection(config.zkConn)
       val client: ZkClient = new ZkClient(conn)
-      try {
-        process(conn, client, config)
-      } finally {
-        client.close
-      }
-    } else {
+      try process(conn, client, config)
+      finally client.close
+    } else
       parser
-    }
   }
 
   def process(conn: ZkConnection, client: ZkClient, config: Config) {
@@ -785,15 +769,14 @@ object ZookeeperTools extends Command {
 
   def pathsAt(path: String, client: ZkClient): Buffer[(String, String)] = {
     val children = client.watchForChilds(path)
-    if (children == null) {
+    if (children == null)
       ListBuffer[(String, String)]()
-    } else {
+    else
       children.asScala map { child =>
         val bytes =
           client.readData(path + "/" + child).asInstanceOf[Array[Byte]]
         (child, new String(bytes))
       }
-    }
   }
 
   class Config(
@@ -848,14 +831,10 @@ object IngestTools extends Command {
     if (parser.parse(args)) {
       val conn = new ZkConnection(config.zkConn)
       val client = new ZkClient(conn)
-      try {
-        process(conn, client, config)
-      } finally {
-        client.close
-      }
-    } else {
+      try process(conn, client, config)
+      finally client.close
+    } else
       parser
-    }
   }
 
   val shardCheckpointPath =
@@ -984,11 +963,10 @@ object ImportTools extends Command with Logging {
       })
     }
 
-    if (parser.parse(args)) {
+    if (parser.parse(args))
       process(config)
-    } else {
+    else
       parser
-    }
   }
 
   def process(config: Config) {
@@ -1115,11 +1093,11 @@ object ImportTools extends Command with Logging {
           val input = if (n >= 0) More(bb) else Done
           val (AsyncParse(errors, results), parser) = p(input)
 
-          if (!errors.isEmpty) {
+          if (!errors.isEmpty)
             sys.error(
               "found %d parse errors.\nfirst 5 were: %s" format (errors.length, errors
                 .take(5)))
-          } else if (results.size > 0) {
+          else if (results.size > 0) {
             val eventidobj = EventId(pid, sid.getAndIncrement)
             logger.info("Sending %d events".format(results.size))
             val records = results map { IngestRecord(eventidobj, _) }
@@ -1142,9 +1120,8 @@ object ImportTools extends Command with Logging {
               bb.flip()
               if (n >= 0) loop(offset + 1, parser) else Future(())
             }
-          } else {
-            if (n >= 0) loop(offset + 1, parser) else Future(())
-          }
+          } else if (n >= 0) loop(offset + 1, parser)
+          else Future(())
         }
 
         loop(0L, AsyncParser.stream()) onComplete {
@@ -1179,11 +1156,10 @@ object CSVTools extends Command {
     val config = new Config
     val parser = new OptionParser("yggutils csv") {
       opt("d", "delimeter", "field delimeter", { s: String =>
-        if (s.length == 1) {
+        if (s.length == 1)
           config.delimeter = s.charAt(0)
-        } else {
+        else
           sys.error("Invalid delimeter")
-        }
       })
       opt("t", "mapTimestamps", "Map timestamps to expected format.", {
         config.teaseTimestamps = true
@@ -1195,11 +1171,10 @@ object CSVTools extends Command {
         config.input = s
       })
     }
-    if (parser.parse(args)) {
+    if (parser.parse(args))
       process(config)
-    } else {
+    else
       parser
-    }
   }
 
   def process(config: Config) {
@@ -1256,11 +1231,10 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         config.servers = s
       })
     }
-    if (parser.parse(args)) {
+    if (parser.parse(args))
       process(config)
-    } else {
+    else
       parser
-    }
   }
 
   def process(config: Config) {
@@ -1273,9 +1247,7 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         config.delete.map(delete(_, apiKeys))
       _ <- Future.sequence(actions)
       _ <- Stoppable.stop(stoppable)
-    } yield {
-      defaultActorSystem.shutdown
-    }
+    } yield defaultActorSystem.shutdown
 
     Await.result(job, Duration(30, "seconds"))
   }
@@ -1291,18 +1263,18 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         _ => mongo.close
       })
 
-    val rootKey: Future[APIKeyRecord] = if (config.createRoot) {
-      MongoAPIKeyManager.createRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys,
-        config.mongoSettings.grants
-      )
-    } else {
-      MongoAPIKeyManager.findRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys
-      )
-    }
+    val rootKey: Future[APIKeyRecord] =
+      if (config.createRoot)
+        MongoAPIKeyManager.createRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys,
+          config.mongoSettings.grants
+        )
+      else
+        MongoAPIKeyManager.findRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys
+        )
 
     rootKey map { k =>
       (
@@ -1315,14 +1287,11 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
   }
 
   def list(apiKeyManager: APIKeyManager[Future]) =
-    for (apiKeys <- apiKeyManager.listAPIKeys) yield {
-      apiKeys.foreach(printAPIKey)
-    }
+    for (apiKeys <- apiKeyManager.listAPIKeys)
+      yield apiKeys.foreach(printAPIKey)
 
   def showRoot(apiKeyManager: APIKeyManager[Future]) =
-    for (rootAPIKey <- apiKeyManager.rootAPIKey) yield {
-      println(rootAPIKey)
-    }
+    for (rootAPIKey <- apiKeyManager.rootAPIKey) yield println(rootAPIKey)
 
   def printAPIKey(t: APIKeyRecord): Unit =
     println(t)

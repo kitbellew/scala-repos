@@ -67,7 +67,7 @@ case class PlayerAggregateAssessment(
 
     val exceptionalDif: Boolean = difs map (sigDif(30) _).tupled exists (~_)
 
-    if (actionable) {
+    if (actionable)
       if (markable && bannable) EngineAndBan
       else if (markable) Engine
       else if (reportable
@@ -75,11 +75,9 @@ case class PlayerAggregateAssessment(
                && cheatingSum >= 1) Engine
       else if (reportable) Report
       else Nothing
-    } else {
-      if (markable) Report
-      else if (reportable) Report
-      else Nothing
-    }
+    else if (markable) Report
+    else if (reportable) Report
+    else Nothing
   }
 
   def countAssessmentValue(assessment: GameAssessment) =

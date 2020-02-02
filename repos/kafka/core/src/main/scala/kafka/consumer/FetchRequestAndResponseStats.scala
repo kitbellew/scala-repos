@@ -84,11 +84,10 @@ object FetchRequestAndResponseStatsRegistry {
   def removeConsumerFetchRequestAndResponseStats(clientId: String) {
     val pattern = (".*" + clientId + ".*").r
     val keys = globalStats.keys
-    for (key <- keys) {
+    for (key <- keys)
       pattern.findFirstIn(key) match {
         case Some(_) => globalStats.remove(key)
         case _       =>
       }
-    }
   }
 }

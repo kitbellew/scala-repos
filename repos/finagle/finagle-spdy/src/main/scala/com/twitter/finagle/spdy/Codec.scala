@@ -53,15 +53,14 @@ case class Spdy(
 
   private[this] def spdyFrameCodec = {
     val maxHeaderSizeInBytes = _maxHeaderSize.inBytes.toInt
-    if (_enableHeaderCompression) {
+    if (_enableHeaderCompression)
       // Header blocks tend to be small so reduce the window-size of the
       // compressor from 32 KB (15) to 2KB (11) to save memory.
       // These settings still provide sufficient compression to fit the
       // compressed header block within the TCP initial congestion window.
       new SpdyFrameCodec(_version, 8192, maxHeaderSizeInBytes, 9, 11, 8)
-    } else {
+    else
       new SpdyRawFrameCodec(_version, 8192, maxHeaderSizeInBytes)
-    }
   }
 
   def client = { config =>

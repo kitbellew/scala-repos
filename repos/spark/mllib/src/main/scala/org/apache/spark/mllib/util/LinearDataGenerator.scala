@@ -146,7 +146,7 @@ object LinearDataGenerator {
     def rndElement(i: Int) =
       (rnd.nextDouble() - 0.5) * math.sqrt(12.0 * xVariance(i)) + xMean(i)
 
-    if (sparsity == 0.0) {
+    if (sparsity == 0.0)
       (0 until nPoints).map { _ =>
         val features =
           Vectors.dense(weights.indices.map { rndElement(_) }.toArray)
@@ -155,7 +155,7 @@ object LinearDataGenerator {
         // Return LabeledPoints with DenseVector
         LabeledPoint(label, features)
       }
-    } else {
+    else
       (0 until nPoints).map { _ =>
         val indices = weights.indices.filter { _ =>
           rnd.nextDouble() <= sparsity
@@ -168,7 +168,6 @@ object LinearDataGenerator {
         // Return LabeledPoints with SparseVector
         LabeledPoint(label, features)
       }
-    }
   }
 
   /**

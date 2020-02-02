@@ -185,27 +185,25 @@ object Codec {
     if ((n & ~0x7F) != 0) {
       buf.put((n & 0x7F | 0x80).toByte)
       writePackedInt(n >> 7, buf)
-    } else {
+    } else
       buf.put((n & 0x7F).toByte)
-    }
 
   def readPackedInt(buf: ByteBuffer): Int = {
     @tailrec def loop(n: Int, offset: Int): Int = {
       val b = buf.get()
-      if ((b & 0x80) != 0) {
+      if ((b & 0x80) != 0)
         loop(n | ((b & 0x7F) << offset), offset + 7)
-      } else {
+      else
         n | ((b & 0x7F) << offset)
-      }
     }
     loop(0, 0)
   }
 
   @tailrec
   def sizePackedInt(n: Int, size: Int = 1): Int =
-    if ((n & ~0x7F) != 0) {
+    if ((n & ~0x7F) != 0)
       sizePackedInt(n >>> 7, size + 1)
-    } else size
+    else size
 
   case class CompositeCodec[A, B, C](
       codecA: Codec[A],
@@ -266,9 +264,8 @@ object Codec {
       if (b.remaining >= size) {
         writeUnsafe(a, b)
         None
-      } else {
+      } else
         Some(a)
-      }
 
     def writeMore(a: A, b: ByteBuffer): Option[A] = writeInit(a, b)
     override def skip(buf: ByteBuffer) {
@@ -324,9 +321,9 @@ object Codec {
     }
 
     def writeInit(n: Long, buf: ByteBuffer): Option[S] =
-      if (buf.remaining() < 10) {
+      if (buf.remaining() < 10)
         Some(n)
-      } else {
+      else {
         writeUnsafe(n, buf)
         None
       }
@@ -347,16 +344,14 @@ object Codec {
       val lo = if (sn < 0) {
         n = ~sn
         n & 0x3FL | 0x40L
-      } else {
+      } else
         n & 0x3FL
-      }
 
       if ((~0x3FL & n) != 0) {
         buf.put((lo | 0x80L).toByte)
         loop(n >> 6)
-      } else {
+      } else
         buf.put(lo.toByte)
-      }
     }
 
     def read(buf: ByteBuffer): Long = {
@@ -409,13 +404,13 @@ object Codec {
       var size = 0
       while (i < s.length) {
         val ch = s.codePointAt(i)
-        if (ch < 0x80) {
+        if (ch < 0x80)
           size += 1
-        } else if (ch < 0x800) {
+        else if (ch < 0x800)
           size += 2
-        } else if (ch < 0x10000) {
+        else if (ch < 0x10000)
           size += 3
-        } else {
+        else {
           size += 4
           i += 1
         }
@@ -438,22 +433,20 @@ object Codec {
         val source = CharBuffer.wrap(a)
         val encoder = Utf8Charset.newEncoder
 
-        if (encoder.encode(source, sink, true) == CoderResult.OVERFLOW) {
+        if (encoder.encode(source, sink, true) == CoderResult.OVERFLOW)
           Some(Right((source, encoder)))
-        } else {
+        else
           None
-        }
       }
 
     def writeMore(more: S, sink: ByteBuffer): Option[S] = more match {
       case Left(a) => writeInit(a, sink)
       case Right((source, encoder)) =>
         if ((encoder.encode(source, sink, true) == CoderResult.OVERFLOW) ||
-            (encoder.flush(sink) == CoderResult.OVERFLOW)) {
+            (encoder.flush(sink) == CoderResult.OVERFLOW))
           Some(Right((source, encoder)))
-        } else {
+        else
           None
-        }
     }
 
     def read(src: ByteBuffer): String = {
@@ -481,11 +474,10 @@ object Codec {
       a.position(a.position() + (alen - pos))
       b.position(b.position() + (blen - pos))
 
-      if (cmp == 0) {
+      if (cmp == 0)
         alen - blen
-      } else {
+      else
         cmp
-      }
     }
   }
 
@@ -568,9 +560,9 @@ object Codec {
     override def maxSize(as: Array[A]): Int = {
       @tailrec
       def loop(row: Int, size: Int): Int =
-        if (row < as.length) {
+        if (row < as.length)
           loop(row + 1, size + elemCodec.maxSize(as(row)))
-        } else size
+        else size
 
       loop(0, 5)
     }
@@ -578,9 +570,9 @@ object Codec {
     def encodedSize(as: Array[A]): Int = {
       @tailrec
       def loop(row: Int, size: Int): Int =
-        if (row < as.length) {
+        if (row < as.length)
           loop(row + 1, size + elemCodec.encodedSize(as(row)))
-        } else size
+        else size
       loop(0, sizePackedInt(as.length))
     }
 
@@ -599,12 +591,12 @@ object Codec {
         as: Array[A],
         row: Int,
         sink: ByteBuffer): Option[S] =
-      if (row < as.length) {
+      if (row < as.length)
         elemCodec.writeInit(as(row), sink) match {
           case Some(s) => Some(Right((s, as, row + 1)))
           case None    => writeArray(as, row + 1, sink)
         }
-      } else None
+      else None
 
     def writeInit(as: Array[A], sink: ByteBuffer): Option[S] =
       if (sink.remaining < 5) Some(Left(as))
@@ -723,9 +715,8 @@ object Codec {
 
     override def skip(buf: ByteBuffer) {
       var b = buf.get()
-      while ((b & 3) != 0 && (b & 12) != 0 && (b & 48) != 0 && (b & 192) != 0) {
+      while ((b & 3) != 0 && (b & 12) != 0 && (b & 48) != 0 && (b & 192) != 0)
         b = buf.get()
-      }
     }
 
     def writeBitSet(bs: BitSet): Array[Byte] = {
@@ -739,15 +730,14 @@ object Codec {
       def rec(bs: List[Int], l: Int, r: Int, offset: Int): Int = {
         val c = (l + r) / 2
 
-        if (l == r) {
+        if (l == r)
           offset
-        } else if (r - l == 1) {
-          if (bs == (l :: Nil)) {
+        else if (r - l == 1) {
+          if (bs == (l :: Nil))
             set(offset)
-          }
           set(offset + 1)
           offset + 2
-        } else {
+        } else
           bs partition (_ < c) match {
             case (Nil, Nil) =>
               offset
@@ -762,7 +752,6 @@ object Codec {
               set(offset + 1)
               rec(hi, c, r, rec(lo, l, c, offset + 2))
           }
-        }
       }
 
       val len = rec(bs.toList, 0, size, 0)
@@ -777,12 +766,11 @@ object Codec {
 
       val bits = new BitSet
       def read(l: Int, r: Int, offset: Int): Int =
-        if (l == r) {
+        if (l == r)
           offset
-        } else if (r - l == 1) {
-          if (get(offset)) {
+        else if (r - l == 1) {
+          if (get(offset))
             bits(l) = true
-          }
           offset + 2
         } else {
           val c = (l + r) / 2
@@ -845,9 +833,8 @@ object Codec {
 
     override def skip(buf: ByteBuffer) {
       var b = buf.get()
-      while ((b & 3) != 0 && (b & 12) != 0 && (b & 48) != 0 && (b & 192) != 0) {
+      while ((b & 3) != 0 && (b & 12) != 0 && (b & 48) != 0 && (b & 192) != 0)
         b = buf.get()
-      }
     }
 
     def writeBitSet(bs: RawBitSet): Array[Byte] = {
@@ -873,37 +860,34 @@ object Codec {
         var i = start
         while (arr(i) < c && i < end) i += 1
 
-        if (i == start) {
-          if (i == end) {
+        if (i == start)
+          if (i == end)
             offset
-          } else {
+          else {
             set(offset + 1)
             rec_(i, end, c, r, offset + 2)
           }
+        else if (i == end) {
+          set(offset)
+          rec_(start, i, l, c, offset + 2)
         } else {
-          if (i == end) {
-            set(offset)
-            rec_(start, i, l, c, offset + 2)
-          } else {
-            set(offset)
-            set(offset + 1)
-            rec_(i, end, c, r, rec_(start, i, l, c, offset + 2))
-          }
+          set(offset)
+          set(offset + 1)
+          rec_(i, end, c, r, rec_(start, i, l, c, offset + 2))
         }
       }
 
       def rec(bs: List[Int], l: Int, r: Int, offset: Int): Int = {
         val c = (l + r) / 2
 
-        if (l == r) {
+        if (l == r)
           offset
-        } else if (r - l == 1) {
-          if (bs == (l :: Nil)) {
+        else if (r - l == 1) {
+          if (bs == (l :: Nil))
             set(offset)
-          }
           set(offset + 1)
           offset + 2
-        } else {
+        } else
           bs partition (_ < c) match {
             case (Nil, Nil) =>
               offset
@@ -918,7 +902,6 @@ object Codec {
               set(offset + 1)
               rec(hi, c, r, rec(lo, l, c, offset + 2))
           }
-        }
       }
 
       val len = rec(RawBitSet.toList(bs), 0, size, 0)
@@ -934,12 +917,11 @@ object Codec {
       val bits = RawBitSet.create(size)
 
       def read(l: Int, r: Int, offset: Int): Int =
-        if (l == r) {
+        if (l == r)
           offset
-        } else if (r - l == 1) {
-          if (get(offset)) {
+        else if (r - l == 1) {
+          if (get(offset))
             RawBitSet.set(bits, l)
-          }
           offset + 2
         } else {
           val c = (l + r) / 2

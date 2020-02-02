@@ -55,9 +55,8 @@ private[round] final class History(
   }
 
   private def waitForLoadedEvents {
-    if (events == null) {
+    if (events == null)
       events = load awaitSeconds 3
-    }
   }
 
   private var persistenceEnabled = withPersistence

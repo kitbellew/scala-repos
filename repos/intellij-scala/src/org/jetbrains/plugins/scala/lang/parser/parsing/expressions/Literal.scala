@@ -31,15 +31,13 @@ object Literal {
         if (builder.getTokenText == "-") {
           builder.advanceLexer() //Ate -
           builder.getTokenType match {
-            case ScalaTokenTypes.tINTEGER | ScalaTokenTypes.tFLOAT => {
+            case ScalaTokenTypes.tINTEGER | ScalaTokenTypes.tFLOAT =>
               builder.advanceLexer() //Ate literal
               marker.done(ScalaElementTypes.LITERAL)
               true
-            }
-            case _ => {
+            case _ =>
               marker.rollbackTo()
               false
-            }
           }
         } else {
           marker.rollbackTo()

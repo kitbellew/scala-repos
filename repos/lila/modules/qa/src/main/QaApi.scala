@@ -254,7 +254,7 @@ final class QaApi(
       answerColl.remove(BSONDocument("_id" -> a.id)) >>
         (question recountAnswers a.questionId).void
 
-    def remove(id: AnswerId): Fu[Unit] = findById(id) flatMap { _ ?? remove }
+    def remove(id: AnswerId): Fu[Unit] = findById(id) flatMap _ ?? remove
 
     def removeByQuestion(id: QuestionId) =
       answerColl.remove(BSONDocument("questionId" -> id))

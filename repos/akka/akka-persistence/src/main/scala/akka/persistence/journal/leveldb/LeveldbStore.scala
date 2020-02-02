@@ -88,9 +88,8 @@ private[persistence] trait LeveldbStore
         })
     })
 
-    if (hasPersistenceIdSubscribers) {
+    if (hasPersistenceIdSubscribers)
       persistenceIds.foreach { pid ⇒ notifyPersistenceIdChange(pid) }
-    }
     if (hasTagSubscribers && allTags.nonEmpty)
       allTags.foreach(notifyTagChange)
     result
@@ -130,9 +129,8 @@ private[persistence] trait LeveldbStore
   def withIterator[R](body: DBIterator ⇒ R): R = {
     val ro = leveldbSnapshot()
     val iterator = leveldb.iterator(ro)
-    try {
-      body(iterator)
-    } finally {
+    try body(iterator)
+    finally {
       iterator.close()
       ro.snapshot().close()
     }
@@ -144,9 +142,7 @@ private[persistence] trait LeveldbStore
       val r = body(batch)
       leveldb.write(batch, leveldbWriteOptions)
       r
-    } finally {
-      batch.close()
-    }
+    } finally batch.close()
   }
 
   def persistentToBytes(p: PersistentRepr): Array[Byte] =

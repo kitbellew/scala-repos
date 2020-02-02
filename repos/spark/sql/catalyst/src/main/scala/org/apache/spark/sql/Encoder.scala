@@ -235,18 +235,16 @@ object Encoders {
 
   /** Throws an exception if T is not a public class. */
   private def validatePublicClass[T: ClassTag](): Unit =
-    if (!Modifier.isPublic(classTag[T].runtimeClass.getModifiers)) {
+    if (!Modifier.isPublic(classTag[T].runtimeClass.getModifiers))
       throw new UnsupportedOperationException(
         s"${classTag[T].runtimeClass.getName} is not a public class. " +
           "Only public classes are supported.")
-    }
 
   /** A way to construct encoders using generic serializers. */
   private def genericSerializer[T: ClassTag](useKryo: Boolean): Encoder[T] = {
-    if (classTag[T].runtimeClass.isPrimitive) {
+    if (classTag[T].runtimeClass.isPrimitive)
       throw new UnsupportedOperationException(
         "Primitive types are not supported.")
-    }
 
     validatePublicClass[T]()
 

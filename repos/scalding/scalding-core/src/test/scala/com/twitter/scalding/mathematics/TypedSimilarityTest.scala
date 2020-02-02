@@ -61,11 +61,10 @@ class TypedSimilarityTest extends WordSpec with Matchers {
   val edges = (0 to nodes).flatMap { n =>
     // try to get at least 6 edges for each node
     (0 to ((nodes / 5) max (6))).foldLeft(Set[(Int, Int)]()) { (set, idx) =>
-      if (set.size > 6) {
+      if (set.size > 6)
         set
-      } else {
+      else
         set + (n -> rand.nextInt(nodes))
-      }
     }
   }.toSeq
 
@@ -74,11 +73,10 @@ class TypedSimilarityTest extends WordSpec with Matchers {
     // try to get at least 10 edges for each node
     (0 to ((nodes / 5) max (10))).foldLeft(Set[(Int, Int, Double)]()) {
       (set, idx) =>
-        if (set.size > 10) {
+        if (set.size > 10)
           set
-        } else {
+        else
           set + ((n, rand.nextInt(nodes), rand.nextDouble * MaxWeight))
-        }
     }
   }.toSeq
 

@@ -88,9 +88,9 @@ package object runtime {
     */
   def propertiesOf(obj: js.Any): js.Array[String] =
     // See http://stackoverflow.com/questions/26445248/
-    if (obj == null || js.isUndefined(obj)) {
+    if (obj == null || js.isUndefined(obj))
       js.Array()
-    } else {
+    else {
       val result = new js.Array[String]
       val alreadySeen = js.Dictionary.empty[Boolean]
 
@@ -158,9 +158,9 @@ package object runtime {
     import Math._
 
     // Special cases
-    if (v.isNaN || v == 0.0 || v.isInfinite) {
+    if (v.isNaN || v == 0.0 || v.isInfinite)
       v
-    } else {
+    else {
       val LN2 = 0.6931471805599453
       val ebits = 8
       val fbits = 23
@@ -174,19 +174,19 @@ package object runtime {
       val absResult = if (av >= SubnormalThreshold) {
         val e0 = floor(log(av) / LN2)
         // 1-bias <= e0 <= 1024
-        if (e0 > bias) {
+        if (e0 > bias)
           // Overflow
           Double.PositiveInfinity
-        } else {
+        else {
           val twoPowE0 = pow(2, e0)
           val f0 = Bits.roundToEven(av / twoPowE0 * twoPowFbits)
           if (f0 / twoPowFbits >= 2) {
             //val e = e0 + 1.0 // not used
             val f = 1.0
-            if (e0 > bias - 1) { // === (e > bias) because e0 is whole
+            if (e0 > bias - 1) // === (e > bias) because e0 is whole
               // Overflow
               Double.PositiveInfinity
-            } else {
+            else {
               // Normalized case 1
               val twoPowE = 2 * twoPowE0
               twoPowE * (1.0 + (f - twoPowFbits) / twoPowFbits)

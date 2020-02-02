@@ -338,7 +338,7 @@ class MongoAPIKeyManager(
               .into(settings.deletedAPIKeys))
           _ <- database(
             remove.from(settings.apiKeys).where("apiKey" === apiKey))
-        } yield { ot }
+        } yield ot
       case None => Future(None)
     }
 
@@ -355,7 +355,7 @@ class MongoAPIKeyManager(
             insert(leafGrant.serialize.asInstanceOf[JObject])
               .into(settings.deletedGrants))
           _ <- database(remove.from(settings.grants).where("grantId" === gid))
-        } yield { deletedChildren + leafGrant }
+        } yield deletedChildren + leafGrant
       } getOrElse {
         Promise successful deletedChildren
       }

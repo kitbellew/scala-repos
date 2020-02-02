@@ -31,10 +31,9 @@ class OfflineCompilerCommand(arguments: List[String], settings: FscSettings)
         else Directory(pwd)
       }
       currentDir.value = baseDirectory.path
-    } else {
+    } else
       // Otherwise we're on the server and will use it to absolutize the paths.
       settings.absolutize()
-    }
   }
 
   override def cmdName = "fsc"

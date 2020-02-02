@@ -318,12 +318,10 @@ trait JdbcTypesComponent extends RelationalTypesComponent { self: JdbcProfile =>
         else {
           var msb = 0L
           var lsb = 0L
-          for (i <- 0 until 8) {
+          for (i <- 0 until 8)
             msb = (msb << 8) | (data(i) & 0xff)
-          }
-          for (i <- 8 until 16) {
+          for (i <- 8 until 16)
             lsb = (lsb << 8) | (data(i) & 0xff)
-          }
           new UUID(msb, lsb)
         }
     }

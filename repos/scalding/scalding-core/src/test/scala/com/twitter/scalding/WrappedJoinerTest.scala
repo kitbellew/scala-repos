@@ -11,9 +11,8 @@ import java.util.{Iterator => JIterator}
 class CheckFlowProcessJoiner(uniqueID: UniqueID) extends InnerJoin {
   override def getIterator(joinerClosure: JoinerClosure): JIterator[Tuple] = {
     val flowProcess = RuntimeStats.getFlowProcessForUniqueId(uniqueID)
-    if (flowProcess == null) {
+    if (flowProcess == null)
       throw new NullPointerException("No active FlowProcess was available.")
-    }
 
     super.getIterator(joinerClosure)
   }

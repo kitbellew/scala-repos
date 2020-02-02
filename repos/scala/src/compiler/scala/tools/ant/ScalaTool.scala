@@ -95,9 +95,8 @@ class ScalaTool extends ScalaMatchingTask {
       val st = s.trim
       if (Platforms.isPermissible(st))
         (if (input != "") List(st) else Nil)
-      else {
+      else
         buildError("Platform " + st + " does not exist.")
-      }
     }
 
   /** Sets the classpath with which to run the tool.
@@ -136,9 +135,9 @@ class ScalaTool extends ScalaMatchingTask {
     properties = input.split(",").toList.flatMap { s: String =>
       val st = s.trim
       val stArray = st.split("=", 2)
-      if (stArray.length == 2) {
+      if (stArray.length == 2)
         if (input != "") List((stArray(0), stArray(1))) else Nil
-      } else
+      else
         buildError("Property " + st + " is not formatted properly.")
     }
 

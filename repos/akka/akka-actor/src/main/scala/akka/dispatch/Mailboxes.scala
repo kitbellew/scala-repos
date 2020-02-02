@@ -189,21 +189,20 @@ private[akka] class Mailboxes(
       mailboxType
     }
 
-    if (deploy.mailbox != Deploy.NoMailboxGiven) {
+    if (deploy.mailbox != Deploy.NoMailboxGiven)
       verifyRequirements(lookup(deploy.mailbox))
-    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven && hasMailboxType) {
+    else if (deploy.dispatcher != Deploy.NoDispatcherGiven && hasMailboxType)
       verifyRequirements(lookup(dispatcherConfig.getString("id")))
-    } else if (hasRequiredType(actorClass)) {
+    else if (hasRequiredType(actorClass))
       try verifyRequirements(lookupByQueueType(getRequiredType(actorClass)))
       catch {
         case NonFatal(thr) if (hasMailboxRequirement) ⇒
           verifyRequirements(lookupByQueueType(mailboxRequirement))
       }
-    } else if (hasMailboxRequirement) {
+    else if (hasMailboxRequirement)
       verifyRequirements(lookupByQueueType(mailboxRequirement))
-    } else {
+    else
       verifyRequirements(lookup(DefaultMailboxId))
-    }
   }
 
   /**
@@ -254,7 +253,7 @@ private[akka] class Mailboxes(
                   .get
             }
 
-            if (!mailboxNonZeroPushTimeoutWarningIssued) {
+            if (!mailboxNonZeroPushTimeoutWarningIssued)
               mailboxType match {
                 case m: ProducesPushTimeoutSemanticsMailbox
                     if m.pushTimeOut.toNanos > 0L ⇒
@@ -265,7 +264,6 @@ private[akka] class Mailboxes(
                   mailboxNonZeroPushTimeoutWarningIssued = true
                 case _ ⇒ // good; nothing to see here, move along, sir.
               }
-            }
 
             mailboxType
         }

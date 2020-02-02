@@ -34,11 +34,10 @@ class PathBindableExtractor[T](implicit pb: PathBindable[T]) {
     val bound = s.collect {
       case self(value) => value
     }
-    if (bound.length == s.length) {
+    if (bound.length == s.length)
       Some(bound)
-    } else {
+    else
       None
-    }
   }
 }
 

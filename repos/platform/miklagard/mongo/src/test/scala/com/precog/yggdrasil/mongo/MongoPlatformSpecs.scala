@@ -82,9 +82,8 @@ object MongoPlatformSpecEngine extends Logging {
   def release: Unit = lock.synchronized {
     refcount -= 1
 
-    if (refcount == 0) {
+    if (refcount == 0)
       scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
-    }
 
     logger.debug("Mongo released, refcount = " + refcount)
   }
@@ -120,36 +119,32 @@ object MongoPlatformSpecEngine extends Logging {
     val db = engine.realMongo.getDB("test")
 
     def loadFile(path: String, file: File) {
-      if (file.isDirectory) {
+      if (file.isDirectory)
         file.listFiles.foreach { f =>
           logger.debug("Found child: " + f)
           loadFile(path + file.getName + "_", f)
         }
-      } else {
-        if (file.getName.endsWith(".json")) {
-          try {
-            val collectionName = path + file.getName.replace(".json", "")
-            logger.debug(
-              "Loading %s into /test/%s".format(file, collectionName))
-            val collection = db.getCollection(collectionName)
-            JParser.parseManyFromFile(file) match {
-              case Success(data) =>
-                val objs = data.map { jv =>
-                  JsonToMongo
-                    .apply(jv.asInstanceOf[JObject])
-                    .fold(e => throw new Exception(e.toString), s => s)
-                }.toArray
-                collection.insert(objs, WriteConcern.FSYNC_SAFE)
+      else if (file.getName.endsWith(".json"))
+        try {
+          val collectionName = path + file.getName.replace(".json", "")
+          logger.debug("Loading %s into /test/%s".format(file, collectionName))
+          val collection = db.getCollection(collectionName)
+          JParser.parseManyFromFile(file) match {
+            case Success(data) =>
+              val objs = data.map { jv =>
+                JsonToMongo
+                  .apply(jv.asInstanceOf[JObject])
+                  .fold(e => throw new Exception(e.toString), s => s)
+              }.toArray
+              collection.insert(objs, WriteConcern.FSYNC_SAFE)
 
-                // Verify that things did actually make it to disk
-                assert(collection.count() == objs.size)
-              case Failure(error) => logger.error("Error loading: " + error)
-            }
-          } catch {
-            case t: Throwable => logger.error("Error loading: " + t)
+              // Verify that things did actually make it to disk
+              assert(collection.count() == objs.size)
+            case Failure(error) => logger.error("Error loading: " + error)
           }
+        } catch {
+          case t: Throwable => logger.error("Error loading: " + t)
         }
-      }
     }
 
     (new File(dataDirURL.toURI)).listFiles.foreach { f => loadFile("", f) }

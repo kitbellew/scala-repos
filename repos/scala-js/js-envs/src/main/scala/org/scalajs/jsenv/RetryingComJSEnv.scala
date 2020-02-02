@@ -137,9 +137,8 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
         val oldRunner = curRunner
 
         curRunner =
-          try {
-            baseEnv.comRunner(libs, code)
-          } catch {
+          try baseEnv.comRunner(libs, code)
+          catch {
             case NonFatal(t) =>
               _logger.error(
                 "Could not retry: creating an new runner failed: " +

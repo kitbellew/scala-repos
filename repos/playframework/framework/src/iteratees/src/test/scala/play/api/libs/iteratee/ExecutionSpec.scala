@@ -24,11 +24,10 @@ object ExecutionSpec extends Specification {
 
     "not overflow the stack" in {
       def executeRecursively(ec: ExecutionContext, times: Int) {
-        if (times > 0) {
+        if (times > 0)
           ec.execute(new Runnable {
             def run() = executeRecursively(ec, times - 1)
           })
-        }
       }
 
       // Work out how deep to go to cause an overflow

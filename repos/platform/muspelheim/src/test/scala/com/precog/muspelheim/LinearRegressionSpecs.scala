@@ -74,7 +74,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
@@ -88,7 +88,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
 
           rSquared must beLike { case SDecimal(_) => ok }
-        }
       }
     }
 
@@ -104,7 +103,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
@@ -115,7 +114,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
 
           checkFields(fields)
-        }
       }
     }
 
@@ -185,7 +183,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
                   case SDecimal(d) => resValues(1) = d; ok
                 }
             }
-            if (constant) {
+            if (constant)
               obj("const") must beLike {
                 case SObject(const) =>
                   const.keys mustEqual Set("estimate", "standardError")
@@ -193,9 +191,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
                   const("estimate") mustEqual SDecimal(0)
                   const("standardError") mustEqual SDecimal(0)
               }
-            } else {
+            else
               ok
-            }
         }
 
         arr(1) must beLike {
@@ -225,17 +222,15 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       }
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           testResult(res1Values, res1VarCovar, elems, true)
-        }
       }
 
       result2 must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           testResult(res2Values, res2VarCovar, elems, false)
-        }
       }
 
       res1Values mustEqual res2Values
@@ -292,7 +287,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
@@ -302,7 +297,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
           val rSquared = fields("RSquared")
 
           rSquared must beLike { case SDecimal(_) => ok }
-        }
       }
     }
 
@@ -329,14 +323,13 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
           val SObject(fields) = elems("model1")
 
           checkFields(fields)
-        }
       }
     }
 
@@ -356,7 +349,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
@@ -379,7 +372,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
 
           checkFields(fields)
-        }
       }
     }
 
@@ -401,7 +393,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
@@ -427,7 +419,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
 
           checkFields(fields)
-        }
       }
     }
 
@@ -450,7 +441,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       result must haveSize(1)
 
       result must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
@@ -479,7 +470,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
 
           checkFields(fields)
-        }
       }
     }
 
@@ -571,7 +561,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       results must haveSize(count)
 
       results must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           if (idJoin) ids must haveSize(2)
           else ids must haveSize(1)
 
@@ -585,7 +575,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
                 case SObject(model) => testPredict(model)
               }
           }
-        }
       }
     }
 
@@ -660,7 +649,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       results must haveSize(count)
 
       results must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(2)
           elems.keys mustEqual Set("predictedWeight", "model1")
 
@@ -672,7 +661,6 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
                 case SObject(model) => testPredict(model)
               }
           }
-        }
       }
     }
 

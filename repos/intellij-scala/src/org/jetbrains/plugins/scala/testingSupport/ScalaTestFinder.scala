@@ -30,20 +30,16 @@ class ScalaTestFinder extends JavaTestFinder {
     cache.getAllClassNames(names)
     val res = new java.util.ArrayList[Pair[_ <: PsiNamedElement, Integer]]()
     import collection.JavaConversions._
-    for (testClassName <- names) {
-      if (pattern.matcher(testClassName).matches()) {
-        for (testClass <- cache.getClassesByName(testClassName, scope)) {
+    for (testClassName <- names)
+      if (pattern.matcher(testClassName).matches())
+        for (testClass <- cache.getClassesByName(testClassName, scope))
           if (frameworks.isTestClass(testClass) || frameworks
-                .isPotentialTestClass(testClass)) {
+                .isPotentialTestClass(testClass))
             res.add(
               Pair.create(
                 testClass,
                 TestFinderHelper
                   .calcTestNameProximity(klassName, testClassName)))
-          }
-        }
-      }
-    }
 
     TestFinderHelper.getSortedElements(res, true)
   }

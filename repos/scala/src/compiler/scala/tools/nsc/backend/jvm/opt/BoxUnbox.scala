@@ -337,7 +337,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           * POP; xSTORE n; POP; xLOAD n.
           */
         def replaceExtractionOps(): Unit =
-          if (boxKind.boxedTypes.lengthCompare(1) == 0) {
+          if (boxKind.boxedTypes.lengthCompare(1) == 0)
             // fast path for single-value boxes
             allConsumers.foreach(extraction =>
               extraction
@@ -348,7 +348,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                   toReplace(extraction.consumer) = ops
                   toDelete ++= extraction.allInsns - extraction.consumer
               })
-          } else {
+          else
             for (extraction <- allConsumers) {
               val valueIndex = boxKind.extractedValueIndex(extraction)
               val replacementOps = if (valueIndex == 0) {
@@ -365,16 +365,14 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                         new VarInsnNode(tp.getOpcode(ILOAD), resultSlot) :: extraction
                           .postExtractionAdaptationOps(tp)
                       new VarInsnNode(tp.getOpcode(ISTORE), resultSlot)
-                    } else {
+                    } else
                       getPop(tp.getSize)
-                    }
                 }
                 consumeStack ::: loadOps
               }
               toReplace(extraction.consumer) = replacementOps
               toDelete ++= extraction.allInsns - extraction.consumer
             }
-          }
 
         checkCopyOpReplacements(
           allCreations,
@@ -413,21 +411,20 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
                     val hasEscaping = escapingConsumers.nonEmpty
                     val hasWrite = allConsumers.exists(_.isWrite)
-                    if (!hasEscaping && !hasWrite) {
+                    if (!hasEscaping && !hasWrite)
                       // M2 -- see doc comment in the beginning of this file
                       // If both M1 and M2 can be applied, we prefer M2 because it doesn't introduce new locals.
                       replaceBoxOperationsMultipleCreations(
                         allCreations,
                         allConsumers,
                         boxKind)
-                    } else if (allCreations.size == 1 && (!hasEscaping || !boxKind.isMutable)) {
+                    else if (allCreations.size == 1 && (!hasEscaping || !boxKind.isMutable))
                       // M1 -- see doc comment in the beginning of this file
                       replaceBoxOperationsSingleCreation(
                         allCreations.head,
                         allConsumers,
                         boxKind,
                         keepBox = hasEscaping)
-                    }
                   }
 
                 case None =>
@@ -579,9 +576,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         if (copyOp.getOpcode == DUP && valueTypes.lengthCompare(1) == 0) {
           if (valueTypes.head.getSize == 2)
             replacements += copyOp -> List(new InsnNode(DUP2))
-        } else {
+        } else
           replaceOK = false
-        }
     }
     if (replaceOK) Some((replacements, nextCopyOpLocal, reTypedLocals))
     else None
@@ -691,9 +687,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                 prodCons.consumersOfValueAt(afterInit, stackTopAfterInit)
               if (initializedInstanceCons == dupConsWithoutInit && prodCons
                     .producersForValueAt(afterInit, stackTopAfterInit) == Set(
-                    dupOp)) {
+                    dupOp))
                 return Some((dupOp, initCall))
-              }
             }
           }
         }
@@ -939,18 +934,16 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             val typeOK =
               tupleClass == expectedTupleClass || tupleClass == expectedTupleClass
                 .substring(0, expectedTupleClass.indexOf('$'))
-            if (typeOK) {
+            if (typeOK)
               if (isSpecializedTupleGetter(mi))
                 return Some(StaticGetterOrInstanceRead(mi))
               else if (isTupleGetter(mi)) return Some(PrimitiveBoxingGetter(mi))
-            }
-          } else if (expectedTupleClass == tupleClass) {
+          } else if (expectedTupleClass == tupleClass)
             if (isSpecializedTupleGetter(mi))
               return Some(
                 PrimitiveUnboxingGetter(mi, Type.getReturnType(mi.desc)))
             else if (isTupleGetter(mi))
               return Some(StaticGetterOrInstanceRead(mi))
-          }
 
         case _ =>
       }

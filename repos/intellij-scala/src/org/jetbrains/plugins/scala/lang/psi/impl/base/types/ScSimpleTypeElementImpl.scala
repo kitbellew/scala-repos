@@ -100,14 +100,13 @@ class ScSimpleTypeElementImpl(node: ASTNode)
     val lift: (ScType) => Success[ScType] = Success(_, Some(this))
 
     def parametrise(tp: ScType, clazz: PsiClass, subst: ScSubstitutor): ScType =
-      if (clazz.getTypeParameters.isEmpty) {
+      if (clazz.getTypeParameters.isEmpty)
         tp
-      } else {
+      else
         ScParameterizedType(tp, clazz.getTypeParameters.map {
           case tp: ScTypeParam => new ScTypeParameterType(tp, subst)
           case ptp             => new ScTypeParameterType(ptp, subst)
         })
-      }
 
     def getConstructorParams(
         constr: PsiMethod,
@@ -325,14 +324,13 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                     ScUnderScoreSectionUtil.underscores(n).nonEmpty
                   case None => false
                 }
-                if (!fromUnderscore) {
+                if (!fromUnderscore)
                   updateRes(expected)
-                } else {
+                else
                   expected match {
                     case ScFunctionType(retType, _) => updateRes(retType)
                     case _                          => //do not update res, we haven't expected type
                   }
-                }
               case _ =>
             }
 
@@ -347,19 +345,17 @@ class ScSimpleTypeElementImpl(node: ASTNode)
               i += 1
             }
 
-            if (lastImplicit && i < params.length) {
+            if (lastImplicit && i < params.length)
               //Let's add implicit parameters
               updateImplicits(nonValueType, withExpected, params, lastImplicit) match {
                 case t: ScTypePolymorphicType => nonValueType = t
                 case _                        =>
               }
-            }
           }
 
           val oldNonValueType = nonValueType
-          try {
-            lastClause(withExpected = true)
-          } catch {
+          try lastClause(withExpected = true)
+          catch {
             case e: SafeCheckException =>
               nonValueType = oldNonValueType
               lastClause(withExpected = false)
@@ -421,7 +417,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         def updateImplicitsWithoutLocalTypeInference(
             r: TypeResult[ScType],
             ss: ScSubstitutor): TypeResult[ScType] =
-          if (withUnnecessaryImplicitsUpdate) {
+          if (withUnnecessaryImplicitsUpdate)
             r.map { tp =>
               ref.bind() match {
                 case Some(
@@ -439,7 +435,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 case _ => tp
               }
             }
-          } else r
+          else r
 
         ref.resolveNoConstructor match {
           case Array(ScalaResolveResult(tp: PsiTypeParameter, _)) =>
@@ -551,8 +547,8 @@ object ScSimpleTypeElementImpl {
   def calculateReferenceType(
       ref: ScStableCodeReferenceElement,
       shapesOnly: Boolean): TypeResult[ScType] = {
-    val (resolvedElement, fromType) = (if (!shapesOnly) {
-                                         if (ref.isConstructorReference) {
+    val (resolvedElement, fromType) = (if (!shapesOnly)
+                                         if (ref.isConstructorReference)
                                            ref.resolveNoConstructor match {
                                              case Array(
                                                  r @ ScalaResolveResult(
@@ -574,14 +570,13 @@ object ScSimpleTypeElementImpl {
                                                Some(r)
                                              case _ => ref.bind()
                                            }
-                                         } else ref.bind()
-                                       } else {
+                                         else ref.bind()
+                                       else
                                          ref.shapeResolve match {
                                            case Array(r: ScalaResolveResult) =>
                                              Some(r)
                                            case _ => None
-                                         }
-                                       }) match {
+                                         }) match {
       case Some(r @ ScalaResolveResult(n: PsiMethod, _)) if n.isConstructor =>
         (n.containingClass, r.fromType)
       case Some(r @ ScalaResolveResult(n: PsiNamedElement, _)) =>
@@ -594,14 +589,14 @@ object ScSimpleTypeElementImpl {
           case pack: PsiPackage =>
             val obj =
               PsiTreeUtil.getContextOfType(resolvedElement, classOf[ScObject])
-            if (obj != null && obj.isPackageObject) {
+            if (obj != null && obj.isPackageObject)
               Success(
                 ScProjectionType(
                   ScDesignatorType(obj),
                   resolvedElement,
                   superReference = false),
                 Some(ref))
-            } else {
+            else
               fromType match {
                 case Some(ScDesignatorType(obj: ScObject))
                     if obj.isPackageObject =>
@@ -614,7 +609,6 @@ object ScSimpleTypeElementImpl {
                 case _ =>
                   Success(ScType.designator(resolvedElement), Some(ref))
               }
-            }
           case _ =>
             calculateReferenceType(qual, shapesOnly) match {
               case failure: Failure => failure

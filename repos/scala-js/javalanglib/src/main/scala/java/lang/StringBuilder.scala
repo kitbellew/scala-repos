@@ -112,10 +112,9 @@ class StringBuilder(private var content: String)
     */
   def replace(start: Int, end: Int, str: String): StringBuilder = {
     val length = content.length
-    if (start < 0 || start > end || start > length) {
+    if (start < 0 || start > end || start > length)
       throw new StringIndexOutOfBoundsException(
         s"Illegal to replace substring at [$start - $end] in string of length $length")
-    }
 
     val realEnd = if (end > length) length else end // java api convention
     content = content.substring(0, start) + str + content.substring(realEnd)
@@ -140,9 +139,8 @@ class StringBuilder(private var content: String)
         append("\u0000")
         index += 1
       }
-    } else {
+    } else
       content = substring(0, newLength)
-    }
   }
 
   def insert(index: Int, b: scala.Boolean): StringBuilder =

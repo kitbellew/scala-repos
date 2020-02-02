@@ -41,9 +41,8 @@ object MLUtils {
 
   private[mllib] lazy val EPSILON = {
     var eps = 1.0
-    while ((1.0 + (eps / 2.0)) != 1.0) {
+    while ((1.0 + (eps / 2.0)) != 1.0)
       eps /= 2.0
-    }
     eps
   }
 
@@ -108,17 +107,18 @@ object MLUtils {
       }
 
     // Determine number of features.
-    val d = if (numFeatures > 0) {
-      numFeatures
-    } else {
-      parsed.persist(StorageLevel.MEMORY_ONLY)
-      parsed
-        .map {
-          case (label, indices, values) =>
-            indices.lastOption.getOrElse(0)
-        }
-        .reduce(math.max) + 1
-    }
+    val d =
+      if (numFeatures > 0)
+        numFeatures
+      else {
+        parsed.persist(StorageLevel.MEMORY_ONLY)
+        parsed
+          .map {
+            case (label, indices, values) =>
+              indices.lastOption.getOrElse(0)
+          }
+          .reduce(math.max) + 1
+      }
 
     parsed.map {
       case (label, indices, values) =>
@@ -393,20 +393,18 @@ object MLUtils {
      */
     val precisionBound1 =
       2.0 * EPSILON * sumSquaredNorm / (normDiff * normDiff + EPSILON)
-    if (precisionBound1 < precision) {
+    if (precisionBound1 < precision)
       sqDist = sumSquaredNorm - 2.0 * dot(v1, v2)
-    } else if (v1.isInstanceOf[SparseVector] || v2.isInstanceOf[SparseVector]) {
+    else if (v1.isInstanceOf[SparseVector] || v2.isInstanceOf[SparseVector]) {
       val dotValue = dot(v1, v2)
       sqDist = math.max(sumSquaredNorm - 2.0 * dotValue, 0.0)
       val precisionBound2 =
         EPSILON * (sumSquaredNorm + 2.0 * math.abs(dotValue)) /
           (sqDist + EPSILON)
-      if (precisionBound2 > precision) {
+      if (precisionBound2 > precision)
         sqDist = Vectors.sqdist(v1, v2)
-      }
-    } else {
+    } else
       sqDist = Vectors.sqdist(v1, v2)
-    }
     sqDist
   }
 
@@ -419,9 +417,8 @@ object MLUtils {
     * @return the result of `math.log(1 + math.exp(x))`.
     */
   private[spark] def log1pExp(x: Double): Double =
-    if (x > 0) {
+    if (x > 0)
       x + math.log1p(math.exp(-x))
-    } else {
+    else
       math.log1p(math.exp(x))
-    }
 }

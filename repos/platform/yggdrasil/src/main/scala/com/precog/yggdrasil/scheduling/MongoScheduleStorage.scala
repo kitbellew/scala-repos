@@ -106,11 +106,9 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
           _ <- insertTask(\/-(taskjv), settings.deletedTasks)
           _ <- database(
             remove.from(settings.tasks) where (".id" === id.toString))
-        } yield {
-          taskjv
-            .validated[ScheduledTask]
-            .disjunction leftMap { _.message } map { Some(_) }
-        }
+        } yield taskjv
+          .validated[ScheduledTask]
+          .disjunction leftMap { _.message } map { Some(_) }
 
       case None =>
         logger.warn("Could not locate task %s for deletion".format(id))

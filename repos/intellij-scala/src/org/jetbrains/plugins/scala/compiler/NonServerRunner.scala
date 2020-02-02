@@ -118,9 +118,8 @@ class NonServerRunner(
       BaseOSProcessHandler.ExecutorServiceHolder.submit(runnable)
 
     def onTextAvailable(text: String) {
-      try {
-        listener(text)
-      } catch {
+      try listener(text)
+      catch {
         case e: Exception =>
       }
     }
@@ -138,7 +137,7 @@ class NonServerRunner(
         if (n > 0) {
           read = true
 
-          for (i <- 0 until n) {
+          for (i <- 0 until n)
             charBuffer(i) match {
               case '=' if i == 0 && text.isEmpty =>
               case '=' if i == n - 1 || charBuffer.charAt(i + 1) != '=' =>
@@ -150,7 +149,6 @@ class NonServerRunner(
                 text.clear()
               case c => text.append(c)
             }
-          }
         }
       }
 

@@ -70,11 +70,10 @@ private[spark] class SortShuffleManager(conf: SparkConf)
     extends ShuffleManager
     with Logging {
 
-  if (!conf.getBoolean("spark.shuffle.spill", true)) {
+  if (!conf.getBoolean("spark.shuffle.spill", true))
     logWarning(
       "spark.shuffle.spill was set to false, but this configuration is ignored as of Spark 1.6+." +
         " Shuffle will continue to spill to disk when necessary.")
-  }
 
   /**
     * A mapping from shuffle ids to the number of mappers producing output for those shuffles.
@@ -92,7 +91,7 @@ private[spark] class SortShuffleManager(conf: SparkConf)
       shuffleId: Int,
       numMaps: Int,
       dependency: ShuffleDependency[K, V, C]): ShuffleHandle =
-    if (SortShuffleWriter.shouldBypassMergeSort(SparkEnv.get.conf, dependency)) {
+    if (SortShuffleWriter.shouldBypassMergeSort(SparkEnv.get.conf, dependency))
       // If there are fewer than spark.shuffle.sort.bypassMergeThreshold partitions and we don't
       // need map-side aggregation, then write numPartitions files directly and just concatenate
       // them at the end. This avoids doing serialization and deserialization twice to merge
@@ -102,16 +101,15 @@ private[spark] class SortShuffleManager(conf: SparkConf)
         shuffleId,
         numMaps,
         dependency.asInstanceOf[ShuffleDependency[K, V, V]])
-    } else if (SortShuffleManager.canUseSerializedShuffle(dependency)) {
+    else if (SortShuffleManager.canUseSerializedShuffle(dependency))
       // Otherwise, try to buffer map outputs in a serialized form, since this is more efficient:
       new SerializedShuffleHandle[K, V](
         shuffleId,
         numMaps,
         dependency.asInstanceOf[ShuffleDependency[K, V, V]])
-    } else {
+    else
       // Otherwise, buffer map outputs in a deserialized form:
       new BaseShuffleHandle(shuffleId, numMaps, dependency)
-    }
 
   /**
     * Get a reader for a range of reduce partitions (startPartition to endPartition-1, inclusive).

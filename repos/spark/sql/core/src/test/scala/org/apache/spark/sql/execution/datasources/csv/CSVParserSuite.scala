@@ -59,11 +59,10 @@ class CSVParserSuite extends SparkFunSuite {
         assert(off >= 0 && off <= cbuf.length)
         read.appendAll(cbuf.take(n))
       } while (n > 0)
-      if (n != -1) {
+      if (n != -1)
         numRead += n
-      } else {
+      else
         done = true
-      }
     } while (!done)
 
     read.toString

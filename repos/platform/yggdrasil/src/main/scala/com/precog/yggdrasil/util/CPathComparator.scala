@@ -163,15 +163,14 @@ object CPathComparator {
           def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering = {
             val lPluckable = lSelector.canPluck(lCol(r1), indices, lMask)
             val rPluckable = rSelector.canPluck(rCol(r2), indices, rMask)
-            if (lPluckable && rPluckable) {
+            if (lPluckable && rPluckable)
               ordering
-            } else if (lPluckable) {
+            else if (lPluckable)
               Gt
-            } else if (rPluckable) {
+            else if (rPluckable)
               Lt
-            } else {
+            else
               Eq
-            }
           }
         }
     }
@@ -216,9 +215,9 @@ object CPathComparator {
           val mask = makeMask(lPath)
           val selector = new ArraySelector()(tpe1.manifest)
           def compare(r1: Int, r2: Int, indices: Array[Int]): MaybeOrdering =
-            if (selector.canPluck(lCol(r1), indices, mask)) {
+            if (selector.canPluck(lCol(r1), indices, mask))
               ordering
-            } else Lt
+            else Lt
         }
     }
 }
@@ -271,9 +270,8 @@ private[yggdrasil] final class HalfArrayCPathComparator[
       val a = lSelector.pluck(left, indices, lMask)
       val cmp = ho.compare(a, rCol(r2))
       if (cmp < 0) Lt else if (cmp == 0) Eq else Gt
-    } else {
+    } else
       Lt
-    }
   }
 }
 
@@ -312,20 +310,18 @@ private[yggdrasil] final class ArrayCPathComparator[
     val lPluckable = lSelector.canPluck(left, indices, lMask)
     val rPluckable = rSelector.canPluck(right, indices, rMask)
 
-    if (lPluckable) {
+    if (lPluckable)
       if (rPluckable) {
         val a = lSelector.pluck(left, indices, lMask)
         val b = rSelector.pluck(right, indices, rMask)
         val cmp = ho.compare(a, b)
         if (cmp < 0) Lt else if (cmp == 0) Eq else Gt
-      } else {
+      } else
         Gt
-      }
-    } else if (rPluckable) {
+    else if (rPluckable)
       Lt
-    } else {
+    else
       NoComp
-    }
   }
 }
 
@@ -344,17 +340,13 @@ private[yggdrasil] final class ArraySelector[@spec(Boolean, Long, Double) A](
     var arr: Array[_] = a
     var i = 0
     while (i < mask.length) {
-      if (mask(i)) {
-        if (am.erasure.isInstance(arr)) {
+      if (mask(i))
+        if (am.erasure.isInstance(arr))
           return indices(i) < arr.length
-        } else {
-          if (indices(i) < arr.length) {
-            arr = arr(indices(i)).asInstanceOf[Array[_]]
-          } else {
-            return false
-          }
-        }
-      }
+        else if (indices(i) < arr.length)
+          arr = arr(indices(i)).asInstanceOf[Array[_]]
+        else
+          return false
 
       i += 1
     }
@@ -367,14 +359,12 @@ private[yggdrasil] final class ArraySelector[@spec(Boolean, Long, Double) A](
     var i = 0
 
     while (i < mask.length) {
-      if (mask(i)) {
+      if (mask(i))
         if (am.erasure.isInstance(arr)) {
           val sarr = arr.asInstanceOf[Array[A]]
           return sarr(indices(i))
-        } else {
+        } else
           arr = arr(indices(i)).asInstanceOf[Array[_]]
-        }
-      }
 
       i += 1
     }

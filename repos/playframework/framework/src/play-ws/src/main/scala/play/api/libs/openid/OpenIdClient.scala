@@ -192,11 +192,10 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
       queryString
         .get("openid.claimed_id")
         .flatMap(_.headOption)) match { // The Claimed Identifier. "openid.claimed_id" and "openid.identity" SHALL be either both present or both absent.
-      case (Some("id_res"), Some(id)) => {
+      case (Some("id_res"), Some(id)) =>
         // MUST perform discovery on the claimedId to resolve the op_endpoint.
         val server: Future[OpenIDServer] = discovery.discoverServer(id)
         server.flatMap(directVerification(queryString))
-      }
       case (Some("cancel"), _) => Future.failed(Errors.AUTH_CANCEL)
       case _                   => Future.failed(Errors.BAD_RESPONSE)
     }
@@ -211,9 +210,9 @@ class WsOpenIdClient @Inject() (ws: WSClient, discovery: Discovery)
     ws.url(server.url)
       .post(fields)
       .map { response =>
-        if (response.status == 200 && response.body.contains("is_valid:true")) {
+        if (response.status == 200 && response.body.contains("is_valid:true"))
           UserInfo(queryString)
-        } else throw Errors.AUTH_ERROR
+        else throw Errors.AUTH_ERROR
       }
   }
 

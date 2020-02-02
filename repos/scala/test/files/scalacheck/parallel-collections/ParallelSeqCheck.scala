@@ -66,9 +66,13 @@ abstract class ParallelSeqCheck[T](collName: String)
     for (inst <- instances(values); f <- choose(0, inst.size);
          s <- choose(0, inst.size - f);
          third <- instances(values); sliceStart <- choose(0, inst.size);
-         howMany <- choose(0, inst.size)) yield {
-      (inst, fromSeq(inst), inst.slice(sliceStart, sliceStart + howMany), f, s)
-    }
+         howMany <- choose(0, inst.size))
+      yield (
+        inst,
+        fromSeq(inst),
+        inst.slice(sliceStart, sliceStart + howMany),
+        f,
+        s)
 
   private def modifySlightly(coll: Seq[T], updateStart: Int, howMany: Int) =
     coll.patch(updateStart, coll, howMany)
@@ -91,9 +95,9 @@ abstract class ParallelSeqCheck[T](collName: String)
 
   property("prefixLengths must be equal") = forAll(collectionPairs) {
     case (s, coll) =>
-      (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex) yield {
-        ("operator " + ind) |: s.prefixLength(pred) == coll.prefixLength(pred)
-      }).reduceLeft(_ && _)
+      (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex)
+        yield ("operator " + ind) |: s.prefixLength(pred) == coll.prefixLength(
+          pred)).reduceLeft(_ && _)
   }
 
   property("indexWheres must be equal") = forAll(collectionPairsWithLengths) {
@@ -140,9 +144,9 @@ abstract class ParallelSeqCheck[T](collName: String)
 
   property("reverseMaps must be equal") = forAll(collectionPairs) {
     case (s, coll) =>
-      (for ((f, ind) <- reverseMapFunctions.zipWithIndex) yield {
-        ("operator " + ind) |: s.reverseMap(f) == coll.reverseMap(f)
-      }).reduceLeft(_ && _)
+      (for ((f, ind) <- reverseMapFunctions.zipWithIndex)
+        yield ("operator " + ind) |: s.reverseMap(f) == coll.reverseMap(f))
+        .reduceLeft(_ && _)
   }
 
   property("sameElements must be equal") =

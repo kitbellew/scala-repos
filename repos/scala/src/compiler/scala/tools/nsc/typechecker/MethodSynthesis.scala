@@ -583,11 +583,10 @@ trait MethodSynthesis {
     }
     sealed trait AnyBeanGetter extends BeanAccessor with DerivedGetter {
       override def validate() {
-        if (derivedSym == NoSymbol) {
+        if (derivedSym == NoSymbol)
           // the namer decides whether to generate these symbols or not. at that point, we don't
           // have symbolic information yet, so we only look for annotations named "BeanProperty".
           BeanPropertyAnnotationLimitationError(tree)
-        }
         super.validate()
       }
     }

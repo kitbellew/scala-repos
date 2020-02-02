@@ -838,7 +838,7 @@ trait AbstractScreen extends Factory with Loggable {
     }).headOption
 
     otherValue match {
-      case OtherValueInitializerImpl(otherValueInitFunc) => {
+      case OtherValueInitializerImpl(otherValueInitFunc) =>
         new Field {
           type OtherValueType = OV
           type ValueType = T
@@ -878,9 +878,8 @@ trait AbstractScreen extends Factory with Loggable {
 
           override def show_? = newShow map (_(this)) openOr (super.show_?)
         }
-      }
 
-      case _ => {
+      case _ =>
         new Field {
           type ValueType = T
           type OtherValueType = OV
@@ -917,7 +916,6 @@ trait AbstractScreen extends Factory with Loggable {
 
           override def show_? = newShow map (_(this)) openOr (super.show_?)
         }
-      }
     }
   }
 
@@ -1303,11 +1301,10 @@ trait ScreenWizardRendered extends Loggable {
         val f = Helpers.deepEnsureUniqueId(fe)
         val id =
           Helpers.findBox(f)(_.attribute("id").map(_.text).filter(_ == curId))
-        if (id.isEmpty) {
+        if (id.isEmpty)
           Helpers.ensureId(f, curId)
-        } else {
+        else
           f
-        }
       }
 
       val myNotices = notices.filter(fi => fi._3.isDefined && fi._3 == curId)
@@ -1420,18 +1417,16 @@ trait ScreenWizardRendered extends Loggable {
             SHtml.hidden { () =>
               snapshot.restore();
               val res = cancelId._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
-              if (!ajax_?) {
+              if (!ajax_?)
                 S.seeOther(Referer.get)
-              }
               res
             } % liftScreenAttr("restoreAction")
           }</form>
 
-      if (ajax_?) {
+      if (ajax_?)
         SHtml.makeFormsAjax(ret)
-      } else {
+      else
         ret
-      }
     }
 
     def bindScreenInfo: CssBindFunc = (currentScreenNumber, screenCount) match {
@@ -1572,11 +1567,10 @@ trait ScreenWizardRendered extends Loggable {
     S.attr("ajax").flatMap(Helpers.asBoolean) openOr defaultToAjax_?
 
   protected def redirectBack(): JsCmd =
-    if (ajaxForms_?) {
+    if (ajaxForms_?)
       AjaxOnDone.get
-    } else {
+    else
       S.seeOther(Referer.get)
-    }
 
   /**
     * Are the forms Ajax or regular HTTP/HTML.
@@ -1824,13 +1818,12 @@ trait LiftScreen
       // val notices = S.getAllNotices
 
       // if we're not Ajax,
-      if (!ajaxForms_?) {
+      if (!ajaxForms_?)
         S.seeOther(
           S.uri,
           () =>
             // S.appendNotices(notices)
             localSnapshot.restore)
-      }
     }
 
     val form = renderHtml()
@@ -1845,19 +1838,17 @@ trait LiftScreen
 
     val finishButton = theScreen.finishButton %
       ("onclick" ->
-        (if (ajaxForms_?) {
+        (if (ajaxForms_?)
            SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(finishId)).toJsCmd
-         } else {
-           "document.getElementById(" + finishId.encJs + ").submit()"
-         }))
+         else
+           "document.getElementById(" + finishId.encJs + ").submit()"))
 
     val cancelButton: Elem = theScreen.cancelButton %
       ("onclick" ->
-        (if (ajaxForms_?) {
+        (if (ajaxForms_?)
            SHtml.makeAjaxCall(LiftRules.jsArtifacts.serialize(cancelId)).toJsCmd
-         } else {
-           "document.getElementById(" + cancelId.encJs + ").submit()"
-         }))
+         else
+           "document.getElementById(" + cancelId.encJs + ").submit()"))
 
     val url = S.uri
 
@@ -1933,23 +1924,20 @@ trait LiftScreen
     if (!LocalAction.get.isEmpty)
       fMap.get(LocalAction.get) map (_()) getOrElse (throw new IllegalArgumentException(
         "No local action available with that binding"))
-    else {
+    else
       validate match {
         case Nil =>
           val snapshot = createSnapshot
           PrevSnapshot.set(Full(snapshot))
           finish()
           redirectBack()
-        case xs => {
+        case xs =>
           S.error(xs)
-          if (ajaxForms_?) {
+          if (ajaxForms_?)
             replayForm
-          } else {
+          else
             Noop
-          }
-        }
       }
-    }
   }
 
   protected def renderWithErrors(errors: List[FieldError]) {

@@ -25,14 +25,13 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
 
   override final def watch(subject: ActorRef): ActorRef = subject match {
     case a: InternalActorRef ⇒
-      if (a != self && !watchingContains(a)) {
+      if (a != self && !watchingContains(a))
         maintainAddressTerminatedSubscription(a) {
           a.sendSystemMessage(
             Watch(a, self)
           ) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
           watching += a
         }
-      }
       a
   }
 
@@ -97,7 +96,7 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
     else set filterNot (_.path == subject.path)
 
   protected def tellWatchersWeDied(): Unit =
-    if (!watchedBy.isEmpty) {
+    if (!watchedBy.isEmpty)
       try {
         // Don't need to send to parent parent since it receives a DWN by default
         def sendTerminated(ifLocal: Boolean)(watcher: ActorRef): Unit =
@@ -127,27 +126,21 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
          */
         watchedBy foreach sendTerminated(ifLocal = false)
         watchedBy foreach sendTerminated(ifLocal = true)
-      } finally {
-        maintainAddressTerminatedSubscription() {
-          watchedBy = ActorCell.emptyActorRefSet
-        }
+      } finally maintainAddressTerminatedSubscription() {
+        watchedBy = ActorCell.emptyActorRefSet
       }
-    }
 
   protected def unwatchWatchedActors(actor: Actor): Unit =
-    if (!watching.isEmpty) {
+    if (!watching.isEmpty)
       maintainAddressTerminatedSubscription() {
-        try {
-          watching foreach { // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-            case watchee: InternalActorRef ⇒
-              watchee.sendSystemMessage(Unwatch(watchee, self))
-          }
+        try watching foreach { // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+          case watchee: InternalActorRef ⇒
+            watchee.sendSystemMessage(Unwatch(watchee, self))
         } finally {
           watching = ActorCell.emptyActorRefSet
           terminatedQueued = ActorCell.emptyActorRefSet
         }
       }
-    }
 
   protected def addWatcher(watchee: ActorRef, watcher: ActorRef): Unit = {
     val watcheeSelf = watchee == self
@@ -164,15 +157,14 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
                 clazz(actor),
                 s"now watched by $watcher"))
         }
-    } else if (!watcheeSelf && watcherSelf) {
+    } else if (!watcheeSelf && watcherSelf)
       watch(watchee)
-    } else {
+    else
       publish(
         Warning(
           self.path.toString,
           clazz(actor),
           "BUG: illegal Watch(%s,%s) for %s".format(watchee, watcher, self)))
-    }
   }
 
   protected def remWatcher(watchee: ActorRef, watcher: ActorRef): Unit = {
@@ -190,15 +182,14 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
                 clazz(actor),
                 s"no longer watched by $watcher"))
         }
-    } else if (!watcheeSelf && watcherSelf) {
+    } else if (!watcheeSelf && watcherSelf)
       unwatch(watchee)
-    } else {
+    else
       publish(
         Warning(
           self.path.toString,
           clazz(actor),
           "BUG: illegal Unwatch(%s,%s) for %s".format(watchee, watcher, self)))
-    }
   }
 
   protected def addressTerminated(address: Address): Unit = {
@@ -213,13 +204,12 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
     // When a parent is watching a child and it terminates due to AddressTerminated
     // it is removed by sending DeathWatchNotification with existenceConfirmed = true to support
     // immediate creation of child with same name.
-    for (a ← watching; if a.path.address == address) {
+    for (a ← watching; if a.path.address == address)
       self.sendSystemMessage(
         DeathWatchNotification(
           a,
           existenceConfirmed = childrenRefs.getByRef(a).isDefined,
           addressTerminated = true))
-    }
   }
 
   /**
@@ -245,9 +235,8 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
       if (had && !has) unsubscribeAddressTerminated()
       else if (!had && has) subscribeAddressTerminated()
       result
-    } else {
+    } else
       block
-    }
   }
 
   private def unsubscribeAddressTerminated(): Unit =

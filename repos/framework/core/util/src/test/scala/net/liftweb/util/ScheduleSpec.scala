@@ -80,7 +80,7 @@ trait PingedService {
     }
      */
     protected def messageHandler = {
-      case Alive => { pinged = true /*; exit() */ }
+      case Alive => pinged = true /*; exit() */
     }
   }
 }

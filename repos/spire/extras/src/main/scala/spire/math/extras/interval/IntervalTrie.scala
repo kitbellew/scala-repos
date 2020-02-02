@@ -388,9 +388,8 @@ object IntervalTrie {
       } else if (lower ne null) {
         result = Interval.fromBounds(lower, Unbound())
         lower = null
-      } else {
+      } else
         Iterator.empty.next()
-      }
       result
     }
 
@@ -421,20 +420,19 @@ object IntervalTrie {
     def isEmpty = !belowAll && (tree eq null)
 
     def isContiguous =
-      if (belowAll) {
+      if (belowAll)
         tree match {
           case a: Leaf => a.sign
           case null    => true
           case _       => false
         }
-      } else {
+      else
         tree match {
           case _: Leaf                        => true
           case Branch(_, _, a: Leaf, b: Leaf) => a.sign & b.sign
           case null                           => true
           case _                              => false
         }
-      }
 
     def hull: Interval[T] = {
       @tailrec
@@ -451,9 +449,9 @@ object IntervalTrie {
         case Above(x)  => Closed(ise.fromLong(x))
         case Below(x)  => Open(ise.fromLong(x))
       }
-      if (isEmpty) {
+      if (isEmpty)
         Interval.empty[T]
-      } else {
+      else {
         val lower = if (belowAll) Unbound[T]() else lowerBound(tree)
         val upper = if (aboveAll) Unbound[T]() else upperBound(tree)
         Interval.fromBounds(lower, upper)

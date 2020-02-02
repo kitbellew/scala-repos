@@ -88,10 +88,9 @@ trait Base { this: Types =>
 
   implicit def listJSONR[A: JSONR]: JSONR[List[A]] = new JSONR[List[A]] {
     def read(json: JValue) = json match {
-      case JArray(xs) => {
+      case JArray(xs) =>
         xs.map(fromJSON[A])
           .sequence[({ type λ[α] = ValidationNel[Error, α] })#λ, A]
-      }
       case x => failure(UnexpectedJSONError(x, classOf[JArray])).toValidationNel
     }
   }

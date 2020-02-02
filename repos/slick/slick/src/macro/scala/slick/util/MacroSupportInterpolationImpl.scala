@@ -38,7 +38,7 @@ object MacroSupportInterpolationImpl {
         str.charAt(pos) match {
           case '\\' =>
             pos += 1
-            if (pos < len) {
+            if (pos < len)
               str.charAt(pos) match {
                 case c2 @ ('(' | ')') => // optional parentheses
                   flushSB
@@ -93,7 +93,6 @@ object MacroSupportInterpolationImpl {
                     ctx.enclosingPosition,
                     "Invalid escaped character '" + c2 + "' in literal \"" + str + "\"")
               }
-            }
           case c => sb append c
         }
         pos += 1

@@ -111,9 +111,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
             val end = (traversed + sz) min until
             traversed = end
             new ParArrayIterator(start, end, arr)
-          } else {
+          } else
             new ParArrayIterator(traversed, traversed, arr)
-          }
     }
 
     override def split: Seq[ParArrayIterator] = {
@@ -125,9 +124,8 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
           new ParArrayIterator(i + splitpoint, until, arr))
         i = until
         sq
-      } else {
+      } else
         Seq(this)
-      }
     }
 
     override def toString = "ParArrayIterator(" + i + ", " + until + ")"
@@ -267,10 +265,9 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         nextuntil: Int,
         start: Int): Boolean = {
       var j = start
-      while (j < nextuntil) {
+      while (j < nextuntil)
         if (p(a(j).asInstanceOf[T])) j += 1
         else return false
-      }
       true
     }
 
@@ -299,10 +296,9 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         nextuntil: Int,
         start: Int): Boolean = {
       var j = start
-      while (j < nextuntil) {
+      while (j < nextuntil)
         if (p(a(j).asInstanceOf[T])) return true
         else j += 1
-      }
       false
     }
 
@@ -364,10 +360,9 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         startpos: Int): Int = {
       var j = startpos
       var endpos = ntil
-      while (j < endpos) {
+      while (j < endpos)
         if (pred(a(j).asInstanceOf[T])) j += 1
         else endpos = j
-      }
       endpos - startpos
     }
 
@@ -385,12 +380,11 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         from: Int): Int = {
       var j = from
       var pos = -1
-      while (j < ntil) {
+      while (j < ntil)
         if (pred(a(j).asInstanceOf[T])) {
           pos = j
           j = ntil
         } else j += 1
-      }
       pos
     }
 
@@ -408,12 +402,11 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         ntil: Int): Int = {
       var pos = -1
       var j = ntil - 1
-      while (j >= from) {
+      while (j >= from)
         if (pred(a(j).asInstanceOf[T])) {
           pos = j
           j = -1
         } else j -= 1
-      }
       pos
     }
 
@@ -859,9 +852,8 @@ object ParArray extends ParFactory[ParArray] {
 
   def fromTraversables[T](xss: GenTraversableOnce[T]*) = {
     val cb = ParArrayCombiner[T]()
-    for (xs <- xss) {
+    for (xs <- xss)
       cb ++= xs.seq
-    }
     cb.result
   }
 

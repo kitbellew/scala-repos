@@ -132,16 +132,15 @@ final case class VectorClock(
           currentOrder
         else if ((nt1 eq cmpEndMarker) && (nt2 eq cmpEndMarker)) currentOrder
         // i1 is empty but i2 is not, so i1 can only be Before
-        else if (nt1 eq cmpEndMarker) {
+        else if (nt1 eq cmpEndMarker)
           if (currentOrder eq After) Concurrent else Before
-        }
         // i2 is empty but i1 is not, so i1 can only be After
-        else if (nt2 eq cmpEndMarker) {
+        else if (nt2 eq cmpEndMarker)
           if (currentOrder eq Before) Concurrent else After
-        } else {
+        else {
           // compare the nodes
           val nc = nt1._1 compareTo nt2._1
-          if (nc == 0) {
+          if (nc == 0)
             // both nodes exist compare the timestamps
             // same timestamp so just continue with the next nodes
             if (nt1._2 == nt2._2)
@@ -149,7 +148,7 @@ final case class VectorClock(
                 nextOrElse(i1, cmpEndMarker),
                 nextOrElse(i2, cmpEndMarker),
                 currentOrder)
-            else if (nt1._2 < nt2._2) {
+            else if (nt1._2 < nt2._2)
               // t1 is less than t2, so i1 can only be Before
               if (currentOrder eq After) Concurrent
               else
@@ -157,24 +156,22 @@ final case class VectorClock(
                   nextOrElse(i1, cmpEndMarker),
                   nextOrElse(i2, cmpEndMarker),
                   Before)
-            } else {
-              // t2 is less than t1, so i1 can only be After
-              if (currentOrder eq Before) Concurrent
-              else
-                compareNext(
-                  nextOrElse(i1, cmpEndMarker),
-                  nextOrElse(i2, cmpEndMarker),
-                  After)
-            }
-          } else if (nc < 0) {
+            else
+            // t2 is less than t1, so i1 can only be After
+            if (currentOrder eq Before) Concurrent
+            else
+              compareNext(
+                nextOrElse(i1, cmpEndMarker),
+                nextOrElse(i2, cmpEndMarker),
+                After)
+          else if (nc < 0)
             // this node only exists in i1 so i1 can only be After
             if (currentOrder eq Before) Concurrent
             else compareNext(nextOrElse(i1, cmpEndMarker), nt2, After)
-          } else {
-            // this node only exists in i2 so i1 can only be Before
-            if (currentOrder eq After) Concurrent
-            else compareNext(nt1, nextOrElse(i2, cmpEndMarker), Before)
-          }
+          else
+          // this node only exists in i2 so i1 can only be Before
+          if (currentOrder eq After) Concurrent
+          else compareNext(nt1, nextOrElse(i2, cmpEndMarker), Before)
         }
 
       compareNext(

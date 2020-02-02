@@ -39,7 +39,7 @@ object CanDesignFilterDecimation {
           optWindow: OptWindowFunction,
           optFilterOrder: OptFilterTaps): FIRKernel1D[Double] =
         optDesignMethod match {
-          case OptDesignMethod.Firwin => {
+          case OptDesignMethod.Firwin =>
             import OptFilterTaps._
             val realOrder = optFilterOrder match {
               case Automatic   => 31
@@ -54,7 +54,6 @@ object CanDesignFilterDecimation {
               scale = true,
               multiplier,
               optWindow)
-          }
           case meth: OptDesignMethod =>
             throw new IllegalArgumentException(
               "Design method " + meth + "is not supported yet!")

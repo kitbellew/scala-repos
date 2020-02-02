@@ -58,11 +58,8 @@ trait GZIPStringEncoder extends StringEncoder {
   override def encode(bytes: Array[Byte]): String = {
     val baos = new ByteArrayOutputStream
     val gos = new GZIPOutputStream(baos)
-    try {
-      gos.write(bytes)
-    } finally {
-      gos.close()
-    }
+    try gos.write(bytes)
+    finally gos.close()
     Base64StringEncoder.encode(baos.toByteArray)
   }
 
@@ -72,11 +69,8 @@ trait GZIPStringEncoder extends StringEncoder {
     val baos = new ByteArrayOutputStream
     val gis = new GZIPInputStream(
       new ByteArrayInputStream(Base64StringEncoder.decode(str)))
-    try {
-      StreamIO.copy(gis, baos)
-    } finally {
-      gis.close()
-    }
+    try StreamIO.copy(gis, baos)
+    finally gis.close()
 
     baos.toByteArray
   }

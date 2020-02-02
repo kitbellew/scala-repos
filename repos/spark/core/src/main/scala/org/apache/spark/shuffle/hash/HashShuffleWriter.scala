@@ -54,18 +54,18 @@ private[spark] class HashShuffleWriter[K, V](
 
   /** Write a bunch of records to this task's output */
   override def write(records: Iterator[Product2[K, V]]): Unit = {
-    val iter = if (dep.aggregator.isDefined) {
-      if (dep.mapSideCombine) {
-        dep.aggregator.get.combineValuesByKey(records, context)
-      } else {
+    val iter =
+      if (dep.aggregator.isDefined)
+        if (dep.mapSideCombine)
+          dep.aggregator.get.combineValuesByKey(records, context)
+        else
+          records
+      else {
+        require(
+          !dep.mapSideCombine,
+          "Map-side combine without Aggregator specified!")
         records
       }
-    } else {
-      require(
-        !dep.mapSideCombine,
-        "Map-side combine without Aggregator specified!")
-      records
-    }
 
     for (elem <- iter) {
       val bucketId = dep.partitioner.getPartition(elem._1)
@@ -77,33 +77,28 @@ private[spark] class HashShuffleWriter[K, V](
   override def stop(initiallySuccess: Boolean): Option[MapStatus] = {
     var success = initiallySuccess
     try {
-      if (stopping) {
+      if (stopping)
         return None
-      }
       stopping = true
-      if (success) {
-        try {
-          Some(commitWritesAndBuildStatus())
-        } catch {
+      if (success)
+        try Some(commitWritesAndBuildStatus())
+        catch {
           case e: Exception =>
             success = false
             revertWrites()
             throw e
         }
-      } else {
+      else {
         revertWrites()
         None
       }
-    } finally {
-      // Release the writers back to the shuffle block manager.
-      if (shuffle != null && shuffle.writers != null) {
-        try {
-          shuffle.releaseWriters(success)
-        } catch {
-          case e: Exception => logError("Failed to release shuffle writers", e)
-        }
+    } finally
+    // Release the writers back to the shuffle block manager.
+    if (shuffle != null && shuffle.writers != null)
+      try shuffle.releaseWriters(success)
+      catch {
+        case e: Exception => logError("Failed to release shuffle writers", e)
       }
-    }
   }
 
   private def commitWritesAndBuildStatus(): MapStatus = {
@@ -119,32 +114,24 @@ private[spark] class HashShuffleWriter[K, V](
       shuffle.writers.zipWithIndex.foreach {
         case (writer, i) =>
           val output = blockManager.diskBlockManager.getFile(writer.blockId)
-          if (sizes(i) > 0) {
+          if (sizes(i) > 0)
             if (output.exists()) {
               // Use length of existing file and delete our own temporary one
               sizes(i) = output.length()
               writer.file.delete()
-            } else {
-              // Commit by renaming our temporary file to something the fetcher expects
-              if (!writer.file.renameTo(output)) {
-                throw new IOException(
-                  s"fail to rename ${writer.file} to $output")
-              }
-            }
-          } else {
-            if (output.exists()) {
+            } else
+            // Commit by renaming our temporary file to something the fetcher expects
+            if (!writer.file.renameTo(output))
+              throw new IOException(s"fail to rename ${writer.file} to $output")
+            else if (output.exists())
               output.delete()
-            }
-          }
       }
     }
     MapStatus(blockManager.shuffleServerId, sizes)
   }
 
   private def revertWrites(): Unit =
-    if (shuffle != null && shuffle.writers != null) {
-      for (writer <- shuffle.writers) {
+    if (shuffle != null && shuffle.writers != null)
+      for (writer <- shuffle.writers)
         writer.revertPartialWritesAndClose()
-      }
-    }
 }

@@ -44,11 +44,10 @@ private[akka] trait WriteJournalBase {
     if (adapter == IdentityEventAdapter || adapter
           .isInstanceOf[NoopWriteEventAdapter])
       repr
-    else {
+    else
       repr
         .withPayload(adapter.toJournal(payload))
         .withManifest(adapter.manifest(payload))
-    }
   }
 
 }

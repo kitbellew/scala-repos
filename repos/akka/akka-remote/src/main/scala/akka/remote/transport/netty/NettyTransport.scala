@@ -573,57 +573,53 @@ class NettyTransport(
     for {
       address ← addressToSocketAddress(
         Address("", "", settings.BindHostname, settings.BindPortSelector))
-    } yield {
-      try {
-        val newServerChannel = inboundBootstrap match {
-          case b: ServerBootstrap ⇒ b.bind(address)
-          case b: ConnectionlessBootstrap ⇒ b.bind(address)
-        }
-
-        // Block reads until a handler actor is registered
-        newServerChannel.setReadable(false)
-        channelGroup.add(newServerChannel)
-
-        serverChannel = newServerChannel
-
-        addressFromSocketAddress(
-          newServerChannel.getLocalAddress,
-          schemeIdentifier,
-          system.name,
-          Some(settings.Hostname),
-          if (settings.PortSelector == 0) None else Some(settings.PortSelector)) match {
-          case Some(address) ⇒
-            addressFromSocketAddress(
-              newServerChannel.getLocalAddress,
-              schemeIdentifier,
-              system.name,
-              None,
-              None) match {
-              case Some(address) ⇒ boundTo = address
-              case None ⇒
-                throw new NettyTransportException(
-                  s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
-            }
-            localAddress = address
-            associationListenerPromise.future.onSuccess {
-              case listener ⇒ newServerChannel.setReadable(true)
-            }
-            (address, associationListenerPromise)
-          case None ⇒
-            throw new NettyTransportException(
-              s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
-        }
-      } catch {
-        case NonFatal(e) ⇒ {
-          log.error(
-            "failed to bind to {}, shutting down Netty transport",
-            address)
-          try {
-            shutdown()
-          } catch { case NonFatal(e) ⇒ } // ignore possible exception during shutdown
-          throw e
-        }
+    } yield try {
+      val newServerChannel = inboundBootstrap match {
+        case b: ServerBootstrap ⇒ b.bind(address)
+        case b: ConnectionlessBootstrap ⇒ b.bind(address)
       }
+
+      // Block reads until a handler actor is registered
+      newServerChannel.setReadable(false)
+      channelGroup.add(newServerChannel)
+
+      serverChannel = newServerChannel
+
+      addressFromSocketAddress(
+        newServerChannel.getLocalAddress,
+        schemeIdentifier,
+        system.name,
+        Some(settings.Hostname),
+        if (settings.PortSelector == 0) None else Some(settings.PortSelector)) match {
+        case Some(address) ⇒
+          addressFromSocketAddress(
+            newServerChannel.getLocalAddress,
+            schemeIdentifier,
+            system.name,
+            None,
+            None) match {
+            case Some(address) ⇒ boundTo = address
+            case None ⇒
+              throw new NettyTransportException(
+                s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
+          }
+          localAddress = address
+          associationListenerPromise.future.onSuccess {
+            case listener ⇒ newServerChannel.setReadable(true)
+          }
+          (address, associationListenerPromise)
+        case None ⇒
+          throw new NettyTransportException(
+            s"Unknown local address type [${newServerChannel.getLocalAddress.getClass.getName}]")
+      }
+    } catch {
+      case NonFatal(e) ⇒
+        log.error(
+          "failed to bind to {}, shutting down Netty transport",
+          address)
+        try shutdown()
+        catch { case NonFatal(e) ⇒ } // ignore possible exception during shutdown
+        throw e
     }
 
   // Need to do like this for binary compatibility reasons

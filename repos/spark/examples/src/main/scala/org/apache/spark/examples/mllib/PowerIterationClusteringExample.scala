@@ -138,11 +138,10 @@ object PowerIterationClusteringExample {
     val rdd = sc.parallelize(points)
     val distancesRdd = rdd.cartesian(rdd).flatMap {
       case (((x0, y0), i0), ((x1, y1), i1)) =>
-        if (i0 < i1) {
+        if (i0 < i1)
           Some((i0.toLong, i1.toLong, gaussianSimilarity((x0, y0), (x1, y1))))
-        } else {
+        else
           None
-        }
     }
     distancesRdd
   }

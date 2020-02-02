@@ -211,9 +211,8 @@ package object plot {
     }
 
     val counts = new Array[Int](binner.splits.length + 1)
-    for (value <- values) {
+    for (value <- values)
       counts(binner.bin(value)) += 1
-    }
 
     val width = (binner.splits.iterator zip binner.splits.iterator.drop(1))
       .map(tup => tup._2 - tup._1)
@@ -228,11 +227,10 @@ package object plot {
           name = if (name == null) defaultName(0) else name,
           items = IndexedSeq.range(0, counts.length),
           x = (i: Int) =>
-            if (i == binner.splits.length) {
+            if (i == binner.splits.length)
               binner.splits(i - 1) + width / 2.0
-            } else {
-              binner.splits(i) - width / 2.0
-            },
+            else
+              binner.splits(i) - width / 2.0,
           y = (i: Int) => counts(i),
           label = (i: Int) => null,
           tip = (i: Int) => null

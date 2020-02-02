@@ -161,9 +161,8 @@ class TaskContextSuite
       .parallelize(Seq(1, 2), 2)
       .mapPartitions { iter =>
         val attemptId = TaskContext.get().attemptNumber
-        if (iter.next() == 1 && attemptId == 0) {
+        if (iter.next() == 1 && attemptId == 0)
           throw new Exception("First execution of task failed")
-        }
         Seq(attemptId).iterator
       }
       .collect()
@@ -192,11 +191,10 @@ class TaskContextSuite
       .map { i =>
         acc1 += 1
         acc2 += 1
-        if (TaskContext.get.attemptNumber() <= 2) {
+        if (TaskContext.get.attemptNumber() <= 2)
           throw new Exception("you did something wrong")
-        } else {
+        else
           0
-        }
       }
       .count()
     // The one that counts failed values should be 4x the one that didn't,

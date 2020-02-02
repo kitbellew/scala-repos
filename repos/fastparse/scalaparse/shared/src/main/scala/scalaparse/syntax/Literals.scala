@@ -101,14 +101,13 @@ trait Literals { l =>
         val NonStringEnd = P(!CharIn("\n\"") ~ AnyChar)
         P((StringChars | Interp | LiteralSlash | Escape | NonStringEnd).rep)
       }
-      val String = {
+      val String =
         P {
           (Id ~ TQ ~/ TripleChars ~ TripleTail) |
             (Id ~ "\"" ~/ SingleChars(true) ~ "\"") |
             (TQ ~/ NoInterp.TripleChars ~ TripleTail) |
             ("\"" ~/ NoInterp.SingleChars(false) ~ "\"")
         }
-      }
 
     }
     object NoInterp extends InterpCtx(None)

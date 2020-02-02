@@ -237,12 +237,11 @@ class LinkedList[E]()
 
   private def _removeOccurrence(iter: Iterator[E], o: Any): Boolean = {
     var changed = false
-    while (iter.hasNext() && !changed) {
+    while (iter.hasNext() && !changed)
       if (iter.next() === o) {
         iter.remove()
         changed = true
       }
-    }
 
     changed
   }
@@ -316,13 +315,11 @@ class LinkedList[E]()
         if (currentNode eq null) {
           removeLast()
           lastNode = LinkedList.this.last
-        } else {
+        } else
           removeNode(lastNode)
-        }
 
-        if (last < i) {
+        if (last < i)
           i -= 1
-        }
 
         last = -1
       }
@@ -336,9 +333,8 @@ class LinkedList[E]()
         if (currentNode eq null) {
           addLast(e)
           lastNode = LinkedList.this.last
-        } else {
+        } else
           addNode(currentNode, e)
-        }
 
         i += 1
         last = -1

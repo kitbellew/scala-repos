@@ -139,12 +139,11 @@ object CsvParser {
       val chr = carr(curEnd) // get current character
 
       if (chr == quote) { // handle a quote
-        if (stripQuote) {
+        if (stripQuote)
           if (inQ)
             inQoff = 1 // we're exiting a quoted field
           else
             curBeg = curEnd + 1 // we're starting a quoted field
-        }
         inQ = !inQ
       }
 
@@ -177,13 +176,12 @@ object CsvParser {
     }
 
     // if we didn't scan a field for all requested locations, throw an error
-    if (locIdx < locs.length) {
+    if (locIdx < locs.length)
       throw new ArrayIndexOutOfBoundsException(
         """Unable to read column %d in line:
           | ------------
           | %s
           | ------------""".stripMargin.format(locs(locIdx), line))
-    }
   }
 
   private def extractAllFields(
@@ -209,12 +207,11 @@ object CsvParser {
       val chr = carr(curEnd) // get current character
 
       if (chr == quote) { // handle a quote
-        if (stripQuote) {
+        if (stripQuote)
           if (inQ)
             inQoff = 1 // we're exiting a quoted field
           else
             curBeg = curEnd + 1 // we're starting a quoted field
-        }
         inQ = !inQ
       }
 
@@ -238,22 +235,18 @@ object CsvParser {
   }
 
   def parseInt(s: String) =
-    try {
-      java.lang.Integer.parseInt(s)
-    } catch { case _: NumberFormatException => Int.MinValue }
+    try java.lang.Integer.parseInt(s)
+    catch { case _: NumberFormatException => Int.MinValue }
 
   def parseLong(s: String) =
-    try {
-      java.lang.Long.parseLong(s)
-    } catch { case _: NumberFormatException => Long.MinValue }
+    try java.lang.Long.parseLong(s)
+    catch { case _: NumberFormatException => Long.MinValue }
 
   def parseFloat(s: String) =
-    try {
-      java.lang.Float.parseFloat(s)
-    } catch { case _: NumberFormatException => Float.NaN }
+    try java.lang.Float.parseFloat(s)
+    catch { case _: NumberFormatException => Float.NaN }
 
   def parseDouble(s: String) =
-    try {
-      java.lang.Double.parseDouble(s)
-    } catch { case _: NumberFormatException => Double.NaN }
+    try java.lang.Double.parseDouble(s)
+    catch { case _: NumberFormatException => Double.NaN }
 }

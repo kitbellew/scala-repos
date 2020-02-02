@@ -55,21 +55,17 @@ class Goose(config: Configuration = new Configuration) {
   def initializeEnvironment() {
 
     val f = new File(config.localStoragePath)
-    try {
-      if (!f.isDirectory) {
-        f.mkdirs()
-      }
-    } catch {
+    try if (!f.isDirectory)
+      f.mkdirs()
+    catch {
       case e: Exception =>
     }
-    if (!f.isDirectory) {
+    if (!f.isDirectory)
       throw new Exception(
         config.localStoragePath + " directory does not seem to exist, you need to set this for image processing downloads")
-    }
-    if (!f.canWrite) {
+    if (!f.canWrite)
       throw new Exception(
         config.localStoragePath + " directory is not writeble, you need to set this for image processing downloads")
-    }
 
     // todo cleanup any jank that may be in the tmp folder currently
   }

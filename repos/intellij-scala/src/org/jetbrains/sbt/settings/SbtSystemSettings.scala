@@ -63,22 +63,18 @@ class SbtSystemSettings(project: Project)
   var customSbtStructurePath: String = ""
 
   def checkSettings(old: SbtProjectSettings, current: SbtProjectSettings) {
-    if (old.jdkName != current.jdkName) {
+    if (old.jdkName != current.jdkName)
       getPublisher.onJdkChanged(old.jdk, current.jdk)
-    }
-    if (old.resolveClassifiers != current.resolveClassifiers) {
+    if (old.resolveClassifiers != current.resolveClassifiers)
       getPublisher.onResolveClassifiersChanged(
         old.resolveClassifiers,
         current.resolveClassifiers)
-    }
-    if (old.resolveSbtClassifiers != current.resolveSbtClassifiers) {
+    if (old.resolveSbtClassifiers != current.resolveSbtClassifiers)
       getPublisher.onResolveSbtClassifiersChanged(
         old.resolveSbtClassifiers,
         current.resolveSbtClassifiers)
-    }
-    if (old.sbtVersion != current.sbtVersion) {
+    if (old.sbtVersion != current.sbtVersion)
       getPublisher.onSbtVersionChanged(old.sbtVersion, current.sbtVersion)
-    }
   }
 
   def getState = {
@@ -174,8 +170,7 @@ class SbtSystemSettingsState
 
   def setLinkedExternalProjectsSettings(
       settings: util.Set[SbtProjectSettings]) {
-    if (settings != null) {
+    if (settings != null)
       projectSettings.addAll(settings)
-    }
   }
 }

@@ -114,21 +114,18 @@ class BernoulliCellSampler[T](
   override def setSeed(seed: Long): Unit = rng.setSeed(seed)
 
   override def sample(items: Iterator[T]): Iterator[T] =
-    if (ub - lb <= 0.0) {
+    if (ub - lb <= 0.0)
       if (complement) items else Iterator.empty
-    } else {
-      if (complement) {
-        items.filter { item =>
-          val x = rng.nextDouble()
-          (x < lb) || (x >= ub)
-        }
-      } else {
-        items.filter { item =>
-          val x = rng.nextDouble()
-          (x >= lb) && (x < ub)
-        }
+    else if (complement)
+      items.filter { item =>
+        val x = rng.nextDouble()
+        (x < lb) || (x >= ub)
       }
-    }
+    else
+      items.filter { item =>
+        val x = rng.nextDouble()
+        (x >= lb) && (x < ub)
+      }
 
   /**
     *  Return a sampler that is the complement of the range specified of the current sampler.
@@ -163,15 +160,14 @@ class BernoulliSampler[T: ClassTag](fraction: Double)
   override def setSeed(seed: Long): Unit = rng.setSeed(seed)
 
   override def sample(items: Iterator[T]): Iterator[T] =
-    if (fraction <= 0.0) {
+    if (fraction <= 0.0)
       Iterator.empty
-    } else if (fraction >= 1.0) {
+    else if (fraction >= 1.0)
       items
-    } else if (fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
+    else if (fraction <= RandomSampler.defaultMaxGapSamplingFraction)
       new GapSamplingIterator(items, fraction, rng, RandomSampler.rngEpsilon)
-    } else {
+    else
       items.filter { _ => rng.nextDouble() <= fraction }
-    }
 
   override def clone: BernoulliSampler[T] = new BernoulliSampler[T](fraction)
 }
@@ -209,21 +205,20 @@ class PoissonSampler[T: ClassTag](
   }
 
   override def sample(items: Iterator[T]): Iterator[T] =
-    if (fraction <= 0.0) {
+    if (fraction <= 0.0)
       Iterator.empty
-    } else if (useGapSamplingIfPossible &&
-               fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
+    else if (useGapSamplingIfPossible &&
+             fraction <= RandomSampler.defaultMaxGapSamplingFraction)
       new GapSamplingReplacementIterator(
         items,
         fraction,
         rngGap,
         RandomSampler.rngEpsilon)
-    } else {
+    else
       items.flatMap { item =>
         val count = rng.sample()
         if (count == 0) Iterator.empty else Iterator.fill(count)(item)
       }
-    }
 
   override def clone: PoissonSampler[T] =
     new PoissonSampler[T](fraction, useGapSamplingIfPossible)
@@ -247,9 +242,9 @@ private[spark] class GapSamplingIterator[T: ClassTag](
     val arrayBufferClass = ArrayBuffer.empty[T].iterator.getClass
     data.getClass match {
       case `arrayClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => data = data.drop(n)
       case `arrayBufferClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => data = data.drop(n)
       case _ =>
         (n: Int) => {
           var j = 0
@@ -301,9 +296,9 @@ private[spark] class GapSamplingReplacementIterator[T: ClassTag](
     val arrayBufferClass = ArrayBuffer.empty[T].iterator.getClass
     data.getClass match {
       case `arrayClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => data = data.drop(n)
       case `arrayBufferClass` =>
-        (n: Int) => { data = data.drop(n) }
+        (n: Int) => data = data.drop(n)
       case _ =>
         (n: Int) => {
           var j = 0

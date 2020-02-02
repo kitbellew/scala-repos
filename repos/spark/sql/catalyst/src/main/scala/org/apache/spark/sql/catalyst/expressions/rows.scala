@@ -56,18 +56,17 @@ trait BaseGenericInternalRow extends InternalRow {
     val len = numFields
     var i = 0
     while (i < len) {
-      if (isNullAt(i)) {
+      if (isNullAt(i))
         return true
-      }
       i += 1
     }
     false
   }
 
   override def toString: String =
-    if (numFields == 0) {
+    if (numFields == 0)
       "[empty row]"
-    } else {
+    else {
       val sb = new StringBuilder
       sb.append("[")
       sb.append(genericGet(0))
@@ -83,48 +82,40 @@ trait BaseGenericInternalRow extends InternalRow {
     }
 
   override def equals(o: Any): Boolean = {
-    if (!o.isInstanceOf[BaseGenericInternalRow]) {
+    if (!o.isInstanceOf[BaseGenericInternalRow])
       return false
-    }
 
     val other = o.asInstanceOf[BaseGenericInternalRow]
-    if (other eq null) {
+    if (other eq null)
       return false
-    }
 
     val len = numFields
-    if (len != other.numFields) {
+    if (len != other.numFields)
       return false
-    }
 
     var i = 0
     while (i < len) {
-      if (isNullAt(i) != other.isNullAt(i)) {
+      if (isNullAt(i) != other.isNullAt(i))
         return false
-      }
       if (!isNullAt(i)) {
         val o1 = genericGet(i)
         val o2 = other.genericGet(i)
         o1 match {
           case b1: Array[Byte] =>
             if (!o2.isInstanceOf[Array[Byte]] ||
-                !java.util.Arrays.equals(b1, o2.asInstanceOf[Array[Byte]])) {
+                !java.util.Arrays.equals(b1, o2.asInstanceOf[Array[Byte]]))
               return false
-            }
           case f1: Float if java.lang.Float.isNaN(f1) =>
             if (!o2.isInstanceOf[Float] || !java.lang.Float.isNaN(
-                  o2.asInstanceOf[Float])) {
+                  o2.asInstanceOf[Float]))
               return false
-            }
           case d1: Double if java.lang.Double.isNaN(d1) =>
             if (!o2.isInstanceOf[Double] || !java.lang.Double.isNaN(
-                  o2.asInstanceOf[Double])) {
+                  o2.asInstanceOf[Double]))
               return false
-            }
           case _ =>
-            if (o1 != o2) {
+            if (o1 != o2)
               return false
-            }
         }
       }
       i += 1
@@ -139,9 +130,9 @@ trait BaseGenericInternalRow extends InternalRow {
     val len = numFields
     while (i < len) {
       val update: Int =
-        if (isNullAt(i)) {
+        if (isNullAt(i))
           0
-        } else {
+        else
           genericGet(i) match {
             case b: Boolean => if (b) 0 else 1
             case b: Byte    => b.toInt
@@ -155,7 +146,6 @@ trait BaseGenericInternalRow extends InternalRow {
             case a: Array[Byte] => java.util.Arrays.hashCode(a)
             case other          => other.hashCode()
           }
-        }
       result = 37 * result + update
       i += 1
     }

@@ -190,11 +190,10 @@ object expand {
     import context.mirror.universe._
     val x = v.mods.annotations.collectFirst {
       case x @ q"new expand.sequence[${Ident(nme2)}](...$args)" =>
-        if (args.flatten.length != typeMappings(nme2).length) {
+        if (args.flatten.length != typeMappings(nme2).length)
           context.error(
             x.pos,
             s"@sequence arguments list does not match the expand.args for $nme2")
-        }
         val predef = context.mirror.staticModule("scala.Predef").asModule
         val missing = Select(Ident(predef), newTermName("???"))
         nme2 -> (typeMappings(nme2) zip args.flatten).toMap
@@ -217,9 +216,8 @@ object expand {
       case tree @ q"new expand.args(...$args)" =>
         val flatArgs: Seq[Tree] = args.flatten
         flatArgs.map(c.typeCheck(_)).map { tree =>
-          try {
-            tree.symbol.asModule.companionSymbol.asType.toType
-          } catch {
+          try tree.symbol.asModule.companionSymbol.asType.toType
+          catch {
             case ex: Exception =>
               c.abort(
                 tree.pos,

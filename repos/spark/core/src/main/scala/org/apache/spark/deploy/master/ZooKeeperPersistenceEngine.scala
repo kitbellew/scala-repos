@@ -69,14 +69,12 @@ private[master] class ZooKeeperPersistenceEngine(
   private def deserializeFromFile[T](filename: String)(
       implicit m: ClassTag[T]): Option[T] = {
     val fileData = zk.getData().forPath(WORKING_DIR + "/" + filename)
-    try {
-      Some(serializer.newInstance().deserialize[T](ByteBuffer.wrap(fileData)))
-    } catch {
-      case e: Exception => {
+    try Some(serializer.newInstance().deserialize[T](ByteBuffer.wrap(fileData)))
+    catch {
+      case e: Exception =>
         logWarning("Exception while reading persisted file, deleting", e)
         zk.delete().forPath(WORKING_DIR + "/" + filename)
         None
-      }
     }
   }
 }

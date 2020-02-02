@@ -37,9 +37,8 @@ private[spark] class PrimitiveVector[@specialized(Long, Int, Double) V: ClassTag
   }
 
   def +=(value: V): Unit = {
-    if (_numElements == _array.length) {
+    if (_numElements == _array.length)
       resize(_array.length * 2)
-    }
     _array(_numElements) = value
     _numElements += 1
   }
@@ -54,9 +53,8 @@ private[spark] class PrimitiveVector[@specialized(Long, Int, Double) V: ClassTag
     var index = 0
     override def hasNext: Boolean = index < _numElements
     override def next(): V = {
-      if (!hasNext) {
+      if (!hasNext)
         throw new NoSuchElementException
-      }
       val value = _array(index)
       index += 1
       value
@@ -72,9 +70,8 @@ private[spark] class PrimitiveVector[@specialized(Long, Int, Double) V: ClassTag
   /** Resizes the array, dropping elements if the total length decreases. */
   def resize(newLength: Int): PrimitiveVector[V] = {
     _array = copyArrayWithLength(newLength)
-    if (newLength < _numElements) {
+    if (newLength < _numElements)
       _numElements = newLength
-    }
     this
   }
 

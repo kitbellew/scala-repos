@@ -40,9 +40,9 @@ object QuirrelCacheSpecs
   private def findNode[A](root: Expr)(
       pf: PartialFunction[Expr, A]): Option[A] = {
     def loop(expr: Expr): Option[A] =
-      if (pf.isDefinedAt(expr)) {
+      if (pf.isDefinedAt(expr))
         Some(pf(expr))
-      } else {
+      else {
         val cs = expr match {
           // special-case Let because its children
           // doesn't return all the sub-exprs

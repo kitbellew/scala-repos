@@ -65,9 +65,8 @@ class ReachingDefsTest extends LightCodeInsightFixtureTestCase {
       builder.append(instruction.toString)
       val defs: Set[Instruction] = markup(instruction)
 
-      for (d <- defs.toSeq.sortBy(_.num)) {
+      for (d <- defs.toSeq.sortBy(_.num))
         builder.append("\n  ").append(d.toString)
-      }
       builder.append("\n")
     }
     builder.toString

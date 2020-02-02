@@ -72,7 +72,7 @@ object Msg extends DispatchSnippet {
     */
   def render(styles: NodeSeq): NodeSeq =
     attr("id") match {
-      case Full(id) => {
+      case Full(id) =>
         // Extract the currently set CSS
         (attr("errorClass") or attr("errorclass")).map(cls =>
           MsgErrorMeta += (id -> cls))
@@ -82,7 +82,6 @@ object Msg extends DispatchSnippet {
           MsgNoticeMeta += (id -> cls))
 
         <span id={id}>{renderIdMsgs(id)}</span> ++ effects(id)
-      }
       case _ => NodeSeq.Empty
     }
 

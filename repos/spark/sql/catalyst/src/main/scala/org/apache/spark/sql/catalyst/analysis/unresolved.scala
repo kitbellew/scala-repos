@@ -123,25 +123,21 @@ object UnresolvedAttribute {
     var i = 0
     while (i < name.length) {
       val char = name(i)
-      if (inBacktick) {
+      if (inBacktick)
         if (char == '`') {
           inBacktick = false
           if (i + 1 < name.length && name(i + 1) != '.') throw e
-        } else {
+        } else
           tmp += char
-        }
-      } else {
-        if (char == '`') {
-          if (tmp.nonEmpty) throw e
-          inBacktick = true
-        } else if (char == '.') {
-          if (name(i - 1) == '.' || i == name.length - 1) throw e
-          nameParts += tmp.mkString
-          tmp.clear()
-        } else {
-          tmp += char
-        }
-      }
+      else if (char == '`') {
+        if (tmp.nonEmpty) throw e
+        inBacktick = true
+      } else if (char == '.') {
+        if (name(i - 1) == '.' || i == name.length - 1) throw e
+        nameParts += tmp.mkString
+        tmp.clear()
+      } else
+        tmp += char
       i += 1
     }
     if (inBacktick) throw e
@@ -217,11 +213,10 @@ case class UnresolvedStar(target: Option[Seq[String]])
       case None => input.output
       // If there is a table, pick out attributes that are part of this table.
       case Some(t) =>
-        if (t.size == 1) {
+        if (t.size == 1)
           input.output.filter(_.qualifiers.exists(resolver(_, t.head)))
-        } else {
+        else
           List()
-        }
     }
     if (expandedAttributes.nonEmpty) return expandedAttributes
 
@@ -229,7 +224,7 @@ case class UnresolvedStar(target: Option[Seq[String]])
     // (i.e. [name].* is both a table and a struct), the struct path can always be qualified.
     require(target.isDefined)
     val attribute = input.resolve(target.get, resolver)
-    if (attribute.isDefined) {
+    if (attribute.isDefined)
       // This target resolved to an attribute in child. It must be a struct. Expand it.
       attribute.get.dataType match {
         case s: StructType =>
@@ -244,7 +239,7 @@ case class UnresolvedStar(target: Option[Seq[String]])
             "Can only star expand struct data types. Attribute: `" +
               target.get + "`")
       }
-    } else {
+    else {
       val from = input.inputSet.map(_.name).mkString(", ")
       val targetString = target.get.mkString(".")
       throw new AnalysisException(

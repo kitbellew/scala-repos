@@ -183,10 +183,10 @@ private[sql] class ExchangeCoordinator(
       // If the current postShuffleInputSize is equal or greater than the
       // targetPostShuffleInputSize, We need to add a new element in partitionStartIndices.
       if (postShuffleInputSize >= targetPostShuffleInputSize) {
-        if (i < numPreShufflePartitions - 1) {
+        if (i < numPreShufflePartitions - 1)
           // Next start index.
           partitionStartIndices += i + 1
-        } else {
+        else {
           // This is the last element. So, we do not need to append the next start index to
           // partitionStartIndices.
         }
@@ -225,12 +225,11 @@ private[sql] class ExchangeCoordinator(
         val exchange = exchanges(i)
         val shuffleDependency = exchange.prepareShuffleDependency()
         shuffleDependencies += shuffleDependency
-        if (shuffleDependency.rdd.partitions.length != 0) {
+        if (shuffleDependency.rdd.partitions.length != 0)
           // submitMapStage does not accept RDD with 0 partition.
           // So, we will not submit this dependency.
           submittedStageFutures +=
             exchange.sqlContext.sparkContext.submitMapStage(shuffleDependency)
-        }
         i += 1
       }
 
@@ -247,11 +246,10 @@ private[sql] class ExchangeCoordinator(
       // Now, we estimate partitionStartIndices. partitionStartIndices.length will be the
       // number of post-shuffle partitions.
       val partitionStartIndices =
-        if (mapOutputStatistics.length == 0) {
+        if (mapOutputStatistics.length == 0)
           None
-        } else {
+        else
           Some(estimatePartitionStartIndices(mapOutputStatistics))
-        }
 
       var k = 0
       while (k < numExchanges) {
@@ -276,10 +274,9 @@ private[sql] class ExchangeCoordinator(
   def postShuffleRDD(exchange: ShuffleExchange): ShuffledRowRDD = {
     doEstimationIfNecessary()
 
-    if (!postShuffleRDDs.containsKey(exchange)) {
+    if (!postShuffleRDDs.containsKey(exchange))
       throw new IllegalStateException(
         s"The given $exchange is not registered in this coordinator.")
-    }
 
     postShuffleRDDs.get(exchange)
   }

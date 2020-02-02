@@ -290,9 +290,10 @@ object Memcached
       )
 
     def newTwemcacheClient(dest: Name, label: String): TwemcacheClient = {
-      val _dest = if (LocalMemcached.enabled) {
-        Resolver.eval(mkDestination("localhost", LocalMemcached.port))
-      } else dest
+      val _dest =
+        if (LocalMemcached.enabled)
+          Resolver.eval(mkDestination("localhost", LocalMemcached.port))
+        else dest
 
       // Memcache only support Name.Bound names (TRFC-162).
       // See KetamaPartitionedClient for more details.

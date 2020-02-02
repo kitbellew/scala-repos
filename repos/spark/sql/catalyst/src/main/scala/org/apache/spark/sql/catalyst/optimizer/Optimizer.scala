@@ -205,11 +205,10 @@ object LimitPushDown extends Rule[LogicalPlan] {
         case FullOuter =>
           (left.maxRows, right.maxRows) match {
             case (None, None) =>
-              if (left.statistics.sizeInBytes >= right.statistics.sizeInBytes) {
+              if (left.statistics.sizeInBytes >= right.statistics.sizeInBytes)
                 join.copy(left = maybePushLimit(exp, left))
-              } else {
+              else
                 join.copy(right = maybePushLimit(exp, right))
-              }
             case (Some(_), Some(_)) => join
             case (Some(_), None)    => join.copy(left = maybePushLimit(exp, left))
             case (None, Some(_)) =>
@@ -292,9 +291,8 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
           Project(projectList.map(pushToRight(_, rewrites)), child)
         }
         Union(newFirstChild +: newOtherChildren)
-      } else {
+      } else
         p
-      }
 
     // Push down filter into union
     case Filter(condition, Union(children)) =>
@@ -409,9 +407,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
           Project(selected, p)
         }
         p.copy(child = u.withNewChildren(newChildren))
-      } else {
+      } else
         p
-      }
 
     // Prune unnecessary window expressions
     case p @ Project(_, w: Window)
@@ -436,18 +433,16 @@ object ColumnPruning extends Rule[LogicalPlan] {
       if ((child.inputSet -- required).nonEmpty) {
         val newChildren = child.children.map(c => prunedChild(c, required))
         p.copy(child = child.withNewChildren(newChildren))
-      } else {
+      } else
         p
-      }
   }
 
   /** Applies a projection only when the child is producing unnecessary attributes */
   private def prunedChild(c: LogicalPlan, allReferences: AttributeSet) =
-    if ((c.outputSet -- allReferences.filter(c.outputSet.contains)).nonEmpty) {
+    if ((c.outputSet -- allReferences.filter(c.outputSet.contains)).nonEmpty)
       Project(c.output.filter(allReferences.contains), c)
-    } else {
+    else
       c
-    }
 }
 
 /**
@@ -470,9 +465,9 @@ object CollapseProject extends Rule[LogicalPlan] {
         case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
       }.exists(!_.deterministic))
 
-      if (hasNondeterministic) {
+      if (hasNondeterministic)
         p
-      } else {
+      else {
         // Substitute any attributes that are produced by the child projection, so that we safely
         // eliminate it.
         // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
@@ -506,9 +501,9 @@ object CollapseProject extends Rule[LogicalPlan] {
         case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
       }.exists(!_.deterministic))
 
-      if (hasNondeterministic) {
+      if (hasNondeterministic)
         p
-      } else {
+      else {
         // Substitute any attributes that are produced by the child projection, so that we safely
         // eliminate it.
         // e.g., 'SELECT c + 1 FROM (SELECT a + b AS C ...' produces 'SELECT a + b + 1 ...'
@@ -610,13 +605,12 @@ object NullPropagation extends Rule[LogicalPlan] {
         // For Coalesce, remove null literals.
         case e @ Coalesce(children) =>
           val newChildren = children.filter(nonNullLiteral)
-          if (newChildren.length == 0) {
+          if (newChildren.length == 0)
             Literal.create(null, e.dataType)
-          } else if (newChildren.length == 1) {
+          else if (newChildren.length == 1)
             newChildren.head
-          } else {
+          else
             Coalesce(newChildren)
-          }
 
         case e @ Substring(Literal(null, _), _, _) =>
           Literal.create(null, e.dataType)
@@ -682,11 +676,10 @@ object InferFiltersFromConstraints
     case filter @ Filter(condition, child) =>
       val newFilters = filter.constraints --
         (child.constraints ++ splitConjunctivePredicates(condition))
-      if (newFilters.nonEmpty) {
+      if (newFilters.nonEmpty)
         Filter(And(newFilters.reduce(And), condition), child)
-      } else {
+      else
         filter
-      }
 
     case join @ Join(left, right, joinType, conditionOpt) =>
       // Only consider constraints that can be pushed down completely to either the left or the
@@ -793,20 +786,19 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
           val lhs = splitDisjunctivePredicates(left)
           val rhs = splitDisjunctivePredicates(right)
           val common = lhs.filter(e => rhs.exists(e.semanticEquals))
-          if (common.isEmpty) {
+          if (common.isEmpty)
             // No common factors, return the original predicate
             and
-          } else {
+          else {
             val ldiff = lhs.filterNot(e => common.exists(e.semanticEquals))
             val rdiff = rhs.filterNot(e => common.exists(e.semanticEquals))
-            if (ldiff.isEmpty || rdiff.isEmpty) {
+            if (ldiff.isEmpty || rdiff.isEmpty)
               // (a || b || c || ...) && (a || b) => (a || b)
               common.reduce(Or)
-            } else {
+            else
               // (a || b || c || ...) && (a || b || d || ...) =>
               // ((c || ...) && (d || ...)) || a || b
               (common :+ And(ldiff.reduce(Or), rdiff.reduce(Or))).reduce(Or)
-            }
           }
 
         // Common factor elimination for disjunction
@@ -819,20 +811,19 @@ object BooleanSimplification extends Rule[LogicalPlan] with PredicateHelper {
           val lhs = splitConjunctivePredicates(left)
           val rhs = splitConjunctivePredicates(right)
           val common = lhs.filter(e => rhs.exists(e.semanticEquals))
-          if (common.isEmpty) {
+          if (common.isEmpty)
             // No common factors, return the original predicate
             or
-          } else {
+          else {
             val ldiff = lhs.filterNot(e => common.exists(e.semanticEquals))
             val rdiff = rhs.filterNot(e => common.exists(e.semanticEquals))
-            if (ldiff.isEmpty || rdiff.isEmpty) {
+            if (ldiff.isEmpty || rdiff.isEmpty)
               // (a && b) || (a && b && c && ...) => a && b
               common.reduce(And)
-            } else {
+            else
               // (a && b && c && ...) || (a && b && d && ...) =>
               // ((c && ...) || (d && ...)) && a && b
               (common :+ Or(ldiff.reduce(And), rdiff.reduce(And))).reduce(And)
-            }
           }
 
         case Not(TrueLiteral)  => FalseLiteral
@@ -869,11 +860,10 @@ object SimplifyConditionals extends Rule[LogicalPlan] with PredicateHelper {
           // Note that these two are handled together here in a single case statement because
           // otherwise we cannot determine the data type for the elseValue if it is None (i.e. null).
           val newBranches = branches.filter(_._1 != FalseLiteral)
-          if (newBranches.isEmpty) {
+          if (newBranches.isEmpty)
             elseValue.getOrElse(Literal.create(null, e.dataType))
-          } else {
+          else
             e.copy(branches = newBranches)
-          }
 
         case e @ CaseWhen(branches, _)
             if branches.headOption.map(_._1) == Some(TrueLiteral) =>
@@ -946,11 +936,11 @@ object PruneFilters extends Rule[LogicalPlan] with PredicateHelper {
         splitConjunctivePredicates(fc).partition { cond =>
           cond.deterministic && p.constraints.contains(cond)
         }
-      if (prunedPredicates.isEmpty) {
+      if (prunedPredicates.isEmpty)
         f
-      } else if (remainingPredicates.isEmpty) {
+      else if (remainingPredicates.isEmpty)
         p
-      } else {
+      else {
         val newCond = remainingPredicates.reduce(And)
         Filter(newCond, p)
       }
@@ -990,21 +980,20 @@ object PushPredicateThroughProject
         }.forall(_.deterministic))
 
       // If there is no nondeterministic conditions, push down the whole condition.
-      if (nondeterministic.isEmpty) {
+      if (nondeterministic.isEmpty)
         project.copy(child =
           Filter(replaceAlias(condition, aliasMap), grandChild))
-      } else {
-        // If they are all nondeterministic conditions, leave it un-changed.
-        if (deterministic.isEmpty) {
-          filter
-        } else {
-          // Push down the small conditions without nondeterministic expressions.
-          val pushedCondition =
-            deterministic.map(replaceAlias(_, aliasMap)).reduce(And)
-          Filter(
-            nondeterministic.reduce(And),
-            project.copy(child = Filter(pushedCondition, grandChild)))
-        }
+      else
+      // If they are all nondeterministic conditions, leave it un-changed.
+      if (deterministic.isEmpty)
+        filter
+      else {
+        // Push down the small conditions without nondeterministic expressions.
+        val pushedCondition =
+          deterministic.map(replaceAlias(_, aliasMap)).reduce(And)
+        Filter(
+          nondeterministic.reduce(And),
+          project.copy(child = Filter(pushedCondition, grandChild)))
       }
   }
 
@@ -1037,9 +1026,8 @@ object PushPredicateThroughGenerate
           Filter(pushDownPredicate, g.child))
         if (stayUp.isEmpty) newGenerate
         else Filter(stayUp.reduce(And), newGenerate)
-      } else {
+      } else
         filter
-      }
   }
 }
 
@@ -1079,9 +1067,8 @@ object PushPredicateThroughAggregate
         // Otherwise, create "Filter(stayUp) <- Aggregate <- Filter(pushDownPredicate)".
         if (stayUp.isEmpty) newAggregate
         else Filter(stayUp.reduce(And), newAggregate)
-      } else {
+      } else
         filter
-      }
   }
 }
 
@@ -1106,9 +1093,9 @@ object ReorderJoin extends Rule[LogicalPlan] with PredicateHelper {
       input: Seq[LogicalPlan],
       conditions: Seq[Expression]): LogicalPlan = {
     assert(input.size >= 2)
-    if (input.size == 2) {
+    if (input.size == 2)
       Join(input(0), input(1), Inner, conditions.reduceLeftOption(And))
-    } else {
+    else {
       val left :: rest = input.toList
       // find out the first join that have at least one join condition
       val conditionalJoin = rest.find { plan =>

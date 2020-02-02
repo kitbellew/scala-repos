@@ -13,15 +13,13 @@ object Test {
     val frommax = Int.MaxValue - n
     val frommin = Int.MinValue - n
 
-    if (n > 0) {
+    if (n > 0)
       if (frommax == 0) "MAX"
       else if (frommax < 1000) "MAX-" + frommax
       else "" + n
-    } else {
-      if (frommin == 0) "MIN"
-      else if (frommin > -1000) "MIN+" + (-frommin)
-      else "" + n
-    }
+    else if (frommin == 0) "MIN"
+    else if (frommin > -1000) "MIN+" + (-frommin)
+    else "" + n
   }
 
   def run[T](body: => Range): List[Any] =

@@ -205,16 +205,15 @@ class SparkILoop(
 
     if (addedClasspath != "") settings.classpath.append(addedClasspath)
     val addedJars =
-      if (Utils.isWindows) {
+      if (Utils.isWindows)
         // Strip any URI scheme prefix so we can add the correct path to the classpath
         // e.g. file:/C:/my/path.jar -> C:/my/path.jar
         SparkILoop.getAddedJars.map { jar =>
           new URI(jar).getPath.stripPrefix("/")
         }
-      } else {
+      else
         // We need new URI(jar).getPath here for the case that `jar` includes encoded white space (%20).
         SparkILoop.getAddedJars.map { jar => new URI(jar).getPath }
-      }
     // work around for Scala bug
     val totalClassPath = addedJars.foldLeft(settings.classpath.value)((l, r) =>
       ClassPath.join(l, r))
@@ -552,7 +551,7 @@ class SparkILoop(
         val hd :: rest = path split '.' toList;
         // If there are dots in the name, the first segment is the
         // key to finding it.
-        if (rest.nonEmpty) {
+        if (rest.nonEmpty)
           intp optFlatName hd match {
             case Some(flat) =>
               val clazz = flat :: rest mkString NAME_JOIN_STRING
@@ -561,7 +560,7 @@ class SparkILoop(
               else super.tryClass(clazz + MODULE_SUFFIX_STRING)
             case _ => super.tryClass(path)
           }
-        } else {
+        else {
           // Look for Foo first, then Foo$, but if Foo$ is given explicitly,
           // we have to drop the $ to find object Foo, then tack it back onto
           // the end of the flattened name.
@@ -730,9 +729,8 @@ class SparkILoop(
     }
     def innerLoop() {
       val shouldContinue =
-        try {
-          processLine(readOneLine())
-        } catch { case t: Throwable => crashRecovery(t) }
+        try processLine(readOneLine())
+        catch { case t: Throwable => crashRecovery(t) }
       if (shouldContinue)
         innerLoop()
     }
@@ -966,12 +964,12 @@ class SparkILoop(
     else if (!paste.running && code.trim.startsWith(PromptString)) {
       paste.transcript(code)
       None
-    } else if (Completion.looksLikeInvocation(code) && intp.mostRecentVar != "") {
+    } else if (Completion.looksLikeInvocation(code) && intp.mostRecentVar != "")
       interpretStartingWith(intp.mostRecentVar + code)
-    } else if (code.trim startsWith "//") {
+    else if (code.trim startsWith "//")
       // line comment, do nothing
       None
-    } else
+    else
       reallyInterpret._2
   }
 
@@ -1100,9 +1098,8 @@ class SparkILoop(
       // initialization in certain cases, there's an initialization order issue that prevents
       // this from being set after SparkContext is instantiated.
       .set("spark.repl.class.outputDir", intp.outputDir.getAbsolutePath())
-    if (execUri != null) {
+    if (execUri != null)
       conf.set("spark.executor.uri", execUri)
-    }
     sparkContext = new SparkContext(conf)
     logInfo("Created spark context..")
     sparkContext
@@ -1163,10 +1160,9 @@ object SparkILoop extends Logging {
 
   def getAddedJars: Array[String] = {
     val envJars = sys.env.get("ADD_JARS")
-    if (envJars.isDefined) {
+    if (envJars.isDefined)
       logWarning(
         "ADD_JARS environment variable is deprecated, use --jar spark submit argument instead")
-    }
     val propJars = sys.props.get("spark.jars").flatMap { p =>
       if (p == "") None else Some(p)
     }

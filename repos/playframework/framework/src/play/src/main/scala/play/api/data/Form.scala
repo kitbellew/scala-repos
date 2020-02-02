@@ -350,9 +350,8 @@ case class Field(
   /**
     * Retrieve available indexes defined for this field (if this field is repeated).
     */
-  lazy val indexes: Seq[Int] = {
+  lazy val indexes: Seq[Int] =
     RepeatedMapping.indexes(name, form.data)
-  }
 
   /**
     * The label for the field.  Transforms repeat names from foo[0] etc to foo.0.
@@ -422,7 +421,7 @@ private[data] object FormUtils {
 
   def fromJson(prefix: String = "", js: JsValue): Map[String, String] =
     js match {
-      case JsObject(fields) => {
+      case JsObject(fields) =>
         fields
           .map {
             case (key, value) =>
@@ -434,12 +433,10 @@ private[data] object FormUtils {
                 value)
           }
           .foldLeft(Map.empty[String, String])(_ ++ _)
-      }
-      case JsArray(values) => {
+      case JsArray(values) =>
         values.zipWithIndex
           .map { case (value, i) => fromJson(prefix + "[" + i + "]", value) }
           .foldLeft(Map.empty[String, String])(_ ++ _)
-      }
       case JsNull           => Map.empty
       case JsUndefined()    => Map.empty
       case JsBoolean(value) => Map(prefix -> value.toString)
@@ -780,12 +777,11 @@ case class RepeatedMapping[T](
     val allErrorsOrItems: Seq[Either[Seq[FormError], T]] = RepeatedMapping
       .indexes(key, data)
       .map(i => wrapped.withPrefix(key + "[" + i + "]").bind(data))
-    if (allErrorsOrItems.forall(_.isRight)) {
+    if (allErrorsOrItems.forall(_.isRight))
       Right(allErrorsOrItems.map(_.right.get).toList).right
         .flatMap(applyConstraints)
-    } else {
+    else
       Left(allErrorsOrItems.collect { case Left(errors) => errors }.flatten)
-    }
   }
 
   /**

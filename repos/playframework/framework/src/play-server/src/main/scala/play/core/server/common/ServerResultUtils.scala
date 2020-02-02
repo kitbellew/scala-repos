@@ -18,37 +18,33 @@ object ServerResultUtils {
   def determineConnectionHeader(
       request: RequestHeader,
       result: Result): ConnectionHeader =
-    if (request.version == HttpProtocol.HTTP_1_1) {
+    if (request.version == HttpProtocol.HTTP_1_1)
       if (result.header.headers
             .get(CONNECTION)
-            .exists(_.equalsIgnoreCase(CLOSE))) {
+            .exists(_.equalsIgnoreCase(CLOSE)))
         // Close connection, header already exists
         DefaultClose
-      } else if ((result.body
-                   .isInstanceOf[HttpEntity.Streamed] && result.body.contentLength.isEmpty)
-                 || request.headers
-                   .get(CONNECTION)
-                   .exists(_.equalsIgnoreCase(CLOSE))) {
+      else if ((result.body
+                 .isInstanceOf[HttpEntity.Streamed] && result.body.contentLength.isEmpty)
+               || request.headers
+                 .get(CONNECTION)
+                 .exists(_.equalsIgnoreCase(CLOSE)))
         // We need to close the connection and set the header
         SendClose
-      } else {
+      else
         DefaultKeepAlive
-      }
-    } else {
-      if (result.header.headers
-            .get(CONNECTION)
-            .exists(_.equalsIgnoreCase(CLOSE))) {
-        DefaultClose
-      } else if ((result.body
-                   .isInstanceOf[HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
-                 request.headers
-                   .get(CONNECTION)
-                   .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {
-        DefaultClose
-      } else {
-        SendKeepAlive
-      }
-    }
+    else if (result.header.headers
+               .get(CONNECTION)
+               .exists(_.equalsIgnoreCase(CLOSE)))
+      DefaultClose
+    else if ((result.body
+               .isInstanceOf[HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
+             request.headers
+               .get(CONNECTION)
+               .forall(!_.equalsIgnoreCase(KEEP_ALIVE)))
+      DefaultClose
+    else
+      SendKeepAlive
 
   /**
     * Validate the result.
@@ -69,9 +65,8 @@ object ServerResultUtils {
       cancelEntity(result.body)
       result.copy(body =
         HttpEntity.Strict(ByteString.empty, result.body.contentType))
-    } else {
+    } else
       result
-    }
 
   private def mayHaveEntity(status: Int) =
     status != Status.NO_CONTENT && status != Status.NOT_MODIFIED
@@ -152,20 +147,19 @@ object ServerResultUtils {
           .find(_.name == Flash.COOKIE_NAME)
       }
 
-    if (optResultFlashCookies.isDefined) {
+    if (optResultFlashCookies.isDefined)
       // We're already setting a flash cookie in the result, just pass that
       // through unchanged
       result
-    } else {
+    else {
       val requestFlash: Flash = requestHeader.flash
-      if (requestFlash.isEmpty) {
+      if (requestFlash.isEmpty)
         // Neither incoming nor outgoing flash cookies; nothing to do
         result
-      } else {
+      else
         // We got incoming flash cookies, but there are no outgoing flash cookies,
         // so we need to clear the cookies for the next request
         result.discardingCookies(Flash.discard)
-      }
     }
   }
 
@@ -179,7 +173,7 @@ object ServerResultUtils {
     */
   def splitSetCookieHeaders(
       headers: Map[String, String]): Iterable[(String, String)] =
-    if (headers.contains(SET_COOKIE)) {
+    if (headers.contains(SET_COOKIE))
       // Rewrite the headers with Set-Cookie split into separate headers
       headers.to[Seq].flatMap {
         case (SET_COOKIE, value) =>
@@ -188,8 +182,7 @@ object ServerResultUtils {
         case (name, value) =>
           Seq((name, value))
       }
-    } else {
+    else
       // No Set-Cookie header so we can just use the headers as they are
       headers
-    }
 }

@@ -16,9 +16,9 @@ object AppliedType {
     // shape of `s`: fqn[at_1, ..., at_n]
     val (typename, rem) = s.span(!delims.contains(_))
 
-    if (rem.isEmpty || rem.startsWith(",") || rem.startsWith("]")) {
+    if (rem.isEmpty || rem.startsWith(",") || rem.startsWith("]"))
       (AppliedType(typename, List()), rem)
-    } else { // parse type arguments
+    else { // parse type arguments
       var typeArgs = List[AppliedType]()
       var remaining = rem
 

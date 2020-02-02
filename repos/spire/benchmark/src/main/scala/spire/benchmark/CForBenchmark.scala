@@ -241,37 +241,37 @@ class CForBenchmarks extends MyBenchmark {
   def doForOr(): Unit = {
     var t: Long = 0L
     val len = size - 1
-    for (i <- 0 until len) { t = t ^ or(arr(i), arr(i + 1)) }
+    for (i <- 0 until len) t = t ^ or(arr(i), arr(i + 1))
 
     val len2 = size / 2
-    for (i <- 0 until len2) { t = t ^ or(arr(i + 3), arr(i + 2)) }
+    for (i <- 0 until len2) t = t ^ or(arr(i + 3), arr(i + 2))
 
     val len3 = size / 3
-    for (i <- 0 until len3) { t = t ^ or(arr(i + 1), arr(i + 2)) }
+    for (i <- 0 until len3) t = t ^ or(arr(i + 1), arr(i + 2))
   }
 
   def doForMin(): Unit = {
     var t: Long = 0L
     val len = size - 1
-    for (i <- 0 until len) { t = t ^ min(arr(i), arr(i + 1)) }
+    for (i <- 0 until len) t = t ^ min(arr(i), arr(i + 1))
 
     val len2 = size / 2
-    for (i <- 0 until len2) { t = t ^ min(arr(i + 3), arr(i + 2)) }
+    for (i <- 0 until len2) t = t ^ min(arr(i + 3), arr(i + 2))
 
     val len3 = size / 3
-    for (i <- 0 until len3) { t = t ^ min(arr(i + 1), arr(i + 2)) }
+    for (i <- 0 until len3) t = t ^ min(arr(i + 1), arr(i + 2))
   }
 
   def doForGcd(): Unit = {
     var t: Long = 0L
     val len = size - 1
-    for (i <- 0 until len) { t = t ^ gcd(arr(i), arr(i + 1)) }
+    for (i <- 0 until len) t = t ^ gcd(arr(i), arr(i + 1))
 
     val len2 = size / 2
-    for (i <- 0 until len2) { t = t ^ gcd(arr(i + 3), arr(i + 2)) }
+    for (i <- 0 until len2) t = t ^ gcd(arr(i + 3), arr(i + 2))
 
     val len3 = size / 3
-    for (i <- 0 until len3) { t = t ^ gcd(arr(i + 1), arr(i + 2)) }
+    for (i <- 0 until len3) t = t ^ gcd(arr(i + 1), arr(i + 2))
   }
 
   def doForIntArrayMultiply(): Unit = {

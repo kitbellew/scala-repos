@@ -101,14 +101,12 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
     }
 
     // make space for "... (K total)"
-    if (colWidths.size < cols) {
+    if (colWidths.size < cols)
       while (colWidths.sum + cols.toString.length + 12 >= maxWidth) {
-        if (colWidths.isEmpty) {
+        if (colWidths.isEmpty)
           return "%d x %d matrix".format(rows, cols)
-        }
         colWidths.remove(colWidths.length - 1)
       }
-    }
 
     val newline = Terminal.newline
 
@@ -126,9 +124,8 @@ trait Matrix[@spec(Double, Int, Float, Long) V]
             rv.append(" total)")
           }
         }
-        if (row + 1 < showRows) {
+        if (row + 1 < showRows)
           rv.append(newline)
-        }
       }
     }
 
@@ -265,9 +262,8 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
       rows: Int,
       cols: Int)(f: (Int, Int) => V): Mat[V] = {
     val z = zeros(rows, cols)
-    for (c <- 0 until cols; r <- 0 until rows) {
+    for (c <- 0 until cols; r <- 0 until rows)
       z(r, c) = f(r, c)
-    }
     z
   }
 
@@ -311,9 +307,8 @@ trait MatrixConstructors[Mat[T] <: Matrix[T]] {
       rv: Matrix[V],
       rl: LiteralRow[R, V],
       rows: Seq[R]) {
-    for ((row, i) <- rows.zipWithIndex) {
+    for ((row, i) <- rows.zipWithIndex)
       rl.foreach(row, { (j, v) => rv(i, j) = v })
-    }
   }
 
 }

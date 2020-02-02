@@ -176,11 +176,10 @@ abstract class AbstractTestRunConfiguration(
     setModule(configuration.getModule)
     val workDir = configuration.getWorkingDirectory
     setWorkingDirectory(
-      if (workDir != null && !workDir.trim.isEmpty) {
+      if (workDir != null && !workDir.trim.isEmpty)
         workDir
-      } else {
+      else
         provideDefaultWorkingDir
-      }
     )
 
     setTestName(configuration.getTestName)
@@ -211,11 +210,9 @@ abstract class AbstractTestRunConfiguration(
       var scope: GlobalSearchScope =
         if (getModule != null) mScope(getModule)
         else GlobalSearchScope.EMPTY_SCOPE
-      for (module <- ModuleManager.getInstance(getProject).getModules) {
-        if (moduleGuard(module)) {
+      for (module <- ModuleManager.getInstance(getProject).getModules)
+        if (moduleGuard(module))
           scope = scope.union(mScope(module))
-        }
-      }
       scope
     }
     testKind match {
@@ -240,9 +237,8 @@ abstract class AbstractTestRunConfiguration(
   def expandPath(_path: String): String = {
     var path = _path
     path = PathMacroManager.getInstance(project).expandPath(path)
-    if (getModule != null) {
+    if (getModule != null)
       path = PathMacroManager.getInstance(getModule).expandPath(path)
-    }
     path
   }
 
@@ -266,13 +262,11 @@ abstract class AbstractTestRunConfiguration(
                 if getModule != null =>
               val buffer = new ArrayBuffer[Module]()
               buffer += getModule
-              for (module <- ModuleManager.getInstance(getProject).getModules) {
+              for (module <- ModuleManager.getInstance(getProject).getModules)
                 if (ModuleManager
                       .getInstance(getProject)
-                      .isModuleDependent(getModule, module)) {
+                      .isModuleDependent(getModule, module))
                   buffer += module
-                }
-              }
               buffer.toArray
             case SearchForTest.IN_SINGLE_MODULE if getModule != null =>
               Array(getModule)
@@ -287,14 +281,12 @@ abstract class AbstractTestRunConfiguration(
       .map(suitePath => getClazz(suitePath, withDependencies = true))
       .filter(_ != null)
 
-    if (suiteClasses.isEmpty) {
+    if (suiteClasses.isEmpty)
       throw new RuntimeConfigurationException(errorMessage)
-    }
 
-    if (suiteClasses.size > 1) {
+    if (suiteClasses.size > 1)
       throw new RuntimeConfigurationException(
         "Multiple suite traits detected: " + suiteClasses)
-    }
 
     suiteClasses.head
   }
@@ -310,35 +302,28 @@ abstract class AbstractTestRunConfiguration(
           case SearchForTest.IN_WHOLE_PROJECT =>
           case SearchForTest.IN_SINGLE_MODULE |
               SearchForTest.ACCROSS_MODULE_DEPENDENCIES =>
-            if (getModule == null) {
+            if (getModule == null)
               throw new RuntimeConfigurationException("Module is not specified")
-            }
         }
         val pack =
           JavaPsiFacade.getInstance(project).findPackage(getTestPackagePath)
-        if (pack == null) {
+        if (pack == null)
           throw new RuntimeConfigurationException("Package doesn't exist")
-        }
       case TestKind.CLASS | TestKind.TEST_NAME =>
-        if (getModule == null) {
+        if (getModule == null)
           throw new RuntimeConfigurationException("Module is not specified")
-        }
-        if (getTestClassPath == "") {
+        if (getTestClassPath == "")
           throw new RuntimeConfigurationException("Test Class is not specified")
-        }
         val clazz = getClazz(getTestClassPath, withDependencies = false)
-        if (clazz == null || isInvalidSuite(clazz)) {
+        if (clazz == null || isInvalidSuite(clazz))
           throw new RuntimeConfigurationException(
             "No Suite Class is found for Class %s in module %s"
               .format(getTestClassPath, getModule.getName))
-        }
-        if (!ScalaPsiUtil.cachedDeepIsInheritor(clazz, suiteClass)) {
+        if (!ScalaPsiUtil.cachedDeepIsInheritor(clazz, suiteClass))
           throw new RuntimeConfigurationException(
             "Class %s is not inheritor of Suite trait".format(getTestClassPath))
-        }
-        if (testKind == TestKind.TEST_NAME && getTestName == "") {
+        if (testKind == TestKind.TEST_NAME && getTestName == "")
           throw new RuntimeConfigurationException("Test Name is not specified")
-        }
     }
 
     JavaRunConfigurationExtensionManager.checkConfigurationIsValid(this)
@@ -397,17 +382,15 @@ abstract class AbstractTestRunConfiguration(
         val buffer = new ArrayBuffer[PsiClass]
 
         buffer ++= pack.getClasses(scope)
-        for (p <- pack.getSubPackages) {
+        for (p <- pack.getSubPackages)
           buffer ++= getClasses(ScPackageImpl(p))
-        }
         buffer.toSeq
       }
-      for (cl <- getClasses(pack)) {
+      for (cl <- getClasses(pack))
         if (!isInvalidSuite(cl) && ScalaPsiUtil.cachedDeepIsInheritor(
               cl,
               suiteClass))
           classes += cl
-      }
     }
 
     if (classes.isEmpty) throw new ExecutionException("Not found suite class.")
@@ -428,20 +411,18 @@ abstract class AbstractTestRunConfiguration(
         //expand macros
         vmParams = PathMacroManager.getInstance(project).expandPath(vmParams)
 
-        if (module != null) {
+        if (module != null)
           vmParams = PathMacroManager.getInstance(module).expandPath(vmParams)
-        }
 
         params.setEnv(getEnvVariables)
 
         //expand environment variables in vmParams
-        for (entry <- params.getEnv.entrySet) {
+        for (entry <- params.getEnv.entrySet)
           vmParams = StringUtil.replace(
             vmParams,
             "$" + entry.getKey + "$",
             entry.getValue,
             false)
-        }
 
         params.getVMParametersList.addParametersString(vmParams)
         val wDir = getWorkingDirectory
@@ -462,9 +443,8 @@ abstract class AbstractTestRunConfiguration(
           case SearchForTest.IN_WHOLE_PROJECT =>
             var jdk: Sdk = null
             for (module <- ModuleManager.getInstance(project).getModules
-                 if jdk == null) {
+                 if jdk == null)
               jdk = JavaParameters.getModuleJdk(module)
-            }
             params.configureByProject(
               project,
               JavaParameters.JDK_AND_CLASSES_AND_TESTS,
@@ -478,7 +458,7 @@ abstract class AbstractTestRunConfiguration(
 
         params.setMainClass(mainClass)
 
-        if (JdkUtil.useDynamicClasspath(getProject)) {
+        if (JdkUtil.useDynamicClasspath(getProject))
           try {
             val fileWithParams: File =
               File.createTempFile("abstracttest", ".tmp")
@@ -486,18 +466,16 @@ abstract class AbstractTestRunConfiguration(
             val printer: PrintStream = new PrintStream(outputStream)
             if (getFailedTests == null) {
               printer.println("-s")
-              for (cl <- getClasses) {
+              for (cl <- getClasses)
                 printer.println(cl)
-              }
               if (testKind == TestKind.TEST_NAME && testName != "") {
                 //this is a "by-name" test for single suite, better fail in a known manner then do something undefined
                 assert(getClasses.size == 1)
                 for (test <- splitTests) {
                   printer.println("-testName")
                   printer.println(test)
-                  for (testParam <- getAdditionalTestParams(test)) {
+                  for (testParam <- getAdditionalTestParams(test))
                     params.getVMParametersList.addParametersString(testParam)
-                  }
                 }
               }
             } else {
@@ -505,9 +483,8 @@ abstract class AbstractTestRunConfiguration(
               for (failed <- getFailedTests) {
                 printer.println(failed._1)
                 printer.println(failed._2)
-                for (testParam <- getAdditionalTestParams(failed._2)) {
+                for (testParam <- getAdditionalTestParams(failed._2))
                   params.getVMParametersList.addParametersString(testParam)
-                }
               }
             }
 
@@ -519,9 +496,8 @@ abstract class AbstractTestRunConfiguration(
             }
 
             val parms: Array[String] = ParametersList.parse(getTestArgs)
-            for (parm <- parms) {
+            for (parm <- parms)
               printer.println(parm)
-            }
 
             printer.close()
             params.getProgramParametersList.add("@" + fileWithParams.getPath)
@@ -531,7 +507,7 @@ abstract class AbstractTestRunConfiguration(
                 "Failed to create dynamic classpath file with command-line args.",
                 ioException)
           }
-        } else {
+        else {
           if (getFailedTests == null) {
             params.getProgramParametersList.add("-s")
             for (cl <- getClasses) params.getProgramParametersList.add(cl)
@@ -541,9 +517,8 @@ abstract class AbstractTestRunConfiguration(
               for (test <- splitTests) {
                 params.getProgramParametersList.add("-testName")
                 params.getProgramParametersList.add(test)
-                for (testParam <- getAdditionalTestParams(test)) {
+                for (testParam <- getAdditionalTestParams(test))
                   params.getVMParametersList.addParametersString(testParam)
-                }
               }
             }
           } else {
@@ -551,9 +526,8 @@ abstract class AbstractTestRunConfiguration(
             for (failed <- getFailedTests) {
               params.getProgramParametersList.add(failed._1)
               params.getProgramParametersList.add(failed._2)
-              for (testParam <- getAdditionalTestParams(failed._2)) {
+              for (testParam <- getAdditionalTestParams(failed._2))
                 params.getVMParametersList.addParametersString(testParam)
-              }
             }
           }
 
@@ -568,12 +542,11 @@ abstract class AbstractTestRunConfiguration(
           params.getProgramParametersList.addParametersString(getTestArgs)
         }
 
-        for (ext <- Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
+        for (ext <- Extensions.getExtensions(RunConfigurationExtension.EP_NAME))
           ext.updateJavaParameters(
             currentConfiguration,
             params,
             getRunnerSettings)
-        }
 
         params
       }
@@ -666,9 +639,8 @@ abstract class AbstractTestRunConfiguration(
     workingDirectory = JDOMExternalizer.readString(element, "workingDirectory")
     JDOMExternalizer.readMap(element, envs, "envs", "envVar")
     val s = JDOMExternalizer.readString(element, "searchForTest")
-    for (search <- SearchForTest.values()) {
+    for (search <- SearchForTest.values())
       if (search.toString == s) searchTest = search
-    }
     testName =
       Option(JDOMExternalizer.readString(element, "testName")).getOrElse("")
     testKind = TestKind.fromString(
@@ -718,15 +690,13 @@ object AbstractTestRunConfiguration extends SuiteValidityChecker {
           .toList ::: c.constructor.toList
       case _ => clazz.getConstructors.toList
     }
-    for (con <- constructors) {
-      if (con.isConstructor && con.getParameterList.getParametersCount == 0) {
+    for (con <- constructors)
+      if (con.isConstructor && con.getParameterList.getParametersCount == 0)
         con match {
           case owner: ScModifierListOwner =>
             if (owner.hasModifierProperty(PsiModifier.PUBLIC)) return false
           case _ =>
         }
-      }
-    }
     true
   }
 }

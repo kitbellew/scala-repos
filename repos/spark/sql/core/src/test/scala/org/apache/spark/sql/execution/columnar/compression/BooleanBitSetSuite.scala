@@ -76,7 +76,7 @@ class BooleanBitSetSuite extends SparkFunSuite {
 
     val decoder = BooleanBitSet.decoder(buffer, BOOLEAN)
     val mutableRow = new GenericMutableRow(1)
-    if (values.nonEmpty) {
+    if (values.nonEmpty)
       values.foreach {
         assert(decoder.hasNext)
         assertResult(_, "Wrong decoded value") {
@@ -84,7 +84,6 @@ class BooleanBitSetSuite extends SparkFunSuite {
           mutableRow.getBoolean(0)
         }
       }
-    }
     assert(!decoder.hasNext)
   }
 

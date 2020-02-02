@@ -78,11 +78,8 @@ class LogPageSuite extends SparkFunSuite with PrivateMethodTester {
   /** Write the specified string to the file. */
   private def write(f: File, s: String): Unit = {
     val writer = new FileWriter(f)
-    try {
-      writer.write(s)
-    } finally {
-      writer.close()
-    }
+    try writer.write(s)
+    finally writer.close()
   }
 
 }

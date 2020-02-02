@@ -30,22 +30,19 @@ case class ScalaFieldEvaluator(
   private def fieldByName(t: ReferenceType, fieldName: String): Field = {
     if (classPrivateThisField) {
       import scala.collection.JavaConversions._
-      for (field <- t.fields()) {
+      for (field <- t.fields())
         if (field.name().endsWith("$$" + fieldName)) return field
-      }
     }
     var field = t.fieldByName(fieldName)
-    if (field != null) {
+    if (field != null)
       return field
-    }
     for (i <- 1 to 3) {
       field = t.fieldByName(fieldName + "$" + i)
       if (field != null) return field
     }
     import scala.collection.JavaConversions._
-    for (field <- t.fields()) {
+    for (field <- t.fields())
       if (field.name().startsWith(fieldName + "$")) return field
-    }
     null
   }
 
@@ -58,9 +55,8 @@ case class ScalaFieldEvaluator(
         import scala.collection.JavaConversions._
         for (interfaceType <- cls.interfaces) {
           val field: Field = findField(interfaceType, context)
-          if (field != null) {
+          if (field != null)
             return field
-          }
         }
         return findField(cls.superclass, context)
       case iface: InterfaceType =>
@@ -70,9 +66,8 @@ case class ScalaFieldEvaluator(
         import scala.collection.JavaConversions._
         for (interfaceType <- iface.superinterfaces) {
           val field: Field = findField(interfaceType, context)
-          if (field != null) {
+          if (field != null)
             return field
-          }
         }
       case _ =>
     }
@@ -94,25 +89,22 @@ case class ScalaFieldEvaluator(
     obj match {
       case refType: ReferenceType =>
         var field: Field = findField(refType, context)
-        if (field == null || !field.isStatic) {
+        if (field == null || !field.isStatic)
           field = fieldByName(refType, fieldName)
-        }
-        if (field == null || !field.isStatic) {
+        if (field == null || !field.isStatic)
           throw EvaluationException(
             DebuggerBundle
               .message("evaluation.error.no.static.field", fieldName))
-        }
         myEvaluatedField = field
         myEvaluatedQualifier = refType
         refType.getValue(field)
       case objRef: ObjectReference =>
         val refType: ReferenceType = objRef.referenceType
         if (!(refType.isInstanceOf[ClassType] || refType
-              .isInstanceOf[ArrayType])) {
+              .isInstanceOf[ArrayType]))
           throw EvaluationException(
             DebuggerBundle
               .message("evaluation.error.class.or.array.expected", fieldName))
-        }
         objRef match {
           case arrayRef: ArrayReference if "length" == fieldName =>
             return DebuggerUtilsEx.createValue(
@@ -122,14 +114,12 @@ case class ScalaFieldEvaluator(
           case _ =>
         }
         var field: Field = findField(refType, context)
-        if (field == null) {
+        if (field == null)
           field = refType.fieldByName(fieldName)
-        }
-        if (field == null) {
+        if (field == null)
           throw EvaluationException(
             DebuggerBundle
               .message("evaluation.error.no.instance.field", fieldName))
-        }
         myEvaluatedQualifier = if (field.isStatic) refType else objRef
         myEvaluatedField = field
         if (field.isStatic) refType.getValue(field) else objRef.getValue(field)
@@ -144,7 +134,7 @@ case class ScalaFieldEvaluator(
     var modifier: Modifier = null
     if (myEvaluatedField != null &&
         (myEvaluatedQualifier.isInstanceOf[ClassType] ||
-        myEvaluatedQualifier.isInstanceOf[ObjectReference])) {
+        myEvaluatedQualifier.isInstanceOf[ObjectReference]))
       modifier = new Modifier {
         def canInspect: Boolean =
           myEvaluatedQualifier.isInstanceOf[ObjectReference]
@@ -174,7 +164,6 @@ case class ScalaFieldEvaluator(
             case _ => null
           }
       }
-    }
     modifier
   }
 }

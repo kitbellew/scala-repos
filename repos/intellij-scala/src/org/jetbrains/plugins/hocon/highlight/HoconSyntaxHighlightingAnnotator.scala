@@ -44,11 +44,10 @@ class HoconSyntaxHighlightingAnnotator extends Annotator {
           holder
             .createInfoAnnotation(TextRange(end - 1, end), null)
             .setTextAttributes(HoconHighlighterColors.IncludeModifierParens)
-        } else if (element.getText == ")") {
+        } else if (element.getText == ")")
           holder
             .createInfoAnnotation(element, null)
             .setTextAttributes(HoconHighlighterColors.IncludeModifierParens)
-        }
 
       case KeyPart if firstChildType == UnquotedString =>
         val textAttributesKey =

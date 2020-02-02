@@ -43,16 +43,14 @@ final class FastaInputStream(in: InputStream)
     var line = readLine()
     while (line != null) {
       val c = line(0)
-      if (c == gt) { // '>'
-        if (header == null) {
+      if (c == gt) // '>'
+        if (header == null)
           header = line
-        } else {
+        else {
           pos = pos - line.length - 1 // reposition to start of line
           return (header, lines)
         }
-      } else {
-        if (c != sc) lines push line // ';'
-      }
+      else if (c != sc) lines push line // ';'
       line = readLine()
     }
     return (header, lines)
@@ -118,8 +116,7 @@ final class FastaOutputStream(in: OutputStream)
     }
 
     sequence match {
-      case (header, lines) => {
-
+      case (header, lines) =>
         write(header); write(nl)
 
         val k = if (lines.isEmpty) 0 else lines.top.length
@@ -131,20 +128,19 @@ final class FastaOutputStream(in: OutputStream)
           val line = lines.pop
           inplaceComplementReverse(line)
 
-          if (isSplitLine) {
+          if (isSplitLine)
             if (isFirstLine) {
               write(line); isFirstLine = false
             } else {
               write(line, 0, LineLength - k); write(nl);
               write(line, LineLength - k, k)
             }
-          } else {
+          else {
             write(line); write(nl)
           }
         }
 
         if (isSplitLine && !isFirstLine) write(nl)
-      }
     }
   }
 

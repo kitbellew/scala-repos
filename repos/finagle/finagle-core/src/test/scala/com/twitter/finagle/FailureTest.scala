@@ -46,7 +46,7 @@ class FailureTest
   test("flags") {
     val e = new Exception
 
-    for (flags <- Seq(flag, flag2)) {
+    for (flags <- Seq(flag, flag2))
       forAll(flags.suchThat(_ != 0)) { f =>
         Failure(e, f).isFlagged(f) &&
         Failure(e).flagged(f) == Failure(e, f) &&
@@ -54,7 +54,6 @@ class FailureTest
         Failure(e, f).isFlagged(f) &&
         !Failure(e, 0).isFlagged(f)
       }
-    }
   }
 
   test("Failure.adapt(Failure)") {
@@ -131,8 +130,7 @@ class FailureTest
       Set(),
       Set()
     )
-    for ((f, c) <- failures.zip(categories)) {
+    for ((f, c) <- failures.zip(categories))
       assert(Failure.flagsOf(f) == c)
-    }
   }
 }

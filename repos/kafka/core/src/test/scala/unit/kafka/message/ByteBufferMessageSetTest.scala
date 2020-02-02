@@ -48,12 +48,11 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
     }
 
     // test valid bytes on empty ByteBufferMessageSet
-    {
-      assertEquals(
-        "Valid bytes on an empty ByteBufferMessageSet should return 0",
-        0,
-        MessageSet.Empty.asInstanceOf[ByteBufferMessageSet].validBytes)
-    }
+
+    assertEquals(
+      "Valid bytes on an empty ByteBufferMessageSet should return 0",
+      0,
+      MessageSet.Empty.asInstanceOf[ByteBufferMessageSet].validBytes)
   }
 
   @Test
@@ -575,7 +574,7 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
       magicValue: Byte = Message.CurrentMagicValue,
       timestamp: Long = Message.NoTimestamp,
       codec: CompressionCodec = NoCompressionCodec): ByteBufferMessageSet =
-    if (magicValue == Message.MagicValue_V0) {
+    if (magicValue == Message.MagicValue_V0)
       new ByteBufferMessageSet(
         codec,
         new Message(
@@ -590,7 +589,7 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
           "beautiful".getBytes,
           Message.NoTimestamp,
           Message.MagicValue_V0))
-    } else {
+    else
       new ByteBufferMessageSet(
         codec,
         new Message(
@@ -605,5 +604,4 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
           "beautiful".getBytes,
           timestamp = timestamp,
           magicValue = Message.MagicValue_V1))
-    }
 }

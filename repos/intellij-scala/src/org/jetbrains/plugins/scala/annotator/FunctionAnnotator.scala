@@ -32,14 +32,13 @@ trait FunctionAnnotator {
       function: ScFunctionDefinition,
       holder: AnnotationHolder,
       typeAware: Boolean) {
-    if (!function.hasExplicitType && !function.returnTypeIsDefined) {
+    if (!function.hasExplicitType && !function.returnTypeIsDefined)
       function.recursiveReferences.foreach { ref =>
         val message = ScalaBundle.message(
           "function.recursive.need.result.type",
           function.name)
         holder.createErrorAnnotation(ref.element, message)
       }
-    }
 
     val tailrecAnnotation = function.annotations.find(
       _.typeElement
@@ -68,7 +67,7 @@ trait FunctionAnnotator {
             "Method annotated with @tailrec contains no recursive calls")
           annotation.registerFix(
             new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
-        } else {
+        } else
           recursiveReferences.filter(!_.isTailCall).foreach { ref =>
             val target = ref.element.getParent match {
               case call: ScMethodCall => call
@@ -80,7 +79,6 @@ trait FunctionAnnotator {
             annotation.registerFix(
               new RemoveElementQuickFix(it, "Remove @tailrec annotation"))
           }
-        }
       }
     }
 
@@ -104,14 +102,13 @@ trait FunctionAnnotator {
       val anyReturn = usageType == AnyType
       val underCatchBlock = usage.getContext.isInstanceOf[ScCatchBlock]
 
-      if (explicitReturn && hasAssign && !explicitType) {
+      if (explicitReturn && hasAssign && !explicitType)
         needsTypeAnnotation()
-      } else if (unitFunction && explicitReturn && !emptyReturn) {
+      else if (unitFunction && explicitReturn && !emptyReturn)
         redundantReturnExpression()
-      } else if (!unitFunction && !anyReturn && !underCatchBlock && !usageType
-                   .conforms(functionType)) {
+      else if (!unitFunction && !anyReturn && !underCatchBlock && !usageType
+                 .conforms(functionType))
         typeMismatch()
-      }
 
       def needsTypeAnnotation() = {
         val message = ScalaBundle.message(

@@ -81,9 +81,8 @@ trait RawJsonStorageModule[M[+_]] { self =>
       var read = 0
       do {
         read = reader.read(buffer)
-        if (read >= 0) {
+        if (read >= 0)
           builder.append(buffer, 0, read)
-        }
       } while (read >= 0)
 
       val json = JParser.parse(builder.toString) --> classOf[JArray]
@@ -203,9 +202,8 @@ trait RawJsonColumnarTableStorageModule[M[+_]]
         }
       }
 
-      for (paths <- pathsM) yield {
-        fromJson(paths.toList.map(projectionData).flatten.toStream)
-      }
+      for (paths <- pathsM)
+        yield fromJson(paths.toList.map(projectionData).flatten.toStream)
     }
   }
 }

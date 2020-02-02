@@ -414,9 +414,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
         encodedReq.headers.set(HttpHeaders.Names.TRANSFER_ENCODING, encodings)
 
       val chunks = new ListBuffer[ChannelBuffer]
-      while (encoder.hasNextChunk) {
+      while (encoder.hasNextChunk)
         chunks += encoder.nextChunk().getContent()
-      }
       encodedReq.setContent(ChannelBuffers.wrappedBuffer(chunks: _*))
     }
 
@@ -426,9 +425,9 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   // absoluteURI if proxied, otherwise relativeURI
   private[this] def resource(): String = {
     val url = config.url.get
-    if (config.proxied) {
+    if (config.proxied)
       return url.toString
-    } else {
+    else {
       val builder = new StringBuilder()
 
       val path = url.getPath
@@ -496,21 +495,18 @@ private object HttpPostRequestEncoderEx {
     require(content != null)
 
     val scontentType =
-      if (contentType == null) {
-        if (isText) {
+      if (contentType == null)
+        if (isText)
           HttpPostBodyUtil.DEFAULT_TEXT_CONTENT_TYPE
-        } else {
+        else
           HttpPostBodyUtil.DEFAULT_BINARY_CONTENT_TYPE
-        }
-      } else {
+      else
         contentType
-      }
     val contentTransferEncoding =
-      if (!isText) {
+      if (!isText)
         HttpPostBodyUtil.TransferEncodingMechanism.BINARY
-      } else {
+      else
         HttpPostBodyUtil.TransferEncodingMechanism.BIT7
-      }
 
     val fileUpload = factory.createFileUpload(
       request,

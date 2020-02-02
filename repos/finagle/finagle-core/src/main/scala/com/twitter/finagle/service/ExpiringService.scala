@@ -99,15 +99,14 @@ abstract class ExpiringService[Req, Rep](
   private[this] def startTimer(duration: Option[Duration], counter: Counter) =
     duration map { t: Duration =>
       timer.schedule(t.fromNow) { expire(counter) }
-    } getOrElse { NullTimerTask }
+    } getOrElse NullTimerTask
 
   private[this] def expire(counter: Counter) {
-    if (deactivate()) {
+    if (deactivate())
       latch.await {
         expired()
         counter.incr()
       }
-    }
   }
 
   private[this] def deactivate(): Boolean = synchronized {

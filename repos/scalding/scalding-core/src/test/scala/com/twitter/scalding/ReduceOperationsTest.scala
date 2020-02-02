@@ -18,59 +18,55 @@ package com.twitter.scalding
 import org.scalatest.{Matchers, WordSpec}
 
 class SortWithTakeJob(args: Args) extends Job(args) {
-  try {
-    Tsv("input0", ('key, 'item_id, 'score)).read
-      .groupBy('key) {
-        _.sortWithTake[(Long, Double)]((('item_id, 'score), 'top_items), 5) {
-          (item_0: (Long, Double), item_1: (Long, Double)) =>
-            if (item_0._2 == item_1._2) {
-              item_0._1 > item_1._1
-            } else {
-              item_0._2 > item_1._2
-            }
-        }
+  try Tsv("input0", ('key, 'item_id, 'score)).read
+    .groupBy('key) {
+      _.sortWithTake[(Long, Double)]((('item_id, 'score), 'top_items), 5) {
+        (item_0: (Long, Double), item_1: (Long, Double)) =>
+          if (item_0._2 == item_1._2)
+            item_0._1 > item_1._1
+          else
+            item_0._2 > item_1._2
       }
-      .map('top_items -> 'top_items) {
-        //used to test that types are correct
-        topItems: List[(Long, Double)] => topItems
-      }
-      .project('key, 'top_items)
-      .write(Tsv("output0"))
-  } catch {
+    }
+    .map('top_items -> 'top_items) {
+      //used to test that types are correct
+      topItems: List[(Long, Double)] => topItems
+    }
+    .project('key, 'top_items)
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
 
 class SortedReverseTakeJob(args: Args) extends Job(args) {
-  try {
-    Tsv("input0", ('key, 'item_id, 'score)).read
-      .groupBy('key) {
-        _.sortedReverseTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
-      }
-      .map('top_items -> 'top_items) {
-        //used to test that types are correct
-        topItems: List[(Long, Double)] => topItems
-      }
-      .project('key, 'top_items)
-      .write(Tsv("output0"))
-  } catch {
+  try Tsv("input0", ('key, 'item_id, 'score)).read
+    .groupBy('key) {
+      _.sortedReverseTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
+    }
+    .map('top_items -> 'top_items) {
+      //used to test that types are correct
+      topItems: List[(Long, Double)] => topItems
+    }
+    .project('key, 'top_items)
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
 
 class SortedTakeJob(args: Args) extends Job(args) {
-  try {
-    Tsv("input0", ('key, 'item_id, 'score)).read
-      .groupBy('key) {
-        _.sortedTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
-      }
-      .map('top_items -> 'top_items) {
-        //used to test that types are correct
-        topItems: List[(Long, Double)] => topItems
-      }
-      .project('key, 'top_items)
-      .write(Tsv("output0"))
-  } catch {
+  try Tsv("input0", ('key, 'item_id, 'score)).read
+    .groupBy('key) {
+      _.sortedTake[(Long, Double)]((('item_id, 'score), 'top_items), 5)
+    }
+    .map('top_items -> 'top_items) {
+      //used to test that types are correct
+      topItems: List[(Long, Double)] => topItems
+    }
+    .project('key, 'top_items)
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
@@ -78,14 +74,13 @@ class SortedTakeJob(args: Args) extends Job(args) {
 class ApproximateUniqueCountJob(args: Args) extends Job(args) {
   implicit def utf8ToBytes(s: String) = com.twitter.bijection.Injection.utf8(s)
 
-  try {
-    Tsv("input0", ('category, 'model, 'os)).read
-      .groupBy('category) {
-        _.approximateUniqueCount[String]('os -> 'os_count)
-      }
-      .map('os_count -> 'os_count) { osCount: Double => osCount.toLong }
-      .write(Tsv("output0"))
-  } catch {
+  try Tsv("input0", ('category, 'model, 'os)).read
+    .groupBy('category) {
+      _.approximateUniqueCount[String]('os -> 'os_count)
+    }
+    .map('os_count -> 'os_count) { osCount: Double => osCount.toLong }
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }

@@ -559,9 +559,8 @@ class HDFSFileCatalog(
   var cachedPartitionSpec: PartitionSpec = _
 
   def partitionSpec(): PartitionSpec = {
-    if (cachedPartitionSpec == null) {
+    if (cachedPartitionSpec == null)
       cachedPartitionSpec = inferPartitioning(partitionSchema)
-    }
 
     cachedPartitionSpec
   }
@@ -569,14 +568,13 @@ class HDFSFileCatalog(
   refresh()
 
   override def listFiles(filters: Seq[Expression]): Seq[Partition] =
-    if (partitionSpec().partitionColumns.isEmpty) {
+    if (partitionSpec().partitionColumns.isEmpty)
       Partition(InternalRow.empty, allFiles()) :: Nil
-    } else {
+    else
       prunePartitions(filters, partitionSpec()).map {
         case PartitionDirectory(values, path) =>
           Partition(values, getStatus(path))
       }
-    }
 
   protected def prunePartitions(
       predicates: Seq[Expression],
@@ -613,9 +611,8 @@ class HDFSFileCatalog(
       }
 
       selected
-    } else {
+    } else
       partitions
-    }
   }
 
   def allFiles(): Seq[FileStatus] = leafFiles.values.toSeq
@@ -624,12 +621,12 @@ class HDFSFileCatalog(
 
   private def listLeafFiles(
       paths: Seq[Path]): mutable.LinkedHashSet[FileStatus] =
-    if (paths.length >= sqlContext.conf.parallelPartitionDiscoveryThreshold) {
+    if (paths.length >= sqlContext.conf.parallelPartitionDiscoveryThreshold)
       HadoopFsRelation.listLeafFilesInParallel(
         paths,
         hadoopConf,
         sqlContext.sparkContext)
-    } else {
+    else {
       val statuses = paths
         .flatMap { path =>
           val fs = path.getFileSystem(hadoopConf)
@@ -637,11 +634,10 @@ class HDFSFileCatalog(
           // Dummy jobconf to get to the pathFilter defined in configuration
           val jobConf = new JobConf(hadoopConf, this.getClass())
           val pathFilter = FileInputFormat.getInputPathFilter(jobConf)
-          if (pathFilter != null) {
+          if (pathFilter != null)
             Try(fs.listStatus(path, pathFilter)).getOrElse(Array.empty)
-          } else {
+          else
             Try(fs.listStatus(path)).getOrElse(Array.empty)
-          }
         }
         .filterNot { status =>
           val name = status.getPath.getName
@@ -651,11 +647,10 @@ class HDFSFileCatalog(
       val (dirs, files) = statuses.partition(_.isDirectory)
 
       // It uses [[LinkedHashSet]] since the order of files can affect the results. (SPARK-11500)
-      if (dirs.isEmpty) {
+      if (dirs.isEmpty)
         mutable.LinkedHashSet(files: _*)
-      } else {
+      else
         mutable.LinkedHashSet(files: _*) ++ listLeafFiles(dirs.map(_.getPath))
-      }
     }
 
   def inferPartitioning(schema: Option[StructType]): PartitionSpec = {
@@ -758,9 +753,9 @@ private[sql] object HadoopFsRelation extends Logging {
   def listLeafFiles(fs: FileSystem, status: FileStatus): Array[FileStatus] = {
     logInfo(s"Listing ${status.getPath}")
     val name = status.getPath.getName.toLowerCase
-    if (shouldFilterOut(name)) {
+    if (shouldFilterOut(name))
       Array.empty
-    } else {
+    else {
       // Dummy jobconf to get to the pathFilter defined in configuration
       val jobConf = new JobConf(fs.getConf, this.getClass())
       val pathFilter = FileInputFormat.getInputPathFilter(jobConf)

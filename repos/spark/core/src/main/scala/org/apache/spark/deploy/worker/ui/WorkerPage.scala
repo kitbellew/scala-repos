@@ -91,22 +91,19 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
           <h4> Running Executors ({runningExecutors.size}) </h4>
           {runningExecutorTable}
           {
-        if (runningDrivers.nonEmpty) {
+        if (runningDrivers.nonEmpty)
           <h4> Running Drivers ({runningDrivers.size}) </h4> ++
             runningDriverTable
-        }
       }
           {
-        if (finishedExecutors.nonEmpty) {
+        if (finishedExecutors.nonEmpty)
           <h4>Finished Executors ({finishedExecutors.size}) </h4> ++
             finishedExecutorTable
-        }
       }
           {
-        if (finishedDrivers.nonEmpty) {
+        if (finishedDrivers.nonEmpty)
           <h4> Finished Drivers ({finishedDrivers.size}) </h4> ++
             finishedDriverTable
-        }
       }
         </div>
       </div>;

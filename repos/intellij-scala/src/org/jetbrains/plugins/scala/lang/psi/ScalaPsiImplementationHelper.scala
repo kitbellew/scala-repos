@@ -55,7 +55,7 @@ object ScalaPsiImplementationHelper {
       )
     if (classes.length == 0) psiClass
     else if (classes.length == 1) classes(0)
-    else {
+    else
       psiClass match {
         case _: ScTrait | _: ScClass =>
           classes
@@ -65,6 +65,5 @@ object ScalaPsiImplementationHelper {
           classes.find(td => td.isInstanceOf[ScObject]).getOrElse(classes(0))
         case _ => classes(0)
       }
-    }
   }
 }

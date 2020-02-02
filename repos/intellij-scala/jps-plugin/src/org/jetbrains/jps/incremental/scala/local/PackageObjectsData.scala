@@ -75,12 +75,10 @@ object PackageObjectsData {
 
     def tryToReadData(file: File) =
       synchronized {
-        try {
-          using(
-            new ObjectInputStream(
-              new BufferedInputStream(new FileInputStream(file)))) { stream =>
-            stream.readObject().asInstanceOf[PackageObjectsData]
-          }
+        try using(
+          new ObjectInputStream(
+            new BufferedInputStream(new FileInputStream(file)))) { stream =>
+          stream.readObject().asInstanceOf[PackageObjectsData]
         } catch {
           case e: Exception =>
             warning(

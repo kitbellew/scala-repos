@@ -81,18 +81,16 @@ object VFSModule {
           if (result == CoderResult.OVERFLOW) {
             val arr2 = new Array[Byte](bufferSize)
             StreamT.Yield(arr, loop(cbuf :: tail, ByteBuffer.wrap(arr2), arr2))
-          } else {
+          } else
             StreamT.Skip(loop(tail, buf, arr))
-          }
 
         case None =>
           val result = encoder.encode(CharBuffer.wrap(""), buf, true)
           if (result == CoderResult.OVERFLOW) {
             val arr2 = new Array[Byte](bufferSize)
             StreamT.Yield(arr, loop(stream, ByteBuffer.wrap(arr2), arr2))
-          } else {
+          } else
             StreamT.Yield(Arrays.copyOf(arr, buf.position), StreamT.empty)
-          }
       })
 
     val arr = new Array[Byte](bufferSize)

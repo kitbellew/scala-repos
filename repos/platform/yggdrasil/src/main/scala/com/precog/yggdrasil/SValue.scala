@@ -39,9 +39,9 @@ sealed trait SValue {
   def hasProperty(selector: JPath) = (this \ selector).isDefined
 
   def \(selector: JPath): Option[SValue] =
-    if (selector == JPath.Identity) {
+    if (selector == JPath.Identity)
       Some(this)
-    } else {
+    else
       this match {
         case SObject(obj) =>
           (selector.nodes: @unchecked) match {
@@ -57,7 +57,6 @@ sealed trait SValue {
 
         case _ => None
       }
-    }
 
   def set(selector: JPath, value: SValue): Option[SValue] = this match {
     case SObject(obj) =>
@@ -105,25 +104,23 @@ sealed trait SValue {
     val s = this match {
       case SObject(m) =>
         if (m.isEmpty) List((JPath(), CEmptyObject))
-        else {
+        else
           m.toSeq.flatMap {
             case (name, value) =>
               value.structure map {
                 case (path, ctype) => (JPathField(name) \ path, ctype)
               }
           }
-        }
 
       case SArray(a) =>
         if (a.isEmpty) List((JPath(), CEmptyArray))
-        else {
+        else
           a.zipWithIndex.flatMap {
             case (value, index) =>
               value.structure map {
                 case (path, ctype) => (JPathIndex(index) \ path, ctype)
               }
           }
-        }
 
       case SString(_)     => List((JPath(), CString))
       case STrue | SFalse => List((JPath(), CBoolean))

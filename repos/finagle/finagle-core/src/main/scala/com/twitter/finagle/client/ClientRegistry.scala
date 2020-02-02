@@ -37,9 +37,9 @@ private[twitter] object ClientRegistry extends StackRegistry {
           // the full resolution can be rather verbose for large clusters,
           // so be stingy with our output
           log.fine(s"$name params $params")
-          if (log.isLoggable(Level.FINER)) {
+          if (log.isLoggable(Level.FINER))
             log.finer(s"$name resolved to $resolution")
-          } else {
+          else
             resolution match {
               case bound: Addr.Bound =>
                 log.info(
@@ -47,7 +47,6 @@ private[twitter] object ClientRegistry extends StackRegistry {
               case _ =>
                 log.info(s"$name resolved to $resolution")
             }
-          }
 
           name
         }

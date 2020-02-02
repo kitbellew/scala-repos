@@ -29,9 +29,8 @@ case class TestServer(
     * Starts this server.
     */
   def start() {
-    if (testServerProcess != null) {
+    if (testServerProcess != null)
       sys.error("Server already started!")
-    }
 
     try {
       val config = ServerConfig(

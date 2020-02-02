@@ -37,11 +37,10 @@ class ScTypeAliasDefinitionImpl private (
     case null =>
       val name = getStub.asInstanceOf[ScTypeAliasStub].getName
       val id = ScalaPsiElementFactory.createIdentifier(name, getManager)
-      if (id == null) {
+      if (id == null)
         assert(
           assertion = false,
           s"Id is null. Name: $name. Text: $getText. Parent text: ${getParent.getText}.")
-      }
       id.getPsi
     case n => n
   }

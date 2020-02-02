@@ -86,9 +86,9 @@ trait VariColumnTabulator extends Tabulator {
       }
     }
 
-    if (fattest >= width) {
+    if (fattest >= width)
       columnize(items)
-    } else {
+    else {
       // if every col is widest, we have at least this many cols
       val mincols = 1 max (width / fattest)
       // if every other col is skinniest, we have at most this many cols

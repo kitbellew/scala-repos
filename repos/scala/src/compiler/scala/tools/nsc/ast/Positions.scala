@@ -9,7 +9,7 @@ trait Positions extends scala.reflect.internal.Positions {
     override def traverse(t: Tree) {
       if (t eq EmptyTree) ()
       else if (t.pos == NoPosition) super.traverse(t setPos pos)
-      else if (globalPhase.id <= currentRun.picklerPhase.id) {
+      else if (globalPhase.id <= currentRun.picklerPhase.id)
         // When we prune due to encountering a position, traverse the
         // pruned children so we can warn about those lacking positions.
         t.children foreach { c =>
@@ -22,7 +22,6 @@ trait Positions extends scala.reflect.internal.Positions {
             inform(" child: " + treeSymStatus(c) + "\n")
           }
         }
-      }
     }
   }
 

@@ -71,13 +71,12 @@ private[sql] object JDBCRelation {
       val upperBound =
         if (i != numPartitions - 1) s"$column < $currentValue" else null
       val whereClause =
-        if (upperBound == null) {
+        if (upperBound == null)
           lowerBound
-        } else if (lowerBound == null) {
+        else if (lowerBound == null)
           s"$upperBound or $column is null"
-        } else {
+        else
           s"$lowerBound AND $upperBound"
-        }
       ans += JDBCPartition(whereClause, i)
       i = i + 1
     }

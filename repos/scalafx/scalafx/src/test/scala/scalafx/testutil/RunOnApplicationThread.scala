@@ -41,19 +41,15 @@ trait RunOnApplicationThread extends SuiteMixin {
     var outcome: Outcome = null
     Platform.runLater(new Runnable() {
       override def run() {
-        try {
-          outcome = superWith(test)
-        } catch {
+        try outcome = superWith(test)
+        catch {
           case e: Exception => testException = e
-        } finally {
-          appThreadLatch.countDown()
-        }
+        } finally appThreadLatch.countDown()
       }
     })
     appThreadLatch.await()
-    if (testException != null) {
+    if (testException != null)
       throw testException
-    }
     outcome
   }
 }

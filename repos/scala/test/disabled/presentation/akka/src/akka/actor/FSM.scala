@@ -37,13 +37,12 @@ object FSM {
     private var ref: Option[ScheduledFuture[AnyRef]] = _
 
     def schedule(actor: ActorRef, timeout: Duration) {
-      if (repeat) {
+      if (repeat)
         ref = Some(Scheduler
           .schedule(actor, this, timeout.length, timeout.length, timeout.unit))
-      } else {
+      else
         ref = Some(
           Scheduler.scheduleOnce(actor, this, timeout.length, timeout.unit))
-      }
     }
 
     def cancel {
@@ -241,9 +240,8 @@ trait FSM[S, D] extends ListenerManagement {
       msg: AnyRef,
       timeout: Duration,
       repeat: Boolean): State = {
-    if (timers contains name) {
+    if (timers contains name)
       timers(name).cancel
-    }
     val timer = Timer(name, msg, repeat, timerGen.next)
     timer.schedule(self, timeout)
     timers(name) = timer
@@ -392,7 +390,7 @@ trait FSM[S, D] extends ListenerManagement {
   private var transitionEvent: List[TransitionHandler] = Nil
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
-    for (te ← transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+    for (te ← transitionEvent) if (te.isDefinedAt(tuple)) te(tuple)
   }
 
   // ListenerManagement shall not start() or stop() listener actors
@@ -405,46 +403,42 @@ trait FSM[S, D] extends ListenerManagement {
     */
   override final protected def receive: Receive = {
     case TimeoutMarker(gen) =>
-      if (generation == gen) {
+      if (generation == gen)
         processEvent(StateTimeout)
-      }
     case t @ Timer(name, msg, repeat, generation) =>
       if ((timers contains name) && (timers(name).generation == generation)) {
         processEvent(msg)
-        if (!repeat) {
+        if (!repeat)
           timers -= name
-        }
       }
     case SubscribeTransitionCallBack(actorRef) =>
       addListener(actorRef)
       // send current state back as reference point
-      try {
-        actorRef ! CurrentState(self, currentState.stateName)
-      } catch {
+      try actorRef ! CurrentState(self, currentState.stateName)
+      catch {
         case e: ActorInitializationException =>
           EventHandler.warning(this, "trying to register not running listener")
       }
     case UnsubscribeTransitionCallBack(actorRef) =>
       removeListener(actorRef)
-    case value => {
+    case value =>
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel(true)
         timeoutFuture = None
       }
       generation += 1
       processEvent(value)
-    }
   }
 
   private def processEvent(value: Any) = {
     val event = Event(value, currentState.stateData)
     val stateFunc = stateFunctions(currentState.stateName)
-    val nextState = if (stateFunc isDefinedAt event) {
-      stateFunc(event)
-    } else {
-      // handleEventDefault ensures that this is always defined
-      handleEvent(event)
-    }
+    val nextState =
+      if (stateFunc isDefinedAt event)
+        stateFunc(event)
+      else
+        // handleEventDefault ensures that this is always defined
+        handleEvent(event)
     nextState.stopReason match {
       case Some(reason) => terminate(reason)
       case None         => makeTransition(nextState)
@@ -452,10 +446,10 @@ trait FSM[S, D] extends ListenerManagement {
   }
 
   private def makeTransition(nextState: State) =
-    if (!stateFunctions.contains(nextState.stateName)) {
+    if (!stateFunctions.contains(nextState.stateName))
       terminate(
         Failure("Next state %s does not exist".format(nextState.stateName)))
-    } else {
+    else {
       if (currentState.stateName != nextState.stateName) {
         handleTransition(currentState.stateName, nextState.stateName)
         notifyListeners(
@@ -471,11 +465,10 @@ trait FSM[S, D] extends ListenerManagement {
       else stateTimeouts(currentState.stateName)
     if (timeout.isDefined) {
       val t = timeout.get
-      if (t.finite_? && t.length >= 0) {
+      if (t.finite_? && t.length >= 0)
         timeoutFuture = Some(
           Scheduler
             .scheduleOnce(self, TimeoutMarker(generation), t.length, t.unit))
-      }
     }
   }
 

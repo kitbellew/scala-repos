@@ -52,9 +52,8 @@ class ScalaApplicationUsagesCollector
       }
 
       def checkLibrary(qual: String, library: String) {
-        if (JavaPsiFacade.getInstance(project).findPackage(qual) != null) {
+        if (JavaPsiFacade.getInstance(project).findPackage(qual) != null)
           set += new UsageDescriptor("Library: " + library, 1)
-        }
       }
 
       val isPlayInstalled = PlatformUtils.isIdeaUltimate

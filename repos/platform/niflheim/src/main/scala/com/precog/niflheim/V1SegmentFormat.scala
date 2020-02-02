@@ -42,9 +42,8 @@ object V1SegmentFormat extends SegmentFormat {
 
   object reader extends SegmentReader {
     private def wrapException[A](f: => A): Validation[IOException, A] =
-      try {
-        Success(f)
-      } catch {
+      try Success(f)
+      catch {
         case e: Exception =>
           Failure(new IOException(e))
       }
@@ -206,9 +205,8 @@ object V1SegmentFormat extends SegmentFormat {
     buffer.putInt(0, buffer.limit() - 4)
 
     try {
-      while (buffer.remaining() > 0) {
+      while (buffer.remaining() > 0)
         channel.write(buffer)
-      }
       Success(result)
     } catch {
       case ex: IOException =>
@@ -220,16 +218,14 @@ object V1SegmentFormat extends SegmentFormat {
       channel: ReadableByteChannel): Validation[IOException, ByteBuffer] =
     try {
       val buffer0 = allocate(4)
-      while (buffer0.remaining() > 0) {
+      while (buffer0.remaining() > 0)
         channel.read(buffer0)
-      }
       buffer0.flip()
       val length = buffer0.getInt()
 
       val buffer = allocate(length)
-      while (buffer.remaining() > 0) {
+      while (buffer.remaining() > 0)
         channel.read(buffer)
-      }
       buffer.flip()
       Success(buffer)
     } catch {

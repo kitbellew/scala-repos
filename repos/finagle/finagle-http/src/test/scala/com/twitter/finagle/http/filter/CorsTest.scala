@@ -12,11 +12,10 @@ class CorsTest extends FlatSpec with MustMatchers {
   val TRAP = Method("TRAP")
   val underlying = Service.mk[Request, Response] { request =>
     val response = request.response
-    if (request.method == TRAP) {
+    if (request.method == TRAP)
       response.contentString = "#guwop"
-    } else {
+    else
       response.status = Status.MethodNotAllowed
-    }
     Future value response
   }
 

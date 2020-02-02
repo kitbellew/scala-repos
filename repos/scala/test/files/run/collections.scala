@@ -69,7 +69,7 @@ object Test extends App {
         }
       println("test3: " + x)
     }
-    if (iters == 5000) {
+    if (iters == 5000)
       time {
         var s1 = s
         var x = 0
@@ -82,7 +82,6 @@ object Test extends App {
         }
         println("test4: " + x)
       }
-    }
   }
 
   def test(msg: String, s0: collection.mutable.Map[Int, Int], iters: Int) = {

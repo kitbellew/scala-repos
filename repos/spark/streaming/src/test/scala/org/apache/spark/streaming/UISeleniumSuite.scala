@@ -49,13 +49,9 @@ class UISeleniumSuite
   }
 
   override def afterAll(): Unit =
-    try {
-      if (webDriver != null) {
-        webDriver.quit()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try if (webDriver != null)
+      webDriver.quit()
+    finally super.afterAll()
 
   /**
     * Create a test SparkStreamingContext with the SparkUI enabled.
@@ -79,9 +75,8 @@ class UISeleniumSuite
     }
     inputStream.foreachRDD { rdd =>
       rdd.foreach(_ => {})
-      try {
-        rdd.foreach(_ => throw new RuntimeException("Oops"))
-      } catch {
+      try rdd.foreach(_ => throw new RuntimeException("Oops"))
+      catch {
         case e: SparkException if e.getMessage.contains("Oops") =>
       }
     }

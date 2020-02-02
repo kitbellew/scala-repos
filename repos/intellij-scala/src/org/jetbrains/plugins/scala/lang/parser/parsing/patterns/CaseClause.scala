@@ -43,9 +43,8 @@ object CaseClause {
         caseClauseMarker.done(ScalaElementTypes.CASE_CLAUSE)
         return true
     }
-    if (!Block.parse(builder, hasBrace = false, needNode = true)) {
+    if (!Block.parse(builder, hasBrace = false, needNode = true))
       builder error ErrMsg("wrong.expression")
-    }
     caseClauseMarker.done(ScalaElementTypes.CASE_CLAUSE)
     true
   }

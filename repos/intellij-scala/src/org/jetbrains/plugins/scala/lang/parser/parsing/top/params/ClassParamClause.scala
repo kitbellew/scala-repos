@@ -28,22 +28,19 @@ object ClassParamClause {
         builder.advanceLexer //Ate '('
         builder.disableNewlines
         builder.getTokenType match {
-          case ScalaTokenTypes.kIMPLICIT => {
+          case ScalaTokenTypes.kIMPLICIT =>
             classParamMarker.rollbackTo
             builder.restoreNewlinesState
             return false
-          }
-          case _ => {}
+          case _ =>
         }
         //ok, let's parse parameters
-        if (ClassParam parse builder) {
+        if (ClassParam parse builder)
           while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
             builder.advanceLexer //Ate ,
-            if (!(ClassParam parse builder)) {
+            if (!(ClassParam parse builder))
               builder error ErrMsg("wrong.parameter")
-            }
           }
-        }
       case _ =>
         classParamMarker.rollbackTo
         return false

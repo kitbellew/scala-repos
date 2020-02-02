@@ -281,9 +281,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
       consumer0.subscribe(List[String]().asJava)
       assertEquals(0, consumer0.assignment.size())
-    } finally {
-      consumer0.close()
-    }
+    } finally consumer0.close()
   }
 
   @Test
@@ -463,10 +461,9 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       * @param newTopicsToSubscribe
       */
     def subscribe(newTopicsToSubscribe: List[String]): Unit = {
-      if (subscriptionChanged) {
+      if (subscriptionChanged)
         throw new IllegalStateException(
           "Do not call subscribe until the previous subsribe request is processed.")
-      }
       topicsSubscription = newTopicsToSubscribe
       subscriptionChanged = true
     }
@@ -499,18 +496,16 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       partitions: Set[TopicPartition]): Boolean = {
     val allNonEmptyAssignments =
       assignments forall (assignment => assignment.size > 0)
-    if (!allNonEmptyAssignments) {
+    if (!allNonEmptyAssignments)
       // at least one consumer got empty assignment
       return false
-    }
 
     // make sure that sum of all partitions to all consumers equals total number of partitions
     val totalPartitionsInAssignments = (0 /: assignments)(_ + _.size)
-    if (totalPartitionsInAssignments != partitions.size) {
+    if (totalPartitionsInAssignments != partitions.size)
       // either same partitions got assigned to more than one consumer or some
       // partitions were not assigned
       return false
-    }
 
     // The above checks could miss the case where one or more partitions were assigned to more
     // than one consumer and the same number of partitions were missing from assignments.

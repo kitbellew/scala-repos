@@ -115,15 +115,12 @@ object JsonPerformanceTest extends App {
       import ExecutionContext.Implicits.global
       Await.ready(Future.sequence(List.range(0, threads).map { t =>
         Future {
-          for (i <- 0 to timesPerThread) {
+          for (i <- 0 to timesPerThread)
             test
-          }
         }(context)
       }), Duration.Inf)
       System.currentTimeMillis() - start
-    } finally {
-      executor.shutdownNow()
-    }
+    } finally executor.shutdownNow()
   }
 
 }

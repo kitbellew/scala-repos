@@ -43,7 +43,7 @@ class ScTryStmtImpl(node: ASTNode)
     lifted flatMap { result =>
       catchBlock match {
         case None => lifted
-        case Some(cb) => {
+        case Some(cb) =>
           cb.expression match {
             case Some(expr) if !lifted.isEmpty =>
               expr.getType(TypingContext.empty) match {
@@ -63,20 +63,18 @@ class ScTryStmtImpl(node: ASTNode)
                     processor.processType(tp, expr)
                     val candidates = processor.candidates
                     if (candidates.length != 1) lifted
-                    else {
+                    else
                       candidates(0) match {
                         case ScalaResolveResult(fun: ScFunction, subst) =>
                           fun.returnType.map(tp =>
                             Bounds.weakLub(lifted.get, subst.subst(tp)))
                         case _ => lifted
                       }
-                    }
                   }
                 case _ => lifted
               }
             case _ => lifted
           }
-        }
       }
     }
   }

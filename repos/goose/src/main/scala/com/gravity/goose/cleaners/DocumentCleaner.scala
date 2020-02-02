@@ -85,13 +85,12 @@ trait DocumentCleaner {
     */
   private def cleanUpSpanTagsInParagraphs(doc: Document) = {
     val spans: Elements = doc.getElementsByTag("span")
-    for (item <- spans) {
+    for (item <- spans)
       if (item.parent().nodeName() == "p") {
         val tn: TextNode = new TextNode(item.text, doc.baseUri)
         item.replaceWith(tn)
         trace("Replacing nested span with TextNode: " + item.text())
       }
-    }
     doc
   }
 
@@ -111,16 +110,14 @@ trait DocumentCleaner {
   private def removeScriptsAndStyles(doc: Document): Document = {
 
     val scripts: Elements = doc.getElementsByTag("script")
-    for (item <- scripts) {
+    for (item <- scripts)
       item.remove()
-    }
     trace(scripts.size + " script tags removed")
 
     val styles: Elements = doc.getElementsByTag("style")
     import scala.collection.JavaConversions._
-    for (style <- styles) {
+    for (style <- styles)
       style.remove()
-    }
     trace(styles.size + " style tags removed")
     doc
   }
@@ -178,21 +175,18 @@ trait DocumentCleaner {
 
       trace(naughtyList.size + " ID elements found against pattern: " + pattern)
 
-      for (node <- naughtyList) {
+      for (node <- naughtyList)
         removeNode(node)
-      }
       val naughtyList3: Elements =
         doc.getElementsByAttributeValueMatching("class", pattern)
       trace(
         naughtyList3.size + " CLASS elements found against pattern: " + pattern)
 
-      for (node <- naughtyList3) {
+      for (node <- naughtyList3)
         removeNode(node)
-      }
     } catch {
-      case e: IllegalArgumentException => {
+      case e: IllegalArgumentException =>
         warn(e, e.toString)
-      }
     }
     doc
   }
@@ -219,21 +213,19 @@ trait DocumentCleaner {
 
     val selected = Collector.collect(wantedTags, doc)
 
-    for (elem <- selected) {
-      if (Collector.collect(blockElemementTags, elem).isEmpty) {
+    for (elem <- selected)
+      if (Collector.collect(blockElemementTags, elem).isEmpty)
         replaceElementsWithPara(doc, elem)
-      } else {
+      else {
         val replacements = getReplacementNodes(doc, elem)
         elem.children().foreach(_.remove())
         replacements.foreach { n =>
-          try {
-            elem.appendChild(n)
-          } catch {
+          try elem.appendChild(n)
+          catch {
             case ex: Exception => info(ex, "Failed to append cleaned child!")
           }
         }
       }
-    }
 
     doc
   }
@@ -259,18 +251,16 @@ trait DocumentCleaner {
 
           div.children().foreach(_.remove())
           replaceNodes.foreach { node =>
-            try {
-              div.appendChild(node)
-            } catch {
+            try div.appendChild(node)
+            catch {
               case e: Exception => info(e, e.toString)
             }
 
           }
         }
       } catch {
-        case e: NullPointerException => {
+        case e: NullPointerException =>
           logger.error(e.toString)
-        }
       }
       divIndex += 1
     }
@@ -304,60 +294,56 @@ trait DocumentCleaner {
     for {
 
       kid <- div.childNodes()
-    } {
+    } if (kid.nodeName() == "p" && replacementText.size > 0) {
 
-      if (kid.nodeName() == "p" && replacementText.size > 0) {
+      // flush the buffer of text
+      val newNode = getFlushedBuffer(replacementText, doc)
+      nodesToReturn += newNode
+      replacementText.clear()
 
-        // flush the buffer of text
-        val newNode = getFlushedBuffer(replacementText, doc)
-        nodesToReturn += newNode
-        replacementText.clear()
-
-        if (kid.isInstanceOf[Element]) {
-          val kidElem = kid.asInstanceOf[Element]
-          nodesToReturn += kidElem
-        }
-
-      } else if (kid.nodeName == "#text") {
-
-        val kidTextNode = kid.asInstanceOf[TextNode]
-        val kidText = kidTextNode.attr("text")
-        val replaceText = tabsAndNewLinesReplacements.replaceAll(kidText)
-        if (replaceText.trim().length > 1) {
-
-          var prevSibNode = kidTextNode.previousSibling()
-          while (prevSibNode != null && prevSibNode
-                   .nodeName() == "a" && prevSibNode.attr("grv-usedalready") != "yes") {
-            replacementText.append(" " + prevSibNode.outerHtml() + " ")
-            nodesToRemove += prevSibNode
-            prevSibNode.attr("grv-usedalready", "yes")
-            prevSibNode =
-              if (prevSibNode.previousSibling() == null) null
-              else prevSibNode.previousSibling()
-          }
-          // add the text of the node
-          replacementText.append(replaceText)
-
-          //          check the next set of links that might be after text (see businessinsider2.txt)
-          var nextSibNode = kidTextNode.nextSibling()
-          while (nextSibNode != null && nextSibNode
-                   .nodeName() == "a" && nextSibNode.attr("grv-usedalready") != "yes") {
-            replacementText.append(" " + nextSibNode.outerHtml() + " ")
-            nodesToRemove += nextSibNode
-            nextSibNode.attr("grv-usedalready", "yes")
-            nextSibNode =
-              if (nextSibNode.nextSibling() == null) null
-              else nextSibNode.nextSibling()
-          }
-
-        }
-        nodesToRemove += kid
-
-      } else {
-        nodesToReturn += kid
+      if (kid.isInstanceOf[Element]) {
+        val kidElem = kid.asInstanceOf[Element]
+        nodesToReturn += kidElem
       }
 
-    }
+    } else if (kid.nodeName == "#text") {
+
+      val kidTextNode = kid.asInstanceOf[TextNode]
+      val kidText = kidTextNode.attr("text")
+      val replaceText = tabsAndNewLinesReplacements.replaceAll(kidText)
+      if (replaceText.trim().length > 1) {
+
+        var prevSibNode = kidTextNode.previousSibling()
+        while (prevSibNode != null && prevSibNode
+                 .nodeName() == "a" && prevSibNode.attr("grv-usedalready") != "yes") {
+          replacementText.append(" " + prevSibNode.outerHtml() + " ")
+          nodesToRemove += prevSibNode
+          prevSibNode.attr("grv-usedalready", "yes")
+          prevSibNode =
+            if (prevSibNode.previousSibling() == null) null
+            else prevSibNode.previousSibling()
+        }
+        // add the text of the node
+        replacementText.append(replaceText)
+
+        //          check the next set of links that might be after text (see businessinsider2.txt)
+        var nextSibNode = kidTextNode.nextSibling()
+        while (nextSibNode != null && nextSibNode
+                 .nodeName() == "a" && nextSibNode.attr("grv-usedalready") != "yes") {
+          replacementText.append(" " + nextSibNode.outerHtml() + " ")
+          nodesToRemove += nextSibNode
+          nextSibNode.attr("grv-usedalready", "yes")
+          nextSibNode =
+            if (nextSibNode.nextSibling() == null) null
+            else nextSibNode.nextSibling()
+        }
+
+      }
+      nodesToRemove += kid
+
+    } else
+      nodesToReturn += kid
+
     // flush out anything still remaining
     if (replacementText.size > 0) {
       val newNode = getFlushedBuffer(replacementText, doc)

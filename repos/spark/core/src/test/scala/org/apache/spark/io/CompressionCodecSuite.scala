@@ -30,17 +30,15 @@ class CompressionCodecSuite extends SparkFunSuite {
     // Write 1000 integers to the output stream, compressed.
     val outputStream = new ByteArrayOutputStream()
     val out = codec.compressedOutputStream(outputStream)
-    for (i <- 1 until 1000) {
+    for (i <- 1 until 1000)
       out.write(i % 256)
-    }
     out.close()
 
     // Read the 1000 integers back.
     val inputStream = new ByteArrayInputStream(outputStream.toByteArray)
     val in = codec.compressedInputStream(inputStream)
-    for (i <- 1 until 1000) {
+    for (i <- 1 until 1000)
       assert(in.read() === i % 256)
-    }
     in.close()
   }
 

@@ -53,9 +53,8 @@ private[twitter] object ThriftUtil {
   def findConstructor[A](
       clz: Class[A],
       paramTypes: Class[_]*): Option[Constructor[A]] =
-    try {
-      Some(clz.getConstructor(paramTypes: _*))
-    } catch {
+    try Some(clz.getConstructor(paramTypes: _*))
+    catch {
       case _: NoSuchMethodException => None
     }
 
@@ -79,10 +78,9 @@ private[twitter] object ThriftUtil {
       serviceSym <- findClass1("com.twitter.finagle.exp.swift.ServiceSym")
       meth <- findMethod(serviceSym, "isService", classOf[Class[_]])
     } yield { k: Class[_] =>
-      try {
-        if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k)
-        else None
-      } catch {
+      try if (meth.invoke(null, k).asInstanceOf[Boolean]) Some(k)
+      else None
+      catch {
         case NonFatal(_) => None
       }
     }

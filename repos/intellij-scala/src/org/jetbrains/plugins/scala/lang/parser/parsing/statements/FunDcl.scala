@@ -26,17 +26,16 @@ object FunDcl {
         //returnMarker.drop
         return false
     }
-    if (!(FunSig parse builder)) {
+    if (!(FunSig parse builder))
       //returnMarker.drop
       return false
-    }
     builder.getTokenType match {
       case ScalaTokenTypes.tCOLON =>
         builder.advanceLexer //Ate :
-        if (Type.parse(builder)) {
+        if (Type.parse(builder))
           //returnMarker.drop
           return true
-        } else {
+        else {
           builder error ScalaBundle.message("wrong.type")
           //returnMarker.drop
           return true

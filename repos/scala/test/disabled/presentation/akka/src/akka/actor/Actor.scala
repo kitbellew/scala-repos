@@ -136,12 +136,11 @@ object Actor extends ListenerManagement {
 
   val registry = new ActorRegistry
 
-  lazy val remote: RemoteSupport = {
+  lazy val remote: RemoteSupport =
     ReflectiveAccess.Remote.defaultRemoteSupport
       .map(_())
       .getOrElse(throw new UnsupportedOperationException(
         "You need to have akka-remote.jar on classpath"))
-  }
 
   private[akka] val TIMEOUT =
     Duration(config.getInt("akka.actor.timeout", 5), TIME_UNIT).toMillis
@@ -259,11 +258,8 @@ object Actor extends ListenerManagement {
       self.dispatcher = dispatcher
       def receive = {
         case Spawn =>
-          try {
-            body
-          } finally {
-            self.stop()
-          }
+          try body
+          finally self.stop()
       }
     }).start() ! Spawn
   }
@@ -283,9 +279,8 @@ object Actor extends ListenerManagement {
     */
   implicit def futureToAnyOptionAsTypedOption(anyFuture: Future[_]) =
     new AnyOptionAsTypedOption({
-      try {
-        anyFuture.await
-      } catch { case t: FutureTimeoutException => }
+      try anyFuture.await
+      catch { case t: FutureTimeoutException => }
       anyFuture.resultOrException
     })
 }

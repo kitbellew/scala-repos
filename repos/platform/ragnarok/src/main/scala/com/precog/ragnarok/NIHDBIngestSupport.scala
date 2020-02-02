@@ -63,9 +63,8 @@ trait NIHDBIngestSupport
   private val sid = new java.util.concurrent.atomic.AtomicInteger(0)
 
   private def openZipFile(f: File): Option[ZipFile] =
-    try {
-      Some(new ZipFile(f))
-    } catch {
+    try Some(new ZipFile(f))
+    catch {
       case _: ZipException => None
     }
 
@@ -141,18 +140,15 @@ trait NIHDBIngestSupport
         projection <- vfs
           .readProjection(apiKey, path, Version.Current, AccessMode.Read)
           .run
-      } yield {
-        (projection valueOr { err =>
-          sys.error(
-            "An error was encountered attempting to read projection at path %s: %s"
-              .format(path, err.toString))
-        }).asInstanceOf[NIHDBResource]
-      }
+      } yield (projection valueOr { err =>
+        sys.error(
+          "An error was encountered attempting to read projection at path %s: %s"
+            .format(path, err.toString))
+      }).asInstanceOf[NIHDBResource]
     }.copoint
 
-    while (projection.db.status.copoint.pending > 0) {
+    while (projection.db.status.copoint.pending > 0)
       Thread.sleep(100)
-    }
 
     projection.db.close(actorSystem).copoint
 

@@ -114,12 +114,12 @@ private[akka] trait SubscriberManagement[T]
     if (subscription.active) {
       import ReactiveStreamsCompliance._
       // check for illegal demand See 3.9
-      if (elements < 1) {
+      if (elements < 1)
         try tryOnError(
           subscription.subscriber,
           numberOfElementsInRequestMustBePositiveException)
         finally unregisterSubscriptionInternal(subscription)
-      } else {
+      else
         endOfStream match {
           case eos @ (NotReached | Completed) ⇒
             val d = subscription.totalDemand + elements
@@ -130,12 +130,12 @@ private[akka] trait SubscriberManagement[T]
             @tailrec def dispatchFromBufferAndReturnRemainingRequested(
                 requested: Long,
                 eos: EndOfStream): Long =
-              if (requested == 0) {
+              if (requested == 0)
                 // if we are at end-of-stream and have nothing more to read we complete now rather than after the next `requestMore`
                 if ((eos ne NotReached) && buffer.count(subscription) == 0)
                   Long.MinValue
                 else 0
-              } else if (buffer.count(subscription) > 0) {
+              else if (buffer.count(subscription) > 0) {
                 val goOn =
                   try {
                     subscription.dispatch(buffer.read(subscription))
@@ -163,7 +163,6 @@ private[akka] trait SubscriberManagement[T]
             }
           case ErrorCompleted(_) ⇒ // ignore, the Subscriber might not have seen our error event yet
         }
-      }
     }
 
   private[this] final def requestFromUpstreamIfRequired(): Unit = {

@@ -202,8 +202,8 @@ class ScribeHandler(
   override def flush() {
 
     def connect() {
-      if (!socket.isDefined) {
-        if (Time.now.since(lastConnectAttempt) > connectBackoff) {
+      if (!socket.isDefined)
+        if (Time.now.since(lastConnectAttempt) > connectBackoff)
           try {
             lastConnectAttempt = Time.now
             socket = Some(new Socket(hostname, port))
@@ -219,10 +219,8 @@ class ScribeHandler(
                 e)
               stats.incrConnectionFailure()
           }
-        } else {
+        else
           stats.incrConnectionSkipped()
-        }
-      }
     }
 
     def detectArchaicServer(): Unit = {
@@ -230,7 +228,7 @@ class ScribeHandler(
 
       serverType = socket match {
         case None => Unknown
-        case Some(s) => {
+        case Some(s) =>
           val outStream = s.getOutputStream()
 
           try {
@@ -256,7 +254,6 @@ class ScribeHandler(
           } catch {
             case NonFatal(_) => Modern
           }
-        }
       }
     }
 
@@ -314,15 +311,13 @@ class ScribeHandler(
       val response = new Array[Byte](expectedReply.length)
       while (offset < response.length) {
         val n = inStream.read(response, offset, response.length - offset)
-        if (n < 0) {
+        if (n < 0)
           throw new IOException("End of stream")
-        }
         offset += n
       }
-      if (!Arrays.equals(response, expectedReply)) {
+      if (!Arrays.equals(response, expectedReply))
         throw new IOException(
           "Error response from scribe server: " + response.hexlify)
-      }
     }
 
     flusher.execute(new Runnable {
@@ -367,9 +362,8 @@ class ScribeHandler(
   private def closeSocket() {
     synchronized {
       socket.foreach { s =>
-        try {
-          s.close()
-        } catch {
+        try s.close()
+        catch {
           case _: Throwable =>
         }
       }

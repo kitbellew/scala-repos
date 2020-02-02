@@ -105,9 +105,7 @@ class UnsafeRowSuite extends SparkFunSuite {
         val writeBuffer = new Array[Byte](1024)
         offheapUnsafeRow.writeToStream(baos, writeBuffer)
         (baos.toByteArray, offheapUnsafeRow.getString(0))
-      } finally {
-        MemoryAllocator.UNSAFE.free(offheapRowPage)
-      }
+      } finally MemoryAllocator.UNSAFE.free(offheapRowPage)
     }
 
     assert(bytesFromArrayBackedRow === bytesFromOffheapRow)
@@ -126,9 +124,8 @@ class UnsafeRowSuite extends SparkFunSuite {
     val row = InternalRow.apply(null)
     val unsafeRow =
       UnsafeProjection.create(Array[DataType](NullType)).apply(row)
-    for (dataType <- DataTypeTestUtils.atomicTypes) {
+    for (dataType <- DataTypeTestUtils.atomicTypes)
       assert(unsafeRow.get(0, dataType) === null)
-    }
   }
 
   test("createFromByteArray and copyFrom") {

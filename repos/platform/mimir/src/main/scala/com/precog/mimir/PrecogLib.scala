@@ -164,19 +164,19 @@ trait PrecogLibModule[M[+_]]
                 } mkString ("{", ",", "}")
 
                 def populate(data: List[JValue]): Validation[Error, Slice] =
-                  if (data.size != members.cardinality) {
+                  if (data.size != members.cardinality)
                     Failure(
                       Error.invalid(
                         "Number of items returned does not match number sent."))
-                  } else {
+                  else {
                     def sparseStream(
                         row: Int,
                         xs: List[RValue]): Stream[RValue] =
-                      if (row < slice.size) {
+                      if (row < slice.size)
                         if (members(row))
                           Stream.cons(xs.head, sparseStream(row + 1, xs.tail))
                         else Stream.cons(CUndefined, sparseStream(row + 1, xs))
-                      } else Stream.empty
+                      else Stream.empty
 
                     val sparseData =
                       sparseStream(0, data map (RValue.fromJValue(_)))

@@ -133,13 +133,12 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
           .traverseS(s) { n =>
             for {
               sum <- State.get[Int]
-              r <- if (sum >= size) {
+              r <- if (sum >= size)
                 State.state[Int, Option[Int]](None)
-              } else if ((sum + n) > size) {
+              else if ((sum + n) > size)
                 State((s: Int) => (s + n) -> Option(size - sum))
-              } else {
+              else
                 State((s: Int) => (s + n) -> Option(n))
-              }
             } yield r
           }
           .eval(0)
@@ -314,13 +313,12 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
         measure1: Reducer[A, V]): Gen[FingerTree[V, A]] = n match {
       case 0 => empty[V, A]
       case 1 => arbitrary[A].map(single[V, A](_))
-      case n => {
+      case n =>
         val nextSize = n.abs / 2
         ^^(
           FingerArbitrary[V, A].arbitrary,
           fingerTree[Node[V, A]](nextSize)(NodeArbitrary[V, A], implicitly),
           FingerArbitrary[V, A].arbitrary)(deep[V, A](_, _, _))
-      }
     }
     Gen.sized(fingerTree[A] _)
   }

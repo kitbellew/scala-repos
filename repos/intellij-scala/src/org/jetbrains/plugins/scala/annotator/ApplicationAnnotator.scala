@@ -44,9 +44,8 @@ trait ApplicationAnnotator {
       result <- reference.multiResolve(false)
       r = result.asInstanceOf[ScalaResolveResult]
     } {
-      if (r.isAssignment) {
+      if (r.isAssignment)
         annotateAssignmentReference(reference, holder)
-      }
       if (!r.isApplicable()) {
         r.element match {
           case f @ (_: ScFunction | _: PsiMethod | _: ScSyntheticFunction) =>
@@ -137,27 +136,27 @@ trait ApplicationAnnotator {
                       call.getInvokedExpr,
                       f.name + " has malformed definition")
                   case ExpansionForNonRepeatedParameter(expression) =>
-                    if (expression != null) {
+                    if (expression != null)
                       holder.createErrorAnnotation(
                         expression,
                         "Expansion for non-repeated parameter")
-                    } else {
+                    else {
                       //TODO investigate case when expression is null. It's possible when new Expression(ScType)
                     }
                   case PositionalAfterNamedArgument(argument) =>
-                    if (argument != null) {
+                    if (argument != null)
                       holder.createErrorAnnotation(
                         argument,
                         "Positional after named argument")
-                    } else {
+                    else {
                       //TODO investigate case when argument is null. It's possible when new Expression(ScType)
                     }
                   case ParameterSpecifiedMultipleTimes(assignment) =>
-                    if (assignment != null) {
+                    if (assignment != null)
                       holder.createErrorAnnotation(
                         assignment.getLExpression,
                         "Parameter specified multiple times")
-                    } else {
+                    else {
                       //TODO investigate case when assignment is null. It's possible when new Expression(ScType)
                     }
                   case WrongTypeParameterInferred => //todo: ?

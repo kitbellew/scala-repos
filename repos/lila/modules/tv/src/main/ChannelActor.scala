@@ -44,7 +44,7 @@ private[tv] final class ChannelActor(channel: Tv.Channel) extends Actor {
   }
 
   def elect(gameOption: Option[Game]) {
-    gameOption foreach { self ! SetGame(_) }
+    gameOption foreach self ! SetGame(_)
   }
 
   def wayBetter(game: Game, candidates: List[Game]) = feature(candidates) map {

@@ -192,9 +192,8 @@ class VectorIndexerSuite
           assert(
             catMap.values.toSet === targetValueIndexSet
           ) // Correct category indices
-          if (origValueSet.contains(0.0)) {
+          if (origValueSet.contains(0.0))
             assert(catMap(0.0) === 0) // value 0 gets index 0
-          }
           // Check transformed data
           assert(
             indexedRDD.map(_(feature)).collect().toSet === targetValueIndexSet)

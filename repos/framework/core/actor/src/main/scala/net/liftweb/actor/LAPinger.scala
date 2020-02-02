@@ -72,9 +72,8 @@ object LAPinger {
       def call: Unit =
         to ! msg
     }
-    try {
-      service.schedule(r, delay, TimeUnit.MILLISECONDS)
-    } catch {
+    try service.schedule(r, delay, TimeUnit.MILLISECONDS)
+    catch {
       case e: RejectedExecutionException =>
         throw PingerException(msg + " could not be scheduled on " + to, e)
     }
@@ -95,9 +94,8 @@ private object TF extends ThreadFactory {
     val d: Thread = threadFactory.newThread(r)
     d setName "ActorPinger"
     d setDaemon true
-    if (ThreadPoolRules.nullContextClassLoader) {
+    if (ThreadPoolRules.nullContextClassLoader)
       d setContextClassLoader null
-    }
     d
   }
 }

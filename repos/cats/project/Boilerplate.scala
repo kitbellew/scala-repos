@@ -99,17 +99,16 @@ object Boilerplate {
       val tpes = synTypes map { tpe => s"F[$tpe]" }
       val tpesString = synTypes mkString ", "
       val params = (synVals zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
-      val next = if (arity + 1 <= maxArity) {
+      val next = if (arity + 1 <= maxArity)
         s"def |@|[Z](z: F[Z]) = new CartesianBuilder${arity + 1}(${`a..n`}, z)"
-      } else {
+      else
         ""
-      }
 
-      val n = if (arity == 1) {
-        ""
-      } else {
-        arity.toString
-      }
+      val n =
+        if (arity == 1)
+          ""
+        else
+          arity.toString
 
       val map =
         if (arity == 1)
@@ -129,11 +128,11 @@ object Boilerplate {
         else
           s"def imap[Z](f: (${`A..N`}) => Z)(g: Z => (${`A..N`}))(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[Z] = Cartesian.imap$n(${`a..n`})(f)(g)"
 
-      val tupled = if (arity != 1) {
-        s"def tupled(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[(${`A..N`})] = Cartesian.tuple$n(${`a..n`})"
-      } else {
-        ""
-      }
+      val tupled =
+        if (arity != 1)
+          s"def tupled(implicit invariant: Invariant[F], cartesian: Cartesian[F]): F[(${`A..N`})] = Cartesian.tuple$n(${`a..n`})"
+        else
+          ""
 
       block"""
         |package cats
@@ -164,14 +163,14 @@ object Boilerplate {
       import tv._
 
       val tpes = synTypes map { tpe => s"F[$tpe]" }
-      val fargs = (0 until arity) map { "f" + _ }
+      val fargs = (0 until arity) map "f" + _
       val fparams = (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
 
       val a = arity / 2
       val b = arity - a
 
-      val fArgsA = (0 until a) map { "f" + _ } mkString ","
-      val fArgsB = (a until arity) map { "f" + _ } mkString ","
+      val fArgsA = (0 until a) map "f" + _ mkString ","
+      val fArgsB = (a until arity) map "f" + _ mkString ","
       val argsA = (0 until a) map { n =>
         "a" + n + ":A" + n
       } mkString ","
@@ -179,12 +178,11 @@ object Boilerplate {
         "a" + n + ":A" + n
       } mkString ","
       def apN(n: Int) =
-        if (n == 1) {
+        if (n == 1)
           "ap"
-        } else {
+        else
           s"ap$n"
-        }
-      def allArgs = (0 until arity) map { "a" + _ } mkString ","
+      def allArgs = (0 until arity) map "a" + _ mkString ","
 
       val apply =
         block"""
@@ -212,7 +210,7 @@ object Boilerplate {
       import tv._
 
       val tpes = synTypes map { tpe => s"F[$tpe]" }
-      val fargs = (0 until arity) map { "f" + _ }
+      val fargs = (0 until arity) map "f" + _
       val fparams = (fargs zip tpes) map { case (v, t) => s"$v:$t" } mkString ", "
       val fargsS = fargs mkString ", "
 

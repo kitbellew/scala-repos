@@ -27,9 +27,9 @@ object Ciphers {
       run16 = java16RecommendedCiphers,
       runHigher = java17RecommendedCiphers)
 
-  lazy val java17RecommendedCiphers: Seq[String] = {
+  lazy val java17RecommendedCiphers: Seq[String] =
     SSLContext.getDefault.getDefaultSSLParameters.getCipherSuites
-  }.filterNot(deprecatedCiphers.contains(_))
+      .filterNot(deprecatedCiphers.contains(_))
 
   val java16RecommendedCiphers: Seq[String] = Seq(
     "TLS_DHE_RSA_WITH_AES_128_CBC_SHA",

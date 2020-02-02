@@ -108,10 +108,9 @@ private[streaming] class BlockManagerBasedBlockHandler(
         throw new SparkException(
           s"Could not store $blockId to block manager, unexpected block type ${o.getClass.getName}")
     }
-    if (!putSucceeded) {
+    if (!putSucceeded)
       throw new SparkException(
         s"Could not store $blockId to block manager with storage level $storageLevel")
-    }
     BlockManagerBasedStoreResult(blockId, numRecords)
   }
 
@@ -151,16 +150,14 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
     conf.getInt("spark.streaming.receiver.blockStoreTimeout", 30).seconds
 
   private val effectiveStorageLevel = {
-    if (storageLevel.deserialized) {
+    if (storageLevel.deserialized)
       logWarning(
         s"Storage level serialization ${storageLevel.deserialized} is not supported when" +
           s" write ahead log is enabled, change to serialization false")
-    }
-    if (storageLevel.replication > 1) {
+    if (storageLevel.replication > 1)
       logWarning(
         s"Storage level replication ${storageLevel.replication} is unnecessary when " +
           s"write ahead log is enabled, change to replication 1")
-    }
 
     StorageLevel(
       storageLevel.useDisk,
@@ -170,11 +167,10 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
       1)
   }
 
-  if (storageLevel != effectiveStorageLevel) {
+  if (storageLevel != effectiveStorageLevel)
     logWarning(
       s"User defined storage level $storageLevel is changed to effective storage level " +
         s"$effectiveStorageLevel when write ahead log is enabled")
-  }
 
   // Write ahead log manages
   private val writeAheadLog = WriteAheadLogUtils.createLogForReceiver(
@@ -221,10 +217,9 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
         serializedBlock,
         effectiveStorageLevel,
         tellMaster = true)
-      if (!putSucceeded) {
+      if (!putSucceeded)
         throw new SparkException(
           s"Could not store $blockId to block manager with storage level $storageLevel")
-      }
     }
 
     // Store the block in write ahead log

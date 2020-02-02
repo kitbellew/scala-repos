@@ -215,16 +215,14 @@ trait ClassHelpers { self: ControlHelpers =>
     * @return the result of the method invocation or throws the root exception causing an error
     */
   def invokeControllerMethod(clz: Class[_], meth: String) =
-    try {
-      clz.getMethod(meth).invoke(clz.newInstance)
-    } catch {
-      case c: InvocationTargetException => {
+    try clz.getMethod(meth).invoke(clz.newInstance)
+    catch {
+      case c: InvocationTargetException =>
         def findRoot(e: Throwable) {
           if (e.getCause == null || e.getCause == e) throw e
           else findRoot(e.getCause)
         }
         findRoot(c)
-      }
     }
 
   /**
@@ -331,9 +329,9 @@ trait ClassHelpers { self: ControlHelpers =>
             m.getParameterTypes.length == params.length)
       methCacheLock.read {
         def key = (clz.getName, meth, params.length)
-        if (Props.productionMode && methodCache.contains(key)) {
+        if (Props.productionMode && methodCache.contains(key))
           methodCache(key)
-        } else {
+        else {
 
           val ret =
             try {
@@ -344,9 +342,8 @@ trait ClassHelpers { self: ControlHelpers =>
               case e: NullPointerException  => Nil
               case e: NoSuchMethodException => alternateMethods
             }
-          if (Props.productionMode) {
+          if (Props.productionMode)
             methCacheLock.upgrade(methodCache(key) = ret)
-          }
           ret
         }
       }
@@ -406,19 +403,17 @@ trait ClassHelpers { self: ControlHelpers =>
       }
     on match {
       case null => Empty
-      case instance => {
+      case instance =>
         controllerMethods(instance).toList match {
           case Nil => Empty
           case x :: xs =>
             Full { () =>
-              try {
-                Full(x.invoke(instance))
-              } catch {
+              try Full(x.invoke(instance))
+              catch {
                 case e: InvocationTargetException => throw e.getCause
               }
             }
         }
-      }
     }
   }
 

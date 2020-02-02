@@ -69,11 +69,10 @@ abstract class RetryPolicy[-A]
     RetryPolicy { e =>
       if (!pred(e))
         None
-      else {
+      else
         this(e).map {
           case (backoff, p2) => (backoff, p2.filterEach(pred))
         }
-      }
     }
 
   /**
@@ -91,11 +90,10 @@ abstract class RetryPolicy[-A]
       val triesRemaining = maxRetries
       if (triesRemaining <= 0)
         None
-      else {
+      else
         this(e).map {
           case (backoff, p2) => (backoff, p2.limit(triesRemaining - 1))
         }
-      }
     }
 }
 
@@ -109,7 +107,7 @@ abstract class SimpleRetryPolicy[A](i: Int)
   def this() = this(0)
 
   final def apply(e: A) =
-    if (shouldRetry(e)) {
+    if (shouldRetry(e))
       backoffAt(i) match {
         case Duration.Top =>
           None
@@ -119,9 +117,8 @@ abstract class SimpleRetryPolicy[A](i: Int)
             def backoffAt(retry: Int) = SimpleRetryPolicy.this.backoffAt(retry)
           }))
       }
-    } else {
+    else
       None
-    }
 
   override def andThen[B](
       that: Option[(Duration, RetryPolicy[A])] => B): A => B =
@@ -264,16 +261,15 @@ object RetryPolicy extends JavaSingleton {
       backoffs: Stream[Duration]
   )(shouldRetry: PartialFunction[A, Boolean]): RetryPolicy[A] =
     RetryPolicy { e =>
-      if (shouldRetry.applyOrElse(e, AlwaysFalse)) {
+      if (shouldRetry.applyOrElse(e, AlwaysFalse))
         backoffs match {
           case howlong #:: rest =>
             Some((howlong, backoff(rest)(shouldRetry)))
           case _ =>
             None
         }
-      } else {
+      else
         None
-      }
     }
 
   /**
@@ -320,14 +316,13 @@ object RetryPolicy extends JavaSingleton {
         policies.map { p =>
           if (backoffOpt.nonEmpty)
             p
-          else {
+          else
             p(e) match {
               case None => p
               case Some((backoff, p2)) =>
                 backoffOpt = Some(backoff)
                 p2
             }
-          }
         }
 
       backoffOpt match {

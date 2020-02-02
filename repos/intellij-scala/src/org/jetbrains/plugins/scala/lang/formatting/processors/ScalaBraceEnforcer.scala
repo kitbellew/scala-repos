@@ -155,9 +155,8 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
       case _ =>
         if (option == CommonCodeStyleSettings.FORCE_BRACES_ALWAYS ||
             (option == CommonCodeStyleSettings.FORCE_BRACES_IF_MULTILINE &&
-            PostFormatProcessorHelper.isMultiline(stmt))) {
+            PostFormatProcessorHelper.isMultiline(stmt)))
           replaceExprWithBlock(expr)
-        }
     }
   }
 
@@ -174,19 +173,16 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
         expr.getManager)
       val prev = expr.getPrevSibling
       if (ScalaPsiUtil.isLineTerminator(prev) || prev
-            .isInstanceOf[PsiWhiteSpace]) {
+            .isInstanceOf[PsiWhiteSpace])
         CodeEditUtil.removeChild(
           SourceTreeToPsiMap.psiElementToTree(parent),
           SourceTreeToPsiMap.psiElementToTree(prev))
-      }
       CodeEditUtil.replaceChild(
         SourceTreeToPsiMap.psiElementToTree(parent),
         SourceTreeToPsiMap.psiElementToTree(expr),
         SourceTreeToPsiMap.psiElementToTree(newExpr))
       CodeStyleManager.getInstance(project).reformat(parent, true)
-    } finally {
-      updateResultRange(oldTextLength, parent.getTextLength)
-    }
+    } finally updateResultRange(oldTextLength, parent.getTextLength)
   }
 
   protected def checkElementContainsRange(element: PsiElement): Boolean =

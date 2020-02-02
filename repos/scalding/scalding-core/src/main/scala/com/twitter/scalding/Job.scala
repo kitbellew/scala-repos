@@ -383,9 +383,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     val f = timeoutExecutor.submit(new Callable[Option[T]] {
       def call(): Option[T] = Some(t)
     });
-    try {
-      f.get(timeout.toMillisecs, TimeUnit.MILLISECONDS)
-    } catch {
+    try f.get(timeout.toMillisecs, TimeUnit.MILLISECONDS)
+    catch {
       case _: TimeoutException =>
         f.cancel(true)
         None
@@ -407,9 +406,8 @@ class NamedPoolThreadFactory(name: String, makeDaemons: Boolean)
     val thread =
       new Thread(group, r, name + "-" + threadNumber.getAndIncrement())
     thread.setDaemon(makeDaemons)
-    if (thread.getPriority != Thread.NORM_PRIORITY) {
+    if (thread.getPriority != Thread.NORM_PRIORITY)
       thread.setPriority(Thread.NORM_PRIORITY)
-    }
     thread
   }
 }
@@ -507,11 +505,10 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
           execution.run(conf, mode)(concurrentExecutionContext),
           scala.concurrent.duration.Duration.Inf)
       }
-    if (!resultPromise.tryComplete(r)) {
+    if (!resultPromise.tryComplete(r))
       // The test framework can call this more than once.
       println(
         "Warning: run called more than once, should not happen in production")
-    }
     // Force an exception if the run failed
     r.get
     true
@@ -525,22 +522,20 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
  */
 class ScriptJob(cmds: Iterable[String]) extends Job(Args("")) {
   override def run =
-    try {
-      cmds.dropWhile { cmd: String =>
-        new java.lang.ProcessBuilder("bash", "-c", cmd)
-          .start()
-          .waitFor() match {
-          case x if x != 0 =>
-            println(cmd + " failed, exitStatus: " + x)
-            false
-          case 0 => true
-        }
-      }.isEmpty
-    } catch {
-      case e: Exception => {
+    try cmds.dropWhile { cmd: String =>
+      new java.lang.ProcessBuilder("bash", "-c", cmd)
+        .start()
+        .waitFor() match {
+        case x if x != 0 =>
+          println(cmd + " failed, exitStatus: " + x)
+          false
+        case 0 => true
+      }
+    }.isEmpty
+    catch {
+      case e: Exception =>
         e.printStackTrace
         false
-      }
     }
 }
 
@@ -560,11 +555,10 @@ trait CounterVerification extends Job {
   def verifyCountersInTest: Boolean = true
 
   override def listeners: List[FlowListener] =
-    if (this.mode.isInstanceOf[TestMode] && !this.verifyCountersInTest) {
+    if (this.mode.isInstanceOf[TestMode] && !this.verifyCountersInTest)
       super.listeners
-    } else {
+    else
       super.listeners :+ new StatsFlowListener(this.verifyCounters)
-    }
 }
 
 private[scalding] case class FlowStepStrategies[A]()

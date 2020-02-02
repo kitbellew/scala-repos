@@ -33,9 +33,8 @@ private[launcher] class TaskLauncherImpl(
       //The filter duration is set to 0, so we get the same offer in the next allocator cycle.
       val noFilter = Protos.Filters.newBuilder().setRefuseSeconds(0).build()
       val operations = taskOps.flatMap(_.offerOperations)
-      if (log.isDebugEnabled()) {
+      if (log.isDebugEnabled())
         log.debug(s"Operations on $offerID:\n${operations.mkString("\n")}")
-      }
       driver.acceptOffers(
         Collections.singleton(offerID),
         operations.asJava,
@@ -65,9 +64,8 @@ private[launcher] class TaskLauncherImpl(
         .getOrElse(Protos.Filters.getDefaultInstance)
       _.declineOffer(offerID, filters)
     }
-    if (declined) {
+    if (declined)
       declinedOffersMeter.mark()
-    }
   }
 
   private[this] def withDriver(description: => String)(
@@ -75,9 +73,8 @@ private[launcher] class TaskLauncherImpl(
     marathonSchedulerDriverHolder.driver match {
       case Some(driver) =>
         val status = block(driver)
-        if (log.isDebugEnabled) {
+        if (log.isDebugEnabled)
           log.debug(s"$description returned status = $status")
-        }
         status == Status.DRIVER_RUNNING
 
       case None =>

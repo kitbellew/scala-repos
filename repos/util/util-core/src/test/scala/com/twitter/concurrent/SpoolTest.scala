@@ -23,7 +23,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     }
 
     "map" in {
-      assert((s map { _ * 2 }) == Spool.empty[Int])
+      assert((s map _ * 2) == Spool.empty[Int])
     }
 
     "mapFuture" in {

@@ -39,27 +39,25 @@ class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag]
     with Serializable {
 
   private val keyWritableClass =
-    if (_keyWritableClass == null) {
+    if (_keyWritableClass == null)
       // pre 1.3.0, we need to use Reflection to get the Writable class
       getWritableClass[K]()
-    } else {
+    else
       _keyWritableClass
-    }
 
   private val valueWritableClass =
-    if (_valueWritableClass == null) {
+    if (_valueWritableClass == null)
       // pre 1.3.0, we need to use Reflection to get the Writable class
       getWritableClass[V]()
-    } else {
+    else
       _valueWritableClass
-    }
 
   private def getWritableClass[T <% Writable: ClassTag]()
       : Class[_ <: Writable] = {
     val c = {
-      if (classOf[Writable].isAssignableFrom(classTag[T].runtimeClass)) {
+      if (classOf[Writable].isAssignableFrom(classTag[T].runtimeClass))
         classTag[T].runtimeClass
-      } else {
+      else
         // We get the type of the Writable class by looking at the apply method which converts
         // from T to Writable. Since we have two apply methods we filter out the one which
         // is not of the form "java.lang.Object apply(java.lang.Object)"
@@ -70,7 +68,6 @@ class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag]
               m.getName() == "apply")(0)
           .getReturnType
 
-      }
       // TODO: use something like WritableConverter to avoid reflection
     }
     c.asInstanceOf[Class[_ <: Writable]]
@@ -101,7 +98,7 @@ class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag]
           valueWritableClass.getSimpleName + ")")
       val format = classOf[SequenceFileOutputFormat[Writable, Writable]]
       val jobConf = new JobConf(self.context.hadoopConfiguration)
-      if (!convertKey && !convertValue) {
+      if (!convertKey && !convertValue)
         self.saveAsHadoopFile(
           path,
           keyWritableClass,
@@ -109,7 +106,7 @@ class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag]
           format,
           jobConf,
           codec)
-      } else if (!convertKey && convertValue) {
+      else if (!convertKey && convertValue)
         self
           .map(x => (x._1, anyToWritable(x._2)))
           .saveAsHadoopFile(
@@ -119,7 +116,7 @@ class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag]
             format,
             jobConf,
             codec)
-      } else if (convertKey && !convertValue) {
+      else if (convertKey && !convertValue)
         self
           .map(x => (anyToWritable(x._1), x._2))
           .saveAsHadoopFile(
@@ -129,7 +126,7 @@ class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag]
             format,
             jobConf,
             codec)
-      } else if (convertKey && convertValue) {
+      else if (convertKey && convertValue)
         self
           .map(x => (anyToWritable(x._1), anyToWritable(x._2)))
           .saveAsHadoopFile(
@@ -139,6 +136,5 @@ class SequenceFileRDDFunctions[K <% Writable: ClassTag, V <% Writable: ClassTag]
             format,
             jobConf,
             codec)
-      }
     }
 }

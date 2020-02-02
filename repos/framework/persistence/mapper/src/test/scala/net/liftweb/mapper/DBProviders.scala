@@ -96,9 +96,8 @@ object DbProviders {
     }
 
     def releaseConnection(conn: Connection) {
-      try {
-        conn.close
-      } catch {
+      try conn.close
+      catch {
         case e: Exception => Empty //ignore
       }
     }

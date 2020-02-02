@@ -19,28 +19,22 @@ object PromiseMock {
       else None
 
     global.Promise = js.constructorOf[MockPromise[_]]
-    try {
-      body(MockPromise.processQueue _)
-    } finally {
-      oldPromise.fold {
-        global.asInstanceOf[js.Dictionary[Any]].delete("Promise")
-      } { old => global.Promise = old }
-    }
+    try body(MockPromise.processQueue _)
+    finally oldPromise.fold {
+      global.asInstanceOf[js.Dictionary[Any]].delete("Promise")
+    } { old => global.Promise = old }
   }
 
   @noinline
   def withMockedPromiseIfExists[A](body: (Option[() => Unit]) => A): A = {
     val oldPromise = global.Promise
 
-    if (js.isUndefined(oldPromise)) {
+    if (js.isUndefined(oldPromise))
       body(None)
-    } else {
+    else {
       global.Promise = js.constructorOf[MockPromise[_]]
-      try {
-        body(Some(MockPromise.processQueue _))
-      } finally {
-        global.Promise = oldPromise
-      }
+      try body(Some(MockPromise.processQueue _))
+      finally global.Promise = oldPromise
     }
   }
 
@@ -97,9 +91,8 @@ object PromiseMock {
       })
 
     private def tryCatchAny[A](tryBody: => A)(catchBody: Any => A): A =
-      try {
-        tryBody
-      } catch {
+      try tryBody
+      catch {
         case th: Throwable =>
           catchBody(th match {
             case js.JavaScriptException(e) => e
@@ -157,24 +150,22 @@ object PromiseMock {
 
     // 25.4.1.3.2 Promise Resolve Functions
     private[this] def resolve(resolution: A | Thenable[A]): Unit =
-      if (state == Pending) {
-        if ((resolution: AnyRef) eq (this: AnyRef)) {
+      if (state == Pending)
+        if ((resolution: AnyRef) eq (this: AnyRef))
           reject(new js.TypeError("Self resolution"))
-        } else if (isNotAnObject(resolution)) {
+        else if (isNotAnObject(resolution))
           fulfill(resolution.asInstanceOf[A])
-        } else {
+        else
           tryCatchAny {
             val thenAction = resolution.asInstanceOf[js.Dynamic].`then`
-            if (!isCallable(thenAction)) {
+            if (!isCallable(thenAction))
               fulfill(resolution.asInstanceOf[A])
-            } else {
+            else {
               val thenable = resolution.asInstanceOf[Thenable[A]]
               val thenActionFun = thenAction.asInstanceOf[js.Function]
               enqueue(() => promiseResolveThenableJob(thenable, thenActionFun))
             }
           } { e => reject(e) }
-        }
-      }
 
     // 25.4.2.2 PromiseResolveThenableJob
     private[this] def promiseResolveThenableJob(

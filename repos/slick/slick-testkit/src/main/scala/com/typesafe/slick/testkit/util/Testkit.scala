@@ -45,7 +45,7 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
   def describeChild(ch: TestMethod) = ch.desc
 
   def getChildren =
-    if (tdb.isEnabled) {
+    if (tdb.isEnabled)
       profileTest.tests.flatMap { t =>
         val ms = t.getMethods.filter { m =>
           m.getName.startsWith("test") && m.getParameterTypes.length == 0
@@ -59,7 +59,7 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
             t)
         }
       }
-    } else Nil
+    else Nil
 
   override def runChildren(notifier: RunNotifier) = if (!children.isEmpty) {
     tdb.cleanUpBefore()
@@ -83,10 +83,10 @@ class Testkit(clazz: Class[_ <: ProfileTest], runnerBuilder: RunnerBuilder)
           finally {
             val skipCleanup = idx == last || (testObject.reuseInstance && (ch.cl eq is(
               idx + 1)._1._1.cl))
-            if (skipCleanup) {
+            if (skipCleanup)
               if (idx == last) testObject.closeKeepAlive()
               else previousTestObject = testObject
-            } else testObject.cleanup()
+            else testObject.cleanup()
           }
         } catch {
           case t: Throwable => addFailure(t, notifier, desc)
@@ -160,13 +160,11 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
     db
   }
 
-  final def cleanup() = if (keepAliveSession ne null) {
-    try if (tdb.isPersistent) tdb.dropUserArtifacts(keepAliveSession)
-    finally {
-      try db.close()
+  final def cleanup() =
+    if (keepAliveSession ne null)
+      try if (tdb.isPersistent) tdb.dropUserArtifacts(keepAliveSession)
+      finally try db.close()
       finally closeKeepAlive()
-    }
-  }
 
   final def closeKeepAlive() =
     if (keepAliveSession ne null) keepAliveSession.close()

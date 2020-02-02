@@ -71,12 +71,11 @@ class DataSourceJdbcDataSource(
   private[this] var openedKeepAliveConnection: Connection = null
 
   def createConnection(): Connection = {
-    if (keepAliveConnection) {
+    if (keepAliveConnection)
       synchronized {
         if (openedKeepAliveConnection eq null)
           openedKeepAliveConnection = ds.getConnection
       }
-    }
     val c = ds.getConnection
     if (connectionPreparer ne null) connectionPreparer(c)
     c
@@ -183,12 +182,11 @@ class DriverJdbcDataSource(
     }
 
   def createConnection(): Connection = {
-    if (keepAliveConnection) {
+    if (keepAliveConnection)
       synchronized {
         if (openedKeepAliveConnection eq null)
           openedKeepAliveConnection = internalCreateConnection()
       }
-    }
     internalCreateConnection()
   }
 
@@ -207,9 +205,9 @@ class DriverJdbcDataSource(
     conn
   }
 
-  def close(): Unit = if (keepAliveConnection) {
-    if (openedKeepAliveConnection ne null) openedKeepAliveConnection.close()
-  }
+  def close(): Unit =
+    if (keepAliveConnection)
+      if (openedKeepAliveConnection ne null) openedKeepAliveConnection.close()
 }
 
 @deprecated("Use DataSourceJdbcDataSource with DriverDataSource instead", "3.1")

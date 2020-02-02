@@ -81,13 +81,12 @@ private[columnar] class BasicColumnBuilder[JvmType](
   }
 
   override def build(): ByteBuffer = {
-    if (buffer.capacity() > buffer.position() * 1.1) {
+    if (buffer.capacity() > buffer.position() * 1.1)
       // trim the buffer
       buffer = ByteBuffer
         .allocate(buffer.position())
         .order(ByteOrder.nativeOrder())
         .put(buffer.array(), 0, buffer.position())
-    }
     buffer.flip().asInstanceOf[ByteBuffer]
   }
 }
@@ -165,9 +164,9 @@ private[columnar] object ColumnBuilder {
   val MAX_BATCH_SIZE_IN_BYTE = 4 * 1024 * 1024L
 
   private[columnar] def ensureFreeSpace(orig: ByteBuffer, size: Int) =
-    if (orig.remaining >= size) {
+    if (orig.remaining >= size)
       orig
-    } else {
+    else {
       // grow in steps of initial size
       val capacity = orig.capacity()
       val newSize = capacity + size.max(capacity)

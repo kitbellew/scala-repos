@@ -56,12 +56,11 @@ object SerializationBenchmark
 
       def get(attempt: Int): T =
         if (attempt > 1000) sys.error("Failed to generate after 100 tries")
-        else {
+        else
           item(p) match {
             case None    => get(attempt + 1)
             case Some(t) => t
           }
-        }
 
       (0 until s).foreach { _ => builder += get(0) }
       builder.result()

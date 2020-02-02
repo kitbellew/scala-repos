@@ -136,9 +136,9 @@ class Tools[C <: Context](val c: C) {
       def loop(sym: ClassSymbol): List[ClassSymbol] =
         sym +: {
           val initialize = sym.typeSignature
-          if (sym.isFinal || sym.isModuleClass) {
+          if (sym.isFinal || sym.isModuleClass)
             Nil
-          } else if (treatAsSealed(sym)) {
+          else if (treatAsSealed(sym)) {
             val syms: List[ClassSymbol] =
               directSubclasses(sym)
                 .map {
@@ -296,11 +296,11 @@ abstract class ShareAnalyzer[U <: Universe](val u: U) extends RichTypes {
       todo match {
         case currTpe :: rest =>
           val currSym = currTpe.typeSymbol.asType
-          if (visited(currTpe)) {
+          if (visited(currTpe))
             if (tpe <:< currTpe)
               true // TODO: make sure this sanely works for polymorphic types
             else loop(rest, visited)
-          } else if (currTpe.isNotNullable || currTpe.isEffectivelyPrimitive || currSym == StringClass || currSym.isModuleClass)
+          else if (currTpe.isNotNullable || currTpe.isEffectivelyPrimitive || currSym == StringClass || currSym.isModuleClass)
             loop(rest, visited)
           // TODO: extend the traversal logic to support sealed classes
           // when doing that don't forget:
@@ -504,9 +504,8 @@ abstract class Macro extends RichTypes { self =>
           val im = mirror.reflect($target)
         """.asInstanceOf[Block]
         initMirror.stats :+ initMirror.expr
-      } else {
+      } else
         Nil
-      }
     }
     // val field = fir.field.get
     val owner =

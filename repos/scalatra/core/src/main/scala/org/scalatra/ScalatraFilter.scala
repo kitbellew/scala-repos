@@ -50,9 +50,9 @@ trait ScalatraFilter extends Filter with ServletBase {
         var uri = requestURI
         if (request.getContextPath.length > 0)
           uri = uri.substring(request.getContextPath.length)
-        if (uri.length == 0) {
+        if (uri.length == 0)
           uri = "/"
-        } else {
+        else {
           val pos = uri.indexOf(';')
           if (pos >= 0) uri = uri.substring(0, pos)
         }
@@ -62,13 +62,12 @@ trait ScalatraFilter extends Filter with ServletBase {
 
     request.get("org.scalatra.ScalatraFilter.requestPath") match {
       case Some(uri) => uri.toString
-      case _ => {
+      case _ =>
         val requestPath = getRequestPath
         request.setAttribute(
           "org.scalatra.ScalatraFilter.requestPath",
           requestPath)
         requestPath.toString
-      }
     }
   }
 

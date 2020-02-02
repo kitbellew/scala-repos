@@ -37,13 +37,12 @@ private[i18n] final class GitWrite(
 
     def receive = {
 
-      case branch: String => {
+      case branch: String =>
         logger.info("Checkout " + branch)
         git checkout branch
         sender ! (())
-      }
 
-      case translation: Translation => {
+      case translation: Translation =>
         val branch = "t/" + translation.id
         val code = translation.code
         val name = (LangList name code) err "Lang does not exist: " + code
@@ -59,7 +58,6 @@ private[i18n] final class GitWrite(
               (git commit commitMsg).void
           )
         }).await
-      }
 
     }
   }))

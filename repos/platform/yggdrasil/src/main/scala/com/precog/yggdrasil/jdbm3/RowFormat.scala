@@ -340,7 +340,7 @@ trait RowFormatSupport { self: StdCodecs =>
 
     @inline @tailrec
     def encodeAll(i: Int): Unit = if (i < encoders.length) {
-      if (!RawBitSet.get(undefined, i)) {
+      if (!RawBitSet.get(undefined, i))
         encoders(i).encode(row, buffer, pool) match {
           case Some(buffers) =>
             if (filled == null)
@@ -349,7 +349,6 @@ trait RowFormatSupport { self: StdCodecs =>
             buffer = pool.acquire
           case None =>
         }
-      }
       encodeAll(i + 1)
     }
 
@@ -388,12 +387,11 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
   def ColumnEncoder(cols: Seq[Column]) = {
     require(columnRefs.size == cols.size)
 
-    val colValueEncoders: Array[ColumnValueEncoder] = {
+    val colValueEncoders: Array[ColumnValueEncoder] =
       (columnRefs zip cols).map({
         case (ColumnRef(_, cType), col) =>
           getColumnEncoder(cType, col)
       })(collection.breakOut)
-    }
 
     new ColumnEncoder {
       val colsArray = cols.toArray
@@ -651,9 +649,9 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       zipWithSelectors(cols) map {
         case (_, colsWithTypes) =>
           val decoders: Map[Byte, ColumnValueDecoder] =
-            (for ((col, cType) <- colsWithTypes) yield {
-              (flagForCType(cType), getColumnDecoder(cType, col))
-            })(collection.breakOut)
+            (for ((col, cType) <- colsWithTypes)
+              yield (flagForCType(cType), getColumnDecoder(cType, col)))(
+              collection.breakOut)
 
           decoders
       }
@@ -667,9 +665,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
           decoders match {
             case selDecoder :: decoders =>
               val flag = buf.get()
-              if (flag != FUndefined) {
+              if (flag != FUndefined)
                 selDecoder(flag).decode(row, buf)
-              }
               decode(decoders)
             case Nil =>
             // Do nothing.
@@ -743,7 +740,7 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       val aType = abuf.get()
       val bType = bbuf.get()
 
-      if ((aType & 0xF0) == (bType & 0xF0)) {
+      if ((aType & 0xF0) == (bType & 0xF0))
         ((aType & 0xF0).toByte) match {
           case FUndefined => 0
           case FBoolean =>
@@ -830,16 +827,15 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
             math.signum(Codec[Long].read(abuf) - Codec[Long].read(bbuf)).toInt
           case x => sys.error("Match error for: " + x)
         }
-      } else {
+      else
         (aType.toInt & 0xFF) - (bType.toInt & 0xFF)
-      }
     }
 
     @tailrec
     def compare(cmp: Int): Int =
-      if (cmp == 0) {
+      if (cmp == 0)
         if (abuf.remaining() > 0) compare(compareNext()) else 0
-      } else cmp
+      else cmp
 
     compare(0)
   }
@@ -947,11 +943,10 @@ trait IdentitiesRowFormat extends RowFormat {
 
     @inline @tailrec
     def sumPackedSize(xs: Array[Long], i: Int, len: Int): Int =
-      if (i < xs.length) {
+      if (i < xs.length)
         sumPackedSize(xs, i + 1, len + packedSize(xs(i)))
-      } else {
+      else
         len
-      }
 
     val bytes = new Array[Byte](sumPackedSize(xs, 0, 0))
 
@@ -1017,16 +1012,16 @@ trait IdentitiesRowFormat extends RowFormat {
 
         @inline @tailrec
         def sumPackedSize(i: Int, len: Int): Int =
-          if (i < longCols.length) {
+          if (i < longCols.length)
             sumPackedSize(i + 1, len + packedSize(longCols(i)(row)))
-          } else len
+          else len
 
         val bytes = new Array[Byte](sumPackedSize(0, 0))
 
         @inline @tailrec
-        def packAll(i: Int, offset: Int): Unit = if (i < longCols.length) {
-          packAll(i + 1, packLong(longCols(i)(row), bytes, offset))
-        }
+        def packAll(i: Int, offset: Int): Unit =
+          if (i < longCols.length)
+            packAll(i + 1, packLong(longCols(i)(row), bytes, offset))
 
         packAll(0, 0)
         bytes
@@ -1074,21 +1069,20 @@ trait IdentitiesRowFormat extends RowFormat {
       val moreA = more(b1)
       val moreB = more(b2)
 
-      if (moreA && moreB) {
+      if (moreA && moreB)
         loop(nOffset, shift + 7, n2, m2)
-      } else if (moreA) {
+      else if (moreA)
         1
-      } else if (moreB) {
+      else if (moreB)
         -1
-      } else if (n2 < m2) {
+      else if (n2 < m2)
         -1
-      } else if (m2 < n2) {
+      else if (m2 < n2)
         1
-      } else if (nOffset < a.length) {
+      else if (nOffset < a.length)
         loop(nOffset, 0, 0L, 0L)
-      } else {
+      else
         0
-      }
     }
 
     if (identities == 0) 0 else loop(0, 0, 0L, 0L)

@@ -30,15 +30,11 @@ class AlgorithmChecker(
   private val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 
   private val signatureConstraintsMap: Map[String, AlgorithmConstraint] = {
-    for (c <- signatureConstraints.iterator) yield {
-      c.algorithm -> c
-    }
+    for (c <- signatureConstraints.iterator) yield c.algorithm -> c
   }.toMap
 
   private val keyConstraintsMap: Map[String, AlgorithmConstraint] = {
-    for (c <- keyConstraints.iterator) yield {
-      c.algorithm -> c
-    }
+    for (c <- keyConstraints.iterator) yield c.algorithm -> c
   }.toMap
 
   def isForwardCheckingSupported: Boolean = false
@@ -50,9 +46,8 @@ class AlgorithmChecker(
     logger.debug(s"init: forward = $forward")
     // forward is from target to most-trusted CA
     // backwards is from most-trusted CA to target, which means we get the root CA first.
-    if (forward) {
+    if (forward)
       throw new CertPathValidatorException("Forward checking not supported")
-    }
   }
 
   def findSignatureConstraint(algorithm: String): Option[AlgorithmConstraint] =
@@ -72,7 +67,7 @@ class AlgorithmChecker(
     logger.debug(
       s"checkSignatureAlgorithms: sigAlgName = $sigAlgName, sigAlgName = $sigAlgName, sigAlgorithms = $sigAlgorithms")
 
-    for (a <- sigAlgorithms) {
+    for (a <- sigAlgorithms)
       findSignatureConstraint(a).map { constraint =>
         if (constraint.matches(a)) {
           logger.debug(
@@ -81,7 +76,6 @@ class AlgorithmChecker(
           throw new CertPathValidatorException(msg)
         }
       }
-    }
   }
 
   /**
@@ -99,7 +93,7 @@ class AlgorithmChecker(
     logger.debug(
       s"checkKeyAlgorithms: keyAlgorithmName = $keyAlgorithmName, keySize = $keySize, keyAlgorithms = $keyAlgorithms")
 
-    for (a <- keyAlgorithms) {
+    for (a <- keyAlgorithms)
       findKeyConstraint(a).map { constraint =>
         if (constraint.matches(a, keySize)) {
           val certName = x509Cert.getSubjectX500Principal.getName
@@ -111,7 +105,6 @@ class AlgorithmChecker(
           throw new CertPathValidatorException(msg)
         }
       }
-    }
   }
 
   /**
@@ -160,18 +153,16 @@ class AlgorithmChecker(
       val secureInterval = new Interval(june2016, december2016)
 
       val expirationDate = new DateTime(x509Cert.getNotAfter.getTime)
-      if (secureInterval.contains(expirationDate)) {
+      if (secureInterval.contains(expirationDate))
         infoOnSunset(x509Cert, expirationDate)
-      }
 
       // Sites with end-entity certificates that expire on or after 1 January 2017, and which include
       // a SHA-1-based signature as part of the certificate chain, will be treated as
       // “neutral, lacking security”.
       val january2017 = new DateTime(2017, 1, 1, 0, 0, 0, 0)
       if (january2017.isEqual(expirationDate) || january2017.isBefore(
-            expirationDate)) {
+            expirationDate))
         warnOnSunset(x509Cert, expirationDate)
-      }
     }
   }
 
@@ -202,11 +193,9 @@ class AlgorithmChecker(
        * Looking for the "most specific CN" (i.e. the last).
        */
       var cn: String = null
-      for (rdn: Rdn <- ldapName.getRdns.asScala) {
-        if ("CN".equalsIgnoreCase(rdn.getType)) {
+      for (rdn: Rdn <- ldapName.getRdns.asScala)
+        if ("CN".equalsIgnoreCase(rdn.getType))
           cn = rdn.getValue.toString
-        }
-      }
       cn
     } catch {
       case e: InvalidNameException =>

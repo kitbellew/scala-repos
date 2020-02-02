@@ -103,14 +103,13 @@ abstract class ProbabilisticClassificationModel[
     */
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
-    if (isDefined(thresholds)) {
+    if (isDefined(thresholds))
       require(
         $(thresholds).length == numClasses,
         this.getClass.getSimpleName +
           ".transform() called with non-matching numClasses and thresholds.length." +
           s" numClasses=$numClasses, but thresholds has length ${$(thresholds).length}"
       )
-    }
 
     // Output selected columns only.
     // This is a bit complicated since it tries to avoid repeated computation.
@@ -126,37 +125,38 @@ abstract class ProbabilisticClassificationModel[
       numColsOutput += 1
     }
     if ($(probabilityCol).nonEmpty) {
-      val probUDF = if ($(rawPredictionCol).nonEmpty) {
-        udf(raw2probability _).apply(col($(rawPredictionCol)))
-      } else {
-        val probabilityUDF = udf { (features: Any) =>
-          predictProbability(features.asInstanceOf[FeaturesType])
+      val probUDF =
+        if ($(rawPredictionCol).nonEmpty)
+          udf(raw2probability _).apply(col($(rawPredictionCol)))
+        else {
+          val probabilityUDF = udf { (features: Any) =>
+            predictProbability(features.asInstanceOf[FeaturesType])
+          }
+          probabilityUDF(col($(featuresCol)))
         }
-        probabilityUDF(col($(featuresCol)))
-      }
       outputData = outputData.withColumn($(probabilityCol), probUDF)
       numColsOutput += 1
     }
     if ($(predictionCol).nonEmpty) {
-      val predUDF = if ($(rawPredictionCol).nonEmpty) {
-        udf(raw2prediction _).apply(col($(rawPredictionCol)))
-      } else if ($(probabilityCol).nonEmpty) {
-        udf(probability2prediction _).apply(col($(probabilityCol)))
-      } else {
-        val predictUDF = udf { (features: Any) =>
-          predict(features.asInstanceOf[FeaturesType])
+      val predUDF =
+        if ($(rawPredictionCol).nonEmpty)
+          udf(raw2prediction _).apply(col($(rawPredictionCol)))
+        else if ($(probabilityCol).nonEmpty)
+          udf(probability2prediction _).apply(col($(probabilityCol)))
+        else {
+          val predictUDF = udf { (features: Any) =>
+            predict(features.asInstanceOf[FeaturesType])
+          }
+          predictUDF(col($(featuresCol)))
         }
-        predictUDF(col($(featuresCol)))
-      }
       outputData = outputData.withColumn($(predictionCol), predUDF)
       numColsOutput += 1
     }
 
-    if (numColsOutput == 0) {
+    if (numColsOutput == 0)
       this.logWarning(
         s"$uid: ProbabilisticClassificationModel.transform() was called as NOOP" +
           " since no output columns were set.")
-    }
     outputData
   }
 
@@ -178,11 +178,10 @@ abstract class ProbabilisticClassificationModel[
   }
 
   override protected def raw2prediction(rawPrediction: Vector): Double =
-    if (!isDefined(thresholds)) {
+    if (!isDefined(thresholds))
       rawPrediction.argmax
-    } else {
+    else
       probability2prediction(raw2probability(rawPrediction))
-    }
 
   /**
     * Predict the probability of each class given the features.
@@ -203,9 +202,9 @@ abstract class ProbabilisticClassificationModel[
     * @return  predicted label
     */
   protected def probability2prediction(probability: Vector): Double =
-    if (!isDefined(thresholds)) {
+    if (!isDefined(thresholds))
       probability.argmax
-    } else {
+    else {
       val thresholds: Array[Double] = getThresholds
       val scaledProbability: Array[Double] =
         probability.toArray.zip(thresholds).map {

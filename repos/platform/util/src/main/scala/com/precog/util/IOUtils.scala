@@ -98,38 +98,35 @@ object IOUtils extends Logging {
     * non-empty dir.
     */
   def recursiveDeleteEmptyDirs(startDir: File, upTo: File): IO[PrecogUnit] =
-    if (startDir == upTo) {
+    if (startDir == upTo)
       IO {
         logger.debug("Stopping recursive clean at root: " + upTo); PrecogUnit
       }
-    } else if (startDir.isDirectory) {
-      if (Option(startDir.list).exists(_.length == 0)) {
+    else if (startDir.isDirectory)
+      if (Option(startDir.list).exists(_.length == 0))
         IO {
           startDir.delete()
         }.flatMap { _ =>
           recursiveDeleteEmptyDirs(startDir.getParentFile, upTo)
         }
-      } else {
+      else
         IO {
           logger.debug(
             "Stopping recursive clean on non-empty directory: " + startDir);
           PrecogUnit
         }
-      }
-    } else {
+    else
       IO {
         logger.warn("Asked to clean a non-directory: " + startDir); PrecogUnit
       }
-    }
 
   def createTmpDir(prefix: String): IO[File] = IO {
     val tmpDir = Files.createTempDir()
     Option(tmpDir.getParentFile)
       .map { parent =>
         val newTmpDir = new File(parent, prefix + tmpDir.getName)
-        if (!tmpDir.renameTo(newTmpDir)) {
+        if (!tmpDir.renameTo(newTmpDir))
           sys.error("Error on tmpdir creation: rename to prefixed failed")
-        }
         newTmpDir
       }
       .getOrElse { sys.error("Error on tmpdir creation: no parent dir found") }

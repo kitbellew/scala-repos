@@ -51,16 +51,13 @@ class Response[T] {
     *  When interrupted will return with Right(InterruptedException)
     */
   def get: Either[T, Throwable] = synchronized {
-    while (!complete) {
-      try {
-        wait()
-      } catch {
-        case exc: InterruptedException => {
+    while (!complete)
+      try wait()
+      catch {
+        case exc: InterruptedException =>
           Thread.currentThread().interrupt()
           raise(exc)
-        }
       }
-    }
     data.get
   }
 
@@ -73,13 +70,11 @@ class Response[T] {
     val start = System.currentTimeMillis
     var current = start
     while (!complete && start + timeout > current) {
-      try {
-        wait(timeout - (current - start))
-      } catch {
-        case exc: InterruptedException => {
+      try wait(timeout - (current - start))
+      catch {
+        case exc: InterruptedException =>
           Thread.currentThread().interrupt()
           raise(exc)
-        }
       }
       current = System.currentTimeMillis
     }

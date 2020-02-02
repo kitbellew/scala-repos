@@ -88,9 +88,8 @@ object ProdServerStart {
         .getString("play.server.dir")
         .getOrElse(throw ServerStartException("No root server path supplied"))
       val file = new File(path)
-      if (!(file.exists && file.isDirectory)) {
+      if (!(file.exists && file.isDirectory))
         throw ServerStartException(s"Bad root server path: $path")
-      }
       file
     }
 
@@ -140,10 +139,9 @@ object ProdServerStart {
     else {
       val pidFile = new File(pidFilePath).getAbsoluteFile
 
-      if (pidFile.exists) {
+      if (pidFile.exists)
         throw ServerStartException(
           s"This application is already running (Or delete ${pidFile.getPath} file).")
-      }
 
       val pid = process.pid getOrElse (throw ServerStartException(
         "Couldn't determine current process's pid"))

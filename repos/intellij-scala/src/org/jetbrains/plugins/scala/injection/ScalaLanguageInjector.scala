@@ -148,22 +148,21 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
             annotation.flatMap(readAttribute(_, "suffix")).mkString
           else ""
 
-        if (!literal.isMultiLineString) {
+        if (!literal.isMultiLineString)
           registrar.addPlace(
             prefix,
             suffix,
             literal,
             ScalaLanguageInjector getRangeInElement literal)
-        } else {
+        else {
           val rangesCollected = extractMultiLineStringRanges(literal)
 
-          for ((lineRange, index) <- rangesCollected.zipWithIndex) {
+          for ((lineRange, index) <- rangesCollected.zipWithIndex)
             registrar.addPlace(
               if (index == 0) prefix else " ",
               if (index == rangesCollected.length - 1) suffix else " ",
               literal,
               lineRange)
-          }
         }
       }
       registrar.doneInjecting()
@@ -389,13 +388,12 @@ object ScalaLanguageInjector {
       val lineLength = partOfMlLine.length
       val wsPrefixLength = partOfMlLine prefixLength (_.isWhitespace)
 
-      if (wsPrefixLength != lineLength) {
+      if (wsPrefixLength != lineLength)
         rangesCollected +=
           (new TextRange(
             if (partOfMlLine.trim startsWith margin) count + 1 + wsPrefixLength
             else count,
             count + lineLength) shiftRight range.getStartOffset)
-      }
 
       count += lineLength + 1
     }

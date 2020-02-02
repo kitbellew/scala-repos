@@ -101,16 +101,15 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
   def getReturnTypeElement: Option[ScTypeElement] = {
     if (myReturnTypeElement != null) {
       val returnTypeElement = myReturnTypeElement.get
-      if (returnTypeElement != null && (returnTypeElement.isEmpty || (returnTypeElement.get.getContext eq getPsi))) {
+      if (returnTypeElement != null && (returnTypeElement.isEmpty || (returnTypeElement.get.getContext eq getPsi)))
         return returnTypeElement
-      }
     }
     val res: Option[ScTypeElement] =
-      if (getReturnTypeText != "") {
+      if (getReturnTypeText != "")
         Some(
           ScalaPsiElementFactory
             .createTypeElementFromText(getReturnTypeText, getPsi, null))
-      } else None
+      else None
     myReturnTypeElement = new SofterReference[Option[ScTypeElement]](res)
     res
   }
@@ -122,11 +121,11 @@ class ScFunctionStubImpl[ParentPsi <: PsiElement](
         return body
     }
     val res: Option[ScExpression] =
-      if (getBodyText != "") {
+      if (getBodyText != "")
         Some(
           ScalaPsiElementFactory
             .createExpressionWithContextFromText(getBodyText, getPsi, null))
-      } else None
+      else None
     myBodyExpression = new SofterReference[Option[ScExpression]](res)
     res
   }

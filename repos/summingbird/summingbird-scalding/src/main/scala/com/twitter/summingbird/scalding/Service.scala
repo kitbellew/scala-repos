@@ -182,10 +182,9 @@ private[scalding] object InternalService {
         p match {
           case ValueFlatMappedProducer(prod, fn) =>
             cummulativeFn match {
-              case Some(cfn) => {
+              case Some(cfn) =>
                 val newFn = (e: Any) => fn(e).flatMap { r => cfn(r) }
                 recurse(prod, Some(newFn))
-              }
               case None => recurse(prod, Some(fn))
 
             }

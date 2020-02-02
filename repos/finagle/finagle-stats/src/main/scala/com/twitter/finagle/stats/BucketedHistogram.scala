@@ -183,15 +183,14 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     *         [[BucketedHistogram.DefaultErrorPercent]] of the actual value.
     */
   def maximum: Long =
-    if (num == 0) {
+    if (num == 0)
       0L
-    } else if (counts(countsLength - 1) > 0) {
+    else if (counts(countsLength - 1) > 0)
       Int.MaxValue
-    } else {
+    else {
       var i = countsLength - 2 // already checked the last, start 1 before
-      while (i >= 0 && counts(i) == 0) {
+      while (i >= 0 && counts(i) == 0)
         i -= 1
-      }
       if (i == 0) 0
       else limitMidpoint(i)
     }
@@ -204,13 +203,12 @@ private[stats] class BucketedHistogram(limits: Array[Int])
     *         [[BucketedHistogram.DefaultErrorPercent]] of the actual value.
     */
   def minimum: Long =
-    if (num == 0) {
+    if (num == 0)
       0L
-    } else {
+    else {
       var i = 0
-      while (i < countsLength && counts(i) == 0) {
+      while (i < countsLength && counts(i) == 0)
         i += 1
-      }
       limitMidpoint(i)
     }
 

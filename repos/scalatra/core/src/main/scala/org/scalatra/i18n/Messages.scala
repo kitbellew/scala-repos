@@ -30,9 +30,8 @@ class Messages(locale: Locale, bundlePath: String = "i18n/messages") {
     * @param key The key to find the message for
     */
   def get(key: String): Option[String] =
-    try {
-      Some(bundle.getString(key))
-    } catch {
+    try Some(bundle.getString(key))
+    catch {
       case e: MissingResourceException => None
     }
 
@@ -42,9 +41,8 @@ class Messages(locale: Locale, bundlePath: String = "i18n/messages") {
     * Return the value for the key or fall back to the provided default
     */
   def getOrElse(key: String, default: => String): String =
-    try {
-      bundle.getString(key)
-    } catch {
+    try bundle.getString(key)
+    catch {
       case e: MissingResourceException => default
     }
 
@@ -52,9 +50,8 @@ class Messages(locale: Locale, bundlePath: String = "i18n/messages") {
     * Returned the value for the key or the default
     */
   def apply(key: String, default: String): String =
-    try {
-      bundle.getString(key)
-    } catch {
+    try bundle.getString(key)
+    catch {
       case e: MissingResourceException => default
     }
 

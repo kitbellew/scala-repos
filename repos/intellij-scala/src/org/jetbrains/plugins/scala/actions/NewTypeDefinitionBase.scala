@@ -58,9 +58,8 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
       NewTypeDefinitionBase.LOW_CASE_NAME_TEMPLATE_PROPERTY,
       name.substring(0, 1).toLowerCase + name.substring(1))
 
-    for (j <- 0.until(parameters.length, 2)) {
+    for (j <- 0.until(parameters.length, 2))
       properties.setProperty(parameters(j), parameters(j + 1))
-    }
 
     var text: String = null
 
@@ -90,11 +89,10 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
           ProjectRootManager.getInstance(project).getFileIndex
         val dirs = view.getDirectories
 
-        for (dir <- dirs) {
+        for (dir <- dirs)
           if (projectFileIndex.isInSourceContent(dir.getVirtualFile) &&
               JavaDirectoryService.getInstance.getPackage(dir) != null)
             return true
-        }
 
         false
       case _ => false

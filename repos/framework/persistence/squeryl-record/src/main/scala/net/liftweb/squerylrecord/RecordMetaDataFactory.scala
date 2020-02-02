@@ -71,7 +71,7 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
       property: (Option[Field], Option[Method], Option[Method], Set[Annotation]),
       sampleInstance4OptionTypeDeduction: AnyRef,
       isOptimisticCounter: Boolean): FieldMetaData = {
-    if (!isRecord(parentMetaData.clasz) || isOptimisticCounter) {
+    if (!isRecord(parentMetaData.clasz) || isOptimisticCounter)
       // Either this is not a Record class, in which case we'll
       //treat it as a normal class in primitive type mode, or the field
       //was mixed in by the Optimisitic trait and is not a Record field.
@@ -81,7 +81,6 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         property,
         sampleInstance4OptionTypeDeduction,
         isOptimisticCounter)
-    }
 
     val metaField =
       findMetaField(parentMetaData.clasz.asInstanceOf[Class[Rec]], name)
@@ -134,20 +133,18 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
           metaField match {
             case (stringTypedField: StringTypedField) =>
               Some(stringTypedField.maxLength)
-            case decimalField: DecimalField[_] => {
+            case decimalField: DecimalField[_] =>
               val precision = decimalField.context.getPrecision();
               if (precision != 0)
                 Some(precision)
               else
                 None
-            }
-            case decimalField: OptionalDecimalField[_] => {
+            case decimalField: OptionalDecimalField[_] =>
               val precision = decimalField.context.getPrecision();
               if (precision != 0)
                 Some(precision)
               else
                 None
-            }
             case _ => None
           }
         fieldLength getOrElse super.length
@@ -225,10 +222,9 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
     * constructing Objects. Instead, the createRecord method must be called.
     */
   def createPosoFactory(posoMetaData: PosoMetaData[_]): () => AnyRef = {
-    if (!isRecord(posoMetaData.clasz)) {
+    if (!isRecord(posoMetaData.clasz))
       // No record class - use standard poso meta data factory
       return SquerylRecord.posoMetaDataFactory.createPosoFactory(posoMetaData);
-    }
 
     // Extract the MetaRecord for the companion object. This
     // is done only once for each class.

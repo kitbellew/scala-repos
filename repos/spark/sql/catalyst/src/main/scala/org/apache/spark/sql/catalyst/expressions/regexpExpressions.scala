@@ -42,23 +42,21 @@ trait StringRegexExpression extends ImplicitCastInputTypes {
   }
 
   protected def compile(str: String): Pattern =
-    if (str == null) {
+    if (str == null)
       null
-    } else {
+    else
       // Let it raise exception if couldn't compile the regex string
       Pattern.compile(escape(str))
-    }
 
   protected def pattern(str: String) =
     if (cache == null) compile(str) else cache
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any = {
     val regex = pattern(input2.asInstanceOf[UTF8String].toString)
-    if (regex == null) {
+    if (regex == null)
       null
-    } else {
+    else
       matches(regex, input1.asInstanceOf[UTF8String].toString)
-    }
   }
 
   override def sql: String =
@@ -106,13 +104,12 @@ case class Like(left: Expression, right: Expression)
             ${ev.value} = $pattern.matcher(${eval.value}.toString()).matches();
           }
         """
-      } else {
+      } else
         s"""
           boolean ${ev.isNull} = true;
           ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
         """
-      }
-    } else {
+    } else
       nullSafeCodeGen(
         ctx,
         ev,
@@ -122,7 +119,6 @@ case class Like(left: Expression, right: Expression)
           ${ev.value} = $pattern.matcher($eval1.toString()).matches();
         """
       )
-    }
   }
 }
 
@@ -159,13 +155,12 @@ case class RLike(left: Expression, right: Expression)
             ${ev.value} = $pattern.matcher(${eval.value}.toString()).find(0);
           }
         """
-      } else {
+      } else
         s"""
           boolean ${ev.isNull} = true;
           ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
         """
-      }
-    } else {
+    } else
       nullSafeCodeGen(
         ctx,
         ev,
@@ -175,7 +170,6 @@ case class RLike(left: Expression, right: Expression)
           ${ev.value} = $pattern.matcher($eval1.toString()).find(0);
         """
       )
-    }
   }
 }
 
@@ -247,9 +241,8 @@ case class RegExpReplace(
     val m = pattern.matcher(s.toString())
     result.delete(0, result.length())
 
-    while (m.find) {
+    while (m.find)
       m.appendReplacement(result, lastReplacement)
-    }
     m.appendTail(result)
 
     UTF8String.fromString(result.toString)
@@ -344,9 +337,8 @@ case class RegExpExtract(
     if (m.find) {
       val mr: MatchResult = m.toMatchResult
       UTF8String.fromString(mr.group(r.asInstanceOf[Int]))
-    } else {
+    } else
       UTF8String.EMPTY_UTF8
-    }
   }
 
   override def dataType: DataType = StringType

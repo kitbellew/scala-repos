@@ -61,9 +61,7 @@ object ContentParser {
       for {
         bytes <- Helpers.tryo(Helpers.readWholeStream(is))
         elems <- simpleParser(new String(bytes, "UTF-8"))
-      } yield {
-        elems
-      }
+      } yield elems
   }
 
   /**

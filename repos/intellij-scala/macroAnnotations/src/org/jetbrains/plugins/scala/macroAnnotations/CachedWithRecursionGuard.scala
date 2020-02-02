@@ -45,9 +45,8 @@ object CachedWithRecursionGuard {
 
     annottees.toList match {
       case DefDef(mods, name, tpParams, params, retTp, rhs) :: Nil =>
-        if (retTp.isEmpty) {
+        if (retTp.isEmpty)
           abort("You must specify return type")
-        }
 
         //generated names
         val cachedFunName = TermName(c.freshName("cachedFun"))

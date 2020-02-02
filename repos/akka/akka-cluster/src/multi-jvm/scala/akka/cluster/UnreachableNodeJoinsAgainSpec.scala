@@ -209,9 +209,7 @@ abstract class UnreachableNodeJoinsAgainSpec
           endActor ! EndActor.SendEnd
           endProbe.expectMsg(EndActor.EndAck)
 
-        } finally {
-          shutdown(freshSystem)
-        }
+        } finally shutdown(freshSystem)
         // no barrier here, because it is not part of testConductor roles any more
       }
 

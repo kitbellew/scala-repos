@@ -38,7 +38,7 @@ class JavaValsUsagesSearcher
         val processor = new TextOccurenceProcessor {
           def execute(element: PsiElement, offsetInElement: Int): Boolean = {
             val references = inReadAction(element.getReferences)
-            for (ref <- references) {
+            for (ref <- references)
               inReadAction {
                 ref match {
                   case refElement: PsiReferenceExpression
@@ -57,7 +57,6 @@ class JavaValsUsagesSearcher
                   case _ =>
                 }
               }
-            }
             true
           }
         }
@@ -74,7 +73,7 @@ class JavaValsUsagesSearcher
         val processor = new TextOccurenceProcessor {
           def execute(element: PsiElement, offsetInElement: Int): Boolean = {
             val references = inReadAction(element.getReferences)
-            for (ref <- references) {
+            for (ref <- references)
               inReadAction {
                 ref match {
                   case refElement: PsiReferenceExpression
@@ -93,7 +92,6 @@ class JavaValsUsagesSearcher
                   case _ =>
                 }
               }
-            }
             true
           }
         }

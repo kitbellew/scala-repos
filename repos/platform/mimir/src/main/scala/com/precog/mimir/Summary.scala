@@ -98,7 +98,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         val functions: List[Option[JType => JType]] =
           jtypes.distinct map (_ map { Schema.replaceLeaf })
 
-        coalesce(functions map { SingleSummary -> _ })
+        coalesce(functions map SingleSummary -> _)
       }
 
       def reduceTable(
@@ -126,17 +126,15 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
       def apply(table: Table, ctx: MorphContext) = {
         val jtypes0: M[Seq[Option[JType]]] = for {
           schemas <- table.schemas
-        } yield {
-          schemas.toSeq map { jtype =>
-            val flattened = Schema.flatten(jtype, List.empty[ColumnRef])
+        } yield schemas.toSeq map { jtype =>
+          val flattened = Schema.flatten(jtype, List.empty[ColumnRef])
 
-            val values = flattened filter {
-              case ref =>
-                ref.selector.hasPrefix(paths.Value) && ref.ctype.isNumeric
-            }
-
-            Schema.mkType(values.toSeq)
+          val values = flattened filter {
+            case ref =>
+              ref.selector.hasPrefix(paths.Value) && ref.ctype.isNumeric
           }
+
+          Schema.mkType(values.toSeq)
         }
 
         // one JType-with-numeric-leaves per schema
@@ -156,9 +154,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         val tablesWithType: M[Seq[(Table, JType)]] = for {
           tbls <- tables
           schemas <- jtypes
-        } yield {
-          tbls zip schemas
-        }
+        } yield tbls zip schemas
 
         val resultTables: M[Seq[Table]] = tablesWithType flatMap {
           _.map {

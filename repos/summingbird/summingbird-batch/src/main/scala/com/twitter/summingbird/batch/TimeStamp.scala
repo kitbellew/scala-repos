@@ -88,9 +88,8 @@ object Timestamp {
       else {
         val iter = ti.toIterator
         var last: Timestamp = iter.next
-        while (iter.hasNext) {
+        while (iter.hasNext)
           last = iter.next
-        }
         Some(last)
       }
   }

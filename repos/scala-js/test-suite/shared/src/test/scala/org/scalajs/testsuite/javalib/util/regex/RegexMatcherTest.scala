@@ -209,9 +209,8 @@ class RegexMatcherTest {
     val matcher = Pattern.compile("cat").matcher("one cat two cats in the yard")
     val sb = new StringBuffer
 
-    while (matcher.find()) {
+    while (matcher.find())
       matcher.appendReplacement(sb, "dog")
-    }
     matcher.appendTail(sb)
 
     assertEquals("one dog two dogs in the yard", sb.toString)
@@ -272,9 +271,8 @@ class RegexMatcherTest {
     }
 
     // Make sure we don't suddenly re-match
-    for (i <- 0 to 5) {
+    for (i <- 0 to 5)
       assertFalse(mat.find())
-    }
   }
 
   @Test def should_support_in_pattern_flags_issue_997(): Unit = {

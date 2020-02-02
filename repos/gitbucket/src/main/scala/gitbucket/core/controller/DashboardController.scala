@@ -102,11 +102,10 @@ trait DashboardControllerBase extends ControllerBase {
       key,
       if (request.hasQueryString) {
         val q = request.getParameter("q")
-        if (q == null) {
+        if (q == null)
           IssueSearchCondition(request)
-        } else {
+        else
           IssueSearchCondition(q, Map[String, Int]())
-        }
       } else
         session
           .getAs[IssueSearchCondition](key)

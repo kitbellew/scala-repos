@@ -53,22 +53,19 @@ class FileStreamSource(
   }
 
   /** Returns the schema of the data from this source */
-  override lazy val schema: StructType = {
+  override lazy val schema: StructType =
     dataSchema.getOrElse {
       val filesPresent = fetchAllFiles()
-      if (filesPresent.isEmpty) {
-        if (providerName == "text") {
+      if (filesPresent.isEmpty)
+        if (providerName == "text")
           // Add a default schema for "text"
           new StructType().add("value", StringType)
-        } else {
+        else
           throw new IllegalArgumentException("No schema specified")
-        }
-      } else {
+      else
         // There are some existing files. Use them to infer the schema.
         dataFrameBuilder(filesPresent.toArray).schema
-      }
     }
-  }
 
   /**
     * Returns the maximum offset that can be retrieved from the source.
@@ -84,9 +81,8 @@ class FileStreamSource(
         logDebug(s"new file: $file")
         newFiles.append(file)
         seenFiles.add(file)
-      } else {
+      } else
         logDebug(s"old file: $file")
-      }
     }
 
     if (newFiles.nonEmpty) {
@@ -123,9 +119,8 @@ class FileStreamSource(
       logDebug(s"Return files from batches ${startId + 1}:$endId")
       logDebug(s"Streaming ${files.mkString(", ")}")
       Some(new Batch(end, dataFrameBuilder(files)))
-    } else {
+    } else
       None
-    }
   }
 
   private def fetchAllFiles(): Seq[String] =

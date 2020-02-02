@@ -51,19 +51,17 @@ private[spark] class DTStatsAggregator(
     * Number of bins for each feature.  This is indexed by the feature index.
     */
   private val numBins: Array[Int] = {
-    if (featureSubset.isDefined) {
+    if (featureSubset.isDefined)
       featureSubset.get.map(metadata.numBins(_))
-    } else {
+    else
       metadata.numBins
-    }
   }
 
   /**
     * Offset for each feature for calculating indices into the [[allStats]] array.
     */
-  private val featureOffsets: Array[Int] = {
+  private val featureOffsets: Array[Int] =
     numBins.scanLeft(0)((total, nBins) => total + statsSize * nBins)
-  }
 
   /**
     * Total number of elements stored in this aggregator

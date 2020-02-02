@@ -47,16 +47,14 @@ object LSMR extends SerializableLogging {
     var u = copy(b)
     val normb = norm(u)
     var beta = norm(u)
-    if (beta > 0) {
+    if (beta > 0)
       u /= beta
-    }
 
     var v = multMTV(At, u)
     var x = v * 0.0
     var alpha = norm(v)
-    if (alpha > 0) {
+    if (alpha > 0)
       v /= alpha
-    }
 
     var alphabar = alpha
     var zetabar = alpha * beta
@@ -164,17 +162,15 @@ object LSMR extends SerializableLogging {
 
       // Estimate cond(A).
       maxrbar = max(maxrbar, rhobarold)
-      if (iter > 1) {
+      if (iter > 1)
         minrbar = min(minrbar, rhobarold)
-      }
 
       var condA = max(maxrbar, rhotemp) / min(minrbar, rhotemp)
 
       // Estimate cond(A).
       maxrbar = max(maxrbar, rhobarold)
-      if (iter > 1) {
+      if (iter > 1)
         minrbar = min(minrbar, rhobarold)
-      }
       condA = max(maxrbar, rhotemp) / min(minrbar, rhotemp)
 
       // Test for convergence.

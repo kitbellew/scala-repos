@@ -106,11 +106,10 @@ private[spark] class MetricsSystem private (
   }
 
   def stop() {
-    if (running) {
+    if (running)
       sinks.foreach(_.stop)
-    } else {
+    else
       logWarning("Stopping a MetricsSystem that is not running")
-    }
     running = false
   }
 
@@ -132,25 +131,22 @@ private[spark] class MetricsSystem private (
     val executorId = conf.getOption("spark.executor.id")
     val defaultName = MetricRegistry.name(source.sourceName)
 
-    if (instance == "driver" || instance == "executor") {
-      if (appId.isDefined && executorId.isDefined) {
+    if (instance == "driver" || instance == "executor")
+      if (appId.isDefined && executorId.isDefined)
         MetricRegistry.name(appId.get, executorId.get, source.sourceName)
-      } else {
+      else {
         // Only Driver and Executor set spark.app.id and spark.executor.id.
         // Other instance types, e.g. Master and Worker, are not related to a specific application.
         val warningMsg =
           s"Using default name $defaultName for source because %s is not set."
-        if (appId.isEmpty) {
+        if (appId.isEmpty)
           logWarning(warningMsg.format("spark.app.id"))
-        }
-        if (executorId.isEmpty) {
+        if (executorId.isEmpty)
           logWarning(warningMsg.format("spark.executor.id"))
-        }
         defaultName
       }
-    } else {
+    else
       defaultName
-    }
   }
 
   def getSourcesByName(sourceName: String): Seq[Source] =
@@ -201,7 +197,7 @@ private[spark] class MetricsSystem private (
 
     sinkConfigs.foreach { kv =>
       val classPath = kv._2.getProperty("class")
-      if (null != classPath) {
+      if (null != classPath)
         try {
           val sink = Utils
             .classForName(classPath)
@@ -210,18 +206,15 @@ private[spark] class MetricsSystem private (
               classOf[MetricRegistry],
               classOf[SecurityManager])
             .newInstance(kv._2, registry, securityMgr)
-          if (kv._1 == "servlet") {
+          if (kv._1 == "servlet")
             metricsServlet = Some(sink.asInstanceOf[MetricsServlet])
-          } else {
+          else
             sinks += sink.asInstanceOf[Sink]
-          }
         } catch {
-          case e: Exception => {
+          case e: Exception =>
             logError("Sink class " + classPath + " cannot be instantiated")
             throw e
-          }
         }
-      }
     }
   }
 }
@@ -235,11 +228,10 @@ private[spark] object MetricsSystem {
 
   def checkMinimalPollingPeriod(pollUnit: TimeUnit, pollPeriod: Int) {
     val period = MINIMAL_POLL_UNIT.convert(pollPeriod, pollUnit)
-    if (period < MINIMAL_POLL_PERIOD) {
+    if (period < MINIMAL_POLL_PERIOD)
       throw new IllegalArgumentException(
         "Polling period " + pollPeriod + " " + pollUnit +
           " below than minimal polling period ")
-    }
   }
 
   def createMetricsSystem(

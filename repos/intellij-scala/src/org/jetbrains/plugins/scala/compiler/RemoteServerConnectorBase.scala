@@ -30,11 +30,11 @@ abstract class RemoteServerConnectorBase(
   }
 
   private val libRoot = {
-    if (ApplicationManager.getApplication.isUnitTestMode) {
+    if (ApplicationManager.getApplication.isUnitTestMode)
       if (PlatformUtils.isIdeaCommunity)
         new File("./out/plugin/Scala/lib").getAbsoluteFile
       else new File("../../out/plugin/Scala/lib").getAbsoluteFile
-    } else new File(PathUtil.getJarPathForClass(getClass)).getParentFile
+    else new File(PathUtil.getJarPathForClass(getClass)).getParentFile
   }
 
   private val libCanonicalPath = PathUtil.getCanonicalPath(libRoot.getPath)

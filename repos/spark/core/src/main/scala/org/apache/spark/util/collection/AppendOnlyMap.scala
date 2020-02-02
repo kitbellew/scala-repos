@@ -72,18 +72,17 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
   def apply(key: K): V = {
     assert(!destroyed, destructionMessage)
     val k = key.asInstanceOf[AnyRef]
-    if (k.eq(null)) {
+    if (k.eq(null))
       return nullValue
-    }
     var pos = rehash(k.hashCode) & mask
     var i = 1
     while (true) {
       val curKey = data(2 * pos)
-      if (k.eq(curKey) || k.equals(curKey)) {
+      if (k.eq(curKey) || k.equals(curKey))
         return data(2 * pos + 1).asInstanceOf[V]
-      } else if (curKey.eq(null)) {
+      else if (curKey.eq(null))
         return null.asInstanceOf[V]
-      } else {
+      else {
         val delta = i
         pos = (pos + delta) & mask
         i += 1
@@ -97,9 +96,8 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
     assert(!destroyed, destructionMessage)
     val k = key.asInstanceOf[AnyRef]
     if (k.eq(null)) {
-      if (!haveNullValue) {
+      if (!haveNullValue)
         incrementSize()
-      }
       nullValue = value
       haveNullValue = true
       return
@@ -132,9 +130,8 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
     assert(!destroyed, destructionMessage)
     val k = key.asInstanceOf[AnyRef]
     if (k.eq(null)) {
-      if (!haveNullValue) {
+      if (!haveNullValue)
         incrementSize()
-      }
       nullValue = updateFunc(haveNullValue, nullValue)
       haveNullValue = true
       return nullValue
@@ -171,17 +168,15 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
       /** Get the next value we should return from next(), or null if we're finished iterating */
       def nextValue(): (K, V) = {
         if (pos == -1) { // Treat position -1 as looking at the null value
-          if (haveNullValue) {
+          if (haveNullValue)
             return (null.asInstanceOf[K], nullValue)
-          }
           pos += 1
         }
         while (pos < capacity) {
-          if (!data(2 * pos).eq(null)) {
+          if (!data(2 * pos).eq(null))
             return (
               data(2 * pos).asInstanceOf[K],
               data(2 * pos + 1).asInstanceOf[V])
-          }
           pos += 1
         }
         null
@@ -191,9 +186,8 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
 
       override def next(): (K, V) = {
         val value = nextValue()
-        if (value == null) {
+        if (value == null)
           throw new NoSuchElementException("End of iterator")
-        }
         pos += 1
         value
       }
@@ -205,9 +199,8 @@ class AppendOnlyMap[K, V](initialCapacity: Int = 64)
   /** Increase table size by 1, rehashing if necessary */
   private def incrementSize() {
     curSize += 1
-    if (curSize > growThreshold) {
+    if (curSize > growThreshold)
       growTable()
-    }
   }
 
   /**

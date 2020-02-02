@@ -67,16 +67,15 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     * @param edgeDirection the direction along which to collect neighboring vertex attributes
     */
   private def degreesRDD(edgeDirection: EdgeDirection): VertexRDD[Int] =
-    if (edgeDirection == EdgeDirection.In) {
+    if (edgeDirection == EdgeDirection.In)
       graph.aggregateMessages(_.sendToDst(1), _ + _, TripletFields.None)
-    } else if (edgeDirection == EdgeDirection.Out) {
+    else if (edgeDirection == EdgeDirection.Out)
       graph.aggregateMessages(_.sendToSrc(1), _ + _, TripletFields.None)
-    } else { // EdgeDirection.Either
+    else // EdgeDirection.Either
       graph.aggregateMessages(
         ctx => { ctx.sendToSrc(1); ctx.sendToDst(1) },
         _ + _,
         TripletFields.None)
-    }
 
   /**
     * Collect the neighbor vertex ids for each vertex.
@@ -89,25 +88,24 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
   def collectNeighborIds(
       edgeDirection: EdgeDirection): VertexRDD[Array[VertexId]] = {
     val nbrs =
-      if (edgeDirection == EdgeDirection.Either) {
+      if (edgeDirection == EdgeDirection.Either)
         graph.aggregateMessages[Array[VertexId]](ctx => {
           ctx.sendToSrc(Array(ctx.dstId)); ctx.sendToDst(Array(ctx.srcId))
         }, _ ++ _, TripletFields.None)
-      } else if (edgeDirection == EdgeDirection.Out) {
+      else if (edgeDirection == EdgeDirection.Out)
         graph.aggregateMessages[Array[VertexId]](
           ctx => ctx.sendToSrc(Array(ctx.dstId)),
           _ ++ _,
           TripletFields.None)
-      } else if (edgeDirection == EdgeDirection.In) {
+      else if (edgeDirection == EdgeDirection.In)
         graph.aggregateMessages[Array[VertexId]](
           ctx => ctx.sendToDst(Array(ctx.srcId)),
           _ ++ _,
           TripletFields.None)
-      } else {
+      else
         throw new SparkException(
           "It doesn't make sense to collect neighbor ids without a " +
             "direction. (EdgeDirection.Both is not supported; use EdgeDirection.Either instead.)")
-      }
     graph.vertices.leftZipJoin(nbrs) { (vid, vdata, nbrsOpt) =>
       nbrsOpt.getOrElse(Array.empty[VertexId])
     }
@@ -285,11 +283,10 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     var retVal: VertexId = null.asInstanceOf[VertexId]
     while (!found) {
       val selectedVertices = graph.vertices.flatMap { vidVvals =>
-        if (Random.nextDouble() < probability) {
+        if (Random.nextDouble() < probability)
           Some(vidVvals._1)
-        } else {
+        else
           None
-        }
       }
       if (selectedVertices.count > 1) {
         found = true

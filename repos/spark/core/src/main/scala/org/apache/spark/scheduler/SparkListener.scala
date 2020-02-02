@@ -291,9 +291,8 @@ class StatsReportListener extends SparkListener with Logging {
   override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
     val info = taskEnd.taskInfo
     val metrics = taskEnd.taskMetrics
-    if (info != null && metrics != null) {
+    if (info != null && metrics != null)
       taskInfoMetrics += ((info, metrics))
-    }
   }
 
   override def onStageCompleted(stageCompleted: SparkListenerStageCompleted) {
@@ -464,15 +463,14 @@ private[spark] object StatsReportListener extends Logging {
     */
   def millisToString(ms: Long): String = {
     val (size, units) =
-      if (ms > hours) {
+      if (ms > hours)
         (ms.toDouble / hours, "hours")
-      } else if (ms > minutes) {
+      else if (ms > minutes)
         (ms.toDouble / minutes, "min")
-      } else if (ms > seconds) {
+      else if (ms > seconds)
         (ms.toDouble / seconds, "s")
-      } else {
+      else
         (ms.toDouble, "ms")
-      }
     "%.1f %s".format(size, units)
   }
 }

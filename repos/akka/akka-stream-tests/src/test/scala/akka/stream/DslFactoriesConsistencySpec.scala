@@ -240,32 +240,28 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       s ← sMethods
       j ← jMethods
       result = delegationCheck(s, j)
-    } yield {
-      result
-    }
+    } yield result
 
     for {
       row ← results.groupBy(_.s)
       matches = row._2.filter(_.matches)
-    } {
-      if (matches.length == 0) {
-        warnings += 1
-        alert("No match for " + row._1)
-        row._2 foreach { m ⇒ alert(s" > ${m.j.toString}: ${m.reason}") }
-      } else if (matches.length == 1) {
-        info(
-          "Matched: Scala:" + row._1.name + "(" + row._1.parameterTypes
-            .map(_.getName)
-            .mkString(",") + "): " + returnTypeString(row._1) +
-            " == " +
-            "Java:" + matches.head.j.name + "(" + matches.head.j.parameterTypes
-            .map(_.getName)
-            .mkString(",") + "): " + returnTypeString(matches.head.j))
-      } else {
-        warnings += 1
-        alert("Multiple matches for " + row._1 + "!")
-        matches foreach { m ⇒ alert(s" > ${m.j.toString}") }
-      }
+    } if (matches.length == 0) {
+      warnings += 1
+      alert("No match for " + row._1)
+      row._2 foreach { m ⇒ alert(s" > ${m.j.toString}: ${m.reason}") }
+    } else if (matches.length == 1)
+      info(
+        "Matched: Scala:" + row._1.name + "(" + row._1.parameterTypes
+          .map(_.getName)
+          .mkString(",") + "): " + returnTypeString(row._1) +
+          " == " +
+          "Java:" + matches.head.j.name + "(" + matches.head.j.parameterTypes
+          .map(_.getName)
+          .mkString(",") + "): " + returnTypeString(matches.head.j))
+    else {
+      warnings += 1
+      alert("Multiple matches for " + row._1 + "!")
+      matches foreach { m ⇒ alert(s" > ${m.j.toString}") }
     }
 
     if (warnings > 0) {
@@ -297,7 +293,7 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       extends MatchResult { val matches = true }
 
   def delegationCheck(s: Method, j: Method): MatchResult =
-    if (nameMatch(s.name, j.name)) {
+    if (nameMatch(s.name, j.name))
       if (s.parameterTypes.length == j.parameterTypes.length)
         if (typeMatch(s.parameterTypes, j.parameterTypes))
           if (returnTypeMatch(s.returnType, j.returnType))
@@ -311,9 +307,8 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
           MatchFailure(s, j, "Types of parameters don't match!")
       else
         MatchFailure(s, j, "Same name, but different number of parameters!")
-    } else {
+    else
       MatchFailure(s, j, "Names don't match!")
-    }
 
   def nameMatch(scalaName: String, javaName: String): Boolean =
     (scalaName, javaName) match {

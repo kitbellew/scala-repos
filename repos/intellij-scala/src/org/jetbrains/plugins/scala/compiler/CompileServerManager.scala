@@ -217,7 +217,7 @@ class CompileServerManager(project: Project) extends ProjectComponent {
 
       val errors = launcher.errors()
 
-      if (errors.nonEmpty) {
+      if (errors.nonEmpty)
         Notifications.Bus.notify(
           new Notification(
             "scala",
@@ -225,7 +225,6 @@ class CompileServerManager(project: Project) extends ProjectComponent {
             errors.mkString,
             NotificationType.ERROR),
           project)
-      }
     }
   }
 }

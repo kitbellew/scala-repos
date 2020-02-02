@@ -36,17 +36,13 @@ object ScalaChangeContextUtil {
     def restoreForElement(elem: PsiElement) {
       val associations: Associations =
         elem.getCopyableUserData(ASSOCIATIONS_KEY)
-      if (associations != null) {
-        try {
-          processor.restoreAssociations(
-            associations,
-            elem.getContainingFile,
-            elem.getTextRange.getStartOffset,
-            elem.getProject)
-        } finally {
-          elem.putCopyableUserData(ASSOCIATIONS_KEY, null)
-        }
-      }
+      if (associations != null)
+        try processor.restoreAssociations(
+          associations,
+          elem.getContainingFile,
+          elem.getTextRange.getStartOffset,
+          elem.getProject)
+        finally elem.putCopyableUserData(ASSOCIATIONS_KEY, null)
     }
     scope.foreach(restoreForElement)
   }

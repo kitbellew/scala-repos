@@ -76,11 +76,11 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
           WrapObject(sortKey, "0"),
           WrapObject(Leaf(Source), "1")))
 
-      implicit val jValueOrdering = if (sortOrder.isAscending) {
-        JValue.order.toScalaOrdering
-      } else {
-        JValue.order.toScalaOrdering.reverse
-      }
+      implicit val jValueOrdering =
+        if (sortOrder.isAscending)
+          JValue.order.toScalaOrdering
+        else
+          JValue.order.toScalaOrdering.reverse
 
       tableWithSortKey.toJson
         .map { jvals => fromJson(jvals.toList.sortBy(_ \ "0").toStream) }

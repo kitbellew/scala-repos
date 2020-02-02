@@ -178,13 +178,13 @@ final case class ClusterRouterGroup(
     with ClusterRouterConfigBase {
 
   override def paths(system: ActorSystem): immutable.Iterable[String] =
-    if (settings.allowLocalRoutees && settings.useRole.isDefined) {
-      if (Cluster(system).selfRoles.contains(settings.useRole.get)) {
+    if (settings.allowLocalRoutees && settings.useRole.isDefined)
+      if (Cluster(system).selfRoles.contains(settings.useRole.get))
         settings.routeesPaths
-      } else Nil
-    } else if (settings.allowLocalRoutees && settings.useRole.isEmpty) {
+      else Nil
+    else if (settings.allowLocalRoutees && settings.useRole.isEmpty)
       settings.routeesPaths
-    } else Nil
+    else Nil
 
   /**
     * INTERNAL API
@@ -243,13 +243,13 @@ final case class ClusterRouterPool(
     * Initial number of routee instances
     */
   override def nrOfInstances(sys: ActorSystem): Int =
-    if (settings.allowLocalRoutees && settings.useRole.isDefined) {
-      if (Cluster(sys).selfRoles.contains(settings.useRole.get)) {
+    if (settings.allowLocalRoutees && settings.useRole.isDefined)
+      if (Cluster(sys).selfRoles.contains(settings.useRole.get))
         settings.maxInstancesPerNode
-      } else 0
-    } else if (settings.allowLocalRoutees && settings.useRole.isEmpty) {
+      else 0
+    else if (settings.allowLocalRoutees && settings.useRole.isEmpty)
       settings.maxInstancesPerNode
-    } else 0
+    else 0
 
   override def resizer: Option[Resizer] = local.resizer
 
@@ -331,9 +331,9 @@ private[akka] class ClusterRouterPoolActor(
   def selectDeploymentTarget: Option[Address] = {
     val currentRoutees = cell.router.routees
     val currentNodes = availableNodes
-    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances) {
+    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances)
       None
-    } else {
+    else {
       // find the node with least routees
       val numberOfRouteesPerNode: Map[Address, Int] =
         currentRoutees.foldLeft(
@@ -397,15 +397,15 @@ private[akka] class ClusterRouterGroupActor(
   def selectDeploymentTarget: Option[(Address, String)] = {
     val currentRoutees = cell.router.routees
     val currentNodes = availableNodes
-    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances) {
+    if (currentNodes.isEmpty || currentRoutees.size >= settings.totalInstances)
       None
-    } else {
+    else {
       // find the node with least routees
       val unusedNodes = currentNodes filterNot usedRouteePaths.contains
 
-      if (unusedNodes.nonEmpty) {
+      if (unusedNodes.nonEmpty)
         Some((unusedNodes.head, settings.routeesPaths.head))
-      } else {
+      else {
         val (address, used) = usedRouteePaths.minBy {
           case (address, used) ⇒ used.size
         }

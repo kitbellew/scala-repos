@@ -30,9 +30,7 @@ class MdnsTest extends FunSuite with Eventually with IntegrationPatience {
         try {
           socket.bind(rawIa)
           socket.getLocalSocketAddress().asInstanceOf[InetSocketAddress]
-        } finally {
-          socket.close()
-        }
+        } finally socket.close()
       }
       val resolver = new MDNSResolver
       val announcer = new MDNSAnnouncer
@@ -53,9 +51,7 @@ class MdnsTest extends FunSuite with Eventually with IntegrationPatience {
             case _ => fail()
           }
         }
-      } finally {
-        Await.ready(announcement.close())
-      }
+      } finally Await.ready(announcement.close())
     }
 
   test("resolve via the main resolver") {

@@ -42,16 +42,14 @@ object TraversableHelpers {
       implicit ord: Ordering[T]): Int = {
     @annotation.tailrec
     def result: Int =
-      if (iteratorA.isEmpty) {
+      if (iteratorA.isEmpty)
         if (iteratorB.isEmpty) 0
         else -1 // a is shorter
-      } else {
-        if (iteratorB.isEmpty) 1 // a is longer
-        else {
-          val cmp = ord.compare(iteratorA.next, iteratorB.next)
-          if (cmp != 0) cmp
-          else result
-        }
+      else if (iteratorB.isEmpty) 1 // a is longer
+      else {
+        val cmp = ord.compare(iteratorA.next, iteratorB.next)
+        if (cmp != 0) cmp
+        else result
       }
 
     result
@@ -87,10 +85,10 @@ object TraversableHelpers {
         startB: Int,
         endB: Int,
         b: Buffer[T]): Int =
-      if (startA == endA) {
+      if (startA == endA)
         if (startB == endB) 0 // both empty
         else -1 // empty is smaller than non-empty
-      } else if (startB == endB) 1 // non-empty is bigger than empty
+      else if (startB == endB) 1 // non-empty is bigger than empty
       else {
         @annotation.tailrec
         def partition(
@@ -103,10 +101,10 @@ object TraversableHelpers {
           else {
             val t = x(pivotEnd)
             val cmp = ord.compare(t, pivot)
-            if (cmp == 0) {
+            if (cmp == 0)
               // the pivot section grows by 1 to include test
               partition(pivot, pivotStart, pivotEnd + 1, endX, x)
-            } else if (cmp > 0) {
+            else if (cmp > 0) {
               // test is bigger, swap it with the end and move the end down:
               val newEnd = endX - 1
               val end = x(newEnd)
@@ -134,7 +132,7 @@ object TraversableHelpers {
           val longer = math.max(asublen, bsublen)
           def extend(s: Int, e: Int) = math.min(s + longer, e)
 
-          if (asublen != 0) {
+          if (asublen != 0)
             /*
              * We can safely recurse because startA does not hold pivot, so we won't
              * do the same algorithm
@@ -146,7 +144,7 @@ object TraversableHelpers {
               startB,
               extend(startB, endB),
               b)
-          } else {
+          else
             /*
              * We know that startB does not have the pivot, because if it did, bsublen == 0
              * and both are equal, which is not true in this branch.
@@ -159,7 +157,6 @@ object TraversableHelpers {
               startA,
               extend(startA, endA),
               a)
-          }
         } else {
           // the prefixes are the same size
           val cmp = compare(startA, aps, a, startB, bps, b)
@@ -174,13 +171,12 @@ object TraversableHelpers {
             val bcheck = bps + minpsize
             if (apsize != bpsize &&
                 acheck < endA &&
-                bcheck < endB) {
+                bcheck < endB)
               // exactly one of them has a pivot value
               ord.compare(a(acheck), b(bcheck))
-            } else {
+            else
               // at least one of them or both is empty, and we pick it up above
               compare(aps + minpsize, endA, a, bps + minpsize, endB, b)
-            }
           }
         }
       }

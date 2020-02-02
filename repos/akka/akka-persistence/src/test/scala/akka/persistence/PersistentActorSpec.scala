@@ -492,10 +492,9 @@ object PersistentActorSpec {
       if (currentDepths(d) < maxDepth) {
         currentDepths = currentDepths.updated(d, currentDepths(d) + 1)
         persistAsync(d + "-" + currentDepths(d))(weMustGoDeeper)
-      } else {
+      } else
         // reset depth counter before next command
         currentDepths = currentDepths.updated(d, 1)
-      }
     }
 
     val receiveCommand: Receive = {
@@ -562,10 +561,9 @@ object PersistentActorSpec {
       if (currentDepths(d) < maxDepth) {
         currentDepths = currentDepths.updated(d, currentDepths(d) + 1)
         persist(d + "-" + currentDepths(d))(weMustGoDeeper)
-      } else {
+      } else
         // reset depth counter before next command
         currentDepths = currentDepths.updated(d, 1)
-      }
     }
 
     val receiveCommand: Receive = {
@@ -641,9 +639,8 @@ object PersistentActorSpec {
       override protected[akka] def aroundReceive(
           receive: Receive,
           message: Any) = {
-        if (message == "restart" && recoveryFinished) {
+        if (message == "restart" && recoveryFinished)
           probe ! s"base aroundReceive $message"
-        }
         super.aroundReceive(receive, message)
       }
     }
@@ -674,9 +671,8 @@ object PersistentActorSpec {
       override protected[akka] def aroundReceive(
           receive: Receive,
           message: Any) = {
-        if (message == "restart" && recoveryFinished) {
+        if (message == "restart" && recoveryFinished)
           probe ! s"mixin aroundReceive $message"
-        }
         super.aroundReceive(receive, message)
       }
     }

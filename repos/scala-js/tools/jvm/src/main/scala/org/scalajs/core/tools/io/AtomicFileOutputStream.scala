@@ -42,14 +42,10 @@ private[io] class AtomicFileOutputStream private (
 
   /** Try to atomically replace the baseFile with the tmpFile */
   private[this] def atomicReplace(): Unit =
-    if (!tmpFile.renameTo(baseFile)) {
+    if (!tmpFile.renameTo(baseFile))
       // Renaming failed. Fallback to copy
-      try {
-        IO.copyTo(
-          FileVirtualBinaryFile(tmpFile),
-          WritableFileVirtualBinaryFile(baseFile))
-      } finally {
-        tmpFile.delete()
-      }
-    }
+      try IO.copyTo(
+        FileVirtualBinaryFile(tmpFile),
+        WritableFileVirtualBinaryFile(baseFile))
+      finally tmpFile.delete()
 }

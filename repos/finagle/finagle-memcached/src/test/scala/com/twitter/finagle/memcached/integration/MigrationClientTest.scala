@@ -140,7 +140,7 @@ class MigrationClientTest
       eventually { assert(Await.result(client2.get("foo")) == None) }
     }
 
-  if (!sys.props.contains("SKIP_FLAKY")) {
+  if (!sys.props.contains("SKIP_FLAKY"))
     test("sending dark traffic") {
       val migrationConfig =
         MigrationConstants.MigrationConfig("Warming", false, false)
@@ -175,7 +175,6 @@ class MigrationClientTest
             .map { case Buf.Utf8(s) => s } == Some("bar"))
       }
     }
-  }
 
   if (!sys.props.contains("SKIP_FLAKY")) // CSL-1731
     test("dark read w/ read repair") {

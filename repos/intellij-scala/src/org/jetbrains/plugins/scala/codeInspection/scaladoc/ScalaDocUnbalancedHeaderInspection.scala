@@ -24,13 +24,12 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
         val firstChildElementType = s.getFirstChild.getNode.getElementType
         val lastChildElementType = s.getLastChild.getNode.getElementType
 
-        if (firstChildElementType == null) {
+        if (firstChildElementType == null)
           return
-        }
 
         if (firstChildElementType == VALID_DOC_HEADER && (lastChildElementType == VALID_DOC_HEADER ||
             lastChildElementType == DOC_HEADER)) {
-          if (s.getFirstChild.getTextLength != s.getLastChild.getTextLength) {
+          if (s.getFirstChild.getTextLength != s.getLastChild.getTextLength)
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(
                 s.getLastChild,
@@ -41,7 +40,6 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
                 new ScalaDocHeaderBalanceQuickFix(
                   s.getFirstChild,
                   s.getLastChild)))
-          }
 
           var sibl = s.getNextSibling
           val firstSibl = sibl
@@ -79,9 +77,8 @@ class ScalaDocHeaderBalanceQuickFix(opening: PsiElement, closing: PsiElement)
     if (!op.isValid || !cl.isValid) return
     if (op.getNode.getElementType != ScalaDocTokenType.VALID_DOC_HEADER ||
         cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER &&
-        cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER) {
+        cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER)
       return
-    }
 
     cl.replace(
       ScalaPsiElementFactory

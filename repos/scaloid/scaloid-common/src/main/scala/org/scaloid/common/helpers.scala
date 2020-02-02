@@ -166,9 +166,8 @@ trait MediaHelpers {
     */
   def play(uri: Uri = notificationSound)(implicit context: Context) {
     val r = RingtoneManager.getRingtone(context, uri)
-    if (r != null) {
+    if (r != null)
       r.play()
-    }
   }
 
   @inline def alarmSound: Uri =

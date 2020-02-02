@@ -124,9 +124,8 @@ object Counter extends CounterOps {
     new CanMapValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
-        for ((k, v) <- from.iterator) {
+        for ((k, v) <- from.iterator)
           rv(k) = fn(from.data(k))
-        }
         rv
       }
     }
@@ -136,9 +135,8 @@ object Counter extends CounterOps {
     new CanMapActiveValues[Counter[K, V], V, RV, Counter[K, RV]] {
       override def apply(from: Counter[K, V], fn: (V => RV)) = {
         val rv = Counter[K, RV]()
-        for ((k, v) <- from.activeIterator) {
+        for ((k, v) <- from.activeIterator)
           rv(k) = fn(from.data(k))
-        }
         rv
       }
     }
@@ -150,9 +148,8 @@ object Counter extends CounterOps {
 
       /** Iterates all values from the given collection. */
       def traverse(from: Counter[K, V], fn: ValuesVisitor[V]): Unit =
-        for (v <- from.valuesIterator) {
+        for (v <- from.valuesIterator)
           fn.visit(v)
-        }
 
     }
 
@@ -166,9 +163,8 @@ object Counter extends CounterOps {
       override def traverse(
           from: Counter[K, V],
           fn: KeyValuePairsVisitor[K, V]): Unit =
-        for ((k, v) <- from.activeIterator) {
+        for ((k, v) <- from.activeIterator)
           fn.visit(k, v)
-        }
 
       override def isTraversableAgain(from: Counter[K, V]): Boolean = true
     }
@@ -178,9 +174,8 @@ object Counter extends CounterOps {
     new norm.Impl2[Counter[K, V], Double, Double] {
       override def apply(ctr: Counter[K, V], p: Double): Double = {
         var result = 0.0
-        for (v <- ctr.valuesIterator) {
+        for (v <- ctr.valuesIterator)
           result += math.pow(implicitly[Field[V]].normImpl(v), p)
-        }
         math.pow(result, 1 / p)
       }
     }
@@ -204,9 +199,8 @@ object Counter extends CounterOps {
       def apply(d: Counter[K, V]): Counter[K, V] = {
         val r = Counter[K, V]()
         val z = implicitly[Zero[V]].zero
-        for ((k, v) <- d.iterator) {
+        for ((k, v) <- d.iterator)
           r(k) = z
-        }
         r
       }
     }

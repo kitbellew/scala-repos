@@ -175,9 +175,8 @@ trait SetTest extends CollectionTest {
       assertFalse(hs.contains(null))
       assertTrue(hs.add(null))
       assertTrue(hs.contains(null))
-    } else {
+    } else
       expectThrows(classOf[Exception], hs.add(null))
-    }
   }
 
   @Test def shouldPutAWholeCollectionInto(): Unit = {
@@ -190,12 +189,11 @@ trait SetTest extends CollectionTest {
       assertTrue(hs.contains("ONE"))
       assertTrue(hs.contains("TWO"))
       assertTrue(hs.contains(null))
-    } else {
+    } else
       expectThrows(classOf[Exception], {
         val l = List[String]("ONE", "TWO", (null: String))
         hs.addAll(asJavaCollection(l))
       })
-    }
   }
 
   @Test def shouldIterateOverElements(): Unit = {

@@ -277,16 +277,14 @@ class PhantomJSEnv(
           val result = fragmentsBuf.result()
           fragmentsBuf.clear()
           result
-        } else if (frag(0) == '1') {
+        } else if (frag(0) == '1')
           loop()
-        } else {
+        else
           throw new AssertionError("Bad fragmentation flag in " + frag)
-        }
       }
 
-      try {
-        loop()
-      } catch {
+      try loop()
+      catch {
         case e: Throwable if !e.isInstanceOf[TimeoutException] =>
           fragmentsBuf.clear() // the protocol is broken, so discard the buffer
           throw e
@@ -297,12 +295,11 @@ class PhantomJSEnv(
       while (recvBuf.isEmpty && !mgr.isClosed && !deadline.isOverdue)
         wait(deadline.millisLeft)
 
-      if (recvBuf.isEmpty) {
+      if (recvBuf.isEmpty)
         if (mgr.isClosed)
           throw new ComJSEnv.ComClosedException
         else
           throw new TimeoutException("Timeout expired")
-      }
 
       recvBuf.dequeue()
     }
@@ -425,8 +422,7 @@ class PhantomJSEnv(
 
       val out = new FileWriter(launcherTmpF)
 
-      try {
-        out.write(s"""// Scala.js Phantom.js launcher
+      try out.write(s"""// Scala.js Phantom.js launcher
                |var page = require('webpage').create();
                |var url = "${escapeJS(fixFileURI(webF.toURI).toASCIIString)}";
                |var autoExit = $autoExit;
@@ -466,9 +462,7 @@ class PhantomJSEnv(
                |    phantom.exit(status !== 'success');
                |});
                |""".stripMargin)
-      } finally {
-        out.close()
-      }
+      finally out.close()
 
       logger.debug(
         "PhantomJS using launcher at: " + launcherTmpF.getAbsolutePath())
@@ -483,11 +477,8 @@ class PhantomJSEnv(
       val out = new BufferedWriter(
         new OutputStreamWriter(new FileOutputStream(webTmpF), "UTF-8"))
 
-      try {
-        writeWebpageLauncher(out)
-      } finally {
-        out.close()
-      }
+      try writeWebpageLauncher(out)
+      finally out.close()
 
       logger.debug(
         "PhantomJS using webpage launcher at: " + webTmpF.getAbsolutePath())

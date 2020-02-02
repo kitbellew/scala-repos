@@ -47,9 +47,8 @@ class ScalaMethodCallFixer extends ScalaFixer {
 
                 while (currentPsi != null && methodCall.getTextRange.contains(
                          currentPsi.getTextRange) &&
-                       !currentPsi.isInstanceOf[ScArgumentExprList]) {
+                       !currentPsi.isInstanceOf[ScArgumentExprList])
                   currentPsi = currentPsi.getParent
-                }
 
                 currentPsi match {
                   case a: ScArgumentExprList => a

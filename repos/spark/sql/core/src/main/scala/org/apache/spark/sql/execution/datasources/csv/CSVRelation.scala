@@ -59,13 +59,13 @@ object CSVRelation extends Logging {
 
     val schemaFields = schema.fields
     val requiredFields = StructType(requiredColumns.map(schema(_))).fields
-    val safeRequiredFields = if (params.dropMalformed) {
-      // If `dropMalformed` is enabled, then it needs to parse all the values
-      // so that we can decide which row is malformed.
-      requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
-    } else {
-      requiredFields
-    }
+    val safeRequiredFields =
+      if (params.dropMalformed)
+        // If `dropMalformed` is enabled, then it needs to parse all the values
+        // so that we can decide which row is malformed.
+        requiredFields ++ schemaFields.filterNot(requiredFields.contains(_))
+      else
+        requiredFields
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
     schemaFields.zipWithIndex
       .filter {
@@ -82,19 +82,18 @@ object CSVRelation extends Logging {
         logWarning(
           s"Dropping malformed line: ${tokens.mkString(params.delimiter.toString)}")
         None
-      } else if (params.failFast && schemaFields.length != tokens.length) {
+      } else if (params.failFast && schemaFields.length != tokens.length)
         throw new RuntimeException(
           s"Malformed line in FAILFAST mode: " +
             s"${tokens.mkString(params.delimiter.toString)}")
-      } else {
+      else {
         val indexSafeTokens =
-          if (params.permissive && schemaFields.length > tokens.length) {
+          if (params.permissive && schemaFields.length > tokens.length)
             tokens ++ new Array[String](schemaFields.length - tokens.length)
-          } else if (params.permissive && schemaFields.length < tokens.length) {
+          else if (params.permissive && schemaFields.length < tokens.length)
             tokens.take(schemaFields.length)
-          } else {
+          else
             tokens
-          }
         try {
           var index: Int = 0
           var subIndex: Int = 0
@@ -109,9 +108,8 @@ object CSVRelation extends Logging {
               field.dataType,
               field.nullable,
               params.nullValue)
-            if (subIndex < requiredSize) {
+            if (subIndex < requiredSize)
               row(subIndex) = value
-            }
             subIndex = subIndex + 1
           }
           Some(row)
@@ -149,7 +147,7 @@ private[sql] class CsvOutputWriter(
   // create the Generator without separator inserted between 2 records
   private[this] val text = new Text()
 
-  private val recordWriter: RecordWriter[NullWritable, Text] = {
+  private val recordWriter: RecordWriter[NullWritable, Text] =
     new TextOutputFormat[NullWritable, Text]() {
       override def getDefaultWorkFile(
           context: TaskAttemptContext,
@@ -162,18 +160,16 @@ private[sql] class CsvOutputWriter(
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId.csv$extension")
       }
     }.getRecordWriter(context)
-  }
 
   private var firstRow: Boolean = params.headerFlag
 
   private val csvWriter = new LineCsvWriter(params, dataSchema.fieldNames.toSeq)
 
   private def rowToString(row: Seq[Any]): Seq[String] = row.map { field =>
-    if (field != null) {
+    if (field != null)
       field.toString
-    } else {
+    else
       params.nullValue
-    }
   }
 
   override def write(row: Row): Unit =
@@ -183,9 +179,8 @@ private[sql] class CsvOutputWriter(
     // TODO: Instead of converting and writing every row, we should use the univocity buffer
     val resultString =
       csvWriter.writeRow(rowToString(row.toSeq(dataSchema)), firstRow)
-    if (firstRow) {
+    if (firstRow)
       firstRow = false
-    }
     text.set(resultString)
     recordWriter.write(NullWritable.get(), text)
   }

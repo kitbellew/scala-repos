@@ -76,11 +76,10 @@ class ParamsSuite extends SparkFunSuite {
              Float.PositiveInfinity)) {
         val json = param.jsonEncode(value)
         val decoded = param.jsonDecode(json)
-        if (value.isNaN) {
+        if (value.isNaN)
           assert(decoded.isNaN)
-        } else {
+        else
           assert(decoded === value)
-        }
       }
     }
 
@@ -100,11 +99,10 @@ class ParamsSuite extends SparkFunSuite {
              Double.PositiveInfinity)) {
         val json = param.jsonEncode(value)
         val decoded = param.jsonDecode(json)
-        if (value.isNaN) {
+        if (value.isNaN)
           assert(decoded.isNaN)
-        } else {
+        else
           assert(decoded === value)
-        }
       }
     }
 
@@ -162,11 +160,10 @@ class ParamsSuite extends SparkFunSuite {
         assert(decoded.length === value.length)
         decoded.zip(value).foreach {
           case (actual, expected) =>
-            if (expected.isNaN) {
+            if (expected.isNaN)
               assert(actual.isNaN)
-            } else {
+            else
               assert(actual === expected)
-            }
         }
       }
     }

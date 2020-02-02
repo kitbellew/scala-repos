@@ -135,16 +135,14 @@ abstract class GenBCode extends BCodeSyncAndTry {
           if (item.isPoison) {
             q2 add poison2
             return
-          } else {
-            try {
-              withCurrentUnit(item.cunit)(visit(item))
-            } catch {
+          } else
+            try withCurrentUnit(item.cunit)(visit(item))
+            catch {
               case ex: Throwable =>
                 ex.printStackTrace()
                 error(
                   s"Error while emitting ${item.cunit.source}\n${ex.getMessage}")
             }
-          }
         }
       }
 
@@ -178,15 +176,15 @@ abstract class GenBCode extends BCodeSyncAndTry {
 
         // -------------- mirror class, if needed --------------
         val mirrorC =
-          if (isTopLevelModuleClass(claszSymbol)) {
-            if (claszSymbol.companionClass == NoSymbol) {
+          if (isTopLevelModuleClass(claszSymbol))
+            if (claszSymbol.companionClass == NoSymbol)
               mirrorCodeGen.genMirrorClass(claszSymbol, cunit)
-            } else {
+            else {
               log(
                 s"No mirror class for module with linked class: ${claszSymbol.fullName}")
               null
             }
-          } else null
+          else null
 
         // -------------- "plain" class --------------
         val pcb = new PlainClassBuilder(cunit)
@@ -198,14 +196,14 @@ abstract class GenBCode extends BCodeSyncAndTry {
 
         // -------------- bean info class, if needed --------------
         val beanC =
-          if (claszSymbol hasAnnotation BeanInfoAttr) {
+          if (claszSymbol hasAnnotation BeanInfoAttr)
             beanInfoCodeGen.genBeanInfoClass(
               claszSymbol,
               cunit,
               fieldSymbols(claszSymbol),
               methodSymbols(cd)
             )
-          } else null
+          else null
 
         // ----------- hand over to pipeline-2
 
@@ -268,7 +266,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
           if (item.isPoison) {
             q3 add poison3
             return
-          } else {
+          } else
             try {
               localOptimizations(item.plain)
               setInnerClasses(item.plain)
@@ -286,7 +284,6 @@ abstract class GenBCode extends BCodeSyncAndTry {
                 error(
                   s"Error while emitting ${item.plain.name}\n${ex.getMessage}")
             }
-          }
         }
       }
 

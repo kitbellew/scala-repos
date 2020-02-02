@@ -26,9 +26,8 @@ object AppInfo extends KafkaMetricsGroup {
 
   def registerInfo(): Unit = {
     lock.synchronized {
-      if (isRegistered) {
+      if (isRegistered)
         return
-      }
     }
 
     newGauge("Version", new Gauge[String] {

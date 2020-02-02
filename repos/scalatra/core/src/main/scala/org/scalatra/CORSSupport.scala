@@ -121,15 +121,14 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
       .getOrElseUpdate(CorsConfigKey, createDefault)
       .asInstanceOf[CORSConfig]
     import corsCfg._
-    if (enabled) {
+    if (enabled)
       logger debug "Enabled CORS Support with:\nallowedOrigins:\n\t%s\nallowedMethods:\n\t%s\nallowedHeaders:\n\t%s"
         .format(
           allowedOrigins mkString ", ",
           allowedMethods mkString ", ",
           allowedHeaders mkString ", ")
-    } else {
+    else
       logger debug "Cors support is disabled"
-    }
   }
 
   protected def handlePreflightRequest(): Unit = {
@@ -238,12 +237,11 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
   }
 
   private[this] def allowsMethod: Boolean = { // 5.2.3 and 5.2.5
-    val accessControlRequestMethod: String = {
+    val accessControlRequestMethod: String =
       request.headers
         .get(AccessControlRequestMethodHeader)
         .flatMap(_.blankOption)
         .getOrElse("")
-    }
     val result: Boolean = {
       accessControlRequestMethod.nonBlank &&
       corsConfig.allowedMethods.contains(
@@ -266,25 +264,21 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
   abstract override def handle(
       req: HttpServletRequest,
       res: HttpServletResponse): Unit =
-    if (corsConfig.enabled) {
+    if (corsConfig.enabled)
       withRequestResponse(req, res) {
         request.requestMethod match {
-          case Options if isPreflightRequest ⇒ {
+          case Options if isPreflightRequest ⇒
             handlePreflightRequest()
-          }
-          case Get | Post | Head if isSimpleRequest ⇒ {
+          case Get | Post | Head if isSimpleRequest ⇒
             augmentSimpleRequest()
             super.handle(req, res)
-          }
-          case _ if isCORSRequest ⇒ {
+          case _ if isCORSRequest ⇒
             augmentSimpleRequest()
             super.handle(req, res)
-          }
           case _ ⇒ super.handle(req, res)
         }
       }
-    } else {
+    else
       super.handle(req, res)
-    }
 
 }

@@ -106,9 +106,9 @@ object Externalizables {
     // copy contents of `xi` where i is the index of `typeOf[Array[Byte]]` in `perType` map
     val readFullyTree: Tree = {
       val arrIndices = perType.getOrElse(typeOf[Array[Byte]], List[Int]())
-      if (arrIndices.isEmpty) { // Array[Byte] unused
+      if (arrIndices.isEmpty) // Array[Byte] unused
         q"???"
-      } else {
+      else {
         val name = newTermName("x" + arrIndices.head)
         // TODO: faster array copy using Unsafe?
         q"System.arraycopy($name, 0, x, 0, x.length)"
@@ -206,22 +206,22 @@ object Externalizables {
     def writeTree(is: List[Int], tpeName: String): Tree = {
       val fldName = newTermName(tpeName + "Arr")
       if (is.isEmpty) q"???"
-      else if (is.size == 1) {
+      else if (is.size == 1)
         q"{ state += 1; $fldName(0) = x }"
-      } else if (is.size == 2) {
+      else if (is.size == 2)
         q"""
           state += 1
           if (state == ${is.head}) $fldName(0) = x
           else $fldName(1) = x
         """
-      } else if (is.size == 3) {
+      else if (is.size == 3)
         q"""
           state += 1
           if (state == ${is.head}) $fldName(0) = x
           else if (state == ${is.tail.head}) $fldName(1) = x
           else $fldName(2) = x
         """
-      } else
+      else
         c.abort(c.enclosingPosition, "more arguments not supported")
     }
 

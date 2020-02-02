@@ -72,9 +72,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
         .set("spark.driver.allowMultipleContexts", "true")
       sc = new SparkContext(conf)
       secondSparkContext = new SparkContext(conf)
-    } finally {
-      Option(secondSparkContext).foreach(_.stop())
-    }
+    } finally Option(secondSparkContext).foreach(_.stop())
   }
 
   test("Test getOrCreate") {
@@ -142,38 +140,30 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
         .map { x =>
           val gotten1 = new File(SparkFiles.get(file1.getName))
           val gotten2 = new File(SparkFiles.get(file2.getName))
-          if (!gotten1.exists()) {
+          if (!gotten1.exists())
             throw new SparkException("file doesn't exist : " + absolutePath1)
-          }
-          if (!gotten2.exists()) {
+          if (!gotten2.exists())
             throw new SparkException("file doesn't exist : " + absolutePath2)
-          }
 
-          if (length1 != gotten1.length()) {
+          if (length1 != gotten1.length())
             throw new SparkException(
               s"file has different length $length1 than added file ${gotten1.length()} : " +
                 absolutePath1)
-          }
-          if (length2 != gotten2.length()) {
+          if (length2 != gotten2.length())
             throw new SparkException(
               s"file has different length $length2 than added file ${gotten2.length()} : " +
                 absolutePath2)
-          }
 
-          if (absolutePath1 == gotten1.getAbsolutePath) {
+          if (absolutePath1 == gotten1.getAbsolutePath)
             throw new SparkException(
               "file should have been copied :" + absolutePath1)
-          }
-          if (absolutePath2 == gotten2.getAbsolutePath) {
+          if (absolutePath2 == gotten2.getAbsolutePath)
             throw new SparkException(
               "file should have been copied : " + absolutePath2)
-          }
           x
         }
         .count()
-    } finally {
-      sc.stop()
-    }
+    } finally sc.stop()
   }
 
   test("addFile recursive works") {
@@ -191,26 +181,21 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
         .map { x =>
           val sep = File.separator
           if (!new File(SparkFiles.get(neptune.getName + sep + alien1.getName))
-                .exists()) {
+                .exists())
             throw new SparkException(
               "can't access file under root added directory")
-          }
           if (!new File(SparkFiles.get(
                 neptune.getName + sep + saturn.getName + sep + alien2.getName))
-                .exists()) {
+                .exists())
             throw new SparkException("can't access file in nested directory")
-          }
           if (new File(SparkFiles.get(
                 pluto.getName + sep + neptune.getName + sep + alien1.getName))
-                .exists()) {
+                .exists())
             throw new SparkException("file exists that shouldn't")
-          }
           x
         }
         .count()
-    } finally {
-      sc.stop()
-    }
+    } finally sc.stop()
   }
 
   test("addFile recursive can't add directories by default") {
@@ -222,9 +207,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       intercept[SparkException] {
         sc.addFile(dir.getAbsolutePath)
       }
-    } finally {
-      sc.stop()
-    }
+    } finally sc.stop()
   }
 
   test(
@@ -240,9 +223,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       // In SPARK-6414, sc.cancelJobGroup will cause NullPointerException and cause
       // SparkContext to shutdown, so the following assertion will fail.
       assert(sc.parallelize(1 to 10).count() == 10L)
-    } finally {
-      sc.stop()
-    }
+    } finally sc.stop()
   }
 
   test(
@@ -334,9 +315,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       assert(sc.wholeTextFiles(dirpath1 + "," + dirpath2).count() == 5L)
       assert(sc.binaryFiles(dirpath1 + "," + dirpath2).count() == 5L)
 
-    } finally {
-      sc.stop()
-    }
+    } finally sc.stop()
   }
 
   test("Default path for file based RDDs is properly set (SPARK-12517)") {

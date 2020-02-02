@@ -62,9 +62,8 @@ object ScalaI18nUtil {
         var i: Int = 0
         var element: PsiElement = param
         while (element ne topLevel) {
-          if (i % 10 == 0) {
+          if (i % 10 == 0)
             element.putUserData(TOP_LEVEL_EXPRESSION, cachedValue)
-          }
           element = element.getParent
           i += 1
           i
@@ -90,9 +89,8 @@ object ScalaI18nUtil {
       AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
       null)
     val isI18n: Boolean = mustBePropertyKey(project, expr, annotationParams)
-    if (!isI18n) {
+    if (!isI18n)
       expr.putUserData(CACHE, NULL)
-    }
     isI18n
   }
 
@@ -153,9 +151,8 @@ object ScalaI18nUtil {
                       null,
                       annFqn,
                       annotationAttributeValues,
-                      nonNlsTargets)) {
+                      nonNlsTargets))
                   return true
-                }
               case _ =>
             }
           case _ =>
@@ -169,7 +166,7 @@ object ScalaI18nUtil {
       @NotNull project: Project,
       @NotNull expression: ScExpression): ScExpression = {
     if (expression.isInstanceOf[PsiBinaryExpression] || expression.getParent
-          .isInstanceOf[PsiBinaryExpression]) {
+          .isInstanceOf[PsiBinaryExpression])
       return CachedValuesManager
         .getManager(project)
         .getParameterizedCachedValue(
@@ -178,7 +175,6 @@ object ScalaI18nUtil {
           TOP_LEVEL_PROVIDER,
           true,
           (project, expression))
-    }
     getTopLevel(project, expression)
   }
 
@@ -203,9 +199,8 @@ object ScalaI18nUtil {
         val value
             : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
           expression.getUserData(TOP_LEVEL_EXPRESSION)
-        if (value != null && value.hasUpToDateValue) {
+        if (value != null && value.hasUpToDateValue)
           return getToplevelExpression(project, expression)
-        }
       }
     }
     expression
@@ -222,25 +217,21 @@ object ScalaI18nUtil {
     var processed = myProcessed
     if (processed != null) {
       if (processed.contains(method)) return false
-    } else {
+    } else
       processed = new mutable.HashSet[PsiMethod]
-    }
     processed.add(method)
     val params: Array[PsiParameter] = method.getParameterList.getParameters
     var param: PsiParameter = null
     if (idx >= params.length) {
-      if (params.length == 0) {
+      if (params.length == 0)
         return false
-      }
       val lastParam: PsiParameter = params(params.length - 1)
-      if (lastParam.isVarArgs) {
+      if (lastParam.isVarArgs)
         param = lastParam
-      } else {
+      else
         return false
-      }
-    } else {
+    } else
       param = params(idx)
-    }
     val annotation: PsiAnnotation = AnnotationUtil.findAnnotation(param, annFqn)
     if (annotation != null) {
       if (annotationAttributeValues != null) {
@@ -249,18 +240,16 @@ object ScalaI18nUtil {
         val attributes: Array[PsiNameValuePair] = parameterList.getAttributes
         for (attribute <- attributes) {
           val name: String = attribute.getName
-          if (annotationAttributeValues.contains(name)) {
+          if (annotationAttributeValues.contains(name))
             annotationAttributeValues.put(name, attribute.getValue)
-          }
         }
       }
       return true
     }
-    if (nonNlsTargets != null) {
+    if (nonNlsTargets != null)
       nonNlsTargets.add(param)
-    }
     val superMethods: Array[PsiMethod] = method.findSuperMethods
-    for (superMethod <- superMethods) {
+    for (superMethod <- superMethods)
       if (isMethodParameterAnnotatedWith(
             superMethod,
             idx,
@@ -268,7 +257,6 @@ object ScalaI18nUtil {
             annFqn,
             annotationAttributeValues,
             null)) return true
-    }
     false
   }
 
@@ -276,18 +264,17 @@ object ScalaI18nUtil {
       expression: ScLiteral,
       key: String,
       resourceBundleName: String): Boolean =
-    if (resourceBundleName == null) {
+    if (resourceBundleName == null)
       !PropertiesImplUtil
         .findPropertiesByKey(expression.getProject, key)
         .isEmpty
-    } else {
+    else {
       val propertiesFiles =
         propertiesFilesByBundleName(resourceBundleName, expression)
       var containedInPropertiesFile: Boolean = false
       import scala.collection.JavaConversions._
-      for (propertiesFile <- propertiesFiles) {
+      for (propertiesFile <- propertiesFiles)
         containedInPropertiesFile |= propertiesFile.findPropertyByKey(key) != null
-      }
       containedInPropertiesFile
     }
 
@@ -299,9 +286,8 @@ object ScalaI18nUtil {
     if (containingFileContext != null)
       containingFile = containingFileContext.getContainingFile
     var virtualFile: VirtualFile = containingFile.getVirtualFile
-    if (virtualFile == null) {
+    if (virtualFile == null)
       virtualFile = containingFile.getOriginalFile.getVirtualFile
-    }
     if (virtualFile != null) {
       val project: Project = containingFile.getProject
       val module: Module = ProjectRootManager
@@ -331,7 +317,7 @@ object ScalaI18nUtil {
     if (property != null && isValid(property, literal)) return property
     if (isI18nProperty(project, literal)) {
       val references: Array[PsiReference] = literal.getReferences
-      for (reference <- references) {
+      for (reference <- references)
         reference match {
           case polyVarRef: PsiPolyVariantReference =>
             val results: Array[ResolveResult] = polyVarRef.multiResolve(false)
@@ -353,7 +339,6 @@ object ScalaI18nUtil {
               case _ =>
             }
         }
-      }
     }
     null
   }
@@ -376,7 +361,7 @@ object ScalaI18nUtil {
     */
   def getPropertyValueParamsMaxCount(expression: ScLiteral): Int = {
     var maxCount: Int = -1
-    for (reference <- expression.getReferences) {
+    for (reference <- expression.getReferences)
       reference match {
         case polyVarRef: PsiPolyVariantReference =>
           for (result <- polyVarRef.multiResolve(false)) {
@@ -386,26 +371,22 @@ object ScalaI18nUtil {
               val value: String =
                 result.getElement.asInstanceOf[IProperty].getValue
               var format: MessageFormat = null
-              try {
-                format = new MessageFormat(value)
-              } catch {
-                case e: Exception => {
+              try format = new MessageFormat(value)
+              catch {
+                case e: Exception =>
                   flag = false
-                }
               }
-              if (flag) {
+              if (flag)
                 try {
                   val count: Int = format.getFormatsByArgumentIndex.length
                   maxCount = Math.max(maxCount, count)
                 } catch {
-                  case ignored: IllegalArgumentException => {}
+                  case ignored: IllegalArgumentException =>
                 }
-              }
             }
           }
         case _ =>
       }
-    }
     maxCount
   }
 
@@ -427,22 +408,20 @@ object ScalaI18nUtil {
           var value: AnyRef = evaluator.computeConstantExpression(
             args(i),
             throwExceptionOnOverflow = false)
-          if (value == null) {
-            if (args(i).isInstanceOf[ScReferenceExpression]) {
+          if (value == null)
+            if (args(i).isInstanceOf[ScReferenceExpression])
               value = "{" + args(i).getText + "}"
-            } else {
+            else {
               text = null
               flag = false
             }
-          }
           text = text.replace("{" + (i - 1) + "}", value.toString)
           i += 1
           i
         }
         if (text != null) {
-          if (!(text == methodCallExpression.getText)) {
+          if (!(text == methodCallExpression.getText))
             text = text.replace("''", "'")
-          }
           return if (text.length > FOLD_MAX_LENGTH)
             text.substring(0, FOLD_MAX_LENGTH - 3) + "...\""
           else text
@@ -461,7 +440,7 @@ object ScalaI18nUtil {
     annotationAttributeValues.put(
       AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
       null)
-    if (mustBePropertyKey(project, expression, annotationAttributeValues)) {
+    if (mustBePropertyKey(project, expression, annotationAttributeValues))
       annotationAttributeValues get AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER exists {
         case bundleName: PsiElement =>
           val result = JavaPsiFacade
@@ -476,7 +455,7 @@ object ScalaI18nUtil {
           }
         case _ => false
       }
-    } else true
+    else true
   }
 
   def createProperty(
@@ -491,9 +470,8 @@ object ScalaI18nUtil {
       documentManager.commitDocument(
         documentManager.getDocument(file.getContainingFile))
       val existingProperty: IProperty = file.findPropertyByKey(key)
-      if (existingProperty == null) {
+      if (existingProperty == null)
         file.addProperty(key, value)
-      }
     }
   }
 
@@ -502,11 +480,10 @@ object ScalaI18nUtil {
       psiFile: PsiFile): TextRange = {
     if (editor == null) return null
     val selectedText: String = editor.getSelectionModel.getSelectedText
-    if (selectedText != null) {
+    if (selectedText != null)
       return new TextRange(
         editor.getSelectionModel.getSelectionStart,
         editor.getSelectionModel.getSelectionEnd)
-    }
     val psiElement: PsiElement =
       psiFile.findElementAt(editor.getCaretModel.getOffset)
     if (psiElement == null || psiElement.isInstanceOf[PsiWhiteSpace])

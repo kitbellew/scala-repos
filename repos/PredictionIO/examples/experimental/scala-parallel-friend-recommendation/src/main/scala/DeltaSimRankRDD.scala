@@ -76,11 +76,10 @@ object DeltaSimRankRDD {
     val newIter = prevIter.leftOuterJoin(deltaToIndex)
     val newScores = newIter.map { x =>
       val index = x._1
-      if (x._2._2.isDefined) {
+      if (x._2._2.isDefined)
         (index, x._2._1 + x._2._2.get)
-      } else {
+      else
         (index, x._2._1)
-      }
     }
     newScores
   }
@@ -137,17 +136,17 @@ object DeltaSimRankRDD {
     }
 
     val e = g.edges.map { (e: Edge[Int]) =>
-      if (hash.contains(e.srcId)) {
+      if (hash.contains(e.srcId))
         e.srcId = hash(e.srcId)
-      } else {
+      else {
         hash += (e.srcId -> counter)
         counter += 1
         e.srcId = counter - 1
       }
 
-      if (hash.contains(e.dstId)) {
+      if (hash.contains(e.dstId))
         e.dstId = hash(e.dstId)
-      } else {
+      else {
         hash += (e.dstId -> counter)
         counter += 1
         e.dstId = counter - 1

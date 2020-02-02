@@ -74,7 +74,7 @@ trait RefactoringHandler { self: Analyzer =>
     val result = scalaCompiler.askPrepareRefactor(procedureId, refactor)
 
     result match {
-      case Right(effect: RefactorEffect) => {
+      case Right(effect: RefactorEffect) =>
         FileUtils.writeDiffChanges(effect.changes, cs) match {
           case Right(f) =>
             new RefactorDiffEffect(
@@ -84,7 +84,6 @@ trait RefactoringHandler { self: Analyzer =>
             )
           case Left(err) => RefactorFailure(effect.procedureId, err.toString)
         }
-      }
       case Left(failure) =>
         failure
     }
@@ -274,11 +273,8 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
 
   private def using[A, R <: { def close(): Unit }](r: R)(f: R => A): A = {
     import scala.language.reflectiveCalls
-    try {
-      f(r)
-    } finally {
-      r.close()
-    }
+    try f(r)
+    finally r.close()
   }
 
   protected def doAddImport(
@@ -308,27 +304,25 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
 
     val tpe = refactor.refactorType
 
-    try {
-      refactor match {
-        case InlineLocalRefactorDesc(file, start, end) =>
-          reloadAndType(file)
-          doInlineLocal(procId, tpe, file, start, end)
-        case RenameRefactorDesc(newName, file, start, end) =>
-          reloadAndType(file)
-          doRename(procId, tpe, newName, file, start, end)
-        case ExtractMethodRefactorDesc(methodName, file, start, end) =>
-          reloadAndType(file)
-          doExtractMethod(procId, tpe, methodName, file, start, end)
-        case ExtractLocalRefactorDesc(name, file, start, end) =>
-          reloadAndType(file)
-          doExtractLocal(procId, tpe, name, file, start, end)
-        case OrganiseImportsRefactorDesc(file) =>
-          reloadAndType(file)
-          doOrganizeImports(procId, tpe, file)
-        case AddImportRefactorDesc(qualifiedName, file) =>
-          reloadAndType(file)
-          doAddImport(procId, tpe, qualifiedName, file)
-      }
+    try refactor match {
+      case InlineLocalRefactorDesc(file, start, end) =>
+        reloadAndType(file)
+        doInlineLocal(procId, tpe, file, start, end)
+      case RenameRefactorDesc(newName, file, start, end) =>
+        reloadAndType(file)
+        doRename(procId, tpe, newName, file, start, end)
+      case ExtractMethodRefactorDesc(methodName, file, start, end) =>
+        reloadAndType(file)
+        doExtractMethod(procId, tpe, methodName, file, start, end)
+      case ExtractLocalRefactorDesc(name, file, start, end) =>
+        reloadAndType(file)
+        doExtractLocal(procId, tpe, name, file, start, end)
+      case OrganiseImportsRefactorDesc(file) =>
+        reloadAndType(file)
+        doOrganizeImports(procId, tpe, file)
+      case AddImportRefactorDesc(qualifiedName, file) =>
+        reloadAndType(file)
+        doAddImport(procId, tpe, qualifiedName, file)
     } catch {
       case e: Throwable =>
         logger.error("Error during refactor request: " + refactor, e)

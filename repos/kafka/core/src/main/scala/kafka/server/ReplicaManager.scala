@@ -289,9 +289,8 @@ class ReplicaManager(
         if (deletePartition) {
           val topicAndPartition = TopicAndPartition(topic, partitionId)
 
-          if (logManager.getLog(topicAndPartition).isDefined) {
+          if (logManager.getLog(topicAndPartition).isDefined)
             logManager.deleteLog(topicAndPartition)
-          }
         }
         stateChangeLogger.trace(
           "Broker %d ignoring stop replica (delete=%s) for partition [%s,%d] as replica doesn't exist on broker"
@@ -499,7 +498,7 @@ class ReplicaManager(
           .mark()
 
         // reject appending to internal topics if it is not allowed
-        if (TopicConstants.INTERNAL_TOPICS.contains(topicPartition.topic) && !internalTopicsAllowed) {
+        if (TopicConstants.INTERNAL_TOPICS.contains(topicPartition.topic) && !internalTopicsAllowed)
           (
             topicPartition,
             LogAppendResult(
@@ -507,7 +506,7 @@ class ReplicaManager(
               Some(
                 new InvalidTopicException("Cannot append to internal topic %s"
                   .format(topicPartition.topic)))))
-        } else {
+        else
           try {
             val partitionOpt =
               getPartition(topicPartition.topic, topicPartition.partition)
@@ -582,7 +581,6 @@ class ReplicaManager(
                 topicPartition,
                 LogAppendResult(LogAppendInfo.UnknownLogAppendInfo, Some(t)))
           }
-        }
     }
   }
 
@@ -869,7 +867,7 @@ class ReplicaManager(
             val partitionLeaderEpoch = partition.getLeaderEpoch()
             // If the leader epoch is valid record the epoch of the controller that made the leadership decision.
             // This is useful while updating the isr to maintain the decision maker controller's epoch in the zookeeper path
-            if (partitionLeaderEpoch < stateInfo.leaderEpoch) {
+            if (partitionLeaderEpoch < stateInfo.leaderEpoch)
               if (stateInfo.replicas.contains(config.brokerId))
                 partitionState.put(partition, stateInfo)
               else {
@@ -889,7 +887,7 @@ class ReplicaManager(
                   topicPartition,
                   Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
               }
-            } else {
+            else {
               // Otherwise record the error code in response
               stateChangeLogger.warn(
                 ("Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d " +
@@ -1187,7 +1185,7 @@ class ReplicaManager(
               epoch))
       }
 
-      if (isShuttingDown.get()) {
+      if (isShuttingDown.get())
         partitionsToMakeFollower.foreach { partition =>
           stateChangeLogger.trace(
             ("Broker %d skipped the adding-fetcher step of the become-follower state change with correlation id %d from " +
@@ -1200,7 +1198,7 @@ class ReplicaManager(
                 partition.topic,
                 partition.partitionId))
         }
-      } else {
+      else {
         // we do not need to check if the leader exists again since this has been done at the beginning of this process
         val partitionsToMakeFollowerWithLeaderAndOffset =
           partitionsToMakeFollower
@@ -1302,9 +1300,8 @@ class ReplicaManager(
       val hwms = reps
         .map(r => new TopicAndPartition(r) -> r.highWatermark.messageOffset)
         .toMap
-      try {
-        highWatermarkCheckpoints(dir).write(hwms)
-      } catch {
+      try highWatermarkCheckpoints(dir).write(hwms)
+      catch {
         case e: IOException =>
           fatal("Error writing to highwatermark file: ", e)
           Runtime.getRuntime().halt(1)

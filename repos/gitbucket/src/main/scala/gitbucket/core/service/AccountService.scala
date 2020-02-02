@@ -18,11 +18,10 @@ trait AccountService {
       settings: SystemSettings,
       userName: String,
       password: String)(implicit s: Session): Option[Account] =
-    if (settings.ldapAuthentication) {
+    if (settings.ldapAuthentication)
       ldapAuthentication(settings, userName, password)
-    } else {
+    else
       defaultAuthentication(userName, password)
-    }
 
   /**
     * Authenticate by internal database.
@@ -43,37 +42,32 @@ trait AccountService {
       userName: String,
       password: String)(implicit s: Session): Option[Account] =
     LDAPUtil.authenticate(settings.ldap.get, userName, password) match {
-      case Right(ldapUserInfo) => {
+      case Right(ldapUserInfo) =>
         // Create or update account by LDAP information
         getAccountByUserName(ldapUserInfo.userName, true) match {
-          case Some(x) if (!x.isRemoved) => {
-            if (settings.ldap.get.mailAttribute.getOrElse("").isEmpty) {
+          case Some(x) if (!x.isRemoved) =>
+            if (settings.ldap.get.mailAttribute.getOrElse("").isEmpty)
               updateAccount(x.copy(fullName = ldapUserInfo.fullName))
-            } else {
+            else
               updateAccount(
                 x.copy(
                   mailAddress = ldapUserInfo.mailAddress,
                   fullName = ldapUserInfo.fullName))
-            }
             getAccountByUserName(ldapUserInfo.userName)
-          }
-          case Some(x) if (x.isRemoved) => {
+          case Some(x) if (x.isRemoved) =>
             logger.info(
               "LDAP Authentication Failed: Account is already registered but disabled.")
             defaultAuthentication(userName, password)
-          }
           case None =>
             getAccountByMailAddress(ldapUserInfo.mailAddress, true) match {
-              case Some(x) if (!x.isRemoved) => {
+              case Some(x) if (!x.isRemoved) =>
                 updateAccount(x.copy(fullName = ldapUserInfo.fullName))
                 getAccountByUserName(ldapUserInfo.userName)
-              }
-              case Some(x) if (x.isRemoved) => {
+              case Some(x) if (x.isRemoved) =>
                 logger.info(
                   "LDAP Authentication Failed: Account is already registered but disabled.")
                 defaultAuthentication(userName, password)
-              }
-              case None => {
+              case None =>
                 createAccount(
                   ldapUserInfo.userName,
                   "",
@@ -82,14 +76,11 @@ trait AccountService {
                   false,
                   None)
                 getAccountByUserName(ldapUserInfo.userName)
-              }
             }
         }
-      }
-      case Left(errorMessage) => {
+      case Left(errorMessage) =>
         logger.info(s"LDAP Authentication Failed: $errorMessage")
         defaultAuthentication(userName, password)
-      }
     }
 
   def getAccountByUserName(userName: String, includeRemoved: Boolean = false)(
@@ -104,16 +95,15 @@ trait AccountService {
       implicit s: Session): Map[String, Account] = {
     val map = knowns.map(a => a.userName -> a).toMap
     val needs = userNames -- map.keySet
-    if (needs.isEmpty) {
+    if (needs.isEmpty)
       map
-    } else {
+    else
       map ++ Accounts
         .filter(t =>
           (t.userName inSetBind needs) && (t.removed === false.bind, !includeRemoved))
         .list
         .map(a => a.userName -> a)
         .toMap
-    }
   }
 
   def getAccountByMailAddress(
@@ -124,11 +114,10 @@ trait AccountService {
 
   def getAllUsers(includeRemoved: Boolean = true)(
       implicit s: Session): List[Account] =
-    if (includeRemoved) {
+    if (includeRemoved)
       Accounts sortBy (_.userName) list
-    } else {
+    else
       Accounts filter (_.removed === false.bind) sortBy (_.userName) list
-    }
 
   def createAccount(
       userName: String,

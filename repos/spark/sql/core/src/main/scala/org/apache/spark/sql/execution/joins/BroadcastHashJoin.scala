@@ -201,9 +201,9 @@ case class BroadcastHashJoin(
     buildPlan.output.zipWithIndex.map {
       case (a, i) =>
         val ev = BoundReference(i, a.dataType, a.nullable).gen(ctx)
-        if (joinType == Inner) {
+        if (joinType == Inner)
           ev
-        } else {
+        else {
           // the variables are needed even there is no matched rows
           val isNull = ctx.freshName("isNull")
           val value = ctx.freshName("value")
@@ -248,15 +248,14 @@ case class BroadcastHashJoin(
          |${ev.code}
          |if (${ev.isNull} || !${ev.value}) continue;
        """.stripMargin
-    } else {
+    } else
       ""
-    }
 
     val resultVars = buildSide match {
       case BuildLeft  => buildVars ++ input
       case BuildRight => input ++ buildVars
     }
-    if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation]) {
+    if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation])
       s"""
          |// generate join key for stream side
          |${keyEv.code}
@@ -267,8 +266,7 @@ case class BroadcastHashJoin(
          |$numOutput.add(1);
          |${consume(ctx, resultVars)}
        """.stripMargin
-
-    } else {
+    else {
       ctx.copyResult = true
       val matches = ctx.freshName("matches")
       val bufferType = classOf[CompactBuffer[UnsafeRow]].getName
@@ -322,15 +320,14 @@ case class BroadcastHashJoin(
          |  $conditionPassed = !${ev.isNull} && ${ev.value};
          |}
        """.stripMargin
-    } else {
+    } else
       s"final boolean $conditionPassed = true;"
-    }
 
     val resultVars = buildSide match {
       case BuildLeft  => buildVars ++ input
       case BuildRight => input ++ buildVars
     }
-    if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation]) {
+    if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation])
       s"""
          |// generate join key for stream side
          |${keyEv.code}
@@ -348,8 +345,7 @@ case class BroadcastHashJoin(
          |$numOutput.add(1);
          |${consume(ctx, resultVars)}
        """.stripMargin
-
-    } else {
+    else {
       ctx.copyResult = true
       val matches = ctx.freshName("matches")
       val bufferType = classOf[CompactBuffer[UnsafeRow]].getName
@@ -401,11 +397,10 @@ case class BroadcastHashJoin(
          |${ev.code}
          |if (${ev.isNull} || !${ev.value}) continue;
        """.stripMargin
-    } else {
+    } else
       ""
-    }
 
-    if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation]) {
+    if (broadcastRelation.value.isInstanceOf[UniqueHashedRelation])
       s"""
          |// generate join key for stream side
          |${keyEv.code}
@@ -416,7 +411,7 @@ case class BroadcastHashJoin(
          |$numOutput.add(1);
          |${consume(ctx, input)}
        """.stripMargin
-    } else {
+    else {
       val matches = ctx.freshName("matches")
       val bufferType = classOf[CompactBuffer[UnsafeRow]].getName
       val i = ctx.freshName("i")

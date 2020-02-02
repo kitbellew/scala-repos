@@ -76,9 +76,8 @@ class ScalaLibraryLoader(
   def addSyntheticClasses(): Unit = {
     val syntheticClasses: SyntheticClasses =
       project.getComponent(classOf[SyntheticClasses])
-    if (!syntheticClasses.isClassesRegistered) {
+    if (!syntheticClasses.isClassesRegistered)
       syntheticClasses.registerClasses()
-    }
   }
 
   def clean() {

@@ -88,7 +88,7 @@ class SexpParser(val input: ParserInput) extends Parser with StringBuilding {
   }
 
   private def SexpCharP: Rule1[SexpChar] = rule {
-    '?' ~ NormalChar ~> { SexpChar }
+    '?' ~ NormalChar ~> SexpChar
   }
 
   def SexpStringP = rule {

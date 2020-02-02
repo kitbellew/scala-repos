@@ -247,12 +247,11 @@ object ImmutableArray extends ImmutableArrayInstances {
     def ++[B >: Char: ClassTag](other: ImmutableArray[B]) =
       other match {
         case other: StringArray => new StringArray(str + other.str)
-        case _ => {
+        case _ =>
           val newArr = new Array[B](length + other.length)
           this.copyToArray(newArr, 0, length)
           other.copyToArray(newArr, length, other.length)
           fromArray(newArr)
-        }
       }
   }
 

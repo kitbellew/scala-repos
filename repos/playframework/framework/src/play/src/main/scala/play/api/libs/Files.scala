@@ -95,15 +95,11 @@ object Files {
       * Move the file.
       */
     def moveTo(to: File, replace: Boolean = false): File = {
-      try {
-        if (replace)
-          JFiles.move(
-            file.toPath,
-            to.toPath,
-            StandardCopyOption.REPLACE_EXISTING)
-        else
-          JFiles.move(file.toPath, to.toPath)
-      } catch {
+      try if (replace)
+        JFiles.move(file.toPath, to.toPath, StandardCopyOption.REPLACE_EXISTING)
+      else
+        JFiles.move(file.toPath, to.toPath)
+      catch {
         case ex: FileAlreadyExistsException => to
       }
 

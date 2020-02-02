@@ -37,9 +37,7 @@ object IO {
       }
       loop()
       builder.result()
-    } finally {
-      br.close()
-    }
+    } finally br.close()
   }
 
   /** Reads the entire content of a reader as a string. */
@@ -133,15 +131,11 @@ object IO {
       files: Seq[VirtualTextFile]): Unit = {
     val out = output.contentWriter
 
-    try {
-      for (file <- files) {
-        writeTo(file, out)
-        // New line after each file
-        out.write('\n')
-      }
-    } finally {
-      out.close()
-    }
+    try for (file <- files) {
+      writeTo(file, out)
+      // New line after each file
+      out.write('\n')
+    } finally out.close()
   }
 
   @inline

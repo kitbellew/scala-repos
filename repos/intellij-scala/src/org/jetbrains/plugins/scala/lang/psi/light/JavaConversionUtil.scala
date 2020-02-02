@@ -45,20 +45,17 @@ object JavaConversionUtil {
         val annotationsText = annotations(holder).mkString("\n")
         if (!annotationsText.isEmpty)
           builder.append(annotationsText).append(" ")
-        for ((fqn, keyword) <- keywordAnnotations) {
+        for ((fqn, keyword) <- keywordAnnotations)
           if (holder.hasAnnotation(fqn).isDefined)
             builder.append(keyword).append(" ")
-        }
       case _ =>
     }
 
-    if (isStatic) {
+    if (isStatic)
       builder.append("static ")
-    }
 
-    if (s.hasModifierProperty("final")) {
+    if (s.hasModifierProperty("final"))
       builder.append("final ")
-    }
 
     s.getModifierList.accessModifier match {
       case Some(a) if a.isUnqualifiedPrivateOrThis => builder.append("private ")
@@ -101,9 +98,9 @@ object JavaConversionUtil {
       case l: ScLiteral =>
         "\"" + StringUtil.escapeStringCharacters(l.getValue.toString) + "\""
       case call: ScMethodCall =>
-        if (call.getInvokedExpr.getText.endsWith("Array")) {
+        if (call.getInvokedExpr.getText.endsWith("Array"))
           call.args.exprs.map(convertExpression).mkString("{", ", ", "}")
-        } else problem
+        else problem
       case call: ScGenericCall =>
         if (call.referencedExpr.getText.endsWith("classOf")) {
           val arguments = call.arguments

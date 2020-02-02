@@ -63,18 +63,17 @@ object TopicCommand extends Logging {
       30000,
       JaasUtils.isZkSecurityEnabled())
     var exitCode = 0
-    try {
-      if (opts.options.has(opts.createOpt))
-        createTopic(zkUtils, opts)
-      else if (opts.options.has(opts.alterOpt))
-        alterTopic(zkUtils, opts)
-      else if (opts.options.has(opts.listOpt))
-        listTopics(zkUtils, opts)
-      else if (opts.options.has(opts.describeOpt))
-        describeTopic(zkUtils, opts)
-      else if (opts.options.has(opts.deleteOpt))
-        deleteTopic(zkUtils, opts)
-    } catch {
+    try if (opts.options.has(opts.createOpt))
+      createTopic(zkUtils, opts)
+    else if (opts.options.has(opts.alterOpt))
+      alterTopic(zkUtils, opts)
+    else if (opts.options.has(opts.listOpt))
+      listTopics(zkUtils, opts)
+    else if (opts.options.has(opts.describeOpt))
+      describeTopic(zkUtils, opts)
+    else if (opts.options.has(opts.deleteOpt))
+      deleteTopic(zkUtils, opts)
+    catch {
       case e: Throwable =>
         println("Error while executing topic command : " + e.getMessage)
         error(Utils.stackTrace(e))
@@ -148,12 +147,11 @@ object TopicCommand extends Logging {
   def alterTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
     val topics = getTopics(zkUtils, opts)
     val ifExists = if (opts.options.has(opts.ifExistsOpt)) true else false
-    if (topics.length == 0 && !ifExists) {
+    if (topics.length == 0 && !ifExists)
       throw new IllegalArgumentException(
         "Topic %s does not exist on ZK path %s".format(
           opts.options.valueOf(opts.topicOpt),
           opts.options.valueOf(opts.zkConnectOpt)))
-    }
     topics.foreach { topic =>
       val configs =
         AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
@@ -174,10 +172,9 @@ object TopicCommand extends Logging {
       }
 
       if (opts.options.has(opts.partitionsOpt)) {
-        if (topic == TopicConstants.GROUP_METADATA_TOPIC_NAME) {
+        if (topic == TopicConstants.GROUP_METADATA_TOPIC_NAME)
           throw new IllegalArgumentException(
             "The number of partitions for the offsets topic cannot be changed.")
-        }
         println(
           "WARNING: If partitions are increased for a topic that has a key, the partition " +
             "logic or ordering of the messages will be affected")
@@ -196,36 +193,31 @@ object TopicCommand extends Logging {
 
   def listTopics(zkUtils: ZkUtils, opts: TopicCommandOptions) {
     val topics = getTopics(zkUtils, opts)
-    for (topic <- topics) {
-      if (zkUtils.pathExists(getDeleteTopicPath(topic))) {
+    for (topic <- topics)
+      if (zkUtils.pathExists(getDeleteTopicPath(topic)))
         println("%s - marked for deletion".format(topic))
-      } else {
+      else
         println(topic)
-      }
-    }
   }
 
   def deleteTopic(zkUtils: ZkUtils, opts: TopicCommandOptions) {
     val topics = getTopics(zkUtils, opts)
     val ifExists = if (opts.options.has(opts.ifExistsOpt)) true else false
-    if (topics.length == 0 && !ifExists) {
+    if (topics.length == 0 && !ifExists)
       throw new IllegalArgumentException(
         "Topic %s does not exist on ZK path %s".format(
           opts.options.valueOf(opts.topicOpt),
           opts.options.valueOf(opts.zkConnectOpt)))
-    }
     topics.foreach { topic =>
-      try {
-        if (TopicConstants.INTERNAL_TOPICS.contains(topic)) {
-          throw new AdminOperationException(
-            "Topic %s is a kafka internal topic and is not allowed to be marked for deletion."
-              .format(topic))
-        } else {
-          zkUtils.createPersistentPath(getDeleteTopicPath(topic))
-          println("Topic %s is marked for deletion.".format(topic))
-          println(
-            "Note: This will have no impact if delete.topic.enable is not set to true.")
-        }
+      try if (TopicConstants.INTERNAL_TOPICS.contains(topic))
+        throw new AdminOperationException(
+          "Topic %s is a kafka internal topic and is not allowed to be marked for deletion."
+            .format(topic))
+      else {
+        zkUtils.createPersistentPath(getDeleteTopicPath(topic))
+        println("Topic %s is marked for deletion.".format(topic))
+        println(
+          "Note: This will have no impact if delete.topic.enable is not set to true.")
       } catch {
         case e: ZkNodeExistsException =>
           println("Topic %s is already marked for deletion.".format(topic))
@@ -248,7 +240,7 @@ object TopicCommand extends Logging {
     val reportOverriddenConfigs =
       if (opts.options.has(opts.topicsWithOverridesOpt)) true else false
     val liveBrokers = zkUtils.getAllBrokersInCluster().map(_.id).toSet
-    for (topic <- topics) {
+    for (topic <- topics)
       zkUtils.getPartitionAssignmentForTopics(List(topic)).get(topic) match {
         case Some(topicPartitionAssignment) =>
           val describeConfigs: Boolean =
@@ -271,7 +263,7 @@ object TopicCommand extends Logging {
                     configs.map(kv => kv._1 + "=" + kv._2).mkString(",")))
             }
           }
-          if (describePartitions) {
+          if (describePartitions)
             for ((partitionId, assignedReplicas) <- sortedPartitions) {
               val inSyncReplicas =
                 zkUtils.getInSyncReplicasForPartition(topic, partitionId)
@@ -288,11 +280,9 @@ object TopicCommand extends Logging {
                 println("\tIsr: " + inSyncReplicas.mkString(","))
               }
             }
-          }
         case None =>
           println("Topic " + topic + " doesn't exist!")
       }
-    }
   }
 
   def parseTopicConfigsToBeAdded(opts: TopicCommandOptions): Properties = {
@@ -305,12 +295,11 @@ object TopicCommand extends Logging {
     configsToBeAdded.foreach(pair =>
       props.setProperty(pair(0).trim, pair(1).trim))
     LogConfig.validate(props)
-    if (props.containsKey(LogConfig.MessageFormatVersionProp)) {
+    if (props.containsKey(LogConfig.MessageFormatVersionProp))
       println(
         s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props
           .getProperty(LogConfig.MessageFormatVersionProp)} is specified. " +
           s"This configuration will be ignored if the version is newer than the inter.broker.protocol.version specified in the broker.")
-    }
     props
   }
 

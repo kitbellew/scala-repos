@@ -91,18 +91,16 @@ class ScImplicitlyConvertible(
       exprType: Option[ScType] = None): Seq[ImplicitResolveResult] = {
     val buffer = new ArrayBuffer[ImplicitResolveResult]
     val seen = new mutable.HashSet[PsiNamedElement]
-    for (elem <- implicitMapFirstPart(exp, fromUnder, exprType)) {
+    for (elem <- implicitMapFirstPart(exp, fromUnder, exprType))
       if (!seen.contains(elem.element)) {
         seen += elem.element
         buffer += elem
       }
-    }
-    for (elem <- implicitMapSecondPart(exp, fromUnder, args = args)) {
+    for (elem <- implicitMapSecondPart(exp, fromUnder, args = args))
       if (!seen.contains(elem.element)) {
         seen += elem.element
         buffer += elem
       }
-    }
     buffer.toSeq
   }
 
@@ -146,9 +144,8 @@ class ScImplicitlyConvertible(
       exprType.getOrElse(placeType(fromUnder).getOrElse(return Seq.empty))
 
     val buffer = new ArrayBuffer[ImplicitMapResult]
-    if (!isFromCompanion) {
+    if (!isFromCompanion)
       buffer ++= buildSimpleImplicitMap(fromUnder, exprType)
-    }
     if (isFromCompanion) {
       val processor = new CollectImplicitsProcessor(true)
       val expandedType: ScType = exp match {
@@ -165,13 +162,11 @@ class ScImplicitlyConvertible(
       for (obj <- ScalaPsiUtil.collectImplicitObjects(
              expandedType,
              place.getProject,
-             place.getResolveScope)) {
+             place.getResolveScope))
         processor.processType(obj, place, ResolveState.initial())
-      }
       for (res <- processor.candidatesS.map(forMap(_, typez))
-           if res.condition) {
+           if res.condition)
         buffer += res
-      }
     }
 
     val result = new ArrayBuffer[ImplicitResolveResult]
@@ -277,9 +272,8 @@ class ScImplicitlyConvertible(
 
     val sigsFound = processor.candidatesS.map(forMap(_, typez))
 
-    for (res <- sigsFound if res.condition) {
+    for (res <- sigsFound if res.condition)
       result += res
-    }
 
     result
   }
@@ -415,22 +409,20 @@ class ScImplicitlyConvertible(
                   val lowerType: ScType = tParam.lowerBound.getOrNothing
                   if (lowerType != types.Nothing) {
                     val substedLower = unSubst.subst(subst.subst(lowerType))
-                    if (!hasRecursiveTypeParameters(substedLower)) {
+                    if (!hasRecursiveTypeParameters(substedLower))
                       uSubst = uSubst.addLower(
                         (tParam.name, ScalaPsiUtil.getPsiElementId(tParam)),
                         substedLower,
                         additional = true)
-                    }
                   }
                   val upperType: ScType = tParam.upperBound.getOrAny
                   if (upperType != types.Any) {
                     val substedUpper = unSubst.subst(subst.subst(upperType))
-                    if (!hasRecursiveTypeParameters(substedUpper)) {
+                    if (!hasRecursiveTypeParameters(substedUpper))
                       uSubst = uSubst.addUpper(
                         (tParam.name, ScalaPsiUtil.getPsiElementId(tParam)),
                         substedUpper,
                         additional = true)
-                    }
                   }
                 }
 
@@ -441,7 +433,7 @@ class ScImplicitlyConvertible(
                     //todo: rewritten in more clean and clear way.
                     val dependentSubst = new ScSubstitutor(() => {
                       val level = place.scalaLanguageLevelOrDefault
-                      if (level >= Scala_2_10) {
+                      if (level >= Scala_2_10)
                         f.paramClauses.clauses.headOption
                           .map(_.parameters)
                           .toSeq
@@ -451,7 +443,7 @@ class ScImplicitlyConvertible(
                               (new Parameter(param), typez)
                           }
                           .toMap
-                      } else Map.empty
+                      else Map.empty
                     })
 
                     def probablyHasDepententMethodTypes: Boolean = {
@@ -473,7 +465,7 @@ class ScImplicitlyConvertible(
 
                     val implicitDependentSubst = new ScSubstitutor(() => {
                       val level = place.scalaLanguageLevelOrDefault
-                      if (level >= Scala_2_10) {
+                      if (level >= Scala_2_10)
                         if (probablyHasDepententMethodTypes) {
                           val params: Seq[Parameter] =
                             f.paramClauses.clauses.last.effectiveParameters.map(
@@ -502,7 +494,7 @@ class ScImplicitlyConvertible(
                             }
                             .toMap
                         } else Map.empty
-                      } else Map.empty
+                      else Map.empty
                     })
 
                     //todo: pass implicit parameters
@@ -599,9 +591,8 @@ class ScImplicitlyConvertible(
               //filtered cases
               if (clauses.length > 2) return true
               if (clauses.length == 2) {
-                if (!clauses(1).isImplicit) {
+                if (!clauses(1).isImplicit)
                   return true
-                }
                 if (f.hasTypeParameters) {
                   val typeParameters = f.typeParameters
                   for {
@@ -714,7 +705,7 @@ object ScImplicitlyConvertible {
   def checkFucntionIsEligible(
       function: ScFunction,
       place: PsiElement): Boolean = {
-    if (!function.hasExplicitType) {
+    if (!function.hasExplicitType)
       if (PsiTreeUtil.isContextAncestor(
             function.getContainingFile,
             place,
@@ -753,7 +744,6 @@ object ScImplicitlyConvertible {
           }
         }
       }
-    }
     true
   }
 

@@ -57,10 +57,9 @@ class SshServerListener
 
   override def contextInitialized(sce: ServletContextEvent): Unit = {
     val settings = loadSystemSettings()
-    if (settings.sshAddress.isDefined && settings.baseUrl.isEmpty) {
+    if (settings.sshAddress.isDefined && settings.baseUrl.isEmpty)
       logger.error(
         "Could not start SshServer because the baseUrl is not configured.")
-    }
     for {
       sshAddress <- settings.sshAddress
       baseUrl <- settings.baseUrl

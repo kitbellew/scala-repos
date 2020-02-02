@@ -183,9 +183,7 @@ class AddScheduledQueryServiceHandler(
                   case Some(errors) =>
                     EitherT.left(M point forbidden(errors.list.mkString(", ")))
                 }
-              } yield {
-                HttpResponse(content = Some(taskId.serialize))
-              }
+              } yield HttpResponse(content = Some(taskId.serialize))
 
             responseVF.fold(a => a, a => a)
         } getOrElse {
@@ -212,13 +210,11 @@ class DeleteScheduledQueryServiceHandler[A](scheduler: Scheduler[Future])(
         error =>
           DispatchError(BadRequest, "Invalid schedule Id \"%s\"".format(idStr))
       }
-    } yield {
-      scheduler.deleteTask(id) map { _ =>
-        ok[String](None)
-      } valueOr { error =>
-        sys.error("todo")
-      //serverError("An error occurred deleting your query", Some(error))
-      }
+    } yield scheduler.deleteTask(id) map { _ =>
+      ok[String](None)
+    } valueOr { error =>
+      sys.error("todo")
+    //serverError("An error occurred deleting your query", Some(error))
     }
   }
 
@@ -248,33 +244,31 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
         case ex: NumberFormatException =>
           DispatchError(BadRequest, "Invalid last limit: " + ex.getMessage)
       }
-    } yield {
-      scheduler.statusForTask(id, limit) map {
-        case Some((task, reports)) =>
-          val nextTime: Option[DateTime] = task.repeat.flatMap {
-            sched: CronExpression =>
-              Option(sched.getNextValidTimeAfter(new java.util.Date))
-          } map { d => new DateTime(d) }
+    } yield scheduler.statusForTask(id, limit) map {
+      case Some((task, reports)) =>
+        val nextTime: Option[DateTime] = task.repeat.flatMap {
+          sched: CronExpression =>
+            Option(sched.getNextValidTimeAfter(new java.util.Date))
+        } map { d => new DateTime(d) }
 
-          val body: JValue = JObject(
-            "task" -> task.serialize,
-            "nextRun" -> (nextTime.map(_.serialize) getOrElse {
-              JString("never")
-            }),
-            "history" -> reports.toList.serialize
-          )
+        val body: JValue = JObject(
+          "task" -> task.serialize,
+          "nextRun" -> (nextTime.map(_.serialize) getOrElse {
+            JString("never")
+          }),
+          "history" -> reports.toList.serialize
+        )
 
-          ok(Some(body))
+        ok(Some(body))
 
-        case None =>
-          notFound("No status found for id " + idStr)
+      case None =>
+        notFound("No status found for id " + idStr)
 
-      } valueOr { error =>
-        HttpResponse(
-          status = HttpStatus(InternalServerError),
-          content =
-            Some("An error occurred getting status for your query".serialize))
-      }
+    } valueOr { error =>
+      HttpResponse(
+        status = HttpStatus(InternalServerError),
+        content =
+          Some("An error occurred getting status for your query".serialize))
     }
   }
 

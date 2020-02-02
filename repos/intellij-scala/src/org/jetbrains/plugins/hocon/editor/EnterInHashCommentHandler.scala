@@ -41,16 +41,14 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
             if (offset < document.getTextLength && text.charAt(offset) != '\n') {
               var prefix = "#"
               if (!StringUtil.startsWith(text, offset, prefix)) {
-                if (text.charAt(caretOffset) != ' ' && !prefix.endsWith(" ")) {
+                if (text.charAt(caretOffset) != ' ' && !prefix.endsWith(" "))
                   prefix += " "
-                }
                 document.insertString(caretOffset, prefix)
               } else {
                 val afterPrefix = offset + prefix.length
                 if (afterPrefix < document.getTextLength && text.charAt(
-                      afterPrefix) != ' ') {
+                      afterPrefix) != ' ')
                   document.insertString(afterPrefix, " ")
-                }
                 caretOffsetRef.set(offset)
               }
               Result.Default

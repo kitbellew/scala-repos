@@ -48,7 +48,7 @@ object SideEffectsUtil {
     case typed: ScTypedStmt                                  => hasNoSideEffects(typed.expr)
     case ref: ScReferenceExpression =>
       if (hasImplicitConversion(ref)) false
-      else {
+      else
         ref.qualifier.forall(hasNoSideEffects) && (ref.resolve() match {
           case Both(
               b: ScBindingPattern,
@@ -71,7 +71,6 @@ object SideEffectsUtil {
               ref.qualifier.flatMap(_.getType().toOption))
           case _ => false
         })
-      }
     case t: ScTuple                                   => t.exprs.forall(hasNoSideEffects)
     case inf: ScInfixExpr if inf.isAssignmentOperator => false
     case ScSugarCallExpr(baseExpr, operation, args) =>

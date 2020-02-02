@@ -51,10 +51,9 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
 
   private def unsafeRowConverter(schema: Array[DataType]): Row => UnsafeRow = {
     val converter = UnsafeProjection.create(schema)
-    (row: Row) => {
+    (row: Row) =>
       converter(
         CatalystTypeConverters.convertToCatalyst(row).asInstanceOf[InternalRow])
-    }
   }
 
   test("toUnsafeRow() test helper method") {
@@ -139,16 +138,14 @@ class UnsafeRowSerializerSuite extends SparkFunSuite with LocalSparkContext {
       sorter.writePartitionedFile(ShuffleBlockId(0, 0, 0), outputFile)
     } {
       // Clean up
-      if (sc != null) {
+      if (sc != null)
         sc.stop()
-      }
 
       // restore the spark env
       SparkEnv.set(oldEnv)
 
-      if (outputFile != null) {
+      if (outputFile != null)
         outputFile.delete()
-      }
     }
   }
 

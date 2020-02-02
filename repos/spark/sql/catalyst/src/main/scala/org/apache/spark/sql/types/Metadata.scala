@@ -84,7 +84,7 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
   override def equals(obj: Any): Boolean =
     obj match {
       case that: Metadata =>
-        if (map.keySet == that.map.keySet) {
+        if (map.keySet == that.map.keySet)
           map.keys.forall { k =>
             (map(k), that.map(k)) match {
               case (v0: Array[_], v1: Array[_]) =>
@@ -93,9 +93,8 @@ sealed class Metadata private[types] (private[types] val map: Map[String, Any])
                 v0 == v1
             }
           }
-        } else {
+        else
           false
-        }
       case other =>
         false
     }
@@ -132,10 +131,10 @@ object Metadata {
       case (key, o: JObject) =>
         builder.putMetadata(key, fromJObject(o))
       case (key, JArray(value)) =>
-        if (value.isEmpty) {
+        if (value.isEmpty)
           // If it is an empty array, we cannot infer its element type. We put an empty Array[Long].
           builder.putLongArray(key, Array.empty)
-        } else {
+        else
           value.head match {
             case _: JInt =>
               builder.putLongArray(
@@ -161,7 +160,6 @@ object Metadata {
               throw new RuntimeException(
                 s"Do not support array of type ${other.getClass}.")
           }
-        }
       case (key, JNull) =>
         builder.putNull(key)
       case (key, other) =>

@@ -85,23 +85,21 @@ trait JavaConversionHelpers {
               .toList
               .filter(_.name != "Any")
             ScalaType("_", Nil, bounds = bs)
-          case c: Class[_] => {
-            if (c.isArray) {
+          case c: Class[_] =>
+            if (c.isArray)
               ScalaType("Array", List(step(c.getComponentType, nextLevel)))
-            } else if (c.isPrimitive) {
+            else if (c.isPrimitive)
               ScalaType(c.getName match {
                 case "void" => "Unit"
                 case n      => n.capitalize
               })
-            } else if (c == classOf[java.lang.Object]) {
+            else if (c == classOf[java.lang.Object])
               ScalaType("Any")
-            } else {
+            else
               ScalaType(
                 name = c.getName.replace("$", innerClassDelim(c)),
                 params = c.getTypeParameters.map(step(_, nextLevel)).toList
               )
-            }
-          }
           case _ =>
             throw new Error(
               "Cannot find type of " + tpe.getClass + " ::" + tpe.toString)
@@ -136,11 +134,10 @@ trait JavaConversionHelpers {
           p.toString.replace("$", ".")
         case _: WildcardType => "?"
         case c: Class[_] =>
-          if (c.isArray) {
+          if (c.isArray)
             step(c.getComponentType) + arrayNotation
-          } else {
+          else
             c.getName.replace("$", innerClassDelim(c))
-          }
         case _ =>
           tpe.toString
       }

@@ -41,9 +41,8 @@ case class SortBasedAggregate(
     child: SparkPlan)
     extends UnaryNode {
 
-  private[this] val aggregateBufferAttributes = {
+  private[this] val aggregateBufferAttributes =
     aggregateExpressions.flatMap(_.aggregateFunction.aggBufferAttributes)
-  }
 
   override def producedAttributes: AttributeSet =
     AttributeSet(aggregateAttributes) ++
@@ -78,11 +77,11 @@ case class SortBasedAggregate(
         // Because the constructor of an aggregation iterator will read at least the first row,
         // we need to get the value of iter.hasNext first.
         val hasInput = iter.hasNext
-        if (!hasInput && groupingExpressions.nonEmpty) {
+        if (!hasInput && groupingExpressions.nonEmpty)
           // This is a grouped aggregate and the input iterator is empty,
           // so return an empty iterator.
           Iterator[UnsafeRow]()
-        } else {
+        else {
           val outputIter = new SortBasedAggregationIterator(
             groupingExpressions,
             child.output,
@@ -103,9 +102,8 @@ case class SortBasedAggregate(
             numOutputRows += 1
             Iterator[UnsafeRow](
               outputIter.outputForEmptyGroupingKeyWithoutInput())
-          } else {
+          } else
             outputIter
-          }
         }
       }
     }

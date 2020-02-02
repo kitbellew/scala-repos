@@ -116,14 +116,12 @@ object TestInlineHandlersNestedHandlerInnerInline {
     println("TestInlineHandlersNestedHandlersInnerInline")
     var result = -1
 
-    try {
-      try {
-        if (nextInt % 2 == 0)
-          throw new MyException("something")
-        result = 1
-      } catch {
-        case MyException(message) => println(message)
-      }
+    try try {
+      if (nextInt % 2 == 0)
+        throw new MyException("something")
+      result = 1
+    } catch {
+      case MyException(message) => println(message)
     } catch {
       case e: IllegalArgumentException => println("IllegalArgumentException")
     }
@@ -139,14 +137,12 @@ object TestInlineHandlersNestedHandlerOuterInline {
     println("TestInlineHandlersNestedHandlersOuterInline")
     var result = -1
 
-    try {
-      try {
-        if (nextInt % 2 == 0)
-          throw new MyException("something")
-        result = 1
-      } catch {
-        case e: IllegalArgumentException => println("IllegalArgumentException")
-      }
+    try try {
+      if (nextInt % 2 == 0)
+        throw new MyException("something")
+      result = 1
+    } catch {
+      case e: IllegalArgumentException => println("IllegalArgumentException")
     } catch {
       case MyException(message) => println(message)
     }
@@ -162,16 +158,14 @@ object TestInlineHandlersNestedHandlerAllInline {
     println("TestInlineHandlersNestedHandlersOuterInline")
     var result = -1
 
-    try {
-      try {
-        if (nextInt % 2 == 0)
-          throw new MyException("something")
-        result = 1
-      } catch {
-        case MyException(message) =>
-          println(message)
-          throw MyException(message)
-      }
+    try try {
+      if (nextInt % 2 == 0)
+        throw new MyException("something")
+      result = 1
+    } catch {
+      case MyException(message) =>
+        println(message)
+        throw MyException(message)
     } catch {
       case MyException(message) =>
         println(message)
@@ -294,11 +288,9 @@ object TestInlineHandlersDoubleNoLocal {
   def main(args: Array[String]): Unit = {
     println("TestInlineHandlersDoubleNoLocal")
 
-    try {
-      a1.synchronized {
-        a2.synchronized {
-          throw new MyException("crash")
-        }
+    try a1.synchronized {
+      a2.synchronized {
+        throw new MyException("crash")
       }
     } catch {
       case t: Throwable => println("Caught crash: " + t.toString)

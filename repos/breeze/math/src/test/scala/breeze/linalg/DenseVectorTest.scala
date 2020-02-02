@@ -561,20 +561,18 @@ class DenseVectorOps_DoubleTest
         n <- Gen.choose(1, N)
         stride <- Gen.choose(1, 4)
         offset <- Gen.choose(0, 5)
-      } yield {
-        (
-          DenseVector
-            .fill(n * stride + offset)(
-              math.random * x
-            ), //.apply(offset until (n * stride + offset) by stride),
-          DenseVector.fill(n * stride + offset)(
-            math.random * y
+      } yield (
+        DenseVector
+          .fill(n * stride + offset)(
+            math.random * x
           ), //.apply(offset until (n * stride + offset) by stride),
-          DenseVector.fill(n * stride + offset)(
-            math.random * z
-          ) //.apply(offset until (n * stride + offset) by stride)
-        )
-      }
+        DenseVector.fill(n * stride + offset)(
+          math.random * y
+        ), //.apply(offset until (n * stride + offset) by stride),
+        DenseVector.fill(n * stride + offset)(
+          math.random * z
+        ) //.apply(offset until (n * stride + offset) by stride)
+      )
     }
   }
 
@@ -596,12 +594,10 @@ class DenseVectorOps_IntTest
         y <- Arbitrary.arbitrary[Int].map { _ % 1000 }
         z <- Arbitrary.arbitrary[Int].map { _ % 1000 }
         n <- Gen.choose(1, N)
-      } yield {
-        (
-          DenseVector.fill(n)(math.random * x toInt),
-          DenseVector.fill(n)(math.random * y toInt),
-          DenseVector.fill(n)(math.random * z toInt))
-      }
+      } yield (
+        DenseVector.fill(n)(math.random * x toInt),
+        DenseVector.fill(n)(math.random * y toInt),
+        DenseVector.fill(n)(math.random * z toInt))
     }
 
   def genScalar: Arbitrary[Int] =
@@ -622,12 +618,10 @@ class DenseVectorOps_ComplexTest
         y <- Arbitrary.arbitrary[Complex]
         z <- Arbitrary.arbitrary[Complex]
         n <- Gen.choose(1, N)
-      } yield {
-        (
-          DenseVector.fill(n)(math.random * x),
-          DenseVector.fill(n)(math.random * y),
-          DenseVector.fill(n)(math.random * z))
-      }
+      } yield (
+        DenseVector.fill(n)(math.random * x),
+        DenseVector.fill(n)(math.random * y),
+        DenseVector.fill(n)(math.random * z))
     }
 
   implicit def genScalar: Arbitrary[Complex] = Arbitrary {
@@ -654,18 +648,16 @@ class DenseVectorOps_FloatTest
         n <- Gen.choose(1, N)
         stride <- Gen.choose(1, 4)
         offset <- Gen.choose(0, 5)
-      } yield {
-        (
-          DenseVector
-            .fill(n * stride + offset)(math.random * x toFloat)
-            .apply(offset until (n * stride + offset) by stride),
-          DenseVector
-            .fill(n * stride + offset)(math.random * y toFloat)
-            .apply(offset until (n * stride + offset) by stride),
-          DenseVector
-            .fill(n * stride + offset)(math.random * z toFloat)
-            .apply(offset until (n * stride + offset) by stride))
-      }
+      } yield (
+        DenseVector
+          .fill(n * stride + offset)(math.random * x toFloat)
+          .apply(offset until (n * stride + offset) by stride),
+        DenseVector
+          .fill(n * stride + offset)(math.random * y toFloat)
+          .apply(offset until (n * stride + offset) by stride),
+        DenseVector
+          .fill(n * stride + offset)(math.random * z toFloat)
+          .apply(offset until (n * stride + offset) by stride))
     }
 
   def genScalar: Arbitrary[Float] =

@@ -112,19 +112,18 @@ class ScalaPluginVersionVerifierApplicationComponent
                       s"icompatible with Scala plugin of version $version. Do you want to disable ${plugin.getName} plugin?\n" +
                       s"""<p/><a href="Yes">Yes, disable it</a>\n""" +
                       s"""<p/><a href="No">No, leave it enabled</a>"""
-                  if (ApplicationManager.getApplication.isUnitTestMode) {
+                  if (ApplicationManager.getApplication.isUnitTestMode)
                     ScalaPluginVersionVerifierApplicationComponent.LOG.error(
                       message)
-                  } else {
+                  else {
                     val Scala_Group = "Scala Plugin Incompatibility"
                     val app: Application = ApplicationManager.getApplication
-                    if (!app.isDisposed) {
+                    if (!app.isDisposed)
                       app.getMessageBus
                         .syncPublisher(Notifications.TOPIC)
                         .register(
                           Scala_Group,
                           NotificationDisplayType.STICKY_BALLOON)
-                    }
                     NotificationGroup.balloonGroup(Scala_Group)
                     val notification = new Notification(
                       Scala_Group,
@@ -154,17 +153,15 @@ class ScalaPluginVersionVerifierApplicationComponent
             }
             Version.parse(extension.getSinceVersion) match {
               case Some(sinceVersion) =>
-                if (sinceVersion != version && version < sinceVersion) {
+                if (sinceVersion != version && version < sinceVersion)
                   wrongVersion()
-                }
               case _ =>
             }
 
             Version.parse(extension.getUntilVersion) match {
               case Some(untilVersion) =>
-                if (untilVersion != version && untilVersion < version) {
+                if (untilVersion != version && untilVersion < version)
                   wrongVersion()
-                }
               case _ =>
             }
           }

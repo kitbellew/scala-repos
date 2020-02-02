@@ -130,20 +130,16 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
         val rawColumns = rawPlan.output.map(_.name)
         val rawOutput = rawPlan.execute().first()
 
-        if (rawColumns != expectedColumns) {
+        if (rawColumns != expectedColumns)
           fail(
             s"Wrong column names. Got $rawColumns, Expected $expectedColumns\n" +
               s"Filters pushed: ${FiltersPushed.list.mkString(",")}\n" +
               queryExecution)
-        }
 
-        if (rawOutput.numFields != expectedColumns.size) {
+        if (rawOutput.numFields != expectedColumns.size)
           fail(s"Wrong output row. Got $rawOutput\n$queryExecution")
-        }
-      } finally {
-        caseInsensitiveContext.conf.setConf(
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
-      }
+      } finally caseInsensitiveContext.conf.setConf(
+        SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
+        SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
     }
 }

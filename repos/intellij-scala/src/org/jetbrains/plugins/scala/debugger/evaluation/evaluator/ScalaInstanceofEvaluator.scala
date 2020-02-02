@@ -26,16 +26,14 @@ class ScalaInstanceofEvaluator(
 
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     val value: Value = operandEvaluator.evaluate(context).asInstanceOf[Value]
-    if (value == null) {
+    if (value == null)
       return DebuggerUtilsEx.createValue(
         context.getDebugProcess.getVirtualMachineProxy,
         PsiType.BOOLEAN.getPresentableText,
         false)
-    }
-    if (!value.isInstanceOf[ObjectReference]) {
+    if (!value.isInstanceOf[ObjectReference])
       throw EvaluationException(
         DebuggerBundle.message("evaluation.error.object.reference.expected"))
-    }
     try {
       val refType: ReferenceType =
         typeEvaluator.evaluate(context).asInstanceOf[ReferenceType]

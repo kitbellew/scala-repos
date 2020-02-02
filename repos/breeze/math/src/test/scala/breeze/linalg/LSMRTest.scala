@@ -81,9 +81,8 @@ class LSMRTest extends FunSuite {
   }
 
   test("a few lsmr tests") {
-    for (m <- 1 until 10; n <- 1 until 10) {
+    for (m <- 1 until 10; n <- 1 until 10)
       lsmrTest(m, n)
-    }
 
   }
 
@@ -127,11 +126,10 @@ class LSMRTest extends FunSuite {
                 if (i > 0) v2(i - 1) * d(i - 1) else 0.0)
           )
 
-          if (m <= n + 1) {
+          if (m <= n + 1)
             y1(0 until m)
-          } else {
+          else
             DenseVector.vertcat(y1, DenseVector.zeros(m - n - 1))
-          }
 
         }
       }
@@ -152,11 +150,10 @@ class LSMRTest extends FunSuite {
                 if (i < m - 1) d(i) * v2(i + 1) else 0.0)
           )
 
-          if (m >= n) {
+          if (m >= n)
             y1(0 until n)
-          } else {
+          else
             DenseVector.vertcat(y1, DenseVector.zeros(n - m))
-          }
 
         }
       }

@@ -254,11 +254,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
     def around[T <% Result](t: => T): Result =
       validatedFactory()
         .map { _ =>
-          try {
-            t: Result
-          } finally {
-            cleanup
-          }
+          try t: Result
+          finally cleanup
         }
         .getOrElse(offline)
 

@@ -120,9 +120,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
   protected def handleParametersUsage(
       change: ChangeInfo,
       usage: ParameterUsageInfo): Unit =
-    if (change.isParameterNamesChanged || change.isParameterSetOrOrderChanged) {
+    if (change.isParameterNamesChanged || change.isParameterSetOrOrderChanged)
       replaceNameId(usage.ref.getElement, usage.newName)
-    }
 
   def handleAnonFunUsage(change: ChangeInfo, usage: AnonFunUsageInfo): Unit = {
     if (!change.isParameterSetOrOrderChanged) return
@@ -252,7 +251,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       usage: InfixExprUsageInfo): Unit = {
     val infix = usage.infix
     val newParams = change.getNewParameters
-    if (newParams.length != 1) {
+    if (newParams.length != 1)
       infix.getArgExpr match {
         case t: ScTuple if !hasSeveralClauses(change) =>
           val tupleText = argsText(change, usage)
@@ -270,7 +269,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
               infix)
           infix.replaceExpression(methodCall, removeParenthesis = true)
       }
-    } else {
+    else {
       val argText = arguments(change, usage).headOption match {
         case Some(Seq(text)) if text.trim.isEmpty => "()"
         case Some(Seq(text))                      => text
@@ -357,18 +356,16 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
       for {
         (param, idx) <- clause.zipWithIndex
         if !isRepeated(param)
-      } {
-        newArgumentExpression(
-          oldArgsInfo,
-          param,
-          manager,
-          isAddDefault,
-          needNamed) match {
-          case Some(text) =>
-            buffer += text
-            if (text.contains("=") && idx > buffer.size - 1) needNamed = true
-          case None => needNamed = true
-        }
+      } newArgumentExpression(
+        oldArgsInfo,
+        param,
+        manager,
+        isAddDefault,
+        needNamed) match {
+        case Some(text) =>
+          buffer += text
+          if (text.contains("=") && idx > buffer.size - 1) needNamed = true
+        case None => needNamed = true
       }
       buffer.toSeq
     }
@@ -394,7 +391,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
                 case Some(seq)                              => (seq, false)
                 case _                                      => return Seq.empty
               }
-            if (jChangeInfo.isArrayToVarargs) {
+            if (jChangeInfo.isArrayToVarargs)
               argExprs match {
                 case Seq(ScMethodCall(ElementText("Array"), arrayArgs)) =>
                   arrayArgs.map(_.getText)
@@ -408,7 +405,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
                   val text = naming + typedText
                   Seq(text)
               }
-            } else argExprs.map(_.getText)
+            else argExprs.map(_.getText)
           }
         case _ => Seq.empty
       }
@@ -447,9 +444,9 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     val default = newParam.getDefaultValue
 
     val withoutName =
-      if (oldIdx < 0) {
+      if (oldIdx < 0)
         if (default != null && !default.isEmpty) default else ""
-      } else {
+      else
         argsInfo.byOldParameterIndex.get(oldIdx) match {
           case None                      => return None
           case Some(seq) if seq.size > 1 => return None
@@ -457,7 +454,6 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
             return Some(assignStmt.getText)
           case Some(Seq(expr)) => expr.getText
         }
-      }
     val argText =
       if (named) s"${newParam.getName} = $withoutName" else withoutName
     Some(argText)

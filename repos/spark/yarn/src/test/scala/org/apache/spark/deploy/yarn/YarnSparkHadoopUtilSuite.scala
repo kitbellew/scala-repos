@@ -58,9 +58,8 @@ class YarnSparkHadoopUtilSuite
         false
     }
 
-  if (!hasBash) {
+  if (!hasBash)
     logWarning("Cannot execute bash, skipping bash tests.")
-  }
 
   def bashTest(name: String)(fn: => Unit): Unit =
     if (hasBash) test(name)(fn) else ignore(name)(fn)
@@ -85,9 +84,7 @@ class YarnSparkHadoopUtilSuite
       val exitCode = proc.waitFor()
       exitCode should be(0)
       out should be(args.mkString(" "))
-    } finally {
-      scriptFile.delete()
-    }
+    } finally scriptFile.delete()
   }
 
   test("Yarn configuration override") {
@@ -115,22 +112,18 @@ class YarnSparkHadoopUtilSuite
     val modifyAcls = acls.get(ApplicationAccessType.MODIFY_APP)
 
     viewAcls match {
-      case Some(vacls) => {
+      case Some(vacls) =>
         val aclSet = vacls.split(',').map(_.trim).toSet
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
-      }
-      case None => {
+      case None =>
         fail()
-      }
     }
     modifyAcls match {
-      case Some(macls) => {
+      case Some(macls) =>
         val aclSet = macls.split(',').map(_.trim).toSet
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
-      }
-      case None => {
+      case None =>
         fail()
-      }
     }
   }
 
@@ -149,54 +142,48 @@ class YarnSparkHadoopUtilSuite
     val modifyAcls = acls.get(ApplicationAccessType.MODIFY_APP)
 
     viewAcls match {
-      case Some(vacls) => {
+      case Some(vacls) =>
         val aclSet = vacls.split(',').map(_.trim).toSet
         assert(aclSet.contains("user1"))
         assert(aclSet.contains("user2"))
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
-      }
-      case None => {
+      case None =>
         fail()
-      }
     }
     modifyAcls match {
-      case Some(macls) => {
+      case Some(macls) =>
         val aclSet = macls.split(',').map(_.trim).toSet
         assert(aclSet.contains("user3"))
         assert(aclSet.contains("user4"))
         assert(aclSet.contains(System.getProperty("user.name", "invalid")))
-      }
-      case None => {
+      case None =>
         fail()
-      }
     }
 
   }
 
   test("test expandEnvironment result") {
     val target = Environment.PWD
-    if (classOf[Environment].getMethods().exists(_.getName == "$$")) {
+    if (classOf[Environment].getMethods().exists(_.getName == "$$"))
       YarnSparkHadoopUtil.expandEnvironment(target) should be(
         "{{" + target + "}}")
-    } else if (Utils.isWindows) {
+    else if (Utils.isWindows)
       YarnSparkHadoopUtil.expandEnvironment(target) should be(
         "%" + target + "%")
-    } else {
+    else
       YarnSparkHadoopUtil.expandEnvironment(target) should be("$" + target)
-    }
 
   }
 
   test("test getClassPathSeparator result") {
     if (classOf[ApplicationConstants]
           .getFields()
-          .exists(_.getName == "CLASS_PATH_SEPARATOR")) {
+          .exists(_.getName == "CLASS_PATH_SEPARATOR"))
       YarnSparkHadoopUtil.getClassPathSeparator() should be("<CPS>")
-    } else if (Utils.isWindows) {
+    else if (Utils.isWindows)
       YarnSparkHadoopUtil.getClassPathSeparator() should be(";")
-    } else {
+    else
       YarnSparkHadoopUtil.getClassPathSeparator() should be(":")
-    }
   }
 
   test("check access nns empty") {
@@ -268,9 +255,7 @@ class YarnSparkHadoopUtilSuite
       assert(SparkHadoopUtil.get.getClass === classOf[YarnSparkHadoopUtil])
       System.setProperty("SPARK_YARN_MODE", "false")
       assert(SparkHadoopUtil.get.getClass === classOf[SparkHadoopUtil])
-    } finally {
-      System.clearProperty("SPARK_YARN_MODE")
-    }
+    } finally System.clearProperty("SPARK_YARN_MODE")
   }
 
   test("Obtain tokens For HiveMetastore") {
@@ -290,12 +275,10 @@ class YarnSparkHadoopUtilSuite
   private def assertNestedHiveException(
       e: InvocationTargetException): Throwable = {
     val inner = e.getCause
-    if (inner == null) {
+    if (inner == null)
       fail("No inner cause", e)
-    }
-    if (!inner.isInstanceOf[HiveException]) {
+    if (!inner.isInstanceOf[HiveException])
       fail("Not a hive exception", inner)
-    }
     inner
   }
 

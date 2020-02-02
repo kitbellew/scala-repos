@@ -69,9 +69,8 @@ private[mux] object TagMap {
         val oldEl = fallback.remove(tag)
         fallback.put(tag, newEl)
         Some(oldEl)
-      } else {
+      } else
         None
-      }
     }
 
     def unmap(tag: Int): Option[T] = synchronized {
@@ -81,11 +80,10 @@ private[mux] object TagMap {
         val el = getFast(tag)
         setFast(tag, null.asInstanceOf[T])
         Option(el)
-      } else if (fallback.containsKey(tag)) {
+      } else if (fallback.containsKey(tag))
         Some(fallback.remove(tag))
-      } else {
+      else
         None
-      }
 
       set.release(tag)
       res

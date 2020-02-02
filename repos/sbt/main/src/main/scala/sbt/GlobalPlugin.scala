@@ -25,7 +25,7 @@ object GlobalPlugin {
   //  static here meaning that the relevant tasks for the global plugin have already been evaluated
   def inject(gp: GlobalPluginData): Seq[Setting[_]] =
     Seq[Setting[_]](
-      projectDescriptors ~= { _ ++ gp.descriptors },
+      projectDescriptors ~= _ ++ gp.descriptors,
       projectDependencies ++= gp.projectID +: gp.dependencies,
       resolvers <<= resolvers { rs => (rs ++ gp.resolvers).distinct },
       globalPluginUpdate := gp.updateReport,

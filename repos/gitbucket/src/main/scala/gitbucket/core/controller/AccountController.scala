@@ -182,7 +182,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
             getActivitiesByUser(userName, true))
 
         // Members
-        case "members" if (account.isGroupAccount) => {
+        case "members" if (account.isGroupAccount) =>
           val members = getGroupMembers(account.userName)
           gitbucket.core.account.html.members(
             account,
@@ -191,10 +191,9 @@ trait AccountControllerBase extends AccountManagementControllerBase {
               members.exists { member =>
                 member.userName == x.userName && member.isManager
               }))
-        }
 
         // Repositories
-        case _ => {
+        case _ =>
           val members = getGroupMembers(account.userName)
           gitbucket.core.account.html.repositories(
             account,
@@ -205,7 +204,6 @@ trait AccountControllerBase extends AccountManagementControllerBase {
                 member.userName == x.userName && member.isManager
               })
           )
-        }
       }
     } getOrElse NotFound
   }
@@ -303,13 +301,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       x =>
         var tokens = getAccessTokens(x.userName)
         val generatedToken = flash.get("generatedToken") match {
-          case Some((tokenId: Int, token: String)) => {
+          case Some((tokenId: Int, token: String)) =>
             val gt = tokens.find(_.accessTokenId == tokenId)
             gt.map { t =>
               tokens = tokens.filterNot(_ == t)
               (t, token)
             }
-          }
           case _ => None
         }
         html.application(x, tokens, generatedToken)
@@ -333,13 +330,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   })
 
   get("/register") {
-    if (context.settings.allowAccountRegistration) {
-      if (context.loginAccount.isDefined) {
+    if (context.settings.allowAccountRegistration)
+      if (context.loginAccount.isDefined)
         redirect("/")
-      } else {
+      else
         html.register()
-      }
-    } else NotFound
+    else NotFound
   }
 
   post("/register", newForm) { form =>
@@ -454,7 +450,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     */
   post("/new", newRepositoryForm)(usersOnly { form =>
     LockUtil.lock(s"${form.owner}/${form.name}") {
-      if (getRepository(form.owner, form.name).isEmpty) {
+      if (getRepository(form.owner, form.name).isEmpty)
         createRepository(
           context.loginAccount.get,
           form.owner,
@@ -462,7 +458,6 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           form.description,
           form.isPrivate,
           form.createReadme)
-      }
 
       // redirect to the repository
       redirect(s"/${form.owner}/${form.name}")
@@ -499,10 +494,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       LockUtil.lock(s"$accountName/${repository.name}") {
         if (getRepository(accountName, repository.name).isDefined ||
             (accountName != loginUserName && !getGroupsByUserName(loginUserName)
-              .contains(accountName))) {
+              .contains(accountName)))
           // redirect to the repository if repository already exists
           redirect(s"/$accountName/${repository.name}")
-        } else {
+        else {
           // Insert to the database at first
           val originUserName =
             repository.repository.originUserName.getOrElse(repository.owner)
@@ -522,11 +517,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
           // Add collaborators for group repository
           val ownerAccount = getAccountByUserName(accountName).get
-          if (ownerAccount.isGroupAccount) {
+          if (ownerAccount.isGroupAccount)
             getGroupMembers(accountName).foreach { member =>
               addCollaborator(accountName, repository.name, member.userName)
             }
-          }
 
           // Insert default labels
           insertDefaultLabels(accountName, repository.name)

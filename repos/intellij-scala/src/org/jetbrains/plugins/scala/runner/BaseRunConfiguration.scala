@@ -76,9 +76,8 @@ abstract class BaseRunConfiguration(
 
     val rootManager = ModuleRootManager.getInstance(module)
     val sdk = rootManager.getSdk
-    if (sdk == null || !sdk.getSdkType.isInstanceOf[JavaSdkType]) {
+    if (sdk == null || !sdk.getSdkType.isInstanceOf[JavaSdkType])
       throw CantRunException.noJdkForModule(module)
-    }
 
     val params = new JavaParameters()
     params.getVMParametersList.addParametersString(javaOptions)

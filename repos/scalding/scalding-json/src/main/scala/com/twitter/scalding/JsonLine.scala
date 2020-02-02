@@ -105,9 +105,9 @@ object JsonLine
   }
 
   private[this] def typeFromManifest(m: Manifest[_]): Type =
-    if (m.typeArguments.isEmpty) {
+    if (m.typeArguments.isEmpty)
       m.runtimeClass
-    } else
+    else
       new ParameterizedType {
         def getRawType = m.runtimeClass
 

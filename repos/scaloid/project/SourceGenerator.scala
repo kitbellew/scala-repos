@@ -70,11 +70,10 @@ object SourceGenerator {
         }
     }
 
-  private val scalariformPreferences = {
+  private val scalariformPreferences =
     FormattingPreferences()
       .setPreference(DoubleIndentClassDeclaration, true)
       .setPreference(PreserveDanglingCloseParenthesis, true)
-  }
 
   private def formatCode(code: String, scalaVersion: String): String =
     ScalaFormatter.format(

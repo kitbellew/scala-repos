@@ -105,11 +105,10 @@ class EventServiceActor(
                         .getByAppid(k.appid)
                         .map(c => (c.name, c.id))
                         .toMap
-                    if (channelMap.contains(ch)) {
+                    if (channelMap.contains(ch))
                       Right(AuthData(k.appid, Some(channelMap(ch)), k.events))
-                    } else {
+                    else
                       Left(ChannelRejection(s"Invalid channel '$ch'."))
-                    }
                   }
                   .getOrElse {
                     Right(AuthData(k.appid, None, k.events))
@@ -267,13 +266,12 @@ class EventServiceActor(
                       val data = eventClient
                         .futureDelete(eventId, appId, channelId)
                         .map { found =>
-                          if (found) {
+                          if (found)
                             (StatusCodes.OK, Map("message" -> "Found"))
-                          } else {
+                          else
                             (
                               StatusCodes.NotFound,
                               Map("message" -> "Not Found"))
-                          }
                         }
                       data
                     }
@@ -313,21 +311,19 @@ class EventServiceActor(
                               event = event)
                             val result =
                               (StatusCodes.Created, Map("eventId" -> s"$id"))
-                            if (config.stats) {
+                            if (config.stats)
                               statsActorRef ! Bookkeeping(
                                 appId,
                                 result._1,
                                 event)
-                            }
                             result
                         }
                       data
-                    } else {
+                    } else
                       (
                         StatusCodes.Forbidden,
                         Map(
                           "message" -> s"${event.event} events are not allowed"))
-                    }
                   }
                 }
               }
@@ -404,13 +400,12 @@ class EventServiceActor(
                                     reversed = reversed
                                   )
                                   .map { eventIter =>
-                                    if (eventIter.hasNext) {
+                                    if (eventIter.hasNext)
                                       (StatusCodes.OK, eventIter.toArray)
-                                    } else {
+                                    else
                                       (
                                         StatusCodes.NotFound,
                                         Map("message" -> "Not Found"))
-                                    }
                                   }
                                 data
                             }
@@ -441,7 +436,7 @@ class EventServiceActor(
                 val allowedEvents = authData.events
                 val handleEvent
                     : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
-                  case Success(event) => {
+                  case Success(event) =>
                     if (allowedEvents.isEmpty || allowedEvents.contains(
                           event.event)) {
                       pluginContext.inputBlockers.values.foreach(
@@ -462,9 +457,8 @@ class EventServiceActor(
                           val result = Map(
                             "status" -> status.intValue,
                             "eventId" -> s"$id")
-                          if (config.stats) {
+                          if (config.stats)
                             statsActorRef ! Bookkeeping(appId, status, event)
-                          }
                           result
                         }
                         .recover {
@@ -474,31 +468,27 @@ class EventServiceActor(
                               "message" -> s"${exception.getMessage()}")
                         }
                       data
-                    } else {
+                    } else
                       Future.successful(Map(
                         "status" -> StatusCodes.Forbidden.intValue,
                         "message" -> s"${event.event} events are not allowed"))
-                    }
-                  }
-                  case Failure(exception) => {
+                  case Failure(exception) =>
                     Future.successful(
                       Map(
                         "status" -> StatusCodes.BadRequest.intValue,
                         "message" -> s"${exception.getMessage()}"))
-                  }
                 }
 
                 entity(as[Seq[Try[Event]]]) { events =>
                   complete {
-                    if (events.length <= MaxNumberOfEventsPerBatchRequest) {
+                    if (events.length <= MaxNumberOfEventsPerBatchRequest)
                       Future.traverse(events)(handleEvent)
-                    } else {
+                    else
                       (
                         StatusCodes.BadRequest,
                         Map(
                           "message" -> (s"Batch request must have less than or equal to " +
                             s"$MaxNumberOfEventsPerBatchRequest events")))
-                    }
                   }
                 }
               }
@@ -516,19 +506,18 @@ class EventServiceActor(
               authenticate(withAccessKey) { authData =>
                 val appId = authData.appId
                 respondWithMediaType(MediaTypes.`application/json`) {
-                  if (config.stats) {
+                  if (config.stats)
                     complete {
                       statsActorRef ? GetStats(appId) map {
                         _.asInstanceOf[Map[String, StatsSnapshot]]
                       }
                     }
-                  } else {
+                  else
                     complete(
                       StatusCodes.NotFound,
                       parse(
                         """{"message": "To see stats, launch Event Server """ +
                           """with --stats argument."}"""))
-                  }
                 }
               }
             }
@@ -662,9 +651,8 @@ class EventServerActor(
   implicit val system = context.system
 
   def receive: Actor.Receive = {
-    case StartServer(host, portNum) => {
+    case StartServer(host, portNum) =>
       IO(Http) ! Http.Bind(child, interface = host, port = portNum)
-    }
     case m: Http.Bound         => log.info("Bound received. EventServer is ready.")
     case m: Http.CommandFailed => log.error("Command failed.")
     case _                     => log.error("Unknown message.")

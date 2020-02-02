@@ -37,14 +37,12 @@ private[spark] object SignalLogger {
       registered = true
 
       val signals = Seq("TERM", "HUP", "INT")
-      for (signal <- signals) {
-        try {
-          new SignalLoggerHandler(signal, log)
-        } catch {
+      for (signal <- signals)
+        try new SignalLoggerHandler(signal, log)
+        catch {
           case e: Exception =>
             log.warn("Failed to register signal handler " + signal, e)
         }
-      }
       log.info(
         "Registered signal handlers for [" + signals.mkString(", ") + "]")
     }

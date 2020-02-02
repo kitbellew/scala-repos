@@ -45,12 +45,11 @@ object IngestTest {
 
   private def ensureDataDirsAreEmpty(runner: NIHDBPerfTestRunner[_]) {
     dataDirs(runner) foreach { dir =>
-      if (!dir.exists()) {
+      if (!dir.exists())
         dir.mkdirs()
-      } else if (!dir.list().isEmpty) {
+      else if (!dir.list().isEmpty)
         sys.error(
           "Cannot run ingest performance tests on non-empty directory '%s'." format dir)
-      }
     }
   }
 
@@ -109,9 +108,7 @@ object IngestTest {
             JField(path, s.toJson)
         }))
 
-      } finally {
-        runner.shutdown()
-      }
+      } finally runner.shutdown()
     }
   }
 

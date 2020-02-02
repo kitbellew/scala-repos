@@ -89,9 +89,8 @@ private[spark] object StratifiedSamplingUtils extends Logging {
     (result: mutable.Map[K, AcceptanceResult], item: (K, V)) => {
       val key = item._1
       val fraction = fractions(key)
-      if (!result.contains(key)) {
+      if (!result.contains(key))
         result += (key -> new AcceptanceResult())
-      }
       val acceptResult = result(key)
 
       if (withReplacement) {
@@ -109,14 +108,12 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         val acceptBound = acceptResult.acceptBound
         val copiesAccepted =
           if (acceptBound == 0.0) 0L else rng.nextPoisson(acceptBound)
-        if (copiesAccepted > 0) {
+        if (copiesAccepted > 0)
           acceptResult.numAccepted += copiesAccepted
-        }
         val copiesWaitlisted = rng.nextPoisson(acceptResult.waitListBound)
-        if (copiesWaitlisted > 0) {
+        if (copiesWaitlisted > 0)
           acceptResult.waitList ++= ArrayBuffer.fill(copiesWaitlisted)(
             rng.nextUniform())
-        }
       } else {
         // We use the streaming version of the algorithm for sampling without replacement to avoid
         // using an extra pass over the RDD for computing the count.
@@ -127,11 +124,10 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           BinomialBounds.getUpperBound(delta, acceptResult.numItems, fraction)
 
         val x = rng.nextUniform()
-        if (x < acceptResult.acceptBound) {
+        if (x < acceptResult.acceptBound)
           acceptResult.numAccepted += 1
-        } else if (x < acceptResult.waitListBound) {
+        else if (x < acceptResult.waitListBound)
           acceptResult.waitList += x
-        }
       }
       acceptResult.numItems += 1
       result
@@ -151,13 +147,10 @@ private[spark] object StratifiedSamplingUtils extends Logging {
       result1.keySet.union(result2.keySet).foreach { key =>
         // Use result2 to keep the combined result since r1 is usual empty
         val entry1 = result1.get(key)
-        if (result2.contains(key)) {
+        if (result2.contains(key))
           result2(key).merge(entry1)
-        } else {
-          if (entry1.isDefined) {
-            result2 += (key -> entry1.get)
-          }
-        }
+        else if (entry1.isDefined)
+          result2 += (key -> entry1.get)
       }
       result2
   }
@@ -189,10 +182,9 @@ private[spark] object StratifiedSamplingUtils extends Logging {
         if (numWaitListAccepted >= acceptResult.waitList.size) {
           logWarning("WaitList too short")
           thresholdByKey += (key -> acceptResult.waitListBound)
-        } else {
+        } else
           thresholdByKey += (key -> acceptResult.waitList.sorted
             .apply(numWaitListAccepted))
-        }
       }
     }
     thresholdByKey
@@ -260,11 +252,10 @@ private[spark] object StratifiedSamplingUtils extends Logging {
           val copiesInSample = copiesAccepted +
             (0 until copiesWaitlisted).count(i =>
               rng.nextUniform() < thresholdByKey(key))
-          if (copiesInSample > 0) {
+          if (copiesInSample > 0)
             Iterator.fill(copiesInSample.toInt)(item)
-          } else {
+          else
             Iterator.empty
-          }
         }
       }
     } else { (idx: Int, iter: Iterator[(K, V)]) =>
@@ -272,11 +263,10 @@ private[spark] object StratifiedSamplingUtils extends Logging {
       rng.reSeed(seed + idx)
       iter.flatMap { item =>
         val count = rng.nextPoisson(fractions(item._1))
-        if (count == 0) {
+        if (count == 0)
           Iterator.empty
-        } else {
+        else
           Iterator.fill(count)(item)
-        }
       }
     }
 

@@ -113,7 +113,7 @@ class CoGroupedRDD[K: ClassTag](
 
   override def getPartitions: Array[Partition] = {
     val array = new Array[Partition](part.numPartitions)
-    for (i <- 0 until array.length) {
+    for (i <- 0 until array.length)
       // Each CoGroupPartition will have a dependency per contributing RDD
       array(i) = new CoGroupPartition(i, rdds.zipWithIndex.map {
         case (rdd, j) =>
@@ -125,7 +125,6 @@ class CoGroupedRDD[K: ClassTag](
               Some(new NarrowCoGroupSplitDep(rdd, i, rdd.partitions(i)))
           }
       }.toArray)
-    }
     array
   }
 
@@ -159,10 +158,9 @@ class CoGroupedRDD[K: ClassTag](
     }
 
     val map = createExternalMap(numRdds)
-    for ((it, depNum) <- rddIterators) {
+    for ((it, depNum) <- rddIterators)
       map.insertAll(
         it.map(pair => (pair._1, new CoGroupValue(pair._2, depNum))))
-    }
     context.taskMetrics().incMemoryBytesSpilled(map.memoryBytesSpilled)
     context.taskMetrics().incDiskBytesSpilled(map.diskBytesSpilled)
     context.taskMetrics().incPeakExecutionMemory(map.peakMemoryUsedBytes)

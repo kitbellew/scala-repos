@@ -58,9 +58,9 @@ object KMeansExample extends App {
     @tailrec
     def loop(assignments0: Array[Int], clusters0: Array[V]): Array[V] = {
       val assignments = assign(clusters0)
-      if (assignments === assignments0) {
+      if (assignments === assignments0)
         clusters0
-      } else {
+      else {
         val clusters = Array.fill[V](clusters0.length)(vs.zero)
         val counts = new Array[Int](clusters0.length)
         cfor(0)(_ < points.length, _ + 1) { i =>

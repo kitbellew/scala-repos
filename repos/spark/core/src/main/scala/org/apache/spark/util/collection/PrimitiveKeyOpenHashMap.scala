@@ -100,9 +100,8 @@ private[spark] class PrimitiveKeyOpenHashMap[@specialized(Long, Int) K: ClassTag
         val ret = (_keySet.getValue(pos), _values(pos))
         pos += 1
         ret
-      } else {
+      } else
         null
-      }
     }
 
     def hasNext: Boolean = nextPair != null

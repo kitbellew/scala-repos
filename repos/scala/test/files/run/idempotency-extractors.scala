@@ -13,9 +13,8 @@ object Test extends App {
   val textractor = tb.typecheck(extractor.tree)
   println(textractor)
   val rtextractor = tb.untypecheck(textractor)
-  try {
-    println(tb.eval(rtextractor))
-  } catch {
+  try println(tb.eval(rtextractor))
+  catch {
     // this is the current behaviour, rather than the desired behavior; see SI-5465
     case _: ToolBoxError => println("error!")
   }

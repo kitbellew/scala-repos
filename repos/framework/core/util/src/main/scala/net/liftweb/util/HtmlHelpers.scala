@@ -236,19 +236,18 @@ trait HtmlHelpers extends CssBindImplicits {
       case Group(ns) => Group(ns.map(stripDuplicateId))
       case element: Elem =>
         element.attribute("id") match {
-          case Some(id) => {
-            if (ids.contains(id.text)) {
+          case Some(id) =>
+            if (ids.contains(id.text))
               processElement(
                 element.copy(attributes =
                   removeAttribute("id", element.attributes)),
                 stripDuplicateId _
               )
-            } else {
+            else {
               ids += id.text
 
               processElement(element, stripDuplicateId _)
             }
-          }
 
           case _ => element
         }
@@ -285,13 +284,12 @@ trait HtmlHelpers extends CssBindImplicits {
 
     ns.map {
       case x if found => x
-      case element: Elem => {
+      case element: Elem =>
         val meta = removeAttribute("id", element.attributes)
 
         found = true
 
         element.copy(attributes = new UnprefixedAttribute("id", id, meta))
-      }
 
       case x => x
     }
@@ -339,13 +337,12 @@ trait HtmlHelpers extends CssBindImplicits {
     */
   def pairsToMetaData(in: List[String]): MetaData = in match {
     case Nil => Null
-    case x :: xs => {
+    case x :: xs =>
       val rest = pairsToMetaData(xs)
       x.charSplit('=').map(Helpers.urlDecode) match {
         case Nil         => rest
         case x :: Nil    => makeMetaData(x, "", rest)
         case x :: y :: _ => makeMetaData(x, y, rest)
       }
-    }
   }
 }

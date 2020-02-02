@@ -172,7 +172,7 @@ class LogSegment(
         case None =>
           // no max offset, just read until the max position
           min((maxPosition - startPosition.position).toInt, maxSize)
-        case Some(offset) => {
+        case Some(offset) =>
           // there is a max offset, translate it to a file position and use that to calculate the max read size
           if (offset < startOffset)
             throw new IllegalArgumentException(
@@ -185,7 +185,6 @@ class LogSegment(
             else
               mapping.position
           min(min(maxPosition, endPosition) - startPosition.position, maxSize).toInt
-        }
       }
     FetchDataInfo(offsetMetadata, log.read(startPosition.position, length))
   }
@@ -205,24 +204,22 @@ class LogSegment(
     var validBytes = 0
     var lastIndexEntry = 0
     val iter = log.iterator(maxMessageSize)
-    try {
-      while (iter.hasNext) {
-        val entry = iter.next
-        entry.message.ensureValid()
-        if (validBytes - lastIndexEntry > indexIntervalBytes) {
-          // we need to decompress the message, if required, to get the offset of the first uncompressed message
-          val startOffset =
-            entry.message.compressionCodec match {
-              case NoCompressionCodec =>
-                entry.offset
-              case _ =>
-                ByteBufferMessageSet.deepIterator(entry).next().offset
-            }
-          index.append(startOffset, validBytes)
-          lastIndexEntry = validBytes
-        }
-        validBytes += MessageSet.entrySize(entry.message)
+    try while (iter.hasNext) {
+      val entry = iter.next
+      entry.message.ensureValid()
+      if (validBytes - lastIndexEntry > indexIntervalBytes) {
+        // we need to decompress the message, if required, to get the offset of the first uncompressed message
+        val startOffset =
+          entry.message.compressionCodec match {
+            case NoCompressionCodec =>
+              entry.offset
+            case _ =>
+              ByteBufferMessageSet.deepIterator(entry).next().offset
+          }
+        index.append(startOffset, validBytes)
+        lastIndexEntry = validBytes
       }
+      validBytes += MessageSet.entrySize(entry.message)
     } catch {
       case e: CorruptRecordException =>
         logger.warn(
@@ -266,14 +263,13 @@ class LogSegment(
   @threadsafe
   def nextOffset(): Long = {
     val ms = read(index.lastOffset, None, log.sizeInBytes)
-    if (ms == null) {
+    if (ms == null)
       baseOffset
-    } else {
+    else
       ms.messageSet.lastOption match {
         case None       => baseOffset
         case Some(last) => last.nextOffset
       }
-    }
   }
 
   /**

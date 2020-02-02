@@ -98,9 +98,8 @@ trait Managed[+T] { selfT =>
       val t = selfT.make()
 
       val u =
-        try {
-          f(t.get).make()
-        } catch {
+        try f(t.get).make()
+        catch {
           case e: Exception =>
             t.dispose()
             throw e

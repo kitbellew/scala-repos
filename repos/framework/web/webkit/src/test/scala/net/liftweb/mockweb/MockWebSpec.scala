@@ -49,27 +49,23 @@ object MockWebSpec extends Specification {
       case RewriteRequest(
           ParsePath(List("test", "stateless"), _, _, _),
           _,
-          _) => {
+          _) =>
         RewriteResponse(List("stateless", "works"))
-      }
     }
 
     LiftRules.statefulRewrite.append {
-      case RewriteRequest(ParsePath(List("test", "stateful"), _, _, _), _, _) => {
+      case RewriteRequest(ParsePath(List("test", "stateful"), _, _, _), _, _) =>
         RewriteResponse(List("stateful", "works"))
-      }
     }
 
     LiftRules.early.append { req =>
       req match {
-        case httpReq: HTTPRequestServlet => {
+        case httpReq: HTTPRequestServlet =>
           httpReq.req match {
-            case mocked: MockHttpServletRequest => {
+            case mocked: MockHttpServletRequest =>
               mocked.remoteAddr = "1.2.3.4"
-            }
             case _ => println("Not a mocked request?")
           }
-        }
         case _ => println("Not a servlet request?")
       }
     }

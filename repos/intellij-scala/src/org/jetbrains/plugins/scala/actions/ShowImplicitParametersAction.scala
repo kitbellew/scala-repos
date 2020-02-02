@@ -101,12 +101,11 @@ class ShowImplicitParametersAction
         expr.extendsBlock.templateParents match {
           case Some(tp) =>
             val elements = tp.typeElements
-            if (elements.nonEmpty) {
+            if (elements.nonEmpty)
               checkTypeElement(elements.head) match {
                 case Some(x) => return x
                 case None    =>
               }
-            }
           case _ =>
         }
       case expr: ScExpression =>
@@ -189,11 +188,11 @@ class ShowImplicitParametersAction
           expr.getTextRange.getEndOffset)
         forExpr(expr)
       }
-      if (expressions.length == 0) {
+      if (expressions.length == 0)
         ScalaActionUtil.showHint(editor, "No implicit parameters")
-      } else if (expressions.length == 1) {
+      else if (expressions.length == 1)
         chooseExpression(expressions(0))
-      } else {
+      else
         ScalaRefactoringUtil.showChooser(
           editor,
           expressions,
@@ -206,7 +205,6 @@ class ShowImplicitParametersAction
               case _ => expr.getText.slice(0, 20)
             }
         )
-      }
     }
   }
 
@@ -240,17 +238,15 @@ class ShowImplicitParametersAction
       project,
       new Runnable {
         def run(): Unit = {
-          if (selectedNode != null) {
+          if (selectedNode != null)
             if (selectedNode.canNavigateToSource) {
               popup.cancel()
               selectedNode.navigate(true)
               succeeded.set(true)
-            } else {
+            } else
               succeeded.set(false)
-            }
-          } else {
+          else
             succeeded.set(false)
-          }
           IdeDocumentHistory
             .getInstance(project)
             .includeCurrentCommandAsNavigation()
@@ -310,9 +306,8 @@ class ShowImplicitParametersAction
     new AnAction {
       def actionPerformed(e: AnActionEvent) {
         val succeeded: Boolean = navigateSelectedElement(popup, jTree, project)
-        if (succeeded) {
+        if (succeeded)
           unregisterCustomShortcutSet(panel)
-        }
       }
     }.registerCustomShortcutSet(shortcutSet, panel)
 
@@ -378,11 +373,10 @@ class ImplicitParametersTreeStructure(
           case _ =>
             addErrorLeaf("No information for no reason")
         }
-      } else {
+      } else
         value.implicitParameters.foreach {
           case result => list.add(new ImplicitParametersNode(result))
         }
-      }
       list
     }
 
@@ -399,7 +393,7 @@ class ImplicitParametersTreeStructure(
               data.setPresentableText("Parameter not found")
           }
           data.setAttributesKey(CodeInsightColors.WRONG_REFERENCES_ATTRIBUTES)
-        } else {
+        } else
           namedElement match {
             case s: ScNamedElement =>
               val presentation = s.getPresentation
@@ -428,7 +422,6 @@ class ImplicitParametersTreeStructure(
                 presentation.getPresentableText + presentationTextSuffix)
             case _ => data.setPresentableText(text)
           }
-        }
       }
     }
 

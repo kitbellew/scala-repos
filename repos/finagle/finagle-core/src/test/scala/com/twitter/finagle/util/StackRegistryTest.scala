@@ -55,12 +55,11 @@ class StackRegistryTest extends FunSuite {
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       reg.register("bar", stk, params)
-      val expected = {
+      val expected =
         Set(
           Entry(Seq("test", "qux", "foo", "bar", "name", "p1"), "999"),
           Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1")
         )
-      }
       assert(GlobalRegistry.get.toSet == expected)
     }
   }
@@ -73,12 +72,11 @@ class StackRegistryTest extends FunSuite {
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       reg.register("bar", stk, params)
-      val expected = {
+      val expected =
         Set(
           Entry(Seq("test", "qux", "foo", "bar", "name", "p1"), "999"),
           Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1")
         )
-      }
       assert(GlobalRegistry.get.toSet == expected)
 
       reg.unregister("bar", stk, params)
@@ -95,12 +93,11 @@ class StackRegistryTest extends FunSuite {
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
       reg.register("bar", stk, params)
-      val expected = {
+      val expected =
         Set(
           Entry(Seq("test", "foo", "bar", "name", "p1"), "999"),
           Entry(Seq("test", "foo", "bar", "head", "p2"), "1")
         )
-      }
       assert(GlobalRegistry.get.size == reg.size)
 
       reg.unregister("bar", stk, params)

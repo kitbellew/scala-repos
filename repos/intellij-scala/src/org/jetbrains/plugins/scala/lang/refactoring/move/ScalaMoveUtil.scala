@@ -164,17 +164,13 @@ object ScalaMoveUtil {
     def restoreInner(clazz: PsiClass) {
       val associations: Associations =
         clazz.getCopyableUserData(ASSOCIATIONS_KEY)
-      if (associations != null) {
-        try {
-          PROCESSOR.restoreAssociations(
-            associations,
-            clazz.getContainingFile,
-            clazz.getTextRange.getStartOffset,
-            clazz.getProject)
-        } finally {
-          clazz.putCopyableUserData(ASSOCIATIONS_KEY, null)
-        }
-      }
+      if (associations != null)
+        try PROCESSOR.restoreAssociations(
+          associations,
+          clazz.getContainingFile,
+          clazz.getTextRange.getStartOffset,
+          clazz.getProject)
+        finally clazz.putCopyableUserData(ASSOCIATIONS_KEY, null)
     }
     restoreInner(aClass)
     if (withCompanion)

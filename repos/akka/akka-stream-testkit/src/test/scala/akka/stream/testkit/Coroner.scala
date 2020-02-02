@@ -67,9 +67,8 @@ object Coroner { // FIXME: remove once going back to project dependencies
     }
 
     override def result(atMost: Duration)(implicit permit: CanAwait): Boolean =
-      try {
-        Await.result(cancelPromise.future, atMost)
-      } catch { case _: TimeoutException ⇒ false }
+      try Await.result(cancelPromise.future, atMost)
+      catch { case _: TimeoutException ⇒ false }
 
   }
 
@@ -100,18 +99,15 @@ object Coroner { // FIXME: remove once going back to project dependencies
           s"Coroner Thread Count starts at $startThreads in $reportTitle")
       }
       watchedHandle.started()
-      try {
-        if (!Await.result(watchedHandle, duration)) {
-          watchedHandle.expired()
-          out.println(
-            s"Coroner not cancelled after ${duration.toMillis}ms. Looking for signs of foul play...")
-          try printReport(reportTitle, out)
-          catch {
-            case NonFatal(ex) ⇒ {
-              out.println("Error displaying Coroner's Report")
-              ex.printStackTrace(out)
-            }
-          }
+      try if (!Await.result(watchedHandle, duration)) {
+        watchedHandle.expired()
+        out.println(
+          s"Coroner not cancelled after ${duration.toMillis}ms. Looking for signs of foul play...")
+        try printReport(reportTitle, out)
+        catch {
+          case NonFatal(ex) ⇒
+            out.println("Error displaying Coroner's Report")
+            ex.printStackTrace(out)
         }
       } finally {
         if (displayThreadCounts) {
@@ -157,29 +153,29 @@ object Coroner { // FIXME: remove once going back to project dependencies
         threadMx.isSynchronizerUsageSupported)
 
     def findDeadlockedThreads: (Seq[ThreadInfo], String) = {
-      val (ids, desc) = if (threadMx.isSynchronizerUsageSupported()) {
-        (threadMx.findDeadlockedThreads(), "monitors and ownable synchronizers")
-      } else {
-        (
-          threadMx.findMonitorDeadlockedThreads(),
-          "monitors, but NOT ownable synchronizers")
-      }
-      if (ids == null) {
+      val (ids, desc) =
+        if (threadMx.isSynchronizerUsageSupported())
+          (
+            threadMx.findDeadlockedThreads(),
+            "monitors and ownable synchronizers")
+        else
+          (
+            threadMx.findMonitorDeadlockedThreads(),
+            "monitors, but NOT ownable synchronizers")
+      if (ids == null)
         (Seq.empty, desc)
-      } else {
+      else {
         val maxTraceDepth = 1000 // Seems deep enough
         (threadMx.getThreadInfo(ids, maxTraceDepth), desc)
       }
     }
 
     def printThreadInfos(threadInfos: Seq[ThreadInfo]) =
-      if (threadInfos.isEmpty) {
+      if (threadInfos.isEmpty)
         println("None")
-      } else {
-        for (ti ← threadInfos.sortBy(_.getThreadName)) {
+      else
+        for (ti ← threadInfos.sortBy(_.getThreadName))
           println(threadInfoToString(ti))
-        }
-      }
 
     def threadInfoToString(ti: ThreadInfo): String = {
       val sb = new java.lang.StringBuilder
@@ -190,9 +186,8 @@ object Coroner { // FIXME: remove once going back to project dependencies
       sb.append(" ")
       sb.append(ti.getThreadState)
 
-      if (ti.getLockName != null) {
+      if (ti.getLockName != null)
         sb.append(" on " + ti.getLockName)
-      }
 
       if (ti.getLockOwnerName != null) {
         sb.append(" owned by \"")
@@ -201,13 +196,11 @@ object Coroner { // FIXME: remove once going back to project dependencies
         sb.append(ti.getLockOwnerId)
       }
 
-      if (ti.isSuspended) {
+      if (ti.isSuspended)
         sb.append(" (suspended)")
-      }
 
-      if (ti.isInNative) {
+      if (ti.isInNative)
         sb.append(" (in native)")
-      }
 
       sb.append('\n')
 

@@ -88,9 +88,8 @@ private[kafka] class KafkaRDD[
       .map(_.asInstanceOf[KafkaRDDPartition])
       .filter(_.count > 0)
 
-    if (num < 1 || nonEmptyPartitions.isEmpty) {
+    if (num < 1 || nonEmptyPartitions.isEmpty)
       return new Array[R](0)
-    }
 
     // Determine in advance how many messages need to be taken from each partition
     val parts = nonEmptyPartitions.foldLeft(Map[Int, Int]()) { (result, part) =>
@@ -98,9 +97,8 @@ private[kafka] class KafkaRDD[
       if (remain > 0) {
         val taken = Math.min(remain, part.count)
         result + (part.index -> taken.toInt)
-      } else {
+      } else
         result
-      }
     }
 
     val buf = new ArrayBuffer[R]
@@ -146,9 +144,8 @@ private[kafka] class KafkaRDD[
         s"Beginning offset ${part.fromOffset} is the same as ending offset " +
           s"skipping ${part.topic} ${part.partition}")
       Iterator.empty
-    } else {
+    } else
       new KafkaRDDIterator(part, context)
-    }
   }
 
   private class KafkaRDDIterator(part: KafkaRDDPartition, context: TaskContext)
@@ -176,7 +173,7 @@ private[kafka] class KafkaRDD[
     // The idea is to use the provided preferred host, except on task retry attempts,
     // to minimize number of kafka metadata requests
     private def connectLeader: SimpleConsumer =
-      if (context.attemptNumber > 0) {
+      if (context.attemptNumber > 0)
         kc.connectLeader(part.topic, part.partition)
           .fold(
             errs =>
@@ -185,9 +182,8 @@ private[kafka] class KafkaRDD[
                   errs.mkString("\n")),
             consumer => consumer
           )
-      } else {
+      else
         kc.connect(part.host, part.port)
-      }
 
     private def handleFetchErr(resp: FetchResponse) {
       if (resp.hasError) {
@@ -222,14 +218,12 @@ private[kafka] class KafkaRDD[
     }
 
     override def close(): Unit =
-      if (consumer != null) {
+      if (consumer != null)
         consumer.close()
-      }
 
     override def getNext(): R = {
-      if (iter == null || !iter.hasNext) {
+      if (iter == null || !iter.hasNext)
         iter = fetchBatch
-      }
       if (!iter.hasNext) {
         assert(requestOffset == part.untilOffset, errRanOutBeforeEnd(part))
         finished = true

@@ -93,18 +93,16 @@ object CompilationData {
   }
 
   def checkOrCreate(output: File) {
-    if (!output.exists()) {
-      try {
-        if (!output.mkdirs())
-          throw new IOException(
-            "Cannot create output directory: " + output.toString)
-      } catch {
+    if (!output.exists())
+      try if (!output.mkdirs())
+        throw new IOException(
+          "Cannot create output directory: " + output.toString)
+      catch {
         case t: Throwable =>
           throw new IOException(
             "Cannot create output directory: " + output.toString,
             t)
       }
-    }
   }
 
   def outputsNotSpecified(chunk: ModuleChunk): Option[String] =
@@ -143,23 +141,19 @@ object CompilationData {
   def addCommonJavacOptions(
       options: util.ArrayList[String],
       compilerOptions: JpsJavaCompilerOptions) {
-    if (compilerOptions.DEBUGGING_INFO) {
+    if (compilerOptions.DEBUGGING_INFO)
       options.add("-g")
-    }
 
-    if (compilerOptions.DEPRECATION) {
+    if (compilerOptions.DEPRECATION)
       options.add("-deprecation")
-    }
 
-    if (compilerOptions.GENERATE_NO_WARNINGS) {
+    if (compilerOptions.GENERATE_NO_WARNINGS)
       options.add("-nowarn")
-    }
 
-    if (!compilerOptions.ADDITIONAL_OPTIONS_STRING.isEmpty) {
+    if (!compilerOptions.ADDITIONAL_OPTIONS_STRING.isEmpty)
       // TODO extract VM options
       options.addAll(
         compilerOptions.ADDITIONAL_OPTIONS_STRING.split("\\s+").toSeq.asJava)
-    }
   }
 
   private def createOutputToCacheMap(

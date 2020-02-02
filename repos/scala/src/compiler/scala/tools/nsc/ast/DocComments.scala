@@ -193,12 +193,11 @@ trait DocComments { self: Global =>
           if (end > tocopy) tocopy = end
         case None =>
           srcSec match {
-            case Some((start1, end1)) => {
+            case Some((start1, end1)) =>
               out append dst.substring(copied, tocopy).trim
               out append "\n"
               copied = tocopy
               out append src.substring(start1, end1).trim
-            }
             case None =>
           }
       }
@@ -367,7 +366,7 @@ trait DocComments { self: Global =>
       // excluding variables written as \$foo so we can use them when
       // necessary to document things like Symbol#decode
       def isEscaped = idx > 0 && str.charAt(idx - 1) == '\\'
-      while (idx < str.length) {
+      while (idx < str.length)
         if ((str charAt idx) != '$' || isEscaped)
           idx += 1
         else {
@@ -399,7 +398,6 @@ trait DocComments { self: Global =>
               }
           }
         }
-      }
       if (out.length == 0) str
       else {
         out append str.substring(copied)
@@ -595,10 +593,9 @@ trait DocComments { self: Global =>
         }
       }
 
-      for (defn <- defined) yield {
-        defn.cloneSymbol(sym.owner, sym.flags | Flags.SYNTHETIC) modifyInfo (
+      for (defn <- defined)
+        yield defn.cloneSymbol(sym.owner, sym.flags | Flags.SYNTHETIC) modifyInfo (
           info => substAliases(info).asSeenFrom(site.thisType, sym.owner))
-      }
     }
   }
 

@@ -18,30 +18,28 @@ class ImplicitAnalyzer(val global: RichPresentationCompiler) {
     override def traverse(t: Tree): Unit = {
       val treeP = t.pos
       if (p.overlaps(treeP) || treeP.includes(p)) {
-        try {
-          t match {
-            case t: ApplyImplicitView =>
-              implicits.append(
-                ImplicitConversionInfo(
-                  treeP.startOrCursor,
-                  treeP.endOrCursor,
-                  SymbolInfo(t.fun.symbol)
-                ))
-            case t: ApplyToImplicitArgs =>
-              val funIsImplicit = t.fun match {
-                case tt: ApplyImplicitView => true
-                case _                     => false
-              }
-              implicits.append(
-                ImplicitParamInfo(
-                  treeP.startOrCursor,
-                  treeP.endOrCursor,
-                  SymbolInfo(t.fun.symbol),
-                  t.args.map { a => SymbolInfo(a.symbol) },
-                  funIsImplicit
-                ))
-            case _ =>
-          }
+        try t match {
+          case t: ApplyImplicitView =>
+            implicits.append(
+              ImplicitConversionInfo(
+                treeP.startOrCursor,
+                treeP.endOrCursor,
+                SymbolInfo(t.fun.symbol)
+              ))
+          case t: ApplyToImplicitArgs =>
+            val funIsImplicit = t.fun match {
+              case tt: ApplyImplicitView => true
+              case _                     => false
+            }
+            implicits.append(
+              ImplicitParamInfo(
+                treeP.startOrCursor,
+                treeP.endOrCursor,
+                SymbolInfo(t.fun.symbol),
+                t.args.map { a => SymbolInfo(a.symbol) },
+                funIsImplicit
+              ))
+          case _ =>
         } catch {
           case e: Throwable =>
             log.error("Error in AST traverse:", e)

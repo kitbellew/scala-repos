@@ -303,9 +303,9 @@ class ModuleExtDataServiceTest
     importProjectData(generateJavaProject(sdk, javacOptions))
 
     val moduleRootManager = ModuleRootManager.getInstance(getModule)
-    if (sdk.flatMap(SdkUtils.findProjectSdk).isEmpty) {
+    if (sdk.flatMap(SdkUtils.findProjectSdk).isEmpty)
       assertTrue(moduleRootManager.isSdkInherited)
-    } else {
+    else {
       assertEquals(expectedSdk, moduleRootManager.getSdk)
       val languageLevelModuleExtension =
         LanguageLevelModuleExtensionImpl.getInstance(getModule)

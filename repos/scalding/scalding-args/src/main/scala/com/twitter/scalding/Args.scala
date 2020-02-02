@@ -109,11 +109,10 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
   def apply(position: Int): String = required(position)
 
   override def equals(other: Any): Boolean =
-    if (other.isInstanceOf[Args]) {
+    if (other.isInstanceOf[Args])
       other.asInstanceOf[Args].m.equals(m)
-    } else {
+    else
       false
-    }
 
   override def hashCode(): Int = m.hashCode()
 
@@ -138,13 +137,12 @@ class Args(val m: Map[String, List[String]]) extends java.io.Serializable {
     m.foldLeft(List[String]()) { (args, kvlist) =>
       val k = kvlist._1
       val values = kvlist._2
-      if (k != "") {
+      if (k != "")
         //Make sure positional args are first
         args ++ ((("--" + k) :: values))
-      } else {
+      else
         // These are positional args (no key), put them first:
         values ++ args
-      }
     }
 
   /**

@@ -82,12 +82,11 @@ class JasmineTestReporter(
         log.error(title)
         log.error(color(log, InfoColor, message))
       }
-    } else {
+    } else
       loggers foreach { log =>
         log.info(title)
         log.info(color(log, InfoColor, message))
       }
-    }
     info("")
   }
 

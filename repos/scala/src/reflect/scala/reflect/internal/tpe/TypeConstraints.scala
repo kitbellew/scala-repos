@@ -112,14 +112,13 @@ private[internal] trait TypeConstraints {
         case NothingClass => true
         case _            => !(lobounds contains tp)
       }
-      if (mustConsider) {
-        if (isNumericBound && isNumericValueType(tp)) {
+      if (mustConsider)
+        if (isNumericBound && isNumericValueType(tp))
           if (numlo == NoType || isNumericSubType(numlo, tp))
             numlo = tp
           else if (!isNumericSubType(tp, numlo))
             numlo = numericLoBound
-        } else lobounds ::= tp
-      }
+          else lobounds ::= tp
     }
 
     def checkWidening(tp: Type) {
@@ -140,12 +139,12 @@ private[internal] trait TypeConstraints {
       }
       if (mustConsider) {
         checkWidening(tp)
-        if (isNumericBound && isNumericValueType(tp)) {
+        if (isNumericBound && isNumericValueType(tp))
           if (numhi == NoType || isNumericSubType(tp, numhi))
             numhi = tp
           else if (!isNumericSubType(numhi, tp))
             numhi = numericHiBound
-        } else hibounds ::= tp
+          else hibounds ::= tp
       }
     }
 
@@ -222,7 +221,7 @@ private[internal] trait TypeConstraints {
             solveOne(tvar2, tparam2, variance2)
           }
         }
-        if (!cyclic) {
+        if (!cyclic)
           if (up) {
             if (bound.typeSymbol != AnyClass) {
               debuglog(
@@ -254,19 +253,16 @@ private[internal] trait TypeConstraints {
                 case _ =>
               }
           }
-        }
         tvar.constr.inst = NoType // necessary because hibounds/lobounds may contain tvar
 
         //println("solving "+tvar+" "+up+" "+(if (up) (tvar.constr.hiBounds) else tvar.constr.loBounds)+((if (up) (tvar.constr.hiBounds) else tvar.constr.loBounds) map (_.widen)))
         val newInst =
           (
-            if (up) {
+            if (up)
               if (depth.isAnyDepth) glb(tvar.constr.hiBounds)
               else glb(tvar.constr.hiBounds, depth)
-            } else {
-              if (depth.isAnyDepth) lub(tvar.constr.loBounds)
-              else lub(tvar.constr.loBounds, depth)
-            }
+            else if (depth.isAnyDepth) lub(tvar.constr.loBounds)
+            else lub(tvar.constr.loBounds, depth)
           )
 
         debuglog(s"$tvar setInst $newInst")

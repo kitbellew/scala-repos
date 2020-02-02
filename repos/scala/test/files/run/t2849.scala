@@ -22,10 +22,9 @@ object Test {
     for (i <- 1 until N) {
       aSortedSet = (aSortedSet - big) ++ (TreeSet(i, big - 1))
       big -= 1
-      if (i % M == 0) {
+      if (i % M == 0)
         //println("big: "+big+", free memory: "+freeMBytes)
         aSortedSet.until(i)
-      }
     }
   }
 
@@ -37,9 +36,8 @@ object Test {
     for (i <- 1 until N) {
       aSortedSet = (aSortedSet - big) ++ (TreeSet(i, big - 1)) + big
       big -= 1
-      if (i % M == 0) {
+      if (i % M == 0)
         aSortedSet.until(i)
-      }
     }
   }
 

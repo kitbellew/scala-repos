@@ -33,7 +33,7 @@ class LazyLogRecordUnformatted(
     level: javalog.Level,
     message: String,
     items: Any*)
-    extends LazyLogRecord(level, { message.format(items: _*) }) {
+    extends LazyLogRecord(level, message.format(items: _*)) {
   require(items.size > 0)
   val preformatted = message
 }

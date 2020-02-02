@@ -153,14 +153,14 @@ class LBFGSB(
     val n = x.length
     val d = DenseVector.zeros[Double](n)
     val t = g.mapPairs { (i, gi) =>
-      if (0 == gi) {
+      if (0 == gi)
         (i, Double.MaxValue)
-      } else {
-        val ti = if (gi < 0) {
-          (x(i) - upperBounds(i)) / gi
-        } else {
-          (x(i) - lowerBounds(i)) / gi
-        }
+      else {
+        val ti =
+          if (gi < 0)
+            (x(i) - upperBounds(i)) / gi
+          else
+            (x(i) - lowerBounds(i)) / gi
         d(i) = if (0 == ti) 0 else -gi
         (i, ti)
       }
@@ -209,10 +209,9 @@ class LBFGSB(
     dtMin = math.max(dtMin, 0)
     oldT += dtMin
 
-    for (sortIdx <- i until n) {
+    for (sortIdx <- i until n)
       xCauchy(sortedIndeces(sortIdx)) =
         x(sortedIndeces(sortIdx)) + oldT * d(sortedIndeces(sortIdx))
-    }
 
     c += p :* dtMin
 
@@ -231,17 +230,16 @@ class LBFGSB(
       du: Vector[Double],
       freeVarIndex: Array[Int]) = {
     var starAlpha = 1.0
-    for ((vIdx, i) <- freeVarIndex.zipWithIndex) {
-      starAlpha = if (0 < du(i)) {
-        math.max(
-          starAlpha,
-          math.min(upperBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
-      } else {
-        math.max(
-          starAlpha,
-          math.min(lowerBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
-      }
-    }
+    for ((vIdx, i) <- freeVarIndex.zipWithIndex)
+      starAlpha =
+        if (0 < du(i))
+          math.max(
+            starAlpha,
+            math.min(upperBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
+        else
+          math.max(
+            starAlpha,
+            math.min(lowerBounds(vIdx) - xCauchy(vIdx) / du(i), 1.0))
 
     starAlpha
   }
@@ -258,16 +256,14 @@ class LBFGSB(
 
     var freeVariableIndexes = collection.mutable.ArrayBuffer[Int]()
     xCauchy.mapPairs { (i, v) =>
-      if (v != upperBounds(i) && v != lowerBounds(i)) {
+      if (v != upperBounds(i) && v != lowerBounds(i))
         freeVariableIndexes += i
-      }
     }
     val freeVarCount = freeVariableIndexes.length
     //WZ = W^T*Z
     val WZ = DenseMatrix.zeros[Double](W.cols, freeVarCount)
-    for (i <- 0 until freeVarCount) {
+    for (i <- 0 until freeVarCount)
       WZ(::, i) := W(freeVariableIndexes(i), ::).t
-    }
 
     // r=(g+theta*(x_cauchy-x)-W*(M*c));
     val dirTheta: DenseVector[Double] = (xCauchy - x) :* theta;
@@ -294,9 +290,8 @@ class LBFGSB(
     val dStar = du :* starAlpha
 
     val subspaceMinX = xCauchy.copy
-    for ((freeVarIdx, i) <- freeVariableIndexes.zipWithIndex) {
+    for ((freeVarIdx, i) <- freeVariableIndexes.zipWithIndex)
       subspaceMinX(freeVarIdx) = subspaceMinX(freeVarIdx) + dStar(i)
-    }
 
     subspaceMinX
   }
@@ -307,23 +302,22 @@ class LBFGSB(
       newY: DenseVector[Double]) = {
     val newHistory = {
       import history._
-      if (0 == yHistory.cols) { //yHistory.cols means update times
+      if (0 == yHistory.cols) //yHistory.cols means update times
         history.copy(
           yHistory = newY.toDenseMatrix.t,
           sHistory = newS.toDenseMatrix.t)
-      } else if (yHistory.cols < m) {
+      else if (yHistory.cols < m)
         history.copy(
           yHistory = DenseMatrix.horzcat(yHistory, newY.toDenseMatrix.t),
           sHistory = DenseMatrix.horzcat(sHistory, newS.toDenseMatrix.t)
         )
-      } else { //m <= k discard the oldest yk and sk
+      else //m <= k discard the oldest yk and sk
         history.copy(
           yHistory =
             DenseMatrix.horzcat(yHistory(::, 1 until m), newY.toDenseMatrix.t),
           sHistory =
             DenseMatrix.horzcat(sHistory(::, 1 until m), newS.toDenseMatrix.t)
         )
-      }
 
     }
 
@@ -347,9 +341,8 @@ class LBFGSB(
         DenseMatrix.horzcat(L, STS :* newTheta))
       val newM = inv(MM) //MM-1 M is defined at formula 3.4
       newHistory.copy(newTheta, newW, newM)
-    } else {
+    } else
       history
-    }
   }
 
   //norm(P(xk-gk, l, u) - xk, INF) < 1E-5
@@ -382,13 +375,12 @@ object LBFGSB {
     val x = state.x
     val g = state.grad
     val pMinusX = (x - g).mapPairs { (i, v) =>
-      if (v <= lowerBounds(i)) {
+      if (v <= lowerBounds(i))
         lowerBounds(i) - x(i)
-      } else if (upperBounds(i) <= v) {
+      else if (upperBounds(i) <= v)
         upperBounds(i) - x(i)
-      } else {
+      else
         v - x(i)
-      }
     }
     val normPMinusX = norm(pMinusX, Double.PositiveInfinity)
 

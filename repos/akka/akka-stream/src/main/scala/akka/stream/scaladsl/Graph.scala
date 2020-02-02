@@ -235,9 +235,8 @@ final class MergePreferred[T] private (
           new InHandler {
             override def onPush(): Unit =
               if (preferredEmitting > 0) () // blocked
-              else {
+              else
                 emit(out, grab(port), pullPort)
-              }
             override def onUpstreamFinish(): Unit = onComplete()
           }
         )
@@ -307,12 +306,10 @@ final class Interleave[T] private (
             case x ⇒ x
           }
           if (!isClosed(in(successor))) successor
+          else if (successor != currentUpstreamIndex) nextInletIndex(successor)
           else {
-            if (successor != currentUpstreamIndex) nextInletIndex(successor)
-            else {
-              completeStage()
-              0 // return dummy/min value to exit stage logic gracefully
-            }
+            completeStage()
+            0 // return dummy/min value to exit stage logic gracefully
           }
         }
         counter = 0
@@ -565,7 +562,7 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
             if (idx < 0 || idx >= outputPorts)
               failStage(PartitionOutOfBoundsException(
                 s"partitioner must return an index in the range [0,${outputPorts - 1}]. returned: [$idx] for input [${elem.getClass.getName}]."))
-            else if (!isClosed(out(idx))) {
+            else if (!isClosed(out(idx)))
               if (isAvailable(out(idx))) {
                 push(out(idx), elem)
                 if (out.exists(isAvailable(_)))
@@ -574,8 +571,7 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
                 outPendingElem = elem
                 outPendingIdx = idx
               }
-
-            } else if (out.exists(isAvailable(_)))
+            else if (out.exists(isAvailable(_)))
               pull(in)
           }
 
@@ -597,9 +593,8 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
                     push(o, elem)
                     outPendingElem = null
                     if (!isClosed(in)) {
-                      if (!hasBeenPulled(in)) {
+                      if (!hasBeenPulled(in))
                         pull(in)
-                      }
                     } else
                       completeStage()
                   }
@@ -610,13 +605,12 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
                 downstreamRunning -= 1
                 if (downstreamRunning == 0)
                   completeStage()
-                else if (outPendingElem != null) {
+                else if (outPendingElem != null)
                   if (idx == outPendingIdx) {
                     outPendingElem = null
                     if (!hasBeenPulled(in))
                       pull(in)
                   }
-                }
               }
             }
           )
@@ -700,16 +694,15 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
                 if (needDownstreamPulls > 0) needDownstreamPulls -= 1
               }
 
-              if (needDownstreamPulls == 0) {
+              if (needDownstreamPulls == 0)
                 if (isAvailable(in)) {
-                  if (noPending) {
+                  if (noPending)
                     push(o, grab(in))
-                  }
                 } else {
                   if (!hasBeenPulled(in)) pull(in)
                   pendingQueue.enqueue(o)
                 }
-              } else pendingQueue.enqueue(o)
+              else pendingQueue.enqueue(o)
             }
 
             override def onDownstreamFinish() = {
@@ -968,10 +961,9 @@ object GraphDSL extends GraphApply {
        * because that computation node would not be part of the tree and
        * the source would not be triggered.
        */
-      if (moduleInProgress.isInstanceOf[CopiedModule]) {
+      if (moduleInProgress.isInstanceOf[CopiedModule])
         moduleInProgress =
           CompositeModule(moduleInProgress, moduleInProgress.shape)
-      }
       val source = new MaterializedValueSource[M](
         moduleInProgress.materializedValueComputation)
       moduleInProgress = moduleInProgress.composeNoMat(source.module)

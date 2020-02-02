@@ -18,11 +18,9 @@ object ParamClauses {
   def parse(builder: ScalaPsiBuilder): Boolean = parse(builder, flag = false)
   def parse(builder: ScalaPsiBuilder, flag: Boolean): Boolean = {
     val paramMarker = builder.mark
-    if (flag) {
-      if (!ParamClause.parse(builder)) {
+    if (flag)
+      if (!ParamClause.parse(builder))
         builder error ErrMsg("param.clause.expected")
-      }
-    }
     while (ParamClause.parse(builder)) {}
     ImplicitParamClause parse builder
     paramMarker.done(ScalaElementTypes.PARAM_CLAUSES)

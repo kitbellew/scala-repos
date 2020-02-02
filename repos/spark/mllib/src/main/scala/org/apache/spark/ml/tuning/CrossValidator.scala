@@ -146,12 +146,10 @@ class CrossValidator @Since("1.2.0") (@Since("1.4.0") override val uid: String)
   @Since("1.4.0")
   override def copy(extra: ParamMap): CrossValidator = {
     val copied = defaultCopy(extra).asInstanceOf[CrossValidator]
-    if (copied.isDefined(estimator)) {
+    if (copied.isDefined(estimator))
       copied.setEstimator(copied.getEstimator.copy(extra))
-    }
-    if (copied.isDefined(evaluator)) {
+    if (copied.isDefined(evaluator))
       copied.setEvaluator(copied.getEvaluator.copy(extra))
-    }
     copied
   }
 
@@ -205,11 +203,10 @@ object CrossValidator extends MLReadable[CrossValidator] {
     def getUidMap(instance: Params): Map[String, Params] = {
       val uidList = getUidMapImpl(instance)
       val uidMap = uidList.toMap
-      if (uidList.size != uidMap.size) {
+      if (uidList.size != uidMap.size)
         throw new RuntimeException(
           "CrossValidator.load found a compound estimator with stages" +
             s" with duplicate UIDs.  List of UIDs: ${uidList.map(_._1).mkString(", ")}")
-      }
       uidMap
     }
 

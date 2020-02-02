@@ -222,7 +222,7 @@ class Lexer(rd: Reader) {
     }
     val delim = ch
     nextChar()
-    while (ch != delim && ch >= ' ') {
+    while (ch != delim && ch >= ' ')
       if (ch == '\\') {
         nextChar()
         ch match {
@@ -240,10 +240,8 @@ class Lexer(rd: Reader) {
           case _ => error("illegal escape character: '" + ch + "'")
         }
         nextChar()
-      } else {
+      } else
         putChar()
-      }
-    }
     acceptChar(delim)
     token = StringLit(sb.toString)
   }
@@ -257,7 +255,7 @@ class Lexer(rd: Reader) {
       if ('0' <= ch && ch <= '9') putChar()
       else error("<digit> expected")
     def digits() =
-      do { digit() } while ('0' <= ch && ch <= '9')
+      do digit() while ('0' <= ch && ch <= '9')
     var isFloating = false
     if (ch == '-') putChar()
     if (ch == '0') digit()

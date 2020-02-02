@@ -83,19 +83,17 @@ class OneHotEncoder(override val uid: String)
     val inputAttr = Attribute.fromStructField(schema(inputColName))
     val outputAttrNames: Option[Array[String]] = inputAttr match {
       case nominal: NominalAttribute =>
-        if (nominal.values.isDefined) {
+        if (nominal.values.isDefined)
           nominal.values
-        } else if (nominal.numValues.isDefined) {
+        else if (nominal.numValues.isDefined)
           nominal.numValues.map(n => Array.tabulate(n)(_.toString))
-        } else {
+        else
           None
-        }
       case binary: BinaryAttribute =>
-        if (binary.values.isDefined) {
+        if (binary.values.isDefined)
           binary.values
-        } else {
+        else
           Some(Array.tabulate(2)(_.toString))
-        }
       case _: NumericAttribute =>
         throw new RuntimeException(
           s"The input column $inputColName cannot be numeric.")
@@ -109,9 +107,8 @@ class OneHotEncoder(override val uid: String)
           names.length > 1,
           s"The input column $inputColName should have at least two distinct values.")
         names.dropRight(1)
-      } else {
+      } else
         names
-      }
     }
 
     val outputAttrGroup = if (filteredOutputAttrNames.isDefined) {
@@ -119,9 +116,8 @@ class OneHotEncoder(override val uid: String)
         BinaryAttribute.defaultAttr.withName(name)
       }
       new AttributeGroup($(outputCol), attrs)
-    } else {
+    } else
       new AttributeGroup($(outputCol))
-    }
 
     val outputFields = inputFields :+ outputAttrGroup.toStructField()
     StructType(outputFields)
@@ -168,11 +164,10 @@ class OneHotEncoder(override val uid: String)
     val emptyValues = Array[Double]()
     val emptyIndices = Array[Int]()
     val encode = udf { label: Double =>
-      if (label < size) {
+      if (label < size)
         Vectors.sparse(size, Array(label.toInt), oneValue)
-      } else {
+      else
         Vectors.sparse(size, emptyIndices, emptyValues)
-      }
     }
 
     dataset.select(

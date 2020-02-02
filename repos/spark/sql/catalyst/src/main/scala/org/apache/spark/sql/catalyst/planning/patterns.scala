@@ -175,9 +175,8 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
             otherPredicates.reduceOption(And),
             left,
             right))
-      } else {
+      } else
         None
-      }
     case _ => None
   }
 }
@@ -241,14 +240,13 @@ object Unions {
       plans: mutable.Stack[LogicalPlan],
       children: Seq[LogicalPlan]): Seq[LogicalPlan] =
     if (plans.isEmpty) children
-    else {
+    else
       plans.pop match {
         case Union(grandchildren) =>
           grandchildren.reverseMap(plans.push(_))
           collectUnionChildren(plans, children)
         case other => collectUnionChildren(plans, children :+ other)
       }
-    }
 }
 
 /**

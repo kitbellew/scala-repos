@@ -244,9 +244,8 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
         counter += 1
         usedNames += result
         result
-      } else {
+      } else
         prefix
-      }
     }
   }
 }

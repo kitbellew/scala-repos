@@ -146,13 +146,10 @@ object ConcurrentMapSpec extends Spec {
           for (j <- 0 until sz) {
             val i = (offs + j) % sz
             var success = false
-            do {
-              if (ct.contains(new Wrap(i))) {
-                success = ct.remove(new Wrap(i)) != None
-              } else {
-                success = ct.putIfAbsent(new Wrap(i), i) == None
-              }
-            } while (!success)
+            do if (ct.contains(new Wrap(i)))
+              success = ct.remove(new Wrap(i)) != None
+            else
+              success = ct.putIfAbsent(new Wrap(i), i) == None while (!success)
           }
         }
       }

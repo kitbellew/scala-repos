@@ -57,7 +57,7 @@ private[spark] object SerDeUtil extends Logging {
     //  };
     // TODO: support Py_UNICODE with 2 bytes
     val machineCodes: Map[Char, Int] =
-      if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN)) {
+      if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN))
         Map(
           'c' -> 1,
           'B' -> 0,
@@ -71,7 +71,7 @@ private[spark] object SerDeUtil extends Logging {
           'f' -> 15,
           'd' -> 17,
           'u' -> 21)
-      } else {
+      else
         Map(
           'c' -> 1,
           'B' -> 0,
@@ -85,19 +85,17 @@ private[spark] object SerDeUtil extends Logging {
           'f' -> 14,
           'd' -> 16,
           'u' -> 20)
-      }
     override def construct(args: Array[Object]): Object =
-      if (args.length == 1) {
+      if (args.length == 1)
         construct(args ++ Array(""))
-      } else if (args.length == 2 && args(1).isInstanceOf[String]) {
+      else if (args.length == 2 && args(1).isInstanceOf[String]) {
         val typecode = args(0).asInstanceOf[String].charAt(0)
         // This must be ISO 8859-1 / Latin 1, not UTF-8, to interoperate correctly
         val data =
           args(1).asInstanceOf[String].getBytes(StandardCharsets.ISO_8859_1)
         construct(typecode, machineCodes(typecode), data)
-      } else {
+      } else
         super.construct(args)
-      }
   }
 
   private var initialized = false
@@ -138,17 +136,15 @@ private[spark] object SerDeUtil extends Logging {
     override def hasNext: Boolean = iter.hasNext
 
     override def next(): Array[Byte] = {
-      while (iter.hasNext && buffer.length < batch) {
+      while (iter.hasNext && buffer.length < batch)
         buffer += iter.next()
-      }
       val bytes = pickle.dumps(buffer.toArray)
       val size = bytes.length
       // let  1M < size < 10M
-      if (size < 1024 * 1024) {
+      if (size < 1024 * 1024)
         batch *= 2
-      } else if (size > 1024 * 1024 * 10 && batch > 1) {
+      else if (size > 1024 * 1024 * 10 && batch > 1)
         batch /= 2
-      }
       buffer.clear()
       bytes
     }
@@ -173,14 +169,13 @@ private[spark] object SerDeUtil extends Logging {
         val unpickle = new Unpickler
         iter.flatMap { row =>
           val obj = unpickle.loads(row)
-          if (batched) {
+          if (batched)
             obj match {
               case array: Array[Any] => array.toSeq
               case _                 => obj.asInstanceOf[JArrayList[_]].asScala
             }
-          } else {
+          else
             Seq(obj)
-          }
         }
       }
       .toJavaRDD()
@@ -237,9 +232,9 @@ private[spark] object SerDeUtil extends Logging {
           val value = if (valueFailed) v.toString else v
           Array[Any](key, value)
       }
-      if (batchSize == 0) {
+      if (batchSize == 0)
         new AutoBatchedPickler(cleaned)
-      } else {
+      else {
         val pickle = new Pickler
         cleaned.grouped(batchSize).map(batched => pickle.dumps(batched.asJava))
       }

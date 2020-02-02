@@ -74,25 +74,22 @@ class InMemoryCatalog extends ExternalCatalog {
   }
 
   private def requireFunctionExists(db: String, funcName: String): Unit =
-    if (!existsFunction(db, funcName)) {
+    if (!existsFunction(db, funcName))
       throw new AnalysisException(
         s"Function '$funcName' does not exist in database '$db'")
-    }
 
   private def requireTableExists(db: String, table: String): Unit =
-    if (!existsTable(db, table)) {
+    if (!existsTable(db, table))
       throw new AnalysisException(
         s"Table '$table' does not exist in database '$db'")
-    }
 
   private def requirePartitionExists(
       db: String,
       table: String,
       spec: TablePartitionSpec): Unit =
-    if (!existsPartition(db, table, spec)) {
+    if (!existsPartition(db, table, spec))
       throw new AnalysisException(
         s"Partition does not exist in database '$db' table '$table': '$spec'")
-    }
 
   // --------------------------------------------------------------------------
   // Databases
@@ -102,13 +99,11 @@ class InMemoryCatalog extends ExternalCatalog {
       dbDefinition: CatalogDatabase,
       ignoreIfExists: Boolean): Unit = synchronized {
     if (catalog.contains(dbDefinition.name)) {
-      if (!ignoreIfExists) {
+      if (!ignoreIfExists)
         throw new AnalysisException(
           s"Database '${dbDefinition.name}' already exists.")
-      }
-    } else {
+    } else
       catalog.put(dbDefinition.name, new DatabaseDesc(dbDefinition))
-    }
   }
 
   override def dropDatabase(
@@ -118,22 +113,17 @@ class InMemoryCatalog extends ExternalCatalog {
     if (catalog.contains(db)) {
       if (!cascade) {
         // If cascade is false, make sure the database is empty.
-        if (catalog(db).tables.nonEmpty) {
+        if (catalog(db).tables.nonEmpty)
           throw new AnalysisException(
             s"Database '$db' is not empty. One or more tables exist.")
-        }
-        if (catalog(db).functions.nonEmpty) {
+        if (catalog(db).functions.nonEmpty)
           throw new AnalysisException(
             s"Database '$db' is not empty. One or more functions exist.")
-        }
       }
       // Remove the database.
       catalog.remove(db)
-    } else {
-      if (!ignoreIfNotExists) {
-        throw new AnalysisException(s"Database '$db' does not exist")
-      }
-    }
+    } else if (!ignoreIfNotExists)
+      throw new AnalysisException(s"Database '$db' does not exist")
   }
 
   override def alterDatabase(dbDefinition: CatalogDatabase): Unit =
@@ -172,13 +162,11 @@ class InMemoryCatalog extends ExternalCatalog {
     requireDbExists(db)
     val table = tableDefinition.name.table
     if (existsTable(db, table)) {
-      if (!ignoreIfExists) {
+      if (!ignoreIfExists)
         throw new AnalysisException(
           s"Table '$table' already exists in database '$db'")
-      }
-    } else {
+    } else
       catalog(db).tables.put(table, new TableDesc(tableDefinition))
-    }
   }
 
   override def dropTable(
@@ -186,14 +174,11 @@ class InMemoryCatalog extends ExternalCatalog {
       table: String,
       ignoreIfNotExists: Boolean): Unit = synchronized {
     requireDbExists(db)
-    if (existsTable(db, table)) {
+    if (existsTable(db, table))
       catalog(db).tables.remove(table)
-    } else {
-      if (!ignoreIfNotExists) {
-        throw new AnalysisException(
-          s"Table '$table' does not exist in database '$db'")
-      }
-    }
+    else if (!ignoreIfNotExists)
+      throw new AnalysisException(
+        s"Table '$table' does not exist in database '$db'")
   }
 
   override def renameTable(db: String, oldName: String, newName: String): Unit =
@@ -324,12 +309,11 @@ class InMemoryCatalog extends ExternalCatalog {
   override def createFunction(db: String, func: CatalogFunction): Unit =
     synchronized {
       requireDbExists(db)
-      if (existsFunction(db, func.name.funcName)) {
+      if (existsFunction(db, func.name.funcName))
         throw new AnalysisException(
           s"Function '$func' already exists in '$db' database")
-      } else {
+      else
         catalog(db).functions.put(func.name.funcName, func)
-      }
     }
 
   override def dropFunction(db: String, funcName: String): Unit = synchronized {

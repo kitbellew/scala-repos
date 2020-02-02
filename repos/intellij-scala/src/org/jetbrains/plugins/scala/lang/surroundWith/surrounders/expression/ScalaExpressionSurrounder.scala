@@ -28,16 +28,14 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
   def isApplicable(element: PsiElement): Boolean =
     element match {
       case _: ScExpression | _: PsiWhiteSpace | _: ScValue | _: ScVariable |
-          _: ScFunction | _: ScTypeAlias => {
+          _: ScFunction | _: ScTypeAlias =>
         true
-      }
-      case e => {
+      case e =>
         if (ScalaPsiUtil.isLineTerminator(e)) true
         else if (e.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) true
         else if (ScalaTokenTypes.COMMENTS_TOKEN_SET contains e.getNode.getElementType)
           true
         else false
-      }
     }
 
   def needParenthesis(elements: Array[PsiElement]): Boolean = {
@@ -66,7 +64,7 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
     val newNode = surroundPsi(elements).getNode
     var childNode: ASTNode = null
 
-    for (child <- elements) {
+    for (child <- elements)
       if (childNode == null) {
         childNode = child.getNode
         childNode.getTreeParent.replaceChild(childNode, newNode)
@@ -74,7 +72,6 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
         childNode = child.getNode
         childNode.getTreeParent.removeChild(childNode)
       }
-    }
     getSurroundSelectionRange(newNode)
   }
 
@@ -87,9 +84,8 @@ abstract class ScalaExpressionSurrounder extends Surrounder {
 
   def getTemplateAsString(elements: Array[PsiElement]): String = {
     var s: String = ""
-    for (element <- elements) {
+    for (element <- elements)
       s = s + element.getNode.getText
-    }
     s
   }
 

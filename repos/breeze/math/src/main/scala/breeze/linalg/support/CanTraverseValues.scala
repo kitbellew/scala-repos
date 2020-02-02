@@ -40,9 +40,8 @@ trait CanTraverseValues[From, A] {
           bb = fn(bb, a)
 
         override def zeros(numZero: Int, zeroValue: A): Unit =
-          for (i <- 0 until numZero) {
+          for (i <- 0 until numZero)
             bb = fn(bb, zeroValue)
-          }
       }
     )
 
@@ -63,11 +62,10 @@ object CanTraverseValues {
         stride: Int): Unit = {
       import spire.syntax.cfor._
       // Standard array bounds check stuff
-      if (stride == 1) {
+      if (stride == 1)
         cforRange(offset until length + offset) { i => visit(arr(i)) }
-      } else {
+      else
         cforRange(0 until length) { i => visit(arr(i * stride + offset)) }
-      }
     }
     def zeros(numZero: Int, zeroValue: A)
   }
@@ -108,9 +106,8 @@ object CanTraverseValues {
       override def traverse(
           from: X,
           fn: CanTraverseValues.ValuesVisitor[V]): Unit =
-        for (v <- from) {
+        for (v <- from)
           fn.visit(v)
-        }
 
       def isTraversableAgain(from: X): Boolean = from.isTraversableAgain
     }

@@ -51,11 +51,8 @@ class ExternalShuffleServiceSuite extends ShuffleSuite with BeforeAndAfterAll {
   }
 
   override def afterAll() {
-    try {
-      server.close()
-    } finally {
-      super.afterAll()
-    }
+    try server.close()
+    finally super.afterAll()
   }
 
   // This test ensures that the external shuffle service is actually in use for the other tests.

@@ -148,9 +148,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
       def apply(a: HashVector[T], b: HashVector[T]): HashVector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           result(k) = op(a(k), v)
-        }
         result
       }
     }
@@ -275,9 +274,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
     new Op.InPlaceImpl2[HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = op(a(k), v)
-        }
       }
     }
 
@@ -311,13 +309,12 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
       def apply(a: HashVector[T], b: HashVector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
 
-        if (a.iterableSize > b.iterableSize) {
+        if (a.iterableSize > b.iterableSize)
           apply(b, a)
-        } else {
+        else {
           var result: T = zero
-          for ((k, v) <- a.activeIterator) {
+          for ((k, v) <- a.activeIterator)
             result += v * b(k)
-          }
           result
         }
       }
@@ -561,9 +558,8 @@ trait SparseVector_HashVector_Ops
           aoff += 1
         }
 
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           builder.add(k, v)
-        }
 
         builder.toSparseVector
       }
@@ -846,9 +842,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
     new OpMulInner.Impl2[HashVector[T], HashVector[T], T] {
       override def apply(v: HashVector[T], v2: HashVector[T]): T = {
         var acc = field.zero
-        for (i <- 0 until v.length) {
+        for (i <- 0 until v.length)
           acc = field.+(acc, field.*(v(i), v2(i)))
-        }
         acc
       }
     }
@@ -871,9 +866,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
       def apply(a: HashVector[V], b: HashVector[V]): Unit = {
         require(b.length == a.length, "HashVectors must be the same length!")
 
-        for (i <- 0 until a.length) {
+        for (i <- 0 until a.length)
           a(i) = b(i)
-        }
 
       }
     }

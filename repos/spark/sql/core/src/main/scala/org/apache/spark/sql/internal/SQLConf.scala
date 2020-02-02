@@ -79,10 +79,9 @@ object SQLConf {
         doc: String,
         isPublic: Boolean): SQLConfEntry[T] =
       sqlConfEntries.synchronized {
-        if (sqlConfEntries.containsKey(key)) {
+        if (sqlConfEntries.containsKey(key))
           throw new IllegalArgumentException(
             s"Duplicate SQLConfEntry. $key has been registered")
-        }
         val entry =
           new SQLConfEntry[T](
             key,
@@ -103,9 +102,8 @@ object SQLConf {
       SQLConfEntry(
         key,
         defaultValue, { v =>
-          try {
-            v.toInt
-          } catch {
+          try v.toInt
+          catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be int, but was $v")
@@ -124,9 +122,8 @@ object SQLConf {
       SQLConfEntry(
         key,
         defaultValue, { v =>
-          try {
-            v.toLong
-          } catch {
+          try v.toLong
+          catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be long, but was $v")
@@ -145,13 +142,11 @@ object SQLConf {
       SQLConfEntry(
         key,
         defaultValue, { v =>
-          try {
-            v.toLong
-          } catch {
+          try v.toLong
+          catch {
             case _: NumberFormatException =>
-              try {
-                Utils.byteStringAsBytes(v)
-              } catch {
+              try Utils.byteStringAsBytes(v)
+              catch {
                 case _: NumberFormatException =>
                   throw new IllegalArgumentException(
                     s"$key should be long, but was $v")
@@ -171,9 +166,8 @@ object SQLConf {
       SQLConfEntry(
         key,
         defaultValue, { v =>
-          try {
-            v.toDouble
-          } catch {
+          try v.toDouble
+          catch {
             case _: NumberFormatException =>
               throw new IllegalArgumentException(
                 s"$key should be double, but was $v")
@@ -192,9 +186,8 @@ object SQLConf {
       SQLConfEntry(
         key,
         defaultValue, { v =>
-          try {
-            v.toBoolean
-          } catch {
+          try v.toBoolean
+          catch {
             case _: IllegalArgumentException =>
               throw new IllegalArgumentException(
                 s"$key should be boolean, but was $v")
@@ -224,10 +217,9 @@ object SQLConf {
         defaultValue,
         v => {
           val _v = valueConverter(v)
-          if (!validValues.contains(_v)) {
+          if (!validValues.contains(_v))
             throw new IllegalArgumentException(
               s"The value of $key should be one of ${validValues.mkString(", ")}, but was $v")
-          }
           _v
         },
         _.toString,
@@ -802,10 +794,9 @@ class SQLConf
     require(key != null, "key cannot be null")
     require(value != null, s"value cannot be null for key: $key")
     val entry = sqlConfEntries.get(key)
-    if (entry != null) {
+    if (entry != null)
       // Only verify configs in the SQLConf object
       entry.valueConverter(value)
-    }
     setConfWithCheck(key, value)
   }
 
@@ -857,10 +848,9 @@ class SQLConf
     */
   def getConfString(key: String, defaultValue: String): String = {
     val entry = sqlConfEntries.get(key)
-    if (entry != null && defaultValue != "<undefined>") {
+    if (entry != null && defaultValue != "<undefined>")
       // Only verify configs in the SQLConf object
       entry.valueConverter(defaultValue)
-    }
     Option(settings.get(key)).getOrElse(defaultValue)
   }
 
@@ -884,10 +874,9 @@ class SQLConf
     }
 
   private def setConfWithCheck(key: String, value: String): Unit = {
-    if (key.startsWith("spark.") && !key.startsWith("spark.sql.")) {
+    if (key.startsWith("spark.") && !key.startsWith("spark.sql."))
       logWarning(
         s"Attempt to set non-Spark SQL config in SQLConf: key = $key, value = $value")
-    }
     settings.put(key, value)
   }
 

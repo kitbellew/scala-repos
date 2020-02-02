@@ -123,9 +123,8 @@ private[deploy] class Worker(
         sys.props.contains("spark.test.home"),
         "spark.test.home is not set!")
       new File(sys.props("spark.test.home"))
-    } else {
+    } else
       new File(sys.env.get("SPARK_HOME").getOrElse("."))
-    }
 
   var workDir: File = null
   val finishedExecutors = new LinkedHashMap[String, ExecutorRunner]
@@ -251,9 +250,9 @@ private[deploy] class Worker(
   private def reregisterWithMaster(): Unit =
     Utils.tryOrExit {
       connectionAttemptCount += 1
-      if (registered) {
+      if (registered)
         cancelLastRegistrationRetry()
-      } else if (connectionAttemptCount <= TOTAL_REGISTRATION_RETRIES) {
+      else if (connectionAttemptCount <= TOTAL_REGISTRATION_RETRIES) {
         logInfo(
           s"Retrying connection to master (attempt # $connectionAttemptCount)")
 
@@ -282,9 +281,8 @@ private[deploy] class Worker(
             // registered == false && master != None means we lost the connection to master, so
             // masterRef cannot be used and we need to recreate it again. Note: we must not set
             // master to None due to the above comments.
-            if (registerMasterFutures != null) {
+            if (registerMasterFutures != null)
               registerMasterFutures.foreach(_.cancel(true))
-            }
             val masterAddress = masterRef.address
             registerMasterFutures =
               Array(registerMasterThreadPool.submit(new Runnable {
@@ -303,9 +301,8 @@ private[deploy] class Worker(
                   }
               }))
           case None =>
-            if (registerMasterFutures != null) {
+            if (registerMasterFutures != null)
               registerMasterFutures.foreach(_.cancel(true))
-            }
             // We are retrying the initial registration
             registerMasterFutures = tryRegisterAllMasters()
         }
@@ -438,9 +435,8 @@ private[deploy] class Worker(
 
   override def receive: PartialFunction[Any, Unit] = synchronized {
     case SendHeartbeat =>
-      if (connected) {
+      if (connected)
         sendToMaster(Heartbeat(workerId, self))
-      }
 
     case WorkDirCleanup =>
       // Spin up a separate thread (in a future) to do the dir cleanup; don't tie up worker
@@ -449,9 +445,8 @@ private[deploy] class Worker(
       val appIds = executors.values.map(_.appId).toSet
       val cleanupFuture = concurrent.Future {
         val appDirs = workDir.listFiles()
-        if (appDirs == null) {
+        if (appDirs == null)
           throw new IOException("ERROR: Failed to list files in " + appDirs)
-        }
         appDirs
           .filter { dir =>
             // the directory is used by an application - check that the application is not running
@@ -491,10 +486,10 @@ private[deploy] class Worker(
       registerWithMaster()
 
     case LaunchExecutor(masterUrl, appId, execId, appDesc, cores_, memory_) =>
-      if (masterUrl != activeMasterUrl) {
+      if (masterUrl != activeMasterUrl)
         logWarning(
           "Invalid Master (" + masterUrl + ") attempted to launch executor.")
-      } else {
+      else
         try {
           logInfo(
             "Asked to launch executor %s/%d for %s"
@@ -502,9 +497,8 @@ private[deploy] class Worker(
 
           // Create the executor's working directory
           val executorDir = new File(workDir, appId + "/" + execId)
-          if (!executorDir.mkdirs()) {
+          if (!executorDir.mkdirs())
             throw new IOException("Failed to create directory " + executorDir)
-          }
 
           // Create local dirs for the executor. These are passed to the executor via the
           // SPARK_EXECUTOR_DIRS environment variable, and deleted by the Worker when the
@@ -546,7 +540,7 @@ private[deploy] class Worker(
           sendToMaster(
             ExecutorStateChanged(appId, execId, manager.state, None, None))
         } catch {
-          case e: Exception => {
+          case e: Exception =>
             logError(
               s"Failed to launch executor $appId/$execId for ${appDesc.name}.",
               e)
@@ -561,9 +555,7 @@ private[deploy] class Worker(
                 ExecutorState.FAILED,
                 Some(e.toString),
                 None))
-          }
         }
-      }
 
     case executorStateChanged @ ExecutorStateChanged(
           appId,
@@ -574,10 +566,10 @@ private[deploy] class Worker(
       handleExecutorStateChanged(executorStateChanged)
 
     case KillExecutor(masterUrl, appId, execId) =>
-      if (masterUrl != activeMasterUrl) {
+      if (masterUrl != activeMasterUrl)
         logWarning(
           "Invalid Master (" + masterUrl + ") attempted to launch executor " + execId)
-      } else {
+      else {
         val fullId = appId + "/" + execId
         executors.get(fullId) match {
           case Some(executor) =>
@@ -588,7 +580,7 @@ private[deploy] class Worker(
         }
       }
 
-    case LaunchDriver(driverId, driverDesc) => {
+    case LaunchDriver(driverId, driverDesc) =>
       logInfo(s"Asked to launch driver $driverId")
       val driver = new DriverRunner(
         conf,
@@ -605,9 +597,8 @@ private[deploy] class Worker(
 
       coresUsed += driverDesc.cores
       memoryUsed += driverDesc.mem
-    }
 
-    case KillDriver(driverId) => {
+    case KillDriver(driverId) =>
       logInfo(s"Asked to kill driver $driverId")
       drivers.get(driverId) match {
         case Some(runner) =>
@@ -615,11 +606,9 @@ private[deploy] class Worker(
         case None =>
           logError(s"Asked to kill unknown driver $driverId")
       }
-    }
 
-    case driverStateChanged @ DriverStateChanged(driverId, state, exception) => {
+    case driverStateChanged @ DriverStateChanged(driverId, state, exception) =>
       handleDriverStateChanged(driverStateChanged)
-    }
 
     case ReregisterWithMaster =>
       reregisterWithMaster()
@@ -706,20 +695,18 @@ private[deploy] class Worker(
   private def trimFinishedExecutorsIfNecessary(): Unit =
     // do not need to protect with locks since both WorkerPage and Restful server get data through
     // thread-safe RpcEndPoint
-    if (finishedExecutors.size > retainedExecutors) {
+    if (finishedExecutors.size > retainedExecutors)
       finishedExecutors.take(math.max(finishedExecutors.size / 10, 1)).foreach {
         case (executorId, _) => finishedExecutors.remove(executorId)
       }
-    }
 
   private def trimFinishedDriversIfNecessary(): Unit =
     // do not need to protect with locks since both WorkerPage and Restful server get data through
     // thread-safe RpcEndPoint
-    if (finishedDrivers.size > retainedDrivers) {
+    if (finishedDrivers.size > retainedDrivers)
       finishedDrivers.take(math.max(finishedDrivers.size / 10, 1)).foreach {
         case (driverId, _) => finishedDrivers.remove(driverId)
       }
-    }
 
   private[worker] def handleDriverStateChanged(
       driverStateChanged: DriverStateChanged): Unit = {
@@ -848,8 +835,7 @@ private[deploy] object Worker extends Logging {
         } :+
         s"-D$useNLC=true"
       cmd.copy(javaOpts = newJavaOpts)
-    } else {
+    } else
       cmd
-    }
   }
 }

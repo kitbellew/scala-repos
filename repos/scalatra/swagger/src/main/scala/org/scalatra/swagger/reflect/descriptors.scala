@@ -35,16 +35,14 @@ object ManifestScalaType {
     else if (mf.runtimeClass == classOf[Symbol]) ManifestScalaType.SymbolType
     else if (mf.runtimeClass == classOf[Number]) ManifestScalaType.NumberType
     /* end optimization */
-    else {
-      if (mf.typeArguments.isEmpty) types(mf, new ManifestScalaType(_))
-      else new ManifestScalaType(mf)
-      //      if (!mf.runtimeClass.isArray) types(mf, new ScalaType(_))
-      //      else {
-      //        val nmf = ManifestFactory.manifestOf(mf.runtimeClass, List(ManifestFactory.manifestOf(mf.runtimeClass.getComponentType)))
-      //        types(nmf, new ScalaType(_))
-      //      }
-      //      new ScalaType(mf)
-    }
+    else if (mf.typeArguments.isEmpty) types(mf, new ManifestScalaType(_))
+    else new ManifestScalaType(mf)
+  //      if (!mf.runtimeClass.isArray) types(mf, new ScalaType(_))
+  //      else {
+  //        val nmf = ManifestFactory.manifestOf(mf.runtimeClass, List(ManifestFactory.manifestOf(mf.runtimeClass.getComponentType)))
+  //        types(nmf, new ScalaType(_))
+  //      }
+  //      new ScalaType(mf)
 
   def apply(
       erasure: Class[_],

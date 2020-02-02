@@ -175,20 +175,16 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             permissionsFinder.findBrowsableChildren(apiKey, path))
           nonRoot = children.filterNot(_ == Path.Root)
           childMetadata <- nonRoot.toList.traverseU(vfs.findPathMetadata)
-        } yield {
-          childMetadata.toSet
-        }
+        } yield childMetadata.toSet
 
       case other =>
         for {
           children <- vfs.findDirectChildren(path)
           permitted <- EitherT.right(
             permissionsFinder.findBrowsableChildren(apiKey, path))
-        } yield {
-          children filter {
-            case PathMetadata(child, _) =>
-              permitted.exists(_.isEqualOrParentOf(path / child))
-          }
+        } yield children filter {
+          case PathMetadata(child, _) =>
+            permitted.exists(_.isEqualOrParentOf(path / child))
         }
     }
 
@@ -208,10 +204,10 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
       val cachePath = path / Path(".cached")
       def fallBack =
-        if (onlyIfCached) {
+        if (onlyIfCached)
           // Return a 202 and schedule a caching run of the query
           sys.error("todo")
-        } else {
+        else
           // if current cached version is older than the max age or cached
           // version does not exist, then run synchronously and cache (if cacheable)
           for {
@@ -223,7 +219,6 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
               queryOptions,
               cacheable.option(cachePath))
           } yield caching
-        }
 
       logger.debug(
         "Checking on cached result for %s with maxAge = %s and recacheAfter = %s and cacheable = %s"
@@ -266,12 +261,10 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
               cachePath,
               Version.Current,
               AccessMode.Read) leftMap storageError
-          } yield {
-            StoredQueryResult(
-              projection.getBlockStream(None),
-              Some(timestamp),
-              None)
-          }
+          } yield StoredQueryResult(
+            projection.getBlockStream(None),
+            Some(timestamp),
+            None)
 
         case Some(VersionEntry(_, _, timestamp)) =>
           logger.debug(
@@ -409,17 +402,15 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                     streamRef)
                   vfs.writeAllSync(Seq((pseudoOffset, msg))).run
                 }
-              } yield {
-                par.fold(
-                  errors => {
-                    logger.error(
-                      "Unable to complete persistence of result stream by %s to %s as %s: %s"
-                        .format(apiKey, path.path, writeAs, errors.shows))
-                    None
-                  },
-                  _ => Some((x, (pseudoOffset + 1, xs)))
-                )
-              }
+              } yield par.fold(
+                errors => {
+                  logger.error(
+                    "Unable to complete persistence of result stream by %s to %s as %s: %s"
+                      .format(apiKey, path.path, writeAs, errors.shows))
+                  None
+                },
+                _ => Some((x, (pseudoOffset + 1, xs)))
+              )
 
             case None =>
               logger.debug(

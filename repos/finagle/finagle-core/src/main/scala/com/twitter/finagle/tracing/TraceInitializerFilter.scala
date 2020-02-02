@@ -109,9 +109,8 @@ sealed class AnnotatingTracingFilter[Req, Rep](
         Trace.recordServiceName(label)
         Trace.recordBinary(finagleVersionKey, finagleVersion())
         // Trace dtab propagation on all requests that have them.
-        if (Dtab.local.nonEmpty) {
+        if (Dtab.local.nonEmpty)
           Trace.recordBinary(dtabLocalKey, Dtab.local.show)
-        }
       }
       Trace.record(before)
       service(request).respond { resp =>
@@ -123,9 +122,8 @@ sealed class AnnotatingTracingFilter[Req, Rep](
         }
         Trace.record(after)
       }
-    } else {
+    } else
       service(request)
-    }
 }
 
 object AnnotatingTracingFilter {

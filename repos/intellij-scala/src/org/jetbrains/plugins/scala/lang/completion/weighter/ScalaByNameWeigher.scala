@@ -132,7 +132,7 @@ class ScalaByNameWeigher extends CompletionWeigher {
     def isAfterNew = ScalaAfterNewCompletionUtil.isAfterNew(position, context)
     def isTypeDefiniton = ScalaCompletionUtil.isTypeDefiniton(position)
 
-    if (isAfterNew || isTypeDefiniton) {
+    if (isAfterNew || isTypeDefiniton)
       ScalaLookupItem.original(element) match {
         case s: ScalaLookupItem =>
           lazy val byTextResult = handleByText(s.element)
@@ -144,6 +144,6 @@ class ScalaByNameWeigher extends CompletionWeigher {
           }
         case _ => null
       }
-    } else null
+    else null
   }
 }

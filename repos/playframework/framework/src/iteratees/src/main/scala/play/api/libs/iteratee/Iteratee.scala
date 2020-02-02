@@ -69,10 +69,9 @@ object Iteratee {
 
       case Input.EOF   => Done(s, Input.EOF)
       case Input.Empty => Cont[E, A](step(s))
-      case Input.El(e) => {
+      case Input.El(e) =>
         val newS = executeFuture(f(s, e))(pec);
         flatten(newS.map(s1 => Cont[E, A](step(s1)))(dec))
-      }
     }
     (Cont[E, A](step(state)))
   }
@@ -92,13 +91,12 @@ object Iteratee {
 
       case Input.EOF   => Done(s, Input.EOF)
       case Input.Empty => Cont[E, A](step(s))
-      case Input.El(e) => {
+      case Input.El(e) =>
         val newS = executeFuture(f(s, e))(pec);
         flatten(newS.map[Iteratee[E, A]] {
           case (s1, done) =>
             if (!done) Cont[E, A](step(s1)) else Done(s1, Input.Empty)
         }(dec))
-      }
     }
     (Cont[E, A](step(state)))
   }
@@ -600,10 +598,9 @@ trait Iteratee[E, +A] {
             case Step.Cont(k)       => k(e)
             case Step.Error(msg, e) => Error(msg, e)
           }(dec)
-      case Step.Cont(k) => {
+      case Step.Cont(k) =>
         implicit val pec = ec.prepare()
         Cont((in: Input[E]) => executeIteratee(k(in))(dec).flatMap(f)(pec))
-      }
       case Step.Error(msg, e) => Error(msg, e)
     }
 
@@ -639,7 +636,7 @@ trait Iteratee[E, +A] {
       case Step.Done(a, Input.Empty) => f(a)
       case Step.Done(a, e) =>
         executeIteratee(f(a))(pec).pureFlatFold {
-          case Step.Done(a, eIn) => {
+          case Step.Done(a, eIn) =>
             val fullIn = (e, eIn) match {
               case (Input.Empty, in)            => in
               case (in, Input.Empty)            => in
@@ -649,7 +646,6 @@ trait Iteratee[E, +A] {
             }
 
             Done(a, fullIn)
-          }
           case Step.Cont(k)       => k(e)
           case Step.Error(msg, e) => Error(msg, e)
         }(dec)

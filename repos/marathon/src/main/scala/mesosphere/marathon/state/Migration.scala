@@ -215,11 +215,10 @@ class MigrationTo0_11(
       }
 
     def loadApp(id: PathId, version: Timestamp): Future[Option[AppDefinition]] =
-      if (appInGroup.version == version) {
+      if (appInGroup.version == version)
         Future.successful(Some(appInGroup))
-      } else {
+      else
         appRepository.app(id, version)
-      }
 
     val sortedVersions = appRepository.listVersions(id).map(_.to[SortedSet])
     sortedVersions.flatMap { sortedVersionsWithoutGroup =>
@@ -257,7 +256,7 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
     def deserialize(
         taskKey: String,
         source: ObjectInputStream): Option[MarathonTask] =
-      if (source.available > 0) {
+      if (source.available > 0)
         try {
           val size = source.readInt
           val bytes = new Array[Byte](size)
@@ -267,9 +266,8 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
           case e: com.google.protobuf.InvalidProtocolBufferException =>
             None
         }
-      } else {
+      else
         None
-      }
 
     store
       .load("task:" + taskKey)

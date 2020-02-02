@@ -153,9 +153,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   /** Update default branch */
   post("/:owner/:repository/settings/update_default_branch", defaultBranchForm)(
     ownerOnly { (form, repository) =>
-      if (repository.branchList.find(_ == form.defaultBranch).isEmpty) {
+      if (repository.branchList.find(_ == form.defaultBranch).isEmpty)
         redirect(s"/${repository.owner}/${repository.name}/settings/options")
-      } else {
+      else {
         saveRepositoryDefaultBranch(
           repository.owner,
           repository.name,
@@ -176,9 +176,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   get("/:owner/:repository/settings/branches/:branch")(ownerOnly { repository =>
     import gitbucket.core.api._
     val branch = params("branch")
-    if (repository.branchList.find(_ == branch).isEmpty) {
+    if (repository.branchList.find(_ == branch).isEmpty)
       redirect(s"/${repository.owner}/${repository.name}/settings/branches")
-    } else {
+    else {
       val protection = ApiBranchProtection(
         getProtectedBranchInfo(repository.owner, repository.name, branch))
       val lastWeeks = getRecentStatuesContexts(
@@ -211,9 +211,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     */
   post("/:owner/:repository/settings/collaborators/add", collaboratorForm)(
     ownerOnly { (form, repository) =>
-      if (!getAccountByUserName(repository.owner).get.isGroupAccount) {
+      if (!getAccountByUserName(repository.owner).get.isGroupAccount)
         addCollaborator(repository.owner, repository.name, form.userName)
-      }
       redirect(
         s"/${repository.owner}/${repository.name}/settings/collaborators")
     })
@@ -223,9 +222,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     */
   get("/:owner/:repository/settings/collaborators/remove")(ownerOnly {
     repository =>
-      if (!getAccountByUserName(repository.owner).get.isGroupAccount) {
+      if (!getAccountByUserName(repository.owner).get.isGroupAccount)
         removeCollaborator(repository.owner, repository.name, params("name"))
-      }
       redirect(
         s"/${repository.owner}/${repository.name}/settings/collaborators")
   })
@@ -409,7 +407,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   post("/:owner/:repository/settings/transfer", transferForm)(ownerOnly {
     (form, repository) =>
       // Change repository owner
-      if (repository.owner != form.newOwner) {
+      if (repository.owner != form.newOwner)
         LockUtil
           .lock(s"${repository.owner}/${repository.name}") {
             // Update database
@@ -433,7 +431,6 @@ trait RepositorySettingsControllerBase extends ControllerBase {
                   getWikiRepositoryDir(form.newOwner, repository.name))
             }
           }
-      }
       redirect(s"/${form.newOwner}/${repository.name}")
   })
 
@@ -462,15 +459,14 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         name: String,
         value: String,
         messages: Messages): Option[String] =
-      if (getWebHook(params("owner"), params("repository"), value).isDefined != needExists) {
-        Some(if (needExists) {
-          "URL had not been registered yet."
-        } else {
-          "URL had been registered already."
-        })
-      } else {
+      if (getWebHook(params("owner"), params("repository"), value).isDefined != needExists)
+        Some(
+          if (needExists)
+            "URL had not been registered yet."
+          else
+            "URL had been registered already.")
+      else
         None
-      }
   }
 
   private def webhookEvents = new ValueType[Set[WebHook.Event]] {
@@ -485,11 +481,10 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         name: String,
         params: Map[String, String],
         messages: Messages): Seq[(String, String)] =
-      if (convert(name, params, messages).isEmpty) {
+      if (convert(name, params, messages).isEmpty)
         Seq(name -> messages("error.required").format(name))
-      } else {
+      else
         Nil
-      }
   }
 
   /**
@@ -541,15 +536,14 @@ trait RepositorySettingsControllerBase extends ControllerBase {
       getAccountByUserName(value) match {
         case None => Some("User does not exist.")
         case Some(x) =>
-          if (x.userName == params("owner")) {
+          if (x.userName == params("owner"))
             Some("This is current repository owner.")
-          } else {
+          else
             params.get("repository").flatMap { repositoryName =>
               getRepositoryNamesOfUser(x.userName)
                 .find(_ == repositoryName)
                 .map { _ => "User already has same repository." }
             }
-          }
       }
   }
 }

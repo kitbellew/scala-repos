@@ -106,11 +106,10 @@ class FileUploadSupportMaxSizeTestServlet
     ))
 
   error {
-    case e: SizeConstraintExceededException => {
+    case e: SizeConstraintExceededException =>
       status = 413
 
       "too much!"
-    }
   }
 
   post("/upload") {

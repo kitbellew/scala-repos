@@ -47,14 +47,14 @@ object ApiUtils {
     * @param string The string to write
     */
   def writeShortString(buffer: ByteBuffer, string: String) {
-    if (string == null) {
+    if (string == null)
       buffer.putShort(-1)
-    } else {
+    else {
       val encodedString = string.getBytes(ProtocolEncoding)
-      if (encodedString.length > Short.MaxValue) {
+      if (encodedString.length > Short.MaxValue)
         throw new KafkaException(
           "String exceeds the maximum size of " + Short.MaxValue + ".")
-      } else {
+      else {
         buffer.putShort(encodedString.length.asInstanceOf[Short])
         buffer.put(encodedString)
       }
@@ -66,16 +66,15 @@ object ApiUtils {
     * @param string The string to write
     */
   def shortStringLength(string: String): Int =
-    if (string == null) {
+    if (string == null)
       2
-    } else {
+    else {
       val encodedString = string.getBytes(ProtocolEncoding)
-      if (encodedString.length > Short.MaxValue) {
+      if (encodedString.length > Short.MaxValue)
         throw new KafkaException(
           "String exceeds the maximum size of " + Short.MaxValue + ".")
-      } else {
+      else
         2 + encodedString.length
-      }
     }
 
   /**

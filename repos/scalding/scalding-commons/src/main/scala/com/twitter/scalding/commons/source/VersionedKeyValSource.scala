@@ -135,15 +135,13 @@ class VersionedKeyValSource[K, V](
     // if a version is explicitly supplied, ensure that it exists
     sourceVersion.foreach { version =>
       mode match {
-        case hadoopMode: HadoopMode => {
+        case hadoopMode: HadoopMode =>
           val store = source.getStore(new JobConf(hadoopMode.jobConf))
 
-          if (!store.hasVersion(version)) {
+          if (!store.hasVersion(version))
             throw new InvalidSourceException(
               "Version %s does not exist. Currently available versions are: %s"
                 .format(version, store.getAllVersions))
-          }
-        }
 
         case _ =>
           throw new IllegalArgumentException(
@@ -154,16 +152,13 @@ class VersionedKeyValSource[K, V](
 
   def resourceExists(mode: Mode): Boolean =
     mode match {
-      case Test(buffers) => {
+      case Test(buffers) =>
         buffers(this) map { !_.isEmpty } getOrElse false
-      }
-      case HadoopTest(conf, buffers) => {
+      case HadoopTest(conf, buffers) =>
         buffers(this) map { !_.isEmpty } getOrElse false
-      }
-      case _ => {
+      case _ =>
         val conf = new JobConf(mode.asInstanceOf[HadoopMode].jobConf)
         source.resourceExists(conf)
-      }
     }
 
   def sinkExists(mode: Mode): Boolean =
@@ -249,9 +244,8 @@ class VersionedKeyValSource[K, V](
     if (other.isInstanceOf[VersionedKeyValSource[_, _]]) {
       val otherSrc = other.asInstanceOf[VersionedKeyValSource[K, V]]
       otherSrc.path == path && otherSrc.sourceVersion == sourceVersion && otherSrc.sinkVersion == sinkVersion
-    } else {
+    } else
       false
-    }
 
   override def hashCode = toString.hashCode
 }

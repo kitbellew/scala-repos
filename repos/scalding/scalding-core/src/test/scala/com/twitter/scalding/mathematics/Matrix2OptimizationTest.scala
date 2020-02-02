@@ -303,9 +303,8 @@ object Matrix2Props extends Properties("Matrix2") {
       val colGen = Gen.choose(1, 1000)
       val nextCols = colGen.sample.get
       (literal(globM, SparseHint(sparsity, nextRows, nextCols)), nextCols)
-    } else {
+    } else
       (literal(globM, SparseHint(sparsity, nextRows, cols)), cols)
-    }
   }
 
   def productChainGen(
@@ -388,45 +387,41 @@ object Matrix2Props extends Properties("Matrix2") {
         List[Product[Any, Any, Any, Double]]) =
       mf match {
         case element @ MatrixLiteral(_, _) => (None, Nil)
-        case Sum(left, right, _) => {
+        case Sum(left, right, _) =>
           val (lastLP, leftR) = toProducts(left)
           val (lastRP, rightR) = toProducts(right)
           val total = leftR ++ rightR ++ (if (lastLP.isDefined) List(lastLP.get)
                                           else Nil) ++
             (if (lastRP.isDefined) List(lastRP.get) else Nil)
           (None, total)
-        }
         case Product(
             leftp @ MatrixLiteral(_, _),
             rightp @ MatrixLiteral(_, _),
             _,
-            _) => {
+            _) =>
           (Some(Product(leftp, rightp, ring)), Nil)
-        }
         case Product(
             left @ Product(_, _, _, _),
             right @ MatrixLiteral(_, _),
             _,
-            _) => {
+            _) =>
           val (lastLP, leftR) = toProducts(left)
           if (lastLP.isDefined) (Some(Product(lastLP.get, right, ring)), leftR)
           else (None, leftR)
-        }
         case Product(
             left @ MatrixLiteral(_, _),
             right @ Product(_, _, _, _),
             _,
-            _) => {
+            _) =>
           val (lastRP, rightR) = toProducts(right)
           if (lastRP.isDefined) (Some(Product(left, lastRP.get, ring)), rightR)
           else (None, rightR)
-        }
-        case Product(left, right, _, _) => {
+        case Product(left, right, _, _) =>
           val (lastLP, leftR) = toProducts(left)
           val (lastRP, rightR) = toProducts(right)
-          if (lastLP.isDefined && lastRP.isDefined) {
+          if (lastLP.isDefined && lastRP.isDefined)
             (Some(Product(lastLP.get, lastRP.get, ring)), leftR ++ rightR)
-          } else {
+          else {
             val newP =
               if (lastLP.isDefined) List(lastLP.get)
               else if (lastRP.isDefined) List(lastRP.get)
@@ -434,7 +429,6 @@ object Matrix2Props extends Properties("Matrix2") {
             (None, newP ++ leftR ++ rightR)
           }
 
-        }
       }
 
     /**
@@ -455,31 +449,28 @@ object Matrix2Props extends Properties("Matrix2") {
             left @ MatrixLiteral(_, _),
             right @ MatrixLiteral(_, _),
             _,
-            _) => {
+            _) =>
           Some(new LabeledTree((start, start + 1), None, None))
-        }
         case Product(
             left @ MatrixLiteral(_, _),
             right @ Product(_, _, _, _),
             _,
-            _) => {
+            _) =>
           val labelRight = labelTree(right, start + 1)
           Some(
             new LabeledTree((start, labelRight.get.range._2), None, labelRight))
-        }
         case Product(
             left @ Product(_, _, _, _),
             right @ MatrixLiteral(_, _),
             _,
-            _) => {
+            _) =>
           val labelLeft = labelTree(left, start)
           Some(
             new LabeledTree(
               (labelLeft.get.range._1, labelLeft.get.range._2 + 1),
               labelLeft,
               None))
-        }
-        case Product(left, right, _, _) => {
+        case Product(left, right, _, _) =>
           val labelLeft = labelTree(left, start)
           val labelRight = labelTree(right, labelLeft.get.range._2 + 1)
           Some(
@@ -487,7 +478,6 @@ object Matrix2Props extends Properties("Matrix2") {
               (labelLeft.get.range._1, labelRight.get.range._2),
               labelLeft,
               labelRight))
-        }
         case _ => None
       }
 
@@ -505,18 +495,17 @@ object Matrix2Props extends Properties("Matrix2") {
             left @ MatrixLiteral(_, _),
             right @ MatrixLiteral(_, _),
             _,
-            _) => {
+            _) =>
           // reflects optimize when k==i: p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)
           Some(
             (left.sizeHint * (left.sizeHint * right.sizeHint)).total.get,
             left,
             right)
-        }
         case Product(
             left @ MatrixLiteral(_, _),
             right @ Product(_, _, _, _),
             _,
-            _) => {
+            _) =>
           val (cost, pLeft, pRight) =
             evaluateProduct(right, labels.right.get).get
           // reflects optimize when k==i: p(i).sizeHint * (p(k).sizeHint * p(j).sizeHint)
@@ -526,19 +515,17 @@ object Matrix2Props extends Properties("Matrix2") {
             labels.right.get.diff * cost + (left.sizeHint * (left.sizeHint * pRight.sizeHint)).total.get,
             left,
             pRight)
-        }
         case Product(
             left @ Product(_, _, _, _),
             right @ MatrixLiteral(_, _),
             _,
-            _) => {
+            _) =>
           val (cost, pLeft, pRight) = evaluateProduct(left, labels.left.get).get
           Some(
             labels.left.get.diff * cost + (pLeft.sizeHint * (pRight.sizeHint * right.sizeHint)).total.get,
             pLeft,
             right)
-        }
-        case Product(left, right, _, _) => {
+        case Product(left, right, _, _) =>
           val (cost1, p1Left, p1Right) =
             evaluateProduct(left, labels.left.get).get
           val (cost2, p2Left, p2Right) =
@@ -547,7 +534,6 @@ object Matrix2Props extends Properties("Matrix2") {
             labels.left.get.diff * cost1 + labels.right.get.diff * cost2 + (p1Left.sizeHint * (p1Right.sizeHint * p2Right.sizeHint)).total.get,
             p1Left,
             p2Right)
-        }
         case _ => None
       }
 

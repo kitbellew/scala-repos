@@ -48,11 +48,11 @@ class ScTemplateBodyImpl private (
 
   def aliases: Array[ScTypeAlias] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.getChildrenByType(
         TokenSets.ALIASES_SET,
         JavaArrayFactoryUtil.ScTypeAliasFactory)
-    } else findChildrenByClass(classOf[ScTypeAlias])
+    else findChildrenByClass(classOf[ScTypeAlias])
   }
 
   def functions: Array[ScFunction] =
@@ -88,12 +88,11 @@ class ScTemplateBodyImpl private (
 
   def selfTypeElement: Option[ScSelfTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.findChildStubByType(ScalaElementTypes.SELF_TYPE) match {
         case null => return None
         case s    => return Some(s.getPsi)
       }
-    }
     Option(findChildByType[ScSelfTypeElement](ScalaElementTypes.SELF_TYPE))
   }
 
@@ -103,13 +102,12 @@ class ScTemplateBodyImpl private (
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     val td = PsiTreeUtil.getContextOfType(this, classOf[ScTemplateDefinition])
-    if (td != null) {
+    if (td != null)
       if (!td.processDeclarationsForTemplateBody(
             processor,
             state,
             td.extendsBlock,
             place)) return false
-    }
     super.processDeclarations(processor, state, lastParent, place)
   }
 

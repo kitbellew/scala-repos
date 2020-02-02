@@ -120,11 +120,10 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
                 "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers.size + " initial subscribers with it"))
             subscribers foreach registerWithUnsubscriber
             true
-          } else {
+          } else
             // recurse, because either new subscribers have been registered since `get` (retry Left case),
             // or another thread has succeeded in setting it's unsubscriber (end on Right case)
             initUnsubscriber(unsubscriber)
-          }
 
         case Right(presentUnsubscriber) ⇒
           if (debug)

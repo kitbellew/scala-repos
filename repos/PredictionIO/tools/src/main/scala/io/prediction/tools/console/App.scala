@@ -129,9 +129,8 @@ object App extends Logging {
         if (firstKey) {
           info(f"  Access Key: ${k.key}%s | $events%s")
           firstKey = false
-        } else {
+        } else
           info(f"              ${k.key}%s | $events%s")
-        }
       }
 
       val chans = channels.getByAppid(app.id)
@@ -178,7 +177,7 @@ object App extends Logging {
       val choice =
         if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
       choice match {
-        case "YES" => {
+        case "YES" =>
           // delete channels
           val delChannelStatus: Seq[Int] = chans.map { ch =>
             if (events.remove(app.id, Some(ch.id))) {
@@ -234,7 +233,6 @@ object App extends Logging {
 
           info("Done.")
           0
-        }
         case _ =>
           info("Aborted.")
           0
@@ -248,11 +246,10 @@ object App extends Logging {
   }
 
   def dataDelete(ca: ConsoleArgs): Int =
-    if (ca.app.all) {
+    if (ca.app.all)
       dataDeleteAll(ca)
-    } else {
+    else
       dataDeleteOne(ca)
-    }
 
   def dataDeleteOne(ca: ConsoleArgs): Int = {
     val apps = storage.Storage.getMetaDataApps
@@ -289,50 +286,45 @@ object App extends Logging {
         if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
 
       choice match {
-        case "YES" => {
+        case "YES" =>
           val events = storage.Storage.getLEvents()
           // remove table
           val r1 = if (events.remove(app.id, channelId)) {
-            if (channelId.isDefined) {
+            if (channelId.isDefined)
               info(s"Removed Event Store for this channel ID: ${channelId.get}")
-            } else {
+            else
               info(s"Removed Event Store for this app ID: ${app.id}")
-            }
             0
           } else {
-            if (channelId.isDefined) {
+            if (channelId.isDefined)
               error(s"Error removing Event Store for this channel.")
-            } else {
+            else
               error(s"Error removing Event Store for this app.")
-            }
             1
           }
           // re-create table
           val dbInit = events.init(app.id, channelId)
           val r2 = if (dbInit) {
-            if (channelId.isDefined) {
+            if (channelId.isDefined)
               info(
                 s"Initialized Event Store for this channel ID: ${channelId.get}.")
-            } else {
+            else
               info(s"Initialized Event Store for this app ID: ${app.id}.")
-            }
             0
           } else {
-            if (channelId.isDefined) {
+            if (channelId.isDefined)
               error(
                 s"Unable to initialize Event Store for this channel ID:" +
                   s" ${channelId.get}.")
-            } else {
+            else
               error(
                 s"Unable to initialize Event Store for this appId:" +
                   s" ${app.id}.")
-            }
             1
           }
           events.close()
           info("Done.")
           r1 + r2
-        }
         case _ =>
           info("Aborted.")
           0
@@ -369,7 +361,7 @@ object App extends Logging {
       val choice =
         if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
       choice match {
-        case "YES" => {
+        case "YES" =>
           // delete channels
           val delChannelStatus: Seq[Int] = chans.map { ch =>
             val r1 = if (events.remove(app.id, Some(ch.id))) {
@@ -413,7 +405,6 @@ object App extends Logging {
             info("Done.")
             r1 + r2
           } else 1
-        }
         case _ =>
           info("Aborted.")
           0
@@ -518,7 +509,7 @@ object App extends Logging {
         val choice =
           if (ca.app.force) "YES" else readLine("Enter 'YES' to proceed: ")
         choice match {
-          case "YES" => {
+          case "YES" =>
             // NOTE: remove storage first before remove meta data (in case remove storage failed)
             val dbRemoved =
               events.remove(app.id, Some(channelMap(deleteChannel)))
@@ -543,7 +534,6 @@ object App extends Logging {
               error(s"Error removing Event Store for this channel.")
               1
             }
-          }
           case _ =>
             info("Aborted.")
             0

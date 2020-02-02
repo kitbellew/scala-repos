@@ -26,12 +26,10 @@ object ScalaProjectSettingsUtil {
     if (packageName.trim.startsWith(".") || packageName.trim.endsWith("."))
       return false
     val parts = packageName.split(".")
-    for (i <- 0 until parts.length) {
-      if (!ScalaNamesUtil.isIdentifier(parts(i)) || parts(i).isEmpty) {
+    for (i <- 0 until parts.length)
+      if (!ScalaNamesUtil.isIdentifier(parts(i)) || parts(i).isEmpty)
         if (!checkPlaceholder || i != parts.length - 1 || parts(i) != "_")
           return false
-      }
-    }
     true
   }
 

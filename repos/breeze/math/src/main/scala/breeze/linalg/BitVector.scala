@@ -93,9 +93,8 @@ object BitVector extends BitVectorOps {
 
   def apply(bools: Boolean*) = {
     val bs = new util.BitSet
-    for (i <- 0 until bools.length if bools(i)) {
+    for (i <- 0 until bools.length if bools(i))
       bs.set(i)
-    }
 
     new BitVector(bs, bools.length)
   }
@@ -147,10 +146,9 @@ object BitVector extends BitVectorOps {
 
       /** Iterates all key-value pairs from the given collection. */
       def traverse(from: BitVector, fn: ValuesVisitor[Boolean]): Unit =
-        for (i <- 0 until from.length) {
+        for (i <- 0 until from.length)
           fn.visit(from(i))
-        }
-//        fn.visitArray(from.data, from.offset, from.length, from.stride)
+      //        fn.visitArray(from.data, from.offset, from.length, from.stride)
 
     }
 
@@ -164,18 +162,16 @@ object BitVector extends BitVectorOps {
           from: BitVector,
           fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[Int, Boolean])
           : Unit =
-        for (i <- 0 until from.length) {
+        for (i <- 0 until from.length)
           fn.visit(i, from(i))
-        }
 
     }
 
   implicit def canTransformValues: CanTransformValues[BitVector, Boolean] =
     new CanTransformValues[BitVector, Boolean] {
       def transform(from: BitVector, fn: (Boolean) => Boolean) {
-        for (i <- 0 until from.length) {
+        for (i <- 0 until from.length)
           from(i) = fn(from(i))
-        }
       }
 
       def transformActive(from: BitVector, fn: (Boolean) => Boolean) {

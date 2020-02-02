@@ -151,13 +151,12 @@ private[coordinator] class GroupMetadata(
 
   def remove(memberId: String) {
     members.remove(memberId)
-    if (memberId == leaderId) {
-      leaderId = if (members.isEmpty) {
-        null
-      } else {
-        members.keys.head
-      }
-    }
+    if (memberId == leaderId)
+      leaderId =
+        if (members.isEmpty)
+          null
+        else
+          members.keys.head
   }
 
   def currentState = state

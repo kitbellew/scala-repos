@@ -21,9 +21,8 @@ class BigIntegerHashCodeTest {
     val aNumber2 = new BigInteger(value2)
     val code1 = aNumber1.hashCode
     val code2 = aNumber2.hashCode
-    if (aNumber1 == aNumber2) {
+    if (aNumber1 == aNumber2)
       assertEquals(code2, code1)
-    }
   }
 
   @Test def hashCodeIssue2159(): Unit = {
@@ -57,8 +56,7 @@ class BigIntegerHashCodeTest {
     val aNumber2 = new BigInteger(value2)
     val code1 = aNumber1.hashCode
     val code2 = aNumber2.hashCode
-    if (aNumber1 != aNumber2) {
+    if (aNumber1 != aNumber2)
       assertNotEquals(code1, code2)
-    }
   }
 }

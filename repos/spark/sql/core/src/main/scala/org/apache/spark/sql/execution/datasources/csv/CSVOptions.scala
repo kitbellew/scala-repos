@@ -47,9 +47,8 @@ private[sql] class CSVOptions(
     paramValue match {
       case None => default
       case Some(value) =>
-        try {
-          value.toInt
-        } catch {
+        try value.toInt
+        catch {
           case e: NumberFormatException =>
             throw new RuntimeException(
               s"$paramName should be an integer. Found $value")
@@ -59,13 +58,12 @@ private[sql] class CSVOptions(
 
   private def getBool(paramName: String, default: Boolean = false): Boolean = {
     val param = parameters.getOrElse(paramName, default.toString)
-    if (param.toLowerCase == "true") {
+    if (param.toLowerCase == "true")
       true
-    } else if (param.toLowerCase == "false") {
+    else if (param.toLowerCase == "false")
       false
-    } else {
+    else
       throw new Exception(s"$paramName flag can be true or false")
-    }
   }
 
   val delimiter = CSVTypeCast.toChar(
@@ -85,10 +83,9 @@ private[sql] class CSVOptions(
   val ignoreTrailingWhiteSpaceFlag = getBool("ignoreTrailingWhiteSpace")
 
   // Parse mode flags
-  if (!ParseModes.isValidMode(parseMode)) {
+  if (!ParseModes.isValidMode(parseMode))
     logWarning(
       s"$parseMode is not a valid parse mode. Using ${ParseModes.DEFAULT}.")
-  }
 
   val failFast = ParseModes.isFailFastMode(parseMode)
   val dropMalformed = ParseModes.isDropMalformedMode(parseMode)

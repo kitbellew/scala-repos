@@ -12,7 +12,7 @@ class PrettyWriter(wr: Writer) extends Writer {
   def close() = wr.close()
   def flush() = wr.flush()
   def write(str: Array[Char], off: Int, len: Int): Unit =
-    if (off < str.length && off < len) {
+    if (off < str.length && off < len)
       str(off) match {
         case '{' | '[' | '(' =>
           indent += 1
@@ -33,8 +33,7 @@ class PrettyWriter(wr: Writer) extends Writer {
         case _ =>
           wr.write(str, off, len)
       }
-    } else {
+    else
       wr.write(str, off, len)
-    }
   override def toString = wr.toString
 }

@@ -194,9 +194,7 @@ class EventLoggingListenerSuite
         JsonProtocol.sparkEventFromJson(parse(lines(1))) === applicationStart)
       assert(
         JsonProtocol.sparkEventFromJson(parse(lines(2))) === applicationEnd)
-    } finally {
-      logData.close()
-    }
+    } finally logData.close()
   }
 
   /**
@@ -258,9 +256,8 @@ class EventLoggingListenerSuite
         if (line.contains(event)) {
           val parsedEvent = JsonProtocol.sparkEventFromJson(parse(line))
           val eventType = Utils.getFormattedClassName(parsedEvent)
-          if (eventType == event) {
+          if (eventType == event)
             eventSet.remove(event)
-          }
         }
       }
     }

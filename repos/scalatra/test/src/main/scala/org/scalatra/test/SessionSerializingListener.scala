@@ -30,9 +30,8 @@ object SessionSerializingListener extends HttpSessionAttributeListener {
   }
 
   def serializeSession(event: HttpSessionBindingEvent) {
-    try {
-      oos.writeObject(event.getValue)
-    } catch {
+    try oos.writeObject(event.getValue)
+    catch {
       case e: NotSerializableException =>
         sys.error(
           "Can't serialize session key '" + event.getName + "' value of type " + e.getMessage)

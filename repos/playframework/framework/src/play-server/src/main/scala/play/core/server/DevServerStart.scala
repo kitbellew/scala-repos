@@ -80,9 +80,8 @@ object DevServerStart {
         }
 
         // First delete the default log file for a fresh start (only in Dev Mode)
-        try {
-          new File(path, "logs/application.log").delete()
-        } catch {
+        try new File(path, "logs/application.log").delete()
+        catch {
           case NonFatal(_) =>
         }
 
@@ -192,20 +191,17 @@ object DevServerStart {
 
                               Success(newApplication)
                             } catch {
-                              case e: PlayException => {
+                              case e: PlayException =>
                                 lastState = Failure(e)
                                 lastState
-                              }
-                              case NonFatal(e) => {
+                              case NonFatal(e) =>
                                 lastState = Failure(
                                   UnexpectedException(unexpected = Some(e)))
                                 lastState
-                              }
-                              case e: LinkageError => {
+                              case e: LinkageError =>
                                 lastState = Failure(
                                   UnexpectedException(unexpected = Some(e)))
                                 lastState
-                              }
                             }
                         }
 

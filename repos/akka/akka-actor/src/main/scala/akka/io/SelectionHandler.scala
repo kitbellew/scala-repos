@@ -118,14 +118,14 @@ private[io] object SelectionHandler {
           child: ActorRef,
           cause: Throwable,
           decision: SupervisorStrategy.Directive): Unit =
-        if (cause.isInstanceOf[DeathPactException]) {
+        if (cause.isInstanceOf[DeathPactException])
           try context.system.eventStream.publish {
             Logging.Debug(
               child.path.toString,
               getClass,
               "Closed after handler termination")
           } catch { case NonFatal(_) ⇒ }
-        } else super.logFailure(context, child, cause, decision)
+        else super.logFailure(context, child, cause, decision)
     }
 
   private class ChannelRegistryImpl(
@@ -144,7 +144,7 @@ private[io] object SelectionHandler {
           val iterator = keys.iterator()
           while (iterator.hasNext) {
             val key = iterator.next()
-            if (key.isValid) {
+            if (key.isValid)
               try {
                 // Cache because the performance implications of calling this on different platforms are not clear
                 val readyOps = key.readyOps()
@@ -155,9 +155,8 @@ private[io] object SelectionHandler {
                 readyOps match {
                   case OP_READ ⇒ connection ! ChannelReadable
                   case OP_WRITE ⇒ connection ! ChannelWritable
-                  case OP_READ_AND_WRITE ⇒ {
+                  case OP_READ_AND_WRITE ⇒
                     connection ! ChannelWritable; connection ! ChannelReadable
-                  }
                   case x if (x & OP_ACCEPT) > 0 ⇒ connection ! ChannelAcceptable
                   case x if (x & OP_CONNECT) > 0 ⇒
                     connection ! ChannelConnectable
@@ -168,7 +167,6 @@ private[io] object SelectionHandler {
                 // can be ignored because this exception is triggered when the key becomes invalid
                 // because `channel.close()` in `TcpConnection.postStop` is called from another thread
               }
-            }
           }
           keys.clear() // we need to remove the selected keys from the set, otherwise they remain selected
         }
@@ -343,17 +341,15 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
       childCount += 1
       if (MaxChannelsPerSelector > 0)
         context.watch(child) // we don't need to watch if we aren't limited
+    } else if (retriesLeft >= 1) {
+      log.debug(
+        "Rejecting [{}] with [{}] retries left, retrying...",
+        cmd,
+        retriesLeft)
+      context.parent forward Retry(cmd, retriesLeft - 1)
     } else {
-      if (retriesLeft >= 1) {
-        log.debug(
-          "Rejecting [{}] with [{}] retries left, retrying...",
-          cmd,
-          retriesLeft)
-        context.parent forward Retry(cmd, retriesLeft - 1)
-      } else {
-        log.warning("Rejecting [{}] with no retries left, aborting...", cmd)
-        cmd.commander ! cmd.apiCommand.failureMessage // I can't do it, Captain!
-      }
+      log.warning("Rejecting [{}] with no retries left, aborting...", cmd)
+      cmd.commander ! cmd.apiCommand.failureMessage // I can't do it, Captain!
     }
   }
 }

@@ -1068,12 +1068,11 @@ class TypedPipeInst[T] private[scalding] (
     // Keep this local
     if (inpipe.getPrevious.isEmpty) {
       val srcs = localFlowDef.getSources
-      if (srcs.containsKey(inpipe.getName)) {
+      if (srcs.containsKey(inpipe.getName))
         Some((srcs.get(inpipe.getName), fields, flatMapFn))
-      } else {
+      else
         sys.error(
           "Invalid head: pipe has no previous, but there is no registered source.")
-      }
     } else None
 
   def checkMode(m: Mode): Unit =
@@ -1246,12 +1245,11 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
       .map(_.toPipe[U](fieldNames)(flowDef, mode, setter))
       .toList
 
-    if (merged.size == 1) {
+    if (merged.size == 1)
       // there is no actual merging here, no need to rename:
       merged.head
-    } else {
+    else
       new cascading.pipe.Merge(merged.map(RichPipe.assignName): _*)
-    }
   }
 
   override def hashCogroup[K, V, W, R](smaller: HashJoinable[K, W])(

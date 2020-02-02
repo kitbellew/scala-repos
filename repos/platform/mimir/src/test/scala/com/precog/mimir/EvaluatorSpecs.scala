@@ -1402,10 +1402,9 @@ trait EvaluatorSpecs[M[+_]]
 
         obj must haveKey("answer")
         obj("answer") must beLike {
-          case SObject(obj) => {
+          case SObject(obj) =>
             obj must haveKey("question")
             obj("question") mustEqual SNull
-          }
         }
       }
     }
@@ -1550,10 +1549,9 @@ trait EvaluatorSpecs[M[+_]]
         val arr = optArr.get
 
         arr must beLike {
-          case Vector(SDecimal(d1), SDecimal(d2)) => {
+          case Vector(SDecimal(d1), SDecimal(d2)) =>
             d1 mustEqual 24
             d2 mustEqual 42
-          }
         }
       }
     }
@@ -1587,11 +1585,10 @@ trait EvaluatorSpecs[M[+_]]
         val arr = optArr.get
 
         arr must beLike {
-          case Vector(SDecimal(d1), SDecimal(d2), SDecimal(d3)) => {
+          case Vector(SDecimal(d1), SDecimal(d2), SDecimal(d3)) =>
             d1 mustEqual 12
             d2 mustEqual 24
             d3 mustEqual 42
-          }
         }
       }
     }
@@ -1630,11 +1627,10 @@ trait EvaluatorSpecs[M[+_]]
           val arr = optArr.get
 
           arr must beLike {
-            case Vector(SDecimal(d1), SDecimal(d2), SDecimal(d3)) => {
+            case Vector(SDecimal(d1), SDecimal(d2), SDecimal(d3)) =>
               d1 mustEqual 24
               d2 mustEqual 12
               d3 mustEqual 42
-            }
           }
         }
       }
@@ -1672,11 +1668,10 @@ trait EvaluatorSpecs[M[+_]]
           val arr = optArr.get
 
           arr must beLike {
-            case Vector(SDecimal(d1), SDecimal(d2), SDecimal(d3)) => {
+            case Vector(SDecimal(d1), SDecimal(d2), SDecimal(d3)) =>
               d1 mustEqual 42
               d2 mustEqual 24
               d3 mustEqual 12
-            }
           }
         }
       }
@@ -3393,7 +3388,7 @@ trait EvaluatorSpecs[M[+_]]
             obj must haveKey("num")
 
             obj("user") must beLike {
-              case SString(str) => {
+              case SString(str) =>
                 str must beOneOf(
                   "daniel",
                   "kris",
@@ -3404,7 +3399,6 @@ trait EvaluatorSpecs[M[+_]]
                   "franco",
                   "matthew",
                   "jason")
-              }
               case SNull => ok
             }
 
@@ -3486,7 +3480,7 @@ trait EvaluatorSpecs[M[+_]]
             obj must haveKey("num")
 
             obj("user") must beLike {
-              case SString(str) => {
+              case SString(str) =>
                 str must beOneOf(
                   "daniel",
                   "kris",
@@ -3497,7 +3491,6 @@ trait EvaluatorSpecs[M[+_]]
                   "franco",
                   "matthew",
                   "jason")
-              }
               case SNull => ok
             }
 
@@ -3688,13 +3681,12 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input) { result =>
         result must haveSize(1)
         result.toList.head must beLike {
-          case (ids, SObject(obj)) if ids.size == 1 => {
+          case (ids, SObject(obj)) if ids.size == 1 =>
             obj must haveKey("user")
             obj("user") must beLike { case SString("daniel") => ok }
 
             obj must haveKey("num")
             obj("num") must beLike { case SDecimal(d) => d mustEqual 9 }
-          }
         }
       }
     }
@@ -3937,9 +3929,7 @@ trait EvaluatorSpecs[M[+_]]
           for {
             x <- decimalValues
             y <- decimalValues
-          } yield {
-            (x, y)
-          }
+          } yield (x, y)
 
         val expectedResult = cross collect { case (x, y) if x == y => x + y }
 
@@ -4024,9 +4014,7 @@ trait EvaluatorSpecs[M[+_]]
           for {
             x <- decimalValues
             y <- decimalValues
-          } yield {
-            (x, y)
-          }
+          } yield (x, y)
 
         val expectedResult = cross collect {
           case (x, y) if x > 500 && x == y => x
@@ -4278,17 +4266,15 @@ trait EvaluatorSpecs[M[+_]]
         resultsE must haveSize(2)
 
         forall(resultsE) {
-          case (ids, sv) => {
+          case (ids, sv) =>
             ids must haveSize(1)
 
             sv must beLike {
-              case SObject(obj) => {
+              case SObject(obj) =>
                 obj must haveSize(2)
                 obj must haveKey("a")
                 obj must haveKey("b")
-              }
             }
-          }
         }
       }
     }

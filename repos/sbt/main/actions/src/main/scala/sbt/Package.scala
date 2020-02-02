@@ -53,12 +53,11 @@ object Package {
   def mergeManifests(manifest: Manifest, mergeManifest: Manifest): Unit = {
     mergeAttributes(manifest.getMainAttributes, mergeManifest.getMainAttributes)
     val entryMap = mapAsScalaMap(manifest.getEntries)
-    for ((key, value) <- mergeManifest.getEntries) {
+    for ((key, value) <- mergeManifest.getEntries)
       entryMap.get(key) match {
         case Some(attributes) => mergeAttributes(attributes, value)
         case None             => entryMap put (key, value)
       }
-    }
   }
 
   final class Configuration(
@@ -68,7 +67,7 @@ object Package {
   def apply(conf: Configuration, cacheFile: File, log: Logger): Unit = {
     val manifest = new Manifest
     val main = manifest.getMainAttributes
-    for (option <- conf.options) {
+    for (option <- conf.options)
       option match {
         case JarManifest(mergeManifest) =>
           mergeManifests(manifest, mergeManifest)
@@ -77,7 +76,6 @@ object Package {
         case ManifestAttributes(attributes @ _*) => main ++= attributes
         case _                                   => log.warn("Ignored unknown package option " + option)
       }
-    }
     setVersion(main)
 
     val cachedMakeJar = inputChanged(cacheFile / "inputs") {

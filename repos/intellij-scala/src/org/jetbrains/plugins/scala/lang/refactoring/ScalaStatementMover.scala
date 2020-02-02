@@ -64,9 +64,8 @@ class ScalaStatementMover extends LineMover {
         if (range.endLine < maxLine)
           new LineRange(range.endLine, range.endLine + 1)
         else null
-      } else {
+      } else
         new LineRange(range.startLine - 1, range.startLine)
-      }
     }
 
     val pair = aim(

@@ -75,9 +75,8 @@ class FlowConflateSpec extends AkkaSpec {
         .run()
       val sub = subscriber.expectSubscription()
 
-      for (i ← 1 to 100) {
+      for (i ← 1 to 100)
         publisher.sendNext(i)
-      }
       subscriber.expectNoMsg(1.second)
       sub.request(1)
       subscriber.expectNext(5050)
@@ -95,9 +94,8 @@ class FlowConflateSpec extends AkkaSpec {
         .run()
       val sub = subscriber.expectSubscription()
 
-      for (i ← 1 to 100) {
+      for (i ← 1 to 100)
         publisher.sendNext(i)
-      }
       subscriber.expectNoMsg(1.second)
       sub.request(1)
       subscriber.expectNext(5050)
@@ -253,9 +251,9 @@ class FlowConflateSpec extends AkkaSpec {
       val future = Source
         .fromPublisher(sourceProbe)
         .conflateWithSeed(seed = i ⇒ Vector(i))((state, elem) ⇒
-          if (elem == 2) {
+          if (elem == 2)
             throw TE("three is a four letter word")
-          } else {
+          else {
             if (elem == 4) saw4Latch.open()
             state :+ elem
           })

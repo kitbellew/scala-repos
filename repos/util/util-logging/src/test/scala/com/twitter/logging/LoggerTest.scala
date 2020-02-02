@@ -291,7 +291,7 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
       }
 
       // CSL-2175
-      if (!sys.props.contains("SKIP_FLAKY")) {
+      if (!sys.props.contains("SKIP_FLAKY"))
         "syslog handler" in {
           withTempFolder {
             val log: Logger = LoggerFactory(
@@ -318,7 +318,6 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
             assert(formatter.priority == 128)
           }
         }
-      }
 
       "complex config" in {
         withTempFolder {
@@ -363,30 +362,26 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
           assert(Logger.get("w3c").getLevel == Level.OFF)
           assert(Logger.get("stats").getLevel == Level.INFO)
           assert(Logger.get("bad_jobs").getLevel == Level.INFO)
-          try {
-            Logger.get("").getHandlers()(0).asInstanceOf[ThrottledHandler]
-          } catch {
+          try Logger.get("").getHandlers()(0).asInstanceOf[ThrottledHandler]
+          catch {
             case _: ClassCastException => fail("not a ThrottledHandler")
           }
-          try {
-            Logger
-              .get("")
-              .getHandlers()(0)
-              .asInstanceOf[ThrottledHandler]
-              .handler
-              .asInstanceOf[FileHandler]
-          } catch {
+          try Logger
+            .get("")
+            .getHandlers()(0)
+            .asInstanceOf[ThrottledHandler]
+            .handler
+            .asInstanceOf[FileHandler]
+          catch {
             case _: ClassCastException => fail("not a FileHandler")
           }
           assert(Logger.get("w3c").getHandlers().size == 0)
-          try {
-            Logger.get("stats").getHandlers()(0).asInstanceOf[ScribeHandler]
-          } catch {
+          try Logger.get("stats").getHandlers()(0).asInstanceOf[ScribeHandler]
+          catch {
             case _: ClassCastException => fail("not a ScribeHandler")
           }
-          try {
-            Logger.get("bad_jobs").getHandlers()(0).asInstanceOf[FileHandler]
-          } catch {
+          try Logger.get("bad_jobs").getHandlers()(0).asInstanceOf[FileHandler]
+          catch {
             case _: ClassCastException => fail("not a FileHandler")
           }
 

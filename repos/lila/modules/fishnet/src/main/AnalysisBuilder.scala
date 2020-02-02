@@ -33,12 +33,12 @@ private object AnalysisBuilder {
                 UciToPgn(replay, uciAnalysis) match {
                   case (analysis, errors) =>
                     errors foreach { e => logger.warn(s"[UciToPgn] $debug $e") }
-                    if (analysis.valid) {
+                    if (analysis.valid)
                       if (analysis.emptyRatio >= 1d / 10)
                         fufail(
                           s"Analysis $debug has ${analysis.nbEmptyInfos} empty infos out of ${analysis.infos.size}")
                       else fuccess(analysis)
-                    } else fufail(s"[analysis] Analysis $debug is empty")
+                    else fufail(s"[analysis] Analysis $debug is empty")
                 }
             )
         }
@@ -52,7 +52,7 @@ private object AnalysisBuilder {
     (evals filterNot (_.isCheckmate) sliding 2).toList
       .zip(moves)
       .zipWithIndex map {
-      case ((List(before, after), move), index) => {
+      case ((List(before, after), move), index) =>
         val variation = before.cappedPvList match {
           case first :: rest if first != move => first :: rest
           case _                              => Nil
@@ -65,7 +65,6 @@ private object AnalysisBuilder {
           variation = variation,
           best = best)
         if (info.ply % 2 == 1) info.invert else info
-      }
     }
 
   case class GameIsGone(id: String) extends lila.common.LilaException {

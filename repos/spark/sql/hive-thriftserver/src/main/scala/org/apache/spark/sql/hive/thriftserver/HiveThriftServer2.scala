@@ -71,20 +71,18 @@ object HiveThriftServer2 extends Logging {
     sqlContext.sparkContext.addSparkListener(listener)
     uiTab =
       if (sqlContext.sparkContext.getConf
-            .getBoolean("spark.ui.enabled", true)) {
+            .getBoolean("spark.ui.enabled", true))
         Some(new ThriftServerTab(sqlContext.sparkContext))
-      } else {
+      else
         None
-      }
   }
 
   def main(args: Array[String]) {
     Utils.initDaemon(log)
     val optionsProcessor = new HiveServerServerOptionsProcessor(
       "HiveThriftServer2")
-    if (!optionsProcessor.process(args)) {
+    if (!optionsProcessor.process(args))
       System.exit(-1)
-    }
 
     logInfo("Starting SparkContext")
     SparkSQLEnv.init()
@@ -104,11 +102,10 @@ object HiveThriftServer2 extends Logging {
       SparkSQLEnv.sparkContext.addSparkListener(listener)
       uiTab =
         if (SparkSQLEnv.sparkContext.getConf
-              .getBoolean("spark.ui.enabled", true)) {
+              .getBoolean("spark.ui.enabled", true))
           Some(new ThriftServerTab(SparkSQLEnv.sparkContext))
-        } else {
+        else
           None
-        }
       // If application was killed before HiveThriftServer2 start successfully then SparkSubmit
       // process can not exit, so check whether if SparkContext was stopped.
       if (SparkSQLEnv.sparkContext.stopped.get()) {
@@ -131,11 +128,10 @@ object HiveThriftServer2 extends Logging {
     var finishTimestamp: Long = 0L
     var totalExecution: Int = 0
     def totalTime: Long =
-      if (finishTimestamp == 0L) {
+      if (finishTimestamp == 0L)
         System.currentTimeMillis - startTimestamp
-      } else {
+      else
         finishTimestamp - startTimestamp
-      }
   }
 
   private[thriftserver] object ExecutionState extends Enumeration {
@@ -155,11 +151,10 @@ object HiveThriftServer2 extends Logging {
     val jobId: ArrayBuffer[String] = ArrayBuffer[String]()
     var groupId: String = ""
     def totalTime: Long =
-      if (finishTimestamp == 0L) {
+      if (finishTimestamp == 0L)
         System.currentTimeMillis - startTimestamp
-      } else {
+      else
         finishTimestamp - startTimestamp
-      }
   }
 
   /**
@@ -303,11 +298,11 @@ private[hive] class HiveThriftServer2(hiveContext: HiveContext)
     setSuperField(this, "cliService", sparkSqlCliService)
     addService(sparkSqlCliService)
 
-    val thriftCliService = if (isHTTPTransportMode(hiveConf)) {
-      new ThriftHttpCLIService(sparkSqlCliService)
-    } else {
-      new ThriftBinaryCLIService(sparkSqlCliService)
-    }
+    val thriftCliService =
+      if (isHTTPTransportMode(hiveConf))
+        new ThriftHttpCLIService(sparkSqlCliService)
+      else
+        new ThriftBinaryCLIService(sparkSqlCliService)
 
     setSuperField(this, "thriftCLIService", thriftCliService)
     addService(thriftCliService)
@@ -325,7 +320,6 @@ private[hive] class HiveThriftServer2(hiveContext: HiveContext)
   }
 
   override def stop(): Unit =
-    if (started.getAndSet(false)) {
+    if (started.getAndSet(false))
       super.stop()
-    }
 }

@@ -502,10 +502,9 @@ object Utils {
     case (List(), List()) => 0
     case (List(), _)      => -1
     case (_, List())      => +1
-    case (x :: xs, y :: ys) => {
+    case (x :: xs, y :: ys) =>
       val diff = x.compareTo(y);
       if (diff != 0) diff else compare(xs, ys)
-    }
   }
 
 }
@@ -531,7 +530,7 @@ object MB {
     private def vars: List[String] = this match {
       case Var(n)    => List(n)
       case Mul(l, r) => l.vars ::: r.vars
-      case Pow(l, n) => { val vs = l.vars; List.range(0, n).flatMap(i => vs) }
+      case Pow(l, n) => val vs = l.vars; List.range(0, n).flatMap(i => vs)
       case _         => List()
     }
 
@@ -549,11 +548,10 @@ object MB {
         case (Lit(l), Lit(r))                  => Lit(l + r)
         case (_, Add(rl, rr))                  => (this + rl) + rr
         case (Add(ll, lr), _) if (lr +<= that) => ll + (that + lr)
-        case (_, _) => {
+        case (_, _) =>
           val l = this.term;
           val r = that.term;
           if (l equ r) Lit(this.count + that.count) * r else Add(this, that)
-        }
       }
       else that + this;
 

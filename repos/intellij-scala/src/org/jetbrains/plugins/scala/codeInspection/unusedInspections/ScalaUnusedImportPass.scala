@@ -71,10 +71,9 @@ class ScalaUnusedImportPass(
 
         if (ScalaApplicationSettings
               .getInstance()
-              .OPTIMIZE_IMPORTS_ON_THE_FLY) {
+              .OPTIMIZE_IMPORTS_ON_THE_FLY)
           myOptimizeImportsRunnable =
             new ScalaImportOptimizer().processFile(file, progress)
-        }
 
         myHighlights = list
       case _: ScalaFile => myHighlights = Collections.emptyList()
@@ -86,15 +85,13 @@ class ScalaUnusedImportPass(
     highlightAll(myHighlights)
     ScalaUnusedImportPass.markFileUpToDate(file)
 
-    if (editor != null && !myHighlights.isEmpty) {
+    if (editor != null && !myHighlights.isEmpty)
       if (myOptimizeImportsRunnable != null &&
           ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY &&
-          ScalaUnusedImportPass.timeToOptimizeImports(file) && file.isWritable) {
+          ScalaUnusedImportPass.timeToOptimizeImports(file) && file.isWritable)
         ScalaUnusedImportPass.invokeOnTheFlyImportOptimizer(
           myOptimizeImportsRunnable,
           file)
-      }
-    }
   }
 }
 
@@ -121,7 +118,7 @@ object ScalaUnusedImportPass {
         DocumentUtil.writeInRunUndoTransparentAction(runnable)
         if (oldStamp != document.getModificationStamp) {
           val afterText: String = file.getText
-          if (Comparing.strEqual(beforeText, afterText)) {
+          if (Comparing.strEqual(beforeText, afterText))
             LOG.error(
               LogMessageEx.createEvent(
                 "Import optimizer  hasn't optimized any imports",
@@ -129,7 +126,6 @@ object ScalaUnusedImportPass {
                 AttachmentFactory.createAttachment(
                   file.getViewProvider.getVirtualFile)
               ))
-          }
         }
       }
     })

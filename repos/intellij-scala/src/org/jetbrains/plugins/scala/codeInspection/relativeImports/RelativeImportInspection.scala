@@ -39,9 +39,8 @@ class RelativeImportInspection
           val fixes = new ArrayBuffer[LocalQuickFix]()
           if (!ScalaCodeStyleSettings
                 .getInstance(q.getProject)
-                .isAddFullQualifiedImports) {
+                .isAddFullQualifiedImports)
             fixes += new EnableFullQualifiedImports()
-          }
           fixes += new MakeFullQualifiedImportFix(q, qualifiedName)
           holder.registerProblem(q, "Relative import detected", fixes: _*)
         }

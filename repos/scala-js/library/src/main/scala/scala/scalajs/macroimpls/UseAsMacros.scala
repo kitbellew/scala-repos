@@ -61,9 +61,8 @@ private[scalajs] object UseAsMacros {
 
       // Nothing and Null have everything
       if (srcSym != definitions.NothingClass &&
-          srcSym != definitions.NullClass) {
+          srcSym != definitions.NullClass)
         check(srcTpe, trgTpe)
-      }
 
       reify { c.prefix.splice.x.asInstanceOf[B] }
     }
@@ -182,9 +181,7 @@ private[scalajs] object UseAsMacros {
       // Group by member selection
       for {
         (selection, members) <- tups.groupBy(_._1)
-      } yield {
-        (selection, members.map(_._2).toList)
-      }
+      } yield (selection, members.map(_._2).toList)
     }
 
     /** Returns the way a member of a raw JS type is selected in JS */
@@ -193,11 +190,11 @@ private[scalajs] object UseAsMacros {
 
       def hasAnnot(annot: Symbol) = annots.exists(annotIs(_, annot))
 
-      if (hasAnnot(JSBracketAccessAnnotation)) {
+      if (hasAnnot(JSBracketAccessAnnotation))
         JSMemberBracketAccess
-      } else if (hasAnnot(JSBracketCallAnnotation)) {
+      else if (hasAnnot(JSBracketCallAnnotation))
         JSMemberBracketCall
-      } else {
+      else {
         val optAnnot = annots.find(annotIs(_, JSNameAnnotation))
         val optName = optAnnot.flatMap(annotStringArg)
 
@@ -216,9 +213,7 @@ private[scalajs] object UseAsMacros {
       // Group exports by name
       for {
         (name, elems) <- exports.groupBy(_._1)
-      } yield {
-        (JSNamedMember(name), elems.map(_._2))
-      }
+      } yield (JSNamedMember(name), elems.map(_._2))
     }
 
     /** All exported declarations of a class.
@@ -232,9 +227,7 @@ private[scalajs] object UseAsMacros {
       for {
         decl <- sym.info.decls if decl.isMethod && !decl.isConstructor
         name <- exportNames(decl.asMethod, exportAll)
-      } yield {
-        (name, jsMemberFor(origTpe, decl.asMethod))
-      }
+      } yield (name, jsMemberFor(origTpe, decl.asMethod))
     }
 
     /** Get the JS member for a method in [[origTpe]] */
@@ -274,9 +267,7 @@ private[scalajs] object UseAsMacros {
       val explicitNames = for {
         annot <- memberAnnotations(sym)
         if annotIs(annot, JSExportAnnotation)
-      } yield {
-        annotStringArg(annot).getOrElse(default)
-      }
+      } yield annotStringArg(annot).getOrElse(default)
 
       if (exportAll && sym.isPublic) default :: explicitNames
       else explicitNames
@@ -302,24 +293,22 @@ private[scalajs] object UseAsMacros {
           def allowedParent(sym: Symbol) =
             sym.asClass.isTrait || JSObjectAncestors(sym)
 
-          for (base <- sym.baseClasses if !allowedParent(base)) {
+          for (base <- sym.baseClasses if !allowedParent(base))
             c.abort(
               c.enclosingPosition,
               s"Supertype ${base.fullName} of $sym " +
                 "is a class. Cannot be used with as.")
-          }
 
           tpe
 
         case tpe @ RefinedType(parents, decls) =>
           parents.foreach(verifyTargetType)
 
-          for (decl <- decls if !decl.isType) {
+          for (decl <- decls if !decl.isType)
             c.abort(
               c.enclosingPosition,
               s"Refinement ${decl.name} " +
                 "is not a type. Only types may be refined with as.")
-          }
 
           tpe
 

@@ -36,9 +36,8 @@ abstract class NativeDDLCommand(val sql: String) extends RunnableCommand {
   override def run(sqlContext: SQLContext): Seq[Row] =
     sqlContext.runNativeSql(sql)
 
-  override val output: Seq[Attribute] = {
+  override val output: Seq[Attribute] =
     Seq(AttributeReference("result", StringType, nullable = false)())
-  }
 
 }
 

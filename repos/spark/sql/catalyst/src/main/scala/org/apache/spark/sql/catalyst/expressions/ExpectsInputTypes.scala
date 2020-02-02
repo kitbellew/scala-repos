@@ -47,11 +47,10 @@ trait ExpectsInputTypes extends Expression {
           s"however, '${child.sql}' is of ${child.dataType.simpleString} type."
     }
 
-    if (mismatches.isEmpty) {
+    if (mismatches.isEmpty)
       TypeCheckResult.TypeCheckSuccess
-    } else {
+    else
       TypeCheckResult.TypeCheckFailure(mismatches.mkString(" "))
-    }
   }
 }
 

@@ -102,19 +102,17 @@ private[thrift] class ThriftClientChannelBufferEncoder
           ctx,
           e.getFuture,
           ChannelBuffers.wrappedBuffer(request.message))
-        if (request.oneway) {
+        if (request.oneway)
           // oneway RPCs are satisfied when the write is complete.
           e.getFuture.addListener(new ChannelFutureListener {
             override def operationComplete(f: ChannelFuture): Unit =
-              if (f.isSuccess) {
+              if (f.isSuccess)
                 Channels.fireMessageReceived(ctx, ChannelBuffers.EMPTY_BUFFER)
-              } else if (f.isCancelled) {
+              else if (f.isCancelled)
                 Channels.fireExceptionCaught(ctx, new CancelledRequestException)
-              } else {
+              else
                 Channels.fireExceptionCaught(ctx, f.getCause)
-              }
           })
-        }
 
       case _ =>
         throw new IllegalArgumentException("No ThriftClientRequest on the wire")
@@ -146,11 +144,10 @@ private[finagle] case class ThriftClientPreparer(
       params[Thrift.param.AttemptTTwitterUpgrade]
     val payloadSizeService = payloadSize.andThen(service)
     val upgradedService =
-      if (attemptUpgrade) {
+      if (attemptUpgrade)
         upgrade(payloadSizeService)
-      } else {
+      else
         Future.value(payloadSizeService)
-      }
 
     upgradedService.map { upgraded =>
       new ValidateThriftService(upgraded, protocolFactory)
@@ -166,7 +163,7 @@ private[finagle] case class ThriftClientPreparer(
       params[Thrift.param.AttemptTTwitterUpgrade]
     val preparingFactory = underlying.flatMap(prepareService(params))
 
-    if (attemptUpgrade) {
+    if (attemptUpgrade)
       new ServiceFactoryProxy(preparingFactory) {
         val stat = stats.stat("codec_connection_preparation_latency_ms")
         override def apply(conn: ClientConnection) = {
@@ -176,9 +173,8 @@ private[finagle] case class ThriftClientPreparer(
           }
         }
       }
-    } else {
+    else
       preparingFactory
-    }
   }
 
   private def upgrade(

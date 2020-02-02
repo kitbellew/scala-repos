@@ -54,13 +54,12 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     */
   override val getCheckpointFile: Option[String] = Some(checkpointPath)
 
-  override val partitioner: Option[Partitioner] = {
+  override val partitioner: Option[Partitioner] =
     _partitioner.orElse {
       ReliableCheckpointRDD.readCheckpointedPartitionerFile(
         context,
         checkpointPath)
     }
-  }
 
   /**
     * Return partitions described by the files in the checkpoint directory.
@@ -80,9 +79,8 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     inputFiles.zipWithIndex.foreach {
       case (path, i) =>
         if (!path.toString.endsWith(
-              ReliableCheckpointRDD.checkpointFileName(i))) {
+              ReliableCheckpointRDD.checkpointFileName(i)))
           throw new SparkException(s"Invalid checkpoint file: $path")
-        }
     }
     Array.tabulate(inputFiles.length)(i => new CheckpointRDDPartition(i))
   }
@@ -136,10 +134,9 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     // Create the output path for the checkpoint
     val checkpointDirPath = new Path(checkpointDir)
     val fs = checkpointDirPath.getFileSystem(sc.hadoopConfiguration)
-    if (!fs.mkdirs(checkpointDirPath)) {
+    if (!fs.mkdirs(checkpointDirPath))
       throw new SparkException(
         s"Failed to create checkpoint path $checkpointDirPath")
-    }
 
     // Save to file, and reload it as an RDD
     val broadcastedConf =
@@ -151,22 +148,20 @@ private[spark] object ReliableCheckpointRDD extends Logging {
         checkpointDirPath.toString,
         broadcastedConf) _)
 
-    if (originalRDD.partitioner.nonEmpty) {
+    if (originalRDD.partitioner.nonEmpty)
       writePartitionerToCheckpointDir(
         sc,
         originalRDD.partitioner.get,
         checkpointDirPath)
-    }
 
     val newRDD = new ReliableCheckpointRDD[T](
       sc,
       checkpointDirPath.toString,
       originalRDD.partitioner)
-    if (newRDD.partitions.length != originalRDD.partitions.length) {
+    if (newRDD.partitions.length != originalRDD.partitions.length)
       throw new SparkException(
         s"Checkpoint RDD $newRDD(${newRDD.partitions.length}) has different " +
           s"number of partitions from original RDD $originalRDD(${originalRDD.partitions.length})")
-    }
     newRDD
   }
 
@@ -187,23 +182,22 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     val tempOutputPath =
       new Path(outputDir, s".$finalOutputName-attempt-${ctx.attemptNumber()}")
 
-    if (fs.exists(tempOutputPath)) {
+    if (fs.exists(tempOutputPath))
       throw new IOException(
         s"Checkpoint failed: temporary path $tempOutputPath already exists")
-    }
     val bufferSize = env.conf.getInt("spark.buffer.size", 65536)
 
-    val fileOutputStream = if (blockSize < 0) {
-      fs.create(tempOutputPath, false, bufferSize)
-    } else {
-      // This is mainly for testing purpose
-      fs.create(
-        tempOutputPath,
-        false,
-        bufferSize,
-        fs.getDefaultReplication(fs.getWorkingDirectory),
-        blockSize)
-    }
+    val fileOutputStream =
+      if (blockSize < 0)
+        fs.create(tempOutputPath, false, bufferSize)
+      else
+        // This is mainly for testing purpose
+        fs.create(
+          tempOutputPath,
+          false,
+          bufferSize,
+          fs.getDefaultReplication(fs.getWorkingDirectory),
+          blockSize)
     val serializer = env.serializer.newInstance()
     val serializeStream = serializer.serializeStream(fileOutputStream)
     Utils.tryWithSafeFinally {
@@ -212,7 +206,7 @@ private[spark] object ReliableCheckpointRDD extends Logging {
       serializeStream.close()
     }
 
-    if (!fs.rename(tempOutputPath, finalOutputPath)) {
+    if (!fs.rename(tempOutputPath, finalOutputPath))
       if (!fs.exists(finalOutputPath)) {
         logInfo(s"Deleting tempOutputPath $tempOutputPath")
         fs.delete(tempOutputPath, false)
@@ -223,11 +217,9 @@ private[spark] object ReliableCheckpointRDD extends Logging {
         // Some other copy of this task must've finished before us and renamed it
         logInfo(
           s"Final output path $finalOutputPath already exists; not overwriting it")
-        if (!fs.delete(tempOutputPath, false)) {
+        if (!fs.delete(tempOutputPath, false))
           logWarning(s"Error deleting $tempOutputPath")
-        }
       }
-    }
   }
 
   /**

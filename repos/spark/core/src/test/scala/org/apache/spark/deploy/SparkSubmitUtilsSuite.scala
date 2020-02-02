@@ -62,11 +62,10 @@ class SparkSubmitUtilsSuite extends SparkFunSuite with BeforeAndAfterAll {
   test("incorrect maven coordinate throws error") {
     val coordinates =
       Seq("a:b: ", " :a:b", "a: :b", "a:b:", ":a:b", "a::b", "::", "a:b", "a")
-    for (coordinate <- coordinates) {
+    for (coordinate <- coordinates)
       intercept[IllegalArgumentException] {
         SparkSubmitUtils.extractMavenCoordinates(coordinate)
       }
-    }
   }
 
   test("create repo resolvers") {

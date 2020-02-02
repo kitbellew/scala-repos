@@ -102,7 +102,7 @@ class FlattenProjections extends Phase {
             case (n, i) => flatten(n, new ElementSymbol(i + 1) :: path)
           }
         case n =>
-          if (collapse) {
+          if (collapse)
             defsM.get(n) match {
               case Some(sym) =>
                 logger.debug(s"Reusing definition: $sym -> $n")
@@ -114,7 +114,7 @@ class FlattenProjections extends Phase {
                 defsM += n -> sym
                 paths += path -> sym
             }
-          } else {
+          else {
             val sym = new AnonSymbol
             logger.debug(s"Adding definition: $sym -> $n")
             defs += sym -> n

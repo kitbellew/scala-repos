@@ -65,11 +65,10 @@ object ColorSelector extends JFXApp {
   // METHODS - BEGIN
 
   private def controlSelected(control: SliderControl) {
-    if (control.selectedControl.value) {
+    if (control.selectedControl.value)
       synchronizedControls.add(control)
-    } else {
+    else
       synchronizedControls.remove(control)
-    }
   }
 
   private def changeColor() {
@@ -101,15 +100,13 @@ object ColorSelector extends JFXApp {
   }
 
   private def randomizeColors() {
-    if (synchronizedControls.nonEmpty) {
+    if (synchronizedControls.nonEmpty)
       this.synchronizedValue() = math.random * colorselector.Max
-    }
-    if (synchronizedControls.size < 4) {
+    if (synchronizedControls.size < 4)
       this.allControls
         .filterNot(_.selectedControl.value)
         .filterNot(_.disabled.value)
         .foreach(_.value() = math.random * colorselector.Max)
-    }
   }
 
   private def colorChanged() {
@@ -146,9 +143,8 @@ object ColorSelector extends JFXApp {
       fraction = 0.45
     }
     onMouseClicked = (event: MouseEvent) => {
-      if ((event.getClickCount == 2) && (event.button == MouseButton.Primary)) {
+      if ((event.getClickCount == 2) && (event.button == MouseButton.Primary))
         randomizeColors()
-      }
     }
   }
 
@@ -203,10 +199,9 @@ object ColorSelector extends JFXApp {
   controlAlpha.value.onChange(changeColor())
   controlAlpha.selectedControl.onChange(controlSelected(controlAlpha))
   controlAlpha.disable.onChange({
-    if (controlAlpha.selectedControl.value) {
+    if (controlAlpha.selectedControl.value)
       if (controlAlpha.disable.value) synchronizedControls.remove(controlAlpha)
       else synchronizedControls.add(controlAlpha)
-    }
     changeColor()
     formatColor()
   })

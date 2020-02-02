@@ -119,18 +119,16 @@ class ParallelCollectionSplitSuite extends SparkFunSuite with Checkers {
     val r = ParallelCollectionRDD.slice(1 to 7, 4)
     val nr = ParallelCollectionRDD.slice(1L to 7L, 4)
     assert(r.size === 4)
-    for (i <- 0 until r.size) {
+    for (i <- 0 until r.size)
       assert(r(i).size === nr(i).size)
-    }
   }
 
   test("identical slice sizes between List and NumericRange") {
     val r = ParallelCollectionRDD.slice(List(1, 2), 4)
     val nr = ParallelCollectionRDD.slice(1L to 2L, 4)
     assert(r.size === 4)
-    for (i <- 0 until r.size) {
+    for (i <- 0 until r.size)
       assert(r(i).size === nr(i).size)
-    }
   }
 
   test("large ranges don't overflow") {

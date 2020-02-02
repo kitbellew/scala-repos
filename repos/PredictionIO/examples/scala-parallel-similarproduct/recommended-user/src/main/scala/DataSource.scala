@@ -34,15 +34,13 @@ class DataSource(val dsp: DataSourceParams)
       .map {
         case (entityId, properties) =>
           val user =
-            try {
-              User()
-            } catch {
-              case e: Exception => {
+            try User()
+            catch {
+              case e: Exception =>
                 logger.error(
                   s"Failed to get properties $properties of" +
                     s" user $entityId. Exception: $e.")
                 throw e
-              }
             }
           (entityId, user)
       }
@@ -60,22 +58,19 @@ class DataSource(val dsp: DataSourceParams)
       // eventsDb.find() returns RDD[Event]
       .map { event =>
         val followEvent =
-          try {
-            event.event match {
-              case "follow" =>
-                FollowEvent(
-                  user = event.entityId,
-                  followedUser = event.targetEntityId.get,
-                  t = event.eventTime.getMillis)
-              case _ => throw new Exception(s"Unexpected event $event is read.")
-            }
+          try event.event match {
+            case "follow" =>
+              FollowEvent(
+                user = event.entityId,
+                followedUser = event.targetEntityId.get,
+                t = event.eventTime.getMillis)
+            case _ => throw new Exception(s"Unexpected event $event is read.")
           } catch {
-            case e: Exception => {
+            case e: Exception =>
               logger.error(
                 s"Cannot convert $event to FollowEvent." +
                   s" Exception: $e.")
               throw e
-            }
           }
         followEvent
       }

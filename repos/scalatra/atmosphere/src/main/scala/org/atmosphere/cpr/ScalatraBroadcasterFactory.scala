@@ -33,25 +33,24 @@ class ScalatraBroadcasterFactory(
 
   private def createBroadcaster[T <: Broadcaster](c: Class[T], id: Any): T =
     try {
-      val b: T = if (classOf[ScalatraBroadcaster].isAssignableFrom(c)) {
-        bCfg.broadcasterClass
-          .getConstructor(classOf[WireFormat], classOf[ActorSystem])
-          .newInstance(wireFormat, system)
-          .asInstanceOf[T]
-      } else {
-        cfg.framework().newClassInstance(c, c)
-      }
+      val b: T =
+        if (classOf[ScalatraBroadcaster].isAssignableFrom(c))
+          bCfg.broadcasterClass
+            .getConstructor(classOf[WireFormat], classOf[ActorSystem])
+            .newInstance(wireFormat, system)
+            .asInstanceOf[T]
+        else
+          cfg.framework().newClassInstance(c, c)
       b.initialize(id.toString, bCfg.uri, cfg)
       bCfg.extraSetup(b)
       b.setSuspendPolicy(-1, Broadcaster.POLICY.FIFO)
 
-      if (b.getBroadcasterConfig == null) {
+      if (b.getBroadcasterConfig == null)
         b.setBroadcasterConfig(
           new BroadcasterConfig(
             cfg.framework().broadcasterFilters,
             cfg,
             id.toString).init())
-      }
 
       b.setBroadcasterLifeCyclePolicy(BroadcasterLifeCyclePolicy.NEVER)
       broadcasterListeners.asScala foreach { l =>
@@ -68,11 +67,10 @@ class ScalatraBroadcasterFactory(
 
   def destroy() {
     val s = cfg.getInitParameter(ApplicationConfig.SHARED)
-    if (s != null && s.equalsIgnoreCase("TRUE")) {
+    if (s != null && s.equalsIgnoreCase("TRUE"))
       logger.warn(
         "Factory shared, will not be destroyed. That can possibly cause memory leaks if" +
           "Broadcaster where created. Make sure you destroy them manually.")
-    }
 
     var bc: BroadcasterConfig = null
     store foreach {
@@ -114,10 +112,9 @@ class ScalatraBroadcasterFactory(
         logger.debug("Removing destroyed Broadcaster %s" format b.getID)
         store.remove(b.getID, b)
       }
-      if (store.putIfAbsent(id, createBroadcaster(c, id)) == null) {
+      if (store.putIfAbsent(id, createBroadcaster(c, id)) == null)
         logger.debug(
           "Added Broadcaster %s. Factory size: %s.".format(id, store.size))
-      }
 
     }
     store.get(id) match {
@@ -137,12 +134,11 @@ class ScalatraBroadcasterFactory(
 
   def remove(b: Broadcaster, id: Any): Boolean = {
     val removed: Boolean = store.remove(id, b)
-    if (removed) {
+    if (removed)
       logger.debug(
         "Removing Broadcaster {} factory size now {} ",
         id,
         store.size)
-    }
     removed
   }
 
@@ -150,21 +146,15 @@ class ScalatraBroadcasterFactory(
 
   def removeAllAtmosphereResource(r: AtmosphereResource) {
     // Remove inside all Broadcaster as well.
-    try {
-      if (store.nonEmpty) {
-        try {
-          store.valuesIterator foreach { b =>
-            if (b.getAtmosphereResources.contains(r))
-              b.removeAtmosphereResource(r)
-          }
-        } catch {
-          case ex: IllegalStateException => logger.debug(ex.getMessage, ex)
-        }
-      }
-    } catch {
-      case ex: Exception => {
+    try if (store.nonEmpty)
+      try store.valuesIterator foreach { b =>
+        if (b.getAtmosphereResources.contains(r))
+          b.removeAtmosphereResource(r)
+      } catch {
+        case ex: IllegalStateException => logger.debug(ex.getMessage, ex)
+      } catch {
+      case ex: Exception =>
         logger.warn(ex.getMessage, ex)
-      }
     }
   }
 }

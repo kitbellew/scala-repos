@@ -23,11 +23,8 @@ class ActivitySourceTest extends FunSuite with BeforeAndAfter {
 
   def writeToTempFile(s: String): Unit = {
     val printer = new java.io.PrintWriter(new File(tempFile))
-    try {
-      printer.print(s)
-    } finally {
-      printer.close()
-    }
+    try printer.print(s)
+    finally printer.close()
   }
 
   def bufToString(buf: Buf): String = buf match {

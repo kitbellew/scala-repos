@@ -72,27 +72,24 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
       if (failedActor ne null) {
         val optionalMessage =
           if (currentMessage ne null) Some(currentMessage.message) else None
-        try {
-          // if the actor fails in preRestart, we can do nothing but log it: it’s best-effort
-          if (failedActor.context ne null)
-            failedActor.aroundPreRestart(cause, optionalMessage)
-        } catch handleNonFatalOrInterruptedException { e ⇒
+        try
+        // if the actor fails in preRestart, we can do nothing but log it: it’s best-effort
+        if (failedActor.context ne null)
+          failedActor.aroundPreRestart(cause, optionalMessage)
+        catch handleNonFatalOrInterruptedException { e ⇒
           val ex = new PreRestartException(self, e, cause, optionalMessage)
           publish(
             Error(ex, self.path.toString, clazz(failedActor), e.getMessage))
-        } finally {
-          clearActorFields(failedActor, recreate = true)
-        }
+        } finally clearActorFields(failedActor, recreate = true)
       }
       assert(
         mailbox.isSuspended,
         "mailbox must be suspended during restart, status=" + mailbox.currentStatus)
       if (!setChildrenTerminationReason(ChildrenContainer.Recreation(cause)))
         finishRecreate(cause, failedActor)
-    } else {
+    } else
       // need to keep that suspend counter balanced
       faultResume(causedByFailure = null)
-    }
 
   /**
     * Do suspend the actor in response to a failure of a parent (i.e. the
@@ -172,14 +169,13 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
     // stop all children, which will turn childrenRefs into TerminatingChildrenContainer (if there are children)
     children foreach stop
 
-    if (systemImpl.aborting) {
+    if (systemImpl.aborting)
       // separate iteration because this is a very rare case that should not penalize normal operation
       children foreach {
         case ref: ActorRefScope if !ref.isLocal ⇒
           self.sendSystemMessage(DeathWatchNotification(ref, true, false))
         case _ ⇒
       }
-    }
 
     val wasTerminating = isTerminating
 
@@ -206,8 +202,8 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
       suspendNonRecursive()
       // suspend children
       val skip: Set[ActorRef] = currentMessage match {
-        case Envelope(Failed(_, _, _), child) ⇒ { setFailed(child); Set(child) }
-        case _ ⇒ { setFailed(self); Set.empty }
+        case Envelope(Failed(_, _, _), child) ⇒ setFailed(child); Set(child)
+        case _ ⇒ setFailed(self); Set.empty
       }
       suspendChildren(exceptFor = skip ++ childrenNotToSuspend)
       t match {
@@ -340,7 +336,7 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
      * otherwise tell the supervisor etc. (in that second case, the match
      * below will hit the empty default case, too)
      */
-    if (actor != null) {
+    if (actor != null)
       try actor.supervisorStrategy.handleChildTerminated(this, child, children)
       catch handleNonFatalOrInterruptedException { e ⇒
         publish(
@@ -351,7 +347,6 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
             "handleChildTerminated failed"))
         handleInvokeFailure(Nil, e)
       }
-    }
     /*
      * if the removal changed the state of the (terminating) children container,
      * then we are continuing the previously suspended recreate/create/terminate action

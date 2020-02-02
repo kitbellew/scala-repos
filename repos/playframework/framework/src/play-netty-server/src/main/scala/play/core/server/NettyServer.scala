@@ -89,9 +89,9 @@ class NettyServer(
     * SSL engine provider, only created if needed.
     */
   private lazy val sslEngineProvider: Option[SSLEngineProvider] =
-    try {
-      Some(ServerSSLEngine.createSSLEngineProvider(config, applicationProvider))
-    } catch {
+    try Some(
+      ServerSSLEngine.createSSLEngineProvider(config, applicationProvider))
+    catch {
       case NonFatal(e) =>
         logger.error(s"cannot load SSL context", e)
         None
@@ -106,11 +106,11 @@ class NettyServer(
     }
     config.entrySet().asScala.filterNot(_.getKey.startsWith("child.")).foreach {
       option =>
-        if (ChannelOption.exists(option.getKey)) {
+        if (ChannelOption.exists(option.getKey))
           setOption(
             ChannelOption.valueOf(option.getKey),
             unwrap(option.getValue))
-        } else {
+        else {
           logger.warn("Ignoring unknown Netty channel option: " + option.getKey)
           transport match {
             case Native =>
@@ -173,23 +173,20 @@ class NettyServer(
         nettyConfig.getConfig("option.child"))
 
       val pipeline = connChannel.pipeline()
-      if (secure) {
+      if (secure)
         sslEngineProvider.map { sslEngineProvider =>
           val sslEngine = sslEngineProvider.createSSLEngine()
           sslEngine.setUseClientMode(false)
           if (config.configuration
                 .getBoolean("play.server.https.wantClientAuth")
-                .getOrElse(false)) {
+                .getOrElse(false))
             sslEngine.setWantClientAuth(true)
-          }
           if (config.configuration
                 .getBoolean("play.server.https.needClientAuth")
-                .getOrElse(false)) {
+                .getOrElse(false))
             sslEngine.setNeedClientAuth(true)
-          }
           pipeline.addLast("ssl", new SslHandler(sslEngine))
         }
-      }
 
       // Netty HTTP decoders/encoders/etc
       pipeline.addLast(
@@ -200,9 +197,8 @@ class NettyServer(
           maxChunkSize))
       pipeline.addLast("encoder", new HttpResponseEncoder())
       pipeline.addLast("decompressor", new HttpContentDecompressor())
-      if (logWire) {
+      if (logWire)
         pipeline.addLast("logging", new LoggingHandler(LogLevel.DEBUG))
-      }
 
       val requestHandler = new PlayRequestHandler(this)
 
@@ -247,9 +243,8 @@ class NettyServer(
       logger.error(e.getMessage)
       throw e
     }
-    if (mode != Mode.Test) {
+    if (mode != Mode.Test)
       logger.info(s"Listening for $protocolName on $boundAddress")
-    }
     serverChannel
   }
 
@@ -264,9 +259,8 @@ class NettyServer(
     // Now shut the application down
     applicationProvider.current.foreach(Play.stop)
 
-    try {
-      super.stop()
-    } catch {
+    try super.stop()
+    catch {
       case NonFatal(e) => logger.error("Error while stopping logger", e)
     }
 
@@ -281,11 +275,10 @@ class NettyServer(
     Await.result(stopHook(), Duration.Inf)
   }
 
-  override lazy val mainAddress = {
+  override lazy val mainAddress =
     (httpChannel orElse httpsChannel).get
       .localAddress()
       .asInstanceOf[InetSocketAddress]
-  }
 
   def httpPort =
     httpChannel map (_.localAddress().asInstanceOf[InetSocketAddress].getPort)

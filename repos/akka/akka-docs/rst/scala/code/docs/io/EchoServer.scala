@@ -132,7 +132,7 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
       case Ack(ack) if ack < nack => acknowledge(ack)
       case Ack(ack) =>
         acknowledge(ack)
-        if (storage.nonEmpty) {
+        if (storage.nonEmpty)
           if (toAck > 0) {
             // stay in ACK-based mode for a while
             writeFirst()
@@ -142,7 +142,7 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
             writeAll()
             context become (if (peerClosed) closing else writing)
           }
-        } else if (peerClosed) context stop self
+        else if (peerClosed) context stop self
         else context become writing
     }
   }
@@ -223,9 +223,8 @@ class EchoHandler(connection: ActorRef, remote: InetSocketAddress)
     connection ! Write(storage(0), Ack(storageOffset))
 
   private def writeAll(): Unit =
-    for ((data, i) <- storage.zipWithIndex) {
+    for ((data, i) <- storage.zipWithIndex)
       connection ! Write(data, Ack(storageOffset + i))
-    }
 
   //#storage-omitted
 }
@@ -302,10 +301,10 @@ class SimpleEchoHandler(connection: ActorRef, remote: InetSocketAddress)
       suspended = false
     }
 
-    if (storage.isEmpty) {
+    if (storage.isEmpty)
       if (closing) context stop self
       else context.unbecome()
-    } else connection ! Write(storage(0), Ack)
+    else connection ! Write(storage(0), Ack)
   }
   //#simple-helpers
   //#storage-omitted

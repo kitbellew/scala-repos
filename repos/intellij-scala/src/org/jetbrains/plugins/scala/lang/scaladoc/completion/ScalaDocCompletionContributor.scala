@@ -34,9 +34,8 @@ class ScalaDocCompletionContributor extends ScalaCompletionContributor {
           context: ProcessingContext,
           result: CompletionResultSet) {
         var posParent = positionFromParameters(parameters).getContext
-        while (posParent != null && !posParent.isInstanceOf[ScDocComment]) {
+        while (posParent != null && !posParent.isInstanceOf[ScDocComment])
           posParent = posParent.getContext
-        }
 
         if (posParent != null) {
           val allowedTags =
@@ -54,11 +53,10 @@ class ScalaDocCompletionContributor extends ScalaCompletionContributor {
                 MyScaladocParsing.allTags -- MyScaladocParsing.tagsWithParameters - MyScaladocParsing.RETURN_TAG
             }
 
-          for (tag <- allowedTags) {
+          for (tag <- allowedTags)
             result.addElement(new LookupElement {
               def getLookupString: String = tag.substring(1)
             })
-          }
         }
         result.stopHere()
       }

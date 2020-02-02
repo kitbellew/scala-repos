@@ -255,7 +255,7 @@ object Duration extends TimeLikeOps[Duration] {
 
           // It's OK to use reduce because the regex ensures that there is
           // at least one element
-        } reduce { _ + _ }
+        } reduce _ + _
       case _ => throw new NumberFormatException("Invalid duration: " + s)
     }
   }
@@ -358,11 +358,10 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
     // in order to ensure that the sentinels are only equal
     // to themselves, we need to make sure we only compare nanos
     // when both instances are `Duration`s and not a sentinel subclass.
-    if (other != null && (other.getClass eq getClass)) {
+    if (other != null && (other.getClass eq getClass))
       other.asInstanceOf[Duration].nanos == nanos
-    } else {
+    else
       false
-    }
 
   override def hashCode: Int =
     // inline java.lang.Long.hashCode to avoid the BoxesRunTime.boxToLong

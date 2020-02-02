@@ -43,9 +43,8 @@ class StandardScaler @Since("1.1.0") (withMean: Boolean, withStd: Boolean)
   @Since("1.1.0")
   def this() = this(false, true)
 
-  if (!(withMean || withStd)) {
+  if (!(withMean || withStd))
     logWarning("Both withMean and withStd are false. The model does nothing.")
-  }
 
   /**
     * Computes the mean and variance and stores as a model to be used for later scaling.
@@ -91,11 +90,10 @@ class StandardScalerModel @Since("1.3.0") (
     require(
       this.withStd || this.withMean,
       "at least one of std or mean vectors must be provided")
-    if (this.withStd && this.withMean) {
+    if (this.withStd && this.withMean)
       require(
         mean.size == std.size,
         "mean and std vectors must have equal size if both are provided")
-    }
   }
 
   @Since("1.3.0")
@@ -165,7 +163,7 @@ class StandardScalerModel @Since("1.3.0") (
           throw new IllegalArgumentException(
             "Do not support vector type " + v.getClass)
       }
-    } else if (withStd) {
+    } else if (withStd)
       vector match {
         case DenseVector(vs) =>
           val values = vs.clone()
@@ -192,9 +190,8 @@ class StandardScalerModel @Since("1.3.0") (
           throw new IllegalArgumentException(
             "Do not support vector type " + v.getClass)
       }
-    } else {
+    else
       // Note that it's safe since we always assume that the data in RDD should be immutable.
       vector
-    }
   }
 }

@@ -87,9 +87,7 @@ class ConcurrentActivationTest
           activatedConsumerNames -> deactivatedConsumerNames)
         assertContainsSameElements(
           activatedProducerNames -> deactivatedProducerNames)
-      } finally {
-        system.eventStream.publish(TestEvent.UnMute(eventFilter))
-      }
+      } finally system.eventStream.publish(TestEvent.UnMute(eventFilter))
     }
   }
 }
@@ -167,9 +165,8 @@ class Registrar(
         new TestProducer(endpoint),
         "concurrent-test-producer-" + start + "-" + i)
       index = index + 1
-      if (activations.size == number * 2) {
+      if (activations.size == number * 2)
         Future.sequence(activations.toList) map activationsPromise.success
-      }
     case reg: DeRegisterConsumersAndProducers ⇒
       actorRefs.foreach { aref ⇒
         context.stop(aref)
@@ -179,9 +176,8 @@ class Registrar(
             log.error("deactivationFutureFor {} failed: {}", aref, e.getMessage)
         }
         deActivations += result
-        if (deActivations.size == number * 2) {
+        if (deActivations.size == number * 2)
           Future.sequence(deActivations.toList) map deActivationsPromise.success
-        }
       }
   }
 

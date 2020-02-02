@@ -225,21 +225,18 @@ object SimpleConsumerShell extends Logging {
         ConsumerConfig.SocketTimeout,
         ConsumerConfig.SocketBufferSize,
         clientId)
-      try {
-        startingOffset = simpleConsumer.earliestOrLatestOffset(
-          TopicAndPartition(topic, partitionId),
-          startingOffset,
-          Request.DebuggingConsumerId)
-      } catch {
+      try startingOffset = simpleConsumer.earliestOrLatestOffset(
+        TopicAndPartition(topic, partitionId),
+        startingOffset,
+        Request.DebuggingConsumerId)
+      catch {
         case t: Throwable =>
           System.err.println(
             "Error in getting earliest or latest offset due to: " + Utils
               .stackTrace(t))
           System.exit(1)
-      } finally {
-        if (simpleConsumer != null)
-          simpleConsumer.close()
-      }
+      } finally if (simpleConsumer != null)
+        simpleConsumer.close()
     }
 
     // initializing formatter
@@ -270,68 +267,66 @@ object SimpleConsumerShell extends Logging {
         def run() {
           var offset = startingOffset
           var numMessagesConsumed = 0
-          try {
-            while (numMessagesConsumed < maxMessages) {
-              val fetchRequest = fetchRequestBuilder
-                .addFetch(topic, partitionId, offset, fetchSize)
-                .build()
-              val fetchResponse = simpleConsumer.fetch(fetchRequest)
-              val messageSet = fetchResponse.messageSet(topic, partitionId)
-              if (messageSet.validBytes <= 0 && noWaitAtEndOfLog) {
-                println(
-                  "Terminating. Reached the end of partition (%s, %d) at offset %d"
-                    .format(topic, partitionId, offset))
-                return
+          try while (numMessagesConsumed < maxMessages) {
+            val fetchRequest = fetchRequestBuilder
+              .addFetch(topic, partitionId, offset, fetchSize)
+              .build()
+            val fetchResponse = simpleConsumer.fetch(fetchRequest)
+            val messageSet = fetchResponse.messageSet(topic, partitionId)
+            if (messageSet.validBytes <= 0 && noWaitAtEndOfLog) {
+              println(
+                "Terminating. Reached the end of partition (%s, %d) at offset %d"
+                  .format(topic, partitionId, offset))
+              return
+            }
+            debug(
+              "multi fetched " + messageSet.sizeInBytes + " bytes from offset " + offset)
+            for (messageAndOffset <- messageSet
+                 if numMessagesConsumed < maxMessages) {
+              try {
+                offset = messageAndOffset.nextOffset
+                if (printOffsets)
+                  System.out.println("next offset = " + offset)
+                val message = messageAndOffset.message
+                val key =
+                  if (message.hasKey) Utils.readBytes(message.key) else null
+                val value =
+                  if (message.isNull) null
+                  else Utils.readBytes(message.payload)
+                val serializedKeySize = if (message.hasKey) key.size else -1
+                val serializedValueSize =
+                  if (message.isNull) -1 else value.size
+                formatter.writeTo(
+                  new ConsumerRecord(
+                    topic,
+                    partitionId,
+                    offset,
+                    message.timestamp,
+                    message.timestampType,
+                    message.checksum,
+                    serializedKeySize,
+                    serializedValueSize,
+                    key,
+                    value),
+                  System.out
+                )
+                numMessagesConsumed += 1
+              } catch {
+                case e: Throwable =>
+                  if (skipMessageOnError)
+                    error(
+                      "Error processing message, skipping this message: ",
+                      e)
+                  else
+                    throw e
               }
-              debug(
-                "multi fetched " + messageSet.sizeInBytes + " bytes from offset " + offset)
-              for (messageAndOffset <- messageSet
-                   if numMessagesConsumed < maxMessages) {
-                try {
-                  offset = messageAndOffset.nextOffset
-                  if (printOffsets)
-                    System.out.println("next offset = " + offset)
-                  val message = messageAndOffset.message
-                  val key =
-                    if (message.hasKey) Utils.readBytes(message.key) else null
-                  val value =
-                    if (message.isNull) null
-                    else Utils.readBytes(message.payload)
-                  val serializedKeySize = if (message.hasKey) key.size else -1
-                  val serializedValueSize =
-                    if (message.isNull) -1 else value.size
-                  formatter.writeTo(
-                    new ConsumerRecord(
-                      topic,
-                      partitionId,
-                      offset,
-                      message.timestamp,
-                      message.timestampType,
-                      message.checksum,
-                      serializedKeySize,
-                      serializedValueSize,
-                      key,
-                      value),
-                    System.out
-                  )
-                  numMessagesConsumed += 1
-                } catch {
-                  case e: Throwable =>
-                    if (skipMessageOnError)
-                      error(
-                        "Error processing message, skipping this message: ",
-                        e)
-                    else
-                      throw e
-                }
-                if (System.out.checkError()) {
-                  // This means no one is listening to our output stream any more, time to shutdown
-                  System.err.println(
-                    "Unable to write to standard out, closing consumer.")
-                  formatter.close()
-                  simpleConsumer.close()
-                  System.exit(1)
-                }
+              if (System.out.checkError()) {
+                // This means no one is listening to our output stream any more, time to shutdown
+                System.err.println(
+                  "Unable to write to standard out, closing consumer.")
+                formatter.close()
+                simpleConsumer.close()
+                System.exit(1)
               }
             }
           } catch {
@@ -340,9 +335,7 @@ object SimpleConsumerShell extends Logging {
                 "Error consuming topic, partition, replica (%s, %d, %d) with offset [%d]"
                   .format(topic, partitionId, replicaId, offset),
                 e)
-          } finally {
-            info(s"Consumed $numMessagesConsumed messages")
-          }
+          } finally info(s"Consumed $numMessagesConsumed messages")
         }
       },
       false

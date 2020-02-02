@@ -110,18 +110,17 @@ object SimplifyBooleanUtil {
         .replaceExpression(copy.expr.getOrElse(copy), removeParenthesis = true)
     case ScPrefixExpr(operation, operand) =>
       if (operation.refName != "!") expr
-      else {
+      else
         booleanConst(operand) match {
           case Some(bool: Boolean) =>
             ScalaPsiElementFactory
               .createExpressionFromText((!bool).toString, expr.getManager)
           case None => expr
         }
-      }
     case ScInfixExpr(leftExpr, operation, rightExpr) =>
       val operName = operation.refName
       if (!boolInfixOperations.contains(operName)) expr
-      else {
+      else
         booleanConst(leftExpr) match {
           case Some(bool: Boolean) =>
             simplifyInfixWithLiteral(bool, operName, rightExpr)
@@ -132,7 +131,6 @@ object SimplifyBooleanUtil {
               case None => expr
             }
         }
-      }
     case _ => expr
   }
 

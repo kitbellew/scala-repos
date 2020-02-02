@@ -27,7 +27,7 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
         assert(
           tagNameElement.getNode.getElementType == ScalaDocTokenType.DOC_TAG_NAME)
 
-        if (!MyScaladocParsing.allTags.contains(tagNameElement.getText)) {
+        if (!MyScaladocParsing.allTags.contains(tagNameElement.getText))
           holder.registerProblem(
             holder.getManager.createProblemDescriptor(
               tagNameElement,
@@ -36,10 +36,10 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
               ProblemHighlightType.GENERIC_ERROR,
               isOnTheFly,
               new ScalaDocDeleteUnknownTagInspection(s)))
-        } else if (MyScaladocParsing.tagsWithParameters.contains(
-                     tagNameElement.getText) &&
-                   (tagNameElement.getNextSibling.getNextSibling == null ||
-                   tagNameElement.getNextSibling.getNextSibling.getNode.getElementType != ScalaDocTokenType.DOC_TAG_VALUE_TOKEN)) {
+        else if (MyScaladocParsing.tagsWithParameters.contains(
+                   tagNameElement.getText) &&
+                 (tagNameElement.getNextSibling.getNextSibling == null ||
+                 tagNameElement.getNextSibling.getNextSibling.getNode.getElementType != ScalaDocTokenType.DOC_TAG_VALUE_TOKEN))
           holder.registerProblem(
             holder.getManager.createProblemDescriptor(
               tagNameElement,
@@ -47,7 +47,6 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
               true,
               ProblemHighlightType.GENERIC_ERROR,
               isOnTheFly))
-        }
       }
     }
 
@@ -62,8 +61,7 @@ class ScalaDocDeleteUnknownTagInspection(unknownTag: ScDocTag)
 
   def doApplyFix(project: Project) {
     val tag = getElement
-    if (tag.isValid) {
+    if (tag.isValid)
       tag.delete()
-    }
   }
 }

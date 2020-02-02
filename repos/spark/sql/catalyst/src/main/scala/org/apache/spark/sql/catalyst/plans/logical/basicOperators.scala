@@ -158,11 +158,10 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
       duplicateResolved
 
   override def maxRows: Option[Long] =
-    if (children.exists(_.maxRows.isEmpty)) {
+    if (children.exists(_.maxRows.isEmpty))
       None
-    } else {
+    else
       Some(children.flatMap(_.maxRows).min)
-    }
 
   override def statistics: Statistics = {
     val leftSize = left.statistics.sizeInBytes
@@ -199,11 +198,10 @@ object Union {
 
 case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
   override def maxRows: Option[Long] =
-    if (children.exists(_.maxRows.isEmpty)) {
+    if (children.exists(_.maxRows.isEmpty))
       None
-    } else {
+    else
       Some(children.flatMap(_.maxRows).sum)
-    }
 
   // updating nullability to make all the children consistent
   override def output: Seq[Attribute] =
@@ -409,12 +407,11 @@ case class Range(
   val numElements: BigInt = {
     val safeStart = BigInt(start)
     val safeEnd = BigInt(end)
-    if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0)) {
+    if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0))
       (safeEnd - safeStart) / step
-    } else {
+    else
       // the remainder has the same sign with range, could add 1 more
       (safeEnd - safeStart) / step + 1
-    }
   }
 
   override def newInstance(): Range =
@@ -447,11 +444,10 @@ case class Aggregate(
     child.constraints.union(getAliasedConstraints(aggregateExpressions))
 
   override def statistics: Statistics =
-    if (groupingExpressions.isEmpty) {
+    if (groupingExpressions.isEmpty)
       Statistics(sizeInBytes = 1)
-    } else {
+    else
       super.statistics
-    }
 }
 
 case class Window(
@@ -516,13 +512,12 @@ private[sql] object Expand {
       val nonSelectedGroupAttrSet = buildNonSelectAttrSet(bitmask, groupByAttrs)
 
       child.output ++ groupByAttrs.map { attr =>
-        if (nonSelectedGroupAttrSet.contains(attr)) {
+        if (nonSelectedGroupAttrSet.contains(attr))
           // if the input attribute in the Invalid Grouping Expression set of for this group
           // replace it with constant null
           Literal.create(null, attr.dataType)
-        } else {
+        else
           attr
-        }
       // groupingId is the last output, here we use the bit mask as the concrete value for it.
       } :+ Literal.create(bitmask, IntegerType)
     }
@@ -679,9 +674,8 @@ case class Sample(
     val ratio = upperBound - lowerBound
     // BigInt can't multiply with Double
     var sizeInBytes = child.statistics.sizeInBytes * (ratio * 100).toInt / 100
-    if (sizeInBytes == 0) {
+    if (sizeInBytes == 0)
       sizeInBytes = 1
-    }
     Statistics(sizeInBytes = sizeInBytes)
   }
 

@@ -49,23 +49,20 @@ abstract class BCodeIdiomatic extends SubComponent {
 
   /* can-multi-thread */
   final def mkArray(xs: List[BType]): Array[BType] = {
-    if (xs.isEmpty) {
+    if (xs.isEmpty)
       return EMPTY_BTYPE_ARRAY
-    }
     val a = new Array[BType](xs.size); xs.copyToArray(a); a
   }
   /* can-multi-thread */
   final def mkArray(xs: List[String]): Array[String] = {
-    if (xs.isEmpty) {
+    if (xs.isEmpty)
       return EMPTY_STRING_ARRAY
-    }
     val a = new Array[String](xs.size); xs.copyToArray(a); a
   }
   /* can-multi-thread */
   final def mkArray(xs: List[asm.Label]): Array[asm.Label] = {
-    if (xs.isEmpty) {
+    if (xs.isEmpty)
       return EMPTY_LABEL_ARRAY
-    }
     val a = new Array[asm.Label](xs.size); xs.copyToArray(a); a
   }
 
@@ -74,9 +71,8 @@ abstract class BCodeIdiomatic extends SubComponent {
    */
   final def mkArrayReverse(xs: List[String]): Array[String] = {
     val len = xs.size
-    if (len == 0) {
+    if (len == 0)
       return EMPTY_STRING_ARRAY
-    }
     val a = new Array[String](len)
     var i = len - 1
     var rest = xs
@@ -93,9 +89,8 @@ abstract class BCodeIdiomatic extends SubComponent {
    */
   final def mkArrayReverse(xs: List[Int]): Array[Int] = {
     val len = xs.size
-    if (len == 0) {
+    if (len == 0)
       return EMPTY_INT_ARRAY
-    }
     val a = new Array[Int](len)
     var i = len - 1
     var rest = xs
@@ -127,9 +122,8 @@ abstract class BCodeIdiomatic extends SubComponent {
       } else if (bType == LONG) {
         jmethod.visitLdcInsn(new java.lang.Long(-1))
         jmethod.visitInsn(Opcodes.LXOR)
-      } else {
+      } else
         abort(s"Impossible to negate a $bType")
-      }
 
     /*
      * can-multi-thread
@@ -143,25 +137,22 @@ abstract class BCodeIdiomatic extends SubComponent {
         case (AND, INT)  => emit(Opcodes.IAND)
         case (AND, _) =>
           emit(Opcodes.IAND)
-          if (kind != BOOL) {
+          if (kind != BOOL)
             emitT2T(INT, kind)
-          }
 
         case (OR, LONG) => emit(Opcodes.LOR)
         case (OR, INT)  => emit(Opcodes.IOR)
         case (OR, _) =>
           emit(Opcodes.IOR)
-          if (kind != BOOL) {
+          if (kind != BOOL)
             emitT2T(INT, kind)
-          }
 
         case (XOR, LONG) => emit(Opcodes.LXOR)
         case (XOR, INT)  => emit(Opcodes.IXOR)
         case (XOR, _) =>
           emit(Opcodes.IXOR)
-          if (kind != BOOL) {
+          if (kind != BOOL)
             emitT2T(INT, kind)
-          }
       }
 
     } // end of method genPrimitiveLogical()
@@ -265,14 +256,12 @@ abstract class BCodeIdiomatic extends SubComponent {
           case FLOAT  => opcs(5)
           case DOUBLE => opcs(6)
         }
-        if (chosen != -1) {
+        if (chosen != -1)
           emit(chosen)
-        }
       }
 
-      if (from == to) {
+      if (from == to)
         return
-      }
       // the only conversion involving BOOL that is allowed is (BOOL -> BOOL)
       assert(from != BOOL && to != BOOL, s"inconvertible types : $from -> $to")
 
@@ -317,44 +306,40 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     // can-multi-thread
     final def iconst(cst: Int) {
-      if (cst >= -1 && cst <= 5) {
+      if (cst >= -1 && cst <= 5)
         emit(Opcodes.ICONST_0 + cst)
-      } else if (cst >= java.lang.Byte.MIN_VALUE && cst <= java.lang.Byte.MAX_VALUE) {
+      else if (cst >= java.lang.Byte.MIN_VALUE && cst <= java.lang.Byte.MAX_VALUE)
         jmethod.visitIntInsn(Opcodes.BIPUSH, cst)
-      } else if (cst >= java.lang.Short.MIN_VALUE && cst <= java.lang.Short.MAX_VALUE) {
+      else if (cst >= java.lang.Short.MIN_VALUE && cst <= java.lang.Short.MAX_VALUE)
         jmethod.visitIntInsn(Opcodes.SIPUSH, cst)
-      } else {
+      else
         jmethod.visitLdcInsn(new Integer(cst))
-      }
     }
 
     // can-multi-thread
     final def lconst(cst: Long) {
-      if (cst == 0L || cst == 1L) {
+      if (cst == 0L || cst == 1L)
         emit(Opcodes.LCONST_0 + cst.asInstanceOf[Int])
-      } else {
+      else
         jmethod.visitLdcInsn(new java.lang.Long(cst))
-      }
     }
 
     // can-multi-thread
     final def fconst(cst: Float) {
       val bits: Int = java.lang.Float.floatToIntBits(cst)
-      if (bits == 0L || bits == 0x3f800000 || bits == 0x40000000) { // 0..2
+      if (bits == 0L || bits == 0x3f800000 || bits == 0x40000000) // 0..2
         emit(Opcodes.FCONST_0 + cst.asInstanceOf[Int])
-      } else {
+      else
         jmethod.visitLdcInsn(new java.lang.Float(cst))
-      }
     }
 
     // can-multi-thread
     final def dconst(cst: Double) {
       val bits: Long = java.lang.Double.doubleToLongBits(cst)
-      if (bits == 0L || bits == 0x3FF0000000000000L) { // +0.0d and 1.0d
+      if (bits == 0L || bits == 0x3FF0000000000000L) // +0.0d and 1.0d
         emit(Opcodes.DCONST_0 + cst.asInstanceOf[Int])
-      } else {
+      else
         jmethod.visitLdcInsn(new java.lang.Double(cst))
-      }
     }
 
     // can-multi-thread
@@ -477,11 +462,10 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     // can-multi-thread
     final def emitRETURN(tk: BType) {
-      if (tk == UNIT) {
+      if (tk == UNIT)
         emit(Opcodes.RETURN)
-      } else {
+      else
         emitTypeBased(JCodeMethodN.returnOpcodes, tk)
-      }
     }
 
     /* Emits one of tableswitch or lookupswitch.
@@ -523,10 +507,9 @@ abstract class BCodeIdiomatic extends SubComponent {
       // check for duplicate keys to avoid "VerifyError: unsorted lookupswitch" (SI-6011)
       i = 1
       while (i < keys.length) {
-        if (keys(i - 1) == keys(i)) {
+        if (keys(i - 1) == keys(i))
           abort(
             "duplicate keys in SWITCH, can't pick arbitrarily one of them to evict, see SI-6011.")
-        }
         i += 1
       }
 
@@ -554,9 +537,8 @@ abstract class BCodeIdiomatic extends SubComponent {
           if (keys(oldPos) == key) {
             newBranches(i) = branches(oldPos)
             oldPos += 1
-          } else {
+          } else
             newBranches(i) = defaultBranch
-          }
           i += 1
         }
         assert(oldPos == keys.length, "emitSWITCH")
@@ -565,9 +547,8 @@ abstract class BCodeIdiomatic extends SubComponent {
           keyMax,
           defaultBranch,
           newBranches: _*)
-      } else {
+      } else
         jmethod.visitLookupSwitchInsn(defaultBranch, keys, branches)
-      }
     }
 
     // internal helpers -- not part of the public API of `jcode`
@@ -585,22 +566,21 @@ abstract class BCodeIdiomatic extends SubComponent {
     final def emitTypeBased(opcs: Array[Int], tk: BType) {
       assert(tk != UNIT, tk)
       val opc = {
-        if (tk.isRef) {
+        if (tk.isRef)
           opcs(0)
-        } else if (tk.isIntSizedType) {
+        else if (tk.isIntSizedType)
           (tk: @unchecked) match {
             case BOOL | BYTE => opcs(1)
             case SHORT       => opcs(2)
             case CHAR        => opcs(3)
             case INT         => opcs(4)
           }
-        } else {
+        else
           (tk: @unchecked) match {
             case LONG   => opcs(5)
             case FLOAT  => opcs(6)
             case DOUBLE => opcs(7)
           }
-        }
       }
       emit(opc)
     }
@@ -651,17 +631,16 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     // ---------------- conversions ----------------
 
-    val fromByteT2T = { Array(-1, -1, I2C, -1, I2L, I2F, I2D) } // do nothing for (BYTE -> SHORT) and for (BYTE -> INT)
-    val fromCharT2T = { Array(I2B, I2S, -1, -1, I2L, I2F, I2D) } // for (CHAR  -> INT) do nothing
-    val fromShortT2T = { Array(I2B, -1, I2C, -1, I2L, I2F, I2D) } // for (SHORT -> INT) do nothing
-    val fromIntT2T = { Array(I2B, I2S, I2C, -1, I2L, I2F, I2D) }
+    val fromByteT2T = Array(-1, -1, I2C, -1, I2L, I2F, I2D) // do nothing for (BYTE -> SHORT) and for (BYTE -> INT)
+    val fromCharT2T = Array(I2B, I2S, -1, -1, I2L, I2F, I2D) // for (CHAR  -> INT) do nothing
+    val fromShortT2T = Array(I2B, -1, I2C, -1, I2L, I2F, I2D) // for (SHORT -> INT) do nothing
+    val fromIntT2T = Array(I2B, I2S, I2C, -1, I2L, I2F, I2D)
 
     // ---------------- array load and store ----------------
 
-    val aloadOpcodes = {
+    val aloadOpcodes =
       Array(AALOAD, BALOAD, SALOAD, CALOAD, IALOAD, LALOAD, FALOAD, DALOAD)
-    }
-    val astoreOpcodes = {
+    val astoreOpcodes =
       Array(
         AASTORE,
         BASTORE,
@@ -671,8 +650,7 @@ abstract class BCodeIdiomatic extends SubComponent {
         LASTORE,
         FASTORE,
         DASTORE)
-    }
-    val returnOpcodes = {
+    val returnOpcodes =
       Array(
         ARETURN,
         IRETURN,
@@ -682,16 +660,15 @@ abstract class BCodeIdiomatic extends SubComponent {
         LRETURN,
         FRETURN,
         DRETURN)
-    }
 
     // ---------------- primitive operations ----------------
 
-    val negOpcodes: Array[Int] = { Array(INEG, LNEG, FNEG, DNEG) }
-    val addOpcodes: Array[Int] = { Array(IADD, LADD, FADD, DADD) }
-    val subOpcodes: Array[Int] = { Array(ISUB, LSUB, FSUB, DSUB) }
-    val mulOpcodes: Array[Int] = { Array(IMUL, LMUL, FMUL, DMUL) }
-    val divOpcodes: Array[Int] = { Array(IDIV, LDIV, FDIV, DDIV) }
-    val remOpcodes: Array[Int] = { Array(IREM, LREM, FREM, DREM) }
+    val negOpcodes: Array[Int] = Array(INEG, LNEG, FNEG, DNEG)
+    val addOpcodes: Array[Int] = Array(IADD, LADD, FADD, DADD)
+    val subOpcodes: Array[Int] = Array(ISUB, LSUB, FSUB, DSUB)
+    val mulOpcodes: Array[Int] = Array(IMUL, LMUL, FMUL, DMUL)
+    val divOpcodes: Array[Int] = Array(IDIV, LDIV, FDIV, DDIV)
+    val remOpcodes: Array[Int] = Array(IREM, LREM, FREM, DREM)
 
   } // end of object JCodeMethodN
 
@@ -756,9 +733,9 @@ abstract class BCodeIdiomatic extends SubComponent {
         case lblDf: LabelDef => acc ::= lblDf
         case _               => ()
       }
-      if (acc.isEmpty) {
+      if (acc.isEmpty)
         acc = saved
-      } else {
+      else {
         result += (tree -> acc)
         acc = acc ::: saved
       }
@@ -775,9 +752,8 @@ abstract class BCodeIdiomatic extends SubComponent {
 
     @inline final def foreachInsn(f: (asm.tree.AbstractInsnNode) => Unit) {
       val insnIter = lst.iterator()
-      while (insnIter.hasNext) {
+      while (insnIter.hasNext)
         f(insnIter.next())
-      }
     }
   }
 }

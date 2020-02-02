@@ -28,14 +28,12 @@ class ArrayBasedMapData(val keyArray: ArrayData, val valueArray: ArrayData)
 
   // We need to check equality of map type in tests.
   override def equals(o: Any): Boolean = {
-    if (!o.isInstanceOf[ArrayBasedMapData]) {
+    if (!o.isInstanceOf[ArrayBasedMapData])
       return false
-    }
 
     val other = o.asInstanceOf[ArrayBasedMapData]
-    if (other eq null) {
+    if (other eq null)
       return false
-    }
 
     ArrayBasedMapData.toScalaMap(this) == ArrayBasedMapData.toScalaMap(other)
   }

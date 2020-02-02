@@ -55,12 +55,10 @@ class CSRFAction(
 
     // Only filter unsafe methods and content types
     if (config.checkMethod(request.method) && config.checkContentType(
-          request.contentType)) {
-
-      if (!requiresCsrfCheck(request, config)) {
+          request.contentType))
+      if (!requiresCsrfCheck(request, config))
         continue
-      } else {
-
+      else
         // Only proceed with checks if there is an incoming token in the header, otherwise there's no point
         getTokenToValidate(request, config, tokenSigner).map { headerToken =>
           // First check if there's a token in the query string or header, if we find one, don't bother handling the body
@@ -103,9 +101,8 @@ class CSRFAction(
           checkFailed(request, "No CSRF token found in headers")
 
         }
-      }
-    } else if (getTokenToValidate(request, config, tokenSigner).isEmpty && config
-                 .createIfNotFound(request)) {
+    else if (getTokenToValidate(request, config, tokenSigner).isEmpty && config
+               .createIfNotFound(request)) {
 
       // No token in header and we have to create one if not found, so create a new token
       val newToken = tokenProvider.generateToken
@@ -134,13 +131,12 @@ class CSRFAction(
       mt <- request.mediaType
       maybeBoundary <- mt.parameters.find(_._1.equalsIgnoreCase("boundary"))
       boundary <- maybeBoundary._2
-    } yield {
-      checkBody(extractTokenFromMultipartFormDataBody(ByteString(boundary)))(
-        request,
-        action,
-        tokenFromHeader,
-        tokenName)
-    }).getOrElse(
+    } yield checkBody(
+      extractTokenFromMultipartFormDataBody(ByteString(boundary)))(
+      request,
+      action,
+      tokenFromHeader,
+      tokenName)).getOrElse(
       checkFailed(request, "No boundary found in multipart/form-data request"))
 
   private def checkBody[T](extractor: (ByteString, String) => Option[String])(
@@ -196,21 +192,20 @@ class CSRFAction(
       ByteString(URLEncoder.encode(tokenName, "utf-8")) ++ ByteString('=')
 
     // First check if it's the first token
-    if (body.startsWith(tokenEquals)) {
+    if (body.startsWith(tokenEquals))
       Some(
         URLDecoder.decode(
           body.drop(tokenEquals.size).takeWhile(_ != '&').utf8String,
           "utf-8"))
-    } else {
+    else {
       val andTokenEquals = ByteString('&') ++ tokenEquals
       val index = body.indexOfSlice(andTokenEquals)
-      if (index == -1) {
+      if (index == -1)
         None
-      } else {
+      else
         Some(URLDecoder.decode(
           body.drop(index + andTokenEquals.size).takeWhile(_ != '&').utf8String,
           "utf-8"))
-      }
     }
   }
 
@@ -238,15 +233,15 @@ class CSRFAction(
       */
     def extractHeaders(position: Int): (Int, List[(String, String)]) =
       // If it starts with CRLF, we've reached the end of the headers
-      if (prefixedBody.startsWith(crlf, position)) {
+      if (prefixedBody.startsWith(crlf, position))
         (position + 2) -> Nil
-      } else {
+      else {
         // Read up to the next CRLF
         val nextCrlf = prefixedBody.indexOfSlice(crlf, position)
-        if (nextCrlf == -1) {
+        if (nextCrlf == -1)
           // Technically this is a protocol error
           position -> Nil
-        } else {
+        else {
           val header = prefixedBody.slice(position, nextCrlf).utf8String
           header.split(":", 2) match {
             case Array(_) =>
@@ -275,9 +270,9 @@ class CSRFAction(
           // Progress past the CRLF at the end of the boundary
           val nextCrlf =
             prefixedBody.indexOfSlice(crlf, nextBoundary + boundaryLine.size)
-          if (nextCrlf == -1) {
+          if (nextCrlf == -1)
             None
-          } else {
+          else {
             val startOfNextPart = nextCrlf + 2
             // Extract the headers
             val (startOfPartData, headers) = extractHeaders(startOfNextPart)
@@ -286,13 +281,12 @@ class CSRFAction(
                 // This part is the token, find the next boundary
                 val endOfData =
                   prefixedBody.indexOfSlice(boundaryLine, startOfPartData)
-                if (endOfData == -1) {
+                if (endOfData == -1)
                   None
-                } else {
+                else
                   // Extract the token value
                   Some(
                     prefixedBody.slice(startOfPartData, endOfData).utf8String)
-                }
               case _ =>
                 // Find the next part
                 findToken(startOfPartData)
@@ -321,84 +315,73 @@ private class BodyHandler(config: CSRFConfig, checkBody: ByteString => Boolean)
   var continue = false
 
   def onPush(elem: ByteString, ctx: DetachedContext[ByteString]) =
-    if (continue) {
+    if (continue)
       // Standard contract for forwarding as is in DetachedStage
-      if (ctx.isHoldingDownstream) {
+      if (ctx.isHoldingDownstream)
         ctx.pushAndPull(elem)
-      } else {
+      else {
         next = elem
         ctx.holdUpstream()
       }
-    } else {
-      if (buffer.size + elem.size > config.postBodyBuffer) {
-        // We've finished buffering up to the configured limit, try to validate
-        buffer ++= elem
-        if (checkBody(buffer)) {
-          // Switch to continue, and push the buffer
-          continue = true
-          if (ctx.isHoldingDownstream) {
-            val toPush = buffer
-            buffer = null
-            ctx.pushAndPull(toPush)
-          } else {
-            next = buffer
-            buffer = null
-            ctx.holdUpstream()
-          }
+    else if (buffer.size + elem.size > config.postBodyBuffer) {
+      // We've finished buffering up to the configured limit, try to validate
+      buffer ++= elem
+      if (checkBody(buffer)) {
+        // Switch to continue, and push the buffer
+        continue = true
+        if (ctx.isHoldingDownstream) {
+          val toPush = buffer
+          buffer = null
+          ctx.pushAndPull(toPush)
         } else {
-          // CSRF check failed
-          ctx.fail(CSRFAction.NoTokenInBody)
+          next = buffer
+          buffer = null
+          ctx.holdUpstream()
         }
-      } else {
-        // Buffer
-        buffer ++= elem
-        ctx.pull()
-      }
+      } else
+        // CSRF check failed
+        ctx.fail(CSRFAction.NoTokenInBody)
+    } else {
+      // Buffer
+      buffer ++= elem
+      ctx.pull()
     }
 
   def onPull(ctx: DetachedContext[ByteString]) =
-    if (continue) {
+    if (continue)
       // Standard contract for forwarding as is in DetachedStage
       if (next != null) {
         val toPush = next
         next = null
-        if (ctx.isFinishing) {
+        if (ctx.isFinishing)
           ctx.pushAndFinish(toPush)
-        } else {
+        else
           ctx.pushAndPull(toPush)
-        }
-      } else {
-        if (ctx.isFinishing) {
-          ctx.finish()
-        } else {
-          ctx.holdDownstream()
-        }
-      }
-    } else {
+      } else if (ctx.isFinishing)
+        ctx.finish()
+      else
+        ctx.holdDownstream()
+    else
       // Otherwise hold because we're buffering
       ctx.holdDownstream()
-    }
 
   override def onUpstreamFinish(ctx: DetachedContext[ByteString]) =
-    if (continue) {
-      if (next != null) {
+    if (continue)
+      if (next != null)
         ctx.absorbTermination()
-      } else {
+      else
         ctx.finish()
-      }
-    } else {
-      // CSRF check
-      if (checkBody(buffer)) {
-        // Absorb the termination, hold the buffer, and enter the continue state.
-        // Even if we're holding downstream, Akka streams will send another onPull so that we can flush it.
-        next = buffer
-        buffer = null
-        continue = true
-        ctx.absorbTermination()
-      } else {
-        ctx.fail(CSRFAction.NoTokenInBody)
-      }
-    }
+    else
+    // CSRF check
+    if (checkBody(buffer)) {
+      // Absorb the termination, hold the buffer, and enter the continue state.
+      // Even if we're holding downstream, Akka streams will send another onPull so that we can flush it.
+      next = buffer
+      buffer = null
+      continue = true
+      ctx.absorbTermination()
+    } else
+      ctx.fail(CSRFAction.NoTokenInBody)
 }
 
 object CSRFAction {
@@ -442,9 +425,8 @@ object CSRFAction {
             .map(tokenSigner.signToken)
           newTokenValue.fold(newReq)(
             newReq.withTag(Token.ReSignedRequestTag, _))
-        } else {
+        } else
           newReq
-        }
     }
 
   private[csrf] def tagRequestFromHeader[A](
@@ -485,9 +467,8 @@ object CSRFAction {
       filterLogger.trace(
         "[CSRF] Bypassing check because CORSFilter request tag found")
       false
-    } else {
+    } else
       config.shouldProtect(request)
-    }
 
   private[csrf] def addTokenToResponse(
       config: CSRFConfig,
@@ -575,9 +556,9 @@ case class CSRFCheck @Inject() (
 
       // Maybe bypass
       if (!CSRFAction.requiresCsrfCheck(request, config) || !config
-            .checkContentType(request.contentType)) {
+            .checkContentType(request.contentType))
         wrapped(request)
-      } else {
+      else
         // Get token from header
         CSRFAction
           .getTokenToValidate(request, config, tokenSigner)
@@ -616,7 +597,6 @@ case class CSRFCheck @Inject() (
               errorHandler,
               "CSRF token check failed")
           }
-      }
     }
   }
 
@@ -680,9 +660,8 @@ case class CSRFAddToken @Inject() (
         import play.api.libs.iteratee.Execution.Implicits.trampoline
         wrapped(requestWithNewToken).map(result =>
           CSRFAction.addTokenToResponse(config, newToken, request, result))
-      } else {
+      } else
         wrapped(request)
-      }
     }
   }
 

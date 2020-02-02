@@ -28,18 +28,16 @@ private object ConfigHelpers {
       converter: String => T,
       key: String,
       configType: String): T =
-    try {
-      converter(s)
-    } catch {
+    try converter(s)
+    catch {
       case _: NumberFormatException =>
         throw new IllegalArgumentException(
           s"$key should be $configType, but was $s")
     }
 
   def toBoolean(s: String, key: String): Boolean =
-    try {
-      s.toBoolean
-    } catch {
+    try s.toBoolean
+    catch {
       case _: IllegalArgumentException =>
         throw new IllegalArgumentException(
           s"$key should be boolean, but was $s")
@@ -59,11 +57,10 @@ private object ConfigHelpers {
 
   def byteFromString(str: String, unit: ByteUnit): Long = {
     val (input, multiplier) =
-      if (str.length() > 0 && str.charAt(0) == '-') {
+      if (str.length() > 0 && str.charAt(0) == '-')
         (str.substring(1), -1)
-      } else {
+      else
         (str, 1)
-      }
     multiplier * JavaUtils.byteStringAs(input, unit)
   }
 
@@ -95,11 +92,10 @@ private[spark] class TypedConfigBuilder[T](
 
   def checkValues(validValues: Set[T]): TypedConfigBuilder[T] =
     transform { v =>
-      if (!validValues.contains(v)) {
+      if (!validValues.contains(v))
         throw new IllegalArgumentException(
           s"The value of ${parent.key} should be one of ${validValues.mkString(
             ", ")}, but was $v")
-      }
       v
     }
 

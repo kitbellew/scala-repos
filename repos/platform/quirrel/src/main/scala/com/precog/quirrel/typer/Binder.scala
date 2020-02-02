@@ -40,15 +40,15 @@ trait Binder extends parser.AST {
 
   override def bindNames(tree: Expr) = {
     def loop(tree: Expr, env: Env): Set[Error] = tree match {
-      case b @ Let(_, id, formals, left, right) => {
+      case b @ Let(_, id, formals, left, right) =>
         val (_, dups) = formals.foldLeft((Set[TicId](), Set[TicId]())) {
           case ((acc, dup), id) if acc(id)  => (acc, dup + id)
           case ((acc, dup), id) if !acc(id) => (acc + id, dup)
         }
 
-        if (!dups.isEmpty) {
+        if (!dups.isEmpty)
           dups map { id => Error(b, MultiplyDefinedTicVariable(id)) }
-        } else {
+        else {
           val ids = formals map { Identifier(Vector(), _) }
           val names2 = ids.foldLeft(env.names) { (m, s) =>
             m + (s -> FormalBinding(b))
@@ -58,9 +58,8 @@ trait Binder extends parser.AST {
             right,
             env.copy(names = env.names + (id -> LetBinding(b))))
         }
-      }
 
-      case b @ Solve(_, constraints, child) => {
+      case b @ Solve(_, constraints, child) =>
         val varVector = constraints map listFreeVars(env)
 
         val errors =
@@ -69,10 +68,10 @@ trait Binder extends parser.AST {
           else
             Set[Error]()
 
-        val ids = varVector reduce { _ ++ _ }
+        val ids = varVector reduce _ ++ _
         b.vars = ids
 
-        val freeBindings = ids map { _ -> FreeBinding(b) }
+        val freeBindings = ids map _ -> FreeBinding(b)
         val constEnv = env.copy(vars = env.vars ++ freeBindings)
         val constErrors = constraints map { loop(_, constEnv) } reduce {
           _ ++ _
@@ -80,61 +79,52 @@ trait Binder extends parser.AST {
 
         val bindings = ids map { id => id -> SolveBinding(b) }
         loop(child, env.copy(vars = env.vars ++ bindings)) ++ constErrors ++ errors
-      }
 
-      case Import(_, spec, child) => { //todo see scalaz's Boolean.option
+      case Import(_, spec, child) => //todo see scalaz's Boolean.option
         val addend = spec match {
-          case SpecificImport(prefix) => {
+          case SpecificImport(prefix) =>
             env.names flatMap {
-              case (Identifier(ns, name), b) => {
-                if (ns.length >= prefix.length) {
+              case (Identifier(ns, name), b) =>
+                if (ns.length >= prefix.length)
                   if (ns zip prefix forall { case (a, b) => a == b })
                     Some(Identifier(ns drop (prefix.length - 1), name) -> b)
                   else
                     None
-                } else if (ns.length == prefix.length - 1) {
-                  if (ns zip prefix forall { case (a, b) => a == b }) {
+                else if (ns.length == prefix.length - 1)
+                  if (ns zip prefix forall { case (a, b) => a == b })
                     if (name == prefix.last)
                       Some(Identifier(Vector(), name) -> b)
                     else
                       None
-                  } else {
+                  else
                     None
-                  }
-                } else {
+                else
                   None
-                }
-              }
 
               case _ => None
             }
-          }
 
-          case WildcardImport(prefix) => {
+          case WildcardImport(prefix) =>
             env.names flatMap {
-              case (Identifier(ns, name), b) => {
-                if (ns.length >= prefix.length + 1) {
+              case (Identifier(ns, name), b) =>
+                if (ns.length >= prefix.length + 1)
                   if (ns zip prefix forall { case (a, b) => a == b })
                     Some(Identifier(ns drop prefix.length, name) -> b)
                   else
                     None
-                } else if (ns.length == prefix.length) {
+                else if (ns.length == prefix.length)
                   if (ns zip prefix forall { case (a, b) => a == b })
                     Some(Identifier(Vector(), name) -> b)
                   else
                     None
-                } else {
+                else
                   None
-                }
-              }
 
               case _ => None
             }
-          }
         }
 
         loop(child, env.copy(names = env.names ++ addend))
-      }
 
       case Assert(_, pred, child) => loop(pred, env) ++ loop(child, env)
 
@@ -145,20 +135,17 @@ trait Binder extends parser.AST {
       case Relate(_, from, to, in) =>
         loop(from, env) ++ loop(to, env) ++ loop(in, env)
 
-      case t @ TicVar(_, name) => {
+      case t @ TicVar(_, name) =>
         env.vars get name match {
-          case Some(b) => {
+          case Some(b) =>
             t.binding = b
             Set()
-          }
-          case None => {
+          case None =>
             t.binding = NullBinding
             Set(Error(t, UndefinedTicVariable(name)))
-          }
         }
-      }
 
-      case d @ Dispatch(_, name, actuals) => {
+      case d @ Dispatch(_, name, actuals) =>
         val recursive = (actuals map { loop(_, env) }).fold(Set()) { _ ++ _ }
         if (env.names contains name) {
           val binding = env.names(name)
@@ -218,7 +205,6 @@ trait Binder extends parser.AST {
           d.isReduction = false
           recursive + Error(d, UndefinedFunction(name))
         }
-      }
 
       case NaryOp(_, values) =>
         (values map { loop(_, env) }).fold(Set()) { _ ++ _ }
@@ -254,7 +240,7 @@ trait Binder extends parser.AST {
     case TicVar(_, name) if env.vars contains name    => Set()
     case TicVar(_, name) if !(env.vars contains name) => Set(name)
     case NaryOp(_, values) =>
-      values map listFreeVars(env) reduceOption { _ ++ _ } getOrElse Set()
+      values map listFreeVars(env) reduceOption _ ++ _ getOrElse Set()
   }
 
   private case class Env(

@@ -12,7 +12,7 @@ trait Importers { to: SymbolTable =>
   override def mkImporter(
       from0: api.Universe): Importer { val from: from0.type } =
     (
-      if (to eq from0) {
+      if (to eq from0)
         new Importer {
           val from = from0
           val reverse = this.asInstanceOf[from.Importer { val from: to.type }]
@@ -22,7 +22,7 @@ trait Importers { to: SymbolTable =>
           def importPosition(their: from.Position) =
             their.asInstanceOf[to.Position]
         }
-      } else {
+      else {
         // todo. fix this loophole
         assert(
           from0.isInstanceOf[SymbolTable],
@@ -89,9 +89,7 @@ trait Importers { to: SymbolTable =>
             markAllCompleted(my)
           }
         }
-      } finally {
-        my resetFlag Flags.LOCKED
-      }
+      } finally my resetFlag Flags.LOCKED
 
     protected def recreateSymbol(their: from.Symbol): to.Symbol = {
       val myowner = importSymbol(their.owner)
@@ -211,9 +209,8 @@ trait Importers { to: SymbolTable =>
                   if (their.isMethod) {
                     val localCopy = cachedRecreateSymbol(their)
                     my filter (_.tpe matches localCopy.tpe)
-                  } else {
+                  } else
                     my filter (!_.isMethod)
-                  }
                 assert(
                   !result.isOverloaded,
                   "import failure: cannot determine unique overloaded method alternative from\n " +
@@ -507,9 +504,8 @@ trait Importers { to: SymbolTable =>
         tryFixup()
         // we have to be careful with position import as some shared trees
         // like EmptyTree, noSelfType don't support position assignment
-        if (their.pos != NoPosition) {
+        if (their.pos != NoPosition)
           my.setPos(importPosition(their.pos))
-        }
       }
       importAttachments(their.attachments.all).foreach {
         my.updateAttachment(_)

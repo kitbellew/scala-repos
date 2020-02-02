@@ -75,16 +75,15 @@ object SbtData {
   private def readSbtVersionFrom(classLoader: ClassLoader): Option[String] =
     readProperty(classLoader, "xsbt.version.properties", "version").map {
       version =>
-        if (version.endsWith("-SNAPSHOT")) {
+        if (version.endsWith("-SNAPSHOT"))
           readProperty(
             getClass.getClassLoader,
             "xsbt.version.properties",
             "timestamp")
             .map(timestamp => version + "-" + timestamp)
             .getOrElse(version)
-        } else {
+        else
           version
-        }
     }
 
   private def md5(file: File): Array[Byte] = {
@@ -95,9 +94,8 @@ object SbtData {
       val text =
         scala.io.Source.fromFile(file, "UTF-8").mkString.replace("\r", "")
       md.digest(text.getBytes("UTF8"))
-    } else {
+    } else
       md.digest(FileUtil.loadBytes(new FileInputStream(file)))
-    }
   }
 
 }

@@ -181,9 +181,9 @@ class QuadraticMinimizer(
     // scale = rho*(z - u) - q
     val scale = DenseVector.zeros[Double](n)
 
-    if (proximal == null) {
+    if (proximal == null)
       State(x, u, z, scale, null, pivot, null, null, null, null, 0, false)
-    } else {
+    else {
       val xHat = DenseVector.zeros[Double](nGram)
       val zOld = DenseVector.zeros[Double](nGram)
 
@@ -241,15 +241,14 @@ class QuadraticMinimizer(
       cforRange(0 until beq.length) { i => scale.update(nGram + i, beq(i)) }
 
     // TO DO : Use LDL' based solver for quasi definite / sparse gram
-    if (linearEquality > 0) {
+    if (linearEquality > 0)
       // x = U \ (L \ q)
       QuadraticMinimizer.dgetrs(R, pivot, scale)
-    } else {
+    else
       // x = R \ (R' \ scale)
       // Step 1 : R' * y = scale
       // Step 2 : R * x = y
       QuadraticMinimizer.dpotrs(R, scale)
-    }
     cforRange(0 until x.length) { i => x.update(i, scale(i)) }
   }
 
@@ -339,7 +338,7 @@ class QuadraticMinimizer(
         convergenceScale * abstol + reltol * max(norm(x, 2), norm(residual, 2))
       val epsDual = convergenceScale * abstol + reltol * norm(s, 2)
 
-      if (residualNorm < epsPrimal && sNorm < epsDual) {
+      if (residualNorm < epsPrimal && sNorm < epsDual)
         return State(
           x,
           u,
@@ -353,7 +352,6 @@ class QuadraticMinimizer(
           s,
           nextIter,
           true)
-      }
       nextIter += 1
     }
     State(x, u, z, scale, R, pivot, xHat, zOld, residual, s, nextIter, false)
@@ -554,9 +552,8 @@ object QuadraticMinimizer {
     var absColSum = 0.0
     var maxColSum = 0.0
     for (c <- 0 until H.cols) {
-      for (r <- 0 until H.rows) {
+      for (r <- 0 until H.rows)
         absColSum += abs(H(r, c))
-      }
       if (absColSum > maxColSum) maxColSum = absColSum
       absColSum = 0.0
     }
@@ -585,21 +582,18 @@ object QuadraticMinimizer {
     constraint match {
       case SMOOTH   => new QuadraticMinimizer(rank)
       case POSITIVE => new QuadraticMinimizer(rank, ProjectPos())
-      case BOX => {
+      case BOX      =>
         //Direct QP with bounds
         val lb = DenseVector.zeros[Double](rank)
         val ub = DenseVector.ones[Double](rank)
         new QuadraticMinimizer(rank, ProjectBox(lb, ub))
-      }
-      case PROBABILITYSIMPLEX => {
+      case PROBABILITYSIMPLEX =>
         new QuadraticMinimizer(rank, ProjectProbabilitySimplex(lambda))
-      }
-      case EQUALITY => {
+      case EQUALITY =>
         //Direct QP with equality and positivity constraint
         val Aeq = DenseMatrix.ones[Double](1, rank)
         val beq = DenseVector.ones[Double](1)
         new QuadraticMinimizer(rank, ProjectPos(), Aeq, beq)
-      }
       case SPARSE =>
         new QuadraticMinimizer(rank, ProximalL1().setLambda(lambda))
     }

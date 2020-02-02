@@ -22,10 +22,9 @@ class Foo {
     import o._
     /*_*/
   }
-  {
-    import O._
-    /*_*/
-  }
+
+  import O._
+  /*_*/
   {
     val c = new C
     import c._

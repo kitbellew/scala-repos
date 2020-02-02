@@ -90,12 +90,11 @@ trait Config extends Serializable {
   def getCascadingAppJar: Option[Try[Class[_]]] =
     get(AppProps.APP_JAR_CLASS).map { str =>
       // The Class[_] messes up using Try(Class.forName(str)) on scala 2.9.3
-      try {
-        Success(
-          // Make sure we are using the class-loader for the current thread
-          Class
-            .forName(str, true, Thread.currentThread().getContextClassLoader))
-      } catch { case err: Throwable => Failure(err) }
+      try Success(
+        // Make sure we are using the class-loader for the current thread
+        Class
+          .forName(str, true, Thread.currentThread().getContextClassLoader))
+      catch { case err: Throwable => Failure(err) }
     }
 
   /*

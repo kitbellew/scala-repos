@@ -340,9 +340,8 @@ class TypedActorSpec
       timeout.duration) {
       val t = newFooBar
       val futures = for (i ← 1 to 20) yield (i, t.futurePigdog(20 millis, i))
-      for ((i, f) ← futures) {
+      for ((i, f) ← futures)
         Await.result(f, remaining) should ===("Pigdog" + i)
-      }
       mustStop(t)
     }
 

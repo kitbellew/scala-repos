@@ -234,14 +234,13 @@ abstract class BTypes {
       .find(_.name == classNode.name) map {
       case innerEntry =>
         val enclosingClass =
-          if (innerEntry.outerName != null) {
+          if (innerEntry.outerName != null)
             // if classNode is a member class, the outerName is non-null
             classBTypeFromParsedClassfile(innerEntry.outerName)
-          } else {
+          else
             // for anonymous or local classes, the outerName is null, but the enclosing class is
             // stored in the EnclosingMethod attribute (which ASM encodes in classNode.outerClass).
             classBTypeFromParsedClassfile(classNode.outerClass)
-          }
         val staticFlag = (innerEntry.access & Opcodes.ACC_STATIC) != 0
         NestedInfo(
           enclosingClass,
@@ -399,7 +398,7 @@ abstract class BTypes {
               }
 
           case classType: ClassBType =>
-            if (isBoxed) {
+            if (isBoxed)
               if (other.isBoxed) this == other
               else if (other == ObjectRef) true
               else
@@ -410,14 +409,14 @@ abstract class BTypes {
                       .orThrow // e.g., java/lang/Double conforms to java/lang/Number
                   case _ => false
                 }
-            } else if (isNullType) {
+            else if (isNullType)
               if (other.isNothingType) false
               else if (other.isPrimitive) false
               else
                 true // Null conforms to all classes (except Nothing) and arrays.
-            } else if (isNothingType) {
+            else if (isNothingType)
               true
-            } else
+            else
               other match {
                 case otherClassType: ClassBType =>
                   classType.isSubtypeOf(otherClassType).orThrow
@@ -935,10 +934,10 @@ abstract class BTypes {
         s"Cannot create ClassBType for phantom type $this")
 
       assert(
-        if (info.get.superClass.isEmpty) {
+        if (info.get.superClass.isEmpty)
           isJLO(this) || (isCompilingPrimitive && ClassBType.hasNoSuper(
             internalName))
-        } else if (isInterface.get) isJLO(info.get.superClass.get)
+        else if (isInterface.get) isJLO(info.get.superClass.get)
         else
           !isJLO(this) && ifInit(info.get.superClass.get)(!_.isInterface.get),
         s"Invalid superClass in $this: ${info.get.superClass}"
@@ -1101,13 +1100,11 @@ abstract class BTypes {
       var chainA = as
       var chainB = bs
       var fcs: ClassBType = null
-      do {
-        if (chainB contains chainA.head) fcs = chainA.head
-        else if (chainA contains chainB.head) fcs = chainB.head
-        else {
-          chainA = chainA.tail
-          chainB = chainB.tail
-        }
+      do if (chainB contains chainA.head) fcs = chainA.head
+      else if (chainA contains chainB.head) fcs = chainB.head
+      else {
+        chainA = chainA.tail
+        chainB = chainB.tail
       } while (fcs == null)
       fcs
     }

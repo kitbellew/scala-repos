@@ -240,11 +240,10 @@ class ColumnPruningSuite extends PlanTest {
     val x = testRelation.subquery('x)
 
     // push down valid
-    val originalQuery = {
+    val originalQuery =
       x.select('a, 'b)
         .sortBy(SortOrder('a, Ascending))
         .select('a)
-    }
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer =
@@ -255,11 +254,10 @@ class ColumnPruningSuite extends PlanTest {
     comparePlans(optimized, analysis.EliminateSubqueryAliases(correctAnswer))
 
     // push down invalid
-    val originalQuery1 = {
+    val originalQuery1 =
       x.select('a, 'b)
         .sortBy(SortOrder('a, Ascending))
         .select('b)
-    }
 
     val optimized1 = Optimize.execute(originalQuery1.analyze)
     val correctAnswer1 =

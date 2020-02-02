@@ -61,11 +61,10 @@ class DCTSuite
 
   private def testDCT(data: Vector, inverse: Boolean): Unit = {
     val expectedResultBuffer = data.toArray.clone()
-    if (inverse) {
+    if (inverse)
       (new DoubleDCT_1D(data.size)).inverse(expectedResultBuffer, true)
-    } else {
+    else
       (new DoubleDCT_1D(data.size)).forward(expectedResultBuffer, true)
-    }
     val expectedResult = Vectors.dense(expectedResultBuffer)
 
     val dataset = sqlContext.createDataFrame(

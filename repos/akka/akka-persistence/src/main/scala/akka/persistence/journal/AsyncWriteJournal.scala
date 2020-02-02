@@ -189,7 +189,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
             val toSeqNr = math.min(toSequenceNr, highSeqNr)
             if (highSeqNr == 0L || fromSequenceNr > toSeqNr)
               Future.successful(highSeqNr)
-            else {
+            else
               // Send replayed messages and replay result to persistentActor directly. No need
               // to resequence replayed messages relative to written and looped messages.
               // not possible to use circuit breaker here
@@ -202,7 +202,6 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
                         Actor.noSender)
                     }
               }.map(_ ⇒ highSeqNr)
-            }
           }
           .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
           .recover {
@@ -347,9 +346,8 @@ private[persistence] object AsyncWriteJournal {
       if (d.snr == delivered + 1) {
         delivered = d.snr
         d.target.tell(d.msg, d.sender)
-      } else {
+      } else
         delayed += (d.snr -> d)
-      }
       val ro = delayed.remove(delivered + 1)
       if (ro.isDefined) resequence(ro.get)
     }

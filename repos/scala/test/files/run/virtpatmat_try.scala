@@ -3,17 +3,15 @@ object Test extends App {
   class B extends Exception { override def toString = "B" }
   def bla = 0
 
-  try {
-    throw new A("meh")
-  } catch { // this should emit a "catch-switch"
+  try throw new A("meh")
+  catch { // this should emit a "catch-switch"
     case y: A          => println(y.x)
     case (_: A | _: B) => println("B")
     case _: Throwable  => println("other")
   }
 
-  try {
-    throw new B()
-  } catch { // case classes and alternative flattening aren't supported yet, but could be in principle
+  try throw new B()
+  catch { // case classes and alternative flattening aren't supported yet, but could be in principle
     // case A(x) => println(x)
     case y: A                  => println(y.x)
     case x @ ((_: A) | (_: B)) => println(x)
@@ -21,37 +19,30 @@ object Test extends App {
   }
 
   def simpleTry {
-    try {
-      bla
-    } catch {
+    try bla
+    catch {
       case x: Exception if x.getMessage == "test" => println("first case " + x)
       case x: Exception                           => println("second case " + x)
     }
   }
 
   def typedWildcardTry {
-    try {
-      bla
-    } catch { case _: ClassCastException => bla }
+    try bla
+    catch { case _: ClassCastException => bla }
   }
 
   def wildcardTry {
-    try {
-      bla
-    } catch { case _: Throwable => bla }
+    try bla
+    catch { case _: Throwable => bla }
   }
 
   def tryPlusFinally {
-    try {
-      bla
-    } finally {
-      println("finally")
-    }
+    try bla
+    finally println("finally")
   }
 
   def catchAndPassToLambda {
-    try {
-      bla
-    } catch { case ex: Exception => val f = () => ex }
+    try bla
+    catch { case ex: Exception => val f = () => ex }
   }
 }

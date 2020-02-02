@@ -82,7 +82,7 @@ class OfflinePartitionLeaderSelector(
                       controllerContext.zkUtils,
                       ConfigType.Topic,
                       topicAndPartition.topic))
-                  .uncleanLeaderElectionEnable) {
+                  .uncleanLeaderElectionEnable)
               throw new NoReplicaOnlineException(
                 ("No broker in ISR for partition " +
                   "%s is alive. Live brokers are: [%s],".format(
@@ -90,7 +90,6 @@ class OfflinePartitionLeaderSelector(
                     controllerContext.liveBrokerIds)) +
                   " ISR brokers are: [%s]".format(
                     currentLeaderAndIsr.isr.mkString(",")))
-            }
 
             debug(
               "No broker in ISR is alive for %s. Pick the leader from the alive assigned replicas: %s"
@@ -217,18 +216,18 @@ class PreferredReplicaPartitionLeaderSelector(
       .partitionLeadershipInfo(topicAndPartition)
       .leaderAndIsr
       .leader
-    if (currentLeader == preferredReplica) {
+    if (currentLeader == preferredReplica)
       throw new LeaderElectionNotNeededException(
         "Preferred replica %d is already the current leader for partition %s"
           .format(preferredReplica, topicAndPartition))
-    } else {
+    else {
       info(
         "Current leader %d for partition %s is not the preferred replica."
           .format(currentLeader, topicAndPartition) +
           " Trigerring preferred replica leader election")
       // check if preferred replica is not the current leader and is alive and in the isr
       if (controllerContext.liveBrokerIds.contains(preferredReplica) && currentLeaderAndIsr.isr
-            .contains(preferredReplica)) {
+            .contains(preferredReplica))
         (
           new LeaderAndIsr(
             preferredReplica,
@@ -236,12 +235,11 @@ class PreferredReplicaPartitionLeaderSelector(
             currentLeaderAndIsr.isr,
             currentLeaderAndIsr.zkVersion + 1),
           assignedReplicas)
-      } else {
+      else
         throw new StateChangeFailedException(
           "Preferred replica %d for partition ".format(preferredReplica) +
             "%s is either not alive or not in the isr. Current leader and ISR: [%s]"
               .format(topicAndPartition, currentLeaderAndIsr))
-      }
     }
   }
 }

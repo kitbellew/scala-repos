@@ -43,12 +43,11 @@ object LogRoleReplace extends ClipboardOwner {
   def main(args: Array[String]): Unit = {
     val replacer = new LogRoleReplace
 
-    if (args.length == 0) {
+    if (args.length == 0)
       replacer.process(
         new BufferedReader(new InputStreamReader(System.in)),
         new PrintWriter(new OutputStreamWriter(System.out)))
-
-    } else if (args(0) == "clipboard") {
+    else if (args(0) == "clipboard") {
       val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
       val contents = clipboard.getContents(null)
       if (contents != null && contents.isDataFlavorSupported(
@@ -65,20 +64,16 @@ object LogRoleReplace extends ClipboardOwner {
 
     } else if (args.length == 1) {
       val inputFile = new BufferedReader(new FileReader(args(0)))
-      try {
-        replacer.process(
-          inputFile,
-          new PrintWriter(new OutputStreamWriter(System.out)))
-      } finally {
-        inputFile.close()
-      }
+      try replacer.process(
+        inputFile,
+        new PrintWriter(new OutputStreamWriter(System.out)))
+      finally inputFile.close()
 
     } else if (args.length == 2) {
       val outputFile = new PrintWriter(new FileWriter(args(1)))
       val inputFile = new BufferedReader(new FileReader(args(0)))
-      try {
-        replacer.process(inputFile, outputFile)
-      } finally {
+      try replacer.process(inputFile, outputFile)
+      finally {
         outputFile.close()
         inputFile.close()
       }
@@ -123,10 +118,9 @@ class LogRoleReplace {
     line.replaceAll(ColorCode, "")
 
   private def updateReplacements(line: String): Boolean = {
-    if (line.startsWith("[info] * ")) {
+    if (line.startsWith("[info] * "))
       // reset when new test begins
       replacements = Map.empty
-    }
 
     line match {
       case RoleStarted(jvm, role, host, port) ⇒
@@ -139,9 +133,8 @@ class LogRoleReplace {
 
   private def replaceLine(line: String): String = {
     var result = line
-    for ((from, to) ← replacements) {
+    for ((from, to) ← replacements)
       result = result.replaceAll(from, to)
-    }
     result
   }
 

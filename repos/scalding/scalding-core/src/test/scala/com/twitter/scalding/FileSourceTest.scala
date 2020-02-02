@@ -22,10 +22,9 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.mapred.JobConf
 
 class MultiTsvInputJob(args: Args) extends Job(args) {
-  try {
-    MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)).read
-      .write(Tsv("output0"))
-  } catch {
+  try MultipleTsvFiles(List("input0", "input1"), ('query, 'queryStats)).read
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 
@@ -42,9 +41,8 @@ class SequenceFileInputJob(args: Args) extends Job(args) {
 }
 
 class MultipleTextLineFilesJob(args: Args) extends Job(args) {
-  try {
-    MultipleTextLineFiles(args.list("input"): _*).write(Tsv("output0"))
-  } catch {
+  try MultipleTextLineFiles(args.list("input"): _*).write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 

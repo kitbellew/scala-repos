@@ -61,9 +61,9 @@ trait MultiplicativeSemigroup[@sp(Byte, Short, Int, Long, Float, Double) A]
 
   protected def prodnAboveOne(a: A, n: Int): A = {
     @tailrec def loop(b: A, k: Int, extra: A): A =
-      if (k == 1) {
+      if (k == 1)
         times(b, extra)
-      } else {
+      else {
         val x = if ((k & 1) == 1) times(b, extra) else extra
         loop(times(b, b), k >>> 1, x)
       }

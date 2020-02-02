@@ -22,13 +22,13 @@ trait ScImportableDeclarationsOwner extends ScalaPsiElement {
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement) =
-    if (isStable) {
+    if (isStable)
       ScalaPsiUtil.processImportLastParent(
         processor,
         state,
         place,
         lastParent,
         getType(TypingContext.empty))
-    } else true
+    else true
 
 }

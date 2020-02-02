@@ -57,8 +57,6 @@ class ExtraStrategiesSuite extends QueryTest with SharedSQLContext {
       checkAnswer(df.select("a"), Row("so fast"))
 
       checkAnswer(df.select("a", "b"), Row("so slow", 1))
-    } finally {
-      sqlContext.experimental.extraStrategies = Nil
-    }
+    } finally sqlContext.experimental.extraStrategies = Nil
   }
 }

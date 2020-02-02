@@ -68,7 +68,7 @@ class AbstractTestRerunFailedTestsAction(
         for (failed <- failedTests) { //todo: fix after adding location API
           def tail() {
             var parent = failed.getParent
-            while (parent != null) {
+            while (parent != null)
               classNames.get(parent.getName) match {
                 case None =>
                   parent = parent.getParent
@@ -81,7 +81,6 @@ class AbstractTestRerunFailedTestsAction(
                   buffer += ((s, getTestName(failed)))
                   parent = null
               }
-            }
           }
           if (extensionConfiguration != this && extensionConfiguration
                 .isInstanceOf[MyRunProfileAdapter] &&
@@ -91,16 +90,14 @@ class AbstractTestRerunFailedTestsAction(
             var added = false
             for (f <- extensionConfiguration
                    .asInstanceOf[MyRunProfileAdapter]
-                   .previoslyFailed if !added) {
+                   .previoslyFailed if !added)
               if (f._2 == getTestName(failed)) {
                 buffer += f
                 added = true
               }
-            }
             if (!added) tail()
-          } else {
+          } else
             tail()
-          }
         }
         previoslyFailed = buffer
         patcher.setFailedTests(buffer)

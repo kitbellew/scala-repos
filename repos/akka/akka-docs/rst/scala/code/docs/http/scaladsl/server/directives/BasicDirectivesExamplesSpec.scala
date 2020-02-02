@@ -401,9 +401,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     //#mapInnerRoute
     val completeWithInnerException =
       mapInnerRoute { route => ctx =>
-        try {
-          route(ctx)
-        } catch {
+        try route(ctx)
+        catch {
           case NonFatal(e) =>
             ctx.complete(s"Got ${e.getClass.getSimpleName} '${e.getMessage}'")
         }

@@ -148,11 +148,11 @@ class RailsPathPatternParser extends RegexPathPatternParser {
 
   private def char = metachar | stdchar
 
-  private def metachar = """[.^$|?+*{}\\\[\]-]""".r ^^ { "\\" + _ }
+  private def metachar = """[.^$|?+*{}\\\[\]-]""".r ^^ "\\" + _
 
   private def stdchar = """[^()]""".r
 
-  private def paren = ("(" | ")") ^^ { "\\" + _ }
+  private def paren = ("(" | ")") ^^ "\\" + _
 }
 
 object RailsPathPatternParser {

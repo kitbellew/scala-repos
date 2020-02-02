@@ -101,9 +101,7 @@ class ActorDSLSpec extends AkkaSpec {
         intercept[TimeoutException] {
           i.receive(1 second)
         }
-      } finally {
-        system.eventStream.unsubscribe(testActor, classOf[Warning])
-      }
+      } finally system.eventStream.unsubscribe(testActor, classOf[Warning])
     }
 
     "have a default and custom timeouts" in {

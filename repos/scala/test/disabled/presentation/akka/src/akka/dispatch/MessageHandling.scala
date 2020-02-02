@@ -29,9 +29,8 @@ final case class MessageInvocation(
     throw new IllegalArgumentException("Receiver can't be null")
 
   def invoke =
-    try {
-      receiver.invoke(this)
-    } catch {
+    try receiver.invoke(this)
+    catch {
       case e: NullPointerException =>
         throw new ActorInitializationException(
           "Don't call 'self ! message' in the Actor's constructor (in Scala this means in the body of the class).")
@@ -44,15 +43,12 @@ final case class FutureInvocation[T](
     cleanup: () => Unit)
     extends Runnable {
   def run =
-    future complete (try {
-      Right(function())
-    } catch {
+    future complete (try Right(function())
+    catch {
       case e =>
         EventHandler.error(e, this, e.getMessage)
         Left(e)
-    } finally {
-      cleanup()
-    })
+    } finally cleanup())
 }
 
 object MessageDispatcher {
@@ -119,9 +115,9 @@ trait MessageDispatcher {
 
   private val futureCleanup: () => Unit =
     () =>
-      if (futures.decrementAndGet() == 0) {
+      if (futures.decrementAndGet() == 0)
         guard withGuard {
-          if (futures.get == 0 && uuids.isEmpty) {
+          if (futures.get == 0 && uuids.isEmpty)
             shutdownSchedule match {
               case UNSCHEDULED =>
                 shutdownSchedule = SCHEDULED
@@ -133,26 +129,23 @@ trait MessageDispatcher {
                 shutdownSchedule = RESCHEDULED
               case RESCHEDULED => //Already marked for reschedule
             }
-          }
         }
-      }
 
   private[akka] def register(actorRef: ActorRef) {
     if (actorRef.mailbox eq null)
       actorRef.mailbox = createMailbox(actorRef)
 
     uuids add actorRef.uuid
-    if (active.isOff) {
+    if (active.isOff)
       active.switchOn {
         start
       }
-    }
   }
 
   private[akka] def unregister(actorRef: ActorRef) =
     if (uuids remove actorRef.uuid) {
       actorRef.mailbox = null
-      if (uuids.isEmpty && futures.get == 0) {
+      if (uuids.isEmpty && futures.get == 0)
         shutdownSchedule match {
           case UNSCHEDULED =>
             shutdownSchedule = SCHEDULED
@@ -164,7 +157,6 @@ trait MessageDispatcher {
             shutdownSchedule = RESCHEDULED
           case RESCHEDULED => //Already marked for reschedule
         }
-      }
     }
 
   /**
@@ -176,7 +168,7 @@ trait MessageDispatcher {
       val uuid = i.next()
       Actor.registry.actorFor(uuid) match {
         case Some(actor) => actor.stop()
-        case None        => {}
+        case None        =>
       }
     }
   }
@@ -188,11 +180,10 @@ trait MessageDispatcher {
           shutdownSchedule = SCHEDULED
           Scheduler.scheduleOnce(this, timeoutMs, TimeUnit.MILLISECONDS)
         case SCHEDULED =>
-          if (uuids.isEmpty && futures.get == 0) {
+          if (uuids.isEmpty && futures.get == 0)
             active switchOff {
               shutdown // shut down in the dispatcher's references is zero
             }
-          }
           shutdownSchedule = UNSCHEDULED
         case UNSCHEDULED => //Do nothing
       }

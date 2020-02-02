@@ -125,17 +125,17 @@ object MarathonTestHelper {
       ScalarResource(Resource.MEM, mem, role = role))
     val diskResource = heedReserved(
       ScalarResource(Resource.DISK, disk, role = role))
-    val portsResource = if (beginPort <= endPort) {
-      Some(
-        heedReserved(
-          RangesResource(
-            Resource.PORTS,
-            Seq(Range(beginPort.toLong, endPort.toLong)),
-            role
-          )))
-    } else {
-      None
-    }
+    val portsResource =
+      if (beginPort <= endPort)
+        Some(
+          heedReserved(
+            RangesResource(
+              Resource.PORTS,
+              Seq(Range(beginPort.toLong, endPort.toLong)),
+              role
+            )))
+      else
+        None
     val offerBuilder = Offer.newBuilder
       .setId(OfferID("1"))
       .setFrameworkId(frameworkID)

@@ -396,8 +396,8 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
         def next(): SimpleWriteCommand =
           current match {
             case null ⇒ Iterator.empty.next()
-            case CompoundWrite(h, t) ⇒ { current = t; h }
-            case x: SimpleWriteCommand ⇒ { current = null; x }
+            case CompoundWrite(h, t) ⇒ current = t; h
+            case x: SimpleWriteCommand ⇒ current = null; x
           }
       }
   }
@@ -610,13 +610,12 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
   /**
     *
     */
-  val manager: ActorRef = {
+  val manager: ActorRef =
     system.systemActorOf(
       props = Props(classOf[TcpManager], this)
         .withDispatcher(Settings.ManagementDispatcher)
         .withDeploy(Deploy.local),
       name = "IO-TCP")
-  }
 
   /**
     * Java API: retrieve a reference to the manager actor.

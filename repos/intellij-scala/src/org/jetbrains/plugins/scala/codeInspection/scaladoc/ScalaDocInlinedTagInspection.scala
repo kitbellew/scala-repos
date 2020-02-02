@@ -61,11 +61,11 @@ class ScalaDocInlinedTagReplaceQuickFix(inlinedTag: ScDocInlinedTag)
     val tag = getElement
     if (!tag.isValid) return
 
-    if (tag.getValueElement == null) {
+    if (tag.getValueElement == null)
       tag.replace(
         ScalaPsiElementFactory
           .createMonospaceSyntaxFromText("", tag.getManager))
-    } else {
+    else {
       val tagText =
         tag.getValueElement.getText
           .replace("`", MyScaladocParsing.escapeSequencesForWiki.get("`").get)

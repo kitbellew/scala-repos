@@ -44,14 +44,12 @@ private[columnar] trait NullableColumnAccessor extends ColumnAccessor {
     if (pos == nextNullIndex) {
       seenNulls += 1
 
-      if (seenNulls < nullCount) {
+      if (seenNulls < nullCount)
         nextNullIndex = ByteBufferHelper.getInt(nullsBuffer)
-      }
 
       row.setNullAt(ordinal)
-    } else {
+    } else
       super.extractTo(row, ordinal)
-    }
 
     pos += 1
   }

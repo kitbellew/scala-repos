@@ -119,10 +119,9 @@ final class Binarizer(override val uid: String)
           s"Data type $other is not supported.")
     }
 
-    if (schema.fieldNames.contains(outputColName)) {
+    if (schema.fieldNames.contains(outputColName))
       throw new IllegalArgumentException(
         s"Output column $outputColName already exists.")
-    }
     StructType(schema.fields :+ outCol)
   }
 

@@ -165,11 +165,8 @@ object BytecodeTest {
       val writer = new ClassWriter(0)
       cn.accept(writer)
       val os = rfile.bufferedOutput()
-      try {
-        os.write(writer.toByteArray)
-      } finally {
-        os.close()
-      }
+      try os.write(writer.toByteArray)
+      finally os.close()
     }
 
     writeClass(f(readClass))

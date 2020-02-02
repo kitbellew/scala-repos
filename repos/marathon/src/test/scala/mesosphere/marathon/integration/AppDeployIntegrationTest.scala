@@ -322,9 +322,8 @@ class AppDeployIntegrationTest
           callbackEvent.eventType == "deployment_success" ||
             callbackEvent.eventType == "failed_health_check_event")
 
-    for (event <- Iterator.continually(interestingEvent()).take(10)) {
+    for (event <- Iterator.continually(interestingEvent()).take(10))
       event.eventType should be("failed_health_check_event")
-    }
 
     When("The app is deleted")
     val delete = marathon.deleteApp(appId, force = true)

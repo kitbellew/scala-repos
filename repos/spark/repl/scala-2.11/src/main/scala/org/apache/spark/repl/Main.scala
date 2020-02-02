@@ -85,12 +85,10 @@ object Main extends Logging {
       // initialization in certain cases, there's an initialization order issue that prevents
       // this from being set after SparkContext is instantiated.
       .set("spark.repl.class.outputDir", outputDir.getAbsolutePath())
-    if (execUri != null) {
+    if (execUri != null)
       conf.set("spark.executor.uri", execUri)
-    }
-    if (System.getenv("SPARK_HOME") != null) {
+    if (System.getenv("SPARK_HOME") != null)
       conf.setSparkHome(System.getenv("SPARK_HOME"))
-    }
     sparkContext = new SparkContext(conf)
     logInfo("Created spark context..")
     sparkContext

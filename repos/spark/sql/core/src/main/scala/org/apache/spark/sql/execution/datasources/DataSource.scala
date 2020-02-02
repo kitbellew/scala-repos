@@ -99,23 +99,20 @@ case class DataSource(
             // Found the data source using fully qualified path
             dataSource
           case Failure(error) =>
-            if (provider.startsWith("org.apache.spark.sql.hive.orc")) {
+            if (provider.startsWith("org.apache.spark.sql.hive.orc"))
               throw new ClassNotFoundException(
                 "The ORC data source must be used with Hive support enabled.",
                 error)
-            } else {
-              if (provider == "avro" || provider == "com.databricks.spark.avro") {
-                throw new ClassNotFoundException(
-                  s"Failed to find data source: $provider. Please use Spark package " +
-                    "http://spark-packages.org/package/databricks/spark-avro",
-                  error)
-              } else {
-                throw new ClassNotFoundException(
-                  s"Failed to find data source: $provider. Please find packages at " +
-                    "http://spark-packages.org",
-                  error)
-              }
-            }
+            else if (provider == "avro" || provider == "com.databricks.spark.avro")
+              throw new ClassNotFoundException(
+                s"Failed to find data source: $provider. Please use Spark package " +
+                  "http://spark-packages.org/package/databricks/spark-avro",
+                error)
+            else
+              throw new ClassNotFoundException(
+                s"Failed to find data source: $provider. Please find packages at " +
+                  "http://spark-packages.org",
+                error)
         }
       case head :: Nil =>
         // there is exactly one registered alias
@@ -283,10 +280,9 @@ case class DataSource(
   def write(mode: SaveMode, data: DataFrame): BaseRelation = {
     if (data.schema
           .map(_.dataType)
-          .exists(_.isInstanceOf[CalendarIntervalType])) {
+          .exists(_.isInstanceOf[CalendarIntervalType]))
       throw new AnalysisException(
         "Cannot save interval data type into external storage.")
-    }
 
     providingClass.newInstance() match {
       case dataSource: CreatableRelationProvider =>
@@ -313,11 +309,10 @@ case class DataSource(
           caseSensitive)
 
         val equality =
-          if (sqlContext.conf.caseSensitiveAnalysis) {
+          if (sqlContext.conf.caseSensitiveAnalysis)
             org.apache.spark.sql.catalyst.analysis.caseSensitiveResolution
-          } else {
+          else
             org.apache.spark.sql.catalyst.analysis.caseInsensitiveResolution
-          }
 
         val dataSchema = StructType(data.schema.filterNot(f =>
           partitionColumns.exists(equality(_, f.name))))
@@ -326,16 +321,15 @@ case class DataSource(
         // up.  If we fail to load the table for whatever reason, ignore the check.
         if (mode == SaveMode.Append) {
           val existingPartitionColumnSet =
-            try {
-              Some(
-                resolveRelation()
-                  .asInstanceOf[HadoopFsRelation]
-                  .location
-                  .partitionSpec()
-                  .partitionColumns
-                  .fieldNames
-                  .toSet)
-            } catch {
+            try Some(
+              resolveRelation()
+                .asInstanceOf[HadoopFsRelation]
+                .location
+                .partitionSpec()
+                .partitionColumns
+                .fieldNames
+                .toSet)
+            catch {
               case e: Exception =>
                 None
             }
@@ -343,11 +337,10 @@ case class DataSource(
           existingPartitionColumnSet.foreach { ex =>
             if (ex.map(_.toLowerCase) != partitionColumns
                   .map(_.toLowerCase())
-                  .toSet) {
+                  .toSet)
               throw new AnalysisException(
                 s"Requested partitioning does not equal existing partitioning: " +
                   s"$ex != ${partitionColumns.toSet}.")
-            }
           }
         }
 

@@ -327,7 +327,7 @@ object Pickler {
 
   /** A conditional pickler for the boolean value `true` */
   private val truePickler =
-    tokenPickler("boolean literal") { case TrueLit => true } cond { _ == true }
+    tokenPickler("boolean literal") { case TrueLit => true } cond _ == true
 
   /** A conditional pickler for the boolean value `false` */
   private val falsePickler =

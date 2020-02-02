@@ -72,19 +72,17 @@ object ResourceServer {
       val ret: Long =
         (for {
           uc <- tryo(in.openConnection)
-        } yield {
-          uc.getLastModified match {
-            case 0L =>
-              uc match {
-                case jc: JarURLConnection =>
-                  jc.getJarEntry() match {
-                    case null => 0L
-                    case e    => e.getTime()
-                  }
-                case _ => 0L
-              }
-            case x => x
-          }
+        } yield uc.getLastModified match {
+          case 0L =>
+            uc match {
+              case jc: JarURLConnection =>
+                jc.getJarEntry() match {
+                  case null => 0L
+                  case e    => e.getTime()
+                }
+              case _ => 0L
+            }
+          case x => x
         }) openOr 0L
       lastModCache.put(str, ret)
       ret

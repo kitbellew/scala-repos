@@ -49,8 +49,7 @@ class HDFSModels(fs: FileSystem, config: StorageClientConfig, prefix: String)
 
   def delete(id: String): Unit = {
     val p = new Path(s"$prefix$id")
-    if (!fs.delete(p, false)) {
+    if (!fs.delete(p, false))
       error(s"Unable to delete ${fs.makeQualified(p).toString}!")
-    }
   }
 }

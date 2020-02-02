@@ -55,9 +55,8 @@ object CompilationUnit {
             parsePackageSequence(completed = true, k)
           } else {
             // Mark error
-            if (!completed && !builder.newlineBeforeCurrentToken) {
+            if (!completed && !builder.newlineBeforeCurrentToken)
               builder.error(ErrMsg("semi.expected"))
-            }
             if (ScalaTokenTypes.kPACKAGE == askType &&
                 !ParserUtils.lookAhead(
                   builder,
@@ -67,7 +66,7 @@ object CompilationUnit {
               val newMarker = builder.mark
               builder.advanceLexer //package
               askType match {
-                case ScalaTokenTypes.tIDENTIFIER => {
+                case ScalaTokenTypes.tIDENTIFIER =>
                   Qual_Id parse builder
                   // Detect explicit packaging with curly braces
                   if (ParserUtils.lookAhead(builder, ScalaTokenTypes.tLBRACE) &&
@@ -75,18 +74,15 @@ object CompilationUnit {
                     newMarker.rollbackTo
                     parsePackagingBody(true)
                     k
-                  } else {
+                  } else
                     parsePackageSequence(false, {
                       newMarker.done(ScalaElementTypes.PACKAGING);
                       k
                     })
-                  }
-                }
-                case _ => {
+                case _ =>
                   builder error ErrMsg("package.qualID.expected")
                   newMarker.drop
                   parsePackageSequence(completed = true, k)
-                }
               }
             } else {
               // Parse the remainder of a file

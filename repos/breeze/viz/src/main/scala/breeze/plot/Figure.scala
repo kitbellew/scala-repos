@@ -108,23 +108,20 @@ class Figure(
 
   /** Redraws the figure */
   def refresh() = {
-    while (plots.length < rows * cols) {
+    while (plots.length < rows * cols)
       plots += None
-    }
-    while (plots.length > rows * cols) {
+    while (plots.length > rows * cols)
       plots.remove(plots.length - 1)
-    }
 
     SwingUtilities.invokeLater(new Runnable {
       def run() {
         contents.removeAll()
         contents.setSize(width_, height_)
         contents.setLayout(new java.awt.GridLayout(rows, cols))
-        for (plot <- plots) {
+        for (plot <- plots)
           contents.add(plot match {
             case Some(plot) => plot.panel; case None => new JPanel()
           })
-        }
         frame.setSize(width_, height_)
         frame.setVisible(visible)
       }
@@ -147,7 +144,7 @@ class Figure(
               py * plotHeight,
               plotWidth,
               plotHeight))
-        case None => {}
+        case None =>
       }
       px = (px + 1) % cols
       if (px == 0) py = (py + 1) % rows
@@ -177,9 +174,8 @@ class Figure(
       plots += Some(new Plot)
       plots.last.get
     } else {
-      if (plots(i) == None) {
+      if (plots(i) == None)
         plots(i) = Some(new Plot)
-      }
       plots(i).get
     }
 

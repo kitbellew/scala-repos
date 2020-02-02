@@ -108,7 +108,7 @@ private[twitter] object Message {
       val bytes = ChannelBuffers.buffer(size)
       bytes.writeShort(version)
       iter = headers.iterator
-      while (iter.hasNext) {
+      while (iter.hasNext)
         iter.next() match {
           case (k, v) =>
             bytes.writeInt(k.readableBytes)
@@ -116,7 +116,6 @@ private[twitter] object Message {
             bytes.writeInt(v.readableBytes)
             bytes.writeBytes(v.slice())
         }
-      }
       bytes
     }
 
@@ -226,14 +225,13 @@ private[twitter] object Message {
       // first, compute how large the message header is (in 'n')
       var n = 2
       var iter = contexts.iterator
-      while (iter.hasNext) {
+      while (iter.hasNext)
         // Note: here and below we don't use the scala dereferencing sugar of
         // `val (k, v) = seq.head` as that caused unnecessary Tuple2 allocations.
         iter.next() match {
           case (k, v) =>
             n += 2 + k.readableBytes + 2 + v.readableBytes
         }
-      }
 
       val dstbytes =
         if (dst.isEmpty) noBytes else dst.show.getBytes(Charsets.Utf8)
@@ -259,7 +257,7 @@ private[twitter] object Message {
       val hd = ChannelBuffers.dynamicBuffer(n)
       hd.writeShort(contexts.length)
       iter = contexts.iterator
-      while (iter.hasNext) {
+      while (iter.hasNext)
         // TODO: it may or may not make sense
         // to do zero-copy here.
         iter.next() match {
@@ -269,7 +267,6 @@ private[twitter] object Message {
             hd.writeShort(v.readableBytes)
             hd.writeBytes(v.slice())
         }
-      }
 
       hd.writeShort(dstbytes.length)
       hd.writeBytes(dstbytes)

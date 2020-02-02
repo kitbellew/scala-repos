@@ -52,10 +52,9 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
       .isInstanceOf[ScTypeDefinition] && psi.getModifierList != null &&
       !psi.getModifierList.getAnnotations.forall(p =>
         p match {
-          case a: ScAnnotation => {
+          case a: ScAnnotation =>
             val typeText = a.constructor.typeElement.getText
             typeText != "deprecated" && typeText != "scala.deprecated"
-          }
           case _ => true
         })
 
@@ -167,9 +166,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
   def indexStub(stub: ScTemplateDefinitionStub, sink: IndexSink) {
     if (stub.isScriptFileClass) return
     val name = stub.getName
-    if (name != null) {
+    if (name != null)
       sink.occurrence(ScalaIndexKeys.SHORT_NAME_KEY, name)
-    }
     val javaName = stub.javaName
     if (javaName != null && stub.isVisibleInJava)
       sink.occurrence(JavaStubIndexKeys.CLASS_SHORT_NAMES, javaName)
@@ -177,9 +175,8 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
       sink.occurrence(ScalaIndexKeys.NOT_VISIBLE_IN_JAVA_SHORT_NAME_KEY, name)
     sink.occurrence(ScalaIndexKeys.ALL_CLASS_NAMES, javaName)
     val additionalNames = stub.additionalJavaNames
-    for (name <- additionalNames) {
+    for (name <- additionalNames)
       sink.occurrence(ScalaIndexKeys.ALL_CLASS_NAMES, name)
-    }
     val javaFqn = stub.javaQualName
     if (javaFqn != null && !stub.isLocal && stub.isVisibleInJava) {
       sink.occurrence[PsiClass, java.lang.Integer](
@@ -201,12 +198,10 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
         if (i == -1) ""
         else fqn.substring(0, i)
       sink.occurrence(ScalaIndexKeys.CLASS_NAME_IN_PACKAGE_KEY, pack)
-      if (stub.isImplicitObject) {
+      if (stub.isImplicitObject)
         sink.occurrence(ScalaIndexKeys.IMPLICIT_OBJECT_KEY, pack)
-      }
-      if (stub.isImplicitClass) {
+      if (stub.isImplicitClass)
         sink.occurrence(ScalaIndexKeys.IMPLICITS_KEY, "implicit")
-      }
     }
     if (stub.isPackageObject) {
       val packageName = fqn.stripSuffix(".`package`")

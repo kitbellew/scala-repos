@@ -119,12 +119,11 @@ class ZkNodeChangeNotificationListener(
     for (notification <- notifications.sorted) {
       val notificationNode = seqNodeRoot + "/" + notification
       val (data, stat) = zkUtils.readDataMaybeNull(notificationNode)
-      if (data.isDefined) {
+      if (data.isDefined)
         if (now - stat.getCtime > changeExpirationMs) {
           debug(s"Purging change notification $notificationNode")
           zkUtils.deletePath(notificationNode)
         }
-      }
     }
   }
 

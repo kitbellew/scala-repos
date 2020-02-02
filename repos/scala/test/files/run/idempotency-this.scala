@@ -13,9 +13,8 @@ object Test extends App {
   println(tthiss)
   println(showRaw(tthiss))
   val rtthiss = tb.untypecheck(tthiss)
-  try {
-    println(tb.eval(rtthiss))
-  } catch {
+  try println(tb.eval(rtthiss))
+  catch {
     // this is the current behaviour, rather than the desired behavior; see SI-5705
     case _: ToolBoxError => println("error!")
   }

@@ -50,9 +50,8 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
       val counter = new AtomicInteger
       var replies = Map.empty[Int, Int]
-      for (i ← 0 until connectionCount) {
+      for (i ← 0 until connectionCount)
         replies = replies + (i -> 0)
-      }
 
       val actor = system.actorOf(
         RandomPool(connectionCount).props(routeeProps = Props(new Actor {
@@ -65,12 +64,11 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
         name = "random"
       )
 
-      for (i ← 0 until iterationCount) {
+      for (i ← 0 until iterationCount)
         for (k ← 0 until connectionCount) {
           val id = Await.result((actor ? "hit").mapTo[Int], timeout.duration)
           replies = replies + (id -> (replies(id) + 1))
         }
-      }
 
       counter.get should ===(connectionCount)
 

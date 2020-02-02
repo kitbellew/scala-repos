@@ -113,28 +113,26 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
           val isNullRight = rightArray.isNullAt(i)
           if (isNullLeft && isNullRight) {
             // Do nothing.
-          } else if (isNullLeft) {
+          } else if (isNullLeft)
             return -1
-          } else if (isNullRight) {
+          else if (isNullRight)
             return 1
-          } else {
+          else {
             val comp =
               elementOrdering.compare(
                 leftArray.get(i, elementType),
                 rightArray.get(i, elementType))
-            if (comp != 0) {
+            if (comp != 0)
               return comp
-            }
           }
           i += 1
         }
-        if (leftArray.numElements() < rightArray.numElements()) {
+        if (leftArray.numElements() < rightArray.numElements())
           return -1
-        } else if (leftArray.numElements() > rightArray.numElements()) {
+        else if (leftArray.numElements() > rightArray.numElements())
           return 1
-        } else {
+        else
           return 0
-        }
       }
     }
 }

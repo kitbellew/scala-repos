@@ -186,9 +186,8 @@ class OpenHashMap[Key, Value](initialSize: Int)
     var entry = table(index)
     while (entry != null) {
       if (entry.hash == hash &&
-          entry.key == key) {
+          entry.key == key)
         return entry.value
-      }
 
       j = 5 * j + 1 + perturb
       perturb >>= 5

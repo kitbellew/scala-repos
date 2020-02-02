@@ -226,9 +226,8 @@ object BigDecimalRootRefinement {
         // is actually in the sub interval (l, r).
         val poly0 = shift(shift(poly, l), (r - l).reciprocal)
         poly0.signVariations % 2 == 1
-      } else {
+      } else
         false
-      }
 
     // QIR expects that (lx,rx) contain exactly 1 root and that they evaluate
     // to different, non-zero signs. However, we may find 1 or both of the
@@ -245,48 +244,43 @@ object BigDecimalRootRefinement {
       if (lx.compareTo(rx) < 0) {
         val ly = lyOpt.getOrElse(evalExact(lx))
         val ry = ryOpt.getOrElse(evalExact(rx))
-        if (ly.signum == 0) {
-          if (qlx > lowerBound) {
+        if (ly.signum == 0)
+          if (qlx > lowerBound)
             // We've "bumped" the lowerbound up to an exact root, coincidentally.
             ExactRoot(lx)
-          } else {
+          else
             // We try to push lx up a bit to get the sign to change.
             adjust(
               lx.add(JBigDecimal.valueOf(1, getEps(lx))),
               Some(ly),
               rx,
               Some(ry))
-          }
-        } else if (ry.signum == 0) {
-          if (qrx < upperBound) {
+        else if (ry.signum == 0)
+          if (qrx < upperBound)
             // We've "bumped" the lowerbound up to an exact root, coincidentally.
             ExactRoot(rx)
-          } else {
+          else
             // We try to push rx down a bit to get the sign to change.
             adjust(
               lx,
               Some(ly),
               rx.subtract(JBigDecimal.valueOf(1, getEps(rx))),
               Some(ry))
-          }
-        } else if (ry.signum == ly.signum) {
+        else if (ry.signum == ly.signum)
           // We've managed to overshoot the actual root, but since we're still
           // "in-bounds", we know it's in either the left cut off bit or the
           // right.
-          if (hasRoot(lowerBound, qlx)) {
+          if (hasRoot(lowerBound, qlx))
             BoundedLeft(lowerBound, lb)
-          } else {
+          else
             BoundedRight(ub, upperBound)
-          }
-        } else {
+        else
           // Yay! We've successfully approximated the lower/upper bounds with
           // big decimal, while keeping the root within (lx, rx).
           QIR(context, lx, ly, rx, ry)
-        }
-      } else {
+      } else
         // We overshot a root.
         Unbounded(lowerBound, upperBound)
-      }
     }
 
     adjust(lb, None, ub, None)
@@ -318,9 +312,9 @@ object BigDecimalRootRefinement {
       val dx = rx.subtract(lx)
       val scale = max(getEps(lx), getEps(rx))
       val eps = JBigDecimal.valueOf(1, scale)
-      if (dx.compareTo(eps) <= 0) {
+      if (dx.compareTo(eps) <= 0)
         Bounded(lx, ly, rx, ry, n)
-      } else {
+      else {
         val dy = ly.subtract(ry)
         val s = ly.divide(dy, n, RoundingMode.HALF_UP) // BAM!
         val delta = dx.multiply(s.ulp)
@@ -342,9 +336,8 @@ object BigDecimalRootRefinement {
           if (s0 == s1) loop0(lx, ly, rx, ry)
           else if (s0 == ly.sign) loop(x0, y0, x1, y1, 2 * n)
           else ExactRoot(x0)
-        } else {
+        } else
           ExactRoot(x1)
-        }
       }
     }
 
@@ -387,9 +380,9 @@ object BigDecimalRootRefinement {
           bisect(x0, y0, x1, y1, x2, y2)
         } else {
           val (x3, y3) = eval(3)
-          if (y3.sign == y5.sign) {
+          if (y3.sign == y5.sign)
             loop(x2, y2, x3, y3, 1)
-          } else {
+          else {
             val (x4, y4) = eval(4)
             bisect(x3, y3, x4, y4, x5, y5)
           }
@@ -401,9 +394,9 @@ object BigDecimalRootRefinement {
           bisect(x3, y3, x4, y4, x5, y5)
         } else {
           val (x2, y2) = eval(2)
-          if (y2.sign == y0.sign) {
+          if (y2.sign == y0.sign)
             loop(x2, y2, x3, y3, 1)
-          } else {
+          else {
             val (x1, y1) = eval(1)
             bisect(x0, y0, x1, y1, x2, y2)
           }
@@ -416,11 +409,10 @@ object BigDecimalRootRefinement {
     val rx = upperBound
     val ry = upperBoundValue
 
-    if (n0 <= 0) {
+    if (n0 <= 0)
       loop0(lx, ly, rx, ry)
-    } else {
+    else
       loop(lx, ly, rx, ry, n0)
-    }
   }
   // scalastyle:on method.length
 }

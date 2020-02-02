@@ -27,18 +27,16 @@ private final class Socket(
         _ foreach { challenge => notifyVersion("reload", JsNull, ()) }
       }
 
-    case PingVersion(uid, v) => {
+    case PingVersion(uid, v) =>
       ping(uid)
       timeBomb.delay
       withMember(uid) { m =>
         history.since(v).fold(resync(m))(_ foreach sendMessage(m))
       }
-    }
 
-    case Broom => {
+    case Broom =>
       broom
       if (timeBomb.boom) self ! PoisonPill
-    }
 
     case GetVersion => sender ! history.version
 

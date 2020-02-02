@@ -39,9 +39,8 @@ private[spark] abstract class YarnSchedulerBackend(
     sc: SparkContext)
     extends CoarseGrainedSchedulerBackend(scheduler, sc.env.rpcEnv) {
 
-  if (conf.getOption("spark.scheduler.minRegisteredResourcesRatio").isEmpty) {
+  if (conf.getOption("spark.scheduler.minRegisteredResourcesRatio").isEmpty)
     minRegisteredRatio = 0.8
-  }
 
   protected var totalExpectedExecutors = 0
 
@@ -92,9 +91,7 @@ private[spark] abstract class YarnSchedulerBackend(
       // was Stopped by SchedulerBackend.
       requestTotalExecutors(0, 0, Map.empty)
       super.stop()
-    } finally {
-      services.stop()
-    }
+    } finally services.stop()
 
   /**
     * Get the attempt ID for this run, if the cluster manager supports multiple
@@ -146,9 +143,8 @@ private[spark] abstract class YarnSchedulerBackend(
       filterName: String,
       filterParams: Map[String, String],
       proxyBase: String): Unit = {
-    if (proxyBase != null && proxyBase.nonEmpty) {
+    if (proxyBase != null && proxyBase.nonEmpty)
       System.setProperty("spark.ui.proxyBase", proxyBase)
-    }
 
     val hasFilter =
       filterName != null && filterName.nonEmpty &&
@@ -202,10 +198,9 @@ private[spark] abstract class YarnSchedulerBackend(
       */
     override def onDisconnected(rpcAddress: RpcAddress): Unit =
       addressToExecutorId.get(rpcAddress).foreach { executorId =>
-        if (disableExecutor(executorId)) {
+        if (disableExecutor(executorId))
           yarnSchedulerEndpoint
             .handleExecutorDisconnectedFromDriver(executorId, rpcAddress)
-        }
       }
   }
 
@@ -229,13 +224,12 @@ private[spark] abstract class YarnSchedulerBackend(
           val lossReasonRequest = GetExecutorLossReason(executorId)
           val future = am.ask[ExecutorLossReason](lossReasonRequest, askTimeout)
           future onSuccess {
-            case reason: ExecutorLossReason => {
+            case reason: ExecutorLossReason =>
               driverEndpoint.askWithRetry[Boolean](
                 RemoveExecutor(executorId, reason))
-            }
           }
           future onFailure {
-            case NonFatal(e) => {
+            case NonFatal(e) =>
               logWarning(
                 s"Attempted to get executor loss reason" +
                   s" for executor id $executorId at RPC address $executorRpcAddress," +
@@ -244,7 +238,6 @@ private[spark] abstract class YarnSchedulerBackend(
               )
               driverEndpoint.askWithRetry[Boolean](
                 RemoveExecutor(executorId, SlaveLost()))
-            }
             case t => throw t
           }
         case None =>
@@ -259,13 +252,12 @@ private[spark] abstract class YarnSchedulerBackend(
       case RegisterClusterManager(am) =>
         logInfo(s"ApplicationMaster registered as $am")
         amEndpoint = Option(am)
-        if (!shouldResetOnAmRegister) {
+        if (!shouldResetOnAmRegister)
           shouldResetOnAmRegister = true
-        } else {
+        else
           // AM is already registered before, this potentially means that AM failed and
           // a new one registered after the failure. This will only happen in yarn-client mode.
           reset()
-        }
 
       case AddWebUIFilter(filterName, filterParams, proxyBase) =>
         addWebUIFilter(filterName, filterParams, proxyBase)

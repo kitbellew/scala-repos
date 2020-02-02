@@ -71,7 +71,7 @@ object Arguments {
           } else if (options(args(i))) {
             res.addOption(args(i))
             i += 1
-          } else if (optionalArgs contains args(i)) {
+          } else if (optionalArgs contains args(i))
             if ((i + 1) == args.length) {
               argumentError(s"missing argument for '${args(i)}'")
               i += 1
@@ -79,7 +79,7 @@ object Arguments {
               res.addArgument(args(i), args(i + 1))
               i += 2
             }
-          } else if (optionalBindings contains args(i)) {
+          else if (optionalBindings contains args(i))
             if ((i + 1) == args.length) {
               argumentError(s"missing argument for '${args(i)}'")
               i += 1
@@ -89,7 +89,7 @@ object Arguments {
                 parseBinding(args(i + 1), optionalBindings(args(i))))
               i += 2
             }
-          } else {
+          else {
             val iter = prefixes.iterator
             val j = i
             while ((i == j) && iter.hasNext) {

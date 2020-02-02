@@ -70,12 +70,11 @@ class PageRank(args: Args) extends Job(args) {
         // TODO: if we had a way to do HDFS operations easily (like rm, mv, tempname)
         // this code would be cleaner and more efficient.  As is, we may go a whole extra
         // set of operations past the point of convergence.
-        if (error > convErr.toDouble || (JOB_COUNT % 2 == 1)) {
+        if (error > convErr.toDouble || (JOB_COUNT % 2 == 1))
           //try again to get under the error
           Some(clone(nextArgs))
-        } else {
+        else
           None
-        }
       }
 
   /**
@@ -104,9 +103,9 @@ class PageRank(args: Args) extends Job(args) {
 
   @tailrec
   final def doPageRank(steps: Int)(pagerank: RichPipe): RichPipe =
-    if (steps <= 0) {
+    if (steps <= 0)
       pagerank
-    } else {
+    else {
       val nodeRows = pagerank
       //remove any EDGE rows from the previous loop
         .filter('rowtype) { (rowtype: Int) => rowtype == NODESET }
@@ -120,10 +119,9 @@ class PageRank(args: Args) extends Job(args) {
             //Ignore the old degree:
             val deg = dsts.size
             dsts.map { str => (str.toLong, deg) }
-          } else {
+          } else
             //Here is a node that points to no other nodes (dangling)
             Nil
-          }
         }
         //Here we make a false row that we use to tell dst how much incoming
         //Page rank it needs to add to itself:

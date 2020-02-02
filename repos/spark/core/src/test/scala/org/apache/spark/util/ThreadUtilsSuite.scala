@@ -56,9 +56,7 @@ class ThreadUtilsSuite extends SparkFunSuite {
       }, 1, TimeUnit.MILLISECONDS)
       latch.await(10, TimeUnit.SECONDS)
       assert(threadName === "this-is-a-thread-name")
-    } finally {
-      executor.shutdownNow()
-    }
+    } finally executor.shutdownNow()
   }
 
   test("newDaemonCachedThreadPool") {
@@ -70,14 +68,13 @@ class ThreadUtilsSuite extends SparkFunSuite {
       maxThreadNumber,
       keepAliveSeconds = 2)
     try {
-      for (_ <- 1 to maxThreadNumber) {
+      for (_ <- 1 to maxThreadNumber)
         cachedThreadPool.execute(new Runnable {
           override def run(): Unit = {
             startThreadsLatch.countDown()
             latch.await(10, TimeUnit.SECONDS)
           }
         })
-      }
       startThreadsLatch.await(10, TimeUnit.SECONDS)
       assert(cachedThreadPool.getActiveCount === maxThreadNumber)
       assert(cachedThreadPool.getQueue.size === 0)
@@ -98,9 +95,7 @@ class ThreadUtilsSuite extends SparkFunSuite {
         assert(cachedThreadPool.getActiveCount === 0)
         assert(cachedThreadPool.getPoolSize === 0)
       }
-    } finally {
-      cachedThreadPool.shutdownNow()
-    }
+    } finally cachedThreadPool.shutdownNow()
   }
 
   test("sameThread") {

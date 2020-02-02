@@ -81,9 +81,8 @@ trait MongoDocumentMeta[BaseDocument]
     MongoDB.useCollection(connectionIdentifier, collectionName)(coll =>
       coll.findOne(qry) match {
         case null => None
-        case dbo => {
+        case dbo =>
           Some(create(dbo))
-        }
       })
 
   /**

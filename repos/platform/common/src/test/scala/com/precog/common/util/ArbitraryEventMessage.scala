@@ -151,9 +151,9 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
       .map(JPath(_))
 
   def buildChildPaths(parent: List[String], depth: Int): List[List[String]] =
-    if (depth == 0) {
+    if (depth == 0)
       List(parent)
-    } else {
+    else
       parent ::
         containerOfN[List, String](
           choose(2, 4).sample.get,
@@ -162,7 +162,6 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
             buildChildPaths(child :: parent, depth - 1)))
           .sample
           .get
-    }
 
   def genStablePaths: Gen[Seq[String]] = lzy(paths)
   def genStableJPaths: Gen[Seq[JPath]] = lzy(jpaths)
@@ -174,10 +173,8 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
     for {
       paths <- containerOfN[Set, JPath](10, genStableJPath)
       values <- containerOfN[Set, JValue](10, genSimpleNotNull)
-    } yield {
-      (paths zip values).foldLeft[JValue](JObject(Nil)) {
-        case (obj, (path, value)) => obj.set(path, value)
-      }
+    } yield (paths zip values).foldLeft[JValue](JObject(Nil)) {
+      case (obj, (path, value)) => obj.set(path, value)
     }
 
   def genIngest: Gen[Ingest] =

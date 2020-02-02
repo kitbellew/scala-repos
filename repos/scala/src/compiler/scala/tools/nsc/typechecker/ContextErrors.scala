@@ -293,9 +293,8 @@ trait ContextErrors {
           tpt: Tree,
           tparams: List[Symbol]) = {
         val tptSafeString: String =
-          try {
-            tpt.tpe.toString()
-          } catch {
+          try tpt.tpe.toString()
+          catch {
             case _: CyclicReference =>
               tpt.toString()
           }
@@ -409,14 +408,14 @@ trait ContextErrors {
           /* Illuminating some common situations and errors a bit further. */
           def addendum = {
             val companion = {
-              if (name.isTermName && owner.isPackageClass) {
+              if (name.isTermName && owner.isPackageClass)
                 target.member(name.toTypeName) match {
                   case NoSymbol => ""
                   case sym =>
                     "\nNote: %s exists, but it has no companion object.".format(
                       sym)
                 }
-              } else ""
+              else ""
             }
             val semicolon =
               (
@@ -990,10 +989,10 @@ trait ContextErrors {
       }
 
       def MacroGeneratedTypeError(expandee: Tree, err: TypeError = null) =
-        if (err == null) {
+        if (err == null)
           // errors have been reported by the macro itself, so we do nothing here
           macroExpansionError(expandee, null)
-        } else {
+        else {
           macroLogLite(
             "macro expansion has failed: %s at %s".format(err.msg, err.pos))
           throw err // this error must be propagated, don't report
@@ -1152,7 +1151,7 @@ trait ContextErrors {
                 sym1.enclClass.pos,
                 s"in ${sym1.enclClass}, multiple overloaded alternatives of $methodName define default arguments")
 
-            } else {
+            } else
               AmbiguousTypeError(
                 pos,
                 "ambiguous reference to overloaded definition,\n" +
@@ -1160,7 +1159,7 @@ trait ContextErrors {
                   s"and  ${sym2.fullLocationString} of type ${pre.memberType(sym2)}\n" +
                   s"match $rest"
               )
-            })
+          )
       }
 
       def AccessError(

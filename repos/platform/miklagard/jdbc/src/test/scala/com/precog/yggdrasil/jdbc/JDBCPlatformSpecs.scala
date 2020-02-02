@@ -90,9 +90,8 @@ object JDBCPlatformSpecEngine extends Logging {
   def release: Unit = lock.synchronized {
     refcount -= 1
 
-    if (refcount == 0) {
+    if (refcount == 0)
       scheduler.schedule(checkUnused, 5, TimeUnit.SECONDS)
-    }
 
     logger.debug("DB released, refcount = " + refcount)
   }
@@ -124,91 +123,84 @@ object JDBCPlatformSpecEngine extends Logging {
     logger.debug("Loading from " + dataDirURL)
 
     def loadFile(path: String, file: File) {
-      if (file.isDirectory) {
+      if (file.isDirectory)
         file.listFiles.foreach { f =>
           logger.debug("Found child: " + f)
           loadFile(path + file.getName + "_", f)
         }
-      } else {
-        if (file.getName.endsWith(".json")) {
-          try {
-            val tableName = path + file.getName.replace(".json", "")
-            logger.debug("Loading %s into /test/%s".format(file, tableName))
+      else if (file.getName.endsWith(".json"))
+        try {
+          val tableName = path + file.getName.replace(".json", "")
+          logger.debug("Loading %s into /test/%s".format(file, tableName))
 
-            JParser.parseManyFromFile(file) match {
-              case Success(data) =>
-                val rows: Seq[Seq[(String, (String, String))]] = data.map {
-                  jv =>
-                    jv.flattenWithPath.map {
-                      case (p, v) =>
-                        (
-                          JDBCColumnarTableModule.escapePath(
-                            p.toString.drop(1)),
-                          jvToSQL(v))
-                    }
+          JParser.parseManyFromFile(file) match {
+            case Success(data) =>
+              val rows: Seq[Seq[(String, (String, String))]] = data.map { jv =>
+                jv.flattenWithPath.map {
+                  case (p, v) =>
+                    (
+                      JDBCColumnarTableModule.escapePath(p.toString.drop(1)),
+                      jvToSQL(v))
+                }
+              }
+
+              // Two passes: first one constructs a schema for the table, second inserts data
+              val schema = rows.foldLeft(Set[(String, String)]()) {
+                case (acc, properties) =>
+                  acc ++ (properties.map { case (p, (t, _)) => (p, t) }).toSet
+              }
+
+              val ddlCreate = "CREATE TABLE %s (%s);".format(
+                tableName,
+                schema.map { case (p, t) => p + " " + t }.mkString(", "))
+
+              logger.debug("Create = " + ddlCreate)
+
+              val conn = DriverManager.getConnection(dbURL)
+
+              try {
+                val stmt = conn.createStatement
+
+                stmt.executeUpdate(ddlCreate)
+
+                rows.foreach { properties =>
+                  val columns = properties.map(_._1).mkString(", ")
+                  val values = properties.map(_._2._2).mkString(", ")
+
+                  val insert = "INSERT INTO %s (%s) VALUES (%s);".format(
+                    tableName,
+                    columns,
+                    values)
+
+                  logger.debug("Inserting with " + insert)
+
+                  stmt.executeUpdate(insert)
                 }
 
-                // Two passes: first one constructs a schema for the table, second inserts data
-                val schema = rows.foldLeft(Set[(String, String)]()) {
-                  case (acc, properties) =>
-                    acc ++ (properties.map { case (p, (t, _)) => (p, t) }).toSet
-                }
+                stmt.close()
+              } finally conn.close()
 
-                val ddlCreate = "CREATE TABLE %s (%s);".format(
-                  tableName,
-                  schema.map { case (p, t) => p + " " + t }.mkString(", "))
+              // Make sure we have the right amount of data
+              val conn2 = DriverManager.getConnection(dbURL)
+              val stmt2 = conn2.createStatement
 
-                logger.debug("Create = " + ddlCreate)
+              val rs =
+                stmt2.executeQuery("SELECT COUNT(*) AS total FROM " + tableName)
 
-                val conn = DriverManager.getConnection(dbURL)
+              rs.next
 
-                try {
-                  val stmt = conn.createStatement
+              assert(rs.getLong("total") == rows.length)
 
-                  stmt.executeUpdate(ddlCreate)
+              logger.debug(tableName + " has size " + rs.getLong("total"))
 
-                  rows.foreach { properties =>
-                    val columns = properties.map(_._1).mkString(", ")
-                    val values = properties.map(_._2._2).mkString(", ")
+              stmt2.close()
+              conn2.close()
 
-                    val insert = "INSERT INTO %s (%s) VALUES (%s);".format(
-                      tableName,
-                      columns,
-                      values)
-
-                    logger.debug("Inserting with " + insert)
-
-                    stmt.executeUpdate(insert)
-                  }
-
-                  stmt.close()
-                } finally {
-                  conn.close()
-                }
-
-                // Make sure we have the right amount of data
-                val conn2 = DriverManager.getConnection(dbURL)
-                val stmt2 = conn2.createStatement
-
-                val rs = stmt2.executeQuery(
-                  "SELECT COUNT(*) AS total FROM " + tableName)
-
-                rs.next
-
-                assert(rs.getLong("total") == rows.length)
-
-                logger.debug(tableName + " has size " + rs.getLong("total"))
-
-                stmt2.close()
-                conn2.close()
-
-              case Failure(error) => logger.error("Error loading: " + error)
-            }
-          } catch {
-            case t: Throwable => logger.error("Error loading: " + t)
+            case Failure(error) => logger.error("Error loading: " + error)
           }
+        } catch {
+          case t: Throwable => logger.error("Error loading: " + t)
         }
-      }
     }
 
     (new File(dataDirURL.toURI)).listFiles.foreach { f => loadFile("", f) }

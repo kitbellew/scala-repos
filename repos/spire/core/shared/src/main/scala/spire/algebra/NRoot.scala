@@ -39,14 +39,13 @@ object NRoot {
     */
   private def intSearch(f: Int => Boolean): Int = {
     val ceil = (0 until 32) find (i => !f(1 << i)) getOrElse 33
-    if (ceil == 0) {
+    if (ceil == 0)
       0
-    } else {
+    else
       (0 /: ((ceil - 1) to 0 by -1)) { (x, i) =>
         val y = x | (1 << i)
         if (f(y)) y else x
       }
-    }
   }
 
   /**
@@ -58,11 +57,10 @@ object NRoot {
     val quot = expanded / y
     val rem = expanded - (quot * y)
 
-    if (rem == 0) {
+    if (rem == 0)
       Stream.cons(quot, Stream.empty)
-    } else {
+    else
       Stream.cons(quot, decDiv(rem, y, r))
-    }
   }
 
   /** Returns the digits of `x` in base `r`. */
@@ -90,24 +88,22 @@ object NRoot {
     * returns A `BigDecimal` approximation to the `k`-th root of `a`.
     */
   def nroot(a: BigDecimal, k: Int, ctxt: MathContext): BigDecimal =
-    if (k == 0) {
+    if (k == 0)
       BigDecimal(1)
-    } else if (a.signum < 0) {
-      if (k % 2 == 0) {
+    else if (a.signum < 0)
+      if (k % 2 == 0)
         throw new ArithmeticException("%d-root of negative number" format k)
-      } else {
+      else
         -nroot(-a, k, ctxt)
-      }
-    } else {
+    else {
       val underlying = BigInt(a.bigDecimal.unscaledValue.toByteArray)
       val scale = BigInt(10) pow a.scale
       val intPart = digitize(underlying / scale, radix)
       val fracPart = decDiv(underlying % scale, scale, radix) map (_.toInt)
       val leader =
         if (intPart.size % k == 0) Stream.empty
-        else {
+        else
           Stream.fill(k - intPart.size % k)(0)
-        }
       val digits =
         leader ++ intPart.toStream ++ fracPart ++ Stream.continually(0)
       val radixPowK = BigInt(radix) pow k
@@ -130,9 +126,9 @@ object NRoot {
 
         val ny = y_ + b
 
-        if (i == maxSize) {
+        if (i == maxSize)
           (i, ny)
-        } else {
+        else {
           val nr = target - (ny pow k)
 
           // TODO: Add stopping condition for when nr == 0 and there are no more

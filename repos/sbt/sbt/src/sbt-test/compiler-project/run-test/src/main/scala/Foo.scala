@@ -26,9 +26,8 @@ class Foo {
   def location(c: Class[_]) =
     toFile(c.getProtectionDomain.getCodeSource.getLocation).getAbsolutePath
   def toFile(url: URL) =
-    try {
-      new File(url.toURI)
-    } catch { case _: URISyntaxException => new File(url.getPath) }
+    try new File(url.toURI)
+    catch { case _: URISyntaxException => new File(url.getPath) }
 }
 
 object Test {

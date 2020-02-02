@@ -31,10 +31,9 @@ object ResponseClass {
     */
   final case class Successful(override val fractionalSuccess: Double)
       extends ResponseClass {
-    if (fractionalSuccess <= 0.0 || fractionalSuccess > 1.0) {
+    if (fractionalSuccess <= 0.0 || fractionalSuccess > 1.0)
       throw new IllegalArgumentException(
         s"Fraction must be (0.0 and 1.0], was: $fractionalSuccess")
-    }
   }
 
   /**

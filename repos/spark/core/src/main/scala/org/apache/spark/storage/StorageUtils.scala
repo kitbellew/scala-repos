@@ -126,13 +126,11 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
         if (_rddBlocks.contains(rddId)) {
           val removed = _rddBlocks(rddId).remove(blockId)
           // If the given RDD has no more blocks left, remove the RDD
-          if (_rddBlocks(rddId).isEmpty) {
+          if (_rddBlocks(rddId).isEmpty)
             _rddBlocks.remove(rddId)
-          }
           removed
-        } else {
+        } else
           None
-        }
       case _ =>
         _nonRddBlocks.remove(blockId)
     }
@@ -233,11 +231,10 @@ class StorageStatus(val blockManagerId: BlockManagerId, val maxMem: Long) {
     blockId match {
       case RDDBlockId(rddId, _) =>
         // If this RDD is no longer persisted, remove it
-        if (newMem + newDisk == 0) {
+        if (newMem + newDisk == 0)
           _rddStorageInfo.remove(rddId)
-        } else {
+        else
           _rddStorageInfo(rddId) = (newMem, newDisk, level)
-        }
       case _ =>
         _nonRddStorageInfo = (newMem, newDisk)
     }
@@ -257,9 +254,8 @@ private[spark] object StorageUtils extends Logging {
   def dispose(buffer: ByteBuffer): Unit =
     if (buffer != null && buffer.isInstanceOf[MappedByteBuffer]) {
       logTrace(s"Unmapping $buffer")
-      if (buffer.asInstanceOf[DirectBuffer].cleaner() != null) {
+      if (buffer.asInstanceOf[DirectBuffer].cleaner() != null)
         buffer.asInstanceOf[DirectBuffer].cleaner().clean()
-      }
     }
 
   /**

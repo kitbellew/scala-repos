@@ -75,9 +75,11 @@ class SourceWatcher(
       for {
         module <- config.modules.values
         root <- module.sourceRoots
-      } yield {
-        new ApachePollingFileWatcher(root, SourceSelector, true, listeners)
-      }
+      } yield new ApachePollingFileWatcher(
+        root,
+        SourceSelector,
+        true,
+        listeners)
   override def shutdown(): Unit = impls.foreach(_.shutdown)
 }
 
@@ -140,16 +142,14 @@ private class ApachePollingFileWatcher(
     for {
       file <- if (recursive) watched.tree else watched.children
       fo = vfs.vfile(file)
-    } {
-      // VFS doesn't send "file created" messages when it first starts
-      // up, but since we're reacting to a directory deletion, we
-      // should send signals for everything we see. This could result
-      // in dupes, but we figure that's better than dropping the
-      // message.
-      if (restarted && selector.includeFile(fo)) {
-        listeners foreach (_.fileAdded(fo))
-      }
     }
+    // VFS doesn't send "file created" messages when it first starts
+    // up, but since we're reacting to a directory deletion, we
+    // should send signals for everything we see. This could result
+    // in dupes, but we figure that's better than dropping the
+    // message.
+    if (restarted && selector.includeFile(fo))
+      listeners foreach (_.fileAdded(fo))
 
     fm.start()
   }

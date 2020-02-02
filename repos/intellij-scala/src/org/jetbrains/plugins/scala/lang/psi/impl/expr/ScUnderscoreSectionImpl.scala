@@ -113,17 +113,17 @@ class ScUnderscoreSectionImpl(node: ASTNode)
                  if result != None) {
 
               def processFunctionType(params: Seq[ScType]) {
-                if (result != null) {
+                if (result != null)
                   if (params.length == unders.length && !forEqualsParamLength) {
                     result = Some(params(i))
                     forEqualsParamLength = true
                   } else if (params.length == unders.length) result = None
-                } else if (params.length > unders.length)
-                  result = Some(params(i))
-                else {
-                  result = Some(params(i))
-                  forEqualsParamLength = true
-                }
+                  else if (params.length > unders.length)
+                    result = Some(params(i))
+                  else {
+                    result = Some(params(i))
+                    forEqualsParamLength = true
+                  }
               }
 
               tp.removeAbstracts match {
@@ -140,12 +140,11 @@ class ScUnderscoreSectionImpl(node: ASTNode)
                 case _ =>
               }
             }
-            if (result == null || result == None) {
+            if (result == null || result == None)
               expectedType(fromUnderscore = false) match {
                 case Some(tp: ScType) => result = Some(tp)
                 case _                => result = None
               }
-            }
             result match {
               case None    => Failure("No type inferred", None)
               case Some(t) => Success(t, None)

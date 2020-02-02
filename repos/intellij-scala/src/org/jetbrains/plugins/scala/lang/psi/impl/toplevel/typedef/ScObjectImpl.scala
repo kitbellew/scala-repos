@@ -57,22 +57,20 @@ class ScObjectImpl protected (
     }
 
   override def getNavigationElement: PsiElement = {
-    if (isSyntheticObject) {
+    if (isSyntheticObject)
       ScalaPsiUtil.getCompanionModule(this) match {
         case Some(clazz) => return clazz.getNavigationElement
         case _           =>
       }
-    }
     super.getNavigationElement
   }
 
   override def getContainingFile: PsiFile = {
-    if (isSyntheticObject) {
+    if (isSyntheticObject)
       ScalaPsiUtil.getCompanionModule(this) match {
         case Some(clazz) => return clazz.getContainingFile
         case _           =>
       }
-    }
     super.getContainingFile
   }
 
@@ -109,9 +107,9 @@ class ScObjectImpl protected (
 
   override def isPackageObject: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.asInstanceOf[ScTemplateDefinitionStub].isPackageObject
-    } else
+    else
       findChildByType[PsiElement](ScalaTokenTypes.kPACKAGE) != null || name == "`package`"
   }
 
@@ -155,25 +153,21 @@ class ScObjectImpl protected (
     if (isPackageObject) {
       import org.jetbrains.plugins.scala.lang.psi.impl.ScPackageImpl._
       startPackageObjectProcessing()
-      try {
-        super[ScTemplateDefinition].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)
-      } catch {
+      try super[ScTemplateDefinition].processDeclarations(
+        processor,
+        state,
+        lastParent,
+        place)
+      catch {
         case ignore: DoNotProcessPackageObjectException =>
           true //do nothing, just let's move on
-      } finally {
-        stopPackageObjectProcessing()
-      }
-    } else {
+      } finally stopPackageObjectProcessing()
+    } else
       super[ScTemplateDefinition].processDeclarations(
         processor,
         state,
         lastParent,
         place)
-    }
 
   override protected def syntheticMethodsWithOverrideImpl: Seq[PsiMethod] = {
     val res =
@@ -268,14 +262,13 @@ class ScObjectImpl protected (
         isInterface = isInterface)(res += _)
     }
 
-    for (synthetic <- syntheticMethodsNoOverride) {
+    for (synthetic <- syntheticMethodsNoOverride)
       this.processPsiMethodsForNode(
         new SignatureNodes.Node(
           new PhysicalSignature(synthetic, ScSubstitutor.empty),
           ScSubstitutor.empty),
         isStatic = false,
         isInterface = isInterface)(res += _)
-    }
     res.toArray
   }
 

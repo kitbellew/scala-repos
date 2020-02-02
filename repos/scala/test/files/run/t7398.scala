@@ -3,10 +3,9 @@ import scala.tools.partest._
 object Test extends CompilerTest {
   import global._
 
-  override lazy val units: List[CompilationUnit] = {
+  override lazy val units: List[CompilationUnit] =
     // This test itself does not depend on JDK8.
     javaCompilationUnits(global)(defaultMethodSource)
-  }
 
   private def defaultMethodSource =
     """

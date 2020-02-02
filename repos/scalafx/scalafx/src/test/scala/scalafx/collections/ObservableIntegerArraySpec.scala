@@ -142,9 +142,8 @@ class ObservableIntegerArraySpec
     assert(oa.size === expected.length)
     assert(oa.isEmpty === false)
     testOutOfBoundsExceptionThrown(oa(-1))
-    for (i <- 0 until expected.length) {
+    for (i <- 0 until expected.length)
       assert(oa(i) === expected(i))
-    }
     testOutOfBoundsExceptionThrown(oa(expected.length))
   }
 

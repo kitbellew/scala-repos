@@ -226,7 +226,7 @@ abstract class SuperAccessors
           def transformClassDef = {
             checkCompanionNameClashes(sym)
             val decls = sym.info.decls
-            for (s <- decls) {
+            for (s <- decls)
               if (s.privateWithin.isClass && !s.isProtected && !s.privateWithin.isModuleClass &&
                   !s.hasFlag(EXPANDEDNAME) && !s.isConstructor) {
                 val savedName = s.name
@@ -236,7 +236,6 @@ abstract class SuperAccessors
                 log(
                   "Expanded '%s' to '%s' in %s".format(savedName, s.name, sym))
               }
-            }
             super.transform(tree)
           }
           transformClassDef
@@ -294,23 +293,20 @@ abstract class SuperAccessors
                 // also exists in a superclass, because they may be surprised
                 // to find out that a constructor parameter will shadow a
                 // field. See SI-4762.
-                if (settings.warnPrivateShadow) {
-                  if (sym.isPrivateLocal && sym.paramss.isEmpty) {
+                if (settings.warnPrivateShadow)
+                  if (sym.isPrivateLocal && sym.paramss.isEmpty)
                     qual.symbol.ancestors foreach { parent =>
                       parent.info.decls filterNot (x =>
                         x.isPrivate || x.isLocalToThis) foreach { m2 =>
-                        if (sym.name == m2.name && m2.isGetter && m2.accessed.isMutable) {
+                        if (sym.name == m2.name && m2.isGetter && m2.accessed.isMutable)
                           reporter.warning(
                             sel.pos,
                             sym.accessString + " " + sym.fullLocationString + " shadows mutable " + m2.name
                               + " inherited from " + m2.owner + ".  Changes to " + m2.name + " will not be visible within "
                               + sym.owner + " - you may want to give them distinct names."
                           )
-                        }
                       }
                     }
-                  }
-                }
 
                 def isAccessibleFromSuper(sym: Symbol) = {
                   val pre = SuperType(sym.owner.tpe, qual.tpe)
@@ -377,11 +373,10 @@ abstract class SuperAccessors
                     reporter.error(
                       tree.pos,
                       "super may not be used on " + sym.accessedOrSelf)
-                } else if (isDisallowed(sym)) {
+                } else if (isDisallowed(sym))
                   reporter.error(
                     tree.pos,
                     "super not allowed here: use this." + name.decode + " instead")
-                }
                 transformSuperSelect(sel)
 
               case _ =>

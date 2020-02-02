@@ -12,9 +12,7 @@ class GlobalStaticVarSpec extends Specification {
       try {
         GlobalStaticVar.set("message", "hello world")
         GlobalStaticVar.get[String]("message") must beSome("hello world")
-      } finally {
-        GlobalStaticVar.remove("message")
-      }
+      } finally GlobalStaticVar.remove("message")
     }
     "return none when not set" in {
       GlobalStaticVar.get[String]("notset") must beNone
@@ -25,18 +23,14 @@ class GlobalStaticVarSpec extends Specification {
         GlobalStaticVar.get[String]("msg") must beSome("hello world")
         GlobalStaticVar.remove("msg")
         GlobalStaticVar.get[String]("msg") must beNone
-      } finally {
-        GlobalStaticVar.remove("msg")
-      }
+      } finally GlobalStaticVar.remove("msg")
     }
     "support complex types like classloaders" in {
       try {
         val classLoader = this.getClass.getClassLoader
         GlobalStaticVar.set("classLoader", classLoader)
         GlobalStaticVar.get[ClassLoader]("classLoader") must beSome(classLoader)
-      } finally {
-        GlobalStaticVar.remove("classLoader")
-      }
+      } finally GlobalStaticVar.remove("classLoader")
     }
   }
 }

@@ -89,9 +89,9 @@ object ExportZkOffsets extends Logging {
 
       var consumerGroups: Seq[String] = null
 
-      if (groups.size == 0) {
+      if (groups.size == 0)
         consumerGroups = zkUtils.getChildren(ZkUtils.ConsumersPath).toList
-      } else {
+      else {
         import scala.collection.JavaConversions._
         consumerGroups = groups
       }

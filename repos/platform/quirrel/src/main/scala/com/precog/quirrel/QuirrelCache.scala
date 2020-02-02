@@ -150,10 +150,9 @@ trait QuirrelCache extends AST { parser: Parser =>
           case _: BoolLit =>
             if (s.startsWith("true")) ("b", 4)
             else if (s.startsWith("false")) ("b", 5)
-            else {
+            else
               sys.error(
                 "error recovering boolean literal from %s (%s at %s)" format (s, original, i))
-            }
           case _: NumLit =>
             parser.numLiteralRegex
               .findPrefixOf(s)

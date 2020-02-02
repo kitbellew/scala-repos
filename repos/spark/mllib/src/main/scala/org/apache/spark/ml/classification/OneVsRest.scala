@@ -102,9 +102,8 @@ final class OneVsRestModel private[ml] (
 
     // persist if underlying dataset is not persistent.
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
-    if (handlePersistence) {
+    if (handlePersistence)
       newDataset.persist(StorageLevel.MEMORY_AND_DISK)
-    }
 
     // update the accumulator column with the result of prediction of models
     val aggregatedDataset =
@@ -132,9 +131,8 @@ final class OneVsRestModel private[ml] (
             .withColumnRenamed(tmpColName, accColName)
       }
 
-    if (handlePersistence) {
+    if (handlePersistence)
       newDataset.unpersist()
-    }
 
     // output the index of the classifier with highest confidence as prediction
     val labelUDF = udf { (predictions: Map[Int, Double]) =>
@@ -216,9 +214,8 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
 
     // persist if underlying dataset is not persistent.
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
-    if (handlePersistence) {
+    if (handlePersistence)
       multiclassLabeled.persist(StorageLevel.MEMORY_AND_DISK)
-    }
 
     // create k columns, one for each binary classifier.
     val models = Range(0, numClasses).par
@@ -240,9 +237,8 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
       }
       .toArray[ClassificationModel[_, _]]
 
-    if (handlePersistence) {
+    if (handlePersistence)
       multiclassLabeled.unpersist()
-    }
 
     // extract label metadata from label column if present, or create a nominal attribute
     // to output the number of labels
@@ -259,9 +255,8 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
   @Since("1.4.1")
   override def copy(extra: ParamMap): OneVsRest = {
     val copied = defaultCopy(extra).asInstanceOf[OneVsRest]
-    if (isDefined(classifier)) {
+    if (isDefined(classifier))
       copied.setClassifier($(classifier).copy(extra))
-    }
     copied
   }
 }

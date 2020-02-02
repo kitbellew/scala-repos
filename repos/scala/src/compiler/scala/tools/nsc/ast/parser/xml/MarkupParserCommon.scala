@@ -55,13 +55,12 @@ private[scala] trait MarkupParserCommon {
     */
   def xAttributeValue(endCh: Char): String = {
     val buf = new StringBuilder
-    while (ch != endCh) {
+    while (ch != endCh)
       // well-formedness constraint
       if (ch == '<')
         return errorAndResult("'<' not allowed in attrib value", "")
       else if (ch == SU) truncatedError("")
       else buf append ch_returning_nextch
-    }
     ch_returning_nextch
     // @todo: normalize attribute value
     buf.toString

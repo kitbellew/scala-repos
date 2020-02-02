@@ -152,17 +152,15 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
 
     val rowWithAllNullColumns: InternalRow = {
       val r = new SpecificMutableRow(fieldTypes)
-      for (i <- fieldTypes.indices) {
+      for (i <- fieldTypes.indices)
         r.setNullAt(i)
-      }
       r
     }
 
     val createdFromNull: UnsafeRow = converter.apply(rowWithAllNullColumns)
 
-    for (i <- fieldTypes.indices) {
+    for (i <- fieldTypes.indices)
       assert(createdFromNull.isNullAt(i))
-    }
     assert(createdFromNull.getBoolean(1) === false)
     assert(createdFromNull.getByte(2) === 0)
     assert(createdFromNull.getShort(3) === 0)
@@ -225,14 +223,12 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
       setToNullAfterCreation.getDecimal(11, 38, 18) ===
         rowWithNoNullColumns.getDecimal(11, 38, 18))
 
-    for (i <- fieldTypes.indices) {
+    for (i <- fieldTypes.indices)
       // Cann't call setNullAt() on DecimalType
-      if (i == 11) {
+      if (i == 11)
         setToNullAfterCreation.setDecimal(11, null, 38)
-      } else {
+      else
         setToNullAfterCreation.setNullAt(i)
-      }
-    }
 
     setToNullAfterCreation.setNullAt(0)
     setToNullAfterCreation.setBoolean(1, false)

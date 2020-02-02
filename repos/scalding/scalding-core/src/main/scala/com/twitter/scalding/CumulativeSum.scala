@@ -74,18 +74,15 @@ object CumulativeSum {
         .scanLeft(None: Option[(Option[V], V, S)]) {
           case (acc, (s, v)) =>
             acc match {
-              case Some((previousPreviousSum, previousSum, previousS)) => {
+              case Some((previousPreviousSum, previousSum, previousS)) =>
                 Some((Some(previousSum), sg.plus(v, previousSum), s))
-              }
               case _ => Some((None, v, s))
             }
         }
         .flatMap {
           case (k, maybeAcc) =>
             for (acc <- maybeAcc;
-                 previousSum <- acc._1) yield {
-              (k, acc._3) -> (None, previousSum)
-            }
+                 previousSum <- acc._1) yield (k, acc._3) -> (None, previousSum)
         }
 
       val summands = pipe
@@ -106,9 +103,7 @@ object CumulativeSum {
         }
         .flatMap {
           case ((k, s), acc) =>
-            for (uv <- acc; u <- uv._1) yield {
-              (k, (u, uv._2))
-            }
+            for (uv <- acc; u <- uv._1) yield (k, (u, uv._2))
         }
     }
   }

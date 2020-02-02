@@ -21,12 +21,11 @@ class RouteeCreationSpec extends AkkaSpec {
         system.actorSelection(self.path).tell(Identify(self.path), testActor)
         def receive = Actor.emptyBehavior
       })))
-      for (i ← 1 to N) {
+      for (i ← 1 to N)
         expectMsgType[ActorIdentity] match {
           case ActorIdentity(_, Some(_)) ⇒ // fine
           case x ⇒ fail(s"routee $i was not found $x")
         }
-      }
     }
 
     "allow sending to context.parent" in {
@@ -41,9 +40,8 @@ class RouteeCreationSpec extends AkkaSpec {
         case "two" ⇒ lastSender.toString
       }
       expectNoMsg(100.millis)
-      if (gotit.size != N) {
+      if (gotit.size != N)
         fail(s"got only ${gotit.size} from [${gotit mkString ", "}]")
-      }
     }
 
   }

@@ -39,9 +39,8 @@ case class Dependency(
   // directly and re-resolve references afterwards.
   // However, current implementation of "bindToElement" can handle only Class references
   def restoreFor(source: ScReferenceElement) {
-    if (source.resolve() != target) {
+    if (source.resolve() != target)
       source.bindToElement(target)
-    }
   }
 }
 
@@ -55,13 +54,12 @@ object Dependency {
   // While we can rely on result.actualElement, there are several bugs related to unapply(Seq)
   // and it's impossible to rebind such targets later (if needed)
   def dependencyFor(reference: ScReferenceElement): Option[Dependency] =
-    if (isPrimary(reference)) {
+    if (isPrimary(reference))
       reference.bind().flatMap { result =>
         dependencyFor(reference, result.element, result.fromType)
       }
-    } else {
+    else
       None
-    }
 
   private def isPrimary(ref: ScReferenceElement) = ref match {
     case it @ Parent(postfix: ScPostfixExpr) => it == postfix.operand

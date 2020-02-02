@@ -139,7 +139,7 @@ class Pack200Task extends ScalaMatchingTask {
     p.put(KEEP_FILE_ORDER, if (keepFileOrder) TRUE else FALSE)
     p.put(MODIFICATION_TIME, if (keepModificationTime) LATEST else KEEP)
 
-    for (file <- files) {
+    for (file <- files)
       if (repack) {
         val repackedFile = new File(packDir, file.getName)
         if (file.lastModified > repackedFile.lastModified) {
@@ -164,6 +164,5 @@ class Pack200Task extends ScalaMatchingTask {
           packer.pack(new JarFile(file), os)
         }
       }
-    }
   }
 }

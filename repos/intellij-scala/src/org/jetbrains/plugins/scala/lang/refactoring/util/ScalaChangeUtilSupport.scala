@@ -28,27 +28,24 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
       original: ASTNode,
       encodingState: Map[Object, Object]): Unit = {
     if (!element.isInstanceOf[ScalaPsiElement]) return
-    if (original.isInstanceOf[CompositeElement]) {
+    if (original.isInstanceOf[CompositeElement])
       original.getElementType match {
         case ScalaElementTypes.REFERENCE |
             ScalaElementTypes.REFERENCE_EXPRESSION |
-            ScalaElementTypes.TYPE_PROJECTION => {
+            ScalaElementTypes.TYPE_PROJECTION =>
           val res = original.getPsi.asInstanceOf[ScReferenceElement].bind
           res match {
             case Some(
                 resolveResult @ ScalaResolveResult(
                   elem: PsiNamedElement,
-                  subst: ScSubstitutor)) => {
+                  subst: ScSubstitutor)) =>
               element.putCopyableUserData(
                 ScalaChangeUtilSupport.REFERENCED_MEMBER_KEY,
                 elem)
-            }
             case _ =>
           }
-        }
         case _ =>
       }
-    }
   }
 
   def decodeInformation(
@@ -69,11 +66,9 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
             null)
           val res = ref.resolve
           if (!element.getManager.areElementsEquivalent(res, named)) {
-            try {
-              if (ref.qualifier == None) {
-                ref = ref.bindToElement(named).asInstanceOf[ScReferenceElement]
-              }
-            } catch {
+            try if (ref.qualifier == None)
+              ref = ref.bindToElement(named).asInstanceOf[ScReferenceElement]
+            catch {
               case ignored: IncorrectOperationException =>
             }
             return SourceTreeToPsiMap

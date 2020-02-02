@@ -32,7 +32,7 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
     if (CodeInsightUtilBase.prepareEditorForWrite(editor) &&
         FileDocumentManager.getInstance.requestWriting(
           editor.getDocument,
-          project)) {
+          project))
       GenerationUtil
         .elementOfTypeAtCaret(
           editor,
@@ -50,7 +50,6 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
               editor.getDocument)
           }
         }
-    }
 
   /**
     * Determines whether toString can be generated for the class.
@@ -109,9 +108,9 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
       aType: ScTypeDefinition,
       project: Project): Option[(Seq[ScNamedElement], Boolean)] = {
     val allSuitableMembers = getAllSuitableMembers(aType)
-    if (ApplicationManager.getApplication.isUnitTestMode) {
+    if (ApplicationManager.getApplication.isUnitTestMode)
       Some(allSuitableMembers, true)
-    } else {
+    else {
       val wizard = new ScalaGenerateToStringWizard(project, allSuitableMembers)
       if (wizard.showAndGet())
         Some(wizard.getToStringFields, wizard.withFieldNames)

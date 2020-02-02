@@ -43,12 +43,11 @@ object HttpServer {
     */
   class Authorize extends SimpleFilter[Request, Response] {
     def apply(request: Request, continue: Service[Request, Response]) =
-      if (Some("open sesame") == request.headerMap.get(Fields.Authorization)) {
+      if (Some("open sesame") == request.headerMap.get(Fields.Authorization))
         continue(request)
-      } else {
+      else
         Future.exception(
           new IllegalArgumentException("You don't know the secret"))
-      }
   }
 
   /**

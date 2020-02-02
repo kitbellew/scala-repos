@@ -10,9 +10,8 @@ object Try {
   case class PredicateDoesNotObtain() extends Exception()
 
   def apply[R](r: => R): Try[R] =
-    try {
-      Return(r)
-    } catch {
+    try Return(r)
+    catch {
       case NonFatal(e) => Throw(e)
     }
 
@@ -53,11 +52,9 @@ object Try {
     * returned if the option is None
     */
   def orThrow[A](o: Option[A])(failure: () => Throwable): Try[A] =
-    try {
-      o match {
-        case Some(item) => Return(item)
-        case None       => Throw(failure())
-      }
+    try o match {
+      case Some(item) => Return(item)
+      case None       => Throw(failure())
     } catch {
       case NonFatal(e) => Throw(e)
     }
@@ -241,11 +238,10 @@ final case class Throw[+R](e: Throwable) extends Try[R] {
   }
   def onSuccess(f: R => Unit) = this
   def handle[R2 >: R](rescueException: PartialFunction[Throwable, R2]) =
-    if (rescueException.isDefinedAt(e)) {
+    if (rescueException.isDefinedAt(e))
       Try(rescueException(e))
-    } else {
+    else
       this
-    }
 }
 
 object Return {

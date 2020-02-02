@@ -73,11 +73,11 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
       pos += 1
     }
 
-    if (pos >= end) {
+    if (pos >= end)
       // We have reached the end of the stream (prepareRead() returned false)
       if (res == "") null
       else res
-    } else {
+    else {
       // Consume terminator
       pos += 1
 

@@ -46,28 +46,24 @@ class ConfigTest {
       '\r',
       '\n',
       '=')
-    for (weirdChar <- badChars) {
+    for (weirdChar <- badChars)
       invalidClientIds += "Is" + weirdChar + "illegal"
-    }
 
-    for (i <- 0 until invalidClientIds.size) {
+    for (i <- 0 until invalidClientIds.size)
       try {
         ProducerConfig.validateClientId(invalidClientIds(i))
         fail("Should throw InvalidClientIdException.")
       } catch {
         case e: InvalidConfigException => "This is good."
       }
-    }
 
     val validClientIds = new ArrayBuffer[String]()
     validClientIds += ("valid", "CLIENT", "iDs", "ar6", "VaL1d", "_0-9_.", "")
-    for (i <- 0 until validClientIds.size) {
-      try {
-        ProducerConfig.validateClientId(validClientIds(i))
-      } catch {
+    for (i <- 0 until validClientIds.size)
+      try ProducerConfig.validateClientId(validClientIds(i))
+      catch {
         case e: Exception => fail("Should not throw exception.")
       }
-    }
   }
 
   @Test
@@ -89,27 +85,23 @@ class ConfigTest {
       '\r',
       '\n',
       '=')
-    for (weirdChar <- badChars) {
+    for (weirdChar <- badChars)
       invalidGroupIds += "Is" + weirdChar + "illegal"
-    }
 
-    for (i <- 0 until invalidGroupIds.size) {
+    for (i <- 0 until invalidGroupIds.size)
       try {
         ConsumerConfig.validateGroupId(invalidGroupIds(i))
         fail("Should throw InvalidGroupIdException.")
       } catch {
         case e: InvalidConfigException => "This is good."
       }
-    }
 
     val validGroupIds = new ArrayBuffer[String]()
     validGroupIds += ("valid", "GROUP", "iDs", "ar6", "VaL1d", "_0-9_.", "")
-    for (i <- 0 until validGroupIds.size) {
-      try {
-        ConsumerConfig.validateGroupId(validGroupIds(i))
-      } catch {
+    for (i <- 0 until validGroupIds.size)
+      try ConsumerConfig.validateGroupId(validGroupIds(i))
+      catch {
         case e: Exception => fail("Should not throw exception.")
       }
-    }
   }
 }

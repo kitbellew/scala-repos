@@ -210,7 +210,7 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
       twoFoldedRdd(0)._2.collect().sorted === twoFoldedRdd(1)._1
         .collect()
         .sorted)
-    for (folds <- 2 to 10) {
+    for (folds <- 2 to 10)
       for (seed <- 1 to 5) {
         val foldedRdds = kFold(data, folds, seed)
         assert(foldedRdds.size === folds)
@@ -241,7 +241,6 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
           foldedRdds.map(_._2).reduce((x, y) => x.union(y)).collect().sorted ===
             data.collect().sorted)
       }
-    }
   }
 
   test("loadVectors") {

@@ -72,7 +72,7 @@ object JarJar {
       struct.name = e.name
       struct.time = e.time
       struct.data = e.data
-      if (processor.process(struct)) {
+      if (processor.process(struct))
         if (struct.name.endsWith("/")) None
         else {
           val f = outdir / struct.name
@@ -87,7 +87,7 @@ object JarJar {
           }
           Some(f)
         }
-      } else None
+      else None
     }
     val processed = in.flatMap(entry => process(entry)).toSet
     val getter = processor.getClass.getDeclaredMethod("getExcludes")

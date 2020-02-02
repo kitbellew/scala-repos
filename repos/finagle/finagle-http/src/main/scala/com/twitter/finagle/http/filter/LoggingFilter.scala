@@ -24,16 +24,14 @@ object LogFormatter {
     var index = 0
     s.foreach { c =>
       val i = c.toInt
-      if (i >= 0x20 && i <= 0x7E && i != 0x22 && i != 0x5C) {
-        if (builder == null) {
+      if (i >= 0x20 && i <= 0x7E && i != 0x22 && i != 0x5C)
+        if (builder == null)
           index += 1 // common case
-        } else {
+        else
           builder.append(c)
-        }
-      } else {
-        if (builder == null) {
+      else {
+        if (builder == null)
           builder = new StringBuilder(s.substring(0, index))
-        }
         c match {
           case '\b'       => builder.append("\\b")
           case '\n'       => builder.append("\\n")
@@ -53,11 +51,10 @@ object LogFormatter {
         }
       }
     }
-    if (builder == null) {
+    if (builder == null)
       s // common case: nothing needed escaping
-    } else {
+    else
       builder.toString
-    }
   }
 }
 

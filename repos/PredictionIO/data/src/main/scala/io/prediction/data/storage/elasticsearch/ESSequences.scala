@@ -29,12 +29,11 @@ class ESSequences(client: Client, config: StorageClientConfig, index: String)
 
   val indices = client.admin.indices
   val indexExistResponse = indices.prepareExists(index).get
-  if (!indexExistResponse.isExists) {
+  if (!indexExistResponse.isExists)
     // val settingsJson =
     //   ("number_of_shards" -> 1) ~
     //   ("auto_expand_replicas" -> "0-all")
     indices.prepareCreate(index).get
-  }
   val typeExistResponse = indices.prepareTypesExists(index).setTypes(estype).get
   if (!typeExistResponse.isExists) {
     val mappingJson =

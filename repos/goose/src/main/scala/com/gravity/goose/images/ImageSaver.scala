@@ -54,30 +54,25 @@ object ImageSaver extends Logging {
         ImageUtils.getImageDimensions(config.imagemagickIdentifyPath, fileName)
       mimeType = imageDims.getMimeType
       if (mimeType == "GIF") {
-        if (logger.isDebugEnabled) {
+        if (logger.isDebugEnabled)
           logger.debug("SNEAKY GIF! " + fileName)
-        }
         throw new SecretGifException
       }
-      if (mimeType == "JPEG") {
+      if (mimeType == "JPEG")
         fileExtension = ".jpg"
-      } else if (mimeType == "PNG") {
+      else if (mimeType == "PNG")
         fileExtension = ".png"
-      } else {
+      else
         throw new IOException(
           "BAD MIME TYPE: " + mimeType + " FILENAME:" + fileName)
-      }
     } catch {
-      case e: SecretGifException => {
+      case e: SecretGifException =>
         throw e
-      }
-      case e: FileNotFoundException => {
+      case e: FileNotFoundException =>
         logger.error(e.getMessage)
-      }
-      case e: IOException => {
+      case e: IOException =>
         logger.error(e.getMessage)
         throw e
-      }
     } finally {}
     fileExtension
   }
@@ -93,17 +88,13 @@ object ImageSaver extends Logging {
     val httpget = new HttpGet(imageSrc)
     val response = httpClient.execute(httpget, localContext)
     val respStatus: String = response.getStatusLine.toString
-    if (!respStatus.contains("200")) {
+    if (!respStatus.contains("200"))
       None
-    } else {
-      try {
-        Some(response.getEntity)
-      } catch {
+    else
+      try Some(response.getEntity)
+      catch {
         case e: Exception => warn(e, e.toString); None
-      } finally {
-        httpget.abort()
-      }
-    }
+      } finally httpget.abort()
   }
 
   def copyInputStreamToLocalImage(
@@ -125,10 +116,9 @@ object ImageSaver extends Logging {
       }
       val f: File = new File(localSrcPath)
       if (f.length < config.minBytesForImages) {
-        if (logger.isDebugEnabled) {
+        if (logger.isDebugEnabled)
           logger.debug(
             "TOO SMALL AN IMAGE: " + localSrcPath + " bytes: " + f.length)
-        }
         return null
       }
       val newFilename = localSrcPath + fileExtension
@@ -138,9 +128,8 @@ object ImageSaver extends Logging {
       trace("Image successfully Written to Disk")
       newFilename
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         throw e
-      }
     } finally {
       //            entity.consumeContent
       instream.close()
@@ -166,41 +155,31 @@ object ImageSaver extends Logging {
       trace("Starting to download image: " + imageSrc)
 
       fetchEntity(httpClient, imageSrc) match {
-        case Some(entity) => {
-
-          try {
-            return copyInputStreamToLocalImage(entity, linkhash, config)
-          } catch {
-            case e: SecretGifException => {
+        case Some(entity) =>
+          try return copyInputStreamToLocalImage(entity, linkhash, config)
+          catch {
+            case e: SecretGifException =>
               throw e
-            }
-            case e: Exception => {
+            case e: Exception =>
               logger.error(e.getMessage); null
-            }
           }
 
-        }
         case None => trace("Unable to get entity for: " + imageSrc); null
       }
 
     } catch {
-      case e: IllegalArgumentException => {
+      case e: IllegalArgumentException =>
         logger.warn(e.getMessage)
-      }
-      case e: SecretGifException => {
+      case e: SecretGifException =>
         raise(e)
-      }
-      case e: ClientProtocolException => {
+      case e: ClientProtocolException =>
         logger.error(e.toString)
-      }
-      case e: IOException => {
+      case e: IOException =>
         logger.error(e.toString)
-      }
-      case e: Exception => {
+      case e: Exception =>
         e.printStackTrace()
         logger.error(e.toString)
         e.printStackTrace()
-      }
     } finally {}
     null
 

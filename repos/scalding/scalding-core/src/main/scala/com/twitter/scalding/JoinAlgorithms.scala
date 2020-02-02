@@ -111,9 +111,9 @@ trait JoinAlgorithms {
       asList(fields)
         .map { fname =>
           // If we renamed, get the rename, else just use the field
-          if (collisions(fname)) {
+          if (collisions(fname))
             rename(fname)
-          } else fname
+          else fname
         }: _*)
     val renamedPipe = p.rename(orig -> temp)
     (renamedPipe, newJoinKeys, temp)
@@ -169,13 +169,13 @@ trait JoinAlgorithms {
     // If we are not doing an inner join, the join fields must be disjoint:
     val joiners = joinerToJoinModes(joiner)
     val intersection = asSet(fs._1).intersect(asSet(fs._2))
-    if (intersection.isEmpty) {
+    if (intersection.isEmpty)
       // Common case: no intersection in names: just CoGroup, which duplicates the grouping fields:
       pipe.coGroupBy(fs._1, joiners._1) {
         _.coGroup(fs._2, that, joiners._2)
           .reducers(reducers)
       }
-    } else if (joiners._1 == InnerJoinMode && joiners._2 == InnerJoinMode) {
+    else if (joiners._1 == InnerJoinMode && joiners._2 == InnerJoinMode) {
       /*
        * Since it is an inner join, we only output if the key is present an equal in both sides.
        * For this (common) case, it doesn't matter if we drop one of the matching grouping fields.
@@ -189,11 +189,10 @@ trait JoinAlgorithms {
             .reducers(reducers)
         }
         .discard(temp)
-    } else {
+    } else
       throw new IllegalArgumentException(
         "join keys must be disjoint unless you are doing an InnerJoin.  Found: " +
           fs.toString + ", which overlap with: " + intersection.toString)
-    }
   }
 
   /**
@@ -239,14 +238,14 @@ trait JoinAlgorithms {
     */
   def joinWithTiny(fs: (Fields, Fields), that: Pipe) = {
     val intersection = asSet(fs._1).intersect(asSet(fs._2))
-    if (intersection.isEmpty) {
+    if (intersection.isEmpty)
       new HashJoin(
         assignName(pipe),
         fs._1,
         assignName(that),
         fs._2,
         WrappedJoiner(new InnerJoin))
-    } else {
+    else {
       val (renamedThat, newJoinFields, temp) =
         renameCollidingFields(that, fs._2, intersection)
       (new HashJoin(
@@ -484,11 +483,10 @@ trait JoinAlgorithms {
           val leftValue = result.getObject(index)
           val rightValue = result.getObject(index + keysSize)
 
-          if (leftValue == null) {
+          if (leftValue == null)
             result.set(index, rightValue)
-          } else if (rightValue == null) {
+          else if (rightValue == null)
             result.set(index + keysSize, leftValue)
-          }
         }
 
         result

@@ -131,9 +131,7 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
     for {
       setter <- getterOrSetter
       elem <- ScalaOverridingMemberSearcher.search(setter, deep = true)
-    } {
-      buff += elem
-    }
+    } buff += elem
     if (!buff.isEmpty) {
       def addGettersAndSetters() {
         def nameWithSetterSuffix(oldName: String, newName: String): String = {
@@ -152,16 +150,15 @@ class PrepareRenameScalaMethodProcessor extends RenamePsiElementProcessor {
         }
       }
 
-      if (ApplicationManager.getApplication.isUnitTestMode) {
+      if (ApplicationManager.getApplication.isUnitTestMode)
         addGettersAndSetters()
-      } else {
+      else {
         val dialog = new WarningDialog(
           function.getProject,
           ScalaBundle.message("rename.getters.and.setters.title"))
         dialog.show()
-        if (dialog.getExitCode == DialogWrapper.OK_EXIT_CODE || ApplicationManager.getApplication.isUnitTestMode) {
+        if (dialog.getExitCode == DialogWrapper.OK_EXIT_CODE || ApplicationManager.getApplication.isUnitTestMode)
           addGettersAndSetters()
-        }
       }
     }
     RenameSuperMembersUtil.prepareSuperMembers(element, newName, allRenames)

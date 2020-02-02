@@ -44,9 +44,8 @@ abstract class ReplTest extends DirectTest {
          case welcome(s) => s
          case s          => s
        }
-     } else {
-       lines drop header.lines.size
-     }) map normalize
+     } else
+       lines drop header.lines.size) map normalize
   }
   def show() = eval() foreach println
 }

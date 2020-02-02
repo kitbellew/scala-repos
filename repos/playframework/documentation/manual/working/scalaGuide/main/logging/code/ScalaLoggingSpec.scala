@@ -34,10 +34,9 @@ class ScalaLoggingSpec extends Specification with Mockito {
         // Log result if successful
         Logger.debug(s"Result=$result")
       } catch {
-        case t: Throwable => {
+        case t: Throwable =>
           // Log error with message and Throwable.
           Logger.error("Exception with riskyCalculation", t)
-        }
       }
       //#logging-default-logger
 
@@ -113,10 +112,9 @@ class ScalaLoggingSpec extends Specification with Mockito {
             val result = riskyCalculation
             Ok(s"Result=$result")
           } catch {
-            case t: Throwable => {
+            case t: Throwable =>
               logger.error("Exception with riskyCalculation", t)
               InternalServerError("Error in calculation: " + t.getMessage())
-            }
           }
         }
       }

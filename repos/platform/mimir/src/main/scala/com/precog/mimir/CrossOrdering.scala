@@ -90,11 +90,10 @@ trait CrossOrdering extends DAG {
         case dag.MegaReduce(reds, parent) =>
           dag.MegaReduce(reds, memoized(parent))
 
-        case s @ dag.Split(spec, child, id) => {
+        case s @ dag.Split(spec, child, id) =>
           val spec2 = memoizedSpec(spec)
           val child2 = memoized(child)
           dag.Split(spec2, child2, id)(s.loc)
-        }
 
         case node @ dag.Assert(pred, child) =>
           dag.Assert(memoized(pred), memoized(child))(node.loc)
@@ -116,7 +115,7 @@ trait CrossOrdering extends DAG {
         case node @ Diff(left, right) =>
           Diff(memoized(left), memoized(right))(node.loc)
 
-        case node @ Join(op, Cross(hint), left, right) => {
+        case node @ Join(op, Cross(hint), left, right) =>
           import CrossOrder._
           if (right.isSingleton)
             Join(op, Cross(Some(CrossLeft)), memoized(left), memoized(right))(
@@ -136,7 +135,6 @@ trait CrossOrdering extends DAG {
                   node.loc)
             }
           }
-        }
 
         case node @ Join(op, joinSort, left, right) =>
           Join(op, joinSort, memoized(left), memoized(right))(node.loc)

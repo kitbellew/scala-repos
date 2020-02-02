@@ -69,7 +69,7 @@ case class Capability(mask: Int) {
   def hasAll(flags: Int*) =
     flags map { f: Int =>
       (f & mask) > 0
-    } reduceLeft { _ && _ }
+    } reduceLeft _ && _
   override def toString() = {
     val cs = Capability.CapabilityMap filter { t =>
       has(t._2)

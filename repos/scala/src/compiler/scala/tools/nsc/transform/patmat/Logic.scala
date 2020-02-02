@@ -221,15 +221,14 @@ trait Logic extends Debugging {
             case f       => Set(f)
           }.toSeq
 
-          if (hasImpureAtom(opsFlattened) || opsFlattened.contains(False)) {
+          if (hasImpureAtom(opsFlattened) || opsFlattened.contains(False))
             False
-          } else {
+          else
             opsFlattened match {
               case Seq()  => True
               case Seq(f) => f
               case ops    => And(ops: _*)
             }
-          }
         case Or(fv) =>
           // recurse for nested Or (pulls all Ors up)
           val ops = fv.map(simplifyProp) - False // ignore `False`
@@ -239,15 +238,14 @@ trait Logic extends Debugging {
             case f      => Set(f)
           }.toSeq
 
-          if (hasImpureAtom(opsFlattened) || opsFlattened.contains(True)) {
+          if (hasImpureAtom(opsFlattened) || opsFlattened.contains(True))
             True
-          } else {
+          else
             opsFlattened match {
               case Seq()  => False
               case Seq(f) => f
               case ops    => Or(ops: _*)
             }
-          }
         case Not(Not(a)) =>
           simplify(a)
         case Not(p) =>
@@ -322,9 +320,8 @@ trait Logic extends Debugging {
 
     // TODO: remove since deprecated
     val budgetProp = scala.sys.Prop[String]("scalac.patmat.analysisBudget")
-    if (budgetProp.isSet) {
+    if (budgetProp.isSet)
       reportWarning(s"Please remove -D${budgetProp.key}, it is ignored.")
-    }
 
     // convert finite domain propositional logic with subtyping to pure boolean propositional logic
     // a type test or a value equality test are modelled as a variable being equal to some constant
@@ -738,12 +735,12 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
           // SI-8611 tp.narrow is tempting, but unsuitable. See `testRefinedTypeSI8611` for an explanation.
           NoSymbol.freshExistential("").setInfo(TypeBounds.upper(tp)).tpe
 
-        if (!t.symbol.isStable) {
+        if (!t.symbol.isStable)
           // Create a fresh type for each unstable value, since we can never correlate it to another value.
           // For example `case X => case X =>` should not complain about the second case being unreachable,
           // if X is mutable.
           freshExistentialSubtype(t.tpe)
-        } else
+        else
           trees find (a => equivalentTree(a, t)) match {
             case Some(orig) =>
               debug.patmat("unique tp for tree: " + ((orig, orig.tpe)))

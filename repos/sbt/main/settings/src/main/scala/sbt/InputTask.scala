@@ -128,11 +128,11 @@ object InputTask {
       dummyTask: Task[I]) =
     new (ScopedKey ~> Option) {
       def apply[T](sk: ScopedKey[T]) =
-        if (sk.key eq dummyKey) {
+        if (sk.key eq dummyKey)
           // sk.key: AttributeKey[T], dummy.key: AttributeKey[Task[I]]
           // (sk.key eq dummy.key) ==> T == Task[I] because AttributeKey is invariant
           Some(dummyTask.asInstanceOf[T])
-        } else
+        else
           None
     }
 

@@ -54,14 +54,13 @@ object ConsumerPerformance {
     val totalBytesRead = new AtomicLong(0)
     val consumerTimeout = new AtomicBoolean(false)
 
-    if (!config.hideHeader) {
+    if (!config.hideHeader)
       if (!config.showDetailedStats)
         println(
           "start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
       else
         println(
           "time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
-    }
 
     var startMs, endMs = 0L
     if (config.useNewConsumer) {
@@ -154,9 +153,8 @@ object ConsumerPerformance {
     )
     val joinStart = System.currentTimeMillis()
     while (!isAssigned.get()) {
-      if (System.currentTimeMillis() - joinStart >= joinTimeout) {
+      if (System.currentTimeMillis() - joinStart >= joinTimeout)
         throw new Exception("Timed out waiting for initial group join.")
-      }
       consumer.poll(100)
     }
     consumer.seekToBeginning(List[TopicPartition]())
@@ -399,9 +397,8 @@ object ConsumerPerformance {
       } catch {
         case _: InterruptedException       =>
         case _: ClosedByInterruptException =>
-        case _: ConsumerTimeoutException => {
+        case _: ConsumerTimeoutException =>
           consumerTimeout.set(true);
-        }
         case e: Throwable => e.printStackTrace()
       }
       totalMessagesRead.addAndGet(messagesRead)

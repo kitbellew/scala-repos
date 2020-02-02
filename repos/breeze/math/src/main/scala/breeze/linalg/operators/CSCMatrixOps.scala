@@ -194,10 +194,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           val ci1 = ci + 1
           var bp = bpStop
           bpStop = b.colPtrs(ci1)
-          if (bp == bpStop) {
+          if (bp == bpStop)
             // No data in column
             computeZeroOpOnRange(nData, ci * cols, ci1 * cols)
-          } else {
+          else {
             // data in column
             var rL = 0
             while (bp < bpStop) {
@@ -495,14 +495,13 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
                 res.add(ari, ci, a.data(ap) * b.data(bp))
                 ap += 1
                 bp += 1
-              } else if (ari < bri) {
+              } else if (ari < bri)
                 // next b row starts further down, therefore increase a pointer
                 ap += 1
-              } else
-                /* ari > bri */ {
-                  // next a row starts further down, therefore increase b pointer
-                  bp += 1
-                }
+              else
+                /* ari > bri */
+                // next a row starts further down, therefore increase b pointer
+                bp += 1
             }
             ci = ci1
           }
@@ -689,9 +688,9 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
               lastOffset,
               math.min(b.activeSize, c + 1),
               c)
-            if (newBOffset < 0) {
+            if (newBOffset < 0)
               lastOffset = ~newBOffset
-            } else {
+            else {
               while (rr < rrlast) {
                 val r = a.rowIndices(rr)
                 res.add(r, a.data(rr) * b.valueAt(newBOffset))
@@ -1018,9 +1017,9 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
               lastOffset,
               math.min(b.activeSize, c + 1),
               c)
-            if (newBOffset < 0) {
+            if (newBOffset < 0)
               lastOffset = ~newBOffset
-            } else {
+            else {
               while (rr < rrlast) {
                 val r = a.rowIndices(rr)
                 res.add(r, ring.*(a.data(rr), b.valueAt(newBOffset)))
@@ -1223,9 +1222,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         require(cols == b.cols, "Matrices must have same number of cols!")
 
         val builder = new CSCMatrix.Builder[R](rows, cols)
-        for (c <- 0 until cols; r <- 0 until rows) {
+        for (c <- 0 until cols; r <- 0 until rows)
           builder.add(r, c, fn((r, c), a(r, c), b(r, c)))
-        }
 
         builder.result(true, true)
       }
@@ -1241,9 +1239,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
         require(cols == b.cols, "Matrices must have same number of cols!")
 
         val builder = new CSCMatrix.Builder[R](rows, cols)
-        for (c <- 0 until cols; r <- 0 until rows) {
+        for (c <- 0 until cols; r <- 0 until rows)
           builder.add(r, c, fn((r, c), a(r, c), b(r, c)))
-        }
 
         builder.result(true, true)
       }
@@ -1386,14 +1383,13 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
                 res.add(ari, ci, ring.*(a.data(ap), b.data(bp)))
                 ap += 1
                 bp += 1
-              } else if (ari < bri) {
+              } else if (ari < bri)
                 // next b row starts further down, therefore increase a pointer
                 ap += 1
-              } else
-                /* ari > bri */ {
-                  // next a row starts further down, therefore increase b pointer
-                  bp += 1
-                }
+              else
+                /* ari > bri */
+                // next a row starts further down, therefore increase b pointer
+                bp += 1
             }
             ci = ci1
           }
@@ -1521,11 +1517,11 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
   @expand
   implicit def csc_T_Op[
       @expand.args(OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](implicit @expand.sequence[Op]({ f./(_, _) }, {
-    f.%(_, _)
-  }, {
-    f.pow(_, _)
-  }) op: Op.Impl2[T, T, T]): Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] = {
+      T: Field: ClassTag](implicit @expand.sequence[Op](
+    f./(_, _),
+    f.%(_, _),
+    f.pow(_, _)) op: Op.Impl2[T, T, T])
+      : Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] = {
     val f = implicitly[Field[T]]
     new Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: T): CSCMatrix[T] =
@@ -1574,9 +1570,10 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
   @expand
   implicit def csc_csc_BadOp[
       @expand.args(OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](implicit @expand.sequence[Op]({ f./(_, _) }, {
-    f.%(_, _)
-  }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: ClassTag](implicit @expand.sequence[Op](
+    f./(_, _),
+    f.%(_, _),
+    f.pow(_, _)) op: Op.Impl2[T, T, T])
       : Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
     val f = implicitly[Field[T]]
     def computeZeroOpOnRange(arr: Array[T], start: Int, end: Int) {
@@ -1616,10 +1613,10 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           val ci1 = ci + 1
           var bp = bpStop
           bpStop = b.colPtrs(ci1)
-          if (bp == bpStop) {
+          if (bp == bpStop)
             // No data in column
             computeZeroOpOnRange(nData, ci * cols, ci1 * cols)
-          } else {
+          else {
             // data in column
             var rL = 0
             while (bp < bpStop) {

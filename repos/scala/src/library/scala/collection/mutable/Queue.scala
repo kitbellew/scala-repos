@@ -91,9 +91,8 @@ class Queue[A]
   private def removeFromList(p: A => Boolean): Option[A] = {
     var leftlst = first0
     var res: Option[A] = None
-    while (leftlst.next.nonEmpty && !p(leftlst.next.elem)) {
+    while (leftlst.next.nonEmpty && !p(leftlst.next.elem))
       leftlst = leftlst.next
-    }
     if (leftlst.next.nonEmpty) {
       res = Some(leftlst.next.elem)
       if (leftlst.next eq last0) last0 = leftlst
@@ -127,14 +126,13 @@ class Queue[A]
       p: A => Boolean,
       res: ArrayBuffer[A]): ArrayBuffer[A] = {
     var leftlst = first0
-    while (leftlst.next.nonEmpty) {
+    while (leftlst.next.nonEmpty)
       if (p(leftlst.next.elem)) {
         res += leftlst.next.elem
         if (leftlst.next eq last0) last0 = leftlst
         leftlst.next = leftlst.next.next
         decrementLength()
       } else leftlst = leftlst.next
-    }
     res
   }
 
@@ -150,9 +148,8 @@ class Queue[A]
     if (isEmpty) None
     else {
       var cell = start
-      while ((cell.next.nonEmpty) && !p(cell.next.elem)) {
+      while ((cell.next.nonEmpty) && !p(cell.next.elem))
         cell = cell.next
-      }
       if (cell.next.isEmpty)
         None
       else {

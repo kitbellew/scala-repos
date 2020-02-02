@@ -254,16 +254,14 @@ abstract class AggregationIterator(
       val resultProjection = UnsafeProjection.create(
         groupingAttributes ++ bufferAttributes,
         groupingAttributes ++ bufferAttributes)
-      (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) => {
+      (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) =>
         resultProjection(joinedRow(currentGroupingKey, currentBuffer))
-      }
     } else {
       // Grouping-only: we only output values based on grouping expressions.
       val resultProjection =
         UnsafeProjection.create(resultExpressions, groupingAttributes)
-      (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) => {
+      (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) =>
         resultProjection(currentGroupingKey)
-      }
     }
   }
 

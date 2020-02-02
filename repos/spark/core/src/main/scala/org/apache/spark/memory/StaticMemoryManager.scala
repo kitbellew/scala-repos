@@ -47,9 +47,8 @@ private[spark] class StaticMemoryManager(
   }
 
   // Max number of bytes worth of blocks to evict when unrolling
-  private val maxUnrollMemory: Long = {
+  private val maxUnrollMemory: Long =
     (maxStorageMemory * conf.getDouble("spark.storage.unrollFraction", 0.2)).toLong
-  }
 
   override def acquireStorageMemory(blockId: BlockId, numBytes: Long): Boolean =
     synchronized {
@@ -59,9 +58,8 @@ private[spark] class StaticMemoryManager(
           s"Will not store $blockId as the required space ($numBytes bytes) exceeds our " +
             s"memory limit ($maxStorageMemory bytes)")
         false
-      } else {
+      } else
         storageMemoryPool.acquireMemory(blockId, numBytes)
-      }
     }
 
   override def acquireUnrollMemory(blockId: BlockId, numBytes: Long): Boolean =

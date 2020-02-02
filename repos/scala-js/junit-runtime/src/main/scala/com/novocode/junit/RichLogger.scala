@@ -89,39 +89,35 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     var i = top
     while (i <= m2) {
       if (trace(i).toString.startsWith("org.junit.") ||
-          trace(i).toString.startsWith("org.hamcrest.")) {
-        if (i == top) {
+          trace(i).toString.startsWith("org.hamcrest."))
+        if (i == top)
           top += 1
-        } else {
+        else {
           m2 = i - 1
           var break = false
           while (m2 > top && !break) {
             val s = trace(m2).toString
             if (!s.startsWith("java.lang.reflect.") &&
-                !s.startsWith("sun.reflect.")) {
+                !s.startsWith("sun.reflect."))
               break = true
-            } else {
+            else
               m2 -= 1
-            }
           }
           i = m2 // break
         }
-      }
       i += 1
     }
 
-    for (i <- top to m2) {
+    for (i <- top to m2)
       error(
         "    at " +
           stackTraceElementToString(trace(i), testClassName, testFileName))
-    }
-    if (m0 != m2) {
+    if (m0 != m2)
       // skip junit-related frames
       error("    ...")
-    } else if (framesInCommon != 0) {
+    else if (framesInCommon != 0)
       // skip frames that were in the previous trace too
       error("    ... " + framesInCommon + " more")
-    }
     logStackTraceAsCause(trace, t.getCause, testClassName, testFileName)
   }
 
@@ -167,11 +163,11 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     r += settings.decodeName(e.getClassName + '.' + e.getMethodName)
     r += '('
 
-    if (e.isNativeMethod) {
+    if (e.isNativeMethod)
       r += c("Native Method", if (highlight) TESTFILE2 else null)
-    } else if (e.getFileName == null) {
+    else if (e.getFileName == null)
       r += c("Unknown Source", if (highlight) TESTFILE2 else null)
-    } else {
+    else {
       r += c(e.getFileName, if (highlight) TESTFILE1 else null)
       if (e.getLineNumber >= 0) {
         r += ':'

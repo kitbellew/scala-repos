@@ -91,9 +91,8 @@ object SbtWatcherMain {
 
           watcher.startSbtExec(argsTail.toArray, cons)
 
-          if (watcher.isRunning) {
+          if (watcher.isRunning)
             currentExec = Some((watcher, cons, argsTail))
-          }
         }
 
         currentExec match {
@@ -103,9 +102,7 @@ object SbtWatcherMain {
             val newDelegate = delegate
             cons.delegate = newDelegate
             Thread.sleep(550)
-            do {
-              Thread.sleep(WAIT_TIME)
-            } while (!cons.messages.isEmpty)
+            do Thread.sleep(WAIT_TIME) while (!cons.messages.isEmpty)
 
             cons.delegate = oldDelegate
           case Some((watcher, _, args))

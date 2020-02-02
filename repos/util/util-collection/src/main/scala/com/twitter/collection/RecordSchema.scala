@@ -101,14 +101,13 @@ final class RecordSchema {
     @throws(classOf[IllegalStateException])
     def update[A](field: Field[A], value: A): Record = {
       val entry = fields.get(field)
-      if (entry eq null) {
+      if (entry eq null)
         fields.put(field, new Entry(value))
-      } else if (entry.locked) {
+      else if (entry.locked)
         throw new IllegalStateException(
           s"attempt to assign $value to a locked field (with current value ${entry.value})")
-      } else {
+      else
         entry.value = value
-      }
       this
     }
 
@@ -169,11 +168,10 @@ final class RecordSchema {
     def copy[A](field: Field[A], value: A): Record = {
       val newFields = copyFields()
       val entry = newFields.get(field)
-      if (entry eq null) {
+      if (entry eq null)
         newFields.put(field, new Entry(value))
-      } else {
+      else
         entry.value = value
-      }
       new Record(newFields)
     }
   }

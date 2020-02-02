@@ -86,7 +86,7 @@ object TestConfigurationUtil {
     val twoArgMethods = Seq("replace", "substring")
 
     def processNoArgMethods(refExpr: ScReferenceExpression) =
-      if (refExpr.refName == "toString") {
+      if (refExpr.refName == "toString")
         //special handling for now, since only toString is allowed on integers
         refExpr.smartQualifier.flatMap(
           getStaticTestNameElement(_, allowSymbolLiterals) match {
@@ -94,7 +94,7 @@ object TestConfigurationUtil {
             case Some(number: Number) => Some(number.toString)
             case _                    => None
           })
-      } else
+      else
         refExpr.smartQualifier
           .flatMap(getStaticTestNameRaw(_, allowSymbolLiterals))
           .flatMap { expr =>

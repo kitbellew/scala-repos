@@ -617,8 +617,7 @@ trait MatchTranslation {
           (
             if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
                 (paramAccessors exists (x =>
-                  x.isMutable || definitions.isRepeated(x)))) {
-
+                  x.isMutable || definitions.isRepeated(x))))
               subPatBinders.zipWithIndex.flatMap {
                 case (binder, idx) =>
                   val param = paramAccessorAt(idx)
@@ -626,7 +625,7 @@ trait MatchTranslation {
                     binder :: Nil
                   else Nil
               }
-            } else Nil
+            else Nil
           )
 
         // checks binder ne null before chaining to the next extractor

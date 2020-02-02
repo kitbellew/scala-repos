@@ -427,18 +427,16 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         sessionState.catalog.lookupRelation(TableIdentifier(tableName)))
       relation match {
         case LogicalRelation(r: HadoopFsRelation, _, _) =>
-          if (!isDataSourceParquet) {
+          if (!isDataSourceParquet)
             fail(
               s"${classOf[MetastoreRelation].getCanonicalName} is expected, but found " +
                 s"${HadoopFsRelation.getClass.getCanonicalName}.")
-          }
 
         case r: MetastoreRelation =>
-          if (isDataSourceParquet) {
+          if (isDataSourceParquet)
             fail(
               s"${HadoopFsRelation.getClass.getCanonicalName} is expected, but found " +
                 s"${classOf[MetastoreRelation].getCanonicalName}.")
-          }
       }
     }
 
@@ -903,9 +901,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
       sql("DROP TABLE explodeTest")
       dropTempTable("data")
-    } finally {
-      setConf(HiveContext.CONVERT_CTAS, originalConf)
-    }
+    } finally setConf(HiveContext.CONVERT_CTAS, originalConf)
   }
 
   test("sanity test for SPARK-6618") {
@@ -1431,12 +1427,11 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         // To make sure this test works, this jar should not be loaded in another place.
         sql(
           s"ADD JAR ${hiveContext.getHiveFile("hive-contrib-0.13.1.jar").getCanonicalPath()}")
-        try {
-          sql("""
+        try sql("""
               |CREATE TEMPORARY FUNCTION example_max
               |AS 'org.apache.hadoop.hive.contrib.udaf.example.UDAFExampleMax'
             """.stripMargin)
-        } catch {
+        catch {
           case throwable: Throwable =>
             error = Some(throwable)
         }

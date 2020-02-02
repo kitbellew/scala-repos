@@ -120,11 +120,9 @@ class AutoOffsetResetTest extends KafkaServerTestHarness with Logging {
 
     var received = 0
     val iter = messageStream.iterator
-    try {
-      for (i <- 0 until numMessages) {
-        iter.next // will throw a timeout exception if the message isn't there
-        received += 1
-      }
+    try for (i <- 0 until numMessages) {
+      iter.next // will throw a timeout exception if the message isn't there
+      received += 1
     } catch {
       case e: ConsumerTimeoutException =>
         info("consumer timed out after receiving " + received + " messages.")

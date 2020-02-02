@@ -119,10 +119,9 @@ object HttpDtab {
     if (dtab.isEmpty)
       return
 
-    if (dtab.size >= Maxsize) {
+    if (dtab.size >= Maxsize)
       throw new IllegalArgumentException(
         "Dtabs with length greater than 100 are not serializable with HTTP")
-    }
 
     for ((Dentry(prefix, dst), i) <- dtab.zipWithIndex) {
       // TODO: now that we have a proper Dtab grammar,

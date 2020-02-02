@@ -90,12 +90,11 @@ private[streaming] class FileBasedWriteAheadLog(
       var failures = 0
       var lastException: Exception = null
       var succeeded = false
-      while (!succeeded && failures < maxFailures) {
+      while (!succeeded && failures < maxFailures)
         try {
           fileSegment = getLogWriter(time).write(byteBuffer)
-          if (closeFileAfterWrite) {
+          if (closeFileAfterWrite)
             resetWriter()
-          }
           succeeded = true
         } catch {
           case ex: Exception =>
@@ -104,7 +103,6 @@ private[streaming] class FileBasedWriteAheadLog(
             resetWriter()
             failures += 1
         }
-      }
       if (fileSegment == null) {
         logError(s"Failed to write to write ahead log after $failures failures")
         throw lastException
@@ -120,9 +118,7 @@ private[streaming] class FileBasedWriteAheadLog(
       reader =
         new FileBasedWriteAheadLogRandomReader(fileSegment.path, hadoopConf)
       byteBuffer = reader.read(fileSegment)
-    } finally {
-      reader.close()
-    }
+    } finally reader.close()
     byteBuffer
   }
 
@@ -145,13 +141,12 @@ private[streaming] class FileBasedWriteAheadLog(
         reader,
         reader.close _)
     }
-    if (!closeFileAfterWrite) {
+    if (!closeFileAfterWrite)
       logFilesToRead.iterator.map(readFile).flatten.asJava
-    } else {
+    else
       // For performance gains, it makes sense to parallelize the recovery if
       // closeFileAfterWrite = true
       seqToParIterator(executionContext, logFilesToRead, readFile).asJava
-    }
   }
 
   /**
@@ -189,7 +184,7 @@ private[streaming] class FileBasedWriteAheadLog(
       logInfo(s"Cleared log files in $logDirectory older than $threshTime")
     }
     oldLogFiles.foreach { logInfo =>
-      if (!executionContext.isShutdown) {
+      if (!executionContext.isShutdown)
         try {
           val f = Future { deleteFile(logInfo) }(executionContext)
           if (waitForCompletion) {
@@ -203,15 +198,13 @@ private[streaming] class FileBasedWriteAheadLog(
                 "This would not affect recovery correctness.",
               e)
         }
-      }
     }
   }
 
   /** Stop the manager, close any open log writer */
   def close(): Unit = synchronized {
-    if (currentLogWriter != null) {
+    if (currentLogWriter != null)
       currentLogWriter.close()
-    }
     executionContext.shutdown()
     logInfo("Stopped write ahead log manager")
   }

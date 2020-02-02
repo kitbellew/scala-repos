@@ -66,9 +66,7 @@ class LauncherBackendSuite extends SparkFunSuite with Matchers {
       eventually(timeout(30 seconds), interval(100 millis)) {
         handle.getState() should be(SparkAppHandle.State.KILLED)
       }
-    } finally {
-      handle.kill()
-    }
+    } finally handle.kill()
   }
 
 }

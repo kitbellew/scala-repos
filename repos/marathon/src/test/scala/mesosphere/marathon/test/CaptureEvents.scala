@@ -28,9 +28,8 @@ class CaptureEvents(eventStream: EventStream) {
     eventStream.subscribe(captureEventsActor, classOf[MarathonEvent])
     eventStream.subscribe(captureEventsActor, classOf[String])
 
-    try {
-      block
-    } finally {
+    try block
+    finally {
       eventStream.unsubscribe(captureEventsActor)
       captureEventsActor ! PoisonPill
       val probe = TestProbe()

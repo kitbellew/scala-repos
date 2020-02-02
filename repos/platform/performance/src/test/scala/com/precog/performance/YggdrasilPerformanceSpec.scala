@@ -122,13 +122,13 @@ histogram
 
       def test(i: Int) = {
         val threads = (0.until(threadCount)) map { i =>
-          if (i == 0) {
+          if (i == 0)
             new Thread {
               override def run() {
                 insert(bifrost, Path("/test/insert_set"), 2, 10000, 1)
               }
             }
-          } else {
+          else
             new Thread {
               val rand = new java.util.Random()
               override def run() {
@@ -145,7 +145,6 @@ histogram
                 }
               }
             }
-          }
         }
 
         threads.foreach { _.start }

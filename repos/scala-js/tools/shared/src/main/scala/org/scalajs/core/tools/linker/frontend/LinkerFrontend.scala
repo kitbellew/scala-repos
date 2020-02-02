@@ -64,9 +64,9 @@ final class LinkerFrontend(
     }
 
     optOptimizer.fold(linkResult) { optimizer =>
-      if (linkResult.isComplete) {
+      if (linkResult.isComplete)
         optimize(linkResult, symbolRequirements, optimizer, logger)
-      } else {
+      else {
         logger.warn(
           "Not running the optimizer because there where linking errors.")
         linkResult

@@ -19,28 +19,25 @@ object Protocols {
 
   // based on guava's UnsignedBytes.getUnsafe()
   private[this] def getUnsafe: sun.misc.Unsafe =
-    try {
-      sun.misc.Unsafe.getUnsafe()
-    } catch {
+    try sun.misc.Unsafe.getUnsafe()
+    catch {
       case NonFatal(_) => // try reflection instead
-        try {
-          AccessController.doPrivileged(
-            new PrivilegedExceptionAction[sun.misc.Unsafe]() {
-              def run(): sun.misc.Unsafe = {
-                val k = classOf[sun.misc.Unsafe]
-                for (f <- k.getDeclaredFields) {
-                  f.setAccessible(true)
-                  val x = f.get(null)
-                  if (k.isInstance(x)) {
-                    return k.cast(x)
-                  }
-                }
-                throw new NoSuchFieldException(
-                  "the Unsafe"
-                ) // fall through to the catch block below
+        try AccessController.doPrivileged(
+          new PrivilegedExceptionAction[sun.misc.Unsafe]() {
+            def run(): sun.misc.Unsafe = {
+              val k = classOf[sun.misc.Unsafe]
+              for (f <- k.getDeclaredFields) {
+                f.setAccessible(true)
+                val x = f.get(null)
+                if (k.isInstance(x))
+                  return k.cast(x)
               }
-            })
-        } catch {
+              throw new NoSuchFieldException(
+                "the Unsafe"
+              ) // fall through to the catch block below
+            }
+          })
+        catch {
           case NonFatal(t) =>
             Logger
               .get()
@@ -63,9 +60,9 @@ object Protocols {
       readLength: Int = 0,
       statsReceiver: StatsReceiver = DefaultStatsReceiver
   ): TProtocolFactory =
-    if (!optimizedBinarySupported) {
+    if (!optimizedBinarySupported)
       new TBinaryProtocol.Factory(strictRead, strictWrite, readLength)
-    } else {
+    else {
       // Factories are created rarely while the creation of their TProtocol's
       // is a common event. Minimize counter creation to just once per Factory.
       val fastEncodeFailed = statsReceiver.counter("fast_encode_failed")
@@ -79,9 +76,8 @@ object Protocols {
             largerThanTlOutBuffer,
             strictRead,
             strictWrite)
-          if (readLength != 0) {
+          if (readLength != 0)
             proto.setReadLength(readLength)
-          }
           proto
         }
       }
@@ -112,9 +108,8 @@ object Protocols {
       */
     private val OffsetValueOffset: Long = unsafe
       .map { u =>
-        try {
-          u.objectFieldOffset(classOf[String].getDeclaredField("offset"))
-        } catch {
+        try u.objectFieldOffset(classOf[String].getDeclaredField("offset"))
+        catch {
           case NonFatal(_) => Long.MinValue
         }
       }
@@ -126,9 +121,8 @@ object Protocols {
       */
     private val CountValueOffset: Long = unsafe
       .map { u =>
-        try {
-          u.objectFieldOffset(classOf[String].getDeclaredField("count"))
-        } catch {
+        try u.objectFieldOffset(classOf[String].getDeclaredField("count"))
+        catch {
           case NonFatal(_) => Long.MinValue
         }
       }
@@ -177,14 +171,12 @@ object Protocols {
       val chars = u.getObject(str, StringValueOffset).asInstanceOf[Array[Char]]
       val offset =
         if (OffsetValueOffset == Long.MinValue) 0
-        else {
+        else
           u.getInt(str, OffsetValueOffset)
-        }
       val count =
         if (CountValueOffset == Long.MinValue) chars.length
-        else {
+        else
           u.getInt(str, CountValueOffset)
-        }
       val charBuffer = CharBuffer.wrap(chars, offset, count)
 
       val out = if (count * MultiByteMultiplierEstimate <= OutBufferSize) {

@@ -210,39 +210,37 @@ object GlobalSettings {
       configuration.getString("application.global").getOrElse("Global")
 
     def javaGlobal: Option[play.GlobalSettings] =
-      try {
-        Option(
-          environment.classLoader
-            .loadClass(globalClass)
-            .newInstance()
-            .asInstanceOf[play.GlobalSettings])
-      } catch {
+      try Option(
+        environment.classLoader
+          .loadClass(globalClass)
+          .newInstance()
+          .asInstanceOf[play.GlobalSettings])
+      catch {
         case e: InstantiationException => None
         case e: ClassNotFoundException => None
       }
 
     def scalaGlobal: GlobalSettings =
-      try {
-        environment.classLoader
-          .loadClass(globalClass + "$")
-          .getDeclaredField("MODULE$")
-          .get(null)
-          .asInstanceOf[GlobalSettings]
-      } catch {
+      try environment.classLoader
+        .loadClass(globalClass + "$")
+        .getDeclaredField("MODULE$")
+        .get(null)
+        .asInstanceOf[GlobalSettings]
+      catch {
         case e: ClassNotFoundException
             if !configuration.getString("application.global").isDefined =>
           DefaultGlobal
-        case e if configuration.getString("application.global").isDefined => {
+        case e if configuration.getString("application.global").isDefined =>
           throw configuration.reportError(
             "application.global",
             s"Cannot initialize the custom Global object ($globalClass) (perhaps it's a wrong reference?)",
             Some(e))
-        }
       }
 
-    try {
-      javaGlobal.map(new j.JavaGlobalSettingsAdapter(_)).getOrElse(scalaGlobal)
-    } catch {
+    try javaGlobal
+      .map(new j.JavaGlobalSettingsAdapter(_))
+      .getOrElse(scalaGlobal)
+    catch {
       case e: PlayException       => throw e
       case e: ThreadDeath         => throw e
       case e: VirtualMachineError => throw e

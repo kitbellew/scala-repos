@@ -1254,18 +1254,16 @@ object BinderSpecs
 
   val exampleDir = new File("quirrel/examples")
 
-  if (exampleDir.exists) {
+  if (exampleDir.exists)
     "specification examples" >> {
-      for (file <- exampleDir.listFiles if file.getName endsWith ".qrl") {
+      for (file <- exampleDir.listFiles if file.getName endsWith ".qrl")
         file.getName >> {
           val result = parseSingle(LineStream(Source.fromFile(file)))
           result.errors must beEmpty
         }
-      }
     }
-  } else {
+  else
     "specification examples" >> skipped
-  }
 
   private def parseSingle(str: LineStream): Expr = {
     val set = parse(str)

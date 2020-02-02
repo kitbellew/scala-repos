@@ -264,12 +264,10 @@ class LogCleaner(
               cleaner.stats)
           } catch {
             case pe: LogCleaningAbortedException => // task can be aborted, let it go.
-          } finally {
-            cleanerManager.doneCleaning(
-              cleanable.topicPartition,
-              cleanable.log.dir.getParentFile,
-              endOffset)
-          }
+          } finally cleanerManager.doneCleaning(
+            cleanable.topicPartition,
+            cleanable.log.dir.getParentFile,
+            endOffset)
       }
     }
 
@@ -317,11 +315,10 @@ class LogCleaner(
             100.0 * (1.0 - stats.bytesWritten.toDouble / stats.bytesRead),
             100.0 * (1.0 - stats.messagesWritten.toDouble / stats.messagesRead))
       info(message)
-      if (stats.invalidMessagesRead > 0) {
+      if (stats.invalidMessagesRead > 0)
         warn(
           "\tFound %d invalid messages during compaction.".format(
             stats.invalidMessagesRead))
-      }
     }
 
   }
@@ -547,7 +544,7 @@ private[log] class Cleaner(
                   source,
                   map,
                   retainDeletes,
-                  messageAndOffset)) {
+                  messageAndOffset))
               retainedMessages += {
                 if (messageAndOffset.message.magic != messageFormatVersion) {
                   writeOriginalMessageSet = false
@@ -557,7 +554,7 @@ private[log] class Cleaner(
                     messageAndOffset.offset)
                 } else messageAndOffset
               }
-            } else writeOriginalMessageSet = false
+            else writeOriginalMessageSet = false
           }
 
           // There are no messages compacted out and no message format conversion, write the original message set back
@@ -597,9 +594,9 @@ private[log] class Cleaner(
       messageFormatVersion: Byte,
       messageAndOffsets: Seq[MessageAndOffset]) {
     val messages = messageAndOffsets.map(_.message)
-    if (messageAndOffsets.isEmpty) {
+    if (messageAndOffsets.isEmpty)
       MessageSet.Empty.sizeInBytes
-    } else if (compressionCodec == NoCompressionCodec) {
+    else if (compressionCodec == NoCompressionCodec) {
       for (messageOffset <- messageAndOffsets)
         ByteBufferMessageSet.writeMessage(
           buffer,
@@ -623,25 +620,21 @@ private[log] class Cleaner(
         magicValue = messageFormatVersion) { outputStream =>
         val output = new DataOutputStream(
           CompressionFactory(compressionCodec, outputStream))
-        try {
-          for (messageOffset <- messageAndOffsets) {
-            val message = messageOffset.message
-            offset = messageOffset.offset
-            if (messageFormatVersion > Message.MagicValue_V0) {
-              // The offset of the messages are absolute offset, compute the inner offset.
-              val innerOffset = messageOffset.offset - firstAbsoluteOffset
-              output.writeLong(innerOffset)
-            } else
-              output.writeLong(offset)
-            output.writeInt(message.size)
-            output.write(
-              message.buffer.array,
-              message.buffer.arrayOffset,
-              message.buffer.limit)
-          }
-        } finally {
-          output.close()
-        }
+        try for (messageOffset <- messageAndOffsets) {
+          val message = messageOffset.message
+          offset = messageOffset.offset
+          if (messageFormatVersion > Message.MagicValue_V0) {
+            // The offset of the messages are absolute offset, compute the inner offset.
+            val innerOffset = messageOffset.offset - firstAbsoluteOffset
+            output.writeLong(innerOffset)
+          } else
+            output.writeLong(offset)
+          output.writeInt(message.size)
+          output.write(
+            message.buffer.array,
+            message.buffer.arrayOffset,
+            message.buffer.limit)
+        } finally output.close()
       }
       ByteBufferMessageSet.writeMessage(buffer, messageWriter, offset)
       stats.recopyMessage(messageWriter.size + MessageSet.LogOverhead)

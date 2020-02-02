@@ -89,11 +89,10 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
           && r
             .getHeader("Content-Type")
             .split(";")(0)
-            .equalsIgnoreCase("APPLICATION/X-WWW-FORM-URLENCODED")) {
+            .equalsIgnoreCase("APPLICATION/X-WWW-FORM-URLENCODED"))
         rl.MapQueryString.parseString(body)
-      } else {
+      else
         Map.empty
-      }
     }
     // At the very least in jetty 8 we see problems under load related to this
     if (r.getQueryString.nonBlank && r.getParameterMap.isEmpty) {
@@ -202,14 +201,14 @@ case class RichRequest(r: HttpServletRequest) extends AttributesMap {
   def body: String =
     cachedBody getOrElse {
       val encoding = r.getCharacterEncoding
-      val enc = if (encoding == null || encoding.trim.length == 0) {
-        if (contentType.exists(_ equalsIgnoreCase "application/json")) "UTF-8"
-        else "ISO-8859-1"
-      } else encoding
+      val enc =
+        if (encoding == null || encoding.trim.length == 0)
+          if (contentType.exists(_ equalsIgnoreCase "application/json")) "UTF-8"
+          else "ISO-8859-1"
+        else encoding
       val body: String =
-        try {
-          Source.fromInputStream(r.getInputStream, enc).mkString
-        } catch { case e: java.io.IOException => "" }
+        try Source.fromInputStream(r.getInputStream, enc).mkString
+        catch { case e: java.io.IOException => "" }
       update(cachedBodyKey, body)
       body
     }

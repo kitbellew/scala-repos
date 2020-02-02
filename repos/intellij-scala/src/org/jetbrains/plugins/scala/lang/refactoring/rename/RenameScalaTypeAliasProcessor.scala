@@ -59,9 +59,8 @@ class RenameScalaTypeAliasProcessor
       case _              => return
     }
 
-    for (elem <- ScalaOverridingMemberSearcher.search(typeAlias, deep = true)) {
+    for (elem <- ScalaOverridingMemberSearcher.search(typeAlias, deep = true))
       allRenames.put(elem, newName)
-    }
 
     ScalaElementToRenameContributor.getAll(element, newName, allRenames)
   }

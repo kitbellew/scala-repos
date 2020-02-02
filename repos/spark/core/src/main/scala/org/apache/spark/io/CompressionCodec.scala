@@ -88,16 +88,15 @@ private[spark] object CompressionCodec {
     * If it is already a short name, just return it.
     */
   def getShortName(codecName: String): String =
-    if (shortCompressionCodecNames.contains(codecName)) {
+    if (shortCompressionCodecNames.contains(codecName))
       codecName
-    } else {
+    else
       shortCompressionCodecNames
         .collectFirst { case (k, v) if v == codecName => k }
         .getOrElse {
           throw new IllegalArgumentException(
             s"No short name for codec $codecName.")
         }
-    }
 
   val FALLBACK_COMPRESSION_CODEC = "snappy"
   val DEFAULT_COMPRESSION_CODEC = "lz4"
@@ -174,9 +173,8 @@ class SnappyCompressionCodec(conf: SparkConf) extends CompressionCodec {
   */
 private final object SnappyCompressionCodec {
   private lazy val version: String =
-    try {
-      Snappy.getNativeLibraryVersion
-    } catch {
+    try Snappy.getNativeLibraryVersion
+    catch {
       case e: Error => throw new IllegalArgumentException(e)
     }
 }
@@ -192,30 +190,26 @@ private final class SnappyOutputStreamWrapper(os: SnappyOutputStream)
   private[this] var closed: Boolean = false
 
   override def write(b: Int): Unit = {
-    if (closed) {
+    if (closed)
       throw new IOException("Stream is closed")
-    }
     os.write(b)
   }
 
   override def write(b: Array[Byte]): Unit = {
-    if (closed) {
+    if (closed)
       throw new IOException("Stream is closed")
-    }
     os.write(b)
   }
 
   override def write(b: Array[Byte], off: Int, len: Int): Unit = {
-    if (closed) {
+    if (closed)
       throw new IOException("Stream is closed")
-    }
     os.write(b, off, len)
   }
 
   override def flush(): Unit = {
-    if (closed) {
+    if (closed)
       throw new IOException("Stream is closed")
-    }
     os.flush()
   }
 

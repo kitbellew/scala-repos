@@ -56,9 +56,8 @@ class ConcurrentMemoryLaws extends WordSpec {
     val leftMap = left.groupBy(identity).mapValues(_.size)
     val rightMap = right.groupBy(identity).mapValues(_.size)
     val eqv = leftMap == rightMap
-    if (!eqv) {
+    if (!eqv)
       println(s"from Queue: $leftMap\nfrom scala: $rightMap")
-    }
     eqv
   }
 

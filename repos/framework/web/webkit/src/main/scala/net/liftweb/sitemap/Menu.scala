@@ -505,9 +505,7 @@ object Menu extends MenuSingleton {
         for {
           (path, paramList) <- extractAndConvertPath(in)
           toConvert <- listToFrom(paramList)
-        } yield {
-          path -> parser(toConvert)
-        }
+        } yield path -> parser(toConvert)
     }
 
     /**
@@ -517,9 +515,8 @@ object Menu extends MenuSingleton {
       Full(NamedPF(locPath.toString) {
         case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
             if param.isDefined || params.contains(
-              Loc.MatchWithoutCurrentValue) => {
+              Loc.MatchWithoutCurrentValue) =>
           RewriteResponse(path, true) -> param
-        }
       })
 
     def headMatch: Boolean
@@ -542,31 +539,27 @@ object Menu extends MenuSingleton {
       def doExtract(op: List[String], mp: List[LocPath]): Boolean =
         (op, mp) match {
           case (Nil, Nil) => true
-          case (o :: Nil, Nil) => {
+          case (o :: Nil, Nil) =>
             retParams += o
             headMatch || !gotStar
-          }
 
           case (op, Nil)                                     => retParams ++= op; headMatch
           case (Nil, _)                                      => false
           case (o :: _, NormalLocPath(str) :: _) if o != str => false
-          case (o :: os, * :: ms) => {
+          case (o :: os, * :: ms) =>
             gotStar = true
             retParams += o
             retPath += *.pathItem
             doExtract(os, ms)
-          }
-          case (o :: os, _ :: ms) => {
+          case (o :: os, _ :: ms) =>
             retPath += o
             doExtract(os, ms)
-          }
         }
 
-      if (doExtract(org, locPath)) {
+      if (doExtract(org, locPath))
         Full((retPath.toList, retParams.toList))
-      } else {
+      else
         Empty
-      }
     }
   }
 

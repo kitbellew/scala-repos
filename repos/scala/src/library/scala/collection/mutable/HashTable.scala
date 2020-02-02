@@ -191,7 +191,7 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   protected def removeEntry(key: A): Entry = {
     val h = index(elemHashCode(key))
     var e = table(h).asInstanceOf[Entry]
-    if (e != null) {
+    if (e != null)
       if (elemEquals(e.key, key)) {
         table(h) = e.next
         tableSize = tableSize - 1
@@ -210,7 +210,6 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
           return e1
         }
       }
-    }
     null
   }
 
@@ -301,16 +300,16 @@ trait HashTable[A, Entry >: Null <: HashEntry[A, Entry]]
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def nnSizeMapAdd(h: Int) = if (sizemap ne null) {
-    sizemap(h >> sizeMapBucketBitSize) += 1
-  }
+  protected def nnSizeMapAdd(h: Int) =
+    if (sizemap ne null)
+      sizemap(h >> sizeMapBucketBitSize) += 1
 
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def nnSizeMapRemove(h: Int) = if (sizemap ne null) {
-    sizemap(h >> sizeMapBucketBitSize) -= 1
-  }
+  protected def nnSizeMapRemove(h: Int) =
+    if (sizemap ne null)
+      sizemap(h >> sizeMapBucketBitSize) -= 1
 
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",

@@ -63,12 +63,11 @@ object Dispatchers {
   val MAILBOX_TYPE: MailboxType =
     if (MAILBOX_CAPACITY < 1) UnboundedMailbox() else BoundedMailbox()
 
-  lazy val defaultGlobalDispatcher = {
+  lazy val defaultGlobalDispatcher =
     config
       .getSection("akka.actor.default-dispatcher")
       .flatMap(from)
       .getOrElse(globalExecutorBasedEventDrivenDispatcher)
-  }
 
   object globalExecutorBasedEventDrivenDispatcher
       extends ExecutorBasedEventDrivenDispatcher(

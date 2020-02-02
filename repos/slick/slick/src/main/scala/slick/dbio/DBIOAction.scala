@@ -211,7 +211,12 @@ object DBIOAction {
     implicit val ec = DBIO.sameThreadExecutionContext
     def sequenceGroupAsM(
         g: Vector[DBIOAction[R, NoStream, E]]): DBIOAction[M[R], NoStream, E] =
-      if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
+      if (g.head.isInstanceOf[SynchronousDatabaseAction[
+            _,
+            _,
+            _,
+            _
+          ]]) // fuse synchronous group
         new SynchronousDatabaseAction.Fused[M[R], NoStream, BasicBackend, E] {
           def run(context: BasicBackend#Context) = {
             val b = cbf()
@@ -224,11 +229,16 @@ object DBIOAction {
           }
           override def nonFusedEquivalentAction = SequenceAction[R, M[R], E](g)
         }
-      } else SequenceAction[R, M[R], E](g)
+      else SequenceAction[R, M[R], E](g)
     def sequenceGroupAsSeq(g: Vector[DBIOAction[R, NoStream, E]])
         : DBIOAction[Seq[R], NoStream, E] =
-      if (g.length == 1) {
-        if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
+      if (g.length == 1)
+        if (g.head.isInstanceOf[SynchronousDatabaseAction[
+              _,
+              _,
+              _,
+              _
+            ]]) // fuse synchronous group
           new SynchronousDatabaseAction.Fused[Seq[R], NoStream, BasicBackend, E] {
             def run(context: BasicBackend#Context) =
               g.head
@@ -237,24 +247,27 @@ object DBIOAction {
                 .run(context) :: Nil
             override def nonFusedEquivalentAction = g.head.map(_ :: Nil)
           }
-        } else g.head.map(_ :: Nil)
-      } else {
-        if (g.head.isInstanceOf[SynchronousDatabaseAction[_, _, _, _]]) { // fuse synchronous group
-          new SynchronousDatabaseAction.Fused[Seq[R], NoStream, BasicBackend, E] {
-            def run(context: BasicBackend#Context) = {
-              val b = new ArrayBuffer[R](g.length)
-              g.foreach(a =>
-                b += a
-                  .asInstanceOf[
-                    SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
-                  .run(context))
-              b
-            }
-            override def nonFusedEquivalentAction =
-              SequenceAction[R, Seq[R], E](g)
+        else g.head.map(_ :: Nil)
+      else if (g.head.isInstanceOf[SynchronousDatabaseAction[
+                 _,
+                 _,
+                 _,
+                 _
+               ]]) // fuse synchronous group
+        new SynchronousDatabaseAction.Fused[Seq[R], NoStream, BasicBackend, E] {
+          def run(context: BasicBackend#Context) = {
+            val b = new ArrayBuffer[R](g.length)
+            g.foreach(a =>
+              b += a
+                .asInstanceOf[
+                  SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
+                .run(context))
+            b
           }
-        } else SequenceAction[R, Seq[R], E](g)
-      }
+          override def nonFusedEquivalentAction =
+            SequenceAction[R, Seq[R], E](g)
+        }
+      else SequenceAction[R, Seq[R], E](g)
     val grouped = groupBySynchronicity[R, E](
       in.asInstanceOf[TraversableOnce[DBIOAction[R, NoStream, E]]])
     grouped.length match {
@@ -720,12 +733,11 @@ object SynchronousDatabaseAction {
         new SynchronousDatabaseAction.Fused[R, S, BasicBackend, E] {
           def run(context: BasicBackend#Context): R = {
             val res =
-              try {
-                base
-                  .asInstanceOf[
-                    SynchronousDatabaseAction[R, S, BasicBackend, Effect]]
-                  .run(context)
-              } catch {
+              try base
+                .asInstanceOf[
+                  SynchronousDatabaseAction[R, S, BasicBackend, Effect]]
+                .run(context)
+              catch {
                 case NonFatal(ex) =>
                   try {
                     val a2 = f(Some(ex))

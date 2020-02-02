@@ -102,9 +102,21 @@ object Settings {
           sh <- shardPort
           shp <- shardPath
           sec <- secure
-        } yield {
-          Settings(h, i, t, ac, acp, au, aup, in, inp, j, jp, sh, shp, sec)
-        }
+        } yield Settings(
+          h,
+          i,
+          t,
+          ac,
+          acp,
+          au,
+          aup,
+          in,
+          inp,
+          j,
+          jp,
+          sh,
+          shp,
+          sec)
     }
 
     val lines = io.Source.fromFile(f).getLines

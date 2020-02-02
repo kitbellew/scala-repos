@@ -360,9 +360,8 @@ private[kafka] class ZookeeperConsumerConnector(
 
   def autoCommit() {
     trace("auto committing")
-    try {
-      commitOffsets(isAutoCommit = false)
-    } catch {
+    try commitOffsets(isAutoCommit = false)
+    catch {
       case t: Throwable =>
         // log it and let it go
         error("exception during autoCommit: ", t)
@@ -412,7 +411,7 @@ private[kafka] class ZookeeperConsumerConnector(
     while (!done) {
       val committed = offsetsChannelLock synchronized {
         // committed when we receive either no error codes or only MetadataTooLarge errors
-        if (offsetsToCommit.size > 0) {
+        if (offsetsToCommit.size > 0)
           if (config.offsetsStorage == "zookeeper") {
             offsetsToCommit.foreach {
               case (topicAndPartition, offsetAndMetadata) =>
@@ -438,7 +437,7 @@ private[kafka] class ZookeeperConsumerConnector(
                 commitFailed,
                 retryableIfFailed,
                 shouldRefreshCoordinator,
-                errorCount) = {
+                errorCount) =
                 offsetCommitResponse.commitStatus.foldLeft(
                   false,
                   false,
@@ -461,7 +460,6 @@ private[kafka] class ZookeeperConsumerConnector(
                       // update error count
                       folded._4 + (if (errorCode != Errors.NONE.code) 1 else 0))
                 }
-              }
               debug(errorCount + " errors in offset commit response.")
 
               if (shouldRefreshCoordinator) {
@@ -481,7 +479,7 @@ private[kafka] class ZookeeperConsumerConnector(
                 false
             }
           }
-        } else {
+        else {
           debug("No updates to offsets since last commit.")
           true
         }
@@ -553,27 +551,25 @@ private[kafka] class ZookeeperConsumerConnector(
               debug(
                 "Could not fetch offsets (because offset cache is being loaded).")
               None // retry
-            } else {
-              if (config.dualCommitEnabled) {
-                // if dual-commit is enabled (i.e., if a consumer group is migrating offsets to kafka), then pick the
-                // maximum between offsets in zookeeper and kafka.
-                val kafkaOffsets = offsetFetchResponse.requestInfo
-                val mostRecentOffsets = kafkaOffsets.map {
-                  case (topicPartition, kafkaOffset) =>
-                    val zkOffset =
-                      fetchOffsetFromZooKeeper(topicPartition)._2.offset
-                    val mostRecentOffset = zkOffset.max(kafkaOffset.offset)
-                    (
-                      topicPartition,
-                      OffsetMetadataAndError(
-                        mostRecentOffset,
-                        kafkaOffset.metadata,
-                        Errors.NONE.code))
-                }
-                Some(OffsetFetchResponse(mostRecentOffsets))
-              } else
-                Some(offsetFetchResponse)
-            }
+            } else if (config.dualCommitEnabled) {
+              // if dual-commit is enabled (i.e., if a consumer group is migrating offsets to kafka), then pick the
+              // maximum between offsets in zookeeper and kafka.
+              val kafkaOffsets = offsetFetchResponse.requestInfo
+              val mostRecentOffsets = kafkaOffsets.map {
+                case (topicPartition, kafkaOffset) =>
+                  val zkOffset =
+                    fetchOffsetFromZooKeeper(topicPartition)._2.offset
+                  val mostRecentOffset = zkOffset.max(kafkaOffset.offset)
+                  (
+                    topicPartition,
+                    OffsetMetadataAndError(
+                      mostRecentOffset,
+                      kafkaOffset.metadata,
+                      Errors.NONE.code))
+              }
+              Some(OffsetFetchResponse(mostRecentOffsets))
+            } else
+              Some(offsetFetchResponse)
           } catch {
             case e: Exception =>
               warn("Error while fetching offsets from %s:%d. Possible cause: %s"
@@ -694,16 +690,15 @@ private[kafka] class ZookeeperConsumerConnector(
         info(
           "starting watcher executor thread for consumer " + consumerIdString)
         var doRebalance = false
-        while (!isShuttingDown.get) {
+        while (!isShuttingDown.get)
           try {
             lock.lock()
-            try {
-              if (!isWatcherTriggered)
-                cond.await(
-                  1000,
-                  TimeUnit.MILLISECONDS
-                ) // wake up periodically so that it can check the shutdown flag
-            } finally {
+            try if (!isWatcherTriggered)
+              cond.await(
+                1000,
+                TimeUnit.MILLISECONDS
+              ) // wake up periodically so that it can check the shutdown flag
+            finally {
               doRebalance = isWatcherTriggered
               isWatcherTriggered = false
               lock.unlock()
@@ -713,7 +708,6 @@ private[kafka] class ZookeeperConsumerConnector(
           } catch {
             case t: Throwable => error("error during syncedRebalance", t)
           }
-        }
         info(
           "stopping watcher executor thread for consumer " + consumerIdString)
       }
@@ -745,9 +739,8 @@ private[kafka] class ZookeeperConsumerConnector(
         localTopicRegistry: Pool[String, Pool[Int, PartitionTopicInfo]]) = {
       info("Releasing partition ownership")
       for ((topic, infos) <- localTopicRegistry) {
-        for (partition <- infos.keys) {
+        for (partition <- infos.keys)
           deletePartitionOwnershipFromZK(topic, partition)
-        }
         removeMetric(
           "OwnedPartitionsCount",
           ownedPartitionsCountMetricTags(topic))
@@ -764,9 +757,8 @@ private[kafka] class ZookeeperConsumerConnector(
       rebalanceLock synchronized {
         rebalanceTimer.time {
           for (i <- 0 until config.rebalanceMaxRetries) {
-            if (isShuttingDown.get()) {
+            if (isShuttingDown.get())
               return
-            }
             info(
               "begin rebalancing consumer " + consumerIdString + " try #" + i)
             var done = false
@@ -783,14 +775,13 @@ private[kafka] class ZookeeperConsumerConnector(
                 info("exception during rebalance ", e)
             }
             info("end rebalancing consumer " + consumerIdString + " try #" + i)
-            if (done) {
+            if (done)
               return
-            } else {
+            else
               /* Here the cache is at a risk of being stale. To take future rebalancing decisions correctly, we should
                * clear the cache */
               info(
                 "Rebalancing attempt failed. Clearing the cache before the next rebalancing operation is triggered")
-            }
             // stop all fetchers and clear all the queues to avoid data duplication
             closeFetchersForQueues(
               cluster,
@@ -938,9 +929,8 @@ private[kafka] class ZookeeperConsumerConnector(
             }
             updateFetcher(cluster)
             true
-          } else {
+          } else
             false
-          }
         }
       }
     }

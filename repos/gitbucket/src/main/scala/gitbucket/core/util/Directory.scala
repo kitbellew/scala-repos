@@ -17,17 +17,15 @@ object Directory {
         // environment variable GITBUCKET_HOME
         case Some(env) => new File(env)
         // default is HOME/.gitbucket
-        case None => {
+        case None =>
           val oldHome = new File(System.getProperty("user.home"), "gitbucket")
           if (oldHome.exists && oldHome.isDirectory && new File(
                 oldHome,
-                "version").exists) {
+                "version").exists)
             //FileUtils.moveDirectory(oldHome, newHome)
             oldHome
-          } else {
+          else
             new File(System.getProperty("user.home"), ".gitbucket")
-          }
-        }
       }
   }).getAbsolutePath
 

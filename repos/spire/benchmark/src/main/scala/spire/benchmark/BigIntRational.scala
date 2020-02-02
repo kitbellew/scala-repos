@@ -7,11 +7,10 @@ object BigIntRational {
 
   def apply(n: BigInt, d: BigInt): BigIntRational = {
     val gcd = n.gcd(d)
-    if (d < 0) {
+    if (d < 0)
       new BigIntRational(-n / gcd, -d / gcd)
-    } else {
+    else
       new BigIntRational(n / gcd, d / gcd)
-    }
   }
 }
 
@@ -20,9 +19,9 @@ final class BigIntRational private (val n: BigInt, val d: BigInt) {
 
   def +(r: BigIntRational): BigIntRational = {
     val dgcd: BigInt = d.gcd(r.d)
-    if (dgcd == 1) {
+    if (dgcd == 1)
       new BigIntRational(r.d * n + r.n * d, r.d * d)
-    } else {
+    else {
       val lden: BigInt = d / dgcd
       val rden: BigInt = r.d / dgcd
       val num: BigInt = rden * n + r.n * lden
@@ -36,9 +35,9 @@ final class BigIntRational private (val n: BigInt, val d: BigInt) {
 
   def -(r: BigIntRational): BigIntRational = {
     val dgcd: BigInt = d.gcd(r.d)
-    if (dgcd == 1) {
+    if (dgcd == 1)
       new BigIntRational(r.d * n - r.n * d, r.d * d)
-    } else {
+    else {
       val lden: BigInt = d / dgcd
       val rden: BigInt = r.d / dgcd
       val num: BigInt = rden * n - r.n * lden
@@ -61,21 +60,19 @@ final class BigIntRational private (val n: BigInt, val d: BigInt) {
     val b = d.gcd(r.d)
     val num = (n / a) * (r.d / b)
     val den = (d / b) * (r.n / a)
-    if (den < BigInt(0)) {
+    if (den < BigInt(0))
       new BigIntRational(-num, -den)
-    } else {
+    else
       new BigIntRational(num, den)
-    }
   }
 
   def pow(exp: Int): BigIntRational =
-    if (exp == 0) {
+    if (exp == 0)
       BigIntRational.One
-    } else if (exp < 0) {
+    else if (exp < 0)
       new BigIntRational(d pow exp.abs, n pow exp.abs)
-    } else {
+    else
       new BigIntRational(n pow exp, d pow exp)
-    }
 
   def compare(r: BigIntRational): Int = {
     val dgcd = d.gcd(r.d)

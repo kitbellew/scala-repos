@@ -59,8 +59,8 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
           .toList ::: c.constructor.toList
       case _ => clazz.getConstructors.toList
     }
-    for (con <- constructors) {
-      if (con.isConstructor && con.getParameterList.getParametersCount == 1) {
+    for (con <- constructors)
+      if (con.isConstructor && con.getParameterList.getParametersCount == 1)
         con match {
           case owner: ScModifierListOwner =>
             if (owner.hasModifierProperty(PsiModifier.PUBLIC)) {
@@ -84,8 +84,6 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
             }
           case _ =>
         }
-      }
-    }
     true
   }
 
@@ -97,10 +95,9 @@ object ScalaTestRunConfiguration extends SuiteValidityChecker {
         annotation.isDefined
       case _ => false
     }
-    if (hasConfigMapAnnotation) {
+    if (hasConfigMapAnnotation)
       lackConfigMapConstructor(clazz)
-    } else {
+    else
       AbstractTestRunConfiguration.lackSuitableConstructor(clazz)
-    }
   }
 }

@@ -59,7 +59,7 @@ object MySqlClientTracingFilter {
 
   object TracingFilter extends SimpleFilter[Request, Result] {
     def apply(request: Request, service: Service[Request, Result]) = {
-      if (Trace.isActivelyTracing) {
+      if (Trace.isActivelyTracing)
         request match {
           case QueryRequest(sqlStatement) =>
             Trace.recordBinary("mysql.query", sqlStatement)
@@ -72,7 +72,6 @@ object MySqlClientTracingFilter {
             Trace.record(
               "mysql." + request.getClass.getSimpleName.replace("$", ""))
         }
-      }
       service(request)
     }
   }

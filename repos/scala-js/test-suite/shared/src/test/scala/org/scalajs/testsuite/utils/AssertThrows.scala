@@ -24,9 +24,9 @@ object AssertThrows {
         null.asInstanceOf[T]
       } catch {
         case actualThrown: Throwable =>
-          if (expectedThrowable.isInstance(actualThrown)) {
+          if (expectedThrowable.isInstance(actualThrown))
             actualThrown.asInstanceOf[T]
-          } else {
+          else {
             val mismatchMessage = "unexpected exception type thrown;" +
               expectedThrowable.getSimpleName + " " + actualThrown.getClass.getSimpleName
 
@@ -36,13 +36,12 @@ object AssertThrows {
           }
       }
     }
-    if (result == null) {
+    if (result == null)
       throw new AssertionError(
         "expected " + expectedThrowable.getSimpleName +
           " to be thrown, but nothing was thrown")
-    } else {
+    else
       result
-    }
   }
 
   /** Backport implementation of Assert.ThrowingRunnable to be used until

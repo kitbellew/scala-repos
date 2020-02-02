@@ -90,9 +90,8 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
           )
       }
 
-    try {
-      checkAnswer(sql(convertedSQL), df)
-    } catch {
+    try checkAnswer(sql(convertedSQL), df)
+    catch {
       case cause: Throwable =>
         fail(
           s"""Failed to execute converted SQL string or got wrong answer:

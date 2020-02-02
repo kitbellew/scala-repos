@@ -21,7 +21,7 @@ class SurroundWithWikiSyntaxTest
   private def checkAllSurrounders(text: String) {
     val actualText = text.stripMargin.replace("\r", "")
 
-    for (surrounder <- surrounders) {
+    for (surrounder <- surrounders)
       checkAfterSurroundWith(
         actualText,
         getAssumedText(
@@ -29,7 +29,6 @@ class SurroundWithWikiSyntaxTest
           surrounder.asInstanceOf[ScalaDocWithSyntaxSurrounder].getSyntaxTag),
         surrounder,
         canSurround = true)
-    }
   }
 
   def testSurroundSimpleData() {

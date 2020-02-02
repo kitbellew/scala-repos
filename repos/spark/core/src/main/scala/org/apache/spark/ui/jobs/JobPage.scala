@@ -78,11 +78,10 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
          |   'data-title="${Utility.escape(escapedName)} (Stage $stageId.$attemptId)<br>' +
          |   'Status: ${status.toUpperCase}<br>' +
          |   'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
-         |   '${if (status != "running") {
+         |   '${if (status != "running")
            s"""<br>Completed: ${UIUtils.formatDate(new Date(completionTime))}"""
-         } else {
-           ""
-         }}">' +
+         else
+           ""}">' +
          |    '$escapedName (Stage $stageId.$attemptId)</div>',
          |}
        """.stripMargin
@@ -120,11 +119,10 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
                |    'data-title="Executor $executorId<br>' +
                |    'Removed at ${UIUtils.formatDate(
                  new Date(event.finishTime.get))}' +
-               |    '${if (event.finishReason.isDefined) {
+               |    '${if (event.finishReason.isDefined)
                  s"""<br>Reason: ${event.finishReason.get}"""
-               } else {
-                 ""
-               }}"' +
+               else
+                 ""}"' +
                |    'data-html="true">Executor $executorId removed</div>'
                |}
              """.stripMargin
@@ -224,19 +222,16 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
       // If the job is completed, then any pending stages are displayed as "skipped":
       val pendingOrSkippedStages = Buffer[StageInfo]()
       val failedStages = Buffer[StageInfo]()
-      for (stage <- stages) {
-        if (stage.submissionTime.isEmpty) {
+      for (stage <- stages)
+        if (stage.submissionTime.isEmpty)
           pendingOrSkippedStages += stage
-        } else if (stage.completionTime.isDefined) {
-          if (stage.failureReason.isDefined) {
+        else if (stage.completionTime.isDefined)
+          if (stage.failureReason.isDefined)
             failedStages += stage
-          } else {
+          else
             completedStages += stage
-          }
-        } else {
+        else
           activeStages += stage
-        }
-      }
 
       val activeStagesTable =
         new StageTableBase(
@@ -282,53 +277,47 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
               {jobData.status}
             </li>
             {
-          if (jobData.jobGroup.isDefined) {
+          if (jobData.jobGroup.isDefined)
             <li>
                   <strong>Job Group:</strong>
                   {jobData.jobGroup.get}
                 </li>
-          }
         }
             {
-          if (shouldShowActiveStages) {
+          if (shouldShowActiveStages)
             <li>
                   <a href="#active"><strong>Active Stages:</strong></a>
                   {activeStages.size}
                 </li>
-          }
         }
             {
-          if (shouldShowPendingStages) {
+          if (shouldShowPendingStages)
             <li>
                   <a href="#pending">
                     <strong>Pending Stages:</strong>
                   </a>{pendingOrSkippedStages.size}
                 </li>
-          }
         }
             {
-          if (shouldShowCompletedStages) {
+          if (shouldShowCompletedStages)
             <li>
                   <a href="#completed"><strong>Completed Stages:</strong></a>
                   {completedStages.size}
                 </li>
-          }
         }
             {
-          if (shouldShowSkippedStages) {
+          if (shouldShowSkippedStages)
             <li>
                 <a href="#skipped"><strong>Skipped Stages:</strong></a>
                 {pendingOrSkippedStages.size}
               </li>
-          }
         }
             {
-          if (shouldShowFailedStages) {
+          if (shouldShowFailedStages)
             <li>
                   <a href="#failed"><strong>Failed Stages:</strong></a>
                   {failedStages.size}
                 </li>
-          }
         }
           </ul>
         </div>
@@ -347,30 +336,25 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
         jobId,
         operationGraphListener.getOperationGraphForJob(jobId))
 
-      if (shouldShowActiveStages) {
+      if (shouldShowActiveStages)
         content ++= <h4 id="active">Active Stages ({activeStages.size})</h4> ++
           activeStagesTable.toNodeSeq
-      }
-      if (shouldShowPendingStages) {
+      if (shouldShowPendingStages)
         content ++= <h4 id="pending">Pending Stages ({
           pendingOrSkippedStages.size
         })</h4> ++
           pendingOrSkippedStagesTable.toNodeSeq
-      }
-      if (shouldShowCompletedStages) {
+      if (shouldShowCompletedStages)
         content ++= <h4 id="completed">Completed Stages ({completedStages.size})</h4> ++
           completedStagesTable.toNodeSeq
-      }
-      if (shouldShowSkippedStages) {
+      if (shouldShowSkippedStages)
         content ++= <h4 id="skipped">Skipped Stages ({
           pendingOrSkippedStages.size
         })</h4> ++
           pendingOrSkippedStagesTable.toNodeSeq
-      }
-      if (shouldShowFailedStages) {
+      if (shouldShowFailedStages)
         content ++= <h4 id ="failed">Failed Stages ({failedStages.size})</h4> ++
           failedStagesTable.toNodeSeq
-      }
       UIUtils.headerSparkPage(
         s"Details for Job $jobId",
         content,

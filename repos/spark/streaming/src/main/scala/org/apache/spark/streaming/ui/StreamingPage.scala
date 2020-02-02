@@ -67,16 +67,15 @@ private[ui] class GraphUIData(
 
   def generateTimelineHtml(jsCollector: JsCollector): Seq[Node] = {
     jsCollector.addPreparedStatement(s"registerTimeline($minY, $maxY);")
-    if (batchInterval.isDefined) {
+    if (batchInterval.isDefined)
       jsCollector.addStatement("drawTimeline(" +
         s"'#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY, '$unitY'," +
         s" ${batchInterval.get}" +
         ");")
-    } else {
+    else
       jsCollector.addStatement(
         s"drawTimeline('#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY," +
           s" '$unitY');")
-    }
     <div id={timelineDivId}></div>
   }
 
@@ -84,14 +83,13 @@ private[ui] class GraphUIData(
     val histogramData = s"$dataJavaScriptName.map(function(d) { return d.y; })"
     jsCollector.addPreparedStatement(
       s"registerHistogram($histogramData, $minY, $maxY);")
-    if (batchInterval.isDefined) {
+    if (batchInterval.isDefined)
       jsCollector.addStatement("drawHistogram(" +
         s"'#$histogramDivId', $histogramData, $minY, $maxY, '$unitY', ${batchInterval.get}" +
         ");")
-    } else {
+    else
       jsCollector.addStatement(
         s"drawHistogram('#$histogramDivId', $histogramData, $minY, $maxY, '$unitY');")
-    }
     <div id={histogramDivId}></div>
   }
 }
@@ -344,22 +342,20 @@ private[ui] class StreamingPage(parent: StreamingTab)
             <div style="width: 160px;">
               <div>
               {
-        if (hasStream) {
+        if (hasStream)
           <span class="expand-input-rate">
                     <span class="expand-input-rate-arrow arrow-closed"></span>
                     <a data-toggle="tooltip" title="Show/hide details of each receiver" data-placement="right">
                       <strong>Input Rate</strong>
                     </a>
                   </span>
-        } else {
+        else
           <strong>Input Rate</strong>
-        }
       }
               </div>
               {
-        if (numReceivers > 0) {
+        if (numReceivers > 0)
           <div>Receivers: {listener.numActiveReceivers} / {numReceivers} active</div>
-        }
       }
               <div>Avg: {eventRateForAllStreams.formattedAvg} events/sec</div>
             </div>
@@ -372,7 +368,7 @@ private[ui] class StreamingPage(parent: StreamingTab)
       }</td>
         </tr>
       {
-        if (hasStream) {
+        if (hasStream)
           <tr id="inputs-table" style="display: none;" >
           <td colspan="3">
             {
@@ -385,7 +381,6 @@ private[ui] class StreamingPage(parent: StreamingTab)
           }
           </td>
         </tr>
-        }
       }
         <tr>
           <td style="vertical-align: middle;">

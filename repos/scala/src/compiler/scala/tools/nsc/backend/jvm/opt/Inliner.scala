@@ -36,7 +36,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       // (This assumes that inlining a request only makes sense if its downstream requests are satisfied - sync with heuristics!)
 
       val warnings = inline(request)
-      for (warning <- warnings) {
+      for (warning <- warnings)
         if ((callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed) || warning
               .emitWarning(compilerSettings)) {
           val annotWarn =
@@ -48,7 +48,6 @@ class Inliner[BT <: BTypes](val btypes: BT) {
             request.callsite.callsitePosition,
             msg)
         }
-      }
     }
 
   /**
@@ -265,7 +264,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       val requests = requestsByMethod.valuesIterator.flatten.toArray
       // sort the inline requests to ensure that removing requests is deterministic
       java.util.Arrays.sort(requests, callsiteOrdering)
-      for (r <- requests) {
+      for (r <- requests)
         // is there a chain of inlining requests that would inline the callsite method into the callee?
         if (isReachable(
               r.callsite.callee.get.callee,
@@ -273,7 +272,6 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           elided += r
         else
           result += r
-      }
       result.toList
     }
 
@@ -411,9 +409,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       hasSerializableClosureInstantiation) =
       cloneInstructions(callee, labelsMap)
     val keepLineNumbers = callsiteClass == calleeDeclarationClass
-    if (!keepLineNumbers) {
+    if (!keepLineNumbers)
       removeLineNumberNodes(clonedInstructions)
-    }
 
     // local vars in the callee are shifted by the number of locals at the callsite
     val localVarShift = callsiteMethod.maxLocals
@@ -629,7 +626,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val Right(callsiteCallee) = callsite.callee
     import callsiteCallee.{callee, calleeDeclarationClass}
 
-    if (isSynchronizedMethod(callee)) {
+    if (isSynchronizedMethod(callee))
       // Could be done by locking on the receiver, wrapping the inlined code in a try and unlocking
       // in finally. But it's probably not worth the effort, scala never emits synchronized methods.
       Some(
@@ -637,7 +634,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           calleeDeclarationClass.internalName,
           callee.name,
           callee.desc))
-    } else if (isStrictfpMethod(callsiteMethod) != isStrictfpMethod(callee)) {
+    else if (isStrictfpMethod(callsiteMethod) != isStrictfpMethod(callee))
       Some(
         StrictfpMismatch(
           calleeDeclarationClass.internalName,
@@ -646,7 +643,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           callsiteClass.internalName,
           callsiteMethod.name,
           callsiteMethod.desc))
-    } else
+    else
       None
   }
 
@@ -708,7 +705,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       callsiteStackHeight > expectedArgs
     }
 
-    if (codeSizeOKForInlining(callsiteMethod, callee)) {
+    if (codeSizeOKForInlining(callsiteMethod, callee))
       Some(
         ResultingMethodTooLarge(
           calleeDeclarationClass.internalName,
@@ -717,7 +714,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           callsiteClass.internalName,
           callsiteMethod.name,
           callsiteMethod.desc))
-    } else if (!callee.tryCatchBlocks.isEmpty && stackHasNonParameters) {
+    else if (!callee.tryCatchBlocks.isEmpty && stackHasNonParameters)
       Some(
         MethodWithHandlerCalledOnNonEmptyStack(
           calleeDeclarationClass.internalName,
@@ -726,7 +723,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           callsiteClass.internalName,
           callsiteMethod.name,
           callsiteMethod.desc))
-    } else
+    else
       findIllegalAccess(
         callee.instructions,
         calleeDeclarationClass,
@@ -900,9 +897,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
               fieldDeclClass,
               fieldRefClass,
               destinationClass)
-          } yield {
-            res
-          }
+          } yield res
 
         case mi: MethodInsnNode =>
           if (mi.owner.charAt(0) == '[')
@@ -941,9 +936,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                 methodNode.access,
                 methodDeclClass,
                 methodRefClass)
-            } yield {
-              res
-            }
+            } yield res
           }
 
         case _: InvokeDynamicInsnNode
@@ -1013,9 +1006,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
               methodDeclClass,
               methodRefClass,
               destinationClass)
-          } yield {
-            res
-          }
+          } yield res
 
         case _: InvokeDynamicInsnNode => Left(UnknownInvokeDynamicInstruction)
 

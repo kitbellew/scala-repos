@@ -97,9 +97,8 @@ private[twitter] class EndpointRegistry {
           entry.remove(path).foreach { case (_, closable) => closable.close() }
           if (entry.isEmpty) {
             dtabEntries.remove(dtab)
-            if (dtabEntries.isEmpty) {
+            if (dtabEntries.isEmpty)
               registry.remove(client)
-            }
           }
         }
       }

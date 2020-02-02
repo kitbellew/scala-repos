@@ -168,7 +168,7 @@ object Plugins extends PluginsFunctions {
     if (defined0.isEmpty)(_, _) => Nil
     else {
       // TODO: defined should return all the plugins
-      val allReqs = (defined0 flatMap { asRequirements }).toSet
+      val allReqs = (defined0 flatMap asRequirements).toSet
       val diff = allReqs diff defined0.toSet
       val defined =
         if (diff.nonEmpty) diff.toList ::: defined0
@@ -216,12 +216,11 @@ object Plugins extends PluginsFunctions {
             val forbidden: Set[AutoPlugin] =
               (selectedPlugins flatMap { Plugins.asExclusions }).toSet
             val c = selectedPlugins.toSet & forbidden
-            if (c.nonEmpty) {
+            if (c.nonEmpty)
               exlusionConflictError(
                 requestedPlugins,
                 selectedPlugins,
                 c.toSeq sortBy { _.label })
-            }
             val retval = topologicalSort(selectedPlugins, log)
             log.debug(s"  :: sorted deduced result: ${retval.toString}")
             retval

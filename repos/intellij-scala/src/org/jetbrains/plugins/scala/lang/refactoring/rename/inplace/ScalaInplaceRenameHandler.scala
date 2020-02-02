@@ -86,9 +86,8 @@ trait ScalaInplaceRenameHandler {
                       .getDocument(file) == editor.getDocument) {
                   editor.getCaretModel.moveToOffset(subst.getTextOffset)
                   inplaceRename(subst)
-                } else {
+                } else
                   doDialogRename(subst, editor.getProject, null, editor)
-                }
               case s: String if s == cancel =>
             }
         })

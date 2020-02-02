@@ -194,15 +194,14 @@ object Namer {
           val oks = seq.collect {
             case Activity.Ok(t) => t
           }
-          if (oks.isEmpty) {
+          if (oks.isEmpty)
             seq
               .collectFirst {
                 case f @ Activity.Failed(_) => f
               }
               .getOrElse(Activity.Pending)
-          } else {
+          else
             Activity.Ok(Union.fromSeq(oks).simplified)
-          }
       }
     new Activity(stateVar)
   }

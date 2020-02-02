@@ -54,14 +54,12 @@ object JTransformsSupport {
   private[signal] def denseVectorCToTemp(
       tempDV: DenseVector[Complex]): Array[Double] = {
     val tempRet = new Array[Double](tempDV.length * 2)
-    for (n <- 0 until tempDV.length) {
+    for (n <- 0 until tempDV.length)
       tempDV(n) match {
-        case Complex(re, im) => {
+        case Complex(re, im) =>
           tempRet(2 * n) = re
           tempRet(2 * n + 1) = im
-        }
       }
-    }
     tempRet
   }
 
@@ -86,15 +84,13 @@ object JTransformsSupport {
       tempDM: DenseMatrix[Complex]): Array[Double] = {
     val tempCols = tempDM.cols
     val tempRet = new Array[Double](tempDM.rows * tempCols * 2)
-    for (r <- 0 until tempDM.rows; c <- 0 until tempDM.cols) {
+    for (r <- 0 until tempDM.rows; c <- 0 until tempDM.cols)
       tempDM(r, c) match {
-        case Complex(re, im) => {
+        case Complex(re, im) =>
           val ind = r * 2 * tempCols + 2 * c
           tempRet(ind) = re
           tempRet(ind + 1) = im
-        }
       }
-    }
     tempRet
   }
 
@@ -107,9 +103,8 @@ object JTransformsSupport {
       tempDM: DenseMatrix[Double]): Array[Double] = {
     val tempCols = tempDM.cols
     val tempRet = new Array[Double](tempDM.rows * tempCols * 2)
-    for (r <- 0 until tempDM.rows; c <- 0 until tempDM.cols) {
+    for (r <- 0 until tempDM.rows; c <- 0 until tempDM.cols)
       tempRet(r * 2 * tempCols + 2 * c) = tempDM(r, c)
-    }
     tempRet
   }
 

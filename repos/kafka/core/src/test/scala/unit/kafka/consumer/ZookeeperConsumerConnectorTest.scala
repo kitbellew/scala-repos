@@ -90,7 +90,7 @@ class ZookeeperConsumerConnectorTest
 
     // no messages to consume, we should hit timeout;
     // also the iterator should support re-entrant, so loop it twice
-    for (i <- 0 until 2) {
+    for (i <- 0 until 2)
       try {
         getMessages(topicMessageStreams0, nMessages * 2)
         fail("should get an exception")
@@ -98,7 +98,6 @@ class ZookeeperConsumerConnectorTest
         case e: ConsumerTimeoutException => // this is ok
         case e: Throwable                => throw e
       }
-    }
 
     zkConsumerConnector0.shutdown
 
@@ -367,7 +366,7 @@ class ZookeeperConsumerConnectorTest
         new StringDecoder())
 
     var receivedMessages: List[String] = Nil
-    for ((topic, messageStreams) <- topicMessageStreams) {
+    for ((topic, messageStreams) <- topicMessageStreams)
       for (messageStream <- messageStreams) {
         val iterator = messageStream.iterator
         for (i <- 0 until nMessages * 2) {
@@ -377,7 +376,6 @@ class ZookeeperConsumerConnectorTest
           debug("received message: " + message)
         }
       }
-    }
     assertEquals(sentMessages.sorted, receivedMessages.sorted)
 
     zkConsumerConnector.shutdown()

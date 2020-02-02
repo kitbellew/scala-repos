@@ -46,12 +46,10 @@ class CoGroupedIterator(
   private var currentRightData: (InternalRow, Iterator[InternalRow]) = _
 
   override def hasNext: Boolean = {
-    if (currentLeftData == null && left.hasNext) {
+    if (currentLeftData == null && left.hasNext)
       currentLeftData = left.next()
-    }
-    if (currentRightData == null && right.hasNext) {
+    if (currentRightData == null && right.hasNext)
       currentRightData = right.next()
-    }
 
     currentLeftData != null || currentRightData != null
   }
@@ -60,13 +58,13 @@ class CoGroupedIterator(
       : (InternalRow, Iterator[InternalRow], Iterator[InternalRow]) = {
     assert(hasNext)
 
-    if (currentLeftData.eq(null)) {
+    if (currentLeftData.eq(null))
       // left is null, right is not null, consume the right data.
       rightOnly()
-    } else if (currentRightData.eq(null)) {
+    else if (currentRightData.eq(null))
       // left is not null, right is null, consume the left data.
       leftOnly()
-    } else if (currentLeftData._1 == currentRightData._1) {
+    else if (currentLeftData._1 == currentRightData._1) {
       // left and right have the same grouping key, consume both of them.
       val result = (currentLeftData._1, currentLeftData._2, currentRightData._2)
       currentLeftData = null
@@ -75,13 +73,12 @@ class CoGroupedIterator(
     } else {
       val compare = keyOrdering.compare(currentLeftData._1, currentRightData._1)
       assert(compare != 0)
-      if (compare < 0) {
+      if (compare < 0)
         // the grouping key of left is smaller, consume the left data.
         leftOnly()
-      } else {
+      else
         // the grouping key of right is smaller, consume the right data.
         rightOnly()
-      }
     }
   }
 

@@ -43,9 +43,8 @@ class IoSpec extends WordSpec with Matchers {
         def read() = throw new RuntimeException
         override def close() = isClosed = true
       }
-      try {
-        copy(in, new ByteArrayOutputStream)
-      } catch { case ignore: Throwable => }
+      try copy(in, new ByteArrayOutputStream)
+      catch { case ignore: Throwable => }
       isClosed should equal(true)
     }
 
@@ -83,11 +82,9 @@ class IoSpec extends WordSpec with Matchers {
 
     "remove the temp file even if the block throws" in {
       var f: File = null
-      try {
-        withTempFile(content) { myF =>
-          f = myF
-          throw new RuntimeException()
-        }
+      try withTempFile(content) { myF =>
+        f = myF
+        throw new RuntimeException()
       } catch {
         case _: Throwable => f.exists() should be(false)
       }

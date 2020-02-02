@@ -182,12 +182,12 @@ object Framing {
       else ctx.finish()
 
     private def tryPull(ctx: Context[ByteString]): SyncDirective =
-      if (ctx.isFinishing) {
+      if (ctx.isFinishing)
         if (allowTruncation) ctx.pushAndFinish(buffer)
         else
           ctx.fail(new FramingException(
             "Stream finished but there was a truncated final frame in the buffer"))
-      } else ctx.pull()
+      else ctx.pull()
 
     @tailrec
     private def doParse(ctx: Context[ByteString]): SyncDirective = {
@@ -196,33 +196,29 @@ object Framing {
       if (possibleMatchPos > maximumLineBytes)
         ctx.fail(new FramingException(s"Read ${buffer.size} bytes " +
           s"which is more than $maximumLineBytes without seeing a line terminator"))
-      else {
-        if (possibleMatchPos == -1) {
-          // No matching character, we need to accumulate more bytes into the buffer
-          nextPossibleMatch = buffer.size
-          tryPull(ctx)
-        } else if (possibleMatchPos + separatorBytes.size > buffer.size) {
-          // We have found a possible match (we found the first character of the terminator
-          // sequence) but we don't have yet enough bytes. We remember the position to
-          // retry from next time.
-          nextPossibleMatch = possibleMatchPos
-          tryPull(ctx)
-        } else {
-          if (buffer.slice(
-                possibleMatchPos,
-                possibleMatchPos + separatorBytes.size) == separatorBytes) {
-            // Found a match
-            val parsedFrame = buffer.slice(0, possibleMatchPos).compact
-            buffer = buffer.drop(possibleMatchPos + separatorBytes.size)
-            nextPossibleMatch = 0
-            if (ctx.isFinishing && buffer.isEmpty)
-              ctx.pushAndFinish(parsedFrame)
-            else ctx.push(parsedFrame)
-          } else {
-            nextPossibleMatch += 1
-            doParse(ctx)
-          }
-        }
+      else if (possibleMatchPos == -1) {
+        // No matching character, we need to accumulate more bytes into the buffer
+        nextPossibleMatch = buffer.size
+        tryPull(ctx)
+      } else if (possibleMatchPos + separatorBytes.size > buffer.size) {
+        // We have found a possible match (we found the first character of the terminator
+        // sequence) but we don't have yet enough bytes. We remember the position to
+        // retry from next time.
+        nextPossibleMatch = possibleMatchPos
+        tryPull(ctx)
+      } else if (buffer.slice(
+                   possibleMatchPos,
+                   possibleMatchPos + separatorBytes.size) == separatorBytes) {
+        // Found a match
+        val parsedFrame = buffer.slice(0, possibleMatchPos).compact
+        buffer = buffer.drop(possibleMatchPos + separatorBytes.size)
+        nextPossibleMatch = 0
+        if (ctx.isFinishing && buffer.isEmpty)
+          ctx.pushAndFinish(parsedFrame)
+        else ctx.push(parsedFrame)
+      } else {
+        nextPossibleMatch += 1
+        doParse(ctx)
       }
     }
 

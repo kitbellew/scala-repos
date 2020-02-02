@@ -141,10 +141,9 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
     override def toString =
       (bytes map { byte => (byte & 0xff).toHexString })
         .mkString("[ ", " ", " ]")
-    lazy val sevenBitsMayBeZero: Array[Byte] = {
+    lazy val sevenBitsMayBeZero: Array[Byte] =
       mapToNextModSevenBits(
         scala.reflect.internal.pickling.ByteCodecs.encode8to7(bytes))
-    }
 
     /* In order to store a byte array (the pickle) using a bytecode-level annotation,
      * the most compact representation is used (which happens to be string-constant and not byte array as one would expect).

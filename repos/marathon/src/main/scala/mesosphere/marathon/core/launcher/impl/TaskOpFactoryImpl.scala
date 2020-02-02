@@ -28,11 +28,10 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
   override def buildTaskOp(request: TaskOpFactory.Request): Option[TaskOp] = {
     log.debug("buildTaskOp")
 
-    if (request.isForResidentApp) {
+    if (request.isForResidentApp)
       inferForResidents(request)
-    } else {
+    else
       inferNormalTaskOp(request)
-    }
   }
 
   private[this] def inferNormalTaskOp(

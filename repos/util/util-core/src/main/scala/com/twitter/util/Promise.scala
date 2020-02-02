@@ -56,9 +56,9 @@ object Promise {
     private[this] var detached: Boolean = false
 
     def detach(): Boolean = synchronized {
-      if (detached) {
+      if (detached)
         false
-      } else {
+      else {
         detached = true
         true
       }
@@ -520,15 +520,13 @@ class Promise[A]
     case Linked(p) => p.raise(intr)
     case s @ Interruptible(waitq, handler) =>
       if (!cas(s, Interrupted(waitq, intr))) raise(intr)
-      else {
+      else
         handler.applyOrElse(intr, Promise.AlwaysUnit)
-      }
 
     case s @ Transforming(waitq, other) =>
       if (!cas(s, Interrupted(waitq, intr))) raise(intr)
-      else {
+      else
         other.raise(intr)
-      }
 
     case s @ Interrupted(waitq, _) =>
       if (!cas(s, Interrupted(waitq, intr)))
@@ -803,10 +801,9 @@ class Promise[A]
           link(target)
 
       case s @ Done(value) =>
-        if (!target.updateIfEmpty(value) && value != Await.result(target)) {
+        if (!target.updateIfEmpty(value) && value != Await.result(target))
           throw new IllegalArgumentException(
             "Cannot link two Done Promises with differing values")
-        }
 
       case s @ Waiting(first, rest) =>
         if (!cas(s, Linked(target))) link(target)

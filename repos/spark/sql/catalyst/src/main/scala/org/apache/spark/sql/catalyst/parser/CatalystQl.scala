@@ -46,9 +46,8 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
     */
   protected def safeParse[T](sql: String, ast: ASTNode)(
       toResult: ASTNode => T): T =
-    try {
-      toResult(ast)
-    } catch {
+    try toResult(ast)
+    catch {
       case e: MatchError        => throw e
       case e: AnalysisException => throw e
       case e: Exception =>
@@ -182,7 +181,7 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             distributeByClause ::
             limitClause ::
             lateralViewClause ::
-            windowClause :: Nil) = {
+            windowClause :: Nil) =
             getClauses(
               Seq(
                 "TOK_INSERT_INTO",
@@ -205,7 +204,6 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               ),
               singleInsert
             )
-          }
 
           val relations = fromClause match {
             case Some(f) => nodeToRelation(f)
@@ -419,19 +417,17 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
       case Token("TOK_TABREF", clauses) =>
         // If the last clause is not a token then it's the alias of the table.
         val (nonAliasClauses, aliasClause) =
-          if (clauses.last.text.startsWith("TOK")) {
+          if (clauses.last.text.startsWith("TOK"))
             (clauses, None)
-          } else {
+          else
             (clauses.dropRight(1), Some(clauses.last))
-          }
 
         val (Some(tableNameParts) ::
           splitSampleClause ::
-          bucketSampleClause :: Nil) = {
+          bucketSampleClause :: Nil) =
           getClauses(
             Seq("TOK_TABNAME", "TOK_TABLESPLITSAMPLE", "TOK_TABLEBUCKETSAMPLE"),
             nonAliasClauses)
-        }
 
         val tableIdent = extractTableIdent(tableNameParts)
         val alias = aliasClause.map { case Token(a, Nil) => cleanIdentifier(a) }
@@ -478,9 +474,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           .getOrElse(relation)
 
       case Token(allJoinTokens(joinToken), relation1 :: relation2 :: other) =>
-        if (!(other.size <= 1)) {
+        if (!(other.size <= 1))
           sys.error(s"Unsupported join operation: $other")
-        }
 
         val (joinType, joinCondition) = getJoinInfo(joinToken, other, node)
 
@@ -912,10 +907,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           updated = true
         case _ =>
       }
-      if (!updated) {
+      if (!updated)
         throw new AnalysisException(
           "at least one time unit should be given for interval literal")
-      }
       Literal(interval)
 
     case _ =>
@@ -980,23 +974,21 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
 
         // Handle Window Frame
         val windowFrame =
-          if (rowFrame.isEmpty && rangeFrame.isEmpty) {
+          if (rowFrame.isEmpty && rangeFrame.isEmpty)
             UnspecifiedFrame
-          } else {
+          else {
             val frameType = rowFrame.map(_ => RowFrame).getOrElse(RangeFrame)
             def nodeToBoundary(node: ASTNode): FrameBoundary = node match {
               case Token(PRECEDING(), Token(count, Nil) :: Nil) =>
-                if (count.toLowerCase() == "unbounded") {
+                if (count.toLowerCase() == "unbounded")
                   UnboundedPreceding
-                } else {
+                else
                   ValuePreceding(count.toInt)
-                }
               case Token(FOLLOWING(), Token(count, Nil) :: Nil) =>
-                if (count.toLowerCase() == "unbounded") {
+                if (count.toLowerCase() == "unbounded")
                   UnboundedFollowing
-                } else {
+                else
                   ValueFollowing(count.toInt)
-                }
               case Token(CURRENT(), Nil) => CurrentRow
               case _ =>
                 noParseRule("Window Frame Boundary", node)

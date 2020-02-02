@@ -311,11 +311,10 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
                     tpt.tpe != null && (tpt.tpe exists (tp =>
                       locals contains tp.typeSymbol))
                   val isInferred = tpt.wasEmpty
-                  if (refersToLocalSymbols || isInferred) {
+                  if (refersToLocalSymbols || isInferred)
                     tpt.duplicate.clearType()
-                  } else {
+                  else
                     tpt
-                  }
                 }
               // If one of the type arguments of a TypeApply gets reset to an empty TypeTree, then this means that:
               // 1) It isn't empty now (tpt.tpe != null), but it was empty before (tpt.wasEmpty).
@@ -362,7 +361,8 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
 
       if (debug) {
         assert(locals.size == orderedLocals.size)
-        val msg = orderedLocals.toList filter { _ != NoSymbol } map { "  " + _ } mkString EOL
+        val msg =
+          orderedLocals.toList filter _ != NoSymbol map "  " + _ mkString EOL
         trace("locals (%d total): %n".format(orderedLocals.size))(msg)
       }
 

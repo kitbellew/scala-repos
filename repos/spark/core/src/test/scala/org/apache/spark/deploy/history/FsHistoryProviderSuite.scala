@@ -484,9 +484,7 @@ class FsHistoryProviderSuite
       eventually(timeout(1 second), interval(10 millis)) {
         provider.getConfig().keys should not contain ("HDFS State")
       }
-    } finally {
-      provider.stop()
-    }
+    } finally provider.stop()
   }
 
   test("provider reports error after FS leaves safe mode") {
@@ -502,9 +500,7 @@ class FsHistoryProviderSuite
       eventually(timeout(1 second), interval(10 millis)) {
         verify(errorHandler).uncaughtException(any(), any())
       }
-    } finally {
-      provider.stop()
-    }
+    } finally provider.stop()
   }
 
   /**
@@ -531,9 +527,8 @@ class FsHistoryProviderSuite
     val cstream =
       codec.map(_.compressedOutputStream(fstream)).getOrElse(fstream)
     val bstream = new BufferedOutputStream(cstream)
-    if (isNewFormat) {
+    if (isNewFormat)
       EventLoggingListener.initEventLog(new FileOutputStream(file))
-    }
     val writer = new OutputStreamWriter(bstream, StandardCharsets.UTF_8)
     Utils.tryWithSafeFinally {
       events.foreach(e =>

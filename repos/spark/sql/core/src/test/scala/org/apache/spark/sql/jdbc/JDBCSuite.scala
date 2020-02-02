@@ -741,11 +741,10 @@ class JDBCSuite
               typeName: String,
               size: Int,
               md: MetadataBuilder): Option[DataType] =
-            if (sqlType % 2 == 0) {
+            if (sqlType % 2 == 0)
               Some(LongType)
-            } else {
+            else
               None
-            }
         },
         testH2Dialect
       ))

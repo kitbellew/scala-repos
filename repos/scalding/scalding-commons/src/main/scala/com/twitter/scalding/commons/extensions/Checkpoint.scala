@@ -139,11 +139,10 @@ object Checkpoint {
     val overrideValue: Option[String] =
       args.optional("checkpoint." + argName + "." + checkpointName)
     def value: Option[String] =
-      if (overrideValue.isDefined) {
+      if (overrideValue.isDefined)
         overrideValue
-      } else {
+      else
         baseValue
-      }
     def isTrue: Boolean = value.exists { _.toLowerCase != "false" }
   }
 
@@ -153,17 +152,16 @@ object Checkpoint {
       implicit args: Args,
       mode: Mode): Option[String] = {
     val fileArg = CheckpointArg(checkpointName, "file")
-    if (fileArg.overrideValue.isDefined) {
+    if (fileArg.overrideValue.isDefined)
       // The flag "--checkpoint.file.<name>=<filename>" is present; use its
       // value as the filename.
       fileArg.overrideValue
-    } else {
+    else
       fileArg.baseValue.map { value =>
         // The flag "--checkpoint.file=<prefix>"; use "<prefix>_<name>" as the
         // filename.
         value + "_" + checkpointName
       }
-    }
   }
 
   // Returns a format for the checkpoint.  The format of the source is

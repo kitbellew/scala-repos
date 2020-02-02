@@ -144,27 +144,23 @@ class MasterSuite
     val conf = new SparkConf()
     val localCluster = new LocalSparkCluster(2, 2, 512, conf)
     localCluster.start()
-    try {
-      eventually(timeout(5 seconds), interval(100 milliseconds)) {
-        val json = Source
-          .fromURL(s"http://localhost:${localCluster.masterWebUIPort}/json")
-          .getLines()
-          .mkString("\n")
-        val JArray(workers) = (parse(json) \ "workers")
-        workers.size should be(2)
-        workers.foreach { workerSummaryJson =>
-          val JString(workerWebUi) = workerSummaryJson \ "webuiaddress"
-          val workerResponse = parse(
-            Source
-              .fromURL(s"$workerWebUi/json")
-              .getLines()
-              .mkString("\n"))
-          (workerResponse \ "cores").extract[Int] should be(2)
-        }
+    try eventually(timeout(5 seconds), interval(100 milliseconds)) {
+      val json = Source
+        .fromURL(s"http://localhost:${localCluster.masterWebUIPort}/json")
+        .getLines()
+        .mkString("\n")
+      val JArray(workers) = (parse(json) \ "workers")
+      workers.size should be(2)
+      workers.foreach { workerSummaryJson =>
+        val JString(workerWebUi) = workerSummaryJson \ "webuiaddress"
+        val workerResponse = parse(
+          Source
+            .fromURL(s"$workerWebUi/json")
+            .getLines()
+            .mkString("\n"))
+        (workerResponse \ "cores").extract[Int] should be(2)
       }
-    } finally {
-      localCluster.stop()
-    }
+    } finally localCluster.stop()
   }
 
   test("basic scheduling - spread out") {
@@ -371,11 +367,10 @@ class MasterSuite
     val scheduledCores3 =
       scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
     assert(scheduledCores1 === Array(0, 0, 0))
-    if (spreadOut) {
+    if (spreadOut)
       assert(scheduledCores2 === Array(4, 4, 0))
-    } else {
+    else
       assert(scheduledCores2 === Array(8, 0, 0))
-    }
     assert(scheduledCores3 === Array(8, 8, 4))
   }
 

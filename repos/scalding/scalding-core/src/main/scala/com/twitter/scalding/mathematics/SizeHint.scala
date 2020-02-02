@@ -85,9 +85,9 @@ case class FiniteHint(rows: BigInt = -1L, cols: BigInt = -1L) extends SizeHint {
       case sp @ SparseHint(_, _, _) => (sp #*# this)
     }
   def total =
-    if (rows >= 0 && cols >= 0) {
+    if (rows >= 0 && cols >= 0)
       Some(rows * cols)
-    } else None
+    else None
   def setCols(ncols: Long) = FiniteHint(rows, ncols)
   def setRows(nrows: Long) = FiniteHint(nrows, cols)
   def setColsToRows = FiniteHint(rows, rows)
@@ -100,47 +100,43 @@ case class SparseHint(sparsity: Double, rows: BigInt, cols: BigInt)
     extends SizeHint {
   def *(other: SizeHint): SizeHint =
     other match {
-      case NoClue           => NoClue
-      case FiniteHint(r, c) => (this * SparseHint(1.0, r, c))
-      case SparseHint(sp, r, c) => {
+      case NoClue               => NoClue
+      case FiniteHint(r, c)     => (this * SparseHint(1.0, r, c))
+      case SparseHint(sp, r, c) =>
         // if I occupy a bin with probability p, and you q, then both: pq
         // There are cols samples of the, above, so the probability one is present:
         // 1-(1-pq)^cols ~ (cols * p * q) min 1.0
         val newSp = (BigDecimal(cols) * sp * sparsity)
-        if (newSp >= 1.0) {
+        if (newSp >= 1.0)
           FiniteHint(rows, c)
-        } else {
+        else
           SparseHint(newSp.toDouble, rows, c)
-        }
-      }
     }
   def +(other: SizeHint): SizeHint =
     other match {
-      case NoClue           => NoClue
-      case FiniteHint(r, c) => (this + SparseHint(1.0, r, c))
-      case SparseHint(sp, r, c) => {
+      case NoClue               => NoClue
+      case FiniteHint(r, c)     => (this + SparseHint(1.0, r, c))
+      case SparseHint(sp, r, c) =>
         // if I occupy a bin with probability p, and you q, then either: p + q - pq
-        if ((sparsity == 1.0) || (sp == 1.0)) {
+        if ((sparsity == 1.0) || (sp == 1.0))
           FiniteHint(rows max r, cols max c)
-        } else {
+        else {
           val newSp = sparsity + sp - sp * sparsity
           SparseHint(newSp, rows max r, cols max c)
         }
-      }
     }
   def #*#(other: SizeHint): SizeHint =
     other match {
       case NoClue           => NoClue
       case FiniteHint(r, c) => (this #*# SparseHint(1.0, r, c))
-      case SparseHint(sp, r, c) => {
+      case SparseHint(sp, r, c) =>
         val newSp = sp min sparsity
         SparseHint(newSp, rows min r, cols min c)
-      }
     }
   def total: Option[BigInt] =
-    if ((rows >= 0) && (cols >= 0)) {
+    if ((rows >= 0) && (cols >= 0))
       Some((BigDecimal(rows) * BigDecimal(cols) * sparsity).toBigInt)
-    } else
+    else
       None
   def setCols(c: Long): SizeHint = copy(cols = c)
   def setRows(r: Long): SizeHint = copy(rows = r)

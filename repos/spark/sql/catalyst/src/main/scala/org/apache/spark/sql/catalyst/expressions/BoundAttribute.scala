@@ -38,9 +38,9 @@ case class BoundReference(ordinal: Int, dataType: DataType, nullable: Boolean)
 
   // Use special getter for primitive types (for UnsafeRow)
   override def eval(input: InternalRow): Any =
-    if (input.isNullAt(ordinal)) {
+    if (input.isNullAt(ordinal))
       null
-    } else {
+    else
       dataType match {
         case BooleanType              => input.getBoolean(ordinal)
         case ByteType                 => input.getByte(ordinal)
@@ -58,7 +58,6 @@ case class BoundReference(ordinal: Int, dataType: DataType, nullable: Boolean)
         case _: MapType               => input.getMap(ordinal)
         case _                        => input.get(ordinal, dataType)
       }
-    }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val javaType = ctx.javaType(dataType)
@@ -70,12 +69,12 @@ case class BoundReference(ordinal: Int, dataType: DataType, nullable: Boolean)
       val code = oev.code
       oev.code = ""
       code
-    } else if (nullable) {
+    } else if (nullable)
       s"""
         boolean ${ev.isNull} = ${ctx.INPUT_ROW}.isNullAt($ordinal);
         $javaType ${ev.value} = ${ev.isNull} ? ${ctx.defaultValue(dataType)} : ($value);
       """
-    } else {
+    else {
       ev.isNull = "false"
       s"""
         $javaType ${ev.value} = $value;
@@ -95,16 +94,14 @@ object BindReferences extends Logging {
         case a: AttributeReference =>
           attachTree(a, "Binding attribute") {
             val ordinal = input.indexWhere(_.exprId == a.exprId)
-            if (ordinal == -1) {
-              if (allowFailures) {
+            if (ordinal == -1)
+              if (allowFailures)
                 a
-              } else {
+              else
                 sys.error(
                   s"Couldn't find $a in ${input.mkString("[", ",", "]")}")
-              }
-            } else {
+            else
               BoundReference(ordinal, a.dataType, input(ordinal).nullable)
-            }
           }
       }
       .asInstanceOf[

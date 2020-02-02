@@ -228,7 +228,7 @@ trait ZNode {
       } onSuccess {
         // When a node is fetched with a watch, send a ZNode.TreeUpdate on the broker, and start
         // monitoring
-        case ZNode.Watch(Return(zparent), eventUpdate) => {
+        case ZNode.Watch(Return(zparent), eventUpdate) =>
           val children = zparent.children.toSet
           val treeUpdate = ZNode.TreeUpdate(
             zparent,
@@ -252,14 +252,13 @@ trait ZNode {
                 log.debug("Unmonitorable event: %s: %s", path, event)
             }
           }
-        }
-        case ZNode.Watch(Throw(ZNode.Error(_path)), eventUpdate) => {
+        case ZNode.Watch(Throw(ZNode.Error(_path)), eventUpdate) =>
           // Tell the broker about the children we lost; otherwise, if there were no children,
           // this deletion should be reflected in a watch on the parent node, if one exists.
-          if (knownChildren.size > 0) {
+          if (knownChildren.size > 0)
             broker send (ZNode
               .TreeUpdate(this, removed = knownChildren)) sync ()
-          } else {
+          else {
             Future.Done
           } onSuccess { _ =>
             eventUpdate onSuccess {
@@ -269,7 +268,6 @@ trait ZNode {
                 log.debug("Unmonitorable event: %s: %s", path, event)
             }
           }
-        }
       }
     }
     // Initially, we don't know about any children for the node.

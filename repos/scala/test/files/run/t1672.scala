@@ -3,9 +3,8 @@ object Test {
   def bar(i: Int): Int =
     if (i == 0) 0
     else
-      try {
-        throw new RuntimeException
-      } catch {
+      try throw new RuntimeException
+      catch {
         case _: Throwable => bar(i - 1)
       }
 
@@ -13,13 +12,11 @@ object Test {
   def nestedTry1(i: Int): Int =
     if (i == 0) 0
     else
-      try {
-        throw new RuntimeException
-      } catch {
+      try throw new RuntimeException
+      catch {
         case _: Throwable =>
-          try {
-            ???
-          } catch { case _: Throwable => nestedTry1(i - 1) }
+          try ???
+          catch { case _: Throwable => nestedTry1(i - 1) }
       }
 
   def main(args: Array[String]) {

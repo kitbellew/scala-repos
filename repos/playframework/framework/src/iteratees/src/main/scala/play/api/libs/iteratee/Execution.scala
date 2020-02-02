@@ -71,11 +71,10 @@ object Execution {
             local.set(Empty)
             runnable.run()
             executeScheduled()
-          } finally {
-            // We've run all the Runnables, so show that the
-            // trampoline has been shut down.
-            local.set(null)
-          }
+          } finally
+          // We've run all the Runnables, so show that the
+          // trampoline has been shut down.
+          local.set(null)
         case Empty =>
           // Add this Runnable to our empty queue
           local.set(runnable)

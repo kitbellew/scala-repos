@@ -34,11 +34,10 @@ object PackageObject {
     // Eat `object' modifier
     builder.advanceLexer()
 
-    if (ObjectDef parse builder) {
+    if (ObjectDef parse builder)
       marker.done(ScalaElementTypes.OBJECT_DEF)
-    } else {
+    else
       marker.drop()
-    }
     true
   }
 }

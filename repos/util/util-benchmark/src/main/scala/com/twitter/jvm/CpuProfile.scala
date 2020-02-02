@@ -44,9 +44,8 @@ object CpuProfileBenchmark {
 
       private def dive(depth: Int): Int =
         if (depth == 0) {
-          while (true) {
+          while (true)
             Thread.sleep(10 << 20)
-          }
           1
         } else
           1 + dive(depth - 1) // make sure we don't tail recurse

@@ -72,14 +72,13 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
             <li><strong>User:</strong> {app.desc.user}</li>
             <li><strong>Cores:</strong>
             {
-        if (app.desc.maxCores.isEmpty) {
+        if (app.desc.maxCores.isEmpty)
           "Unlimited (%s granted)".format(app.coresGranted)
-        } else {
+        else
           "%s (%s granted, %s left)".format(
             app.desc.maxCores.get,
             app.coresGranted,
             app.coresLeft)
-        }
       }
             </li>
             <li>
@@ -98,10 +97,9 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
           <h4> Executor Summary </h4>
           {executorsTable}
           {
-        if (removedExecutors.nonEmpty) {
+        if (removedExecutors.nonEmpty)
           <h4> Removed Executors </h4> ++
             removedExecutorsTable
-        }
       }
         </div>
       </div>;

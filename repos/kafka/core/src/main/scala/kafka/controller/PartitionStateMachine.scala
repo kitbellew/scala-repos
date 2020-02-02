@@ -127,7 +127,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       // that belong to topics to be deleted
       for ((topicAndPartition, partitionState) <- partitionState
            if (!controller.deleteTopicManager.isTopicQueuedUpForDeletion(
-             topicAndPartition.topic))) {
+             topicAndPartition.topic)))
         if (partitionState.equals(OfflinePartition) || partitionState.equals(
               NewPartition))
           handleStateChange(
@@ -136,7 +136,6 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             OnlinePartition,
             controller.offlinePartitionSelector,
             (new CallbackBuilder).build)
-      }
       brokerRequestBatch.sendRequestsToBrokers(controller.epoch)
     } catch {
       case e: Throwable =>
@@ -222,92 +221,90 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             targetState))
     val currState =
       partitionState.getOrElseUpdate(topicAndPartition, NonExistentPartition)
-    try {
-      targetState match {
-        case NewPartition =>
-          // pre: partition did not exist before this
-          assertValidPreviousStates(
-            topicAndPartition,
-            List(NonExistentPartition),
-            NewPartition)
-          partitionState.put(topicAndPartition, NewPartition)
-          val assignedReplicas = controllerContext
-            .partitionReplicaAssignment(topicAndPartition)
-            .mkString(",")
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed partition %s state from %s to %s with assigned replicas %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                topicAndPartition,
-                currState,
-                targetState,
-                assignedReplicas))
-        // post: partition has been assigned replicas
-        case OnlinePartition =>
-          assertValidPreviousStates(
-            topicAndPartition,
-            List(NewPartition, OnlinePartition, OfflinePartition),
-            OnlinePartition)
-          partitionState(topicAndPartition) match {
-            case NewPartition =>
-              // initialize leader and isr path for new partition
-              initializeLeaderAndIsrForPartition(topicAndPartition)
-            case OfflinePartition =>
-              electLeaderForPartition(topic, partition, leaderSelector)
-            case OnlinePartition => // invoked when the leader needs to be re-elected
-              electLeaderForPartition(topic, partition, leaderSelector)
-            case _ => // should never come here since illegal previous states are checked above
-          }
-          partitionState.put(topicAndPartition, OnlinePartition)
-          val leader = controllerContext
-            .partitionLeadershipInfo(topicAndPartition)
-            .leaderAndIsr
-            .leader
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed partition %s from %s to %s with leader %d"
-              .format(
-                controllerId,
-                controller.epoch,
-                topicAndPartition,
-                currState,
-                targetState,
-                leader))
-        // post: partition has a leader
-        case OfflinePartition =>
-          // pre: partition should be in New or Online state
-          assertValidPreviousStates(
-            topicAndPartition,
-            List(NewPartition, OnlinePartition, OfflinePartition),
-            OfflinePartition)
-          // should be called when the leader for a partition is no longer alive
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed partition %s state from %s to %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                topicAndPartition,
-                currState,
-                targetState))
-          partitionState.put(topicAndPartition, OfflinePartition)
-        // post: partition has no alive leader
-        case NonExistentPartition =>
-          // pre: partition should be in Offline state
-          assertValidPreviousStates(
-            topicAndPartition,
-            List(OfflinePartition),
-            NonExistentPartition)
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed partition %s state from %s to %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                topicAndPartition,
-                currState,
-                targetState))
-          partitionState.put(topicAndPartition, NonExistentPartition)
-        // post: partition state is deleted from all brokers and zookeeper
-      }
+    try targetState match {
+      case NewPartition =>
+        // pre: partition did not exist before this
+        assertValidPreviousStates(
+          topicAndPartition,
+          List(NonExistentPartition),
+          NewPartition)
+        partitionState.put(topicAndPartition, NewPartition)
+        val assignedReplicas = controllerContext
+          .partitionReplicaAssignment(topicAndPartition)
+          .mkString(",")
+        stateChangeLogger.trace(
+          "Controller %d epoch %d changed partition %s state from %s to %s with assigned replicas %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              topicAndPartition,
+              currState,
+              targetState,
+              assignedReplicas))
+      // post: partition has been assigned replicas
+      case OnlinePartition =>
+        assertValidPreviousStates(
+          topicAndPartition,
+          List(NewPartition, OnlinePartition, OfflinePartition),
+          OnlinePartition)
+        partitionState(topicAndPartition) match {
+          case NewPartition =>
+            // initialize leader and isr path for new partition
+            initializeLeaderAndIsrForPartition(topicAndPartition)
+          case OfflinePartition =>
+            electLeaderForPartition(topic, partition, leaderSelector)
+          case OnlinePartition => // invoked when the leader needs to be re-elected
+            electLeaderForPartition(topic, partition, leaderSelector)
+          case _ => // should never come here since illegal previous states are checked above
+        }
+        partitionState.put(topicAndPartition, OnlinePartition)
+        val leader = controllerContext
+          .partitionLeadershipInfo(topicAndPartition)
+          .leaderAndIsr
+          .leader
+        stateChangeLogger.trace(
+          "Controller %d epoch %d changed partition %s from %s to %s with leader %d"
+            .format(
+              controllerId,
+              controller.epoch,
+              topicAndPartition,
+              currState,
+              targetState,
+              leader))
+      // post: partition has a leader
+      case OfflinePartition =>
+        // pre: partition should be in New or Online state
+        assertValidPreviousStates(
+          topicAndPartition,
+          List(NewPartition, OnlinePartition, OfflinePartition),
+          OfflinePartition)
+        // should be called when the leader for a partition is no longer alive
+        stateChangeLogger.trace(
+          "Controller %d epoch %d changed partition %s state from %s to %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              topicAndPartition,
+              currState,
+              targetState))
+        partitionState.put(topicAndPartition, OfflinePartition)
+      // post: partition has no alive leader
+      case NonExistentPartition =>
+        // pre: partition should be in Offline state
+        assertValidPreviousStates(
+          topicAndPartition,
+          List(OfflinePartition),
+          NonExistentPartition)
+        stateChangeLogger.trace(
+          "Controller %d epoch %d changed partition %s state from %s to %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              topicAndPartition,
+              currState,
+              targetState))
+        partitionState.put(topicAndPartition, NonExistentPartition)
+      // post: partition state is deleted from all brokers and zookeeper
     } catch {
       case t: Throwable =>
         stateChangeLogger.error(
@@ -328,7 +325,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     * zookeeper
     */
   private def initializePartitionState() {
-    for ((topicPartition, replicaAssignment) <- controllerContext.partitionReplicaAssignment) {
+    for ((topicPartition, replicaAssignment) <- controllerContext.partitionReplicaAssignment)
       // check if leader and isr path exists for partition. If not, then it is in NEW state
       controllerContext.partitionLeadershipInfo.get(topicPartition) match {
         case Some(currentLeaderIsrAndEpoch) =>
@@ -343,7 +340,6 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         case None =>
           partitionState.put(topicPartition, NewPartition)
       }
-    }
   }
 
   private def assertValidPreviousStates(
@@ -586,7 +582,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         parentPath: String,
         children: java.util.List[String]) {
       inLock(controllerContext.controllerLock) {
-        if (hasStarted.get) {
+        if (hasStarted.get)
           try {
             val currentChildren = {
               import JavaConversions._
@@ -619,7 +615,6 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
           } catch {
             case e: Throwable => error("Error while handling new topic", e)
           }
-        }
       }
     }
   }
@@ -716,14 +711,11 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                 .format(
                   partitionsToBeAdded.map(_._1.partition).mkString(","),
                   topic))
-          else {
-            if (partitionsToBeAdded.size > 0) {
-              info("New partitions to be added %s".format(partitionsToBeAdded))
-              controllerContext.partitionReplicaAssignment.++=(
-                partitionsToBeAdded)
-              controller.onNewPartitionCreation(
-                partitionsToBeAdded.keySet.toSet)
-            }
+          else if (partitionsToBeAdded.size > 0) {
+            info("New partitions to be added %s".format(partitionsToBeAdded))
+            controllerContext.partitionReplicaAssignment.++=(
+              partitionsToBeAdded)
+            controller.onNewPartitionCreation(partitionsToBeAdded.keySet.toSet)
           }
         } catch {
           case e: Throwable =>

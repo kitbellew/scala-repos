@@ -97,25 +97,21 @@ class ConsumerFetcherManager(
           }
         }
       } catch {
-        case t: Throwable => {
+        case t: Throwable =>
           if (!isRunning.get())
             throw t /* If this thread is stopped, propagate this exception to kill the thread. */
           else
             warn("Failed to find leader for %s".format(noLeaderPartitionSet), t)
-        }
-      } finally {
-        lock.unlock()
-      }
+      } finally lock.unlock()
 
-      try {
-        addFetcherForPartitions(leaderForPartitionsMap.map {
-          case (topicAndPartition, broker) =>
-            topicAndPartition -> BrokerAndInitialOffset(
-              broker,
-              partitionMap(topicAndPartition).getFetchOffset())
-        })
-      } catch {
-        case t: Throwable => {
+      try addFetcherForPartitions(leaderForPartitionsMap.map {
+        case (topicAndPartition, broker) =>
+          topicAndPartition -> BrokerAndInitialOffset(
+            broker,
+            partitionMap(topicAndPartition).getFetchOffset())
+      })
+      catch {
+        case t: Throwable =>
           if (!isRunning.get())
             throw t /* If this thread is stopped, propagate this exception to kill the thread. */
           else {
@@ -127,7 +123,6 @@ class ConsumerFetcherManager(
             noLeaderPartitionSet ++= leaderForPartitionsMap.keySet
             lock.unlock()
           }
-        }
       }
 
       shutdownIdleFetcherThreads()

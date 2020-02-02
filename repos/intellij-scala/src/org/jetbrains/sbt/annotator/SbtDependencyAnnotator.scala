@@ -34,9 +34,8 @@ class SbtDependencyAnnotator extends Annotator {
       version: String)
 
   override def annotate(element: PsiElement, holder: AnnotationHolder): Unit =
-    try {
-      doAnnotate(element, holder)
-    } catch {
+    try doAnnotate(element, holder)
+    catch {
       case exc: ResolverException =>
       // TODO: find another way to notify user instead of spamming with notifications
       // NotificationUtil.showMessage(null, exc.getMessage)
@@ -99,12 +98,11 @@ class SbtDependencyAnnotator extends Annotator {
       ScLiteralImpl.string(group) <- Option(maybeGroup)
       ScLiteralImpl.string(artifact) <- Option(maybeArtifact)
       shouldAppendScalaVersion = maybePercents.getText == "%%"
-    } yield {
+    } yield
       if (shouldAppendScalaVersion && scalaVersion.isDefined)
         ArtifactInfo(group, artifact + "_" + scalaVersion.get, version)
       else
         ArtifactInfo(group, artifact, version)
-    }
   }
 
   private def isDynamicVersion(version: String): Boolean =

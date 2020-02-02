@@ -83,11 +83,10 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
     val outputName = "part-" + numfmt.format(splitID)
     val path = FileOutputFormat.getOutputPath(conf.value)
     val fs: FileSystem = {
-      if (path != null) {
+      if (path != null)
         path.getFileSystem(conf.value)
-      } else {
+      else
         FileSystem.get(conf.value)
-      }
     }
 
     getOutputCommitter().setupTask(getTaskContext())
@@ -99,11 +98,10 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
   }
 
   def write(key: AnyRef, value: AnyRef) {
-    if (writer != null) {
+    if (writer != null)
       writer.write(key, value)
-    } else {
+    else
       throw new IOException("Writer is null, open() has not been called")
-    }
   }
 
   def close() {
@@ -126,32 +124,28 @@ private[spark] class SparkHadoopWriter(jobConf: JobConf)
   // ********* Private Functions *********
 
   private def getOutputFormat(): OutputFormat[AnyRef, AnyRef] = {
-    if (format == null) {
+    if (format == null)
       format = conf.value
         .getOutputFormat()
         .asInstanceOf[OutputFormat[AnyRef, AnyRef]]
-    }
     format
   }
 
   private def getOutputCommitter(): OutputCommitter = {
-    if (committer == null) {
+    if (committer == null)
       committer = conf.value.getOutputCommitter
-    }
     committer
   }
 
   private def getJobContext(): JobContext = {
-    if (jobContext == null) {
+    if (jobContext == null)
       jobContext = new JobContextImpl(conf.value, jID.value)
-    }
     jobContext
   }
 
   private def getTaskContext(): TaskAttemptContext = {
-    if (taskContext == null) {
+    if (taskContext == null)
       taskContext = newTaskAttemptContext(conf.value, taID.value)
-    }
     taskContext
   }
 
@@ -182,14 +176,12 @@ private[spark] object SparkHadoopWriter {
   }
 
   def createPathFromString(path: String, conf: JobConf): Path = {
-    if (path == null) {
+    if (path == null)
       throw new IllegalArgumentException("Output path is null")
-    }
     val outputPath = new Path(path)
     val fs = outputPath.getFileSystem(conf)
-    if (fs == null) {
+    if (fs == null)
       throw new IllegalArgumentException("Incorrectly formatted output path")
-    }
     outputPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
   }
 }

@@ -95,9 +95,9 @@ object MapTest extends SpecLite {
   "deleteMin" ! forAll { a: Int ==>> Int =>
     val b = a.deleteMin
     structurallySound(b)
-    if (a.isEmpty) {
+    if (a.isEmpty)
       b.isEmpty must_=== true
-    } else {
+    else {
       (b.size + 1) must_=== a.size
       b must_=== a.delete(a.findMin.get._1)
     }
@@ -106,9 +106,9 @@ object MapTest extends SpecLite {
   "deleteMax" ! forAll { a: Int ==>> Int =>
     val b = a.deleteMax
     structurallySound(b)
-    if (a.isEmpty) {
+    if (a.isEmpty)
       b.isEmpty must_=== true
-    } else {
+    else {
       (b.size + 1) must_=== a.size
       b must_=== a.delete(a.findMax.get._1)
     }

@@ -103,9 +103,9 @@ class SourceMapWriter(
   writeHeader()
 
   private def sourceToIndex(source: SourceFile): Int =
-    if (_srcToIndex.contains(source)) {
+    if (_srcToIndex.contains(source))
       _srcToIndex(source)
-    } else {
+    else {
       val index = sources.size
       _srcToIndex.put(source, index)
       sources += sourceToURI(source)
@@ -121,9 +121,9 @@ class SourceMapWriter(
   }
 
   private def nameToIndex(name: String): Int =
-    if (_nameToIndex.contains(name)) {
+    if (_nameToIndex.contains(name))
       _nameToIndex(name)
-    } else {
+    else {
       val index = names.size
       _nameToIndex.put(name, index)
       names += name
@@ -209,9 +209,9 @@ class SourceMapWriter(
     val column = pendingPos1.column
 
     // Source index field
-    if (source eq lastSource) { // highly likely
+    if (source eq lastSource) // highly likely
       writeBase64VLQ0()
-    } else {
+    else {
       val sourceIndex = sourceToIndex(source)
       writeBase64VLQ(sourceIndex - lastSourceIndex)
       lastSource = source
@@ -290,9 +290,9 @@ class SourceMapWriter(
       (((value0 ^ signExtended) - signExtended) << 1) | (signExtended & 1)
 
     // Write as many base-64 digits as necessary to encode value
-    if (value < 26) {
+    if (value < 26)
       return out.write('A' + value)
-    } else {
+    else {
       def writeBase64VLQSlowPath(value0: Int): Unit = {
         var value = value0
         do {

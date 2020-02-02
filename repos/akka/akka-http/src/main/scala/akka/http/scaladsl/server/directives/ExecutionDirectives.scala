@@ -43,7 +43,7 @@ trait ExecutionDirectives {
           rejections: immutable.Seq[Rejection],
           originalRejections: immutable.Seq[Rejection],
           iterationsLeft: Int = maxIterations): Future[RouteResult] =
-        if (iterationsLeft > 0) {
+        if (iterationsLeft > 0)
           handler(rejections) match {
             case Some(route) ⇒
               recoverRejectionsWith(
@@ -51,7 +51,7 @@ trait ExecutionDirectives {
                 ctx.withAcceptAll)
             case None ⇒ FastFuture.successful(RouteResult.Rejected(rejections))
           }
-        } else
+        else
           sys.error(
             s"Rejection handler still produced new rejections after $maxIterations iterations. " +
               s"Is there an infinite handler cycle? Initial rejections: $originalRejections final rejections: $rejections")

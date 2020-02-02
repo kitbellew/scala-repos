@@ -56,11 +56,10 @@ private[streaming] class KafkaInputDStream[
     with Logging {
 
   def getReceiver(): Receiver[(K, V)] =
-    if (!useReliableReceiver) {
+    if (!useReliableReceiver)
       new KafkaReceiver[K, V, U, T](kafkaParams, topics, storageLevel)
-    } else {
+    else
       new ReliableKafkaReceiver[K, V, U, T](kafkaParams, topics, storageLevel)
-    }
 }
 
 private[streaming] class KafkaReceiver[
@@ -117,17 +116,14 @@ private[streaming] class KafkaReceiver[
       ThreadUtils.newDaemonFixedThreadPool(
         topics.values.sum,
         "KafkaMessageHandler")
-    try {
-      // Start the messages handler for each partition
-      topicMessageStreams.values.foreach { streams =>
-        streams.foreach { stream =>
-          executorPool.submit(new MessageHandler(stream))
-        }
+    try
+    // Start the messages handler for each partition
+    topicMessageStreams.values.foreach { streams =>
+      streams.foreach { stream =>
+        executorPool.submit(new MessageHandler(stream))
       }
-    } finally {
-      executorPool
-        .shutdown() // Just causes threads to terminate after work is done
-    }
+    } finally executorPool
+      .shutdown() // Just causes threads to terminate after work is done
   }
 
   // Handles Kafka messages

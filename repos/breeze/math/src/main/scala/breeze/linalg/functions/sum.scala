@@ -108,7 +108,7 @@ trait VectorizedReduceUFunc extends UFunc {
             }
             res(i) = r
           }
-        } else {
+        } else
           cforRange(0 until mat.cols) { i =>
             var r = res(i)
             cforRange(0 until mat.rows) { j =>
@@ -116,7 +116,6 @@ trait VectorizedReduceUFunc extends UFunc {
             }
             res(i) = r
           }
-        }
         res.t
       }
     }

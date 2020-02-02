@@ -142,9 +142,9 @@ class FormatterTest extends WordSpec {
     "write stack traces" should {
       object ExceptionLooper {
         def cycle(n: Int) {
-          if (n == 0) {
+          if (n == 0)
             throw new Exception("Aie!")
-          } else {
+          else {
             cycle(n - 1)
             throw new Exception(
               "this is just here to fool the tail recursion optimizer")
@@ -152,9 +152,8 @@ class FormatterTest extends WordSpec {
         }
 
         def cycle2(n: Int) {
-          try {
-            cycle(n)
-          } catch {
+          try cycle(n)
+          catch {
             case t: Throwable =>
               throw new Exception("grrrr", t)
           }

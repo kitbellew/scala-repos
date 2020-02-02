@@ -56,12 +56,10 @@ private[akka] class ActorPublisher[T](val impl: ActorRef) extends Publisher[T] {
       val current = pendingSubscribers.get
       if (current eq null)
         reportSubscribeFailure(subscriber)
-      else {
-        if (pendingSubscribers.compareAndSet(current, subscriber +: current))
-          impl ! wakeUpMsg
-        else
-          doSubscribe() // CAS retry
-      }
+      else if (pendingSubscribers.compareAndSet(current, subscriber +: current))
+        impl ! wakeUpMsg
+      else
+        doSubscribe() // CAS retry
     }
 
     doSubscribe()
@@ -124,9 +122,9 @@ private[akka] class ActorSubscriptionWithCursor[T](
 private[akka] trait SoftShutdown { this: Actor ⇒
   def softShutdown(): Unit = {
     val children = context.children
-    if (children.isEmpty) {
+    if (children.isEmpty)
       context.stop(self)
-    } else {
+    else {
       context.children foreach context.watch
       context.become {
         case Terminated(_) ⇒ if (context.children.isEmpty) context.stop(self)

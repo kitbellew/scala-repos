@@ -167,7 +167,7 @@ object Retries {
         val retryPolicy = policyP.retryPolicy
 
         val filters =
-          if (retryPolicy eq RetryPolicy.Never) {
+          if (retryPolicy eq RetryPolicy.Never)
             newRequeueFilter(
               retryBudget,
               budgetP.requeueBackoffs,
@@ -175,7 +175,7 @@ object Retries {
               scoped,
               timerP.timer,
               next)
-          } else {
+          else {
             val retryFilter = new RetryExceptionsFilter[Req, Rep](
               retryPolicy,
               timerP.timer,

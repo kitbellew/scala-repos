@@ -208,9 +208,8 @@ object GradientBoostedTrees extends Logging {
     val persistedInput = if (input.getStorageLevel == StorageLevel.NONE) {
       input.persist(StorageLevel.MEMORY_AND_DISK)
       true
-    } else {
+    } else
       false
-    }
 
     // Prepare periodic checkpointers
     val predErrorCheckpointer = new PeriodicRDDCheckpointer[(Double, Double)](
@@ -304,9 +303,9 @@ object GradientBoostedTrees extends Logging {
         val currentValidateError = validatePredError.values.mean()
         if (bestValidateError - currentValidateError < validationTol * Math.max(
               currentValidateError,
-              0.01)) {
+              0.01))
           doneLearning = true
-        } else if (currentValidateError < bestValidateError) {
+        else if (currentValidateError < bestValidateError) {
           bestValidateError = currentValidateError
           bestM = m + 1
         }
@@ -323,17 +322,16 @@ object GradientBoostedTrees extends Logging {
     validatePredErrorCheckpointer.deleteAllCheckpoints()
     if (persistedInput) input.unpersist()
 
-    if (validate) {
+    if (validate)
       new GradientBoostedTreesModel(
         boostingStrategy.treeStrategy.algo,
         baseLearners.slice(0, bestM),
         baseLearnerWeights.slice(0, bestM))
-    } else {
+    else
       new GradientBoostedTreesModel(
         boostingStrategy.treeStrategy.algo,
         baseLearners,
         baseLearnerWeights)
-    }
   }
 
 }

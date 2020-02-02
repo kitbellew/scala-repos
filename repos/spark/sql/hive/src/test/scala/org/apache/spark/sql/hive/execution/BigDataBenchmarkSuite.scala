@@ -84,10 +84,10 @@ class BigDataBenchmarkSuite extends HiveComparisonTest {
 
   testTables.foreach(registerTestTable)
 
-  if (!testDataDirectory.exists()) {
+  if (!testDataDirectory.exists())
     // TODO: Auto download the files on demand.
     ignore("No data files found for BigDataBenchmark tests.") {}
-  } else {
+  else {
     createQueryTest(
       "query1",
       "SELECT pageURL, pageRank FROM rankings WHERE pageRank > 1")

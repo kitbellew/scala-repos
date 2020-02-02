@@ -83,11 +83,10 @@ object Mode {
   // This should be passed ALL the args supplied after the job name
   def apply(args: Args, config: Configuration): Mode = {
     val strictSources = args.boolean("tool.partialok") == false
-    if (!strictSources) {
+    if (!strictSources)
       // TODO we should do smarter logging here
       println(
         "[Scalding:INFO] using --tool.partialok. Missing log data won't cause errors.")
-    }
 
     if (args.boolean("local"))
       Local(strictSources)
@@ -163,11 +162,10 @@ trait HadoopMode extends Mode {
       val ctor = clazz.getConstructor(classOf[java.util.Map[_, _]])
       ctor.newInstance(finalMap.asJava).asInstanceOf[FlowConnector]
     } catch {
-      case ncd: ClassNotFoundException => {
+      case ncd: ClassNotFoundException =>
         throw new ModeLoadException(
           "Failed to load Cascading flow connector class " + flowConnectorClass,
           ncd)
-      }
     }
   }
 
@@ -188,11 +186,10 @@ trait HadoopMode extends Mode {
         val ctor = clazz.getConstructor(classOf[JobConf])
         ctor.newInstance(conf).asInstanceOf[FlowProcess[JobConf]]
       } catch {
-        case ncd: ClassNotFoundException => {
+        case ncd: ClassNotFoundException =>
           throw new ModeLoadException(
             "Failed to load Cascading flow process class " + flowProcessClass,
             ncd)
-        }
       }
 
     htap.retrieveSourceFields(fp)
@@ -249,10 +246,10 @@ case class HadoopTest(
   @tailrec
   private def allocateNewPath(prefix: String, idx: Int): String = {
     val candidate = prefix + idx.toString
-    if (allPaths(candidate)) {
+    if (allPaths(candidate))
       //Already taken, try again:
       allocateNewPath(prefix, idx + 1)
-    } else {
+    else {
       // Update all paths:
       allPaths += candidate
       candidate
@@ -284,9 +281,8 @@ case class HadoopTest(
     val path = getWritePathFor(src)
     // We read the write tap in order to add its contents in the test buffers
     val it = openForRead(Config.defaultFrom(this), src.createTap(Write)(this))
-    while (it != null && it.hasNext) {
+    while (it != null && it.hasNext)
       buf += new Tuple(it.next.getTuple)
-    }
     it.close()
     //Clean up this data off the disk
     new File(path).delete()

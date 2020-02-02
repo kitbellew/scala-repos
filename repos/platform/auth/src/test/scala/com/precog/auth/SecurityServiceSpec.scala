@@ -274,7 +274,7 @@ class SecurityServiceSpec
     DeletePermission(Path.Root, WrittenByAny)
   )
 
-  val rootGrants = {
+  val rootGrants =
     Set(
       Grant(
         rootGrantId,
@@ -286,7 +286,6 @@ class SecurityServiceSpec
         new Instant(0L),
         None
       ))
-  }
 
   val rootGrantRequests = rootGrants map mkNewGrantRequest
 

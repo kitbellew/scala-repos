@@ -124,16 +124,16 @@ object TestLinearWriteSpeed {
     val writables = new Array[Writable](numFiles)
     val scheduler = new KafkaScheduler(1)
     scheduler.startup()
-    for (i <- 0 until numFiles) {
-      if (options.has(mmapOpt)) {
+    for (i <- 0 until numFiles)
+      if (options.has(mmapOpt))
         writables(i) = new MmapWritable(
           new File(dir, "kafka-test-" + i + ".dat"),
           bytesToWrite / numFiles,
           buffer)
-      } else if (options.has(channelOpt)) {
+      else if (options.has(channelOpt))
         writables(i) =
           new ChannelWritable(new File(dir, "kafka-test-" + i + ".dat"), buffer)
-      } else if (options.has(logOpt)) {
+      else if (options.has(logOpt)) {
         val segmentSize =
           rand.nextInt(512) * 1024 * 1024 + 64 * 1024 * 1024 // vary size to avoid herd effect
         val logProperties = new Properties()
@@ -153,7 +153,6 @@ object TestLinearWriteSpeed {
           "Must specify what to write to with one of --log, --channel, or --mmap")
         System.exit(1)
       }
-    }
     bytesToWrite = (bytesToWrite / numFiles) * numFiles
 
     println("%10s\t%10s\t%10s".format("mb_sec", "avg_latency", "max_latency"))

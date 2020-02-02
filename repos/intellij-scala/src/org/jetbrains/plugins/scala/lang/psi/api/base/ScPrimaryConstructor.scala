@@ -102,11 +102,10 @@ trait ScPrimaryConstructor
             superReference = false)
         else ScDesignatorType(clazz)
       if (typeParameters.isEmpty) designatorType
-      else {
+      else
         ScParameterizedType(
           designatorType,
           typeParameters.map(new ScTypeParameterType(_, ScSubstitutor.empty)))
-      }
     })
     if (clauses.isEmpty)
       return new ScMethodType(returnType, Seq.empty, false)(
@@ -157,14 +156,11 @@ trait ScPrimaryConstructor
       first <- parameterList.clauses.headOption
       if first.hasRepeatedParam
       if hasAnnotation("scala.annotation.varargs").isDefined
-    } {
-      buffer += new ScPrimaryConstructorWrapper(this, isJavaVarargs = true)
-    }
+    } buffer += new ScPrimaryConstructorWrapper(this, isJavaVarargs = true)
 
     val params = parameters
-    for (i <- params.indices if params(i).baseDefaultParam) {
+    for (i <- params.indices if params(i).baseDefaultParam)
       buffer += new ScPrimaryConstructorWrapper(this, forDefault = Some(i + 1))
-    }
 
     buffer.toSeq
   }

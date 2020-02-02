@@ -42,14 +42,13 @@ object Collections {
   private lazy val EMPTY_LIST_ITERATOR: ListIterator[_] =
     new EmptyListIterator
 
-  private lazy val EMPTY_ENUMERATION: Enumeration[_] = {
+  private lazy val EMPTY_ENUMERATION: Enumeration[_] =
     new Enumeration[Any] {
       def hasMoreElements: Boolean = false
 
       def nextElement(): Any =
         throw new NoSuchElementException
     }
-  }
 
   // Differs from original type definition, original: [T <: jl.Comparable[_ >: T]]
   def sort[T <: jl.Comparable[T]](list: List[T]): Unit =
@@ -84,9 +83,8 @@ object Collections {
         if (cmp == 0) mid
         else if (cmp > 0) binarySearch(lo, mid, get)
         else binarySearch(mid + 1, hi, get)
-      } else {
+      } else
         notFound(lo)
-      }
 
     list match {
       case _: RandomAccess =>
@@ -210,26 +208,22 @@ object Collections {
   private def copyImpl[T](
       source: List[_ <: T] with RandomAccess,
       dest: ListIterator[T]): Unit =
-    for (i <- 0 until source.size) {
+    for (i <- 0 until source.size)
       if (dest.hasNext) {
         dest.next()
         dest.set(source.get(i))
-      } else {
+      } else
         throw new IndexOutOfBoundsException
-      }
-    }
 
   private def copyImpl[T](
       source: Iterator[_ <: T],
       dest: ListIterator[T]): Unit =
-    while (source.hasNext) {
+    while (source.hasNext)
       if (dest.hasNext) {
         dest.next()
         dest.set(source.next())
-      } else {
+      } else
         throw new IndexOutOfBoundsException
-      }
-    }
 
   // Differs from original type definition, original: [T <: jl.Comparable[_ >: T]]
   def min[T <: AnyRef with jl.Comparable[T]](coll: Collection[_ <: T]): T =
@@ -263,13 +257,13 @@ object Collections {
           val nextValue = list(index)
           val newCount = count + 1
           list(index) = value
-          if (index != cycleStartIndex) {
+          if (index != cycleStartIndex)
             rotateNext(
               cycleStartIndex,
               newCount,
               indexModulo(index + distance),
               nextValue)
-          } else if (newCount < listSize) {
+          else if (newCount < listSize) {
             val nextCycleStart = cycleStartIndex + 1
             rotateNext(
               nextCycleStart,
@@ -301,12 +295,11 @@ object Collections {
     list match {
       case _: RandomAccess =>
         var modified = false
-        for (i <- list.indices) {
+        for (i <- list.indices)
           if (list(i) === oldVal) {
             list(i) = newVal
             modified = true
           }
-        }
         modified
 
       case _ =>
@@ -317,9 +310,8 @@ object Collections {
             if (isEqual)
               iter.set(newVal)
             replaceAll(iter, mod || isEqual)
-          } else {
+          } else
             mod
-          }
         replaceAll(list.listIterator(), false)
     }
 
@@ -335,10 +327,10 @@ object Collections {
       target: List[_],
       fromStart: Boolean): Int = {
     val targetSize = target.size
-    if (targetSize == 0) {
+    if (targetSize == 0)
       if (fromStart) 0
       else source.size
-    } else {
+    else {
       val indices = 0 to source.size - targetSize
       val indicesInOrder = if (fromStart) indices else indices.reverse
       indicesInOrder
@@ -826,27 +818,25 @@ object Collections {
       else false
 
     override def removeAll(c: Collection[_]): Boolean =
-      if (eagerThrow) {
+      if (eagerThrow)
         throw new UnsupportedOperationException
-      } else {
+      else {
         val cSet = c.asInstanceOf[Collection[AnyRef]].toSet
-        if (this.exists(e => cSet(e.asInstanceOf[AnyRef]))) {
+        if (this.exists(e => cSet(e.asInstanceOf[AnyRef])))
           throw new UnsupportedOperationException
-        } else {
+        else
           false
-        }
       }
 
     override def retainAll(c: Collection[_]): Boolean =
-      if (eagerThrow) {
+      if (eagerThrow)
         throw new UnsupportedOperationException
-      } else {
+      else {
         val cSet = c.asInstanceOf[Collection[AnyRef]].toSet
-        if (this.exists(e => !cSet(e.asInstanceOf[AnyRef]))) {
+        if (this.exists(e => !cSet(e.asInstanceOf[AnyRef])))
           throw new UnsupportedOperationException
-        } else {
+        else
           false
-        }
       }
   }
 

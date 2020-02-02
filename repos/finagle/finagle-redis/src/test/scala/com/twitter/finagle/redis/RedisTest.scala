@@ -65,11 +65,8 @@ trait RedisClientTest extends RedisTest with BeforeAndAfterAll {
         .hostConnectionLimit(1)
         .buildFactory())
     Await.result(client.flushAll)
-    try {
-      testCode(client)
-    } finally {
-      client.release
-    }
+    try testCode(client)
+    finally client.release
   }
 }
 
@@ -110,11 +107,8 @@ trait RedisClientServerIntegrationTest
       .retries(2)
       .build()
     Await.result(client(FlushAll))
-    try {
-      testCode(client)
-    } finally {
-      client.close()
-    }
+    try testCode(client)
+    finally client.close()
   }
 
   protected def assertMBulkReply(
@@ -138,11 +132,10 @@ trait RedisClientServerIntegrationTest
             .map({ msg => chanBuf2String(msg) })
           assert(actualMessages == expects)
       }
-    case EmptyMBulkReply() => {
+    case EmptyMBulkReply() =>
       val isEmpty = true
       val actualReply = expects.isEmpty
       assert(actualReply == isEmpty)
-    }
     case r: Reply => fail("Expected MBulkReply, got %s".format(r))
     case _        => fail("Expected MBulkReply")
   }

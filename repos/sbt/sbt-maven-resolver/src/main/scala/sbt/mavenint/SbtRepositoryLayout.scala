@@ -81,12 +81,10 @@ object SbtRepositoryLayout extends RepositoryLayout {
           .append(artifact.getVersion)
     }
 
-    if (artifact.getClassifier != null && !artifact.getClassifier.trim.isEmpty) {
+    if (artifact.getClassifier != null && !artifact.getClassifier.trim.isEmpty)
       path.append("-").append(artifact.getClassifier)
-    }
-    if (artifact.getExtension.length > 0) {
+    if (artifact.getExtension.length > 0)
       path.append('.').append(artifact.getExtension)
-    }
     URI.create(path.toString())
   }
 

@@ -106,9 +106,9 @@ object TerminateJson {
           case c                    => true
         }
 
-        if (stack.isEmpty) {
+        if (stack.isEmpty)
           anyValue()
-        } else {
+        else
           stack.head match {
             case SkipChar =>
               stack.pop()
@@ -142,7 +142,6 @@ object TerminateJson {
             case _ =>
               anyValue()
           }
-        }
       }
 
       buf.flip()
@@ -154,7 +153,7 @@ object TerminateJson {
       else
         Some({
           val sb = new StringBuilder()
-          while (stack.nonEmpty) {
+          while (stack.nonEmpty)
             sb ++= (stack.pop() match {
               case ExpectValue => "null"
               case ExpectField => "\"\":null"
@@ -165,7 +164,6 @@ object TerminateJson {
               case CloseObject => "}"
               case _           => sys.error("Unreachable.")
             })
-          }
           CharBuffer.wrap(sb.toString)
         })
 

@@ -71,11 +71,8 @@ object WebSocketClient {
 
   def apply[T](block: WebSocketClient => T) = {
     val client = WebSocketClient.create()
-    try {
-      block(client)
-    } finally {
-      client.shutdown()
-    }
+    try block(client)
+    finally client.shutdown()
   }
 
   private implicit class ToFuture(chf: ChannelFuture) {
@@ -83,13 +80,12 @@ object WebSocketClient {
       val promise = Promise[Channel]()
       chf.addListener(new ChannelFutureListener {
         def operationComplete(future: ChannelFuture) =
-          if (future.isSuccess) {
+          if (future.isSuccess)
             promise.success(future.channel())
-          } else if (future.isCancelled) {
+          else if (future.isCancelled)
             promise.failure(new RuntimeException("Future cancelled"))
-          } else {
+          else
             promise.failure(future.cause())
-          }
       })
       promise.future
     }
@@ -117,14 +113,14 @@ object WebSocketClient {
 
       val normalized = url.normalize()
       val tgt =
-        if (normalized.getPath == null || normalized.getPath.trim().isEmpty) {
+        if (normalized.getPath == null || normalized.getPath.trim().isEmpty)
           new URI(
             normalized.getScheme,
             normalized.getAuthority,
             "/",
             normalized.getQuery,
             normalized.getFragment)
-        } else normalized
+        else normalized
 
       val disconnected = Promise[Unit]()
 
@@ -341,11 +337,10 @@ object WebSocketClient {
     }
 
     override def exceptionCaught(ctx: ChannelHandlerContext, e: Throwable) {
-      if (serverInitiatedClose.get()) {
+      if (serverInitiatedClose.get())
         disconnected.trySuccess(())
-      } else {
+      else
         disconnected.tryFailure(e)
-      }
       ctx.channel.close()
       ctx.fireExceptionCaught(e)
     }

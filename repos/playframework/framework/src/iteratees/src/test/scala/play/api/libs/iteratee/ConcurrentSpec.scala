@@ -212,9 +212,7 @@ object ConcurrentSpec
         val enumerator = Concurrent.unicast[String](onStart = { c =>
           c.push("foo")
           c.push("bar")
-        }, onComplete = {
-          completed.success("called")
-        })(unicastEC)
+        }, onComplete = completed.success("called"))(unicastEC)
 
         val future = enumerator |>>> Cont {
           case Input.El(data) => Done(data)

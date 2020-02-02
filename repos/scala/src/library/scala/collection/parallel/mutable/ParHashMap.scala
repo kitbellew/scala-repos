@@ -202,10 +202,9 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
     sz += 1
     val hc = improve(elemHashCode(elem._1), seedvalue)
     val pos = (hc >>> nonmasklen)
-    if (buckets(pos) eq null) {
+    if (buckets(pos) eq null)
       // initialize bucket
       buckets(pos) = new UnrolledBuffer[DefaultEntry[K, V]]()
-    }
     // add to bucket
     buckets(pos) += new DefaultEntry(elem._1, elem._2)
     this
@@ -234,9 +233,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
       }
       var i = 0
       while (i < ParHashMapCombiner.numblocks) {
-        if (buckets(i) ne null) {
+        if (buckets(i) ne null)
           for (elem <- buckets(i)) table.insertEntry(elem)
-        }
         i += 1
       }
       new ParHashMap(table.hashTableContents)
@@ -272,12 +270,11 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
 
       // check if key already exists
       var ce = olde
-      while (ce ne null) {
+      while (ce ne null)
         if (ce.key == e.key) {
           h = -1
           ce = null
         } else ce = ce.next
-      }
 
       // if key does not already exist
       if (h != -1) {

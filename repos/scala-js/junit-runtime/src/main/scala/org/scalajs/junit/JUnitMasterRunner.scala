@@ -30,9 +30,8 @@ final class JUnitMasterRunner(
     if (registered != done) {
       val msg = s"$registered task(s) were registered, $done were executed"
       throw new IllegalStateException(msg)
-    } else {
+    } else
       ""
-    }
   }
 
   def receiveMessage(msg: String): Option[String] = msg(0) match {

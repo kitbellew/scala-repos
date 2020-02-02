@@ -61,18 +61,16 @@ trait ScalaPsiElement
 
   def findLastChildByType[T <: PsiElement](t: IElementType): T = {
     var node = getNode.getLastChildNode
-    while (node != null && node.getElementType != t) {
+    while (node != null && node.getElementType != t)
       node = node.getTreePrev
-    }
     if (node == null) null.asInstanceOf[T]
     else node.getPsi.asInstanceOf[T]
   }
 
   def findFirstChildByType(t: IElementType) = {
     var node = getNode.getFirstChildNode
-    while (node != null && node.getElementType != t) {
+    while (node != null && node.getElementType != t)
       node = node.getTreeNext
-    }
     if (node == null) null else node.getPsi
   }
 
@@ -88,18 +86,16 @@ trait ScalaPsiElement
 
   def findLastChildByType(set: TokenSet) = {
     var node = getNode.getLastChildNode
-    while (node != null && !set.contains(node.getElementType)) {
+    while (node != null && !set.contains(node.getElementType))
       node = node.getTreePrev
-    }
     if (node == null) null else node.getPsi
   }
 
   protected def findLastChild[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): Option[T] = {
     var child = getLastChild
-    while (child != null && !clazz.isInstance(child)) {
+    while (child != null && !clazz.isInstance(child))
       child = child.getPrevSibling
-    }
     if (child == null) None else Some(child.asInstanceOf[T])
   }
 
@@ -116,9 +112,8 @@ trait ScalaPsiElement
     * Override in inheritors
     */
   def acceptChildren(visitor: ScalaElementVisitor) {
-    for (c <- getChildren; if c.isInstanceOf[ScalaPsiElement]) {
+    for (c <- getChildren; if c.isInstanceOf[ScalaPsiElement])
       c.asInstanceOf[ScalaPsiElement].accept(visitor)
-    }
   }
 
   abstract override def getUseScope: SearchScope =

@@ -74,36 +74,34 @@ object Broker {
   def createBroker(id: Int, brokerInfoString: String): Broker = {
     if (brokerInfoString == null)
       throw new BrokerNotAvailableException(s"Broker id $id does not exist")
-    try {
-      Json.parseFull(brokerInfoString) match {
-        case Some(m) =>
-          val brokerInfo = m.asInstanceOf[Map[String, Any]]
-          val version = brokerInfo("version").asInstanceOf[Int]
-          val endpoints =
-            if (version < 1)
-              throw new KafkaException(
-                s"Unsupported version of broker registration: $brokerInfoString")
-            else if (version == 1) {
-              val host = brokerInfo("host").asInstanceOf[String]
-              val port = brokerInfo("port").asInstanceOf[Int]
-              Map(
-                SecurityProtocol.PLAINTEXT -> new EndPoint(
-                  host,
-                  port,
-                  SecurityProtocol.PLAINTEXT))
-            } else {
-              val listeners = brokerInfo("endpoints").asInstanceOf[List[String]]
-              listeners.map { listener =>
-                val ep = EndPoint.createEndPoint(listener)
-                (ep.protocolType, ep)
-              }.toMap
-            }
-          val rack =
-            brokerInfo.get("rack").filter(_ != null).map(_.asInstanceOf[String])
-          new Broker(id, endpoints, rack)
-        case None =>
-          throw new BrokerNotAvailableException(s"Broker id $id does not exist")
-      }
+    try Json.parseFull(brokerInfoString) match {
+      case Some(m) =>
+        val brokerInfo = m.asInstanceOf[Map[String, Any]]
+        val version = brokerInfo("version").asInstanceOf[Int]
+        val endpoints =
+          if (version < 1)
+            throw new KafkaException(
+              s"Unsupported version of broker registration: $brokerInfoString")
+          else if (version == 1) {
+            val host = brokerInfo("host").asInstanceOf[String]
+            val port = brokerInfo("port").asInstanceOf[Int]
+            Map(
+              SecurityProtocol.PLAINTEXT -> new EndPoint(
+                host,
+                port,
+                SecurityProtocol.PLAINTEXT))
+          } else {
+            val listeners = brokerInfo("endpoints").asInstanceOf[List[String]]
+            listeners.map { listener =>
+              val ep = EndPoint.createEndPoint(listener)
+              (ep.protocolType, ep)
+            }.toMap
+          }
+        val rack =
+          brokerInfo.get("rack").filter(_ != null).map(_.asInstanceOf[String])
+        new Broker(id, endpoints, rack)
+      case None =>
+        throw new BrokerNotAvailableException(s"Broker id $id does not exist")
     } catch {
       case t: Throwable =>
         throw new KafkaException(

@@ -75,13 +75,12 @@ sealed abstract class Heap[A] {
       (s, leq, t) =>
         t match {
           case Node(_, Stream()) => Empty[A]
-          case Node(_, f0) => {
+          case Node(_, f0) =>
             val (Node(Ranked(r, x), cf), ts2) = getMin(leq, f0)
             val (zs, ts1, f1) = splitForest(r, Stream(), Stream(), cf)
             val f2 = skewMeld(leq, skewMeld(leq, ts1, ts2), f1)
             val f3 = zs.foldRight(f2)(skewInsert(leq, _, _))
             Heap(s - 1, leq, Node(Ranked(0, x), f3))
-          }
         }
     )
 
@@ -335,10 +334,9 @@ object Heap extends HeapInstances {
 
     def minZ[A](f: (A, A) => Boolean): Forest[A] => ForestZipper[A] = {
       case Stream() => emptyZ
-      case xs => {
+      case xs =>
         val z = zipper(xs)
         minZp(f)(z, z)
-      }
     }
 
     def minZp[A](leq: (A, A) => Boolean)
@@ -350,14 +348,13 @@ object Heap extends HeapInstances {
 
     def heapify[A](leq: (A, A) => Boolean): Tree[Ranked[A]] => Tree[Ranked[A]] = {
       case n @ Node(_, Stream()) => n
-      case n @ Node(Ranked(r, a), as) => {
+      case n @ Node(Ranked(r, a), as) =>
         val (left, Node(Ranked(rp, ap), asp) #:: right) = minZ(leq)(as)
         if (leq(a, ap)) n
         else
           Node(
             Ranked(r, ap),
             rezip((left, heapify(leq)(Node(Ranked(rp, a), asp)) #:: right)))
-      }
     }
 
     def singletonWith[A](f: (A, A) => Boolean, a: A) =
@@ -406,11 +403,10 @@ object Heap extends HeapInstances {
         trees: Forest[A]): (Tree[Ranked[A]], Forest[A]) =
       trees match {
         case Stream(t) => (t, Stream())
-        case t #:: ts => {
+        case t #:: ts =>
           val (tp, tsp) = getMin(f, ts)
           if (f(t.rootLabel.value, tp.rootLabel.value)) (t, ts)
           else (tp, t #:: tsp)
-        }
       }
 
     def splitForest[A]: (Int, Forest[A], Forest[A], Forest[A]) => (

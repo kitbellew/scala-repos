@@ -118,14 +118,13 @@ class Main {
 
     path.findClassFile(encName) match {
       case Some(classFile) =>
-        if (verbose) {
+        if (verbose)
           Console.println(
             Console.BOLD + "FILENAME" + Console.RESET + " = " + classFile.path)
-        }
         val bytes = classFile.toByteArray
-        if (isScalaFile(bytes)) {
+        if (isScalaFile(bytes))
           Console.println(decompileScala(bytes, isPackageObjectFile(encName)))
-        } else {
+        else {
           // construct a reader for the classfile content
           val reader = new ByteArrayReader(classFile.toByteArray)
           // parse the classfile

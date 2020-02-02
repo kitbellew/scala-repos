@@ -63,8 +63,7 @@ class ScSelfTypeElementElementType[Func <: ScSelfTypeElement]
   }
 
   def indexStub(stub: ScSelfTypeElementStub, sink: IndexSink) {
-    for (name <- stub.getClassNames) {
+    for (name <- stub.getClassNames)
       sink.occurrence(ScSelfTypeInheritorsIndex.KEY, name)
-    }
   }
 }

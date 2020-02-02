@@ -192,11 +192,10 @@ private class AppTaskLauncherActor(
   }
 
   private[this] def waitingForInFlight(): Unit =
-    if (inFlightTaskOperations.isEmpty) {
+    if (inFlightTaskOperations.isEmpty)
       context.stop(self)
-    } else {
+    else
       context.become(receiveWaitingForInFlight)
-    }
 
   /**
     * Receive rate limiter updates.
@@ -292,15 +291,13 @@ private class AppTaskLauncherActor(
         case _             => log.warning("ignore update of unknown {}", taskId)
       }
 
-      if (status.terminal) {
+      if (status.terminal)
         // If the app has constraints, we need to reconsider offers that
         // we already rejected. E.g. when a host:unique constraint prevented
         // us to launch tasks on a particular node before, we need to reconsider offers
         // of that node after a task on that node has died.
-        if (app.constraints.nonEmpty) {
+        if (app.constraints.nonEmpty)
           maybeOfferReviver.foreach(_.reviveOffers())
-        }
-      }
 
       replyWithQueuedTaskCount()
   }
@@ -334,17 +331,15 @@ private class AppTaskLauncherActor(
 
           suspendMatchingUntilWeGetBackoffDelayUpdate()
 
-        } else {
+        } else
           log.info(
             "scaling change for '{}', version {} with {} initial tasks",
             app.id,
             app.version,
             addCount
           )
-        }
-      } else {
+      } else
         tasksToLaunch += addCount
-      }
 
       OfferMatcherRegistration.manageOfferMatcherStatus()
 
@@ -489,17 +484,16 @@ private class AppTaskLauncherActor(
           context.dispatcher)
         registeredAsMatcher = true
       } else if (!shouldBeRegistered && registeredAsMatcher) {
-        if (tasksToLaunch > 0) {
+        if (tasksToLaunch > 0)
           log.info(
             "Backing off due to task failures. Stop receiving offers for {}, {}",
             app.id,
             app.version)
-        } else {
+        else
           log.info(
             "No tasks left to launch. Stop receiving offers for {}, {}",
             app.id,
             app.version)
-        }
         offerMatcherManager.removeSubscription(myselfAsOfferMatcher)(
           context.dispatcher)
         registeredAsMatcher = false

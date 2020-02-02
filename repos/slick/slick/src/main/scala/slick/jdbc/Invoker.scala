@@ -31,10 +31,9 @@ trait Invoker[+R] { self =>
     * If the result set is empty, a NoSuchElementException is thrown. */
   final def first(implicit session: JdbcBackend#Session): R = {
     val it = iteratorTo(0)
-    try {
-      if (it.hasNext) it.next()
-      else throw new NoSuchElementException("Invoker.first")
-    } finally it.close
+    try if (it.hasNext) it.next()
+    else throw new NoSuchElementException("Invoker.first")
+    finally it.close
   }
 
   /** Execute the statement and return a fully materialized collection. */
@@ -51,11 +50,8 @@ trait Invoker[+R] { self =>
   final def foreach(f: R => Unit, maxRows: Int = 0)(
       implicit session: JdbcBackend#Session) {
     val it = iteratorTo(maxRows)
-    try {
-      it.foreach(f)
-    } finally {
-      it.close()
-    }
+    try it.foreach(f)
+    finally it.close()
   }
 }
 

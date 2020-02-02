@@ -67,9 +67,8 @@ object PageViewGenerator {
     var total = 0.0
     for ((item, prob) <- inputMap) {
       total = total + prob
-      if (total > rand) {
+      if (total > rand)
         return item
-      }
     }
     inputMap
       .take(1)

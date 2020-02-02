@@ -118,20 +118,18 @@ private[yarn] class ExecutorRunnable(
     if (sparkConf.get(SHUFFLE_SERVICE_ENABLED)) {
       val secretString = securityMgr.getSecretKey()
       val secretBytes =
-        if (secretString != null) {
+        if (secretString != null)
           // This conversion must match how the YarnShuffleService decodes our secret
           JavaUtils.stringToBytes(secretString)
-        } else {
+        else
           // Authentication is not enabled, so just provide dummy metadata
           ByteBuffer.allocate(0)
-        }
       ctx.setServiceData(Collections.singletonMap("spark_shuffle", secretBytes))
     }
 
     // Send the start request to the ContainerManager
-    try {
-      nmClient.startContainer(container, ctx)
-    } catch {
+    try nmClient.startContainer(container, ctx)
+    catch {
       case ex: Exception =>
         throw new SparkException(
           s"Exception while starting container ${container.getId}" +
@@ -227,11 +225,10 @@ private[yarn] class ExecutorRunnable(
       .getUserClasspath(sparkConf)
       .flatMap { uri =>
         val absPath =
-          if (new File(uri.getPath()).isAbsolute()) {
+          if (new File(uri.getPath()).isAbsolute())
             Client.getClusterPath(sparkConf, uri.getPath())
-          } else {
+          else
             Client.buildPath(Environment.PWD.$(), uri.getPath())
-          }
         Seq("--user-class-path", "file:" + absPath)
       }
       .toSeq
@@ -301,7 +298,7 @@ private[yarn] class ExecutorRunnable(
       val distFiles = System.getenv("SPARK_YARN_CACHE_FILES").split(',')
       val visibilities =
         System.getenv("SPARK_YARN_CACHE_FILES_VISIBILITIES").split(',')
-      for (i <- 0 to distFiles.length - 1) {
+      for (i <- 0 to distFiles.length - 1)
         setupDistributedCache(
           distFiles(i),
           LocalResourceType.FILE,
@@ -309,7 +306,6 @@ private[yarn] class ExecutorRunnable(
           timeStamps(i),
           fileSizes(i),
           visibilities(i))
-      }
     }
 
     if (System.getenv("SPARK_YARN_CACHE_ARCHIVES") != null) {
@@ -320,7 +316,7 @@ private[yarn] class ExecutorRunnable(
       val distArchives = System.getenv("SPARK_YARN_CACHE_ARCHIVES").split(',')
       val visibilities =
         System.getenv("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES").split(',')
-      for (i <- 0 to distArchives.length - 1) {
+      for (i <- 0 to distArchives.length - 1)
         setupDistributedCache(
           distArchives(i),
           LocalResourceType.ARCHIVE,
@@ -328,7 +324,6 @@ private[yarn] class ExecutorRunnable(
           timeStamps(i),
           fileSizes(i),
           visibilities(i))
-      }
     }
 
     logInfo("Prepared Local resources " + localResources)

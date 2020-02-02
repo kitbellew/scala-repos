@@ -68,45 +68,40 @@ object RoutesFileParser {
     val errors = ListBuffer.empty[RoutesCompilationError]
 
     routes.foreach { route =>
-      if (route.call.packageName.isEmpty) {
+      if (route.call.packageName.isEmpty)
         errors += RoutesCompilationError(
           file,
           "Missing package name",
           Some(route.call.pos.line),
           Some(route.call.pos.column))
-      }
 
-      if (route.call.controller.isEmpty) {
+      if (route.call.controller.isEmpty)
         errors += RoutesCompilationError(
           file,
           "Missing Controller",
           Some(route.call.pos.line),
           Some(route.call.pos.column))
-      }
 
       route.path.parts.collect {
-        case part @ DynamicPart(name, regex, _) => {
+        case part @ DynamicPart(name, regex, _) =>
           route.call.parameters
             .getOrElse(Nil)
             .find(_.name == name)
             .map { p =>
-              if (p.fixed.isDefined || p.default.isDefined) {
+              if (p.fixed.isDefined || p.default.isDefined)
                 errors += RoutesCompilationError(
                   file,
                   "It is not allowed to specify a fixed or default value for parameter: '" + name + "' extracted from the path",
                   Some(p.pos.line),
                   Some(p.pos.column))
-              }
-              try {
-                java.util.regex.Pattern.compile(regex)
-              } catch {
-                case e: Exception => {
+              try java.util.regex.Pattern.compile(regex)
+              catch {
+                case e: Exception =>
                   errors += RoutesCompilationError(
                     file,
                     e.getMessage,
                     Some(part.pos.line),
                     Some(part.pos.column))
-                }
               }
             }
             .getOrElse {
@@ -116,7 +111,6 @@ object RoutesFileParser {
                 Some(part.pos.line),
                 Some(part.pos.column))
             }
-        }
       }
 
     }
@@ -333,7 +327,7 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
 
   def call: Parser[HandlerCall] =
     opt("@") ~ absoluteMethod ~ opt(parameters) ^^ {
-      case instantiate ~ absMethod ~ parameters => {
+      case instantiate ~ absMethod ~ parameters =>
         val (packageParts, classAndMethod) =
           absMethod.splitAt(absMethod.size - 2)
         val packageName = packageParts.mkString(".")
@@ -341,7 +335,6 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
         val methodName = classAndMethod(1)
         val dynamic = !instantiate.isEmpty
         HandlerCall(packageName, className, dynamic, methodName, parameters)
-      }
     }
 
   def router: Parser[String] = rep1sep(identifier, ".") ^^ {

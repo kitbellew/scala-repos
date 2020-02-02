@@ -89,7 +89,7 @@ final case class Comprehension(
           s2.nodeType.asCollectionType.elementType)
       else nodeType
     if (same && newType == nodeType) this
-    else {
+    else
       copy(
         from = f2,
         select = s2,
@@ -103,7 +103,6 @@ final case class Comprehension(
         fetch = fetch2.orElse(fetch),
         offset = offset2.orElse(offset)
       ) :@ newType
-    }
   }
 }
 

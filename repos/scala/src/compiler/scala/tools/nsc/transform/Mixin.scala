@@ -169,9 +169,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       val forwarderInfo =
         if (erasureMap(specificForwardInfo) =:= erasedInterfaceInfo)
           specificForwardInfo
-        else {
+        else
           erasedInterfaceInfo
-        }
       // Optimize: no need if mixinClass has no typeparams.
       // !!! JZ Really? What about the effect of abstract types, prefix?
       if (mixinClass.typeParams.isEmpty) sym
@@ -225,14 +224,13 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
       clazz.info // make sure info is up to date, so that implClass is set.
 
-      for (member <- clazz.info.decls) {
+      for (member <- clazz.info.decls)
         if (!member.isMethod && !member.isModule && !member.isModuleVar) {
           assert(member.isTerm && !member.isDeferred, member)
-          if (member.getterIn(clazz).isPrivate) {
+          if (member.getterIn(clazz).isPrivate)
             member.makeNotPrivate(
               clazz
             ) // this will also make getter&setter not private
-          }
           val getter = member.getterIn(clazz)
           if (getter == NoSymbol) addMember(clazz, newGetter(member))
           if (!member.tpe.isInstanceOf[ConstantType] && !member.isLazy) {
@@ -241,7 +239,6 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           }
           clazz.info.decls.unlink(member)
         }
-      }
       debuglog("new defs of " + clazz + " = " + clazz.info.decls)
     }
   }
@@ -269,7 +266,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     /* Mix in members of implementation class mixinClass into class clazz */
     def mixinTraitForwarders(mixinClass: Symbol) {
       for (member <- mixinClass.info.decls;
-           if isImplementedStatically(member)) {
+           if isImplementedStatically(member))
         member overridingSymbol clazz match {
           case NoSymbol =>
             if (clazz.info
@@ -279,7 +276,6 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                 .asInstanceOf[TermSymbol] setAlias member
           case _ =>
         }
-      }
     }
 
     /* Mix in members of trait mixinClass into class clazz. Also,
@@ -288,8 +284,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
      */
     def mixinTraitMembers(mixinClass: Symbol) {
       // For all members of a trait's interface do:
-      for (mixinMember <- mixinClass.info.decls) {
-        if (isConcreteAccessor(mixinMember)) {
+      for (mixinMember <- mixinClass.info.decls)
+        if (isConcreteAccessor(mixinMember))
           if (isOverriddenAccessor(mixinMember, clazz.info.baseClasses))
             devWarning(
               s"Overridden concrete accessor: ${mixinMember.fullLocationString}")
@@ -297,13 +293,12 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             // mixin field accessors
             val mixedInAccessor =
               cloneAndAddMixinMember(mixinClass, mixinMember)
-            if (mixinMember.isLazy) {
+            if (mixinMember.isLazy)
               initializer(mixedInAccessor) = (
                 mixinClass.info.decl(mixinMember.name)
                   orElse abort(
                     "Could not find initializer for " + mixinMember.name)
               )
-            }
             if (!mixinMember.isSetter)
               mixinMember.tpe match {
                 case MethodType(Nil, ConstantType(_)) =>
@@ -337,7 +332,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                     sym setFlag newFlags setAnnotations accessed.annotations)
               }
           }
-        } else if (mixinMember.isSuperAccessor) { // mixin super accessors
+        else if (mixinMember.isSuperAccessor) { // mixin super accessors
           val superAccessor =
             addMember(clazz, mixinMember.cloneSymbol(clazz)) setPos clazz.pos
           assert(superAccessor.alias != NoSymbol, superAccessor)
@@ -352,15 +347,13 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               superAccessor.asInstanceOf[TermSymbol] setAlias alias1
           }
         } else if (mixinMember.isMethod && mixinMember.isModule && mixinMember
-                     .hasNoFlags(LIFTED | BRIDGE)) {
+                     .hasNoFlags(LIFTED | BRIDGE))
           // mixin objects: todo what happens with abstract objects?
           addMember(
             clazz,
             mixinMember.cloneSymbol(
               clazz,
               mixinMember.flags & ~(DEFERRED | lateDEFERRED)) setPos clazz.pos)
-        }
-      }
     }
 
     if (clazz.isJavaDefined || treatedClassInfos(clazz) == clazz.info)
@@ -484,9 +477,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
         case _ =>
           if (currentOwner.isTrait && sym.isSetter && !enteringPickler(
-                sym.isDeferred)) {
+                sym.isDeferred))
             sym.addAnnotation(TraitSetterAnnotationClass)
-          }
           tree
       }
     }
@@ -507,13 +499,11 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           else if (needsInitFlag(field) && !field.isDeferred) false
           else return NO_NAME
         )
-      if (field.accessed hasAnnotation TransientAttr) {
+      if (field.accessed hasAnnotation TransientAttr)
         if (isNormal) BITMAP_TRANSIENT
         else BITMAP_CHECKINIT_TRANSIENT
-      } else {
-        if (isNormal) BITMAP_NORMAL
-        else BITMAP_CHECKINIT
-      }
+      else if (isNormal) BITMAP_NORMAL
+      else BITMAP_CHECKINIT
     }
 
     /** Add all new definitions to a non-trait class
@@ -884,9 +874,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                 if (sym.tpe.resultType.typeSymbol == UnitClass) UNIT
                 else rhs
               ))
-          } else if (sym.isConstructor) {
+          } else if (sym.isConstructor)
             deriveDefDef(stat)(addInitBits(clazz, _))
-          } else if (settings.checkInit && !clazz.isTrait && sym.isSetter) {
+          else if (settings.checkInit && !clazz.isTrait && sym.isSetter) {
             val getter = sym.getterIn(clazz)
             if (needsInitFlag(getter) && fieldOffset.isDefinedAt(getter))
               deriveDefDef(stat)(rhs =>
@@ -1044,46 +1034,44 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         }
 
       // for all symbols `sym` in the class definition, which are mixed in:
-      for (sym <- clazz.info.decls; if sym hasFlag MIXEDIN) {
+      for (sym <- clazz.info.decls; if sym hasFlag MIXEDIN)
         // if current class is a trait, add an abstract method for accessor `sym`
-        if (clazz.isTrait) {
+        if (clazz.isTrait)
           addDefDef(sym)
-        } else {
-          // if class is not a trait add accessor definitions
-          if (isConcreteAccessor(sym)) {
-            // add accessor definitions
+        else
+        // if class is not a trait add accessor definitions
+        if (isConcreteAccessor(sym))
+          // add accessor definitions
+          addDefDef(
+            sym, {
+              if (sym.isSetter)
+                // If this is a setter of a mixed-in field which is overridden by another mixin,
+                // the trait setter of the overridden one does not need to do anything - the
+                // trait setter of the overriding field will initialize the field.
+                if (isOverriddenSetter(sym)) UNIT
+                else setterBody(sym)
+              else getterBody(sym)
+            }
+          )
+        else if (sym.isModule && !(sym hasFlag LIFTED | BRIDGE)) {
+          // Moved to Refchecks
+        } else if (!sym.isMethod)
+          // add fields
+          addValDef(sym)
+        else if (sym.isSuperAccessor)
+          // add superaccessors
+          addDefDef(sym)
+        else {
+          // add forwarders
+          assert(sym.alias != NoSymbol, (sym, sym.debugFlagString, clazz))
+          // debuglog("New forwarder: " + sym.defString + " => " + sym.alias.defString)
+          if (!sym.isMacro)
             addDefDef(
-              sym, {
-                if (sym.isSetter) {
-                  // If this is a setter of a mixed-in field which is overridden by another mixin,
-                  // the trait setter of the overridden one does not need to do anything - the
-                  // trait setter of the overriding field will initialize the field.
-                  if (isOverriddenSetter(sym)) UNIT
-                  else setterBody(sym)
-                } else getterBody(sym)
-              }
-            )
-          } else if (sym.isModule && !(sym hasFlag LIFTED | BRIDGE)) {
-            // Moved to Refchecks
-          } else if (!sym.isMethod) {
-            // add fields
-            addValDef(sym)
-          } else if (sym.isSuperAccessor) {
-            // add superaccessors
-            addDefDef(sym)
-          } else {
-            // add forwarders
-            assert(sym.alias != NoSymbol, (sym, sym.debugFlagString, clazz))
-            // debuglog("New forwarder: " + sym.defString + " => " + sym.alias.defString)
-            if (!sym.isMacro)
-              addDefDef(
-                sym,
-                Apply(
-                  SuperSelect(clazz, sym.alias),
-                  sym.paramss.head.map(Ident(_))))
-          }
+              sym,
+              Apply(
+                SuperSelect(clazz, sym.alias),
+                sym.paramss.head.map(Ident(_))))
         }
-      }
       stats1 = add(stats1, newDefs.toList)
       if (clazz.isTrait) stats1 = stats1.filter {
         case vd: ValDef =>

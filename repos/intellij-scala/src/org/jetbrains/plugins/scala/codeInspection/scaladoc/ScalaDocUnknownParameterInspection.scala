@@ -55,22 +55,18 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
         def paramsDif(
             paramList: scala.Seq[ScParameter],
             tagParamList: scala.Seq[ScTypeParam]) {
-          if (paramList != null) {
-            for (funcParam <- paramList) {
+          if (paramList != null)
+            for (funcParam <- paramList)
               tagParams -= convertMemberName(funcParam.name)
-            }
-          }
-          if (tagParamList != null) {
-            for (typeParam <- tagParamList) {
+          if (tagParamList != null)
+            for (typeParam <- tagParamList)
               tagTypeParams -= convertMemberName(typeParam.name)
-            }
-          }
         }
 
         def collectDocParams() {
           for (tagParam <- s.findTagsByName(
-                 Set("@param", "@tparam").contains(_))) {
-            if (tagParam.getValueElement != null) {
+                 Set("@param", "@tparam").contains(_)))
+            if (tagParam.getValueElement != null)
               tagParam.name match {
                 case "@param" =>
                   insertDuplicating(
@@ -85,12 +81,10 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                       tagParam.asInstanceOf[ScDocTag]),
                     tagParam.asInstanceOf[ScDocTag])
               }
-            }
-          }
         }
 
         def registerBadParams() {
-          for ((_, badParameter) <- tagParams) {
+          for ((_, badParameter) <- tagParams)
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(
                 badParameter.getValueElement,
@@ -98,8 +92,7 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                 true,
                 ProblemHighlightType.ERROR,
                 isOnTheFly))
-          }
-          for ((_, badTypeParameter) <- tagTypeParams) {
+          for ((_, badTypeParameter) <- tagTypeParams)
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(
                 badTypeParameter.getValueElement,
@@ -107,8 +100,7 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                 true,
                 ProblemHighlightType.ERROR,
                 isOnTheFly))
-          }
-          for (duplicatingParam <- duplicatingParams) {
+          for (duplicatingParam <- duplicatingParams)
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(
                 duplicatingParam.getValueElement,
@@ -120,7 +112,6 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                   duplicatingParam,
                   true)
               ))
-          }
         }
 
         def doInspection(
@@ -149,7 +140,7 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
           case traitt: ScTrait =>
             doInspection(null, traitt.typeParameters)
           case typeAlias: ScTypeAlias => //scaladoc can't process tparams for type alias now
-            for (tag <- s.findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG)) {
+            for (tag <- s.findTagsByName(MyScaladocParsing.TYPE_PARAM_TAG))
               holder.registerProblem(
                 holder.getManager.createProblemDescriptor(
                   tag.getFirstChild,
@@ -157,13 +148,12 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                   true,
                   ProblemHighlightType.WEAK_WARNING,
                   isOnTheFly))
-            }
           case _ => //we can't have params/tparams here
             for (tag <- s.findTagsByName(
                    Set(
                      MyScaladocParsing.PARAM_TAG,
                      MyScaladocParsing.TYPE_PARAM_TAG).contains _)
-                 if tag.isInstanceOf[ScDocTag]) {
+                 if tag.isInstanceOf[ScDocTag])
               holder.registerProblem(
                 holder.getManager.createProblemDescriptor(
                   tag.getFirstChild,
@@ -175,7 +165,6 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
                     tag.asInstanceOf[ScDocTag],
                     false)
                 ))
-            }
         }
       }
     }

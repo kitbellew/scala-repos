@@ -141,20 +141,17 @@ object DecisionTreeRunner {
         .required()
         .action((x, c) => c.copy(input = x))
       checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest > 1) {
+        if (params.fracTest < 0 || params.fracTest > 1)
           failure(
             s"fracTest ${params.fracTest} value incorrect; should be in [0,1].")
-        } else {
-          if (params.algo == Classification &&
-              (params.impurity == Gini || params.impurity == Entropy)) {
-            success
-          } else if (params.algo == Regression && params.impurity == Variance) {
-            success
-          } else {
-            failure(
-              s"Algo ${params.algo} is not compatible with impurity ${params.impurity}.")
-          }
-        }
+        else if (params.algo == Classification &&
+                 (params.impurity == Gini || params.impurity == Entropy))
+          success
+        else if (params.algo == Regression && params.impurity == Variance)
+          success
+        else
+          failure(
+            s"Algo ${params.algo} is not compatible with impurity ${params.impurity}.")
       }
     }
 
@@ -190,26 +187,24 @@ object DecisionTreeRunner {
     }
     // For classification, re-index classes if needed.
     val (examples, classIndexMap, numClasses) = algo match {
-      case Classification => {
+      case Classification =>
         // classCounts: class --> # examples in class
         val classCounts = origExamples.map(_.label).countByValue()
         val sortedClasses = classCounts.keys.toList.sorted
         val numClasses = classCounts.size
         // classIndexMap: class --> index in 0,...,numClasses-1
         val classIndexMap = {
-          if (classCounts.keySet != Set(0.0, 1.0)) {
+          if (classCounts.keySet != Set(0.0, 1.0))
             sortedClasses.zipWithIndex.toMap
-          } else {
+          else
             Map[Double, Int]()
-          }
         }
         val examples = {
-          if (classIndexMap.isEmpty) {
+          if (classIndexMap.isEmpty)
             origExamples
-          } else {
+          else
             origExamples.map(lp =>
               LabeledPoint(classIndexMap(lp.label), lp.features))
-          }
         }
         val numExamples = examples.count()
         println(s"numClasses = $numClasses.")
@@ -220,7 +215,6 @@ object DecisionTreeRunner {
           println(s"$c\t$frac\t${classCounts(c)}")
         }
         (examples, classIndexMap, numClasses)
-      }
       case Regression =>
         (origExamples, null, 0)
       case _ =>
@@ -236,25 +230,22 @@ object DecisionTreeRunner {
         case "libsvm" => MLUtils.loadLibSVMFile(sc, testInput, numFeatures)
       }
       algo match {
-        case Classification => {
+        case Classification =>
           // classCounts: class --> # examples in class
           val testExamples = {
-            if (classIndexMap.isEmpty) {
+            if (classIndexMap.isEmpty)
               origTestExamples
-            } else {
+            else
               origTestExamples.map(lp =>
                 LabeledPoint(classIndexMap(lp.label), lp.features))
-            }
           }
           Array(examples, testExamples)
-        }
         case Regression =>
           Array(examples, origTestExamples)
       }
-    } else {
+    } else
       // Split input into training, test.
       examples.randomSplit(Array(1.0 - fracTest, fracTest))
-    }
     val training = splits(0).cache()
     val test = splits(1).cache()
 
@@ -306,11 +297,10 @@ object DecisionTreeRunner {
       val model = DecisionTree.train(training, strategy)
       val elapsedTime = (System.nanoTime() - startTime) / 1e9
       println(s"Training time: $elapsedTime seconds")
-      if (model.numNodes < 20) {
+      if (model.numNodes < 20)
         println(model.toDebugString) // Print full model.
-      } else {
+      else
         println(model) // Print model summary.
-      }
       if (params.algo == Classification) {
         val trainAccuracy =
           new MulticlassMetrics(training.map(lp =>
@@ -339,11 +329,10 @@ object DecisionTreeRunner {
           randomSeed)
         val elapsedTime = (System.nanoTime() - startTime) / 1e9
         println(s"Training time: $elapsedTime seconds")
-        if (model.totalNumNodes < 30) {
+        if (model.totalNumNodes < 30)
           println(model.toDebugString) // Print full model.
-        } else {
+        else
           println(model) // Print model summary.
-        }
         val trainAccuracy =
           new MulticlassMetrics(training.map(lp =>
             (model.predict(lp.features), lp.label))).precision
@@ -363,11 +352,10 @@ object DecisionTreeRunner {
           randomSeed)
         val elapsedTime = (System.nanoTime() - startTime) / 1e9
         println(s"Training time: $elapsedTime seconds")
-        if (model.totalNumNodes < 30) {
+        if (model.totalNumNodes < 30)
           println(model.toDebugString) // Print full model.
-        } else {
+        else
           println(model) // Print model summary.
-        }
         val trainMSE = meanSquaredError(model, training)
         println(s"Train mean squared error = $trainMSE")
         val testMSE = meanSquaredError(model, test)

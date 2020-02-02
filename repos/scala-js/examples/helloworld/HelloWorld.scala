@@ -18,9 +18,8 @@ object HelloWorld extends js.JSApp {
       sayHelloFromTypedDOM()
       sayHelloFromJQuery()
       sayHelloFromTypedJQuery()
-    } else {
+    } else
       println("Hello world!")
-    }
   }
 
   def sayHelloFromDOM() {

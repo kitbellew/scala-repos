@@ -44,9 +44,8 @@ object BigDecimalOperations {
       }
 
       approx take k last
-    } else if (d == 0) {
+    } else if (d == 0)
       0
-    } else {
+    else
       sys.error("square root of a negative number")
-    }
 }

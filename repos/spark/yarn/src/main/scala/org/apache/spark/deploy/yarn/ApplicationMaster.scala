@@ -53,12 +53,11 @@ private[spark] class ApplicationMaster(
 
   // Load the properties file with the Spark configuration and set entries as system properties,
   // so that user code run inside the AM also has access to them.
-  if (args.propertiesFile != null) {
+  if (args.propertiesFile != null)
     Utils.getPropertiesFromFile(args.propertiesFile).foreach {
       case (k, v) =>
         sys.props(k) = v
     }
-  }
 
   // TODO: Currently, task to container is computed once (TaskSetManager) - which need not be
   // optimal as more containers are available. Might need to handle this better.
@@ -74,11 +73,10 @@ private[spark] class ApplicationMaster(
 
   private val maxNumExecutorFailures = {
     val effectiveNumExecutors =
-      if (Utils.isDynamicAllocationEnabled(sparkConf)) {
+      if (Utils.isDynamicAllocationEnabled(sparkConf))
         sparkConf.get(DYN_ALLOCATION_MAX_EXECUTORS)
-      } else {
+      else
         sparkConf.get(EXECUTOR_INSTANCES).getOrElse(0)
-      }
     // By default, effectiveNumExecutors is Int.MaxValue if dynamic allocation is enabled. We need
     // avoid the integer overflow here.
     val defaultMaxNumExecutorFailures = math.max(
@@ -168,7 +166,7 @@ private[spark] class ApplicationMaster(
           .getAttemptId()
           .getAttemptId() >= maxAppAttempts
 
-        if (!finished) {
+        if (!finished)
           // The default state of ApplicationMaster is failed if it is invoked by shut down hook.
           // This behavior is different compared to 1.x version.
           // If user application is exited ahead of time by calling System.exit(N), here mark
@@ -178,15 +176,13 @@ private[spark] class ApplicationMaster(
             finalStatus,
             ApplicationMaster.EXIT_EARLY,
             "Shutdown hook called before final status was reported.")
-        }
 
-        if (!unregistered) {
+        if (!unregistered)
           // we only want to unregister if we don't want the RM to retry
           if (finalStatus == FinalApplicationStatus.SUCCEEDED || isLastAttempt) {
             unregister(finalStatus, finalMsg)
             cleanupStagingDir(fs)
           }
-        }
       }
 
       // Call this to force generation of secret so it gets populated into the
@@ -204,11 +200,10 @@ private[spark] class ApplicationMaster(
         delegationTokenRenewerOption.foreach(_.scheduleLoginFromKeytab())
       }
 
-      if (isClusterMode) {
+      if (isClusterMode)
         runDriver(securityMgr)
-      } else {
+      else
         runExecutorLauncher(securityMgr)
-      }
     } catch {
       case e: Exception =>
         // catch everything else if not specifically handled
@@ -228,11 +223,10 @@ private[spark] class ApplicationMaster(
     * from the application code.
     */
   final def getDefaultFinalStatus(): FinalApplicationStatus =
-    if (isClusterMode) {
+    if (isClusterMode)
       FinalApplicationStatus.FAILED
-    } else {
+    else
       FinalApplicationStatus.UNDEFINED
-    }
 
   /**
     * unregister is used to completely unregister the application from the ResourceManager.
@@ -359,12 +353,12 @@ private[spark] class ApplicationMaster(
     val sc = waitForSparkContextInitialized()
 
     // If there is no SparkContext at this point, just fail the app.
-    if (sc == null) {
+    if (sc == null)
       finish(
         FinalApplicationStatus.FAILED,
         ApplicationMaster.EXIT_SC_NOT_INITED,
         "Timed out waiting for SparkContext.")
-    } else {
+    else {
       rpcEnv = sc.env.rpcEnv
       val driverRef = runAMEndpoint(
         sc.getConf.get("spark.driver.host"),
@@ -409,19 +403,19 @@ private[spark] class ApplicationMaster(
         var failureCount = 0
         while (!finished) {
           try {
-            if (allocator.getNumExecutorsFailed >= maxNumExecutorFailures) {
+            if (allocator.getNumExecutorsFailed >= maxNumExecutorFailures)
               finish(
                 FinalApplicationStatus.FAILED,
                 ApplicationMaster.EXIT_MAX_EXECUTOR_FAILURES,
                 s"Max number of executor failures ($maxNumExecutorFailures) reached")
-            } else {
+            else {
               logDebug("Sending progress")
               allocator.allocateResources()
             }
             failureCount = 0
           } catch {
             case i: InterruptedException =>
-            case e: Throwable => {
+            case e: Throwable =>
               failureCount += 1
               // this exception was introduced in hadoop 2.4 and this code would not compile
               // with earlier versions if we refer it directly.
@@ -432,18 +426,16 @@ private[spark] class ApplicationMaster(
                   FinalApplicationStatus.FAILED,
                   ApplicationMaster.EXIT_REPORTER_FAILURE,
                   e.getMessage)
-              } else if (!NonFatal(e) || failureCount >= reporterMaxFailures) {
+              } else if (!NonFatal(e) || failureCount >= reporterMaxFailures)
                 finish(
                   FinalApplicationStatus.FAILED,
                   ApplicationMaster.EXIT_REPORTER_FAILURE,
                   "Exception was thrown " +
                     s"$failureCount time(s) from Reporter thread.")
-              } else {
+              else
                 logWarning(
                   s"Reporter thread fails $failureCount time(s) in a row.",
                   e)
-              }
-            }
           }
           try {
             val numPendingAllocate = allocator.getPendingAllocate.size
@@ -515,12 +507,11 @@ private[spark] class ApplicationMaster(
       }
 
       val sparkContext = sparkContextRef.get()
-      if (sparkContext == null) {
+      if (sparkContext == null)
         logError(
           ("SparkContext did not initialize after waiting for %d ms. Please check earlier"
             + " log output for errors. Failing the application.").format(
             totalWaitTime))
-      }
       sparkContext
     }
   }
@@ -536,7 +527,7 @@ private[spark] class ApplicationMaster(
     val totalWaitTimeMs = sparkConf.get(AM_MAX_WAIT_TIME)
     val deadline = System.currentTimeMillis + totalWaitTimeMs
 
-    while (!driverUp && !finished && System.currentTimeMillis < deadline) {
+    while (!driverUp && !finished && System.currentTimeMillis < deadline)
       try {
         val socket = new Socket(driverHost, driverPort)
         socket.close()
@@ -549,11 +540,9 @@ private[spark] class ApplicationMaster(
               .format(driverHost, driverPort))
           Thread.sleep(100L)
       }
-    }
 
-    if (!driverUp) {
+    if (!driverUp)
       throw new SparkException("Failed to connect to driver!")
-    }
 
     sparkConf.set("spark.driver.host", driverHost)
     sparkConf.set("spark.driver.port", driverPort.toString)
@@ -572,9 +561,8 @@ private[spark] class ApplicationMaster(
       params.foreach {
         case (k, v) => System.setProperty(s"spark.$amFilter.param.$k", v)
       }
-    } else {
+    } else
       amEndpoint.send(AddWebUIFilter(amFilter, params.toMap, proxyBase))
-    }
   }
 
   /**
@@ -592,18 +580,16 @@ private[spark] class ApplicationMaster(
       new URL("file:" + new File(entry.getPath()).getAbsolutePath())
     }
     val userClassLoader =
-      if (Client.isUserClassPathFirst(sparkConf, isDriver = true)) {
+      if (Client.isUserClassPathFirst(sparkConf, isDriver = true))
         new ChildFirstURLClassLoader(urls, Utils.getContextOrSparkClassLoader)
-      } else {
+      else
         new MutableURLClassLoader(urls, Utils.getContextOrSparkClassLoader)
-      }
 
     var userArgs = args.userArgs
-    if (args.primaryPyFile != null && args.primaryPyFile.endsWith(".py")) {
+    if (args.primaryPyFile != null && args.primaryPyFile.endsWith(".py"))
       // When running pyspark, the app is run using PythonRunner. The second argument is the list
       // of files to add to PYTHONPATH, which Client.scala already handles, so it's empty.
       userArgs = Seq(args.primaryPyFile, "") ++ userArgs
-    }
     if (args.primaryRFile != null && args.primaryRFile.endsWith(".R")) {
       // TODO(davies): add R dependencies here
     }
@@ -679,9 +665,8 @@ private[spark] class ApplicationMaster(
             if (a.requestTotalExecutorsWithPreferredLocalities(
                   requestedTotal,
                   localityAwareTasks,
-                  hostToLocalTaskCount)) {
+                  hostToLocalTaskCount))
               resetAllocatorInterval()
-            }
             context.reply(true)
 
           case None =>

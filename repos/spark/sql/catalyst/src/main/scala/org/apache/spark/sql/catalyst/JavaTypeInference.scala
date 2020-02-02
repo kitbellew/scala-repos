@@ -317,13 +317,13 @@ object JavaTypeInference {
           val (_, nullable) = inferDataType(fieldType)
           val constructor =
             constructorFor(fieldType, Some(addToPath(fieldName)))
-          val setter = if (nullable) {
-            constructor
-          } else {
-            AssertNotNull(
-              constructor,
-              Seq("currently no type path record in java"))
-          }
+          val setter =
+            if (nullable)
+              constructor
+            else
+              AssertNotNull(
+                constructor,
+                Seq("currently no type path record in java"))
           p.getWriteMethod.getName -> setter
         }.toMap
 
@@ -331,15 +331,14 @@ object JavaTypeInference {
           NewInstance(other, Nil, ObjectType(other), propagateNull = false)
         val result = InitializeJavaBean(newInstance, setters)
 
-        if (path.nonEmpty) {
+        if (path.nonEmpty)
           expressions.If(
             IsNull(getPath),
             expressions.Literal.create(null, ObjectType(other)),
             result
           )
-        } else {
+        else
           result
-        }
     }
   }
 
@@ -360,22 +359,21 @@ object JavaTypeInference {
         input: Expression,
         elementType: TypeToken[_]): Expression = {
       val (dataType, nullable) = inferDataType(elementType)
-      if (ScalaReflection.isNativeType(dataType)) {
+      if (ScalaReflection.isNativeType(dataType))
         NewInstance(
           classOf[GenericArrayData],
           input :: Nil,
           dataType = ArrayType(dataType, nullable))
-      } else {
+      else
         MapObjects(
           extractorFor(_, elementType),
           input,
           ObjectType(elementType.getRawType))
-      }
     }
 
-    if (!inputObject.dataType.isInstanceOf[ObjectType]) {
+    if (!inputObject.dataType.isInstanceOf[ObjectType])
       inputObject
-    } else {
+    else
       typeToken.getRawType match {
         case c if c == classOf[String] =>
           StaticInvoke(
@@ -435,7 +433,7 @@ object JavaTypeInference {
 
         case other =>
           val properties = getJavaBeanProperties(other)
-          if (properties.length > 0) {
+          if (properties.length > 0)
             CreateNamedStruct(properties.flatMap { p =>
               val fieldName = p.getName
               val fieldType = typeToken.method(p.getReadMethod).getReturnType
@@ -447,11 +445,9 @@ object JavaTypeInference {
                 fieldValue,
                 fieldType) :: Nil
             })
-          } else {
+          else
             throw new UnsupportedOperationException(
               s"Cannot infer type for class ${other.getName} because it is not bean-compliant")
-          }
       }
-    }
   }
 }

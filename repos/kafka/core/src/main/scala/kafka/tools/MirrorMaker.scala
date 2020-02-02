@@ -227,11 +227,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
             "whitelist must be specified when using new consumer in mirror maker.")
           System.exit(1)
         }
-      } else {
-        if (List(whitelistOpt, blacklistOpt).count(options.has) != 1) {
-          error("Exactly one of whitelist or blacklist is required.")
-          System.exit(1)
-        }
+      } else if (List(whitelistOpt, blacklistOpt).count(options.has) != 1) {
+        error("Exactly one of whitelist or blacklist is required.")
+        System.exit(1)
       }
 
       abortOnSendFailure = options.valueOf(abortOnSendFailureOpt).toBoolean
@@ -278,19 +276,17 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           if (customRebalanceListenerClass != null) {
             val rebalanceListenerArgs =
               options.valueOf(rebalanceListenerArgsOpt)
-            if (rebalanceListenerArgs != null) {
+            if (rebalanceListenerArgs != null)
               Some(
                 CoreUtils.createObject[ConsumerRebalanceListener](
                   customRebalanceListenerClass,
                   rebalanceListenerArgs))
-            } else {
+            else
               Some(
                 CoreUtils.createObject[ConsumerRebalanceListener](
                   customRebalanceListenerClass))
-            }
-          } else {
+          } else
             None
-          }
         }
 
         if (customRebalanceListener.exists(
@@ -310,21 +306,19 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           if (customRebalanceListenerClass != null) {
             val rebalanceListenerArgs =
               options.valueOf(rebalanceListenerArgsOpt)
-            if (rebalanceListenerArgs != null) {
+            if (rebalanceListenerArgs != null)
               Some(
                 CoreUtils.createObject[
                   org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
                   customRebalanceListenerClass,
                   rebalanceListenerArgs))
-            } else {
+            else
               Some(
                 CoreUtils.createObject[
                   org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
                   customRebalanceListenerClass))
-            }
-          } else {
+          } else
             None
-          }
         }
         if (customRebalanceListener.exists(!_.isInstanceOf[
               org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
@@ -345,8 +339,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       // Create and initialize message handler
       val customMessageHandlerClass = options.valueOf(messageHandlerOpt)
       val messageHandlerArgs = options.valueOf(messageHandlerArgsOpt)
-      messageHandler = {
-        if (customMessageHandlerClass != null) {
+      messageHandler =
+        if (customMessageHandlerClass != null)
           if (messageHandlerArgs != null)
             CoreUtils.createObject[MirrorMakerMessageHandler](
               customMessageHandlerClass,
@@ -354,10 +348,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           else
             CoreUtils.createObject[MirrorMakerMessageHandler](
               customMessageHandlerClass)
-        } else {
+        else
           defaultMirrorMakerMessageHandler
-        }
-      }
     } catch {
       case ct: ControlThrowable => throw ct
       case t: Throwable =>
@@ -446,9 +438,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
   def commitOffsets(mirrorMakerConsumer: MirrorMakerBaseConsumer) {
     if (!exitingOnSendFailure) {
       trace("Committing offsets.")
-      try {
-        mirrorMakerConsumer.commit()
-      } catch {
+      try mirrorMakerConsumer.commit()
+      catch {
         case e: WakeupException =>
           // we only call wakeup() once to close the consumer,
           // so if we catch it in commit we can safely retry
@@ -456,9 +447,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           mirrorMakerConsumer.commit()
           throw e
       }
-    } else {
+    } else
       info("Exiting on send failure, skip committing offsets.")
-    }
   }
 
   def cleanShutdown() {
@@ -512,16 +502,14 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         // We need the two while loop to make sure when old consumer is used, even there is no message we
         // still commit offset. When new consumer is used, this is handled by poll(timeout).
         while (!exitingOnSendFailure && !shuttingDown) {
-          try {
-            while (!exitingOnSendFailure && !shuttingDown && mirrorMakerConsumer.hasData) {
-              val data = mirrorMakerConsumer.receive()
-              trace(
-                "Sending message with value size %d and offset %d"
-                  .format(data.value.length, data.offset))
-              val records = messageHandler.handle(data)
-              records.foreach(producer.send)
-              maybeFlushAndCommitOffsets()
-            }
+          try while (!exitingOnSendFailure && !shuttingDown && mirrorMakerConsumer.hasData) {
+            val data = mirrorMakerConsumer.receive()
+            trace(
+              "Sending message with value size %d and offset %d"
+                .format(data.value.length, data.offset))
+            val records = messageHandler.handle(data)
+            records.foreach(producer.send)
+            maybeFlushAndCommitOffsets()
           } catch {
             case cte: ConsumerTimeoutException =>
               trace("Caught ConsumerTimeoutException, continue iteration.")
@@ -658,17 +646,15 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         new InternalRebalanceListenerForNewConsumer(
           this,
           customRebalanceListener)
-      if (whitelistOpt.isDefined) {
-        try {
-          consumer.subscribe(
-            Pattern.compile(whitelistOpt.get),
-            consumerRebalanceListener)
-        } catch {
+      if (whitelistOpt.isDefined)
+        try consumer.subscribe(
+          Pattern.compile(whitelistOpt.get),
+          consumerRebalanceListener)
+        catch {
           case pse: PatternSyntaxException =>
             error("Invalid expression syntax: %s".format(whitelistOpt.get))
             throw pse
         }
-      }
     }
 
     override def hasData = true
@@ -766,16 +752,15 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
     val producer = new KafkaProducer[Array[Byte], Array[Byte]](producerProps)
 
     def send(record: ProducerRecord[Array[Byte], Array[Byte]]) {
-      if (sync) {
+      if (sync)
         this.producer.send(record).get()
-      } else {
+      else
         this.producer.send(
           record,
           new MirrorMakerProducerCallback(
             record.topic(),
             record.key(),
             record.value()))
-      }
     }
 
     def flush() {

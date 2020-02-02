@@ -73,9 +73,8 @@ trait CanonicalizeSpec[M[+_]]
             sliceSize must beBetween(minLength, maxLength)
         }
         slices.last must be_<=(maxLength)
-      } else {
+      } else
         slices must haveSize(0)
-      }
     }
   }
 

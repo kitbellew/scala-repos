@@ -331,9 +331,8 @@ private[ann] class SoftmaxFunction extends ActivationFunction {
       var i = 0
       var max = Double.MinValue
       while (i < x.rows) {
-        if (x(i, j) > max) {
+        if (x(i, j) > max)
           max = x(i, j)
-        }
         i += 1
       }
       var sum = 0.0
@@ -585,11 +584,11 @@ private[ml] object FeedForwardTopology {
     val layers = new Array[Layer]((layerSizes.length - 1) * 2)
     for (i <- 0 until layerSizes.length - 1) {
       layers(i * 2) = new AffineLayer(layerSizes(i), layerSizes(i + 1))
-      layers(i * 2 + 1) = if (softmax && i == layerSizes.length - 2) {
-        new FunctionalLayer(new SoftmaxFunction())
-      } else {
-        new FunctionalLayer(new SigmoidFunction())
-      }
+      layers(i * 2 + 1) =
+        if (softmax && i == layerSizes.length - 2)
+          new FunctionalLayer(new SoftmaxFunction())
+        else
+          new FunctionalLayer(new SigmoidFunction())
     }
     FeedForwardTopology(layers)
   }
@@ -608,9 +607,8 @@ private[ml] class FeedForwardModel private (
   override def forward(data: BDM[Double]): Array[BDM[Double]] = {
     val outputs = new Array[BDM[Double]](layerModels.length)
     outputs(0) = layerModels(0).eval(data)
-    for (i <- 1 until layerModels.length) {
+    for (i <- 1 until layerModels.length)
       outputs(i) = layerModels(i).eval(outputs(i - 1))
-    }
     outputs
   }
 
@@ -630,9 +628,8 @@ private[ml] class FeedForwardModel private (
     }
     deltas(L) = new BDM[Double](0, 0)
     deltas(L - 1) = newE
-    for (i <- (L - 2) to (0, -1)) {
+    for (i <- (L - 2) to (0, -1))
       deltas(i) = layerModels(i + 1).prevDelta(deltas(i + 1), outputs(i + 1))
-    }
     val grads = new Array[Array[Double]](layerModels.length)
     for (i <- 0 until layerModels.length) {
       val input = if (i == 0) data else outputs(i - 1)
@@ -658,9 +655,8 @@ private[ml] class FeedForwardModel private (
   override def weights(): Vector = {
     // TODO: extract roll
     var size = 0
-    for (i <- 0 until layerModels.length) {
+    for (i <- 0 until layerModels.length)
       size += layerModels(i).size
-    }
     val array = new Array[Double](size)
     var offset = 0
     for (i <- 0 until layerModels.length) {
@@ -768,36 +764,39 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
     * @return RDD of double (always zero) and vector that contains the stacked vectors
     */
   def stack(data: RDD[(Vector, Vector)]): RDD[(Double, Vector)] = {
-    val stackedData = if (stackSize == 1) {
-      data.map { v =>
-        (
-          0.0,
-          Vectors.fromBreeze(BDV
-            .vertcat(v._1.toBreeze.toDenseVector, v._2.toBreeze.toDenseVector)))
-      }
-    } else {
-      data.mapPartitions { it =>
-        it.grouped(stackSize).map { seq =>
-          val size = seq.size
-          val bigVector =
-            new Array[Double](inputSize * size + outputSize * size)
-          var i = 0
-          seq.foreach {
-            case (in, out) =>
-              System
-                .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
-              System.arraycopy(
-                out.toArray,
-                0,
-                bigVector,
-                inputSize * size + i * outputSize,
-                outputSize)
-              i += 1
-          }
-          (0.0, Vectors.dense(bigVector))
+    val stackedData =
+      if (stackSize == 1)
+        data.map { v =>
+          (
+            0.0,
+            Vectors.fromBreeze(
+              BDV
+                .vertcat(
+                  v._1.toBreeze.toDenseVector,
+                  v._2.toBreeze.toDenseVector)))
         }
-      }
-    }
+      else
+        data.mapPartitions { it =>
+          it.grouped(stackSize).map { seq =>
+            val size = seq.size
+            val bigVector =
+              new Array[Double](inputSize * size + outputSize * size)
+            var i = 0
+            seq.foreach {
+              case (in, out) =>
+                System
+                  .arraycopy(in.toArray, 0, bigVector, i * inputSize, inputSize)
+                System.arraycopy(
+                  out.toArray,
+                  0,
+                  bigVector,
+                  inputSize * size + i * outputSize,
+                  outputSize)
+                i += 1
+            }
+            (0.0, Vectors.dense(bigVector))
+          }
+        }
     stackedData
   }
 

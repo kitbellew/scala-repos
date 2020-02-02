@@ -306,9 +306,9 @@ class ClientBuilderTest
       // 1st call fails and triggers a retry which
       // captures the value of the local
       val service = Service.mk[String, String] { str: String =>
-        if (first.compareAndSet(false, true)) {
+        if (first.compareAndSet(false, true))
           Future.exception(new SpecificException())
-        } else {
+        else {
           localOnRetry.set(aLocal().getOrElse(-1))
           Future(str)
         }

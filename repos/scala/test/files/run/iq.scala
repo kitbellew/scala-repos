@@ -12,9 +12,8 @@ object iq {
     /* Test isEmpty.
      * Expected: Empty
      */
-    if (q.isEmpty) {
+    if (q.isEmpty)
       Console.println("Empty")
-    }
 
     /* Test enqueing. */
     val q2 = q.enqueue(42).enqueue(0)

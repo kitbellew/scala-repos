@@ -129,9 +129,8 @@ package object debug {
             var i = 0
             while (i < numColumns) {
               val value = currentRow.get(i, output(i).dataType)
-              if (value != null) {
+              if (value != null)
                 columnStats(i).elementTypes += HashSet(value.getClass.getName)
-              }
               i += 1
             }
             currentRow

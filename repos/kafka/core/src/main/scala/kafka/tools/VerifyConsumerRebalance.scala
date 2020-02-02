@@ -62,19 +62,16 @@ object VerifyConsumerRebalance extends Logging {
       debug("zkConnect = %s; group = %s".format(zkConnect, group))
 
       // check if the rebalancing operation succeeded.
-      try {
-        if (validateRebalancingOperation(zkUtils, group))
-          println("Rebalance operation successful !")
-        else
-          println("Rebalance operation failed !")
-      } catch {
+      try if (validateRebalancingOperation(zkUtils, group))
+        println("Rebalance operation successful !")
+      else
+        println("Rebalance operation failed !")
+      catch {
         case e2: Throwable =>
           error("Error while verifying current rebalancing operation", e2)
       }
-    } finally {
-      if (zkUtils != null)
-        zkUtils.close()
-    }
+    } finally if (zkUtils != null)
+      zkUtils.close()
   }
 
   private def validateRebalancingOperation(
@@ -129,7 +126,7 @@ object VerifyConsumerRebalance extends Logging {
           if (partitionOwner == null) {
             error("No owner for partition [%s,%d]".format(topic, partition))
             rebalanceSucceeded = false
-          } else {
+          } else
             // check if the owner is a valid consumer id
             consumerIdsForTopic match {
               case Some(consumerIds) =>
@@ -141,12 +138,10 @@ object VerifyConsumerRebalance extends Logging {
                   info(
                     "Owner of partition [%s,%d] is %s"
                       .format(topic, partition, partitionOwner))
-              case None => {
+              case None =>
                 error("No consumer ids registered for topic " + topic)
                 rebalanceSucceeded = false
-              }
             }
-          }
         }
 
     }

@@ -37,13 +37,12 @@ abstract class ScFunctionImpl protected (
       case null    => getNode.findChildByType(ScalaTokenTypes.kTHIS)
       case notNull => notNull
     }
-    if (n == null) {
+    if (n == null)
       return ScalaPsiElementFactory
         .createIdentifier(
           getStub.asInstanceOf[ScFunctionStub].getName,
           getManager)
         .getPsi
-    }
     n.getPsi
   }
 
@@ -64,7 +63,7 @@ abstract class ScFunctionImpl protected (
 
     lazy val parameterIncludingSynthetic: Seq[ScParameter] =
       effectiveParameterClauses.flatMap(_.effectiveParameters)
-    if (getStub == null) {
+    if (getStub == null)
       returnTypeElement match {
         case Some(x)
             if lastParent != null && x.startOffsetInParent == lastParent.startOffsetInParent =>
@@ -74,14 +73,11 @@ abstract class ScFunctionImpl protected (
           }
         case _ =>
       }
-    } else {
-      if (lastParent != null && lastParent.getContext != lastParent.getParent) {
-        for (p <- parameterIncludingSynthetic) {
-          ProgressManager.checkCanceled()
-          if (!processor.execute(p, state)) return false
-        }
+    else if (lastParent != null && lastParent.getContext != lastParent.getParent)
+      for (p <- parameterIncludingSynthetic) {
+        ProgressManager.checkCanceled()
+        if (!processor.execute(p, state)) return false
       }
-    }
     true
   }
 }

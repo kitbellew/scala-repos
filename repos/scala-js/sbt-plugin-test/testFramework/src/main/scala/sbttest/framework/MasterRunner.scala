@@ -29,9 +29,8 @@ final class MasterRunner(
     val registered = registeredCount.get
     val done = doneCount.get
 
-    if (slaves > 0) {
+    if (slaves > 0)
       throw new IllegalStateException(s"There are still $slaves slaves running")
-    }
 
     if (registered != done)
       throw new IllegalStateException(

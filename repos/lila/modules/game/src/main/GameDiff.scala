@@ -21,11 +21,10 @@ private[game] object GameDiff {
 
     def d[A, B <: BSONValue](name: String, getter: Game => A, toBson: A => B) {
       val (va, vb) = (getter(a), getter(b))
-      if (va != vb) {
+      if (va != vb)
         if (vb == None || vb == null || vb == "")
           unsetBuilder += (name -> BSONBoolean(true))
         else setBuilder += name -> toBson(vb)
-      }
     }
 
     def dOpt[A, B <: BSONValue](
@@ -33,7 +32,7 @@ private[game] object GameDiff {
         getter: Game => A,
         toBson: A => Option[B]) {
       val (va, vb) = (getter(a), getter(b))
-      if (va != vb) {
+      if (va != vb)
         if (vb == None || vb == null || vb == "")
           unsetBuilder += (name -> BSONBoolean(true))
         else
@@ -41,7 +40,6 @@ private[game] object GameDiff {
             case None    => unsetBuilder += (name -> BSONBoolean(true))
             case Some(x) => setBuilder += name -> x
           }
-      }
     }
 
     val w = lila.db.BSON.writer

@@ -59,9 +59,7 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
       val resp = Await.result(client(req))
       assert(resp.status == Status.Ok)
       verify(service).apply(anyAuthenticated)
-    } finally {
-      server.close(Time.Bottom)
-    }
+    } finally server.close(Time.Bottom)
   }
 
   /**
@@ -76,9 +74,7 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
       val rsp = Await.result(client.apply(req))
       assert(rsp.status == Status.Unauthorized)
       rsp
-    } finally {
-      client.close().before(server.close())
-    }
+    } finally client.close().before(server.close())
   }
 
   def serve(

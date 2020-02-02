@@ -23,12 +23,10 @@ class ScalaCodeBlockSelectioner extends ExtendWordSelectionHandlerBase {
     var firstChild = e.getNode.getFirstChildNode
     var lastChild = e.getNode.getLastChildNode
     if (firstChild.getElementType == ScalaTokenTypes.tLBRACE && lastChild.getElementType == ScalaTokenTypes.tRBRACE) {
-      while (firstChild.getTreeNext != null && firstChild.getTreeNext.getElementType == TokenType.WHITE_SPACE) {
+      while (firstChild.getTreeNext != null && firstChild.getTreeNext.getElementType == TokenType.WHITE_SPACE)
         firstChild = firstChild.getTreeNext
-      }
-      while (lastChild.getTreePrev != null && lastChild.getTreePrev.getElementType == TokenType.WHITE_SPACE) {
+      while (lastChild.getTreePrev != null && lastChild.getTreePrev.getElementType == TokenType.WHITE_SPACE)
         lastChild = lastChild.getTreePrev
-      }
       val start = firstChild.getTextRange.getEndOffset
       val end = lastChild.getTextRange.getStartOffset
       if (start >= end) new util.ArrayList[TextRange]() // '{   }' case

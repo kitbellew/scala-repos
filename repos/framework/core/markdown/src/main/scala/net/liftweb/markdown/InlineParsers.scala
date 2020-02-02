@@ -87,9 +87,9 @@ trait InlineParsers extends BaseParsers {
     */
   def markdownText(special: Set[Char], markdownEscapes: Boolean) = Parser {
     in =>
-      if (in.atEnd) {
+      if (in.atEnd)
         Failure("End of input.", in)
-      } else {
+      else {
         var start = in.offset
         var i = in.offset
         val s = in.source
@@ -106,16 +106,15 @@ trait InlineParsers extends BaseParsers {
             result.append(escapableMarkdownChars(s.charAt(i + 1)))
             i += 2
             start = i
-          } else if (xmlEscape != null && c == '&' && checkForSemi(i, s, end)) {
+          } else if (xmlEscape != null && c == '&' && checkForSemi(i, s, end))
             i += 1
-          } else if (xmlEscape != null) {
+          else if (xmlEscape != null) {
             result.append(s.subSequence(start, i).toString)
             result.append(xmlEscape)
             i += 1
             start = i
-          } else {
+          } else
             i += 1
-          }
         }
         if (start != i) result.append(s.subSequence(start, i).toString)
         if (result.length == 0) Failure("No text consumed.", in)
@@ -153,9 +152,9 @@ trait InlineParsers extends BaseParsers {
     * based on a one char lookahead.
     */
   def elementParsers(ctx: InlineContext) = Parser { in =>
-    if (in.atEnd) {
+    if (in.atEnd)
       Failure("End of Input Reached", in)
-    } else {
+    else
       in.first match {
         case ' ' => br(in)
         case '`' => code(in)
@@ -166,7 +165,6 @@ trait InlineParsers extends BaseParsers {
         case '!' => img(ctx)(in)
         case _   => Failure("Lookahead does not start inline element.", in)
       }
-    }
   }
 
   /** Parses a single inline token. Either a span element or a chunk of text.
@@ -186,7 +184,7 @@ trait InlineParsers extends BaseParsers {
 
   /** Parses two spaces at the end of a line to a manual break (<br/>)
     */
-  val br: Parser[String] = ("  \n") ^^^ { deco.decorateBreak() + "\n" }
+  val br: Parser[String] = ("  \n") ^^^ deco.decorateBreak() + "\n"
 
   /** Parses an inline code element.
     * An inline code element is surrounded by single backticks ("`")
@@ -208,13 +206,12 @@ trait InlineParsers extends BaseParsers {
   /** A shortcut markdown link of the form <http://example.com>
     */
   def fastLink(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("a")) {
+    if (ctx.tags.contains("a"))
       failure("Cannot nest a link in a link.")
-    } else {
+    else
       elem('<') ~> markdownText(Set('>', ' ', '<', '\n'), true) <~ '>' ^^ { u =>
         deco.decorateLink(u, u, None)
       }
-    }
 
   /** A link started by square brackets, either a reference or a a link with the full URL.
     */
@@ -224,24 +221,22 @@ trait InlineParsers extends BaseParsers {
   /** A markdown link with the full url given.
     */
   def fullLink(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("a")) {
+    if (ctx.tags.contains("a"))
       failure("Cannot nest a link in a link.")
-    } else {
+    else
       '[' ~> linkInline(ctx.addTag("a")) ~ ("](" ~ ows) ~ url ~ ows ~ title <~ (ows ~ ')') ^^ {
         case txt ~ _ ~ u ~ _ ~ ttl => deco.decorateLink(txt, u, ttl)
       }
-    }
 
   /** A markdown link which references an url by id.
     */
   def referenceLink(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("a")) {
+    if (ctx.tags.contains("a"))
       failure("Cannot nest a link in a link.")
-    } else {
+    else
       ref(ctx.addTag("a")) ^^ {
         case (LinkDefinition(_, u, ttl), txt) => deco.decorateLink(txt, u, ttl)
       }
-    }
 
   /** Inline markdown in a link. Like normal inline stuff but stops when it reaches a closing square bracket.
     */
@@ -262,16 +257,14 @@ trait InlineParsers extends BaseParsers {
       '"' ~> ((markdownText(Set('"'), true) ~ opt(
         not('"' ~ ows ~ ')') ~> aChar)) *) <~ '"') ^^ {
       case None => None
-      case Some(chunks) => {
+      case Some(chunks) =>
         val result = new StringBuilder()
-        for (chunk <- chunks) {
+        for (chunk <- chunks)
           chunk match {
             case (text) ~ None    => result.append(text)
             case (text) ~ Some(s) => result.append(text).append(s)
           }
-        }
         Some(result.toString)
-      }
     }
 
   /** Plaintext variant to refInline. Escapable text until a square bracket is hit.
@@ -347,38 +340,34 @@ trait InlineParsers extends BaseParsers {
   /**Parses emphasized text wrapped in asterisks: *foo*
     */
   def emAsterisk(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("em")) {
+    if (ctx.tags.contains("em"))
       failure("Cannot nest emphasis.")
-    } else {
+    else
       span("*", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) }
-    }
 
   /**Parses emphasized text wrapped in underscores: _foo_
     */
   def emUnderscore(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("em")) {
+    if (ctx.tags.contains("em"))
       failure("Cannot nest emphasis.")
-    } else {
+    else
       span("_", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) }
-    }
 
   /**Parses strong text in asterisks: **foo**
     */
   def strongAsterisk(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("strong")) {
+    if (ctx.tags.contains("strong"))
       failure("Cannot nest strong text.")
-    } else {
+    else
       span("**", ctx.addTag("strong")) ^^ { deco.decorateStrong(_) }
-    }
 
   /**Parses strong text in underscores: __foo__
     */
   def strongUnderscore(ctx: InlineContext): Parser[String] =
-    if (ctx.tags.contains("strong")) {
+    if (ctx.tags.contains("strong"))
       failure("Cannot nest strong text.")
-    } else {
+    else
       span("__", ctx.addTag("strong")) ^^ { deco.decorateStrong(_) }
-    }
 
   /**
     * Runs the inline parser on the given input and returns the result

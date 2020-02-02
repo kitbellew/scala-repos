@@ -143,9 +143,8 @@ class BatchSourceFile(val file: AbstractFile, content0: Array[Char])
     if (pos.isDefined && pos.source == this && pos.point != -1) {
       def isOK(c: Char) = isIdentifierPart(c) || isOperatorPart(c)
       Some(new String(content drop pos.point takeWhile isOK))
-    } else {
+    } else
       super.identifier(pos)
-    }
 
   private def charAtIsEOL(idx: Int)(p: Char => Boolean) = {
     // don't identify the CR in CR LF as a line break, since LF will do.

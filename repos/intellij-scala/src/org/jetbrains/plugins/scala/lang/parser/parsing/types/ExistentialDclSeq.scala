@@ -26,9 +26,8 @@ object ExistentialDclSeq {
   def parse(builder: ScalaPsiBuilder) {
     builder.getTokenType match {
       case ScalaTokenTypes.kTYPE | ScalaTokenTypes.kVAL =>
-        if (!Dcl.parse(builder, isMod = false)) {
+        if (!Dcl.parse(builder, isMod = false))
           EmptyDcl.parse(builder, isMod = false)
-        }
       case _ =>
         //builder error ScalaBundle.message("wrong.existential.declaration")
         return
@@ -38,9 +37,8 @@ object ExistentialDclSeq {
         builder.advanceLexer() //Ate semi
       builder.getTokenType match {
         case ScalaTokenTypes.kTYPE | ScalaTokenTypes.kVAL =>
-          if (!Dcl.parse(builder, isMod = false)) {
+          if (!Dcl.parse(builder, isMod = false))
             EmptyDcl.parse(builder, isMod = false)
-          }
         case _ =>
           builder error ScalaBundle.message("wrong.existential.declaration")
       }

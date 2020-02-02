@@ -71,17 +71,16 @@ class Driver extends HasDefaultMethod {
     // redirect err to out, for logging
     val prevErr = System.err
     System.setErr(System.out)
-    try {
-      // this test is only valid under JDK 1.8+
-      testUnderJavaAtLeast("1.8") {
-        generateInterface()
-        compile()
-        Class.forName("Driver").newInstance()
-        ()
-      } otherwise {
-        println("hello from publicMethod")
-        println("hello from staticMethod")
-      }
+    try
+    // this test is only valid under JDK 1.8+
+    testUnderJavaAtLeast("1.8") {
+      generateInterface()
+      compile()
+      Class.forName("Driver").newInstance()
+      ()
+    } otherwise {
+      println("hello from publicMethod")
+      println("hello from staticMethod")
     } finally System.setErr(prevErr)
   }
 }

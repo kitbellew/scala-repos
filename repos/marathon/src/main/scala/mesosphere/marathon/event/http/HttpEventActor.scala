@@ -106,11 +106,10 @@ class HttpEventActor(
 
   def broadcast(event: MarathonEvent, subscribers: EventSubscribers): Unit = {
     val (active, limited) = subscribers.urls.partition(limiter(_).notLimited)
-    if (limited.nonEmpty) {
+    if (limited.nonEmpty)
       log.info(
         s"""Will not send event ${event.eventType} to unresponsive hosts: ${limited
           .mkString(" ")}""")
-    }
     //remove all unsubscribed callback listener
     limiter = limiter
       .filterKeys(subscribers.urls)

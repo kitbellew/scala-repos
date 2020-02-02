@@ -33,9 +33,9 @@ object CanHaarTr {
   /**Copy or pad a given vector.
     */
   private def padOrCopy(v: DenseVector[Double]) =
-    if ((v.length & -v.length) == v.length) {
+    if ((v.length & -v.length) == v.length)
       v.copy
-    } else {
+    else {
       val length = 1 << (32 - Integer.numberOfLeadingZeros(v.length))
       val r = new DenseVector(new Array[Double](length))
       r.slice(0, v.length) := v
@@ -46,15 +46,14 @@ object CanHaarTr {
     */
   private def squareMatrix(m: DenseMatrix[Double]): DenseMatrix[Double] = {
     val maxd = Math.max(m.rows, m.cols)
-    val rows = if ((maxd & -maxd) == maxd) {
-      maxd
-    } else {
-      1 << (32 - Integer.numberOfLeadingZeros(Math.max(m.rows, m.cols)))
-    }
+    val rows =
+      if ((maxd & -maxd) == maxd)
+        maxd
+      else
+        1 << (32 - Integer.numberOfLeadingZeros(Math.max(m.rows, m.cols)))
     val o = DenseMatrix.zeros[Double](rows, rows)
-    for (r <- 0 until m.rows; c <- 0 until m.cols) {
+    for (r <- 0 until m.rows; c <- 0 until m.cols)
       o(r, c) = m(r, c)
-    }
     o
   }
 
@@ -77,16 +76,15 @@ object CanHaarTr {
       rows: Int,
       cols: Int): DenseMatrix[Double] = {
     val m = DenseMatrix.zeros[Double](rows, cols)
-    for (r <- 0 until m.rows; c <- 0 until m.cols) {
+    for (r <- 0 until m.rows; c <- 0 until m.cols)
       m(r, c) = v(r * cols + c)
-    }
     m
   }
 
   /** Compute the fht on a given double vector.
     */
   implicit val dvDouble1FHT
-      : CanHaarTr[DenseVector[Double], DenseVector[Double]] = {
+      : CanHaarTr[DenseVector[Double], DenseVector[Double]] =
     new CanHaarTr[DenseVector[Double], DenseVector[Double]] {
       def apply(v: DenseVector[Double]) = {
         def _fht(v: DenseVector[Double]): DenseVector[Double] = {
@@ -102,12 +100,11 @@ object CanHaarTr {
         _fht(padOrCopy(v))
       }
     }
-  }
 
   /** Compute the fht on a given double matrix.
     */
   implicit val dmDouble1FHT
-      : CanHaarTr[DenseMatrix[Double], DenseMatrix[Double]] = {
+      : CanHaarTr[DenseMatrix[Double], DenseMatrix[Double]] =
     new CanHaarTr[DenseMatrix[Double], DenseMatrix[Double]] {
       def apply(m: DenseMatrix[Double]) = {
         def _fht(m: DenseMatrix[Double], limit: Int): Unit = if (limit > 1) {
@@ -133,6 +130,5 @@ object CanHaarTr {
         v
       }
     }
-  }
 
 }

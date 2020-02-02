@@ -182,9 +182,8 @@ trait IntegrationTest {
       conditions: Iterable[AbstractTestProxy => Boolean],
       allowTail: Boolean = false): Option[List[AbstractTestProxy]] = {
     import scala.collection.JavaConversions._
-    if (conditions.isEmpty) {
+    if (conditions.isEmpty)
       if (allowTail) return Some(List()) else return None
-    }
     if (conditions.head(root)) {
       val children = root.getChildren
       if (children.isEmpty && conditions.size == 1) Some(List(root))
@@ -194,9 +193,8 @@ trait IntegrationTest {
           .find(_.isDefined)
           .flatten
           .map(tail => root :: tail)
-    } else {
+    } else
       None
-    }
   }
 
   protected def checkResultTreeHasExactNamedPath(
@@ -257,12 +255,9 @@ trait IntegrationTest {
         try {
           assert(testTreeRoot.isDefined && testTreeCheck(testTreeRoot.get))
 
-          if (checkOutputs) {
+          if (checkOutputs)
             assert(res == expectedText)
-          }
-        } finally {
-          semaphore.up()
-        }
+        } finally semaphore.up()
     })
 
     semaphore.waitFor()

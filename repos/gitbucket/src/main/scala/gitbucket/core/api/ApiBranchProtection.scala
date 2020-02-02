@@ -34,15 +34,13 @@ object ApiBranchProtection {
     def apply(
         enabled: Boolean,
         includeAdministrators: Boolean): EnforcementLevel =
-      if (enabled) {
-        if (includeAdministrators) {
+      if (enabled)
+        if (includeAdministrators)
           Everyone
-        } else {
+        else
           NonAdmins
-        }
-      } else {
+      else
         Off
-      }
   }
 
   implicit val enforcementLevelSerializer =

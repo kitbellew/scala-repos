@@ -167,9 +167,9 @@ class ScImportStmtImpl private (
             case Some(ScalaResolveResult(p: PsiPackage, _)) =>
               poOpt() match {
                 case Some(po) =>
-                  if (checkPo) {
+                  if (checkPo)
                     po.getType(TypingContext.empty)
-                  } else Failure("no failure", Some(this))
+                  else Failure("no failure", Some(this))
                 case _ => Failure("no failure", Some(this))
               }
             case _ => exprQualRefType()
@@ -210,15 +210,13 @@ class ScImportStmtImpl private (
                     ScalaCodeStyleSettings.EXCLUDE_PREFIX.length,
                     s.lastIndexOf(".")) == pack.getQualifiedName)
               val names = new mutable.HashSet[String]()
-              for (prefixImport <- prefixImports) {
+              for (prefixImport <- prefixImports)
                 names += prefixImport.substring(
                   prefixImport.lastIndexOf('.') + 1)
-              }
               val excludeNames = new mutable.HashSet[String]()
-              for (prefixImport <- excludeImports) {
+              for (prefixImport <- excludeImports)
                 excludeNames += prefixImport.substring(
                   prefixImport.lastIndexOf('.') + 1)
-              }
               val wildcard = names.contains("_")
               def isOK(name: String): Boolean =
                 if (wildcard) !excludeNames.contains(name)
@@ -308,9 +306,8 @@ class ScImportStmtImpl private (
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
                     }
-                    if (!processor.execute(result.getElement, newState)) {
+                    if (!processor.execute(result.getElement, newState))
                       return false
-                    }
                   }
                 }
               }
@@ -418,9 +415,8 @@ class ScImportStmtImpl private (
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
                     }
-                    if (!processor.execute(result.getElement, newState)) {
+                    if (!processor.execute(result.getElement, newState))
                       return false
-                    }
                   }
                 }
               }

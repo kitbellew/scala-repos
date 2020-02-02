@@ -75,17 +75,16 @@ object EntrywiseMatrixNorms {
                 val nn = v.abs.toDouble
                 agg += nn * nn
               }, (e: Double) => sqrt(e))
-              else if (n == Int.MaxValue) {
+              else if (n == Int.MaxValue)
                 ((v: Int) => {
                   val nn = v.abs.toDouble
                   if (nn > agg) agg = nn
                 }, identity[Double] _)
-              } else {
+              else
                 ((v: Int) => {
                   val nn = v.abs.toDouble
                   agg += pow(v, n)
                 }, (e: Double) => pow(e, 1.0 / n))
-              }
 
             def visit(a: Int): Unit = op(a)
 
@@ -114,17 +113,16 @@ object EntrywiseMatrixNorms {
               val nn = v.abs.toDouble
               agg += nn * nn
             }, (e: Double) => sqrt(e))
-            else if (n == Float.PositiveInfinity) {
+            else if (n == Float.PositiveInfinity)
               ((v: Float) => {
                 val nn = v.abs.toDouble
                 if (nn > agg) agg = nn
               }, identity[Double] _)
-            } else {
+            else
               ((v: Float) => {
                 val nn = v.abs.toDouble
                 agg += pow(v, n)
               }, (e: Double) => pow(e, 1.0 / n))
-            }
 
           def visit(a: Float): Unit = op(a)
 
@@ -152,17 +150,16 @@ object EntrywiseMatrixNorms {
               val nn = v.abs
               agg += nn * nn
             }, (e: Double) => sqrt(e))
-            else if (n == Double.PositiveInfinity) {
+            else if (n == Double.PositiveInfinity)
               ((v: Double) => {
                 val nn = v.abs
                 if (nn > agg) agg = nn
               }, identity[Double] _)
-            } else {
+            else
               ((v: Double) => {
                 val nn = v.abs
                 agg += pow(v, n)
               }, (e: Double) => pow(e, 1.0 / n))
-            }
 
           def visit(a: Double): Unit = op(a)
 
@@ -190,17 +187,16 @@ object EntrywiseMatrixNorms {
                 val nn = field.sNorm(v)
                 agg += nn * nn
               }, (e: Double) => sqrt(e))
-              else if (n == Double.PositiveInfinity) {
+              else if (n == Double.PositiveInfinity)
                 ((v: S) => {
                   val nn = field.sNorm(v)
                   if (nn > agg) agg = nn
                 }, identity[Double] _)
-              } else {
+              else
                 ((v: S) => {
                   val nn = field.sNorm(v)
                   agg += pow(nn, n)
                 }, (e: Double) => pow(e, 1.0 / n))
-              }
 
             def visit(a: S): Unit = op(a)
 

@@ -42,13 +42,12 @@ private[streaming] class FileBasedWriteAheadLogReader(
   private var nextItem: Option[ByteBuffer] = None
 
   override def hasNext: Boolean = synchronized {
-    if (closed) {
+    if (closed)
       return false
-    }
 
-    if (nextItem.isDefined) { // handle the case where hasNext is called without calling next
+    if (nextItem.isDefined) // handle the case where hasNext is called without calling next
       true
-    } else {
+    else
       try {
         val length = instream.readInt()
         val buffer = new Array[Byte](length)
@@ -67,21 +66,19 @@ private[streaming] class FileBasedWriteAheadLogReader(
               "this should be okay.",
             e)
           close()
-          if (HdfsUtils.checkFileExists(path, conf)) {
+          if (HdfsUtils.checkFileExists(path, conf))
             // If file exists, this could be a legitimate error
             throw e
-          } else {
+          else
             // File was deleted. This can occur when the daemon cleanup thread takes time to
             // delete the file during recovery.
             false
-          }
 
         case e: Exception =>
           logWarning("Error while trying to read data from HDFS.", e)
           close()
           throw e
       }
-    }
   }
 
   override def next(): ByteBuffer = synchronized {
@@ -95,9 +92,8 @@ private[streaming] class FileBasedWriteAheadLogReader(
   }
 
   override def close(): Unit = synchronized {
-    if (!closed) {
+    if (!closed)
       instream.close()
-    }
     closed = true
   }
 }

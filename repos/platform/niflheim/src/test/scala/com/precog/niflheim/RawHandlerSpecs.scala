@@ -33,9 +33,8 @@ import scala.collection.mutable
 
 abstract class cleanup(f: File) extends After {
   def after =
-    try {
-      f.delete()
-    } catch {
+    try f.delete()
+    catch {
       case _: Exception => ()
     }
 }

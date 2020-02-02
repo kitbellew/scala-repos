@@ -17,11 +17,8 @@ object XMLSpec extends Specification {
 
     def writeStringToFile(file: File, text: String) = {
       val out = new FileOutputStream(file)
-      try {
-        out.write(text.getBytes("utf-8"))
-      } finally {
-        out.close()
-      }
+      try out.write(text.getBytes("utf-8"))
+      finally out.close()
     }
 
     "parse XML bodies" in {

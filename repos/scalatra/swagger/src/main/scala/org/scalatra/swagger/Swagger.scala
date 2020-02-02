@@ -99,33 +99,31 @@ object Swagger {
       val ntpe = tpe.typeArgs.head
       if (!known.contains(ntpe)) collectModels(ntpe, alreadyKnown, known + ntpe)
       else Set.empty
-    } else {
-      if (alreadyKnown.map(_.id).contains(tpe.simpleName)) Set.empty
-      else {
-        val descr = Reflector.describe(tpe)
-        descr match {
-          case descriptor: ClassDescriptor =>
-            val ctorModels =
-              descriptor.mostComprehensive.filterNot(_.isPrimitive).toVector
-            val propModels = descriptor.properties.filterNot(p =>
-              p.isPrimitive || ctorModels.exists(_.name == p.name))
-            val subModels = (ctorModels.map(_.argType) ++ propModels.map(
-              _.returnType)).toSet -- known
-            val topLevel = for {
-              tl <- subModels + descriptor.erasure
-              if !(tl.isCollection || tl.isMap || tl.isOption)
-              m <- modelToSwagger(tl)
-            } yield m
+    } else if (alreadyKnown.map(_.id).contains(tpe.simpleName)) Set.empty
+    else {
+      val descr = Reflector.describe(tpe)
+      descr match {
+        case descriptor: ClassDescriptor =>
+          val ctorModels =
+            descriptor.mostComprehensive.filterNot(_.isPrimitive).toVector
+          val propModels = descriptor.properties.filterNot(p =>
+            p.isPrimitive || ctorModels.exists(_.name == p.name))
+          val subModels = (ctorModels.map(_.argType) ++ propModels.map(
+            _.returnType)).toSet -- known
+          val topLevel = for {
+            tl <- subModels + descriptor.erasure
+            if !(tl.isCollection || tl.isMap || tl.isOption)
+            m <- modelToSwagger(tl)
+          } yield m
 
-            val nested =
-              subModels.foldLeft((topLevel, known + descriptor.erasure)) {
-                (acc, b) =>
-                  val m = collectModels(b, alreadyKnown, acc._2)
-                  (acc._1 ++ m, acc._2 + b)
-              }
-            nested._1
-          case _ => Set.empty
-        }
+          val nested =
+            subModels.foldLeft((topLevel, known + descriptor.erasure)) {
+              (acc, b) =>
+                val m = collectModels(b, alreadyKnown, acc._2)
+                (acc._1 ++ m, acc._2 + b)
+            }
+          nested._1
+        case _ => Set.empty
       }
     }
 
@@ -211,18 +209,16 @@ object Swagger {
     } else if (csvString.toLowerCase.startsWith("rangeexclusive[")) {
       val ranges = csvString.substring(15, csvString.length() - 1).split(",")
       buildAllowableRangeValues(ranges, csvString, inclusive = false)
-    } else {
-      if (csvString.isBlank) {
-        AllowableValues.AnyValue
-      } else {
-        val params = csvString.split(",").toList
-        implicit val format = DefaultJsonFormats.GenericFormat(
-          DefaultReaders.StringReader,
-          DefaultWriters.StringWriter)
-        paramType match {
-          case null     => AllowableValues.AllowableValuesList(params)
-          case "string" => AllowableValues.AllowableValuesList(params)
-        }
+    } else if (csvString.isBlank)
+      AllowableValues.AnyValue
+    else {
+      val params = csvString.split(",").toList
+      implicit val format = DefaultJsonFormats.GenericFormat(
+        DefaultReaders.StringReader,
+        DefaultWriters.StringWriter)
+      paramType match {
+        case null     => AllowableValues.AllowableValuesList(params)
+        case "string" => AllowableValues.AllowableValuesList(params)
       }
     }
 
@@ -232,24 +228,21 @@ object Swagger {
       inclusive: Boolean = true): AllowableValues.AllowableRangeValues = {
     var min: java.lang.Float = 0
     var max: java.lang.Float = 0
-    if (ranges.size < 2) {
+    if (ranges.size < 2)
       throw new RuntimeException(
         "Allowable values format " + inputStr + "is incorrect")
-    }
-    if (ranges(0).equalsIgnoreCase("Infinity")) {
+    if (ranges(0).equalsIgnoreCase("Infinity"))
       min = Float.PositiveInfinity
-    } else if (ranges(0).equalsIgnoreCase("-Infinity")) {
+    else if (ranges(0).equalsIgnoreCase("-Infinity"))
       min = Float.NegativeInfinity
-    } else {
+    else
       min = ranges(0).toFloat
-    }
-    if (ranges(1).equalsIgnoreCase("Infinity")) {
+    if (ranges(1).equalsIgnoreCase("Infinity"))
       max = Float.PositiveInfinity
-    } else if (ranges(1).equalsIgnoreCase("-Infinity")) {
+    else if (ranges(1).equalsIgnoreCase("-Infinity"))
       max = Float.NegativeInfinity
-    } else {
+    else
       max = ranges(1).toFloat
-    }
     val allowableValues =
       AllowableValues.AllowableRangeValues(
         if (inclusive) Range.inclusive(min.toInt, max.toInt)
@@ -471,18 +464,18 @@ object DataType {
     //    }
     else if (classOf[scala.collection.Set[_]]
                .isAssignableFrom(klass) || classOf[java.util.Set[_]]
-               .isAssignableFrom(klass)) {
+               .isAssignableFrom(klass))
       if (st.typeArgs.nonEmpty) GenSet(fromScalaType(st.typeArgs.head))
       else GenSet()
-    } else if (classOf[collection.Seq[_]]
-                 .isAssignableFrom(klass) || classOf[java.util.List[_]]
-                 .isAssignableFrom(klass)) {
+    else if (classOf[collection.Seq[_]]
+               .isAssignableFrom(klass) || classOf[java.util.List[_]]
+               .isAssignableFrom(klass))
       if (st.typeArgs.nonEmpty) GenList(fromScalaType(st.typeArgs.head))
       else GenList()
-    } else if (st.isArray || isCollection(klass)) {
+    else if (st.isArray || isCollection(klass))
       if (st.typeArgs.nonEmpty) GenArray(fromScalaType(st.typeArgs.head))
       else GenArray()
-    } else {
+    else {
       val stt = if (st.isOption) st.typeArgs.head else st
       new ValueDataType(stt.simpleName, qualifiedName = Option(stt.fullName))
     }

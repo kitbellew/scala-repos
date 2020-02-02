@@ -63,9 +63,8 @@ class ScalaCompletionStatistician extends CompletionStatistician {
               val context =
                 ScalaStatisticManager.memberKey(containingClass).getOrElse("")
               new StatisticsInfo("scalaMember#" + context, key)
-            } else {
+            } else
               StatisticsInfo.EMPTY
-            }
         }
       case _ => StatisticsInfo.EMPTY
     }

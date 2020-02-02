@@ -303,11 +303,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
       // 3 failures must occur before the service is initially removed,
       // then one failure after each probing
-      for (i <- 0 until 2) {
+      for (i <- 0 until 2)
         intercept[Exception] {
           Await.result(service(123))
         }
-      }
 
       for (i <- 0 until markDeadForList.length) {
         // After another failure, the service should be unavailable
@@ -381,11 +380,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { tc =>
-      for (i <- 1 to 3) {
+      for (i <- 1 to 3)
         intercept[Exception] {
           Await.result(service(123))
         }
-      }
 
       assert(factory.status == Status.Busy)
 
@@ -414,11 +412,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     import h._
 
     Time.withCurrentTimeFrozen { tc =>
-      for (i <- 1 to 3) {
+      for (i <- 1 to 3)
         intercept[Exception] {
           Await.result(service(123))
         }
-      }
 
       assert(factory.status == Status.Busy)
 

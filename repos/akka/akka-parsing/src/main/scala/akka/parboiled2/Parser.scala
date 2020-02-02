@@ -231,19 +231,17 @@ abstract class Parser(
       } else done
     }
 
-    try {
-      if (phase0_initialRun())
-        scheme.success(valueStack.toHList[L]())
-      else {
-        val principalErrorIndex = phase1_establishPrincipalErrorIndex()
-        val p2 = phase2_establishReportedErrorIndex(principalErrorIndex)
-        val reportQuiet = phase3_determineReportQuiet(principalErrorIndex)
-        val parseError = phase4_collectRuleTraces(
-          p2.reportedErrorIndex,
-          principalErrorIndex,
-          reportQuiet)()
-        scheme.parseError(parseError)
-      }
+    try if (phase0_initialRun())
+      scheme.success(valueStack.toHList[L]())
+    else {
+      val principalErrorIndex = phase1_establishPrincipalErrorIndex()
+      val p2 = phase2_establishReportedErrorIndex(principalErrorIndex)
+      val reportQuiet = phase3_determineReportQuiet(principalErrorIndex)
+      val parseError = phase4_collectRuleTraces(
+        p2.reportedErrorIndex,
+        principalErrorIndex,
+        reportQuiet)()
+      scheme.parseError(parseError)
     } catch {
       case e: Parser.Fail ⇒
         val pos = Position(cursor, input)
@@ -254,9 +252,7 @@ abstract class Parser(
             RuleTrace(Nil, RuleTrace.Fail(e.expected)) :: Nil))
       case NonFatal(e) ⇒
         scheme.failure(e)
-    } finally {
-      phase = null
-    }
+    } finally phase = null
   }
 
   /**
@@ -333,13 +329,12 @@ abstract class Parser(
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
   def __exitAtomic(saved: Boolean): Unit =
-    if (saved) {
+    if (saved)
       phase match {
         case x: EstablishingReportedErrorIndex ⇒
           x.currentAtomicStart = Int.MinValue
         case _ ⇒ throw new IllegalStateException
       }
-    }
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -363,13 +358,12 @@ abstract class Parser(
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
     */
   def __exitQuiet(saved: Int): Unit =
-    if (saved >= 0) {
+    if (saved >= 0)
       phase match {
         case x: DetermineReportQuiet ⇒ x.inQuiet = false
         case x: CollectingRuleTraces ⇒ x.minErrorIndex = saved
         case _ ⇒ throw new IllegalStateException
       }
-    }
 
   /**
     * THIS IS NOT PUBLIC API and might become hidden in future. Use only if you know what you are doing!
@@ -378,10 +372,9 @@ abstract class Parser(
     phase match {
       case null | _: EstablishingPrincipalErrorIndex ⇒ // nothing to do
       case x: CollectingRuleTraces ⇒
-        if (_cursor >= x.minErrorIndex) {
+        if (_cursor >= x.minErrorIndex)
           if (x.errorMismatches == x.traceNr) throw Parser.StartTracingException
           else x.errorMismatches += 1
-        }
       case x: EstablishingReportedErrorIndex ⇒
         if (x.currentAtomicStart > x.maxAtomicErrorStart)
           x.maxAtomicErrorStart = x.currentAtomicStart
@@ -440,7 +433,7 @@ abstract class Parser(
         __advance()
         __updateMaxCursor()
         __matchStringWrapped(string, ix + 1)
-      } else {
+      } else
         try __registerMismatch()
         catch {
           case Parser.StartTracingException ⇒
@@ -449,7 +442,6 @@ abstract class Parser(
               NonTerminal(StringMatch(string), -ix) :: Nil,
               CharMatch(string charAt ix))
         }
-      }
     else true
 
   /**
@@ -476,7 +468,7 @@ abstract class Parser(
         __advance()
         __updateMaxCursor()
         __matchIgnoreCaseStringWrapped(string, ix + 1)
-      } else {
+      } else
         try __registerMismatch()
         catch {
           case Parser.StartTracingException ⇒
@@ -485,7 +477,6 @@ abstract class Parser(
               NonTerminal(IgnoreCaseString(string), -ix) :: Nil,
               IgnoreCaseChar(string charAt ix))
         }
-      }
     else true
 
   /**

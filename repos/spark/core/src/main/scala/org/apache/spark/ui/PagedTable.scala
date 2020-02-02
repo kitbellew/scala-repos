@@ -33,9 +33,8 @@ import org.apache.spark.util.Utils
   */
 private[ui] abstract class PagedDataSource[T](val pageSize: Int) {
 
-  if (pageSize <= 0) {
+  if (pageSize <= 0)
     throw new IllegalArgumentException("Page size must be positive")
-  }
 
   /**
     * Return the size of all data.
@@ -52,10 +51,9 @@ private[ui] abstract class PagedDataSource[T](val pageSize: Int) {
     */
   def pageData(page: Int): PageData[T] = {
     val totalPages = (dataSize + pageSize - 1) / pageSize
-    if (page <= 0 || page > totalPages) {
+    if (page <= 0 || page > totalPages)
       throw new IndexOutOfBoundsException(
         s"Page $page is out of range. Please select a page number between 1 and $totalPages.")
-    }
     val from = (page - 1) * pageSize
     val to = dataSize.min(page * pageSize)
     PageData(totalPages, sliceData(from, to))
@@ -155,9 +153,9 @@ private[ui] trait PagedTable[T] {
       page: Int,
       pageSize: Int,
       totalPages: Int): Seq[Node] = {
-    if (totalPages == 1) {
+    if (totalPages == 1)
       Nil
-    } else {
+    else {
       // A group includes all page numbers will be shown in the page navigation.
       // The size of group is 10 means there are 10 page numbers will be shown.
       // The first group is 1 to 10, the second is 2 to 20, and so on
@@ -168,12 +166,11 @@ private[ui] trait PagedTable[T] {
       val startPage = currentGroup * groupSize + 1
       val endPage = totalPages.min(startPage + groupSize - 1)
       val pageTags = (startPage to endPage).map { p =>
-        if (p == page) {
+        if (p == page)
           // The current page should be disabled so that it cannot be clicked.
           <li class="disabled"><a href="#">{p}</a></li>
-        } else {
+        else
           <li><a href={Unparsed(pageLink(p))}>{p}</a></li>
-        }
       }
 
       val hiddenFormFields = {
@@ -193,9 +190,8 @@ private[ui] trait PagedTable[T] {
               case (k, v) =>
                 <input type="hidden" name={k} value={v} />
             }
-        } else {
+        } else
           Seq.empty
-        }
       }
 
       <div>
@@ -230,7 +226,7 @@ private[ui] trait PagedTable[T] {
           <span style="float: left; padding-top: 4px; padding-right: 4px;">Page: </span>
           <ul>
             {
-        if (currentGroup > firstGroup) {
+        if (currentGroup > firstGroup)
           <li>
               <a href={Unparsed(pageLink(startPage - groupSize))} aria-label="Previous Group">
                 <span aria-hidden="true">
@@ -238,10 +234,9 @@ private[ui] trait PagedTable[T] {
                 </span>
               </a>
             </li>
-        }
       }
             {
-        if (page > 1) {
+        if (page > 1)
           <li>
             <a href={Unparsed(pageLink(page - 1))} aria-label="Previous">
               <span aria-hidden="true">
@@ -249,20 +244,18 @@ private[ui] trait PagedTable[T] {
               </span>
             </a>
             </li>
-        }
       }
             {pageTags}
             {
-        if (page < totalPages) {
+        if (page < totalPages)
           <li>
               <a href={Unparsed(pageLink(page + 1))} aria-label="Next">
                 <span aria-hidden="true">&gt;</span>
               </a>
             </li>
-        }
       }
             {
-        if (currentGroup < lastGroup) {
+        if (currentGroup < lastGroup)
           <li>
               <a href={Unparsed(pageLink(startPage + groupSize))} aria-label="Next Group">
                 <span aria-hidden="true">
@@ -270,7 +263,6 @@ private[ui] trait PagedTable[T] {
                 </span>
               </a>
             </li>
-        }
       }
           </ul>
         </div>

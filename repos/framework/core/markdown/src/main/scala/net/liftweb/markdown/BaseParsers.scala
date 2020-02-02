@@ -57,26 +57,25 @@ trait BaseParsers extends RegexParsers {
       val s = in.source
       val end = s.length
       //process chars as long as it is whitespace
-      while (i < end && (s.charAt(i) == ' ' || s.charAt(i) == '\t')) {
+      while (i < end && (s.charAt(i) == ' ' || s.charAt(i) == '\t'))
         //advance a char
         i += 1
-      }
       Success(s.subSequence(in.offset, i).toString, in.drop(i - in.offset))
     }
   }
 
   /** Accepts a unix newline and returns a string containing a single newline.
     */
-  def nl: Parser[String] = '\n' ^^^ { "\n" }
+  def nl: Parser[String] = '\n' ^^^ "\n"
 
   /**
     * Matches everything in the parsed string up to the end.
     * Also matches the empty String. Returns the matched String.
     */
   def rest: Parser[String] = Parser { in =>
-    if (in.atEnd) {
+    if (in.atEnd)
       Success("", in)
-    } else {
+    else {
       val source = in.source
       val offset = in.offset
       Success(
@@ -123,16 +122,15 @@ trait BaseParsers extends RegexParsers {
   def lookbehind(cs: Set[Char]): Parser[Unit] = Parser { in =>
     val source = in.source
     val offset = in.offset
-    if (offset == 0) {
+    if (offset == 0)
       Failure("No chars before current char, cannot look behind.", in)
-    } else if (!cs.contains(source.charAt(offset - 1))) {
+    else if (!cs.contains(source.charAt(offset - 1)))
       Failure(
         "Previous char was '" + source
           .charAt(offset - 1) + "' expected one of " + cs,
         in)
-    } else {
+    else
       Success((), in)
-    }
   }
 
   /**
@@ -227,11 +225,10 @@ trait BaseParsers extends RegexParsers {
    * i.e. parsing '<' returns "&lt;"
    */
   def aChar = Parser { in =>
-    if (in.atEnd) {
+    if (in.atEnd)
       Failure("End of input reached.", in)
-    } else {
+    else
       Success(escapeForXml(in.first), in.rest)
-    }
   }
 
   val xmlNameStartCharRanges: SortedMap[Char, Char] =
@@ -283,8 +280,8 @@ trait BaseParsers extends RegexParsers {
     * That way you can omit xml escaping when writing inline XML in markdown.
     */
   def xmlAttrVal: Parser[String] =
-    ('"' ~> ((not('"') ~> aChar) *) <~ '"' ^^ { '"' + _.mkString + '"' }) |
-      ('\'' ~> ((not('\'') ~> aChar) *) <~ '\'' ^^ { '\'' + _.mkString + '\'' })
+    ('"' ~> ((not('"') ~> aChar) *) <~ '"' ^^ '"' + _.mkString + '"') |
+      ('\'' ~> ((not('\'') ~> aChar) *) <~ '\'' ^^ '\'' + _.mkString + '\'')
 
   /** Parses an XML Attribute with simplified value handling like xmlAttrVal.
     */
@@ -301,7 +298,7 @@ trait BaseParsers extends RegexParsers {
 
   /** Parses closing xml tags.
     */
-  def xmlEndTag: Parser[String] = "</" ~> xmlName <~ ">" ^^ { "</" + _ + ">" }
+  def xmlEndTag: Parser[String] = "</" ~> xmlName <~ ">" ^^ "</" + _ + ">"
 
   /** Runs the given parser on the given input.
     *  Expects the parser to succeed and consume all input.

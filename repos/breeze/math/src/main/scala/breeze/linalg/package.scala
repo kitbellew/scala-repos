@@ -82,12 +82,11 @@ package object linalg {
     var mat = CSVReader.read(input, separator, quote, escape, skipLines)
     mat = mat.takeWhile(line => line.length != 0 && line.head.nonEmpty) // empty lines at the end
     input.close()
-    if (mat.length == 0) {
+    if (mat.length == 0)
       DenseMatrix.zeros[Double](0, 0)
-    } else {
+    else
       DenseMatrix.tabulate(mat.length, mat.head.length)((i, j) =>
         mat(i)(j).toDouble)
-    }
   }
 
   def csvwrite(
@@ -190,9 +189,8 @@ package object linalg {
       // count number of tied values at rank i
       var numTiedValuesAtI = 1
       while (i + numTiedValuesAtI < as.length && a(as(i + numTiedValuesAtI)) == a(
-               as(i))) {
+               as(i)))
         numTiedValuesAtI += 1
-      }
 
       // set return value for next numTiedValuesAtI indexes in as
       val rank = 1 + i + (numTiedValuesAtI - 1) / 2.0
@@ -293,12 +291,10 @@ package object linalg {
         xc(*, ::) :/ stddev(x(::, *)).t
       else
         xc
-    } else {
-      if (scale)
-        x(*, ::) :/ columnRMS(x)
-      else
-        x
-    }
+    } else if (scale)
+      x(*, ::) :/ columnRMS(x)
+    else
+      x
   }
 
   /**

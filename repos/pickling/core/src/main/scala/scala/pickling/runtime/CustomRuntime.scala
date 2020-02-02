@@ -57,7 +57,7 @@ object CustomRuntime {
           .asInstanceOf[Array[AnyRef]]
 
         var i = 0
-        while (i < length) {
+        while (i < length)
           try {
             val r = reader.readElement()
             val elem = elemUnpickler.unpickleEntry(r)
@@ -82,7 +82,6 @@ object CustomRuntime {
                 Some(e)
               )
           }
-        }
 
         preader.popHints()
         preader.endCollection()
@@ -117,20 +116,21 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
   def tag = FastTypeTag[(Any, Any)]
 
   def pickleField(name: String, value: Any, builder: PBuilder): Unit = {
-    val (tag1, pickler1) = if (value == null) {
-      (
-        FastTypeTag.Null.asInstanceOf[FastTypeTag[Any]],
-        Defaults.nullPickler.asInstanceOf[Pickler[Any]])
-    } else {
-      val clazz = value.getClass
-      val tag = FastTypeTag
-        .mkRaw(clazz, reflectRuntime.currentMirror)
-        .asInstanceOf[FastTypeTag[Any]]
-      val pickler = scala.pickling.internal.currentRuntime.picklers
-        .genPickler(clazz.getClassLoader, clazz, tag)
-        .asInstanceOf[Pickler[Any]]
-      (tag, pickler)
-    }
+    val (tag1, pickler1) =
+      if (value == null)
+        (
+          FastTypeTag.Null.asInstanceOf[FastTypeTag[Any]],
+          Defaults.nullPickler.asInstanceOf[Pickler[Any]])
+      else {
+        val clazz = value.getClass
+        val tag = FastTypeTag
+          .mkRaw(clazz, reflectRuntime.currentMirror)
+          .asInstanceOf[FastTypeTag[Any]]
+        val pickler = scala.pickling.internal.currentRuntime.picklers
+          .genPickler(clazz.getClassLoader, clazz, tag)
+          .asInstanceOf[Pickler[Any]]
+        (tag, pickler)
+      }
 
     builder.putField(name, b => pickler1.pickle(value, b))
   }
@@ -157,14 +157,13 @@ class Tuple2RTPickler() extends AbstractPicklerUnpickler[(Any, Any)] {
     val tag1 = reader1.beginEntry()
 
     val value = {
-      if (reader1.atPrimitive) {
+      if (reader1.atPrimitive)
         reader1.readPrimitive()
-      } else {
+      else {
         val unpickler1 = internal.currentRuntime.picklers
           .genUnpickler(reflectRuntime.currentMirror, tag1)
-        try {
-          unpickler1.unpickle(tag1, reader1)
-        } catch {
+        try unpickler1.unpickle(tag1, reader1)
+        catch {
           case PicklingException(msg, cause) =>
             throw PicklingException(
               s"""error in unpickle of '${this.getClass.getName}':

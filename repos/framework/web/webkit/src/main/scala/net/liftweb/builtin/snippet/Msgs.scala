@@ -74,7 +74,7 @@ object Msgs extends DispatchSnippet {
       (NoticeType.Error, MsgsErrorMeta),
       (NoticeType.Warning, MsgsWarningMeta),
       (NoticeType.Notice, MsgsNoticeMeta)).foreach {
-      case (noticeType, ajaxStorage) => {
+      case (noticeType, ajaxStorage) =>
         // Extract the title if provided, or default to none. Allow for XML nodes
         // so that people can localize, etc.
         val title: NodeSeq = (styles \\ noticeType.titleTag)
@@ -91,7 +91,6 @@ object Msgs extends DispatchSnippet {
 
         // Save the settings for AJAX usage
         ajaxStorage(Full(AjaxMessageMeta(title, cssClasses)))
-      }
     }
 
     // Delegate the actual rendering to a shared method so that we don't
@@ -112,11 +111,10 @@ object Msgs extends DispatchSnippet {
   def renderNotices(): NodeSeq = {
     // Determine which formatting function to use based on tag usage
     val f =
-      if (ShowAll.is) {
+      if (ShowAll.is)
         S.messages _
-      } else {
+      else
         S.noIdMessages _
-      }
 
     // Compute the formatted set of messages for a given input
     def computeMessageDiv(
@@ -132,11 +130,10 @@ object Msgs extends DispatchSnippet {
         // Compute the resulting div
         f(messages).toList.map(e => (<li>{e}</li>)) match {
           case Nil => Nil
-          case msgList => {
+          case msgList =>
             val ret = <div id={noticeType.id}>{title}<ul>{msgList}</ul></div>
             styles.foldLeft(ret)((xml, style) =>
               xml % new UnprefixedAttribute("class", Text(style), Null))
-          }
         }
     }
 
@@ -169,9 +166,8 @@ object Msgs extends DispatchSnippet {
       default: T,
       wrap: JsCmd => T): T =
     LiftRules.noticesAutoFadeOut()(noticeType) map {
-      case (duration, fadeTime) => {
+      case (duration, fadeTime) =>
         wrap(LiftRules.jsArtifacts.fadeOut(noticeType.id, duration, fadeTime))
-      }
     } openOr default
 
   /**

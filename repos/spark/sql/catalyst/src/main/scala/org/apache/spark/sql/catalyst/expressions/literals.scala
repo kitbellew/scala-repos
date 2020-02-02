@@ -205,7 +205,7 @@ case class Literal protected (value: Any, dataType: DataType)
     if (value == null) {
       ev.isNull = "true"
       s"final ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};"
-    } else {
+    } else
       dataType match {
         case BooleanType =>
           ev.isNull = "false"
@@ -213,18 +213,18 @@ case class Literal protected (value: Any, dataType: DataType)
           ""
         case FloatType =>
           val v = value.asInstanceOf[Float]
-          if (v.isNaN || v.isInfinite) {
+          if (v.isNaN || v.isInfinite)
             super[CodegenFallback].genCode(ctx, ev)
-          } else {
+          else {
             ev.isNull = "false"
             ev.value = s"${value}f"
             ""
           }
         case DoubleType =>
           val v = value.asInstanceOf[Double]
-          if (v.isNaN || v.isInfinite) {
+          if (v.isNaN || v.isInfinite)
             super[CodegenFallback].genCode(ctx, ev)
-          } else {
+          else {
             ev.isNull = "false"
             ev.value = s"${value}D"
             ""
@@ -245,7 +245,6 @@ case class Literal protected (value: Any, dataType: DataType)
         case other =>
           super[CodegenFallback].genCode(ctx, ev)
       }
-    }
 
   override def sql: String = (value, dataType) match {
     case (_, NullType | _: ArrayType | _: MapType | _: StructType)

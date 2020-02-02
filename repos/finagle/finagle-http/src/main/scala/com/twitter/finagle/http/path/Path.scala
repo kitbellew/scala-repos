@@ -128,12 +128,12 @@ protected class Numeric[A <: AnyVal](cast: String => A) {
   def unapply(str: String): Option[A] =
     if (!str.isEmpty &&
         (str.head == '-' || Character.isDigit(str.head)) &&
-        str.drop(1).forall(Character.isDigit)) try {
-      Some(cast(str))
-    } catch {
-      case _: NumberFormatException =>
-        None
-    }
+        str.drop(1).forall(Character.isDigit))
+      try Some(cast(str))
+      catch {
+        case _: NumberFormatException =>
+          None
+      }
     else
       None
 }
@@ -182,9 +182,8 @@ abstract class ParamMatcher(name: String) {
 abstract class IntParamMatcher(name: String) {
   def unapply(params: ParamMap): Option[Int] =
     params.get(name) flatMap { value =>
-      try {
-        Some(value.toInt)
-      } catch {
+      try Some(value.toInt)
+      catch {
         case ex: NumberFormatException =>
           None
       }
@@ -200,9 +199,8 @@ abstract class IntParamMatcher(name: String) {
 abstract class LongParamMatcher(name: String) {
   def unapply(params: ParamMap): Option[Long] =
     params.get(name) flatMap { value =>
-      try {
-        Some(value.toLong)
-      } catch {
+      try Some(value.toLong)
+      catch {
         case ex: NumberFormatException =>
           None
       }
@@ -218,9 +216,8 @@ abstract class LongParamMatcher(name: String) {
 abstract class DoubleParamMatcher(name: String) {
   def unapply(params: ParamMap): Option[Double] =
     params.get(name) flatMap { value =>
-      try {
-        Some(value.toDouble)
-      } catch {
+      try Some(value.toDouble)
+      catch {
         case ex: NumberFormatException =>
           None
       }

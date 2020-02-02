@@ -42,10 +42,9 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
     if (extractedHash.isEmpty) extractedHash = {
       var downloaded: Option[String] = None
 
-      try {
-        downloaded = ActivatorRepoProcessor.downloadStringFromRepo(
-          s"$urlString/$PROPERTIES")
-      } catch {
+      try downloaded =
+        ActivatorRepoProcessor.downloadStringFromRepo(s"$urlString/$PROPERTIES")
+      catch {
         case io: IOException => error("Can't download index", io)
       }
 
@@ -66,7 +65,7 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
     if (extractedHash
           .flatMap(a => indexFile.map(b => (a, b._1)))
           .exists(a => a._1 == a._2)) indexFile.map(_._2)
-    else {
+    else
       extractHash() flatMap {
         case hash =>
           val tmpFile = FileUtil.createTempFile(s"index-$hash", ".zip", true)
@@ -81,14 +80,12 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
             Some(tmpFile)
           } else None
       }
-    }
 
   private def cacheFile(file: File, where: File) {
     val cacheDir = getCacheDataPath
 
-    if (cacheDir.exists() || cacheDir.mkdir()) {
+    if (cacheDir.exists() || cacheDir.mkdir())
       if (where.exists() || where.createNewFile()) FileUtil.copy(file, where)
-    }
   }
 
   private def processIndex(location: File): Map[String, DocData] = {
@@ -96,42 +93,38 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
 
     var reader: IndexReader = null
 
-    try {
-      template.usingTempDirectoryWithHandler("index-activator", None)({
-        case io: IOException =>
-          error("Can't process templates list", io);
-          Map.empty[String, ActivatorRepoProcessor.DocData]
-      }, { case io: IOException => }) { extracted =>
-        ZipUtil.extract(location, extracted, null)
+    try template.usingTempDirectoryWithHandler("index-activator", None)({
+      case io: IOException =>
+        error("Can't process templates list", io);
+        Map.empty[String, ActivatorRepoProcessor.DocData]
+    }, { case io: IOException => }) { extracted =>
+      ZipUtil.extract(location, extracted, null)
 
-        import org.apache.lucene
-        import org.apache.lucene.search.IndexSearcher
+      import org.apache.lucene
+      import org.apache.lucene.search.IndexSearcher
 
-        val loader =
-          getClass.getClassLoader match { //hack to avoid lucene 2.4.1 from bundled maven plugin
-            case urlLoader: URLClassLoader =>
-              new URLClassLoader(urlLoader.getURLs, null)
-            case other => other
-          }
-        loader.loadClass("org.apache.lucene.store.FSDirectory")
+      val loader =
+        getClass.getClassLoader match { //hack to avoid lucene 2.4.1 from bundled maven plugin
+          case urlLoader: URLClassLoader =>
+            new URLClassLoader(urlLoader.getURLs, null)
+          case other => other
+        }
+      loader.loadClass("org.apache.lucene.store.FSDirectory")
 
-        reader = DirectoryReader.open(FSDirectory.open(extracted))
-        val searcher = new IndexSearcher(reader)
-        val docs =
-          searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
-        val data = docs.scoreDocs.map { case doc => reader document doc.doc }
+      reader = DirectoryReader.open(FSDirectory.open(extracted))
+      val searcher = new IndexSearcher(reader)
+      val docs =
+        searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
+      val data = docs.scoreDocs.map { case doc => reader document doc.doc }
 
-        data.map {
-          case docData => Keys.from(docData)
-        }.toMap
-      }
+      data.map {
+        case docData => Keys.from(docData)
+      }.toMap
     } catch {
       case io: IOException =>
         error("Can't process templates list", io)
         Map.empty
-    } finally {
-      if (reader != null) reader.close()
-    }
+    } finally if (reader != null) reader.close()
   }
 
   private def getOrDownloadTemplate(
@@ -152,9 +145,8 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         return
       }
 
-      try {
-        FileUtil.copy(cachedTemplate, pathTo)
-      } catch {
+      try FileUtil.copy(cachedTemplate, pathTo)
+      catch {
         case _: IOException => onError(a)
       }
     }

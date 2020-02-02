@@ -44,21 +44,18 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   def satisfy(value: T): Unit = {
     val funcs = synchronized {
-      try {
-        if (!satisfied && !aborted) {
-          item = value
-          satisfied = true
-          val ret = toDo
-          toDo = Nil
-          onFailure = Nil
-          onComplete.foreach(f =>
-            LAFuture.executeWithObservers(scheduler, () => f(Full(value))))
-          onComplete = Nil
-          ret
-        } else Nil
-      } finally {
-        notifyAll()
-      }
+      try if (!satisfied && !aborted) {
+        item = value
+        satisfied = true
+        val ret = toDo
+        toDo = Nil
+        onFailure = Nil
+        onComplete.foreach(f =>
+          LAFuture.executeWithObservers(scheduler, () => f(Full(value))))
+        onComplete = Nil
+        ret
+      } else Nil
+      finally notifyAll()
     }
     funcs.foreach(f => LAFuture.executeWithObservers(scheduler, () => f(value)))
   }
@@ -140,7 +137,7 @@ class LAFuture[T](val scheduler: LAScheduler) {
   def get(timeout: Long): Box[T] = synchronized {
     if (satisfied) Full(item)
     else if (aborted) failure
-    else {
+    else
       try {
         wait(timeout)
         if (satisfied) Full(item)
@@ -149,7 +146,6 @@ class LAFuture[T](val scheduler: LAScheduler) {
       } catch {
         case _: InterruptedException => Empty
       }
-    }
   }
 
   /**
@@ -176,11 +172,10 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   def onSuccess(f: T => Unit) {
     synchronized {
-      if (satisfied) {
+      if (satisfied)
         LAFuture.executeWithObservers(scheduler, () => f(item))
-      } else if (!aborted) {
+      else if (!aborted)
         toDo ::= f
-      }
     }
   }
 
@@ -192,9 +187,8 @@ class LAFuture[T](val scheduler: LAScheduler) {
   def onFail(f: Box[Nothing] => Unit) {
     synchronized {
       if (aborted) LAFuture.executeWithObservers(scheduler, () => f(failure))
-      else if (!satisfied) {
+      else if (!satisfied)
         onFailure ::= f
-      }
     }
   }
 
@@ -205,11 +199,11 @@ class LAFuture[T](val scheduler: LAScheduler) {
     */
   def onComplete(f: Box[T] => Unit) {
     synchronized {
-      if (satisfied) {
+      if (satisfied)
         LAFuture.executeWithObservers(scheduler, () => f(Full(item)))
-      } else if (aborted) {
+      else if (aborted)
         LAFuture.executeWithObservers(scheduler, () => f(failure))
-      } else
+      else
         onComplete ::= f
     }
   }
@@ -273,9 +267,8 @@ object LAFuture {
       scheduler: LAScheduler = LAScheduler): LAFuture[T] = {
     val ret = new LAFuture[T](scheduler)
     scheduler.execute { () =>
-      try {
-        ret.satisfy(f())
-      } catch {
+      try ret.satisfy(f())
+      catch {
         case e: Exception => ret.fail(e)
       }
     }
@@ -300,9 +293,8 @@ object LAFuture {
     */
   private def notifyObservers(future: LAFuture[_]) {
     val observers = threadInfo.get()
-    if (null eq observers) {} else {
+    if (null eq observers) {} else
       observers.foreach(_(future))
-    }
   }
 
   private def executeWithObservers(scheduler: LAScheduler, f: () => Unit) {
@@ -310,11 +302,8 @@ object LAFuture {
     scheduler.execute { () =>
       val old = threadInfo.get()
       threadInfo.set(cur)
-      try {
-        f()
-      } finally {
-        threadInfo.set(old)
-      }
+      try f()
+      finally threadInfo.set(old)
     }
   }
 
@@ -331,11 +320,8 @@ object LAFuture {
   def observeCreation[T](observation: LAFuture[_] => Unit)(toDo: => T): T = {
     val old = threadInfo.get()
     threadInfo.set(if (null eq old) List(observation) else observation :: old)
-    try {
-      toDo
-    } finally {
-      threadInfo.set(old)
-    }
+    try toDo
+    finally threadInfo.set(old)
   }
 
   /**
@@ -345,14 +331,14 @@ object LAFuture {
     */
   def collect[T](future: LAFuture[T]*): LAFuture[List[T]] = {
     val ret = new LAFuture[List[T]]
-    if (future.isEmpty) {
+    if (future.isEmpty)
       ret.satisfy(Nil)
-    } else {
+    else {
       val sync = new Object
       val len = future.length
       val vals = new collection.mutable.ArrayBuffer[Box[T]](len)
       // pad array so inserts at random places are possible
-      for (i <- 0 to len) { vals.insert(i, Empty) }
+      for (i <- 0 to len) vals.insert(i, Empty)
       var gotCnt = 0
 
       future.toList.zipWithIndex.foreach {
@@ -361,9 +347,8 @@ object LAFuture {
             sync.synchronized {
               vals.insert(idx, Full(v))
               gotCnt += 1
-              if (gotCnt >= len) {
+              if (gotCnt >= len)
                 ret.satisfy(vals.toList.flatten)
-              }
             }
           }
       }
@@ -381,14 +366,14 @@ object LAFuture {
     */
   def collectAll[T](future: LAFuture[Box[T]]*): LAFuture[Box[List[T]]] = {
     val ret = new LAFuture[Box[List[T]]]
-    if (future.isEmpty) {
+    if (future.isEmpty)
       ret.satisfy(Full(Nil))
-    } else {
+    else {
       val sync = new Object
       val len = future.length
       val vals = new collection.mutable.ArrayBuffer[Box[T]](len)
       // pad array so inserts at random places are possible
-      for (i <- 0 to len) { vals.insert(i, Empty) }
+      for (i <- 0 to len) vals.insert(i, Empty)
       var gotCnt = 0
 
       future.toList.zipWithIndex.foreach {
@@ -396,17 +381,14 @@ object LAFuture {
           f.foreach { vb =>
             sync.synchronized {
               vb match {
-                case Full(v) => {
+                case Full(v) =>
                   vals.insert(idx, Full(v))
                   gotCnt += 1
-                  if (gotCnt >= len) {
+                  if (gotCnt >= len)
                     ret.satisfy(Full(vals.toList.flatten))
-                  }
-                }
 
-                case eb: EmptyBox => {
+                case eb: EmptyBox =>
                   ret.satisfy(eb)
-                }
               }
             }
           }

@@ -83,7 +83,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
       results must haveSize(1)
 
       results must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(0)
           elems.keys mustEqual Set("model1")
 
@@ -92,7 +92,6 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
               obj.keySet mustEqual Set("fit")
               obj("fit") must beLike { case SDecimal(_) => ok }
           }
-        }
       }
     }
 
@@ -104,7 +103,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
       results must haveSize(count)
 
       results must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           if (idJoin) ids must haveSize(2)
           else ids must haveSize(1)
 
@@ -123,7 +122,6 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
                   }
               }
           }
-        }
       }
     }
 
@@ -201,7 +199,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
       results must haveSize(count)
 
       results must haveAllElementsLike {
-        case (ids, SObject(elems)) => {
+        case (ids, SObject(elems)) =>
           ids must haveSize(2)
 
           elems.keys mustEqual Set("model1", "predictedGender")
@@ -219,7 +217,6 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
                   }
               }
           }
-        }
       }
     }
 

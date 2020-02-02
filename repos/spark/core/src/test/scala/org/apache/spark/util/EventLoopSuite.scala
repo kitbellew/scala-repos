@@ -156,9 +156,8 @@ class EventLoopSuite extends SparkFunSuite with Timeouts {
 
       override def onReceive(event: Int): Unit = {
         onReceiveLatch.countDown()
-        try {
-          Thread.sleep(5000)
-        } catch {
+        try Thread.sleep(5000)
+        catch {
           case ie: InterruptedException => // swallow
         }
       }

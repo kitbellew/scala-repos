@@ -238,7 +238,7 @@ trait TestShardService
               }
 
             case error =>
-              if (contentType.exists(_ == MimeTypes.application / json)) {
+              if (contentType.exists(_ == MimeTypes.application / json))
                 response map {
                   case Left(bytes) =>
                     Left(
@@ -249,7 +249,7 @@ trait TestShardService
                     Right(
                       stream.map(bytes => utf8.decode(ByteBuffer.wrap(bytes))))
                 }
-              } else {
+              else
                 response map {
                   case Left(bb) => Left(JString(new String(bb.array, "UTF-8")))
                   case chunk =>
@@ -261,7 +261,6 @@ trait TestShardService
                             CharBuffer.wrap(JString(s).renderCompact) :: StreamT
                               .empty[Future, CharBuffer])))
                 }
-              }
           }
         }
     }
@@ -624,12 +623,11 @@ trait TestPlatform extends ManagedPlatform { self =>
                 mu map { _ => \/.right(toSlice(JObject("value" -> JNum(2)))) }
               }
           }
-        } else {
+        } else
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
             shardQueryMonad.point(
               \/.right(toSlice(JObject("value" -> JNum(2)))))
           }
-        }
     }
 
   def status() = Future(Success(JArray(List(JString("status")))))

@@ -49,10 +49,9 @@ object GridPageRank {
     for (iter <- 0 until nIter) {
       val oldPr = pr
       pr = new Array[Double](nRows * nCols)
-      for (ind <- 0 until (nRows * nCols)) {
+      for (ind <- 0 until (nRows * nCols))
         pr(ind) = resetProb + (1.0 - resetProb) *
           inNbrs(ind).map(nbr => oldPr(nbr) / outDegree(nbr)).sum
-      }
     }
     (0L until (nRows * nCols)).zip(pr)
   }

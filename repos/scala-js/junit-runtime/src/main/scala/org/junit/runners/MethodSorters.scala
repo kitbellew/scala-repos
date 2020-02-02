@@ -17,9 +17,8 @@ object MethodSorters {
 }
 
 class MethodSorters private (f: (String, String) => Int) {
-  lazy val comparator: Ordering[String] = {
+  lazy val comparator: Ordering[String] =
     new Ordering[String] {
       def compare(x: String, y: String): Int = f(x, y)
     }
-  }
 }

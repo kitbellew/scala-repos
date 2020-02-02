@@ -28,16 +28,15 @@ object Block {
         builder.getTokenType match {
           case ScalaTokenTypes.tSEMICOLON =>
             hasSemicolon = true
-            while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON) {
+            while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON)
               builder.advanceLexer()
-            }
           case _ => if (builder.newlineBeforeCurrentToken) hasSemicolon = true
         }
       }
 
       updateSemicolon()
 
-      while (!ResultExpr.parse(builder) && BlockStat.parse(builder)) {
+      while (!ResultExpr.parse(builder) && BlockStat.parse(builder))
         if (!hasSemicolon) {
           rollbackMarker.rollbackTo()
           builder error ErrMsg("semi.expected")
@@ -48,7 +47,6 @@ object Block {
           rollbackMarker.drop()
           rollbackMarker = builder.mark()
         }
-      }
       rollbackMarker.drop()
     }
   }
@@ -59,20 +57,16 @@ object Block {
     var tts: List[IElementType] = Nil
     var continue = true
 
-    while (continue) {
+    while (continue)
       if (ResultExpr.parse(builder)) {
         continue = false
         i = i + 1
         tts ::= builder.getTokenType
-      } else {
-        if (BlockStat.parse(builder)) {
-          i = i + 1
-          tts ::= builder.getTokenType
-        } else {
-          continue = false
-        }
-      }
-    }
+      } else if (BlockStat.parse(builder)) {
+        i = i + 1
+        tts ::= builder.getTokenType
+      } else
+        continue = false
     if (tts.drop(1).headOption.contains(ScalaTokenTypes.tSEMICOLON))
       i -= 1 // See unit_to_unit.test
 
@@ -102,12 +96,11 @@ object Block {
     } else {
       val bm = builder.mark()
       val count = parseImpl(builder)
-      if (count > 1) {
+      if (count > 1)
         bm.done(ScalaElementTypes.BLOCK)
-      } else {
-        if (!needNode) bm.drop() else bm.done(ScalaElementTypes.BLOCK)
+      else if (!needNode) bm.drop()
+      else bm.done(ScalaElementTypes.BLOCK)
 //        bm.done(ScalaElementTypes.BLOCK)
-      }
     }
     true
   }

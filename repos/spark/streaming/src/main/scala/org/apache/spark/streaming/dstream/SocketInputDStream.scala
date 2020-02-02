@@ -55,9 +55,8 @@ private[streaming] class SocketReceiver[T: ClassTag](
   def onStart() {
 
     logInfo(s"Connecting to $host:$port")
-    try {
-      socket = new Socket(host, port)
-    } catch {
+    try socket = new Socket(host, port)
+    catch {
       case e: ConnectException =>
         restart(s"Error connecting to $host:$port", e)
         return
@@ -86,21 +85,17 @@ private[streaming] class SocketReceiver[T: ClassTag](
   def receive() {
     try {
       val iterator = bytesToObjects(socket.getInputStream())
-      while (!isStopped && iterator.hasNext) {
+      while (!isStopped && iterator.hasNext)
         store(iterator.next())
-      }
-      if (!isStopped()) {
+      if (!isStopped())
         restart("Socket data stream had no more data")
-      } else {
+      else
         logInfo("Stopped receiving")
-      }
     } catch {
       case NonFatal(e) =>
         logWarning("Error receiving data", e)
         restart("Error receiving data", e)
-    } finally {
-      onStop()
-    }
+    } finally onStop()
   }
 }
 
@@ -116,9 +111,8 @@ private[streaming] object SocketReceiver {
     new NextIterator[String] {
       protected override def getNext() = {
         val nextValue = dataInputStream.readLine()
-        if (nextValue == null) {
+        if (nextValue == null)
           finished = true
-        }
         nextValue
       }
 

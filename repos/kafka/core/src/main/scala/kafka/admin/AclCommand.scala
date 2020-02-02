@@ -42,14 +42,13 @@ object AclCommand {
 
     opts.checkArgs()
 
-    try {
-      if (opts.options.has(opts.addOpt))
-        addAcl(opts)
-      else if (opts.options.has(opts.removeOpt))
-        removeAcl(opts)
-      else if (opts.options.has(opts.listOpt))
-        listAcl(opts)
-    } catch {
+    try if (opts.options.has(opts.addOpt))
+      addAcl(opts)
+    else if (opts.options.has(opts.removeOpt))
+      removeAcl(opts)
+    else if (opts.options.has(opts.listOpt))
+      listAcl(opts)
+    catch {
       case e: Throwable =>
         println(s"Error while executing ACL command: ${e.getMessage}")
         println(Utils.stackTrace(e))
@@ -65,9 +64,8 @@ object AclCommand {
         CommandLineUtils
           .parseKeyValueArgs(authorizerProperties, acceptMissingValue = false)
           .asScala
-      } else {
+      } else
         Map.empty[String, Any]
-      }
 
     val authorizerClass = opts.options.valueOf(opts.authorizerOpt)
     val authZ = CoreUtils.createObject[Authorizer](authorizerClass)
@@ -101,18 +99,16 @@ object AclCommand {
     withAuthorizer(opts) { authorizer =>
       val resourceToAcl = getResourceToAcls(opts)
 
-      for ((resource, acls) <- resourceToAcl) {
+      for ((resource, acls) <- resourceToAcl)
         if (acls.isEmpty) {
           if (confirmAction(
                 s"Are you sure you want to delete all ACLs for resource `$resource`? (y/n)"))
             authorizer.removeAcls(resource)
-        } else {
-          if (confirmAction(s"Are you sure you want to remove ACLs: $Newline ${acls
-                .map("\t" + _)
-                .mkString(Newline)} $Newline from resource `$resource`? (y/n)"))
-            authorizer.removeAcls(acls, resource)
-        }
-      }
+        } else if (confirmAction(
+                     s"Are you sure you want to remove ACLs: $Newline ${acls
+                       .map("\t" + _)
+                       .mkString(Newline)} $Newline from resource `$resource`? (y/n)"))
+          authorizer.removeAcls(acls, resource)
 
       listAcl(opts)
     }
@@ -139,9 +135,8 @@ object AclCommand {
 
     //if none of the --producer or --consumer options are specified , just construct ACLs from CLI options.
     if (!opts.options.has(opts.producerOpt) && !opts.options.has(
-          opts.consumerOpt)) {
+          opts.consumerOpt))
       resourceToAcls ++= getCliResourceToAcls(opts)
-    }
 
     //users are allowed to specify both --producer and --consumer options in a single command.
     if (opts.options.has(opts.producerOpt))

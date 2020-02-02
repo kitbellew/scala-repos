@@ -95,11 +95,10 @@ private[sql] case class InsertIntoHadoopFsRelation(
           s"path $qualifiedOutputPath already exists.")
       case (SaveMode.Overwrite, true) =>
         Utils.tryOrIOException {
-          if (!fs.delete(qualifiedOutputPath, true /* recursively */ )) {
+          if (!fs.delete(qualifiedOutputPath, true /* recursively */ ))
             throw new IOException(
               s"Unable to clear output " +
                 s"directory $qualifiedOutputPath prior to writing to it")
-          }
         }
         true
       case (SaveMode.Append, _) | (SaveMode.Overwrite, _) |
@@ -135,9 +134,9 @@ private[sql] case class InsertIntoHadoopFsRelation(
             bucketSpec)
 
         val writerContainer =
-          if (partitionColumns.isEmpty && bucketSpec.isEmpty) {
+          if (partitionColumns.isEmpty && bucketSpec.isEmpty)
             new DefaultWriterContainer(relation, job, isAppend)
-          } else {
+          else
             new DynamicPartitionWriterContainer(
               relation,
               job,
@@ -147,7 +146,6 @@ private[sql] case class InsertIntoHadoopFsRelation(
               PartitioningUtils.DEFAULT_PARTITION_NAME,
               sqlContext.conf.getConf(SQLConf.PARTITION_MAX_FILES),
               isAppend)
-          }
 
         // This call shouldn't be put into the `try` block below because it only initializes and
         // prepares the job, any exception thrown from here shouldn't cause abortJob() to be called.
@@ -165,9 +163,8 @@ private[sql] case class InsertIntoHadoopFsRelation(
             throw new SparkException("Job aborted.", cause)
         }
       }
-    } else {
+    } else
       logInfo("Skipping insertion into a relation that already exists.")
-    }
 
     Seq.empty[Row]
   }

@@ -33,7 +33,7 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
         if (mc == null || mc.args == null || mc.args.exprs.isEmpty) return
         if (isIgnoreSingleParameter && isSingleParamMethodCall(mc)) return
         val argList = mc.args
-        for (expr <- argList.exprs) {
+        for (expr <- argList.exprs)
           expr match {
             case lit @ ScBooleanLiteral(_)
                 if isArgForBooleanParam(expr, argList) &&
@@ -49,7 +49,6 @@ abstract class NameBooleanParametersInspectionBase extends LocalInspectionTool {
               holder.registerProblem(descriptor)
             case _ =>
           }
-        }
       }
 
       def isArgForBooleanParam(

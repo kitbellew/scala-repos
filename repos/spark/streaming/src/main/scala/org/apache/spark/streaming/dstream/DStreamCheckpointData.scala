@@ -90,10 +90,9 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
           case (time, file) =>
             try {
               val path = new Path(file)
-              if (fileSystem == null) {
+              if (fileSystem == null)
                 fileSystem = path.getFileSystem(
                   dstream.ssc.sparkContext.hadoopConfiguration)
-              }
               fileSystem.delete(path, true)
               timeToCheckpointFile -= time
               logInfo("Deleted checkpoint file '" + file + "' for time " + time)
@@ -118,14 +117,13 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
   def restore() {
     // Create RDDs from the checkpoint data
     currentCheckpointFiles.foreach {
-      case (time, file) => {
+      case (time, file) =>
         logInfo(
           "Restoring checkpointed RDD for time " + time + " from file '" + file + "'")
         dstream.generatedRDDs += (
           (
             time,
             dstream.context.sparkContext.checkpointFile[T](file)))
-      }
     }
   }
 
@@ -137,11 +135,11 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
   private def writeObject(oos: ObjectOutputStream): Unit =
     Utils.tryOrIOException {
       logDebug(this.getClass().getSimpleName + ".writeObject used")
-      if (dstream.context.graph != null) {
+      if (dstream.context.graph != null)
         dstream.context.graph.synchronized {
-          if (dstream.context.graph.checkpointInProgress) {
+          if (dstream.context.graph.checkpointInProgress)
             oos.defaultWriteObject()
-          } else {
+          else {
             val msg =
               "Object of " + this.getClass.getName + " is being serialized " +
                 " possibly as a part of closure of an RDD operation. This is because " +
@@ -152,10 +150,9 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
             throw new java.io.NotSerializableException(msg)
           }
         }
-      } else {
+      else
         throw new java.io.NotSerializableException(
           "Graph is unexpectedly null when DStream is being serialized.")
-      }
     }
 
   @throws(classOf[IOException])

@@ -46,9 +46,8 @@ object ConsoleConsumer extends Logging {
 
   def main(args: Array[String]) {
     val conf = new ConsumerConfig(args)
-    try {
-      run(conf)
-    } catch {
+    try run(conf)
+    catch {
       case e: Throwable =>
         error("Unknown error when running consumer: ", e)
         System.exit(1);
@@ -73,13 +72,12 @@ object ConsoleConsumer extends Logging {
 
     addShutdownHook(consumer, conf)
 
-    try {
-      process(
-        conf.maxMessages,
-        conf.formatter,
-        consumer,
-        conf.skipMessageOnError)
-    } finally {
+    try process(
+      conf.maxMessages,
+      conf.formatter,
+      consumer,
+      conf.skipMessageOnError)
+    finally {
       consumer.cleanup()
       reportRecordCount()
 
@@ -132,9 +130,8 @@ object ConsoleConsumer extends Logging {
       skipMessageOnError: Boolean) {
     while (messageCount < maxMessages || maxMessages == -1) {
       val msg: BaseConsumerRecord =
-        try {
-          consumer.receive()
-        } catch {
+        try consumer.receive()
+        catch {
           case nse: StreamEndException =>
             trace(
               "Caught StreamEndException because consumer is shutdown, ignore and terminate.")
@@ -151,28 +148,26 @@ object ConsoleConsumer extends Logging {
             return
         }
       messageCount += 1
-      try {
-        formatter.writeTo(
-          new ConsumerRecord(
-            msg.topic,
-            msg.partition,
-            msg.offset,
-            msg.timestamp,
-            msg.timestampType,
-            0,
-            0,
-            0,
-            msg.key,
-            msg.value),
-          System.out)
-      } catch {
+      try formatter.writeTo(
+        new ConsumerRecord(
+          msg.topic,
+          msg.partition,
+          msg.offset,
+          msg.timestamp,
+          msg.timestampType,
+          0,
+          0,
+          0,
+          msg.key,
+          msg.value),
+        System.out)
+      catch {
         case e: Throwable =>
-          if (skipMessageOnError) {
+          if (skipMessageOnError)
             error("Error processing message, skipping this message: ", e)
-          } else {
+          else
             // Consumer will be closed
             throw e
-          }
       }
       checkErr(formatter)
     }

@@ -25,16 +25,14 @@ trait TypeAnalysis extends Macro {
       Nil
     else if (sym.isClass) {
       val classSym = sym.asClass
-      if (tools.treatAsSealed(classSym)) {
+      if (tools.treatAsSealed(classSym))
         tools.directSubclasses(classSym).flatMap(cl => whyNotClosed(cl.asType))
-      } else {
+      else
         List(s"'${sym.fullName}' allows unknown subclasses (it is not sealed or final isCaseClass=${isCaseClass(
           sym)} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools
           .directSubclasses(classSym)})")
-      }
-    } else {
+    } else
       List(s"'${sym.fullName}' is not a class or trait")
-    }
 }
 
 import HasCompat._

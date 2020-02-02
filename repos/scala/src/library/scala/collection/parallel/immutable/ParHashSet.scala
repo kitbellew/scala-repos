@@ -148,10 +148,9 @@ private[immutable] abstract class HashSetCombiner[T]
     sz += 1
     val hc = emptyTrie.computeHash(elem)
     val pos = hc & 0x1f
-    if (buckets(pos) eq null) {
+    if (buckets(pos) eq null)
       // initialize bucket
       buckets(pos) = new UnrolledBuffer[Any]
-    }
     // add to bucket
     buckets(pos) += elem
     this

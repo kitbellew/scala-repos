@@ -94,7 +94,7 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
       def apply(path: Path) = rec(path, 1)
       def rec(path: Path, count: Int): Matching[lift.Out] = {
         def done = if (count >= min) Matched(path, lift()) else Unmatched
-        if (count <= max) {
+        if (count <= max)
           self(path) match {
             case Matched(remaining, extractions) ⇒
               def done1 =
@@ -113,7 +113,7 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
               }
             case Unmatched ⇒ done
           }
-        } else done
+        else done
       }
     }
 }
@@ -433,19 +433,17 @@ trait PathMatchers {
             value: T = minusOne): Matching[Tuple1[T]] = {
           val a =
             if (ix < segment.length) fromChar(segment charAt ix) else minusOne
-          if (a == minusOne) {
+          if (a == minusOne)
             if (value == minusOne) Unmatched
             else
               Matched(
                 if (ix < segment.length) segment.substring(ix) :: tail
                 else tail,
                 Tuple1(value))
-          } else {
-            if (value == minusOne) digits(ix + 1, a)
-            else if (value <= maxDivBase && value * base <= max - a) // protect from overflow
-              digits(ix + 1, value * base + a)
-            else Unmatched
-          }
+          else if (value == minusOne) digits(ix + 1, a)
+          else if (value <= maxDivBase && value * base <= max - a) // protect from overflow
+            digits(ix + 1, value * base + a)
+          else Unmatched
         }
         digits()
 

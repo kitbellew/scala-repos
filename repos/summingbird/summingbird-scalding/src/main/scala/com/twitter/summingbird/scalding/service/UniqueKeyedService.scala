@@ -111,8 +111,7 @@ object UniqueKeyedService extends java.io.Serializable {
                   .format(requested, s)
               toTry(e, msg)
           }
-        } else {
+        } else
           super.satisfiable(requested, mode)
-        }
     }
 }

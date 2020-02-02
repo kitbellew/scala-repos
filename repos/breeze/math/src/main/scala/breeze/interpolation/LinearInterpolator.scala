@@ -25,10 +25,9 @@ class LinearInterpolator[T: ClassTag: Field: Ordering](
   }
 
   override protected def extrapolate(x: T): T = {
-    if (X.length < 2) {
+    if (X.length < 2)
       throw new IndexOutOfBoundsException(
         "Cannot extrapolate linearly when given less than two points.")
-    }
 
     val index = if (x < X(0)) 1 else X.length - 1
     interpolate(index, x)

@@ -34,9 +34,8 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
       @NotNull document: Document,
       quick: Boolean): Array[FoldingDescriptor] = {
     if (!element
-          .isInstanceOf[ScalaFile] || quick || !ScalaI18nUtil.isFoldingsOn) {
+          .isInstanceOf[ScalaFile] || quick || !ScalaI18nUtil.isFoldingsOn)
       return FoldingDescriptor.EMPTY
-    }
     val file: ScalaFile = element.asInstanceOf[ScalaFile]
     val project: Project = file.getProject
     val result = new java.util.ArrayList[FoldingDescriptor]
@@ -92,11 +91,9 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
                 val value: AnyRef = evaluator.computeConstantExpression(
                   args(i),
                   throwExceptionOnOverflow = false)
-                if (value == null) {
-                  if (!args(i).isInstanceOf[ScReferenceExpression]) {
+                if (value == null)
+                  if (!args(i).isInstanceOf[ScReferenceExpression])
                     ok = false
-                  }
-                }
                 i += 1
                 i
               }

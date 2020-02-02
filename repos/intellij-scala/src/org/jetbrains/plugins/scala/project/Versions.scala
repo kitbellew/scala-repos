@@ -54,11 +54,11 @@ trait Versions {
   private def loadLinesFrom(url: String): Try[Seq[String]] =
     Try(HttpConfigurable.getInstance().openHttpConnection(url)).map {
       connection =>
-        try {
-          Source.fromInputStream(connection.getInputStream).getLines().toVector
-        } finally {
-          connection.disconnect()
-        }
+        try Source
+          .fromInputStream(connection.getInputStream)
+          .getLines()
+          .toVector
+        finally connection.disconnect()
     }
 
   protected case class Entity(

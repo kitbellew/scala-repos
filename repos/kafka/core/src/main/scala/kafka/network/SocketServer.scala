@@ -103,7 +103,7 @@ class SocketServer(
         val protocol = endpoint.protocolType
         val processorEndIndex = processorBeginIndex + numProcessorThreads
 
-        for (i <- processorBeginIndex until processorEndIndex) {
+        for (i <- processorBeginIndex until processorEndIndex)
           processors(i) = new Processor(
             i,
             time,
@@ -114,7 +114,6 @@ class SocketServer(
             protocol,
             config.values,
             metrics)
-        }
 
         val acceptor = new Acceptor(
           endpoint,
@@ -166,9 +165,8 @@ class SocketServer(
   }
 
   def boundPort(protocol: SecurityProtocol = SecurityProtocol.PLAINTEXT): Int =
-    try {
-      acceptors(endpoints(protocol)).serverChannel.socket().getLocalPort
-    } catch {
+    try acceptors(endpoints(protocol)).serverChannel.socket().getLocalPort
+    catch {
       case e: Exception =>
         throw new KafkaException(
           "Tried to check server's port before server was started or checked for port of non-existing protocol",
@@ -289,13 +287,13 @@ private[kafka] class Acceptor(
     startupComplete()
     try {
       var currentProcessor = 0
-      while (isRunning) {
+      while (isRunning)
         try {
           val ready = nioSelector.select(500)
           if (ready > 0) {
             val keys = nioSelector.selectedKeys()
             val iter = keys.iterator()
-            while (iter.hasNext && isRunning) {
+            while (iter.hasNext && isRunning)
               try {
                 val key = iter.next
                 iter.remove()
@@ -311,7 +309,6 @@ private[kafka] class Acceptor(
                 case e: Throwable =>
                   error("Error while accepting connection", e)
               }
-            }
           }
         } catch {
           // We catch all the throwables to prevent the acceptor thread from exiting on exceptions due
@@ -320,7 +317,6 @@ private[kafka] class Acceptor(
           case e: ControlThrowable => throw e
           case e: Throwable        => error("Error occurred", e)
         }
-      }
     } finally {
       debug("Closing server socket and selector.")
       swallowError(serverChannel.close())
@@ -474,16 +470,15 @@ private[kafka] class Processor(
 
   override def run() {
     startupComplete()
-    while (isRunning) {
+    while (isRunning)
       try {
         // setup any new connections that have been queued up
         configureNewConnections()
         // register any new responses for writing
         processNewResponses()
 
-        try {
-          selector.poll(300)
-        } catch {
+        try selector.poll(300)
+        catch {
           case e @ (_: IllegalStateException | _: IOException) =>
             error(
               "Closing processor %s due to illegal state or IO exception"
@@ -549,7 +544,6 @@ private[kafka] class Processor(
         case e: Throwable =>
           error("Processor got uncaught exception.", e)
       }
-    }
 
     debug("Closing selector - processor " + id)
     swallowError(closeAll())
@@ -558,31 +552,26 @@ private[kafka] class Processor(
 
   private def processNewResponses() {
     var curr = requestChannel.receiveResponse(id)
-    while (curr != null) {
-      try {
-        curr.responseAction match {
-          case RequestChannel.NoOpAction =>
-            // There is no response to send to the client, we need to read more pipelined requests
-            // that are sitting in the server's socket buffer
-            curr.request.updateRequestMetrics
-            trace(
-              "Socket server received empty response to send, registering for read: " + curr)
-            selector.unmute(curr.request.connectionId)
-          case RequestChannel.SendAction =>
-            trace(
-              "Socket server received response to send, registering for write and sending data: " + curr)
-            selector.send(curr.responseSend)
-            inflightResponses += (curr.request.connectionId -> curr)
-          case RequestChannel.CloseConnectionAction =>
-            curr.request.updateRequestMetrics
-            trace(
-              "Closing socket connection actively according to the response code.")
-            close(selector, curr.request.connectionId)
-        }
-      } finally {
-        curr = requestChannel.receiveResponse(id)
-      }
-    }
+    while (curr != null)
+      try curr.responseAction match {
+        case RequestChannel.NoOpAction =>
+          // There is no response to send to the client, we need to read more pipelined requests
+          // that are sitting in the server's socket buffer
+          curr.request.updateRequestMetrics
+          trace(
+            "Socket server received empty response to send, registering for read: " + curr)
+          selector.unmute(curr.request.connectionId)
+        case RequestChannel.SendAction =>
+          trace(
+            "Socket server received response to send, registering for write and sending data: " + curr)
+          selector.send(curr.responseSend)
+          inflightResponses += (curr.request.connectionId -> curr)
+        case RequestChannel.CloseConnectionAction =>
+          curr.request.updateRequestMetrics
+          trace(
+            "Closing socket connection actively according to the response code.")
+          close(selector, curr.request.connectionId)
+      } finally curr = requestChannel.receiveResponse(id)
   }
 
   /**

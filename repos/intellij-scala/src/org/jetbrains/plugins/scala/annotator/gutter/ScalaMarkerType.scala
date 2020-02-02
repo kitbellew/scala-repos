@@ -255,9 +255,8 @@ object ScalaMarkerType {
     new NullableFunction[PsiElement, String] {
       def fun(element: PsiElement): String = {
         var elem = element
-        if (element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
+        if (element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
           elem = PsiTreeUtil.getParentOfType(element, classOf[ScNamedElement])
-        }
         if (!elem.isInstanceOf[PsiClass]) return null
         elem match {
           case _: ScTrait  => ScalaBundle.message("trait.has.implementations")
@@ -269,9 +268,8 @@ object ScalaMarkerType {
     new GutterIconNavigationHandler[PsiElement] {
       def navigate(mouseEvent: MouseEvent, element: PsiElement) {
         var elem = element
-        if (element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
+        if (element.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
           elem = PsiTreeUtil.getParentOfType(element, classOf[ScNamedElement])
-        }
         val clazz = elem match {
           case x: PsiClass => x
           case _           => return
@@ -314,9 +312,8 @@ object ScalaMarkerType {
           val presentation = method.containingClass.getPresentation
           if (presentation != null)
             presentation.getPresentableText + " " + presentation.getLocationString
-          else {
+          else
             ClassPresentationUtil.getNameForClass(method.containingClass, false)
-          }
         case xlass: PsiClass =>
           val presentation = xlass.getPresentation
           presentation.getPresentableText + " " + presentation.getLocationString

@@ -239,9 +239,9 @@ class Engine[TD, EI, PD, Q, P, A](
       .zip(algoParamsList)
       .zipWithIndex
       .map {
-        case (((model, algo), (algoName, algoParams)), ax) => {
+        case (((model, algo), (algoName, algoParams)), ax) =>
           model match {
-            case modelManifest: PersistentModelManifest => {
+            case modelManifest: PersistentModelManifest =>
               logger.info(
                 "Custom-persisted model detected for algorithm " +
                   algo.getClass.getName)
@@ -251,8 +251,7 @@ class Engine[TD, EI, PD, Q, P, A](
                 algoParams,
                 Some(sc),
                 getClass.getClassLoader)
-            }
-            case m => {
+            case m =>
               try {
                 logger.info(
                   s"Loaded model ${m.getClass.getName} for algorithm " +
@@ -265,9 +264,7 @@ class Engine[TD, EI, PD, Q, P, A](
                     s"Null model detected for algorithm ${algo.getClass.getName}")
                   m
               }
-            }
           } // model match
-        }
       }
   }
 
@@ -331,27 +328,23 @@ class Engine[TD, EI, PD, Q, P, A](
       "EngineParams.algorithmParamsList must have at least 1 element.")
 
     val algorithms = algoParamsList.map {
-      case (algoName, algoParams) => {
-        try {
-          Doer(algorithmClassMap(algoName), algoParams)
-        } catch {
-          case e: NoSuchElementException => {
-            if (algoName == "") {
+      case (algoName, algoParams) =>
+        try Doer(algorithmClassMap(algoName), algoParams)
+        catch {
+          case e: NoSuchElementException =>
+            if (algoName == "")
               logger.error(
                 "Empty algorithm name supplied but it could not " +
                   "match with any algorithm in the engine's definition. " +
                   "Existing algorithm name(s) are: " +
                   s"${algorithmClassMap.keys.mkString(", ")}. Aborting.")
-            } else {
+            else
               logger.error(
                 s"$algoName cannot be found in the engine's " +
                   "definition. Existing algorithm name(s) are: " +
                   s"${algorithmClassMap.keys.mkString(", ")}. Aborting.")
-            }
             sys.exit(1)
-          }
         }
-      }
     }
 
     val (servingName, servingParams) = engineParams.servingParams
@@ -644,16 +637,14 @@ object Engine {
     logger.info(s"Preparator: $preparator")
     logger.info(s"AlgorithmList: $algorithmList")
 
-    if (params.skipSanityCheck) {
+    if (params.skipSanityCheck)
       logger.info("Data sanity check is off.")
-    } else {
+    else
       logger.info("Data sanity check is on.")
-    }
 
     val td =
-      try {
-        dataSource.readTrainingBase(sc)
-      } catch {
+      try dataSource.readTrainingBase(sc)
+      catch {
         case e: StorageClientException =>
           logger.error(
             s"Error occured reading from data source. (Reason: " +
@@ -662,21 +653,18 @@ object Engine {
           sys.exit(1)
       }
 
-    if (!params.skipSanityCheck) {
+    if (!params.skipSanityCheck)
       td match {
-        case sanityCheckable: SanityCheck => {
+        case sanityCheckable: SanityCheck =>
           logger.info(
             s"${td.getClass.getName} supports data sanity" +
               " check. Performing check.")
           sanityCheckable.sanityCheck()
-        }
-        case _ => {
+        case _ =>
           logger.info(
             s"${td.getClass.getName} does not support" +
               " data sanity check. Skipping check.")
-        }
       }
-    }
 
     if (params.stopAfterRead) {
       logger.info("Stopping here because --stop-after-read is set.")
@@ -685,21 +673,18 @@ object Engine {
 
     val pd = preparator.prepareBase(sc, td)
 
-    if (!params.skipSanityCheck) {
+    if (!params.skipSanityCheck)
       pd match {
-        case sanityCheckable: SanityCheck => {
+        case sanityCheckable: SanityCheck =>
           logger.info(
             s"${pd.getClass.getName} supports data sanity" +
               " check. Performing check.")
           sanityCheckable.sanityCheck()
-        }
-        case _ => {
+        case _ =>
           logger.info(
             s"${pd.getClass.getName} does not support" +
               " data sanity check. Skipping check.")
-        }
       }
-    }
 
     if (params.stopAfterPrepare) {
       logger.info("Stopping here because --stop-after-prepare is set.")
@@ -708,23 +693,20 @@ object Engine {
 
     val models: Seq[Any] = algorithmList.map(_.trainBase(sc, pd))
 
-    if (!params.skipSanityCheck) {
+    if (!params.skipSanityCheck)
       models.foreach { model =>
         model match {
-          case sanityCheckable: SanityCheck => {
+          case sanityCheckable: SanityCheck =>
             logger.info(
               s"${model.getClass.getName} supports data sanity" +
                 " check. Performing check.")
             sanityCheckable.sanityCheck()
-          }
-          case _ => {
+          case _ =>
             logger.info(
               s"${model.getClass.getName} does not support" +
                 " data sanity check. Skipping check.")
-          }
         }
       }
-    }
 
     logger.info("EngineWorkflow.train completed")
     models
@@ -802,9 +784,8 @@ object Engine {
             val rawPredicts: RDD[(QX, P)] =
               algo.batchPredictBase(sc, model, qs)
             val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
-              case (qx, p) => {
+              case (qx, p) =>
                 (qx, (ax, p))
-              }
             }
             predicts
           }
@@ -823,7 +804,7 @@ object Engine {
 
     val servingQPAMap: Map[EX, RDD[(Q, P, A)]] = algoPredictsMap
       .map {
-        case (ex, psMap) => {
+        case (ex, psMap) =>
           // The query passed to serving.serve is the original one, not
           // supplemented.
           val qasMap: RDD[(QX, (Q, A))] = evalQAsMap(ex)
@@ -835,7 +816,6 @@ object Engine {
             case (qx, q, ps, a) => (q, serving.serveBase(q, ps), a)
           }
           (ex, qpaMap)
-        }
       }
 
     (0 until evalCount).map { ex => (evalInfoMap(ex), servingQPAMap(ex)) }.toSeq

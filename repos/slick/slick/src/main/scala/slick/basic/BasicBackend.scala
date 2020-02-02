@@ -146,14 +146,12 @@ trait BasicBackend { self =>
                 .warn("Subscriber.onSubscribe failed unexpectedly", ex)
               false
           }
-        if (subscribed) {
-          try {
-            runInContext(a, ctx, true, true).onComplete {
-              case Success(_) => ctx.tryOnComplete
-              case Failure(t) => ctx.tryOnError(t)
-            }(DBIO.sameThreadExecutionContext)
-          } catch { case NonFatal(ex) => ctx.tryOnError(ex) }
-        }
+        if (subscribed)
+          try runInContext(a, ctx, true, true).onComplete {
+            case Success(_) => ctx.tryOnComplete
+            case Failure(t) => ctx.tryOnError(t)
+          }(DBIO.sameThreadExecutionContext)
+          catch { case NonFatal(ex) => ctx.tryOnError(ex) }
       }
     }
 
@@ -251,7 +249,7 @@ trait BasicBackend { self =>
         case NamedAction(a, _) =>
           runInContext(a, ctx, streaming, topLevel)
         case a: SynchronousDatabaseAction[_, _, _, _] =>
-          if (streaming) {
+          if (streaming)
             if (a.supportsStreaming)
               streamSynchronousDatabaseAction(
                 a.asInstanceOf[SynchronousDatabaseAction[
@@ -271,7 +269,7 @@ trait BasicBackend { self =>
                 ctx,
                 streaming,
                 topLevel)
-          } else
+          else
             runSynchronousDatabaseAction(
               a.asInstanceOf[SynchronousDatabaseAction[R, NoStream, This, _]],
               ctx,
@@ -324,9 +322,7 @@ trait BasicBackend { self =>
                     }
                   releaseSession(ctx, false)
                   res
-                } finally {
-                  ctx.sync = 0
-                }
+                } finally ctx.sync = 0
               promise.success(res)
             } catch { case NonFatal(ex) => promise.tryFailure(ex) }
         })
@@ -348,88 +344,84 @@ trait BasicBackend { self =>
         a: SynchronousDatabaseAction[_, _ <: NoStream, This, _ <: Effect],
         ctx: StreamingContext,
         highPrio: Boolean)(initialState: a.StreamState): Unit =
-      try {
-        ctx
-          .getEC(synchronousExecutionContext)
-          .prepare
-          .execute(new AsyncExecutor.PrioritizedRunnable {
-            private[this] def str(l: Long) =
-              if (l != Long.MaxValue) l
-              else if (GlobalConfig.unicodeDump) "\u221E"
-              else "oo"
+      try ctx
+        .getEC(synchronousExecutionContext)
+        .prepare
+        .execute(new AsyncExecutor.PrioritizedRunnable {
+          private[this] def str(l: Long) =
+            if (l != Long.MaxValue) l
+            else if (GlobalConfig.unicodeDump) "\u221E"
+            else "oo"
 
-            def highPriority = highPrio
+          def highPriority = highPrio
 
-            def run: Unit =
-              try {
-                val debug = streamLogger.isDebugEnabled
-                var state = initialState
-                ctx.readSync
-                if (state eq null) acquireSession(ctx)
-                var demand = ctx.demandBatch
-                var realDemand =
-                  if (demand < 0) demand - Long.MinValue else demand
-                do {
-                  try {
-                    if (debug)
-                      streamLogger.debug(
-                        (if (state eq null) "Starting initial"
-                         else
-                           "Restarting ") + " streaming action, realDemand = " + str(
-                          realDemand))
-                    if (ctx.cancelled) {
-                      if (ctx.deferredError ne null) throw ctx.deferredError
-                      if (state ne null) { // streaming cancelled before finishing
-                        val oldState = state
-                        state = null
-                        a.cancelStream(ctx, oldState)
-                      }
-                    } else if ((realDemand > 0 || (state eq null))) {
+          def run: Unit =
+            try {
+              val debug = streamLogger.isDebugEnabled
+              var state = initialState
+              ctx.readSync
+              if (state eq null) acquireSession(ctx)
+              var demand = ctx.demandBatch
+              var realDemand =
+                if (demand < 0) demand - Long.MinValue else demand
+              do {
+                try {
+                  if (debug)
+                    streamLogger.debug(
+                      (if (state eq null) "Starting initial"
+                       else
+                         "Restarting ") + " streaming action, realDemand = " + str(
+                        realDemand))
+                  if (ctx.cancelled) {
+                    if (ctx.deferredError ne null) throw ctx.deferredError
+                    if (state ne null) { // streaming cancelled before finishing
                       val oldState = state
                       state = null
-                      state = a.emitStream(ctx, realDemand, oldState)
+                      a.cancelStream(ctx, oldState)
                     }
-                    if (state eq null) { // streaming finished and cleaned up
-                      releaseSession(ctx, true)
-                      ctx.streamingResultPromise.trySuccess(null)
-                    }
-                  } catch {
-                    case NonFatal(ex) =>
-                      if (state ne null)
-                        try a.cancelStream(ctx, state)
-                        catch ignoreFollowOnError
-                      releaseSession(ctx, true)
-                      throw ex
-                  } finally {
-                    ctx.streamState = state
-                    ctx.sync = 0
+                  } else if ((realDemand > 0 || (state eq null))) {
+                    val oldState = state
+                    state = null
+                    state = a.emitStream(ctx, realDemand, oldState)
                   }
-                  if (debug) {
-                    if (state eq null)
-                      streamLogger.debug(
-                        s"Sent up to ${str(realDemand)} elements - Stream " + (if (ctx.cancelled)
-                                                                                 "cancelled"
-                                                                               else
-                                                                                 "completely delivered"))
-                    else
-                      streamLogger.debug(
-                        s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
+                  if (state eq null) { // streaming finished and cleaned up
+                    releaseSession(ctx, true)
+                    ctx.streamingResultPromise.trySuccess(null)
                   }
-                  demand = ctx.delivered(demand)
-                  realDemand =
-                    if (demand < 0) demand - Long.MinValue else demand
-                } while ((state ne null) && realDemand > 0)
-                if (debug) {
-                  if (state ne null)
-                    streamLogger.debug(
-                      "Suspending streaming action with continuation (more data available)")
-                  else streamLogger.debug("Finished streaming action")
+                } catch {
+                  case NonFatal(ex) =>
+                    if (state ne null)
+                      try a.cancelStream(ctx, state)
+                      catch ignoreFollowOnError
+                    releaseSession(ctx, true)
+                    throw ex
+                } finally {
+                  ctx.streamState = state
+                  ctx.sync = 0
                 }
-              } catch {
-                case NonFatal(ex) => ctx.streamingResultPromise.tryFailure(ex)
-              }
-          })
-      } catch {
+                if (debug)
+                  if (state eq null)
+                    streamLogger.debug(
+                      s"Sent up to ${str(realDemand)} elements - Stream " + (if (ctx.cancelled)
+                                                                               "cancelled"
+                                                                             else
+                                                                               "completely delivered"))
+                  else
+                    streamLogger.debug(
+                      s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
+                demand = ctx.delivered(demand)
+                realDemand = if (demand < 0) demand - Long.MinValue else demand
+              } while ((state ne null) && realDemand > 0)
+              if (debug)
+                if (state ne null)
+                  streamLogger.debug(
+                    "Suspending streaming action with continuation (more data available)")
+                else streamLogger.debug("Finished streaming action")
+            } catch {
+              case NonFatal(ex) => ctx.streamingResultPromise.tryFailure(ex)
+            }
+        })
+      catch {
         case NonFatal(ex) =>
           streamLogger.warn("Error scheduling synchronous streaming", ex)
           throw ex
@@ -593,26 +585,23 @@ trait BasicBackend { self =>
           a,
           this.asInstanceOf[StreamingContext],
           highPrio = true)(s.asInstanceOf[a.StreamState])
-      } else {
-        if (streamLogger.isDebugEnabled)
-          streamLogger.debug(
-            "Saw transition from demand = 0, but no stream continuation available")
-      }
+      } else if (streamLogger.isDebugEnabled)
+        streamLogger.debug(
+          "Saw transition from demand = 0, but no stream continuation available")
     }
 
     def subscription = this
 
     ////////////////////////////////////////////////////////////////////////// Subscription methods
 
-    def request(l: Long): Unit = if (!cancelRequested) {
-      if (l <= 0) {
-        deferredError = new IllegalArgumentException(
-          "Requested count must not be <= 0 (see Reactive Streams spec, 3.9)")
-        cancel
-      } else {
-        if (!cancelRequested && remaining.getAndAdd(l) == 0L) restartStreaming
-      }
-    }
+    def request(l: Long): Unit =
+      if (!cancelRequested)
+        if (l <= 0) {
+          deferredError = new IllegalArgumentException(
+            "Requested count must not be <= 0 (see Reactive Streams spec, 3.9)")
+          cancel
+        } else if (!cancelRequested && remaining.getAndAdd(l) == 0L)
+          restartStreaming
 
     def cancel: Unit = if (!cancelRequested) {
       cancelRequested = true

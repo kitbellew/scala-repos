@@ -205,12 +205,12 @@ object SnapshotSerializer {
     val uid: Seq[Byte] =
       baus.toByteArray.slice(uidOffset, uidOffset + replacement.length)
     // only attempt to patch if we know the target class
-    if (clazz == knownClazz) {
-      if (uid == replacement.toSeq) {
+    if (clazz == knownClazz)
+      if (uid == replacement.toSeq)
         // running on 2.11
         true
-      } else if (uid == (key.slice(offset, offset + replacement.length): Seq[
-                   Byte])) {
+      else if (uid == (key.slice(offset, offset + replacement.length): Seq[
+                 Byte])) {
         // running on 2.10, need to switch out UID between key and replacement
         val len = replacement.length
         val tmp = new Array[Byte](len)
@@ -219,6 +219,6 @@ object SnapshotSerializer {
         System.arraycopy(tmp, 0, key, offset, len)
         true
       } else false
-    } else false
+    else false
   }
 }

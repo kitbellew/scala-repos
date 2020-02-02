@@ -252,12 +252,11 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
   override def nullable: Boolean = false
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (children.isEmpty) {
+    if (children.isEmpty)
       TypeCheckResult.TypeCheckFailure(
         "function hash requires at least one argument")
-    } else {
+    else
       TypeCheckResult.TypeCheckSuccess
-    }
 
   override def prettyName: String = "hash"
 
@@ -287,9 +286,9 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
       case d: Double  => hashLong(java.lang.Double.doubleToLongBits(d))
       case d: Decimal =>
         val precision = dataType.asInstanceOf[DecimalType].precision
-        if (precision <= Decimal.MAX_LONG_DIGITS) {
+        if (precision <= Decimal.MAX_LONG_DIGITS)
           hashLong(d.toUnscaledLong)
-        } else {
+        else {
           val bytes = d.toJavaBigDecimal.unscaledValue().toByteArray
           Murmur3_x86_32.hashUnsafeBytes(
             bytes,
@@ -420,9 +419,9 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
       case FloatType                                     => hashInt(s"Float.floatToIntBits($input)")
       case DoubleType                                    => hashLong(s"Double.doubleToLongBits($input)")
       case d: DecimalType =>
-        if (d.precision <= Decimal.MAX_LONG_DIGITS) {
+        if (d.precision <= Decimal.MAX_LONG_DIGITS)
           hashLong(s"$input.toUnscaledLong()")
-        } else {
+        else {
           val bytes = ctx.freshName("bytes")
           s"""
             final byte[] $bytes = $input.toJavaBigDecimal().unscaledValue().toByteArray();

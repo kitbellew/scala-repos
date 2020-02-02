@@ -1559,9 +1559,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   }
 
   private def rows(): MatCols[T] = {
-    if (cachedRows.isEmpty) {
+    if (cachedRows.isEmpty)
       cachedRows = Some(toMat.rows())
-    }
     cachedRows.get
   }
 
@@ -1813,12 +1812,11 @@ object Frame extends BinOpFrame {
       case 0 => empty[RX, Int, T]
       case 1 =>
         Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, IndexIntRange(1))
-      case _ => {
+      case _ =>
         val init =
           Frame(IndexedSeq(asIdxSeq(0).values), asIdxSeq(0).index, Array(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
         Frame(temp.values, temp.rowIx, IndexIntRange(temp.numCols))
-      }
     }
   }
 
@@ -1834,11 +1832,10 @@ object Frame extends BinOpFrame {
     asIdxSeq.length match {
       case 0 => empty[RX, CX, T]
       case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, colIx)
-      case _ => {
+      case _ =>
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Index(0))
         val temp = values.tail.foldLeft(init)(_.joinS(_, OuterJoin))
         Frame(temp.values, temp.rowIx, colIx)
-      }
     }
   }
 
@@ -1855,11 +1852,10 @@ object Frame extends BinOpFrame {
     asIdxSeq.length match {
       case 0 => empty[RX, CX, T]
       case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, idx)
-      case _ => {
+      case _ =>
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Array(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
         Frame(temp.values, temp.rowIx, idx)
-      }
     }
   }
 
@@ -1884,9 +1880,8 @@ object Frame extends BinOpFrame {
       colIx: Index[CX]): Frame[RX, CX, T] =
     if (mat.length == 0)
       empty[RX, CX, T]
-    else {
+    else
       new Frame[RX, CX, T](mat.cols(), rowIx, colIx) withMat Some(mat)
-    }
 }
 
 /**
@@ -1980,11 +1975,10 @@ object Panel {
       case 0 => empty[RX, Int]
       case 1 =>
         Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, IndexIntRange(1))
-      case _ => {
+      case _ =>
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Array(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
         Frame(temp.values, temp.rowIx, IndexIntRange(temp.numCols))
-      }
     }
   }
 
@@ -2000,11 +1994,10 @@ object Panel {
     asIdxSeq.length match {
       case 0 => empty[RX, CX]
       case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, colIx)
-      case _ => {
+      case _ =>
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Index(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
         Frame(temp.values, temp.rowIx, colIx)
-      }
     }
   }
 
@@ -2021,11 +2014,10 @@ object Panel {
     asIdxSeq.length match {
       case 0 => empty[RX, CX]
       case 1 => Frame(asIdxSeq.map(_.values), asIdxSeq(0).index, idx)
-      case _ => {
+      case _ =>
         val init = Frame(Seq(asIdxSeq(0).values), asIdxSeq(0).index, Array(0))
         val temp = asIdxSeq.tail.foldLeft(init)(_.joinS(_, OuterJoin))
         Frame(temp.values, temp.rowIx, idx)
-      }
     }
   }
 }

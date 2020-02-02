@@ -409,29 +409,27 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     */
   abstract override def initialize(config: ConfigT) {
     super.initialize(config)
-    try {
-      this match {
-        case _: Filter =>
-          val registrations =
-            servletContext.getFilterRegistrations.asScala.values
-          val registration = registrations.find(
-            _.getClassName == getClass.getName) getOrElse throwAFit
-          registration.getServletNameMappings.asScala foreach { name =>
-            Option(servletContext.getServletRegistration(name)) foreach { reg =>
-              reg.getMappings.asScala foreach registerInSwagger
-            }
+    try this match {
+      case _: Filter =>
+        val registrations =
+          servletContext.getFilterRegistrations.asScala.values
+        val registration = registrations.find(
+          _.getClassName == getClass.getName) getOrElse throwAFit
+        registration.getServletNameMappings.asScala foreach { name =>
+          Option(servletContext.getServletRegistration(name)) foreach { reg =>
+            reg.getMappings.asScala foreach registerInSwagger
           }
+        }
 
-        case _: Servlet =>
-          val registration =
-            ScalatraBase.getServletRegistration(this) getOrElse throwAFit
-          //          println("Registering for mappings: " + registration.getMappings().asScala.mkString("[", ", ", "]"))
-          registration.getMappings.asScala foreach registerInSwagger
+      case _: Servlet =>
+        val registration =
+          ScalatraBase.getServletRegistration(this) getOrElse throwAFit
+        //          println("Registering for mappings: " + registration.getMappings().asScala.mkString("[", ", ", "]"))
+        registration.getMappings.asScala foreach registerInSwagger
 
-        case _ =>
-          throw new RuntimeException(
-            "The swagger support only works for servlets or filters at this time.")
-      }
+      case _ =>
+        throw new RuntimeException(
+          "The swagger support only works for servlets or filters at this time.")
     } catch {
       case e: Throwable => e.printStackTrace()
     }

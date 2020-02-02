@@ -41,11 +41,10 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
       .getOrElse {
         fail(s"Random data generator was not defined for $dataType")
       }
-    if (nullable) {
+    if (nullable)
       assert(Iterator.fill(100)(generator()).contains(null))
-    } else {
+    else
       assert(!Iterator.fill(100)(generator()).contains(null))
-    }
     for (_ <- 1 to 10) {
       val generatedValue = generator()
       toCatalyst(generatedValue)
@@ -55,20 +54,18 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
   // Basic types:
   for (dataType <- DataTypeTestUtils.atomicTypes;
        nullable <- Seq(true, false)
-       if !dataType.isInstanceOf[DecimalType]) {
+       if !dataType.isInstanceOf[DecimalType])
     test(s"$dataType (nullable=$nullable)") {
       testRandomDataGeneration(dataType)
     }
-  }
 
   for (arrayType <- DataTypeTestUtils.atomicArrayTypes
        if RandomDataGenerator
          .forType(arrayType.elementType, arrayType.containsNull)
-         .isDefined) {
+         .isDefined)
     test(s"$arrayType") {
       testRandomDataGeneration(arrayType)
     }
-  }
 
   val atomicTypesWithDataGenerators =
     DataTypeTestUtils.atomicTypes.filter(

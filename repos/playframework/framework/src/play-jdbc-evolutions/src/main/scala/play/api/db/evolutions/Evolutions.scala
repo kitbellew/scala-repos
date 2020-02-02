@@ -153,9 +153,8 @@ object Evolutions {
   }
 
   private def writeFileIfChanged(path: File, content: String): Unit =
-    if (content != PlayIO.readFileAsString(path)) {
+    if (content != PlayIO.readFileAsString(path))
       writeFile(path, content)
-    }
 
   private def writeFile(destination: File, content: String): Unit =
     Files.write(destination.toPath, content.getBytes(utf8))
@@ -257,15 +256,11 @@ object Evolutions {
       autocommit: Boolean = true,
       schema: String = "")(block: => T): T = {
     applyEvolutions(database, evolutionsReader, autocommit, schema)
-    try {
-      block
-    } finally {
-      try {
-        cleanupEvolutions(database, autocommit, schema)
-      } catch {
-        case e: Exception =>
-          Logger.warn("Error resetting evolutions", e)
-      }
+    try block
+    finally try cleanupEvolutions(database, autocommit, schema)
+    catch {
+      case e: Exception =>
+        Logger.warn("Error resetting evolutions", e)
     }
   }
 }
@@ -315,11 +310,10 @@ object OfflineEvolutions {
       dbName,
       evolutions.evolutionsReader,
       schema)
-    if (!isTest) {
+    if (!isTest)
       logger.warn(
         "Applying evolution scripts for database '" + dbName + "':\n\n" + Evolutions
           .toHumanReadableScript(scripts))
-    }
     evolutions.evolutionsApi.evolve(dbName, scripts, autocommit, schema)
   }
 
@@ -341,10 +335,9 @@ object OfflineEvolutions {
       revision: Int,
       schema: String = ""): Unit = {
     val evolutions = getEvolutions(appPath, classloader, dbApi)
-    if (!isTest) {
+    if (!isTest)
       logger.warn(
         "Resolving evolution [" + revision + "] for database '" + dbName + "'")
-    }
     evolutions.evolutionsApi.resolve(dbName, revision, schema)
   }
 

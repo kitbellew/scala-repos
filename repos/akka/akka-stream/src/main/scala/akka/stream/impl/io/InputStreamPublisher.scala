@@ -82,9 +82,8 @@ private[akka] class InputStreamPublisher(
   override def postStop(): Unit = {
     super.postStop()
 
-    try {
-      if (is ne null) is.close()
-    } catch {
+    try if (is ne null) is.close()
+    catch {
       case ex: Exception ⇒
         completionPromise.success(IOResult(readBytesTotal, Failure(ex)))
     }

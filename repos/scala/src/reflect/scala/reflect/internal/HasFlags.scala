@@ -138,11 +138,10 @@ trait HasFlags {
         val flag = Flags.rawFlagPickledOrder(i)
         if ((bits & flag) != 0L) {
           val s = resolveOverloadedFlag(flag)
-          if (s.length > 0) {
+          if (s.length > 0)
             if (sb eq null) sb = new StringBuilder append s
             else if (sb.length == 0) sb append s
             else sb append " " append s
-          }
         }
         i += 1
       }
@@ -152,13 +151,13 @@ trait HasFlags {
   def accessString: String = {
     val pw = if (hasAccessBoundary) privateWithin.toString else ""
 
-    if (pw == "") {
+    if (pw == "")
       if (hasAllFlags(PrivateLocal)) "private[this]"
       else if (hasAllFlags(ProtectedLocal)) "protected[this]"
       else if (hasFlag(PRIVATE)) "private"
       else if (hasFlag(PROTECTED)) "protected"
       else ""
-    } else if (hasFlag(PROTECTED)) "protected[" + pw + "]"
+    else if (hasFlag(PROTECTED)) "protected[" + pw + "]"
     else "private[" + pw + "]"
   }
   protected def calculateFlagString(basis: Long): String = {

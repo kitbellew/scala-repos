@@ -58,11 +58,10 @@ class SunSignalHandler extends SignalHandler {
         Array[Class[_]](signalHandlerClass),
         new InvocationHandler {
           def invoke(proxy: Object, method: Method, args: Array[Object]) = {
-            if (method.getName() == "handle") {
+            if (method.getName() == "handle")
               handlers(signal).foreach { x =>
                 x(nameMethod.invoke(args(0)).asInstanceOf[String])
               }
-            }
             null
           }
         }
@@ -82,12 +81,11 @@ object HandleSignal {
     * For now, this only works on the Sun^H^H^HOracle JVM.
     */
   def apply(posixSignal: String)(f: String => Unit) {
-    if (!handlers.contains(posixSignal)) {
+    if (!handlers.contains(posixSignal))
       handlers.synchronized {
         SignalHandlerFactory().foreach { _.handle(posixSignal, handlers) }
         handlers(posixSignal) = mutable.HashSet[String => Unit]()
       }
-    }
 
     handlers.synchronized {
       handlers(posixSignal) += f

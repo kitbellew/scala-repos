@@ -226,7 +226,7 @@ private object PoolSlot {
         error getOrElse "regular connection close")
 
       val results: List[ProcessorOut] = {
-        if (inflightRequests.isEmpty && firstContext.isDefined) {
+        if (inflightRequests.isEmpty && firstContext.isDefined)
           (error match {
             case Some(err) ⇒
               ResponseDelivery(
@@ -243,7 +243,7 @@ private object PoolSlot {
                   Failure(new UnexpectedDisconnectException(
                     "Unexpected (early) disconnect"))))
           }) :: Nil
-        } else {
+        else
           inflightRequests.map { rc ⇒
             if (rc.retriesLeft == 0) {
               val reason = error.fold[Throwable](
@@ -254,7 +254,6 @@ private object PoolSlot {
             } else
               SlotEvent.RetryRequest(rc.copy(retriesLeft = rc.retriesLeft - 1))
           }(collection.breakOut)
-        }
       }
       inflightRequests = immutable.Queue.empty
       onNext(SlotEvent.Disconnected(slotIx, results.size) :: results)

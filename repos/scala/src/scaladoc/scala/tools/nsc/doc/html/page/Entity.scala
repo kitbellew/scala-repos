@@ -66,14 +66,14 @@ trait EntityPage extends HtmlPage {
       relativeLinkTo { List("tools.tooltip.js", "lib") }
     }></script>
       {
-      if (universe.settings.docDiagrams.value) {
+      if (universe.settings.docDiagrams.value)
         <script type="text/javascript" src={
           relativeLinkTo { List("modernizr.custom.js", "lib") }
         }></script>
       <script type="text/javascript" src={
           relativeLinkTo { List("diagrams.js", "lib") }
         } id="diagrams-js"></script>
-      } else NodeSeq.Empty
+      else NodeSeq.Empty
     }
       <script type="text/javascript">
         /* this variable can be used by the JS to determine the path to the root document */
@@ -525,11 +525,11 @@ trait EntityPage extends HtmlPage {
       indentation: Int = 0
   ): NodeSeq = {
     // Sometimes it's same, do we need signatureCompat still?
-    val sig = if (mbr.signature == mbr.signatureCompat) {
-      <a id={mbr.signature}/>
-    } else {
-      <a id={mbr.signature}/><a id={mbr.signatureCompat}/>
-    }
+    val sig =
+      if (mbr.signature == mbr.signatureCompat)
+        <a id={mbr.signature}/>
+      else
+        <a id={mbr.signature}/><a id={mbr.signatureCompat}/>
 
     val memberComment = memberToCommentHtml(mbr, inTpl, isSelf = false)
     <li name={mbr.definitionName} visbl={
@@ -644,19 +644,17 @@ trait EntityPage extends HtmlPage {
           comment: Comment): NodeSeq = prs match {
 
         case (tp: TypeParam) :: rest =>
-          val paramEntry: NodeSeq = {
+          val paramEntry: NodeSeq =
             <dt class="tparam">{tp.name}</dt><dd class="cmt">{
               bodyToHtml(comment.typeParams(tp.name))
             }</dd>
-          }
           paramEntry ++ paramCommentToHtml(rest, comment)
 
         case (vp: ValueParam) :: rest =>
-          val paramEntry: NodeSeq = {
+          val paramEntry: NodeSeq =
             <dt class="param">{vp.name}</dt><dd class="cmt">{
               bodyToHtml(comment.valueParams(vp.name))
             }</dd>
-          }
           paramEntry ++ paramCommentToHtml(rest, comment)
 
         case _ =>
@@ -669,7 +667,7 @@ trait EntityPage extends HtmlPage {
           case vp: ValueParam => comment.valueParams isDefinedAt vp.name
         }
         if (cmtedPrs.isEmpty && comment.result.isEmpty) NodeSeq.Empty
-        else {
+        else
           <dl class="paramcmts block">{
             paramCommentToHtml(cmtedPrs, comment) ++ (comment.result match {
               case None => NodeSeq.Empty
@@ -677,7 +675,6 @@ trait EntityPage extends HtmlPage {
                 <dt>returns</dt><dd class="cmt">{bodyToHtml(cmt)}</dd>
             })
           }</dl>
-        }
       }
     }
 
@@ -769,22 +766,20 @@ trait EntityPage extends HtmlPage {
     val attributes: NodeSeq = {
       val fvs: List[comment.Paragraph] = visibility(mbr).toList
       if (fvs.isEmpty || isReduced) NodeSeq.Empty
-      else {
+      else
         <dt>Attributes</dt>
         <dd>{
           fvs map { fv => inlineToHtml(fv.text) ++ scala.xml.Text(" ") }
         }</dd>
-      }
     }
 
     val definitionClasses: NodeSeq = {
       val inDefTpls = mbr.inDefinitionTemplates
       if ((inDefTpls.tail.isEmpty && (inDefTpls.head == inTpl)) || isReduced)
         NodeSeq.Empty
-      else {
+      else
         <dt>Definition Classes</dt>
         <dd>{templatesToHtml(inDefTpls, scala.xml.Text(" → "))}</dd>
-      }
     }
 
     val fullSignature: NodeSeq = {
@@ -819,7 +814,7 @@ trait EntityPage extends HtmlPage {
       def showArguments(annotation: Annotation) =
         !(annotationsWithHiddenArguments.contains(annotation.qualifiedName))
 
-      if (!mbr.annotations.isEmpty) {
+      if (!mbr.annotations.isEmpty)
         <dt>Annotations</dt>
         <dd>{
           mbr.annotations.map { annot =>
@@ -832,7 +827,7 @@ trait EntityPage extends HtmlPage {
           }
         }
         </dd>
-      } else NodeSeq.Empty
+      else NodeSeq.Empty
     }
 
     val sourceLink: NodeSeq = mbr match {
@@ -1010,7 +1005,7 @@ trait EntityPage extends HtmlPage {
           val diagram = f(dtpl)
           if (diagram.isDefined) {
             val diagramSvg = generator.generate(diagram.get, tpl, this)
-            if (diagramSvg != NodeSeq.Empty) {
+            if (diagramSvg != NodeSeq.Empty)
               <div class="toggleContainer block diagram-container" id={
                 id + "-container"
               }>
@@ -1024,7 +1019,7 @@ trait EntityPage extends HtmlPage {
                   <button title="Toggle full-screen" id="diagram-fs" class="diagram-btn to-full"><i class="material-icons">&#xE5D0;</i></button>
                 </div>
               </div>
-            } else NodeSeq.Empty
+            else NodeSeq.Empty
           } else NodeSeq.Empty
         case _ => NodeSeq.Empty
       }
@@ -1127,15 +1122,14 @@ trait EntityPage extends HtmlPage {
                 value
               }</span>
           val encoded = scala.reflect.NameTransformer.encode(value)
-          if (encoded != value) {
+          if (encoded != value)
             span % new UnprefixedAttribute(
               "title",
               "gt4s: " + encoded +
                 span.attribute("title").map(node => ". " + node).getOrElse(""),
               scala.xml.Null)
-          } else {
+          else
             span
-          }
         }
         if (!nameLink.isEmpty)
           <a title={
@@ -1190,9 +1184,9 @@ trait EntityPage extends HtmlPage {
             }
             def implicitCheck(vlss: List[ValueParam]): NodeSeq = vlss match {
               case vl :: vls =>
-                if (vl.isImplicit) {
+                if (vl.isImplicit)
                   <span class="implicit">implicit </span>
-                } else Text("")
+                else Text("")
               case _ => Text("")
             }
             vlsss map { vlss =>
@@ -1208,7 +1202,7 @@ trait EntityPage extends HtmlPage {
         }
       }{
         if (isReduced) NodeSeq.Empty
-        else {
+        else
           mbr match {
             case tme: MemberEntity
                 if (tme.isDef || tme.isVal || tme.isLazyVal || tme.isVar) =>
@@ -1232,7 +1226,6 @@ trait EntityPage extends HtmlPage {
 
             case _ => NodeSeq.Empty
           }
-        }
       }
       </span>
       </xml:group>

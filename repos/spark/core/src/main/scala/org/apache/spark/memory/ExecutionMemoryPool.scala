@@ -156,14 +156,12 @@ private[memory] class ExecutionMemoryPool(
           s"Internal error: release called on $numBytes bytes but task only has $curMem bytes " +
             s"of memory from the $poolName pool")
         curMem
-      } else {
+      } else
         numBytes
-      }
       if (memoryForTask.contains(taskAttemptId)) {
         memoryForTask(taskAttemptId) -= memoryToFree
-        if (memoryForTask(taskAttemptId) <= 0) {
+        if (memoryForTask(taskAttemptId) <= 0)
           memoryForTask.remove(taskAttemptId)
-        }
       }
       lock.notifyAll() // Notify waiters in acquireMemory() that memory has been freed
     }

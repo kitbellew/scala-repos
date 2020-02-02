@@ -63,11 +63,9 @@ abstract class NodePrinters {
 
     def showAttributes(tree: Tree): String =
       if (infolevel == InfoLevel.Quiet) ""
-      else {
-        try {
-          List(showSymbol(tree), showType(tree)) filterNot (_ == "") mkString ", " trim
-        } catch { case ex: Throwable => "sym= <error> " + ex.getMessage }
-      }
+      else
+        try List(showSymbol(tree), showType(tree)) filterNot (_ == "") mkString ", " trim
+        catch { case ex: Throwable => "sym= <error> " + ex.getMessage }
   }
 
   trait PrintAST {
@@ -109,13 +107,13 @@ abstract class NodePrinters {
     def stringify(tree: Tree): String = {
       buf.clear()
       if (settings.XshowtreesStringified) buf.append(tree.toString + EOL)
-      if (settings.XshowtreesCompact) {
+      if (settings.XshowtreesCompact)
         buf.append(
           showRaw(
             tree,
             printIds = settings.uniqid,
             printTypes = settings.printtypes))
-      } else {
+      else {
         level = 0
         traverse(tree)
       }

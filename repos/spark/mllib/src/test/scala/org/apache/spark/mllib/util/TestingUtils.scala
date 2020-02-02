@@ -38,15 +38,14 @@ object TestingUtils {
     val absX = math.abs(x)
     val absY = math.abs(y)
     val diff = math.abs(x - y)
-    if (x == y) {
+    if (x == y)
       true
-    } else if (absX < Double.MinPositiveValue || absY < Double.MinPositiveValue) {
+    else if (absX < Double.MinPositiveValue || absY < Double.MinPositiveValue)
       throw new TestFailedException(
         s"$x or $y is extremely close to zero, so the relative tolerance is meaningless.",
         0)
-    } else {
+    else
       diff < eps * math.min(absX, absY)
-    }
   }
 
   /**
@@ -84,11 +83,10 @@ object TestingUtils {
       * otherwise, returns true.
       */
     def ~==(r: CompareDoubleRightSide): Boolean = {
-      if (!r.fun(x, r.y, r.eps)) {
+      if (!r.fun(x, r.y, r.eps))
         throw new TestFailedException(
           s"Expected $x and ${r.y} to be within ${r.eps}${r.method}.",
           0)
-      }
       true
     }
 
@@ -96,11 +94,10 @@ object TestingUtils {
       * Throws exception when the difference of two values are within eps; otherwise, returns true.
       */
     def !~==(r: CompareDoubleRightSide): Boolean = {
-      if (r.fun(x, r.y, r.eps)) {
+      if (r.fun(x, r.y, r.eps))
         throw new TestFailedException(
           s"Did not expect $x and ${r.y} to be within ${r.eps}${r.method}.",
           0)
-      }
       true
     }
 
@@ -145,11 +142,10 @@ object TestingUtils {
       * otherwise, returns true.
       */
     def ~==(r: CompareVectorRightSide): Boolean = {
-      if (!r.fun(x, r.y, r.eps)) {
+      if (!r.fun(x, r.y, r.eps))
         throw new TestFailedException(
           s"Expected $x and ${r.y} to be within ${r.eps}${r.method} for all elements.",
           0)
-      }
       true
     }
 
@@ -157,11 +153,10 @@ object TestingUtils {
       * Throws exception when the difference of two vectors are within eps; otherwise, returns true.
       */
     def !~==(r: CompareVectorRightSide): Boolean = {
-      if (r.fun(x, r.y, r.eps)) {
+      if (r.fun(x, r.y, r.eps))
         throw new TestFailedException(
           s"Did not expect $x and ${r.y} to be within ${r.eps}${r.method} for all elements.",
           0)
-      }
       true
     }
 
@@ -218,11 +213,10 @@ object TestingUtils {
       * otherwise, returns true.
       */
     def ~==(r: CompareMatrixRightSide): Boolean = {
-      if (!r.fun(x, r.y, r.eps)) {
+      if (!r.fun(x, r.y, r.eps))
         throw new TestFailedException(
           s"Expected \n$x\n and \n${r.y}\n to be within ${r.eps}${r.method} for all elements.",
           0)
-      }
       true
     }
 
@@ -230,12 +224,11 @@ object TestingUtils {
       * Throws exception when the difference of two matrices are within eps; otherwise, returns true.
       */
     def !~==(r: CompareMatrixRightSide): Boolean = {
-      if (r.fun(x, r.y, r.eps)) {
+      if (r.fun(x, r.y, r.eps))
         throw new TestFailedException(
           s"Did not expect \n$x\n and \n${r.y}\n to be within " +
             "${r.eps}${r.method} for all elements.",
           0)
-      }
       true
     }
 

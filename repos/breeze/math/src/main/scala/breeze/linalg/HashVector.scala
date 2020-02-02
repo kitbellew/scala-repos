@@ -104,9 +104,8 @@ object HashVector
 
   def apply[V: ClassTag: Zero](length: Int)(values: (Int, V)*) = {
     val r = zeros[V](length)
-    for ((i, v) <- values) {
+    for ((i, v) <- values)
       r(i) = v
-    }
     r
   }
 

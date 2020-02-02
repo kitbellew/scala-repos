@@ -88,12 +88,10 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     */
   def awaitAnyTermination(): Unit =
     awaitTerminationLock.synchronized {
-      while (lastTerminatedQuery == null) {
+      while (lastTerminatedQuery == null)
         awaitTerminationLock.wait(10)
-      }
-      if (lastTerminatedQuery != null && lastTerminatedQuery.exception.nonEmpty) {
+      if (lastTerminatedQuery != null && lastTerminatedQuery.exception.nonEmpty)
         throw lastTerminatedQuery.exception.get
-      }
     }
 
   /**
@@ -123,12 +121,10 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
     def isTimedout = System.currentTimeMillis - startTime >= timeoutMs
 
     awaitTerminationLock.synchronized {
-      while (!isTimedout && lastTerminatedQuery == null) {
+      while (!isTimedout && lastTerminatedQuery == null)
         awaitTerminationLock.wait(10)
-      }
-      if (lastTerminatedQuery != null && lastTerminatedQuery.exception.nonEmpty) {
+      if (lastTerminatedQuery != null && lastTerminatedQuery.exception.nonEmpty)
         throw lastTerminatedQuery.exception.get
-      }
       lastTerminatedQuery != null
     }
   }
@@ -172,10 +168,9 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
       df: DataFrame,
       sink: Sink): ContinuousQuery =
     activeQueriesLock.synchronized {
-      if (activeQueries.contains(name)) {
+      if (activeQueries.contains(name))
         throw new IllegalArgumentException(
           s"Cannot start query with name $name as a query with that name is already active")
-      }
       val query = new StreamExecution(sqlContext, name, df.logicalPlan, sink)
       query.start()
       activeQueries.put(name, query)
@@ -189,9 +184,8 @@ class ContinuousQueryManager(sqlContext: SQLContext) {
       activeQueries -= terminatedQuery.name
     }
     awaitTerminationLock.synchronized {
-      if (lastTerminatedQuery == null || terminatedQuery.exception.nonEmpty) {
+      if (lastTerminatedQuery == null || terminatedQuery.exception.nonEmpty)
         lastTerminatedQuery = terminatedQuery
-      }
       awaitTerminationLock.notifyAll()
     }
   }

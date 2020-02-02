@@ -68,9 +68,9 @@ class DeploymentManager(
             s"Conflicting deployments for deployment ${plan.id} have been canceled")
           scheduler.schedulerActor ! ConflictingDeploymentsCanceled(
             plan.id,
-            if (conflictingDeployments.nonEmpty) {
+            if (conflictingDeployments.nonEmpty)
               conflictingDeployments.map(_.plan).to[Seq]
-            } else Seq(plan))
+            else Seq(plan))
       }
 
     case CancelAllDeployments =>

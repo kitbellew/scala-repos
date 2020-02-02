@@ -35,9 +35,7 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         val jExecutorService: ExecutionContextExecutorService =
           ExecutionContexts.fromExecutorService(es)
         jExecutorService should not be (null)
-      } finally {
-        es.shutdown
-      }
+      } finally es.shutdown
     }
 
     "be able to use Batching" in {
@@ -61,10 +59,10 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
               p.tryFailure(
                 new IllegalStateException("Batch was executed inline!"))
             else if (count.incrementAndGet == 100) p.trySuccess(()) //Done
-            else if (lock.compareAndSet(0, 1)) {
+            else if (lock.compareAndSet(0, 1))
               try Thread.sleep(10)
               finally lock.compareAndSet(1, 0)
-            } else
+            else
               p.tryFailure(
                 new IllegalStateException("Executed batch in parallel!"))
           }

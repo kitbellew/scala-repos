@@ -165,10 +165,9 @@ private[http] object StreamUtils {
               throw new IllegalStateException("Not expecting data")
             override def onPull(): Unit = {
               splitAndPush(remaining)
-              if (remaining.isEmpty) {
+              if (remaining.isEmpty)
                 if (finishing) completeStage()
                 else setHandlers(in, out, WaitingForData)
-              }
             }
             override def onUpstreamFinish(): Unit =
               if (remaining.isEmpty) completeStage() else finishing = true
@@ -287,7 +286,7 @@ private[http] object StreamUtils {
       def onPush(elem: A, ctx: Context[B]): SyncDirective = ctx.push(elem)
       def onPull(ctx: Context[B]): SyncDirective = recovery match {
         case None ⇒ ctx.pull()
-        case Some(x) ⇒ { recovery = null; ctx.push(x) }
+        case Some(x) ⇒ recovery = null; ctx.push(x)
         case null ⇒ ctx.finish()
       }
       override def onUpstreamFailure(

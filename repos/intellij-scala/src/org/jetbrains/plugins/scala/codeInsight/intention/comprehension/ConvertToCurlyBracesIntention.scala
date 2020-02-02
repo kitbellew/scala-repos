@@ -45,8 +45,7 @@ class ConvertToCurlyBracesIntention extends PsiElementBaseIntentionAction {
     }
 
     for (enumerators <- statement.enumerators;
-         semi <- enumerators.findChildrenByType(ScalaTokenTypes.tSEMICOLON)) {
+         semi <- enumerators.findChildrenByType(ScalaTokenTypes.tSEMICOLON))
       semi.replace(ScalaPsiElementFactory.createNewLine(manager))
-    }
   }
 }

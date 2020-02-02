@@ -75,7 +75,7 @@ private[r] object SparkRWrappers {
 
   def getModelCoefficients(model: PipelineModel): Array[Double] =
     model.stages.last match {
-      case m: LinearRegressionModel => {
+      case m: LinearRegressionModel =>
         val coefficientStandardErrorsR =
           Array(m.summary.coefficientStandardErrors.last) ++
             m.summary.coefficientStandardErrors.dropRight(1)
@@ -83,20 +83,16 @@ private[r] object SparkRWrappers {
           .dropRight(1)
         val pValuesR = Array(m.summary.pValues.last) ++ m.summary.pValues
           .dropRight(1)
-        if (m.getFitIntercept) {
+        if (m.getFitIntercept)
           Array(m.intercept) ++ m.coefficients.toArray ++ coefficientStandardErrorsR ++
             tValuesR ++ pValuesR
-        } else {
+        else
           m.coefficients.toArray ++ coefficientStandardErrorsR ++ tValuesR ++ pValuesR
-        }
-      }
-      case m: LogisticRegressionModel => {
-        if (m.getFitIntercept) {
+      case m: LogisticRegressionModel =>
+        if (m.getFitIntercept)
           Array(m.intercept) ++ m.coefficients.toArray
-        } else {
+        else
           m.coefficients.toArray
-        }
-      }
       case m: KMeansModel =>
         m.clusterCenters.flatMap(_.toArray)
     }
@@ -121,15 +117,14 @@ private[r] object SparkRWrappers {
   def getKMeansCluster(model: PipelineModel, method: String): DataFrame =
     model.stages.last match {
       case m: KMeansModel =>
-        if (method == "centers") {
+        if (method == "centers")
           // Drop the assembled vector for easy-print to R side.
           m.summary.predictions.drop(m.summary.featuresCol)
-        } else if (method == "classes") {
+        else if (method == "classes")
           m.summary.cluster
-        } else {
+        else
           throw new UnsupportedOperationException(
             s"Method (centers or classes) required but $method found.")
-        }
       case other =>
         throw new UnsupportedOperationException(
           s"KMeansModel required but ${other.getClass.getSimpleName} found.")
@@ -140,19 +135,17 @@ private[r] object SparkRWrappers {
       case m: LinearRegressionModel =>
         val attrs = AttributeGroup.fromStructField(
           m.summary.predictions.schema(m.summary.featuresCol))
-        if (m.getFitIntercept) {
+        if (m.getFitIntercept)
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
-        } else {
+        else
           attrs.attributes.get.map(_.name.get)
-        }
       case m: LogisticRegressionModel =>
         val attrs = AttributeGroup.fromStructField(
           m.summary.predictions.schema(m.summary.featuresCol))
-        if (m.getFitIntercept) {
+        if (m.getFitIntercept)
           Array("(Intercept)") ++ attrs.attributes.get.map(_.name.get)
-        } else {
+        else
           attrs.attributes.get.map(_.name.get)
-        }
       case m: KMeansModel =>
         val attrs = AttributeGroup.fromStructField(
           m.summary.predictions.schema(m.summary.featuresCol))

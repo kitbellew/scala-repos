@@ -29,10 +29,9 @@ object ScatterGatherFirstCompletedSpec {
           case Stop(None) ⇒ context.stop(self)
           case Stop(Some(_id)) if (_id == id) ⇒ context.stop(self)
           case _id: Int if (_id == id) ⇒
-          case x ⇒ {
+          case x ⇒
             Thread sleep 100 * id
             sender() ! id
-          }
         }
 
         override def postStop =

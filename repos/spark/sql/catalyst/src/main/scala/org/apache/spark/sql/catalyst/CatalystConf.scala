@@ -29,11 +29,10 @@ private[spark] trait CatalystConf {
     * identifiers are equal.
     */
   def resolver: Resolver =
-    if (caseSensitiveAnalysis) {
+    if (caseSensitiveAnalysis)
       caseSensitiveResolution
-    } else {
+    else
       caseInsensitiveResolution
-    }
 }
 
 /**

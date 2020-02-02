@@ -352,10 +352,10 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   def lastOption: Option[T] = if (isEmpty) None else Some(last)
 
   def slice(from: Int, until: Int): ConstArray[T] =
-    if (from == 0) {
+    if (from == 0)
       if (until == length) this
       else new ConstArray(a, until)
-    } else
+    else
       new ConstArray(
         Arrays
           .copyOfRange[AnyRef](a.asInstanceOf[Array[AnyRef]], from, until)

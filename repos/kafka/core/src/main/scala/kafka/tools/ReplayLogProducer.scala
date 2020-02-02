@@ -172,7 +172,7 @@ object ReplayLogProducer extends Logging {
             stream.slice(0, config.numMessages)
           else
             stream
-        for (messageAndMetadata <- iter) {
+        for (messageAndMetadata <- iter)
           try {
             val response = producer.send(
               new ProducerRecord[Array[Byte], Array[Byte]](
@@ -181,14 +181,12 @@ object ReplayLogProducer extends Logging {
                 messageAndMetadata.timestamp,
                 messageAndMetadata.key(),
                 messageAndMetadata.message()))
-            if (config.isSync) {
+            if (config.isSync)
               response.get()
-            }
             messageCount += 1
           } catch {
             case ie: Exception => error("Skipping this message", ie)
           }
-        }
       } catch {
         case e: ConsumerTimeoutException =>
           error("consumer thread timing out", e)

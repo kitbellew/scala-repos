@@ -78,11 +78,10 @@ private[spark] class EventLoggingListener(
     sparkConf.getInt("spark.eventLog.buffer.kb", 100) * 1024
   private val fileSystem = Utils.getHadoopFileSystem(logBaseDir, hadoopConf)
   private val compressionCodec =
-    if (shouldCompress) {
+    if (shouldCompress)
       Some(CompressionCodec.createCodec(sparkConf))
-    } else {
+    else
       None
-    }
   private val compressionCodecName = compressionCodec.map { c =>
     CompressionCodec.getShortName(c.getClass.getName)
   }
@@ -103,10 +102,9 @@ private[spark] class EventLoggingListener(
     * Creates the log file in the configured log directory.
     */
   def start() {
-    if (!fileSystem.getFileStatus(new Path(logBaseDir)).isDirectory) {
+    if (!fileSystem.getFileStatus(new Path(logBaseDir)).isDirectory)
       throw new IllegalArgumentException(
         s"Log directory $logBaseDir does not exist.")
-    }
 
     val workingPath = logPath + IN_PROGRESS
     val uri = new URI(workingPath)
@@ -116,17 +114,16 @@ private[spark] class EventLoggingListener(
 
     if (shouldOverwrite && fileSystem.exists(path)) {
       logWarning(s"Event log $path already exists. Overwriting...")
-      if (!fileSystem.delete(path, true)) {
+      if (!fileSystem.delete(path, true))
         logWarning(s"Error deleting $path")
-      }
     }
 
     /* The Hadoop LocalFileSystem (r1.0.4) has known issues with syncing (HADOOP-7844).
      * Therefore, for local files, use FileOutputStream instead. */
     val dstream =
-      if ((isDefaultLocal && uri.getScheme == null) || uri.getScheme == "file") {
+      if ((isDefaultLocal && uri.getScheme == null) || uri.getScheme == "file")
         new FileOutputStream(uri.getPath)
-      } else {
+      else {
         hadoopDataStream = Some(fileSystem.create(path))
         hadoopDataStream.get
       }
@@ -160,9 +157,8 @@ private[spark] class EventLoggingListener(
       writer.foreach(_.flush())
       hadoopDataStream.foreach(_.hflush())
     }
-    if (testing) {
+    if (testing)
       loggedEvents += eventJson
-    }
   }
 
   // Events that do not trigger a flush
@@ -220,9 +216,8 @@ private[spark] class EventLoggingListener(
       event: SparkListenerExecutorMetricsUpdate): Unit = {}
 
   override def onOtherEvent(event: SparkListenerEvent): Unit =
-    if (event.logEvent) {
+    if (event.logEvent)
       logEvent(event, flushLogger = true)
-    }
 
   /**
     * Stop logging events. The event log file will be renamed so that it loses the
@@ -232,23 +227,19 @@ private[spark] class EventLoggingListener(
     writer.foreach(_.close())
 
     val target = new Path(logPath)
-    if (fileSystem.exists(target)) {
+    if (fileSystem.exists(target))
       if (shouldOverwrite) {
         logWarning(s"Event log $target already exists. Overwriting...")
-        if (!fileSystem.delete(target, true)) {
+        if (!fileSystem.delete(target, true))
           logWarning(s"Error deleting $target")
-        }
-      } else {
+      } else
         throw new IOException(
           "Target log file already exists (%s)".format(logPath))
-      }
-    }
     fileSystem.rename(new Path(logPath + IN_PROGRESS), target)
     // touch file to ensure modtime is current across those filesystems where rename()
     // does not set it, -and which support setTimes(); it's a no-op on most object stores
-    try {
-      fileSystem.setTimes(target, System.currentTimeMillis(), -1)
-    } catch {
+    try fileSystem.setTimes(target, System.currentTimeMillis(), -1)
+    catch {
       case e: Exception => logDebug(s"failed to set time of $target", e)
     }
   }
@@ -304,11 +295,10 @@ private[spark] object EventLoggingListener extends Logging {
       compressionCodecName: Option[String] = None): String = {
     val base = logBaseDir.toString.stripSuffix("/") + "/" + sanitize(appId)
     val codec = compressionCodecName.map("." + _).getOrElse("")
-    if (appAttemptId.isDefined) {
+    if (appAttemptId.isDefined)
       base + "_" + sanitize(appAttemptId.get) + codec
-    } else {
+    else
       base + codec
-    }
   }
 
   private def sanitize(str: String): String =
@@ -322,9 +312,8 @@ private[spark] object EventLoggingListener extends Logging {
   def openEventLog(log: Path, fs: FileSystem): InputStream = {
     // It's not clear whether FileSystem.open() throws FileNotFoundException or just plain
     // IOException when a file does not exist, so try our best to throw a proper exception.
-    if (!fs.exists(log)) {
+    if (!fs.exists(log))
       throw new FileNotFoundException(s"File $log does not exist.")
-    }
 
     val in = new BufferedInputStream(fs.open(log))
 
@@ -338,9 +327,8 @@ private[spark] object EventLoggingListener extends Logging {
         CompressionCodec.createCodec(new SparkConf, c))
     }
 
-    try {
-      codec.map(_.compressedInputStream(in)).getOrElse(in)
-    } catch {
+    try codec.map(_.compressedInputStream(in)).getOrElse(in)
+    catch {
       case e: Exception =>
         in.close()
         throw e

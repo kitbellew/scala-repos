@@ -113,11 +113,11 @@ private[hive] class HiveClientImpl(
           "spark.yarn.keytab")) {
       val principalName = sparkConf.get("spark.yarn.principal")
       val keytabFileName = sparkConf.get("spark.yarn.keytab")
-      if (!new File(keytabFileName).exists()) {
+      if (!new File(keytabFileName).exists())
         throw new SparkException(
           s"Keytab file: $keytabFileName" +
             " specified in spark.yarn.keytab does not exist")
-      } else {
+      else {
         logInfo(
           "Attempting to login to Kerberos" +
             s" using principal: $principalName and keytab: $keytabFileName")
@@ -129,13 +129,13 @@ private[hive] class HiveClientImpl(
       try {
         // originState will be created if not exists, will never be null
         val originalState = SessionState.get()
-        if (originalState.isInstanceOf[CliSessionState]) {
+        if (originalState.isInstanceOf[CliSessionState])
           // In `SparkSQLCLIDriver`, we have already started a `CliSessionState`,
           // which contains information like configurations from command line. Later
           // we call `SparkSQLEnv.init()` there, which would run into this part again.
           // so we should keep `conf` and reuse the existing instance of `CliSessionState`.
           originalState
-        } else {
+        else {
           val initialConf = new HiveConf(hadoopConf, classOf[SessionState])
           // HiveConf is a Hadoop Configuration, which has a field of classLoader and
           // the initial value will be the current thread's context class loader
@@ -145,25 +145,21 @@ private[hive] class HiveClientImpl(
           initialConf.setClassLoader(initClassLoader)
           config.foreach {
             case (k, v) =>
-              if (k.toLowerCase.contains("password")) {
+              if (k.toLowerCase.contains("password"))
                 logDebug(s"Hive Config: $k=xxx")
-              } else {
+              else
                 logDebug(s"Hive Config: $k=$v")
-              }
               initialConf.set(k, v)
           }
           val state = new SessionState(initialConf)
-          if (clientLoader.cachedHive != null) {
+          if (clientLoader.cachedHive != null)
             Hive.set(clientLoader.cachedHive.asInstanceOf[Hive])
-          }
           SessionState.start(state)
           state.out = new PrintStream(outputBuffer, true, "UTF-8")
           state.err = new PrintStream(outputBuffer, true, "UTF-8")
           state
         }
-      } finally {
-        Thread.currentThread().setContextClassLoader(original)
-      }
+      } finally Thread.currentThread().setContextClassLoader(original)
     ret
   }
 
@@ -190,9 +186,8 @@ private[hive] class HiveClientImpl(
     var caughtException: Exception = null
     do {
       numTries += 1
-      try {
-        return f
-      } catch {
+      try return f
+      catch {
         case e: Exception if causedByThrift(e) =>
           caughtException = e
           logWarning(
@@ -203,9 +198,8 @@ private[hive] class HiveClientImpl(
           Thread.sleep(retryDelayMillis)
       }
     } while (numTries <= retryLimit && System.nanoTime < deadline)
-    if (System.nanoTime > deadline) {
+    if (System.nanoTime > deadline)
       logWarning("Deadline exceeded")
-    }
     throw caughtException
   }
 
@@ -214,18 +208,17 @@ private[hive] class HiveClientImpl(
     while (target != null) {
       val msg = target.getMessage()
       if (msg != null && msg.matches(
-            "(?s).*(TApplication|TProtocol|TTransport)Exception.*")) {
+            "(?s).*(TApplication|TProtocol|TTransport)Exception.*"))
         return true
-      }
       target = target.getCause()
     }
     false
   }
 
   def client: Hive =
-    if (clientLoader.cachedHive != null) {
+    if (clientLoader.cachedHive != null)
       clientLoader.cachedHive.asInstanceOf[Hive]
-    } else {
+    else {
       val c = Hive.get(conf)
       clientLoader.cachedHive = c
       c
@@ -247,9 +240,7 @@ private[hive] class HiveClientImpl(
     shim.setCurrentSessionState(state)
     val ret =
       try f
-      finally {
-        Thread.currentThread().setContextClassLoader(original)
-      }
+      finally Thread.currentThread().setContextClassLoader(original)
     ret
   }
 
@@ -270,11 +261,10 @@ private[hive] class HiveClientImpl(
   }
 
   override def setCurrentDatabase(databaseName: String): Unit = withHiveState {
-    if (getDatabaseOption(databaseName).isDefined) {
+    if (getDatabaseOption(databaseName).isDefined)
       state.setCurrentDatabase(databaseName)
-    } else {
+    else
       throw new NoSuchDatabaseException(databaseName)
-    }
   }
 
   override def createDatabase(
@@ -485,9 +475,8 @@ private[hive] class HiveClientImpl(
   protected def runHive(cmd: String, maxRows: Int = 1000): Seq[String] =
     withHiveState {
       logDebug(s"Running hiveql '$cmd'")
-      if (cmd.toLowerCase.startsWith("set")) {
+      if (cmd.toLowerCase.startsWith("set"))
         logDebug(s"Changing config: $cmd")
-      }
       try {
         val cmd_trimmed: String = cmd.trim()
         val tokens: Array[String] = cmd_trimmed.split("\\s+")
@@ -509,11 +498,10 @@ private[hive] class HiveClientImpl(
             results
 
           case _ =>
-            if (state.out != null) {
+            if (state.out != null)
               // scalastyle:off println
               state.out.println(tokens(0) + " " + cmd_1)
-              // scalastyle:on println
-            }
+            // scalastyle:on println
             Seq(proc.run(cmd_1).getResponseCode.toString)
         }
       } catch {
@@ -614,13 +602,13 @@ private[hive] class HiveClientImpl(
 
   def addJar(path: String): Unit = {
     val uri = new Path(path).toUri
-    val jarURL = if (uri.getScheme == null) {
-      // `path` is a local file path without a URL scheme
-      new File(path).toURI.toURL
-    } else {
-      // `path` is a URL with a scheme
-      uri.toURL
-    }
+    val jarURL =
+      if (uri.getScheme == null)
+        // `path` is a local file path without a URL scheme
+        new File(path).toURI.toURL
+      else
+        // `path` is a URL with a scheme
+        uri.toURL
     clientLoader.addJar(jarURL)
     runSqlHive(s"ADD JAR $path")
   }
@@ -635,9 +623,8 @@ private[hive] class HiveClientImpl(
       client.getIndexes("default", t, 255).asScala.foreach { index =>
         shim.dropIndex(client, "default", t, index.getIndexName)
       }
-      if (!table.isIndexTable) {
+      if (!table.isIndexTable)
         client.dropTable("default", t)
-      }
     }
     client.getAllDatabases.asScala.filterNot(_ == "default").foreach { db =>
       logDebug(s"Dropping Database: $db")

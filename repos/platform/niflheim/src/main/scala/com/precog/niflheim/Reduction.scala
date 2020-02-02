@@ -61,9 +61,8 @@ object Reductions {
               bitsOrBust(seg.defined, mask) { bits =>
                 var min = Long.MaxValue
                 bits.foreach { row =>
-                  if (values(row) < min) {
+                  if (values(row) < min)
                     min = values(row)
-                  }
                 }
                 BigDecimal(min)
               }
@@ -72,9 +71,8 @@ object Reductions {
               bitsOrBust(seg.defined, mask) { bits =>
                 var min = Double.PositiveInfinity
                 bits.foreach { row =>
-                  if (values(row) < min) {
+                  if (values(row) < min)
                     min = values(row)
-                  }
                 }
                 BigDecimal(min)
               }
@@ -83,9 +81,8 @@ object Reductions {
               bitsOrBust(seg.defined, mask) { bits =>
                 var min: BigDecimal = null
                 bits.foreach { row =>
-                  if (min == null || values(row) < min) {
+                  if (min == null || values(row) < min)
                     min = values(row)
-                  }
                 }
                 min
               }
@@ -112,9 +109,8 @@ object Reductions {
               bitsOrBust(seg.defined, mask) { bits =>
                 var min = Long.MinValue
                 bits.foreach { row =>
-                  if (values(row) > min) {
+                  if (values(row) > min)
                     min = values(row)
-                  }
                 }
                 BigDecimal(min)
               }
@@ -123,9 +119,8 @@ object Reductions {
               bitsOrBust(seg.defined, mask) { bits =>
                 var min = Double.NegativeInfinity
                 bits.foreach { row =>
-                  if (values(row) > min) {
+                  if (values(row) > min)
                     min = values(row)
-                  }
                 }
                 BigDecimal(min)
               }
@@ -134,9 +129,8 @@ object Reductions {
               bitsOrBust(seg.defined, mask) { bits =>
                 var min: BigDecimal = null
                 bits.foreach { row =>
-                  if (min == null || values(row) > min) {
+                  if (min == null || values(row) > min)
                     min = values(row)
-                  }
                 }
                 min
               }

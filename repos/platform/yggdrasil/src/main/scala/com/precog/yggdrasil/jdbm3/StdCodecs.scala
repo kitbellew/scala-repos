@@ -50,18 +50,16 @@ trait StdCodecs {
   }
 
   def codecForCValueType[A](cType: CValueType[A]): Codec[A] =
-    try {
-      cType match {
-        case CBoolean => BooleanCodec
-        case CString  => StringCodec
-        case CLong    => LongCodec
-        case CDouble  => DoubleCodec
-        case CNum     => BigDecimalCodec
-        case CDate    => DateTimeCodec
-        case CPeriod  => PeriodCodec
-        case CArrayType(elemType) =>
-          ArrayCodec(codecForCValueType(elemType), elemType.manifest)
-      }
+    try cType match {
+      case CBoolean => BooleanCodec
+      case CString  => StringCodec
+      case CLong    => LongCodec
+      case CDouble  => DoubleCodec
+      case CNum     => BigDecimalCodec
+      case CDate    => DateTimeCodec
+      case CPeriod  => PeriodCodec
+      case CArrayType(elemType) =>
+        ArrayCodec(codecForCValueType(elemType), elemType.manifest)
     } catch {
       case ex: Throwable =>
         println(cType)

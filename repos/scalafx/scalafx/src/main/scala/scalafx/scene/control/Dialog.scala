@@ -218,11 +218,10 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     */
   def result: ObjectProperty[R] = delegate.resultProperty
   def result_=(value: R): Unit =
-    if (value == null) {
+    if (value == null)
       delegate.setResult(null.asInstanceOf[R])
-    } else {
+    else
       result() = value
-    }
 
   /**
     * API to convert the [[scalafx.scene.control.ButtonType]] that the user clicked on into a

@@ -31,11 +31,10 @@ trait BooleanOrder extends Order[Boolean] with Serializable {
   override def min(x: Boolean, y: Boolean): Boolean = x && y
   override def max(x: Boolean, y: Boolean): Boolean = x || y
   def compare(x: Boolean, y: Boolean): Int =
-    if (x) {
+    if (x)
       if (y) 0 else 1
-    } else {
-      if (y) -1 else 0
-    }
+    else if (y) -1
+    else 0
 }
 
 @SerialVersionUID(0L)

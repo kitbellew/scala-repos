@@ -60,12 +60,11 @@ class H5StoreSpec extends Specification {
       java.lang.Runtime.getRuntime.loadLibrary("jhdf5")
     } match {
       case Left(exception) => Skipped("Could not import HDF5")
-      case Right(result) => {
+      case Right(result) =>
         test in {
           logic
           H5Store.openResourceCount must_== 0 // check for any resource leaks
         }
-      }
     }
 
   "H5Store" should {

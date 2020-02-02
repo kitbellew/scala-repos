@@ -28,7 +28,7 @@ trait CommitStatusService {
         t.byCommit(userName, repositoryName, sha) && t.context === context.bind)
       .map(_.commitStatusId)
       .firstOption match {
-      case Some(id: Int) => {
+      case Some(id: Int) =>
         CommitStatuses
           .filter(_.byPrimaryKey(id))
           .map { t =>
@@ -36,7 +36,6 @@ trait CommitStatusService {
           }
           .update((state, targetUrl, now, creator.userName, description))
         id
-      }
       case None =>
         (CommitStatuses returning CommitStatuses.map(_.commitStatusId)) += CommitStatus(
           userName = userName,

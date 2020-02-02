@@ -85,9 +85,7 @@ class OffsetIndex(
         // if this is a pre-existing index, assume it is all valid and set position to last entry
         idx.position(roundToExactMultiple(idx.limit, 8))
       idx
-    } finally {
-      CoreUtils.swallow(raf.close())
-    }
+    } finally CoreUtils.swallow(raf.close())
   }
 
   /* the number of eight-byte entries currently in the index */
@@ -227,11 +225,10 @@ class OffsetIndex(
         require(
           entries * 8 == mmap.position,
           entries + " entries but file position in index is " + mmap.position + ".")
-      } else {
+      } else
         throw new InvalidOffsetException(
           "Attempt to append an offset (%d) to position %d no larger than the last offset appended (%d) to %s."
             .format(offset, entries, lastOffset, file.getAbsolutePath))
-      }
     }
   }
 
@@ -313,9 +310,7 @@ class OffsetIndex(
           .map(FileChannel.MapMode.READ_WRITE, 0, roundedNewSize)
         this.maxEntries = this.mmap.limit / 8
         this.mmap.position(position)
-      } finally {
-        CoreUtils.swallow(raf.close())
-      }
+      } finally CoreUtils.swallow(raf.close())
     }
   }
 
@@ -323,12 +318,11 @@ class OffsetIndex(
     * Forcefully free the buffer's mmap. We do this only on windows.
     */
   private def forceUnmap(m: MappedByteBuffer) {
-    try {
-      if (m.isInstanceOf[sun.nio.ch.DirectBuffer])(m
-        .asInstanceOf[sun.nio.ch.DirectBuffer])
-        .cleaner()
-        .clean()
-    } catch {
+    try if (m.isInstanceOf[sun.nio.ch.DirectBuffer])(m
+      .asInstanceOf[sun.nio.ch.DirectBuffer])
+      .cleaner()
+      .clean()
+    catch {
       case t: Throwable => warn("Error when freeing index buffer", t)
     }
   }
@@ -406,11 +400,8 @@ class OffsetIndex(
   private def maybeLock[T](lock: Lock)(fun: => T): T = {
     if (Os.isWindows)
       lock.lock()
-    try {
-      fun
-    } finally {
-      if (Os.isWindows)
-        lock.unlock()
-    }
+    try fun
+    finally if (Os.isWindows)
+      lock.unlock()
   }
 }

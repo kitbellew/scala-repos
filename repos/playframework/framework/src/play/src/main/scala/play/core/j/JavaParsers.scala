@@ -22,10 +22,9 @@ object JavaParsers {
   def toJavaMultipartFormData[A](multipart: MultipartFormData[TemporaryFile])
       : play.mvc.Http.MultipartFormData[File] =
     new play.mvc.Http.MultipartFormData[File] {
-      lazy val asFormUrlEncoded = {
+      lazy val asFormUrlEncoded =
         multipart.asFormUrlEncoded.mapValues(_.toArray).asJava
-      }
-      lazy val getFiles = {
+      lazy val getFiles =
         multipart.files.map { file =>
           new play.mvc.Http.MultipartFormData.FilePart(
             file.key,
@@ -33,7 +32,6 @@ object JavaParsers {
             file.contentType.orNull,
             file.ref.file)
         }.asJava
-      }
     }
 
   def toJavaRaw(rawBuffer: RawBuffer): play.mvc.Http.RawBuffer =

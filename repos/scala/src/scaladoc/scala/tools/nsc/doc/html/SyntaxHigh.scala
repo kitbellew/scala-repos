@@ -349,7 +349,7 @@ private[html] object SyntaxHigh {
           else
             parse(buf(i).toString, i + 1)
         case _ =>
-          if (i == 0 || (i >= 1 && !Character.isJavaIdentifierPart(buf(i - 1)))) {
+          if (i == 0 || (i >= 1 && !Character.isJavaIdentifierPart(buf(i - 1))))
             if (Character.isDigit(buf(i).toInt) ||
                 (buf(i) == '.' && i + 1 < buf.length && Character.isDigit(
                   buf(i + 1).toInt))) {
@@ -371,7 +371,7 @@ private[html] object SyntaxHigh {
                   parse(buf(i).toString, i + 1)
               }
             }
-          } else
+          else
             parse(buf(i).toString, i + 1)
       }
     }

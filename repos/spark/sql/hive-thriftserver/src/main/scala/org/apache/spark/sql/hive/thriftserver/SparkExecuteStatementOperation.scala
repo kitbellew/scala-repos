@@ -60,9 +60,9 @@ private[hive] class SparkExecuteStatementOperation(
   private var statementId: String = _
 
   private lazy val resultSchema: TableSchema = {
-    if (result == null || result.queryExecution.analyzed.output.size == 0) {
+    if (result == null || result.queryExecution.analyzed.output.size == 0)
       new TableSchema(Arrays.asList(new FieldSchema("Result", "string", "")))
-    } else {
+    else {
       logInfo(s"Result Schema: ${result.queryExecution.analyzed.output}")
       val schema = result.queryExecution.analyzed.output.map { attr =>
         new FieldSchema(
@@ -121,9 +121,9 @@ private[hive] class SparkExecuteStatementOperation(
     setHasResultSet(true)
     val resultRowSet: RowSet =
       RowSetFactory.create(getResultSetSchema, getProtocolVersion)
-    if (!iter.hasNext) {
+    if (!iter.hasNext)
       resultRowSet
-    } else {
+    else {
       // maxRowsL here typically maps to java.sql.Statement.getFetchSize, which is an int
       val maxRows = maxRowsL.toInt
       var curRow = 0
@@ -132,11 +132,10 @@ private[hive] class SparkExecuteStatementOperation(
         val row = ArrayBuffer[Any]()
         var curCol = 0
         while (curCol < sparkRow.length) {
-          if (sparkRow.isNullAt(curCol)) {
+          if (sparkRow.isNullAt(curCol))
             row += null
-          } else {
+          else
             addNonNullColumnValue(sparkRow, row, curCol)
-          }
           curCol += 1
         }
         resultRowSet.addRow(row.toArray.asInstanceOf[Array[Object]])
@@ -152,9 +151,9 @@ private[hive] class SparkExecuteStatementOperation(
     setState(OperationState.PENDING)
     setHasResultSet(true) // avoid no resultset for async run
 
-    if (!runInBackground) {
+    if (!runInBackground)
       execute()
-    } else {
+    else {
       val sparkServiceUGI = Utils.getUGI()
 
       // Runnable impl to call runInternal asynchronously,
@@ -164,18 +163,16 @@ private[hive] class SparkExecuteStatementOperation(
         override def run(): Unit = {
           val doAsAction = new PrivilegedExceptionAction[Unit]() {
             override def run(): Unit =
-              try {
-                execute()
-              } catch {
+              try execute()
+              catch {
                 case e: HiveSQLException =>
                   setOperationException(e)
                   log.error("Error running hive query: ", e)
               }
           }
 
-          try {
-            sparkServiceUGI.doAs(doAsAction)
-          } catch {
+          try sparkServiceUGI.doAs(doAsAction)
+          catch {
             case e: Exception =>
               setOperationException(new HiveSQLException(e))
               logError(
@@ -243,18 +240,17 @@ private[hive] class SparkExecuteStatementOperation(
           hiveContext
             .getConf("spark.sql.thriftServer.incrementalCollect", "false")
             .toBoolean
-        if (useIncrementalCollect) {
+        if (useIncrementalCollect)
           result.rdd.toLocalIterator
-        } else {
+        else
           result.collect().iterator
-        }
       }
       dataTypes = result.queryExecution.analyzed.output.map(_.dataType).toArray
     } catch {
       case e: HiveSQLException =>
-        if (getStatus().getState() == OperationState.CANCELED) {
+        if (getStatus().getState() == OperationState.CANCELED)
           return
-        } else {
+        else {
           setState(OperationState.ERROR)
           throw e
         }
@@ -276,9 +272,8 @@ private[hive] class SparkExecuteStatementOperation(
 
   override def cancel(): Unit = {
     logInfo(s"Cancel '$statement' with $statementId")
-    if (statementId != null) {
+    if (statementId != null)
       hiveContext.sparkContext.cancelJobGroup(statementId)
-    }
     cleanup(OperationState.CANCELED)
   }
 
@@ -286,9 +281,8 @@ private[hive] class SparkExecuteStatementOperation(
     setState(state)
     if (runInBackground) {
       val backgroundHandle = getBackgroundHandle()
-      if (backgroundHandle != null) {
+      if (backgroundHandle != null)
         backgroundHandle.cancel(true)
-      }
     }
   }
 }

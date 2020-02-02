@@ -78,10 +78,9 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
     val fval = low.fval
     val dd = low.dd
 
-    if (dd > 0) {
+    if (dd > 0)
       throw new FirstOrderException(
         "Line search invoked with non-descent direction: " + dd)
-    }
 
     /**
       * Assuming a point satisfying the strong wolfe conditions exists within
@@ -121,9 +120,8 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
           // Zoom exit condition is the "curvature" condition
           // Essentially that the directional derivative is large enough
-          if (abs(c.dd) <= c2 * abs(dd)) {
+          if (abs(c.dd) <= c2 * abs(dd))
             return c.t
-          }
 
           // If the signs don't coincide, flip left to right before updating l to c
           if (c.dd * (hi.t - low.t) >= 0) {
@@ -164,9 +162,8 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
         // We don't need to zoom at all
         // if the strong wolfe condition is satisfied already.
-        if (abs(c.dd) <= c2 * abs(dd)) {
+        if (abs(c.dd) <= c2 * abs(dd))
           return c.t
-        }
 
         // If c.dd is positive, we zoom on the inverted interval.
         // Occurs if we skipped over the nearest local minimum

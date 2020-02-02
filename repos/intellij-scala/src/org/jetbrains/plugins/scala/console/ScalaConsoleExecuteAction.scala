@@ -36,9 +36,8 @@ class ScalaConsoleExecuteAction extends AnAction {
 
   def actionPerformed(e: AnActionEvent) {
     val editor = e.getData(CommonDataKeys.EDITOR)
-    if (editor == null) {
+    if (editor == null)
       return
-    }
     val console = ScalaConsoleInfo.getConsole(editor)
     val processHandler = ScalaConsoleInfo.getProcessHandler(editor)
     val model = ScalaConsoleInfo.getController(editor)
@@ -73,12 +72,11 @@ class ScalaConsoleExecuteAction extends AnAction {
           }
           console.textSent(line + "\n")
         }
-    } else {
+    } else
       ScalaConsoleExecuteAction.LOG.info(
         new Throwable(
           s"Enter action in console failed: $editor, " +
             s"$console"))
-    }
   }
 }
 

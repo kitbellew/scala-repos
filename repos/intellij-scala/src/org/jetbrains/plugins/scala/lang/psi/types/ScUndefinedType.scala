@@ -77,10 +77,9 @@ case class ScAbstractType(
   }
 
   override def hashCode: Int = {
-    if (hash == -1) {
+    if (hash == -1)
       hash = (upper.hashCode() * 31 + lower.hashCode()) * 31 + tpt.args
         .hashCode()
-    }
     hash
   }
 
@@ -117,25 +116,23 @@ case class ScAbstractType(
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     val newVisited = visited + this
     update(this) match {
       case (true, res) => res
       case _ =>
-        try {
-          ScAbstractType(
-            tpt
-              .recursiveUpdate(update, newVisited)
-              .asInstanceOf[ScTypeParameterType],
-            lower.recursiveUpdate(update, newVisited),
-            upper.recursiveUpdate(update, newVisited)
-          )
-        } catch {
+        try ScAbstractType(
+          tpt
+            .recursiveUpdate(update, newVisited)
+            .asInstanceOf[ScTypeParameterType],
+          lower.recursiveUpdate(update, newVisited),
+          upper.recursiveUpdate(update, newVisited)
+        )
+        catch {
           case cce: ClassCastException => throw new RecursiveUpdateException
         }
     }
@@ -148,15 +145,14 @@ case class ScAbstractType(
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
-        try {
-          ScAbstractType(
-            tpt
-              .recursiveVarianceUpdateModifiable(newData, update, variance)
-              .asInstanceOf[ScTypeParameterType],
-            lower.recursiveVarianceUpdateModifiable(newData, update, -variance),
-            upper.recursiveVarianceUpdateModifiable(newData, update, variance)
-          )
-        } catch {
+        try ScAbstractType(
+          tpt
+            .recursiveVarianceUpdateModifiable(newData, update, variance)
+            .asInstanceOf[ScTypeParameterType],
+          lower.recursiveVarianceUpdateModifiable(newData, update, -variance),
+          upper.recursiveVarianceUpdateModifiable(newData, update, variance)
+        )
+        catch {
           case cce: ClassCastException => throw new RecursiveUpdateException
         }
     }

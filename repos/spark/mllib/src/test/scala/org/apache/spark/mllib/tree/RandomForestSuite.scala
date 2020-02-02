@@ -185,19 +185,18 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
           failString
         ) // 1 node per tree
 
-        if (numFeaturesPerNode == numFeatures) {
+        if (numFeaturesPerNode == numFeatures)
           // featureSubset values should all be None
           assert(
             treeToNodeToIndexInfo.values.forall(
               _.values.forall(_.featureSubset.isEmpty)),
             failString)
-        } else {
+        else
           // Check number of features.
           assert(
             treeToNodeToIndexInfo.values.forall(
               _.values.forall(_.featureSubset.get.size === numFeaturesPerNode)),
             failString)
-        }
       }
     }
 
@@ -330,9 +329,7 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
           case (treeA, treeB) =>
             DecisionTreeSuite.checkEqual(treeA, treeB)
         }
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      } finally Utils.deleteRecursively(tempDir)
     }
   }
 

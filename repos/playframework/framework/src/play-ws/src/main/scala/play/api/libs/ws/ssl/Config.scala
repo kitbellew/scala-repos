@@ -282,9 +282,9 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
   def parseDebug(config: PlayConfig): SSLDebugConfig = {
     val certpath = config.get[Boolean]("certpath")
 
-    if (config.get[Boolean]("all")) {
+    if (config.get[Boolean]("all"))
       SSLDebugConfig(all = true, certpath = certpath)
-    } else {
+    else {
 
       val record: Option[SSLDebugRecordOptions] =
         if (config.get[Boolean]("record")) {
@@ -297,9 +297,8 @@ class SSLConfigParser(c: PlayConfig, classLoader: ClassLoader) {
         val data = config.get[Boolean]("data")
         val verbose = config.get[Boolean]("verbose")
         Some(SSLDebugHandshakeOptions(data = data, verbose = verbose))
-      } else {
+      } else
         None
-      }
 
       val keygen = config.get[Boolean]("keygen")
       val session = config.get[Boolean]("session")

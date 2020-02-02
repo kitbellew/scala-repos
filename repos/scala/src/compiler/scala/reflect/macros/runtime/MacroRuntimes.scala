@@ -31,11 +31,10 @@ trait MacroRuntimes extends JavaReflectionRuntimes {
     if (fastTrack contains macroDef) {
       macroLogVerbose("macro expansion is serviced by a fast track")
       fastTrack(macroDef)
-    } else {
+    } else
       macroRuntimesCache.getOrElseUpdate(
         macroDef,
         new MacroRuntimeResolver(macroDef).resolveRuntime())
-    }
   }
 
   /** Macro classloader that is used to resolve and run macro implementations.
@@ -64,7 +63,7 @@ trait MacroRuntimes extends JavaReflectionRuntimes {
           throw new AbortMacroException(
             args.c.enclosingPosition,
             "macro implementation is missing")
-      } else {
+      } else
         try {
           macroLogVerbose(
             s"resolving macro implementation as $className.$methName (isBundle = $isBundle)")
@@ -77,6 +76,5 @@ trait MacroRuntimes extends JavaReflectionRuntimes {
             macroDef setFlag IS_ERROR
             null
         }
-      }
   }
 }

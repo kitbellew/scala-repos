@@ -44,46 +44,39 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("object keys and values") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map("" + i) = "" + i
-    }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       assert(map("" + i) === "" + i)
-    }
     assert(map("0") === null)
     assert(map("101") === null)
     assert(map(null) === null)
     val set = new HashSet[(String, String)]
-    for ((k, v) <- map) { // Test the foreach method
+    for ((k, v) <- map) // Test the foreach method
       set += ((k, v))
-    }
     assert(set === (1 to 100).map(_.toString).map(x => (x, x)).toSet)
   }
 
   test("primitive keys and values") {
     val map = new AppendOnlyMap[Int, Int]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map(i) = i
-    }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       assert(map(i) === i)
-    }
     assert(map(0) === null)
     assert(map(101) === null)
     val set = new HashSet[(Int, Int)]
-    for ((k, v) <- map) { // Test the foreach method
+    for ((k, v) <- map) // Test the foreach method
       set += ((k, v))
-    }
     assert(set === (1 to 100).map(x => (x, x)).toSet)
   }
 
   test("null keys") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map("" + i) = "" + i
-    }
     assert(map.size === 100)
     assert(map(null) === null)
     map(null) = "hello"
@@ -93,9 +86,8 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("null values") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map("" + i) = null
-    }
     assert(map.size === 100)
     assert(map("1") === null)
     assert(map(null) === null)
@@ -107,9 +99,8 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("changeValue") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map("" + i) = "" + i
-    }
     assert(map.size === 100)
     for (i <- 1 to 100) {
       val res = map.changeValue("" + i, (hadValue, oldValue) => {
@@ -145,20 +136,17 @@ class AppendOnlyMapSuite extends SparkFunSuite {
 
   test("inserting in capacity-1 map") {
     val map = new AppendOnlyMap[String, String](1)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map("" + i) = "" + i
-    }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       assert(map("" + i) === "" + i)
-    }
   }
 
   test("destructive sort") {
     val map = new AppendOnlyMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map("" + i) = "" + i
-    }
     map.update(null, "happy new year!")
 
     try {

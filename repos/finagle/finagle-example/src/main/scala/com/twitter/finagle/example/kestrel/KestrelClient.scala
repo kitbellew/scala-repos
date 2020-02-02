@@ -58,9 +58,8 @@ object KestrelClient {
       try {
         val Buf.Utf8(str) = msg.bytes
         println(str)
-      } finally {
-        msg.ack.sync() // if we don't do this, no more msgs will come to us
-      }
+      } finally msg.ack
+        .sync() // if we don't do this, no more msgs will come to us
     }
 
     // Let it run for a little while

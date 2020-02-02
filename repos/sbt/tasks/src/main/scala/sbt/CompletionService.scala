@@ -38,11 +38,8 @@ object CompletionService {
       cleanup: A => Unit): CompletionService[A, T] =
     wrap(service) { (node, work) => () =>
       setup(node)
-      try {
-        work()
-      } finally {
-        cleanup(node)
-      }
+      try work()
+      finally cleanup(node)
     }
   def wrap[A, T](service: CompletionService[A, T])(
       w: (A, () => T) => (() => T)): CompletionService[A, T] =

@@ -31,14 +31,13 @@ trait DoubleTypedField extends NumericTypedField[Double] {
   def setFromAny(in: Any): Box[Double] = setNumericFromAny(in, _.doubleValue)
 
   def setFromString(s: String): Box[Double] =
-    if (s == null || s.isEmpty) {
+    if (s == null || s.isEmpty)
       if (optional_?)
         setBox(Empty)
       else
         setBox(Failure(notOptionalErrorMessage))
-    } else {
+    else
       setBox(tryo(java.lang.Double.parseDouble(s)))
-    }
 
   def defaultValue = 0.0
 

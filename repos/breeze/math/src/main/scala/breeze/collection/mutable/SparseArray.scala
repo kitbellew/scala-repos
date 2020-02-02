@@ -201,15 +201,15 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
       throw new IndexOutOfBoundsException(
         "Index " + i + " out of bounds [0," + used + ")")
 
-    if (used == 0) {
+    if (used == 0)
       // empty list do nothing
       -1
-    } else {
+    else {
       val index = this.index
-      if (i > index(used - 1)) {
+      if (i > index(used - 1))
         // special case for end of list - this is a big win for growing sparse arrays
         ~used
-      } else {
+      else {
         // regular binary search from begin to end (inclusive)
         var begin = 0
         var end = used - 1
@@ -230,22 +230,20 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
         // be sure to make it a local though, so it doesn't
         // change from under us.
         val l = lastReturnedPos
-        if (l >= 0 && l < end) {
+        if (l >= 0 && l < end)
           mid = l
-        }
 
         // unroll the loop once. We're going to
         // check mid and mid+1, because if we're
         // iterating in order this will give us O(1) access
         val mi = index(mid)
-        if (mi == i) {
+        if (mi == i)
           found = true
-        } else if (mi > i) {
+        else if (mi > i)
           end = mid - 1
-        } else {
+        else
           // mi < i
           begin = mid + 1
-        }
 
         // a final stupid check:
         // we're frequently iterating
@@ -256,18 +254,17 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
           if (mi == i) {
             mid = mid + 1
             found = true
-          } else if (mi > i) {
+          } else if (mi > i)
             end = mid
-          } else {
+          else
             // mi < i
             begin = mid + 2
-          }
         }
         if (!found)
           mid = (end + begin) >> 1
 
         // pick up search.
-        while (!found && begin <= end) {
+        while (!found && begin <= end)
           if (index(mid) < i) {
             begin = mid + 1
             mid = (end + begin) >> 1
@@ -276,7 +273,6 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
             mid = (end + begin) >> 1
           } else
             found = true
-        }
 
         // note: hold onto a local variable
         // because multithreading
@@ -313,10 +309,10 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
   @inline
   final def update(i: Int, value: V) {
     val offset = findOffset(i)
-    if (offset >= 0) {
+    if (offset >= 0)
       // found at offset
       data(offset) = value
-    } else if (value != default) {
+    else if (value != default) {
       // need to insert at ~offset
       val insertPos = ~offset
 
@@ -325,21 +321,20 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
       if (used > data.length) {
         // need to grow array
         val newLength = {
-          if (data.length == 0) {
+          if (data.length == 0)
             4
-          } else if (data.length < 0x0400) {
+          else if (data.length < 0x0400)
             data.length * 2
-          } else if (data.length < 0x0800) {
+          else if (data.length < 0x0800)
             data.length + 0x0400
-          } else if (data.length < 0x1000) {
+          else if (data.length < 0x1000)
             data.length + 0x0800
-          } else if (data.length < 0x2000) {
+          else if (data.length < 0x2000)
             data.length + 0x1000
-          } else if (data.length < 0x4000) {
+          else if (data.length < 0x4000)
             data.length + 0x2000
-          } else {
+          else
             data.length + 0x4000
-          }
         }
 
         // allocate new arrays
@@ -396,9 +391,8 @@ final class SparseArray[@specialized(Double, Int, Float, Long) V](
       var _nz = 0
       var i = 0
       while (i < used) {
-        if (data(i) != default) {
+        if (data(i) != default)
           _nz += 1
-        }
         i += 1
       }
       _nz
@@ -490,16 +484,14 @@ object SparseArray {
         i += 1
       }
       rv
-    } else {
+    } else
       new SparseArray[T](length)
-    }
 
   def create[@specialized(Int, Float, Double) T: ClassTag: Zero](length: Int)(
       values: (Int, T)*) = {
     val rv = new SparseArray[T](length)
-    for ((k, v) <- values) {
+    for ((k, v) <- values)
       rv(k) = v
-    }
     rv
   }
 
@@ -509,9 +501,8 @@ object SparseArray {
     var i = 0
     while (i < length) {
       val v = fn(i)
-      if (v != rv.default) {
+      if (v != rv.default)
         rv(i) = v
-      }
       i += 1
     }
     rv.compact()

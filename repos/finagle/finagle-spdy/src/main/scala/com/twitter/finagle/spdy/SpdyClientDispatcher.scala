@@ -20,18 +20,16 @@ class SpdyClientDispatcher(trans: Transport[HttpRequest, HttpResponse])
     trans.read() flatMap { resp =>
       val streamId = SpdyHttpHeaders.getStreamId(resp)
       val promise = promiseMap.remove(streamId)
-      if (promise != null) {
+      if (promise != null)
         promise.updateIfEmpty(Return(resp))
-      }
       readLoop()
     }
 
   readLoop() onFailure { cause =>
     readFailure.synchronized {
       readFailure.set(cause)
-      for (promise <- promiseMap.asScala.values) {
+      for (promise <- promiseMap.asScala.values)
         promise.updateIfEmpty(Throw(cause))
-      }
       promiseMap.clear()
     }
   }
@@ -42,9 +40,9 @@ class SpdyClientDispatcher(trans: Transport[HttpRequest, HttpResponse])
 
     readFailure.synchronized {
       val cause = readFailure.get()
-      if (cause != null) {
+      if (cause != null)
         p() = Throw(WriteException(cause))
-      } else {
+      else {
         promiseMap.put(streamId, p)
 
         p.setInterruptHandler {

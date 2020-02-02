@@ -109,11 +109,10 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   def compareXml(left: NodeSeq, right: NodeSeq): Boolean = {
     val ls: Seq[Node] = left.toSeq
     val rs: Seq[Node] = right.toSeq
-    if (ls.length == rs.length) {
+    if (ls.length == rs.length)
       ls.zip(rs).foldLeft(true) { case (b, (l, r)) => b && compareNode(l, r) }
-    } else {
+    else
       false
-    }
   }
 
   /**
@@ -372,9 +371,8 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
     var len = 0
     while (len >= 0) {
       len = in.read(ba)
-      if (len > 0) {
+      if (len > 0)
         bos.write(ba, 0, len)
-      }
     }
     new ByteArrayInputStream(bos.toByteArray)
   }

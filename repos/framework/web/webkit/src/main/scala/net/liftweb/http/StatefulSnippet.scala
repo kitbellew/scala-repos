@@ -123,11 +123,10 @@ trait StatefulSnippet extends DispatchSnippet {
       import util.Helpers._
 
       ("form *" #> ((kids: NodeSeq) => toMerge ++ kids)).apply(res)
-    } else if (isForm) {
+    } else if (isForm)
       toMerge ++ res
-    } else {
+    else
       res
-    }
   }
 
 }

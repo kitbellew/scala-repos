@@ -44,9 +44,8 @@ object Test {
     val fac = new NoBindingFactoryAdapter
 
     parser.setContentHandler(fac)
-    try {
-      parser.parse(str)
-    } catch {
+    try parser.parse(str)
+    catch {
       case x: Exception =>
         x.printStackTrace
     }
@@ -55,7 +54,7 @@ object Test {
   def attributes(d: MetaData) = {
     val attrs = new AttributesHolder
 
-    if (d != null) {
+    if (d != null)
       for (attr <- d) {
         val sb = new StringBuilder()
         Utility.sequenceToXML(attr.value, TopScope, sb, true)
@@ -63,7 +62,6 @@ object Test {
           new QualifiedName("", "", attr.key.toLowerCase),
           sb.toString)
       }
-    }
     attrs
   }
 }

@@ -83,9 +83,8 @@ class ScLiteralImpl(node: ASTNode)
       case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tWRONG_STRING =>
         if (!text.startsWith('"')) return null
         text = text.substring(1)
-        if (text.endsWith('"')) {
+        if (text.endsWith('"'))
           text = text.substring(0, text.length - 1)
-        }
         try StringContext.treatEscapes(text) //for octal escape sequences
         catch {
           case e: InvalidEscapeException =>
@@ -94,9 +93,8 @@ class ScLiteralImpl(node: ASTNode)
       case ScalaTokenTypes.tMULTILINE_STRING =>
         if (!text.startsWith("\"\"\"")) return null
         text = text.substring(3)
-        if (text.endsWith("\"\"\"")) {
+        if (text.endsWith("\"\"\""))
           text = text.substring(0, text.length - 3)
-        }
         text
       case ScalaTokenTypes.kTRUE  => java.lang.Boolean.TRUE
       case ScalaTokenTypes.kFALSE => java.lang.Boolean.FALSE
@@ -104,9 +102,8 @@ class ScLiteralImpl(node: ASTNode)
         if (StringUtil.endsWithChar(getText, '\'')) {
           if (textLength == 1) return null
           text = text.substring(1, textLength - 1)
-        } else {
+        } else
           text = text.substring(1, textLength)
-        }
         val chars: StringBuilder = new StringBuilder
         val success: Boolean =
           PsiLiteralExpressionImpl.parseStringCharacters(text, chars, null)
@@ -131,24 +128,21 @@ class ScLiteralImpl(node: ASTNode)
         for (d <- number.map(_.asDigit)) {
           if (value < 0 ||
               limit / (base / divider) < value / divider ||
-              limit - (d / divider) < value * (base / divider)) {
+              limit - (d / divider) < value * (base / divider))
             return null
-          }
           value = value * base + d
         }
         if (endsWithL) java.lang.Long.valueOf(value)
         else Integer.valueOf(value.toInt)
       case ScalaTokenTypes.tFLOAT =>
         if (child.getText.endsWith('f') || child.getText.endsWith('F'))
-          try {
-            java.lang.Float.valueOf(text.substring(0, text.length - 1))
-          } catch {
+          try java.lang.Float.valueOf(text.substring(0, text.length - 1))
+          catch {
             case e: Exception => null
           }
         else
-          try {
-            java.lang.Double.valueOf(text)
-          } catch {
+          try java.lang.Double.valueOf(text)
+          catch {
             case e: Exception => null
           }
       case ScalaTokenTypes.tSYMBOL =>
@@ -209,11 +203,11 @@ class ScLiteralImpl(node: ASTNode)
       new TextRange(
         range.getStartOffset + prefix.length + quote.length,
         range.getEndOffset - quote.length)
-    } else if (isChar) {
+    } else if (isChar)
       new TextRange(range.getStartOffset + 1, range.getEndOffset - 1)
-    } else if (isSymbol) {
+    else if (isSymbol)
       new TextRange(range.getStartOffset + 1, range.getEndOffset)
-    } else range
+    else range
   }
 
   override def accept(visitor: ScalaElementVisitor) {

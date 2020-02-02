@@ -103,9 +103,8 @@ object Scalajsp {
 
   private def readFromJar(jar: File, name: String) = {
     val jarFile =
-      try {
-        new ZipFile(jar)
-      } catch { case _: FileNotFoundException => fail(s"No such JAR: $jar") }
+      try new ZipFile(jar)
+      catch { case _: FileNotFoundException => fail(s"No such JAR: $jar") }
     try {
       val entry = jarFile.getEntry(name)
       if (entry == null)
@@ -116,9 +115,7 @@ object Scalajsp {
           IO.readInputStreamToByteArray(jarFile.getInputStream(entry))
         new MemVirtualSerializedScalaJSIRFile(name).withContent(content)
       }
-    } finally {
-      jarFile.close()
-    }
+    } finally jarFile.close()
   }
 
   private val stdout =

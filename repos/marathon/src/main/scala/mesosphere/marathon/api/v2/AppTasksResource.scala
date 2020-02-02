@@ -109,11 +109,10 @@ class AppTasksResource @Inject() (
       if (scale) {
         val deploymentF = taskKiller.killAndScale(pathId, findToKill, force)
         deploymentResult(result(deploymentF))
-      } else {
+      } else
         reqToResponse(taskKiller.kill(pathId, findToKill)) { tasks =>
           ok(jsonObjString("tasks" -> tasks))
         }
-      }
   }
 
   @DELETE
@@ -133,12 +132,11 @@ class AppTasksResource @Inject() (
       if (scale) {
         val deploymentF = taskKiller.killAndScale(pathId, findToKill, force)
         deploymentResult(result(deploymentF))
-      } else {
+      } else
         reqToResponse(taskKiller.kill(pathId, findToKill)) { tasks =>
           tasks.headOption.fold(unknownTask(id))(task =>
             ok(jsonObjString("task" -> task)))
         }
-      }
   }
 
   private def reqToResponse(future: Future[Iterable[Task]])(

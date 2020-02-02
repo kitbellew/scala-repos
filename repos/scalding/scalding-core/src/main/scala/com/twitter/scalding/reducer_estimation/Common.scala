@@ -204,9 +204,8 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
         numReducers.getOrElse(-1))
 
       // set number of reducers
-      if (!setExplicitly || overrideExplicit) {
+      if (!setExplicitly || overrideExplicit)
         numReducers.foreach(conf.setNumReduceTasks)
-      }
     }
   }
 }

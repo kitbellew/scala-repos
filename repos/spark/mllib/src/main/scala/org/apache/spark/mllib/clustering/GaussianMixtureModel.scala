@@ -126,9 +126,8 @@ class GaussianMixtureModel @Since("1.3.0") (
       case (weight, dist) => MLUtils.EPSILON + weight * dist.pdf(pt)
     }
     val pSum = p.sum
-    for (i <- 0 until k) {
+    for (i <- 0 until k)
       p(i) /= pSum
-    }
     p
   }
 }
@@ -189,7 +188,7 @@ object GaussianMixtureModel extends Loader[GaussianMixtureModel] {
     val k = (metadata \ "k").extract[Int]
     val classNameV1_0 = SaveLoadV1_0.classNameV1_0
     (loadedClassName, version) match {
-      case (classNameV1_0, "1.0") => {
+      case (classNameV1_0, "1.0") =>
         val model = SaveLoadV1_0.load(sc, path)
         require(
           model.weights.length == k,
@@ -200,7 +199,6 @@ object GaussianMixtureModel extends Loader[GaussianMixtureModel] {
           s"GaussianMixtureModel requires gaussians of length $k" +
             s"got gaussians of length ${model.gaussians.length}")
         model
-      }
       case _ =>
         throw new Exception(
           s"GaussianMixtureModel.load did not recognize model with (className, format version):" +

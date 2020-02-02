@@ -218,9 +218,8 @@ object LoadBalancerFactory {
             e)
           Activity.Failed(e)
         case Addr.Pending =>
-          if (log.isLoggable(Level.FINE)) {
+          if (log.isLoggable(Level.FINE))
             log.fine(s"$label: name resolution is pending")
-          }
           Activity.Pending
       }: Var[Activity.State[Set[Address]]])
 

@@ -136,9 +136,9 @@ abstract class FormatInterpolator {
           if (e.index == s0.length - 1) {
             c.error(errPoint, """Trailing '\' escapes nothing.""")
             s0
-          } else if (octalOf(s0(e.index + 1)) >= 0) {
+          } else if (octalOf(s0(e.index + 1)) >= 0)
             badOctal
-          } else {
+          else {
             c.error(errPoint, e.getMessage)
             s0
           }
@@ -168,7 +168,7 @@ abstract class FormatInterpolator {
             case None      =>
           }
         }
-        if (ms.hasNext) {
+        if (ms.hasNext)
           Conversion(ms.next, part.pos, args.size) match {
             case Some(op) if op.isLiteral => s_%()
             case Some(op) if op.indexed =>
@@ -181,10 +181,10 @@ abstract class FormatInterpolator {
             case Some(op) => accept(op)
             case None     =>
           }
-        } else s_%()
+        else s_%()
       }
       // any remaining conversions must be either literals or indexed
-      while (ms.hasNext) {
+      while (ms.hasNext)
         Conversion(ms.next, part.pos, args.size) match {
           case Some(op) if first && op.hasFlag('<') =>
             op.badFlag('<', "No last arg")
@@ -192,7 +192,6 @@ abstract class FormatInterpolator {
           case Some(op)                               => errorLeading(op)
           case None                                   =>
         }
-      }
       fstring append s
     }
 

@@ -76,21 +76,19 @@ class AttributeGroup private (
       attr.withIndex(i)
   }.toArray)
 
-  private lazy val nameToIndex: Map[String, Int] = {
+  private lazy val nameToIndex: Map[String, Int] =
     attributes
       .map(_.view.flatMap { attr => attr.name.map(_ -> attr.index.get) }.toMap)
       .getOrElse(Map.empty)
-  }
 
   /** Size of the attribute group. Returns -1 if the size is unknown. */
   def size: Int =
-    if (numAttributes.isDefined) {
+    if (numAttributes.isDefined)
       numAttributes.get
-    } else if (attributes.isDefined) {
+    else if (attributes.isDefined)
       attributes.get.length
-    } else {
+    else
       -1
-    }
 
   /** Test whether this attribute group contains a specific attribute. */
   def hasAttr(attrName: String): Boolean = nameToIndex.contains(attrName)
@@ -122,9 +120,8 @@ class AttributeGroup private (
       attributes.get.foreach {
         case numeric: NumericAttribute =>
           // Skip default numeric attributes.
-          if (numeric.withoutIndex != NumericAttribute.defaultAttr) {
+          if (numeric.withoutIndex != NumericAttribute.defaultAttr)
             numericMetadata += numeric.toMetadataImpl(withType = false)
-          }
         case nominal: NominalAttribute =>
           nominalMetadata += nominal.toMetadataImpl(withType = false)
         case binary: BinaryAttribute =>
@@ -132,26 +129,22 @@ class AttributeGroup private (
         case UnresolvedAttribute =>
       }
       val attrBldr = new MetadataBuilder
-      if (numericMetadata.nonEmpty) {
+      if (numericMetadata.nonEmpty)
         attrBldr.putMetadataArray(
           AttributeType.Numeric.name,
           numericMetadata.toArray)
-      }
-      if (nominalMetadata.nonEmpty) {
+      if (nominalMetadata.nonEmpty)
         attrBldr.putMetadataArray(
           AttributeType.Nominal.name,
           nominalMetadata.toArray)
-      }
-      if (binaryMetadata.nonEmpty) {
+      if (binaryMetadata.nonEmpty)
         attrBldr.putMetadataArray(
           AttributeType.Binary.name,
           binaryMetadata.toArray)
-      }
       bldr.putMetadata(ATTRIBUTES, attrBldr.build())
       bldr.putLong(NUM_ATTRIBUTES, attributes.get.length)
-    } else if (numAttributes.isDefined) {
+    } else if (numAttributes.isDefined)
       bldr.putLong(NUM_ATTRIBUTES, numAttributes.get)
-    }
     bldr.build()
   }
 
@@ -215,46 +208,40 @@ object AttributeGroup {
       val numAttrs = metadata.getLong(NUM_ATTRIBUTES).toInt
       val attributes = new Array[Attribute](numAttrs)
       val attrMetadata = metadata.getMetadata(ATTRIBUTES)
-      if (attrMetadata.contains(Numeric.name)) {
+      if (attrMetadata.contains(Numeric.name))
         attrMetadata
           .getMetadataArray(Numeric.name)
           .map(NumericAttribute.fromMetadata)
           .foreach { attr => attributes(attr.index.get) = attr }
-      }
-      if (attrMetadata.contains(Nominal.name)) {
+      if (attrMetadata.contains(Nominal.name))
         attrMetadata
           .getMetadataArray(Nominal.name)
           .map(NominalAttribute.fromMetadata)
           .foreach { attr => attributes(attr.index.get) = attr }
-      }
-      if (attrMetadata.contains(Binary.name)) {
+      if (attrMetadata.contains(Binary.name))
         attrMetadata
           .getMetadataArray(Binary.name)
           .map(BinaryAttribute.fromMetadata)
           .foreach { attr => attributes(attr.index.get) = attr }
-      }
       var i = 0
       while (i < numAttrs) {
-        if (attributes(i) == null) {
+        if (attributes(i) == null)
           attributes(i) = NumericAttribute.defaultAttr
-        }
         i += 1
       }
       new AttributeGroup(name, attributes)
-    } else if (metadata.contains(NUM_ATTRIBUTES)) {
+    } else if (metadata.contains(NUM_ATTRIBUTES))
       new AttributeGroup(name, metadata.getLong(NUM_ATTRIBUTES).toInt)
-    } else {
+    else
       new AttributeGroup(name)
-    }
   }
 
   /** Creates an attribute group from a [[StructField]] instance. */
   def fromStructField(field: StructField): AttributeGroup = {
     require(field.dataType == new VectorUDT)
-    if (field.metadata.contains(ML_ATTR)) {
+    if (field.metadata.contains(ML_ATTR))
       fromMetadata(field.metadata.getMetadata(ML_ATTR), field.name)
-    } else {
+    else
       new AttributeGroup(field.name)
-    }
   }
 }

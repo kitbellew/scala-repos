@@ -80,10 +80,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
   // could be private since 2.11.6, but left protected to avoid potential breakages (eg ensime)
   protected def saveOriginalOwner(sym: Symbol): Unit =
     // some synthetic symbols have NoSymbol as owner initially
-    if (sym.owner != NoSymbol) {
+    if (sym.owner != NoSymbol)
       if (originalOwnerMap contains sym) ()
       else defineOriginalOwner(sym, sym.rawowner)
-    }
 
   def defineOriginalOwner(sym: Symbol, owner: Symbol): Unit =
     originalOwnerMap(sym) = owner
@@ -642,9 +641,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     /** Given a field, construct a term symbol that represents the source construct that gave rise the field */
     def sugaredSymbolOrSelf = {
       val getter = getterIn(owner)
-      if (getter == NoSymbol) {
+      if (getter == NoSymbol)
         this
-      } else {
+      else {
         val result = owner
           .newValue(
             getter.name.toTermName,
@@ -672,8 +671,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     // Lock a symbol, using the handler if the recursion depth becomes too great.
     private[scala] def lock(handler: => Unit): Boolean =
-      if ((_rawflags & LOCKED) != 0L) {
-        if (settings.Yrecursion.value != 0) {
+      if ((_rawflags & LOCKED) != 0L)
+        if (settings.Yrecursion.value != 0)
           recursionTable get this match {
             case Some(n) =>
               if (n > settings.Yrecursion.value) {
@@ -687,10 +686,10 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
               recursionTable += (this -> 1)
               true
           }
-        } else {
+        else {
           handler; false
         }
-      } else {
+      else {
         _rawflags |= LOCKED
         true
 //        activeLocks += 1
@@ -1630,9 +1629,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       val ob1 = other.accessBoundary(owner)
       val ob2 = ob1.linkedClassOfClass
       var o = tb
-      while (o != NoSymbol && o != ob1 && o != ob2) {
+      while (o != NoSymbol && o != ob1 && o != ob2)
         o = o.owner
-      }
       o != NoSymbol && o != tb
     }
 
@@ -1660,7 +1658,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       if (infos eq null) null
       else {
         var is = infos
-        while (is.prev ne null) { is = is.prev }
+        while (is.prev ne null) is = is.prev
         is.info
       }
 
@@ -1732,17 +1730,16 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
           assert(infos.prev eq null, this.name)
           val tp = infos.info
 
-          if ((_rawflags & LOCKED) != 0L) { // rolled out once for performance
+          if ((_rawflags & LOCKED) != 0L) // rolled out once for performance
             lock {
               setInfo(ErrorType)
               throw CyclicReference(this, tp)
             }
-          } else {
+          else
             _rawflags |= LOCKED
-            // TODO another commented out lines - this should be solved in one way or another
+          // TODO another commented out lines - this should be solved in one way or another
 //          activeLocks += 1
-            //         lockedSyms += this
-          }
+          //         lockedSyms += this
           val current = phase
           try {
             assertCorrectThread()
@@ -1851,9 +1848,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
                 if (itr.pid == NoPhase.id) curPeriod
                 else period(currentRunId, itr.pid)
             }
-          } finally {
-            phase = current
-          }
+          } finally phase = current
         }
       }
       infos.info
@@ -1862,14 +1857,14 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     // adapt to new run in fsc.
     private def adaptInfos(infos: TypeHistory): TypeHistory = {
       assert(isCompilerUniverse)
-      if (infos == null || runId(infos.validFrom) == currentRunId) {
+      if (infos == null || runId(infos.validFrom) == currentRunId)
         infos
-      } else if (infos ne infos.oldest) {
+      else if (infos ne infos.oldest)
         // SI-8871 Discard all but the first element of type history. Specialization only works in the resident
         // compiler / REPL if re-run its info transformer in this run to correctly populate its
         // per-run caches, e.g. typeEnv
         adaptInfos(infos.oldest)
-      } else {
+      else {
         val prev1 = adaptInfos(infos.prev)
         if (prev1 ne infos.prev) prev1
         else {
@@ -1999,7 +1994,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         val thistp = tp.typeSymbol.thisType
         val oldsymbuf = new ListBuffer[Symbol]
         val newsymbuf = new ListBuffer[Symbol]
-        for (sym <- info.decls) {
+        for (sym <- info.decls)
           // todo: what about public references to private symbols?
           if (sym.isPublic && !sym.isConstructor) {
             oldsymbuf += sym
@@ -2010,15 +2005,13 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
                           else
                             sym.cloneSymbol(tp.typeSymbol))
           }
-        }
         val oldsyms = oldsymbuf.toList
         val newsyms = newsymbuf.toList
-        for (sym <- newsyms) {
+        for (sym <- newsyms)
           addMember(
             thistp,
             tp,
             sym modifyInfo (_ substThisAndSym (this, thistp, oldsyms, newsyms)))
-        }
       }
       tp
     }
@@ -2318,7 +2311,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       assert(hasAccessorFlag, this)
       val localField = owner.info decl localName
 
-      if (localField == NoSymbol && this.hasFlag(MIXEDIN)) {
+      if (localField == NoSymbol && this.hasFlag(MIXEDIN))
         // SI-8087: private[this] fields don't have a `localName`. When searching the accessed field
         // for a mixin accessor of such a field, we need to look for `name` instead.
         // The phase travel ensures that the field is found (`owner` is the trait class symbol, the
@@ -2326,9 +2319,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         enteringPhase(picklerPhase)(owner.info)
           .decl(name)
           .suchThat(!_.isAccessor)
-      } else {
+      else
         localField
-      }
     }
 
     /** The module corresponding to this module class (note that this
@@ -2444,15 +2436,15 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     /** The top-level class containing this symbol. */
     def enclosingTopLevelClass: Symbol =
-      if (isTopLevel) {
+      if (isTopLevel)
         if (isClass) this else moduleClass
-      } else owner.enclosingTopLevelClass
+      else owner.enclosingTopLevelClass
 
     /** The top-level class or local dummy symbol containing this symbol. */
     def enclosingTopLevelClassOrDummy: Symbol =
-      if (isTopLevel) {
+      if (isTopLevel)
         if (isClass) this else moduleClass.orElse(this)
-      } else owner.enclosingTopLevelClassOrDummy
+      else owner.enclosingTopLevelClassOrDummy
 
     /** Is this symbol defined in the same scope and compilation unit as `that` symbol? */
     def isCoDefinedWith(that: Symbol) = (
@@ -3162,9 +3154,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     override def expandName(base: Symbol) {
       if (!hasFlag(EXPANDEDNAME)) {
         setFlag(EXPANDEDNAME)
-        if (hasAccessorFlag && !isDeferred) {
+        if (hasAccessorFlag && !isDeferred)
           accessed.expandName(base)
-        } else if (hasGetter) {
+        else if (hasGetter) {
           getterIn(owner).expandName(base)
           setterIn(owner).expandName(base)
         }
@@ -3409,12 +3401,11 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     private def maybeUpdateTypeCache() {
-      if (tpePeriod != currentPeriod) {
+      if (tpePeriod != currentPeriod)
         if (isValid(tpePeriod))
           tpePeriod = currentPeriod
         else
           updateTypeCache() // perform the actual update
-      }
     }
     private def updateTypeCache() {
       if (tpeCache eq NoType)
@@ -3611,11 +3602,9 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
 
     override def associatedFile = (
       if (!isTopLevel) super.associatedFile
-      else {
-        if (_associatedFile eq null)
-          NoAbstractFile // guarantee not null, but save cost of initializing the var
-        else _associatedFile
-      }
+      else if (_associatedFile eq null)
+        NoAbstractFile // guarantee not null, but save cost of initializing the var
+      else _associatedFile
     )
     override def associatedFile_=(f: AbstractFile) { _associatedFile = f }
 

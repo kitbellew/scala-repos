@@ -97,7 +97,7 @@ case class Tournament(
       !isFinished && s.homepageHours.?? { hours =>
         startsAt.minusHours(hours) isBefore DateTime.now
       }
-    } map { this -> _ }
+    } map this -> _
 }
 
 case class EnterableTournaments(

@@ -33,13 +33,11 @@ class ExtendsFilter extends ElementFilter {
       prev2 match {
         case x: ScTypeDefinition =>
           if (x.extendsBlock.templateParents.isDefined) return false
-          else {
-            if (leaf.getNextSibling != null &&
-                leaf.getNextSibling.getNextSibling != null &&
-                leaf.getNextSibling.getNextSibling.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
-              return false
-            else return true
-          }
+          else if (leaf.getNextSibling != null &&
+                   leaf.getNextSibling.getNextSibling != null &&
+                   leaf.getNextSibling.getNextSibling.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
+            return false
+          else return true
         case _ => return false
       }
     }

@@ -33,9 +33,8 @@ class NamedPoolThreadFactory(name: String, makeDaemons: Boolean)
     val thread =
       new Thread(group, r, name + "-" + threadNumber.getAndIncrement())
     thread.setDaemon(makeDaemons)
-    if (thread.getPriority != Thread.NORM_PRIORITY) {
+    if (thread.getPriority != Thread.NORM_PRIORITY)
       thread.setPriority(Thread.NORM_PRIORITY)
-    }
     thread
   }
 }

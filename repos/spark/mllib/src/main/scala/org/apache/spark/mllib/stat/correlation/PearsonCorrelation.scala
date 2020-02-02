@@ -77,9 +77,8 @@ private[stat] object PearsonCorrelation extends Correlation with Logging {
         val corr = if (sigma == 0.0 || cov(i, i) == 0.0) {
           containNaN = true
           Double.NaN
-        } else {
+        } else
           cov(i, j) / (sigma * cov(i, i))
-        }
         cov(i, j) = corr
         cov(j, i) = corr
         i += 1
@@ -94,9 +93,8 @@ private[stat] object PearsonCorrelation extends Correlation with Logging {
       i += 1
     }
 
-    if (containNaN) {
+    if (containNaN)
       logWarning("Pearson correlation matrix contains NaN values.")
-    }
 
     Matrices.fromBreeze(cov)
   }

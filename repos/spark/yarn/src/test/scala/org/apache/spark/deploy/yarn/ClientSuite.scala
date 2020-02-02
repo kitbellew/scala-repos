@@ -64,9 +64,7 @@ class ClientSuite
     try {
       System.setProperties(oldSystemProperties)
       oldSystemProperties = null
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   test("default Yarn application classpath") {
     getDefaultYarnApplicationClasspath should be(
@@ -111,13 +109,12 @@ class ClientSuite
   private val ADDED = "local:/addJar1,local:/addJar2,/addJar3"
 
   private val PWD =
-    if (classOf[Environment].getMethods().exists(_.getName == "$$")) {
+    if (classOf[Environment].getMethods().exists(_.getName == "$$"))
       "{{PWD}}"
-    } else if (Utils.isWindows) {
+    else if (Utils.isWindows)
       "%PWD%"
-    } else {
+    else
       Environment.PWD.$()
-    }
 
   test("Local jar URIs") {
     val conf = new Configuration()
@@ -135,11 +132,10 @@ class ClientSuite
       .split(",")
       .foreach({ entry =>
         val uri = new URI(entry)
-        if (LOCAL_SCHEME.equals(uri.getScheme())) {
+        if (LOCAL_SCHEME.equals(uri.getScheme()))
           cp should contain(uri.getPath())
-        } else {
+        else
           cp should not contain (uri.getPath())
-        }
       })
     cp should contain(PWD)
     cp should contain(s"$PWD${Path.SEPARATOR}$LOCALIZED_CONF_DIR")
@@ -162,18 +158,15 @@ class ClientSuite
         .split(",")
         .map { p =>
           val uri = new URI(p)
-          if (LOCAL_SCHEME == uri.getScheme()) {
+          if (LOCAL_SCHEME == uri.getScheme())
             p
-          } else {
+          else
             Option(uri.getFragment()).getOrElse(new File(p).getName())
-          }
         }
         .mkString(",")
 
       sparkConf.get(SECONDARY_JARS) should be(Some(expected.split(",").toSeq))
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 
   test("Cluster path translation") {

@@ -91,9 +91,8 @@ class JavaCompiler(
 
   def askTypecheckFiles(files: List[SourceFileInfo]): Unit = {
     reportHandler.clearAllJavaNotes()
-    for (sf <- files) {
+    for (sf <- files)
       internSource(sf)
-    }
     typecheckAll()
   }
 

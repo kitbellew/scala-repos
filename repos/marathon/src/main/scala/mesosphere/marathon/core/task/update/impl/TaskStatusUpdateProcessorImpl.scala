@@ -74,11 +74,10 @@ class TaskStatusUpdateProcessorImpl @Inject() (
           ).flatMap(_ => acknowledge(status))
         case _ =>
           killUnknownTaskTimer {
-            if (status.getState != MesosProtos.TaskState.TASK_LOST) {
+            if (status.getState != MesosProtos.TaskState.TASK_LOST)
               // If we kill a unknown task, we will get another TASK_LOST notification which leads to an endless
               // stream of kills and TASK_LOST updates.
               killTask(taskId.mesosTaskId)
-            }
             acknowledge(status)
           }
       }

@@ -61,11 +61,11 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
 
   private val supportedMasterPrefixes = Seq("spark://", "mesos://")
 
-  private val masters: Array[String] = if (master.startsWith("spark://")) {
-    Utils.parseStandaloneMasterUrls(master)
-  } else {
-    Array(master)
-  }
+  private val masters: Array[String] =
+    if (master.startsWith("spark://"))
+      Utils.parseStandaloneMasterUrls(master)
+    else
+      Array(master)
 
   // Set of masters that lost contact with us, used to keep track of
   // whether there are masters still alive for us to communicate with
@@ -99,11 +99,10 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         }
       } catch {
         case e: SubmitRestConnectionException =>
-          if (handleConnectionException(m)) {
+          if (handleConnectionException(m))
             throw new SubmitRestConnectionException(
               "Unable to connect to server",
               e)
-          }
       }
     }
     response
@@ -131,11 +130,10 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         }
       } catch {
         case e: SubmitRestConnectionException =>
-          if (handleConnectionException(m)) {
+          if (handleConnectionException(m))
             throw new SubmitRestConnectionException(
               "Unable to connect to server",
               e)
-          }
       }
     }
     response
@@ -157,20 +155,18 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         response = get(url)
         response match {
           case s: SubmissionStatusResponse if s.success =>
-            if (!quiet) {
+            if (!quiet)
               handleRestResponse(s)
-            }
             handled = true
           case unexpected =>
             handleUnexpectedRestResponse(unexpected)
         }
       } catch {
         case e: SubmitRestConnectionException =>
-          if (handleConnectionException(m)) {
+          if (handleConnectionException(m))
             throw new SubmitRestConnectionException(
               "Unable to connect to server",
               e)
-          }
       }
     }
     response
@@ -244,15 +240,13 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
     import scala.concurrent.ExecutionContext.Implicits.global
     val responseFuture = Future {
       val dataStream =
-        if (connection.getResponseCode == HttpServletResponse.SC_OK) {
+        if (connection.getResponseCode == HttpServletResponse.SC_OK)
           connection.getInputStream
-        } else {
+        else
           connection.getErrorStream
-        }
       // If the server threw an exception while writing a response, it will not have a body
-      if (dataStream == null) {
+      if (dataStream == null)
         throw new SubmitRestProtocolException("Server returned empty body")
-      }
       val responseJson = Source.fromInputStream(dataStream).mkString
       logDebug(s"Response from the server:\n$responseJson")
       val response = SubmitRestProtocolMessage.fromJson(responseJson)
@@ -270,9 +264,8 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
       }
     }
 
-    try {
-      Await.result(responseFuture, 10.seconds)
-    } catch {
+    try Await.result(responseFuture, 10.seconds)
+    catch {
       case unreachable @ (_: FileNotFoundException | _: SocketException) =>
         throw new SubmitRestConnectionException(
           "Unable to connect to server",
@@ -311,9 +304,8 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
   private def getBaseUrl(master: String): String = {
     var masterUrl = master
     supportedMasterPrefixes.foreach { prefix =>
-      if (master.startsWith(prefix)) {
+      if (master.startsWith(prefix))
         masterUrl = master.stripPrefix(prefix)
-      }
     }
     masterUrl = masterUrl.stripSuffix("/")
     s"http://$masterUrl/$PROTOCOL_VERSION/submissions"
@@ -324,11 +316,10 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
     val valid = supportedMasterPrefixes.exists { prefix =>
       master.startsWith(prefix)
     }
-    if (!valid) {
+    if (!valid)
       throw new IllegalArgumentException(
         "This REST client only supports master URLs that start with " +
           "one of the following: " + supportedMasterPrefixes.mkString(","))
-    }
   }
 
   /** Report the status of a newly created submission. */
@@ -340,11 +331,10 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         logInfo(
           s"Submission successfully created as $submissionId. Polling submission state...")
         pollSubmissionStatus(submissionId)
-      } else {
+      } else
         // should never happen
         logError(
           "Application successfully submitted, but submission ID was not provided!")
-      }
     } else {
       val failMessage =
         Option(submitResponse.message).map { ": " + _ }.getOrElse("")

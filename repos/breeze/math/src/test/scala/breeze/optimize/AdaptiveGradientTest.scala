@@ -46,10 +46,9 @@ class AdaptiveGradientTest extends OptimizeTestBase {
       val ok = norm(
         result :- DenseVector.ones[Double](init.size) * targetValue,
         2) / result.size < 2e-3
-      if (!ok) {
+      if (!ok)
         sys.error(
           "min " + init + " with reg: " + sgd.regularizationConstant + "gives " + result + " should be " + targetValue)
-      }
       ok
     }
 
@@ -78,10 +77,9 @@ class AdaptiveGradientTest extends OptimizeTestBase {
       val ok = norm(
         result :- DenseVector.ones[Double](init.size) * targetValue,
         2) / result.size < 1e-2
-      if (!ok) {
+      if (!ok)
         sys.error(
           s"min $init with reg: ${sgd.lambda} gives $result should be $targetValue")
-      }
       ok
     }
 

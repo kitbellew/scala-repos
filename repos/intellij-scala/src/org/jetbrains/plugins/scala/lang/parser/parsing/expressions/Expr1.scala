@@ -60,9 +60,8 @@ object Expr1 {
 
         ParserPatcher getSuitablePatcher builder parse builder
 
-        if (!Expr.parse(builder)) {
+        if (!Expr.parse(builder))
           builder error ErrMsg("wrong.expression")
-        }
         val rollbackMarker = builder.mark
         builder.getTokenType match {
           case ScalaTokenTypes.tSEMICOLON =>
@@ -97,9 +96,8 @@ object Expr1 {
           case _ =>
             builder error ErrMsg("condition.expected")
         }
-        if (!Expr.parse(builder)) {
+        if (!Expr.parse(builder))
           builder error ErrMsg("wrong.expression")
-        }
         exprMarker.done(ScalaElementTypes.WHILE_STMT)
         return true
       //---------------------try statement------------------------//
@@ -111,25 +109,22 @@ object Expr1 {
             builder.advanceLexer() //Ate {
             builder.enableNewlines
             def foo() {
-              if (!Block.parse(builder, hasBrace = false)) {
+              if (!Block.parse(builder, hasBrace = false))
                 builder error ErrMsg("block.expected")
-              }
             }
             ParserUtils.parseLoopUntilRBrace(builder, foo)
             builder.restoreNewlinesState
           case _ =>
-            if (!Block.parse(builder, hasBrace = false)) {
+            if (!Block.parse(builder, hasBrace = false))
               builder error ErrMsg("block.expected")
-            }
         }
         tryMarker.done(ScalaElementTypes.TRY_BLOCK)
         val catchMarker = builder.mark
         builder.getTokenType match {
           case ScalaTokenTypes.kCATCH =>
             builder.advanceLexer() //Ate catch
-            if (!Expr.parse(builder)) {
+            if (!Expr.parse(builder))
               builder.error(ErrMsg("wrong.expression"))
-            }
             catchMarker.done(ScalaElementTypes.CATCH_BLOCK)
           case _ =>
             catchMarker.drop()
@@ -138,9 +133,8 @@ object Expr1 {
         builder.getTokenType match {
           case ScalaTokenTypes.kFINALLY =>
             builder.advanceLexer() //Ate finally
-            if (!Expr.parse(builder)) {
+            if (!Expr.parse(builder))
               builder error ErrMsg("wrong.expression")
-            }
             finallyMarker.done(ScalaElementTypes.FINALLY_BLOCK)
           case _ =>
             finallyMarker.drop()
@@ -188,18 +182,16 @@ object Expr1 {
             builder.advanceLexer() //Ate {
             builder.enableNewlines
             def foo() {
-              if (!Enumerators.parse(builder)) {
+              if (!Enumerators.parse(builder))
                 builder error ErrMsg("enumerators.expected")
-              }
             }
             ParserUtils.parseLoopUntilRBrace(builder, foo)
             builder.restoreNewlinesState
           case ScalaTokenTypes.tLPARENTHESIS =>
             builder.advanceLexer() //Ate (
             builder.disableNewlines
-            if (!Enumerators.parse(builder)) {
+            if (!Enumerators.parse(builder))
               builder error ErrMsg("enumerators.expected")
-            }
             builder.getTokenType match {
               case ScalaTokenTypes.tRPARENTHESIS => builder.advanceLexer()
               case _                             => builder error ErrMsg("rparenthesis.expected")
@@ -224,9 +216,8 @@ object Expr1 {
       //----------------throw statment--------------//
       case ScalaTokenTypes.kTHROW =>
         builder.advanceLexer() //Ate throw
-        if (!Expr.parse(builder)) {
+        if (!Expr.parse(builder))
           builder error ErrMsg("wrong.expression")
-        }
         exprMarker.done(ScalaElementTypes.THROW_STMT)
         return true
       //--------------implicit closure--------------//
@@ -273,9 +264,8 @@ object Expr1 {
         builder.getTokenType match {
           case ScalaTokenTypes.tASSIGN =>
             builder.advanceLexer() //Ate =
-            if (!Expr.parse(builder)) {
+            if (!Expr.parse(builder))
               builder error ErrMsg("wrong.expression")
-            }
             exprMarker.done(ScalaElementTypes.ASSIGN_STMT)
             return true
           case ScalaTokenTypes.tCOLON =>
@@ -289,9 +279,8 @@ object Expr1 {
                 builder.advanceLexer() //Ate {
                 builder.enableNewlines
                 def foo() {
-                  if (!CaseClauses.parse(builder)) {
+                  if (!CaseClauses.parse(builder))
                     builder error ErrMsg("case.clauses.expected")
-                  }
                 }
                 ParserUtils.parseLoopUntilRBrace(builder, foo)
                 builder.restoreNewlinesState

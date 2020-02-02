@@ -85,7 +85,7 @@ private[spark] class BlockStoreShuffleReader[K, C](
       new InterruptibleIterator[(Any, Any)](context, metricIter)
 
     val aggregatedIter: Iterator[Product2[K, C]] =
-      if (dep.aggregator.isDefined) {
+      if (dep.aggregator.isDefined)
         if (dep.mapSideCombine) {
           // We are reading values that are already combined
           val combinedKeyValuesIterator =
@@ -100,7 +100,7 @@ private[spark] class BlockStoreShuffleReader[K, C](
             interruptibleIter.asInstanceOf[Iterator[(K, Nothing)]]
           dep.aggregator.get.combineValuesByKey(keyValuesIterator, context)
         }
-      } else {
+      else {
         require(
           !dep.mapSideCombine,
           "Map-side combine without Aggregator specified!")

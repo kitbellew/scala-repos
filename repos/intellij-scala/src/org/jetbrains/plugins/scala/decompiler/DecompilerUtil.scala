@@ -48,9 +48,8 @@ object DecompilerUtil {
         .orNull
       if (testProject != null) Array(testProject)
       else Array.empty
-    } else {
+    } else
       manager.getOpenProjects.filter(!_.isDisposed)
-    }
   }
 
   def obtainProject: Project = {
@@ -98,7 +97,7 @@ object DecompilerUtil {
         }
         res = decompilationResult
       }
-      if (readAttribute != null) {
+      if (readAttribute != null)
         try {
           val isScala = readAttribute.readBoolean()
           val sourceName = readAttribute.readUTF()
@@ -107,14 +106,13 @@ object DecompilerUtil {
           else
             res =
               new DecompilationResult(isScala, sourceName, attributeTimeStamp) {
-                override lazy val sourceText: String = {
+                override lazy val sourceText: String =
                   decompileInner(file, bytes).sourceText
-                }
               }
         } catch {
           case e: IOException => updateAttributeAndData()
         }
-      } else updateAttributeAndData()
+      else updateAttributeAndData()
       data = new SoftReference[DecompilationResult](res)
       file.putUserData(SCALA_DECOMPILER_KEY, data)
     }
@@ -124,18 +122,16 @@ object DecompilerUtil {
   private def decompileInner(
       file: VirtualFile,
       bytes: Array[Byte]): DecompilationResult =
-    try {
-      Decompiler.decompile(file.getName, bytes) match {
-        case Some((sourceFileName, decompiledSourceText)) =>
-          new DecompilationResult(
-            isScala = true,
-            sourceFileName,
-            file.getTimeStamp) {
-            override def sourceText: String = decompiledSourceText
-          }
-        case _ =>
-          new DecompilationResult(isScala = false, "", file.getTimeStamp)
-      }
+    try Decompiler.decompile(file.getName, bytes) match {
+      case Some((sourceFileName, decompiledSourceText)) =>
+        new DecompilationResult(
+          isScala = true,
+          sourceFileName,
+          file.getTimeStamp) {
+          override def sourceText: String = decompiledSourceText
+        }
+      case _ =>
+        new DecompilationResult(isScala = false, "", file.getTimeStamp)
     } catch {
       case m: MatchError =>
         LOG.warn(

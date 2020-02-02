@@ -85,13 +85,11 @@ akka.loglevel = DEBUG
     system.actorOf(Props(classOf[Receptionist], testActor), "receptionist")
 
   lazy val remoteDaemon = {
-    {
-      val p = TestProbe()(client)
-      client
-        .actorSelection(RootActorPath(addr) / receptionist.path.elements)
-        .tell(IdentifyReq("/remote"), p.ref)
-      p.expectMsgType[ActorIdentity].ref.get
-    }
+    val p = TestProbe()(client)
+    client
+      .actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      .tell(IdentifyReq("/remote"), p.ref)
+    p.expectMsgType[ActorIdentity].ref.get
   }
 
   lazy val target2 = {

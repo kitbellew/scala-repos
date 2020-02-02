@@ -33,9 +33,8 @@ object Test extends App {
 
     val d = new TimeOfDayVar
     d.hours = 8; d.minutes = 30; d.seconds = 0
-    try {
-      d.hours = 25 // throws a DateError exception
-    } catch {
+    try d.hours = 25 // throws a DateError exception
+    catch {
       case de: DateError => println("DateError")
       case e: Exception  => println("Exception")
     }

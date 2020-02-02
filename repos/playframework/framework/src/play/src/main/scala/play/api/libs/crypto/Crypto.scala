@@ -350,13 +350,12 @@ object CSRFTokenSigner {
     * timing attacks.
     */
   def constantTimeEquals(a: String, b: String): Boolean =
-    if (a.length != b.length) {
+    if (a.length != b.length)
       false
-    } else {
+    else {
       var equal = 0
-      for (i <- 0 until a.length) {
+      for (i <- 0 until a.length)
         equal |= a(i) ^ b(i)
-      }
       equal == 0
     }
 }
@@ -418,21 +417,18 @@ class AESCTRCrypter @Inject() (config: CryptoConfig) extends AESCrypter {
   def decryptAES(value: String, privateKey: String): String = {
     val seperator = "-"
     val sepIndex = value.indexOf(seperator)
-    if (sepIndex < 0) {
+    if (sepIndex < 0)
       decryptAESVersion0(value, privateKey)
-    } else {
+    else {
       val version = value.substring(0, sepIndex)
       val data = value.substring(sepIndex + 1, value.length())
       version match {
-        case "1" => {
+        case "1" =>
           decryptAESVersion1(data, privateKey)
-        }
-        case "2" => {
+        case "2" =>
           decryptAESVersion2(data, privateKey)
-        }
-        case _ => {
+        case _ =>
           throw new CryptoException("Unknown version")
-        }
       }
     }
   }

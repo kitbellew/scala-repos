@@ -53,19 +53,17 @@ class IndexedRowMatrix @Since("1.0.0") (
 
   @Since("1.0.0")
   override def numCols(): Long = {
-    if (nCols <= 0) {
+    if (nCols <= 0)
       // Calling `first` will throw an exception if `rows` is empty.
       nCols = rows.first().vector.size
-    }
     nCols
   }
 
   @Since("1.0.0")
   override def numRows(): Long = {
-    if (nRows <= 0L) {
+    if (nRows <= 0L)
       // Reduce will throw an exception if `rows` is empty.
       nRows = rows.map(_.index).reduce(math.max) + 1L
-    }
     nRows
   }
 
@@ -165,9 +163,8 @@ class IndexedRowMatrix @Since("1.0.0") (
           IndexedRow(i, v)
       }
       new IndexedRowMatrix(indexedRows, nRows, svd.U.numCols().toInt)
-    } else {
+    } else
       null
-    }
     SingularValueDecomposition(U, svd.s, svd.V)
   }
 

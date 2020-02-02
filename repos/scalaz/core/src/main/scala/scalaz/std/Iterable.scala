@@ -22,9 +22,8 @@ trait IterableInstances {
           val a2 = i2.next()
 
           val o = A.order(a1, a2)
-          if (o != EQ) {
+          if (o != EQ)
             return o
-          }
         }
         anyVal.booleanInstance.order(i1.hasNext, i2.hasNext)
       }
@@ -41,9 +40,8 @@ trait IterableInstances {
           val x1 = i1.next
           val x2 = i2.next
 
-          if (!Equal[A].equal(x1, x2)) {
+          if (!Equal[A].equal(x1, x2))
             b = true
-          }
         }
 
         !(b || i1.hasNext || i2.hasNext)

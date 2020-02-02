@@ -203,15 +203,13 @@ final class DecisionTreeRegressionModel private[ml] (
       predictVariance(features)
     }
     var output = dataset
-    if ($(predictionCol).nonEmpty) {
+    if ($(predictionCol).nonEmpty)
       output =
         output.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
-    }
-    if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
+    if (isDefined(varianceCol) && $(varianceCol).nonEmpty)
       output = output.withColumn(
         $(varianceCol),
         predictVarianceUDF(col($(featuresCol))))
-    }
     output
   }
 

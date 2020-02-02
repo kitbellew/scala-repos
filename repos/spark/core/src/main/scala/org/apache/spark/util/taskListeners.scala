@@ -52,9 +52,9 @@ private[spark] class TaskCompletionListenerException(
     extends RuntimeException {
 
   override def getMessage: String =
-    if (errorMessages.size == 1) {
+    if (errorMessages.size == 1)
       errorMessages.head
-    } else {
+    else {
       errorMessages.zipWithIndex
         .map { case (msg, i) => s"Exception $i: $msg" }
         .mkString("\n")

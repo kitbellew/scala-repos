@@ -27,7 +27,7 @@ class JavaAccessorMethodCalledAsEmptyParenInspection
           call.getParent match {
             case callParent: ScMethodCall => // do nothing
             case _ =>
-              if (call.argumentExpressions.isEmpty) {
+              if (call.argumentExpressions.isEmpty)
                 e.resolve() match {
                   case _: ScalaPsiElement => // do nothing
                   case (m: PsiMethod)
@@ -40,7 +40,6 @@ class JavaAccessorMethodCalledAsEmptyParenInspection
                       new RemoveCallParentheses(call))
                   case _ =>
                 }
-              }
           }
         case _ =>
       }

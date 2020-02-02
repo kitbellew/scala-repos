@@ -104,9 +104,8 @@ private[spark] object ShutdownHookManager extends Logging {
         !absolutePath.equals(path) && absolutePath.startsWith(path)
       }
     }
-    if (retval) {
+    if (retval)
       logInfo("path = " + file + ", already present as root for deletion.")
-    }
     retval
   }
 
@@ -185,17 +184,15 @@ private[util] class SparkShutdownHookManager {
   def runAll(): Unit = {
     shuttingDown = true
     var nextHook: SparkShutdownHook = null
-    while ({ nextHook = hooks.synchronized { hooks.poll() }; nextHook != null }) {
+    while ({ nextHook = hooks.synchronized { hooks.poll() }; nextHook != null })
       Try(Utils.logUncaughtExceptions(nextHook.run()))
-    }
   }
 
   def add(priority: Int, hook: () => Unit): AnyRef =
     hooks.synchronized {
-      if (shuttingDown) {
+      if (shuttingDown)
         throw new IllegalStateException(
           "Shutdown hooks cannot be modified during shutdown.")
-      }
       val hookRef = new SparkShutdownHook(priority, hook)
       hooks.add(hookRef)
       hookRef

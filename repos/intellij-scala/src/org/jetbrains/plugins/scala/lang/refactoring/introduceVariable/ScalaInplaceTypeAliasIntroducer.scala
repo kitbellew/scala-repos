@@ -59,9 +59,8 @@ object ScalaInplaceTypeAliasIntroducer {
               .getInstance(myEditor.getProject)
               .commitDocument(document)
           }
-          if (!myProject.isDisposed && myProject.isOpen) {
+          if (!myProject.isDisposed && myProject.isOpen)
             PsiDocumentManager.getInstance(myProject).commitDocument(document)
-          }
         }
       },
       "Introduce Type Alias",

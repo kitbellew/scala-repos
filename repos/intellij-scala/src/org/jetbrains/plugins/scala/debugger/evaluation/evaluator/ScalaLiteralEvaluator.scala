@@ -39,9 +39,8 @@ object ScalaLiteralEvaluator {
     val tp = l.getType().getOrAny
     val value = l.getValue
     import org.jetbrains.plugins.scala.lang.psi.types.Null
-    if (value == null && tp != Null) {
+    if (value == null && tp != Null)
       throw EvaluationException(s"Literal ${l.getText} has null value")
-    }
     new ScalaLiteralEvaluator(value, tp)
   }
 }

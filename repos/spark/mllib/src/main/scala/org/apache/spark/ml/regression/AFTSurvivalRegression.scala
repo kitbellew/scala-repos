@@ -117,9 +117,8 @@ private[regression] trait AFTSurvivalRegressionParams
       SchemaUtils.checkColumnType(schema, $(censorCol), DoubleType)
       SchemaUtils.checkColumnType(schema, $(labelCol), DoubleType)
     }
-    if (hasQuantilesCol) {
+    if (hasQuantilesCol)
       SchemaUtils.appendColumn(schema, $(quantilesCol), new VectorUDT)
-    }
     SchemaUtils.appendColumn(schema, $(predictionCol), DoubleType)
   }
 }
@@ -325,13 +324,12 @@ class AFTSurvivalRegressionModel private[ml] (
     val predictQuantilesUDF = udf { features: Vector =>
       predictQuantiles(features)
     }
-    if (hasQuantilesCol) {
+    if (hasQuantilesCol)
       dataset
         .withColumn($(predictionCol), predictUDF(col($(featuresCol))))
         .withColumn($(quantilesCol), predictQuantilesUDF(col($(featuresCol))))
-    } else {
+    else
       dataset.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
-    }
   }
 
   @Since("1.6.0")

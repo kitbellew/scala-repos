@@ -121,11 +121,10 @@ object ScalaPluginUpdater {
   def doUpdatePluginHostsAndCheck(
       branch: ScalaApplicationSettings.pluginBranch) = {
     doUpdatePluginHosts(branch)
-    if (UpdateSettings.getInstance().isCheckNeeded) {
+    if (UpdateSettings.getInstance().isCheckNeeded)
       UpdateChecker
         .updateAndShowResult()
         .doWhenDone(toRunnable(postCheckIdeaCompatibility(branch)))
-    }
   }
 
   def getScalaPluginBranch: ScalaApplicationSettings.pluginBranch =
@@ -156,9 +155,8 @@ object ScalaPluginUpdater {
       val pluginIdString: String = pluginId.getIdString
       import scala.collection.JavaConversions._
       while (installedPlugins.exists(
-               _.getPluginId.getIdString == pluginIdString)) {
+               _.getPluginId.getIdString == pluginIdString))
         installedPlugins.remove(pluginIdString)
-      }
     } catch {
       case e1: IOException => PluginManagerMain.LOG.error(e1)
     }
@@ -226,13 +224,12 @@ object ScalaPluginUpdater {
         .request(a)
         .connect(new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
           def process(request: HttpRequests.Request) =
-            try {
-              Some(
-                new UpdatesInfo(
-                  JDOMUtil
-                    .loadDocument(request.getInputStream)
-                    .detachRootElement))
-            } catch { case e: JDOMException => LOG.info(e); None }
+            try Some(
+              new UpdatesInfo(
+                JDOMUtil
+                  .loadDocument(request.getInputStream)
+                  .detachRootElement))
+            catch { case e: JDOMException => LOG.info(e); None }
         })
       if (info.isDefined) {
         val strategy = new UpdateStrategy(
@@ -295,7 +292,7 @@ object ScalaPluginUpdater {
       .getEventMulticaster
       .removeDocumentListener(updateListener)
     if (lastUpdateTime == 0L || System
-          .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
+          .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1))
       ApplicationManager.getApplication.executeOnPooledThread(new Runnable {
         override def run() = {
           val buildNumber = ApplicationInfo.getInstance().getBuild.asString()
@@ -311,19 +308,17 @@ object ScalaPluginUpdater {
             .getInstance()
             .setValue(key, System.currentTimeMillis().toString)
           doneUpdating = true
-          try {
-            HttpRequests
-              .request(url)
-              .connect(new HttpRequests.RequestProcessor[Unit] {
-                override def process(request: Request) =
-                  JDOMUtil.load(request.getReader())
-              })
-          } catch {
+          try HttpRequests
+            .request(url)
+            .connect(new HttpRequests.RequestProcessor[Unit] {
+              override def process(request: Request) =
+                JDOMUtil.load(request.getReader())
+            })
+          catch {
             case e: Throwable => LOG.warn(e)
           }
         }
       })
-    }
   }
 
   def setupReporter(): Unit = {

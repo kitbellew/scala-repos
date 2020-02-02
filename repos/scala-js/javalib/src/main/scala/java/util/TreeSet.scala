@@ -52,9 +52,9 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
       }
 
       def remove(): Unit =
-        if (last.isEmpty) {
+        if (last.isEmpty)
           throw new IllegalStateException()
-        } else {
+        else {
           last.foreach(self.remove(_))
           last = None
         }
@@ -75,9 +75,9 @@ class TreeSet[E](_comparator: Comparator[_ >: E])
       }
 
       def remove(): Unit =
-        if (last.isEmpty) {
+        if (last.isEmpty)
           throw new IllegalStateException()
-        } else {
+        else {
           last.foreach(self.remove(_))
           last = None
         }

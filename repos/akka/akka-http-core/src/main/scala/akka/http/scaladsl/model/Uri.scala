@@ -379,7 +379,7 @@ object Uri {
     var _port = port
     if (_scheme.isEmpty) {
       _scheme = httpScheme(securedConnection)
-      if (_host.isEmpty) {
+      if (_host.isEmpty)
         if (hostHeaderHost.isEmpty) {
           _host = defaultAuthority.host
           _port = defaultAuthority.port
@@ -387,7 +387,6 @@ object Uri {
           _host = hostHeaderHost
           _port = hostHeaderPort
         }
-      }
     }
     create(
       _scheme,
@@ -1140,9 +1139,9 @@ object UriRendering {
           .upperHexDigit(byte)
       if (ix < string.length) {
         val charSize = string.charAt(ix) match {
-          case c if keep(c) ⇒ { r ~~ c; 1 }
-          case ' ' if replaceSpaces ⇒ { r ~~ '+'; 1 }
-          case c if c <= 127 && asciiCompatible ⇒ { appendEncoded(c.toByte); 1 }
+          case c if keep(c) ⇒ r ~~ c; 1
+          case ' ' if replaceSpaces ⇒ r ~~ '+'; 1
+          case c if c <= 127 && asciiCompatible ⇒ appendEncoded(c.toByte); 1
           case c ⇒
             def append(s: String) = s.getBytes(charset).foreach(appendEncoded)
             if (Character.isHighSurrogate(c)) {

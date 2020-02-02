@@ -124,9 +124,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
             res.info = Left(
               NoClassBTypeInfoClassSymbolInfoFailedSI9111(classSym.fullName))
             res
-          } else {
+          } else
             setClassInfo(classSym, res)
-          }
         }
       )
     }
@@ -457,9 +456,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           val members = exitingPickler(
             memberClassesForInnerClassTable(classSym))
           nested diff members
-        } else {
+        } else
           nested
-        }
       }
 
       val companionModuleMembers =
@@ -585,7 +583,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // (2) Java compatibility. See the big comment in BTypes that summarizes the InnerClass spec.
         if ((innerClassSym.isJavaDefined && innerClassSym.rawowner.isModuleClass) || // (1)
             (!isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
-              innerClassSym.rawowner))) { // (2)
+              innerClassSym.rawowner
+            ))) // (2)
           // phase travel for linkedCoC - does not always work in late phases
           exitingPickler(innerClassSym.rawowner.linkedClassOfClass) match {
             case NoSymbol =>
@@ -595,9 +594,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
             case companionClass =>
               classBTypeFromSymbol(companionClass)
           }
-        } else {
+        else
           classBTypeFromSymbol(innerClassSym.rawowner)
-        }
       }
 
       val outerName: Option[String] = {
@@ -650,7 +648,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       buildFromSymbol // InlineInfo required for classes being compiled, we have to create the classfile attribute
     else if (!compilerSettings.YoptInlinerEnabled)
       BTypes.EmptyInlineInfo // For other classes, we need the InlineInfo only inf the inliner is enabled.
-    else {
+    else
       // For classes not being compiled, the InlineInfo is read from the classfile attribute. This
       // fixes an issue with mixed-in methods: the mixin phase enters mixin methods only to class
       // symbols being compiled. For non-compiled classes, we could not build MethodInlineInfos
@@ -662,7 +660,6 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           EmptyInlineInfo.copy(warning =
             Some(ClassNotFoundWhenBuildingInlineInfoFromSymbol(missingClass)))
       }
-    }
   }
 
   /**

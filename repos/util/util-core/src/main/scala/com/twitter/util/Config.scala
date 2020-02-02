@@ -142,7 +142,7 @@ trait Config[T] extends (() => T) {
           if (name != "required" &&
               name != "optional" &&
               !name.endsWith("$outer") && // no loops!
-              interestingReturnTypes.exists(_.isAssignableFrom(rt))) {
+              interestingReturnTypes.exists(_.isAssignableFrom(rt)))
             method.invoke(config) match {
               case Unspecified =>
                 buf += (prefix + name)
@@ -160,7 +160,6 @@ trait Config[T] extends (() => T) {
                 collect(prefix + name + ".", sub)
               case _ =>
             }
-          }
         }
       }
     }

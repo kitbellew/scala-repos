@@ -90,23 +90,21 @@ abstract class RuleExecutor[TreeType <: TreeNode[_]] extends Logging {
             val runTime = System.nanoTime() - startTime
             RuleExecutor.timeMap.addAndGet(rule.ruleName, runTime)
 
-            if (!result.fastEquals(plan)) {
+            if (!result.fastEquals(plan))
               logTrace(s"""
                   |=== Applying Rule ${rule.ruleName} ===
                   |${sideBySide(plan.treeString, result.treeString).mkString(
                             "\n")}
                 """.stripMargin)
-            }
 
             result
         }
         iteration += 1
         if (iteration > batch.strategy.maxIterations) {
           // Only log if this is a rule that is supposed to run more than once.
-          if (iteration != 2) {
+          if (iteration != 2)
             logInfo(
               s"Max iterations (${iteration - 1}) reached for batch ${batch.name}")
-          }
           continue = false
         }
 
@@ -118,14 +116,13 @@ abstract class RuleExecutor[TreeType <: TreeNode[_]] extends Logging {
         lastPlan = curPlan
       }
 
-      if (!batchStartPlan.fastEquals(curPlan)) {
+      if (!batchStartPlan.fastEquals(curPlan))
         logDebug(s"""
           |=== Result of Batch ${batch.name} ===
           |${sideBySide(plan.treeString, curPlan.treeString).mkString("\n")}
         """.stripMargin)
-      } else {
+      else
         logTrace(s"Batch ${batch.name} has no effect.")
-      }
     }
 
     curPlan

@@ -264,17 +264,17 @@ final class Vector[+A] private[immutable] (
   }
 
   private def gotoPosWritable(oldIndex: Int, newIndex: Int, xor: Int) =
-    if (dirty) {
+    if (dirty)
       gotoPosWritable1(oldIndex, newIndex, xor)
-    } else {
+    else {
       gotoPosWritable0(newIndex, xor)
       dirty = true
     }
 
   private def gotoFreshPosWritable(oldIndex: Int, newIndex: Int, xor: Int) =
-    if (dirty) {
+    if (dirty)
       gotoFreshPosWritable1(oldIndex, newIndex, xor)
-    } else {
+    else {
       gotoFreshPosWritable0(oldIndex, newIndex, xor)
       dirty = true
     }
@@ -473,10 +473,9 @@ final class Vector[+A] private[immutable] (
             newFocus ^ newBlockIndex)
           s.display0(lo) = value.asInstanceOf[AnyRef]
           //assert(s.depth == depth+1) might or might not create new level!
-          if (s.depth == depth + 1) {
+          if (s.depth == depth + 1)
             //println("creating new level " + s.depth + " (had "+0+" free space)")
             s.debug()
-          }
           s
         }
       }
@@ -556,9 +555,9 @@ final class Vector[+A] private[immutable] (
 
   // requires structure is at index cutIndex and writable at level 0
   private def cleanLeftEdge(cutIndex: Int) =
-    if (cutIndex < (1 << 5)) {
+    if (cutIndex < (1 << 5))
       zeroLeft(display0, cutIndex)
-    } else if (cutIndex < (1 << 10)) {
+    else if (cutIndex < (1 << 10)) {
       zeroLeft(display0, cutIndex & 0x1f)
       display1 = copyRight(display1, (cutIndex >>> 5))
     } else if (cutIndex < (1 << 15)) {
@@ -583,17 +582,16 @@ final class Vector[+A] private[immutable] (
       display3 = copyRight(display3, (cutIndex >>> 15) & 0x1f)
       display4 = copyRight(display4, (cutIndex >>> 20) & 0x1f)
       display5 = copyRight(display5, (cutIndex >>> 25))
-    } else {
+    } else
       throw new IllegalArgumentException()
-    }
 
   // requires structure is writable and at index cutIndex
   private def cleanRightEdge(cutIndex: Int) =
     // we're actually sitting one block left if cutIndex lies on a block boundary
     // this means that we'll end up erasing the whole block!!
-    if (cutIndex <= (1 << 5)) {
+    if (cutIndex <= (1 << 5))
       zeroRight(display0, cutIndex)
-    } else if (cutIndex <= (1 << 10)) {
+    else if (cutIndex <= (1 << 10)) {
       zeroRight(display0, ((cutIndex - 1) & 0x1f) + 1)
       display1 = copyLeft(display1, (cutIndex >>> 5))
     } else if (cutIndex <= (1 << 15)) {
@@ -618,9 +616,8 @@ final class Vector[+A] private[immutable] (
       display3 = copyLeft(display3, (((cutIndex - 1) >>> 15) & 0x1f) + 1)
       display4 = copyLeft(display4, (((cutIndex - 1) >>> 20) & 0x1f) + 1)
       display5 = copyLeft(display5, (cutIndex >>> 25))
-    } else {
+    } else
       throw new IllegalArgumentException()
-    }
 
   private def requiredDepth(xor: Int) =
     if (xor < (1 << 5)) 1
@@ -703,7 +700,7 @@ class VectorIterator[+A](_startIndex: Int, endIndex: Int)
     val res = display0(lo).asInstanceOf[A]
     lo += 1
 
-    if (lo == endLo) {
+    if (lo == endLo)
       if (blockIndex + lo < endIndex) {
         val newBlockIndex = blockIndex + 32
         gotoNextBlockStart(newBlockIndex, blockIndex ^ newBlockIndex)
@@ -711,10 +708,8 @@ class VectorIterator[+A](_startIndex: Int, endIndex: Int)
         blockIndex = newBlockIndex
         endLo = math.min(endIndex - blockIndex, 32)
         lo = 0
-      } else {
+      } else
         _hasNext = false
-      }
-    }
 
     res
   }
@@ -831,31 +826,31 @@ private[immutable] trait VectorPointer[T] {
 
   // requires structure is at pos oldIndex = xor ^ index
   private[immutable] final def getElem(index: Int, xor: Int): T =
-    if (xor < (1 << 5)) { // level = 0
+    if (xor < (1 << 5)) // level = 0
       display0(index & 31).asInstanceOf[T]
-    } else if (xor < (1 << 10)) { // level = 1
+    else if (xor < (1 << 10)) // level = 1
       display1((index >> 5) & 31)
         .asInstanceOf[Array[AnyRef]](index & 31)
         .asInstanceOf[T]
-    } else if (xor < (1 << 15)) { // level = 2
+    else if (xor < (1 << 15)) // level = 2
       display2((index >> 10) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
         .asInstanceOf[Array[AnyRef]](index & 31)
         .asInstanceOf[T]
-    } else if (xor < (1 << 20)) { // level = 3
+    else if (xor < (1 << 20)) // level = 3
       display3((index >> 15) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
         .asInstanceOf[Array[AnyRef]](index & 31)
         .asInstanceOf[T]
-    } else if (xor < (1 << 25)) { // level = 4
+    else if (xor < (1 << 25)) // level = 4
       display4((index >> 20) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 15) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 10) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
         .asInstanceOf[Array[AnyRef]](index & 31)
         .asInstanceOf[T]
-    } else if (xor < (1 << 30)) { // level = 5
+    else if (xor < (1 << 30)) // level = 5
       display5((index >> 25) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 20) & 31)
         .asInstanceOf[Array[AnyRef]]((index >> 15) & 31)
@@ -863,18 +858,17 @@ private[immutable] trait VectorPointer[T] {
         .asInstanceOf[Array[AnyRef]]((index >> 5) & 31)
         .asInstanceOf[Array[AnyRef]](index & 31)
         .asInstanceOf[T]
-    } else { // level = 6
+    else // level = 6
       throw new IllegalArgumentException()
-    }
 
   // go to specific position
   // requires structure is at pos oldIndex = xor ^ index,
   // ensures structure is at pos index
   private[immutable] final def gotoPos(index: Int, xor: Int): Unit =
     if (xor < (1 << 5)) { // level = 0 (could maybe removed)
-    } else if (xor < (1 << 10)) { // level = 1
+    } else if (xor < (1 << 10)) // level = 1
       display0 = display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]]
-    } else if (xor < (1 << 15)) { // level = 2
+    else if (xor < (1 << 15)) { // level = 2
       display1 = display2((index >> 10) & 31).asInstanceOf[Array[AnyRef]]
       display0 = display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]]
     } else if (xor < (1 << 20)) { // level = 3
@@ -892,17 +886,16 @@ private[immutable] trait VectorPointer[T] {
       display2 = display3((index >> 15) & 31).asInstanceOf[Array[AnyRef]]
       display1 = display2((index >> 10) & 31).asInstanceOf[Array[AnyRef]]
       display0 = display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]]
-    } else { // level = 6
+    } else // level = 6
       throw new IllegalArgumentException()
-    }
 
   // USED BY ITERATOR
 
   // xor: oldIndex ^ index
   private[immutable] final def gotoNextBlockStart(index: Int, xor: Int): Unit = // goto block start pos
-    if (xor < (1 << 10)) { // level = 1
+    if (xor < (1 << 10)) // level = 1
       display0 = display1((index >> 5) & 31).asInstanceOf[Array[AnyRef]]
-    } else if (xor < (1 << 15)) { // level = 2
+    else if (xor < (1 << 15)) { // level = 2
       display1 = display2((index >> 10) & 31).asInstanceOf[Array[AnyRef]]
       display0 = display1(0).asInstanceOf[Array[AnyRef]]
     } else if (xor < (1 << 20)) { // level = 3
@@ -920,9 +913,8 @@ private[immutable] trait VectorPointer[T] {
       display2 = display3(0).asInstanceOf[Array[AnyRef]]
       display1 = display2(0).asInstanceOf[Array[AnyRef]]
       display0 = display1(0).asInstanceOf[Array[AnyRef]]
-    } else { // level = 6
+    } else // level = 6
       throw new IllegalArgumentException()
-    }
 
   // USED BY BUILDER
 
@@ -980,9 +972,8 @@ private[immutable] trait VectorPointer[T] {
       display3((index >> 15) & 31) = display2
       display4((index >> 20) & 31) = display3
       display5((index >> 25) & 31) = display4
-    } else { // level = 6
+    } else // level = 6
       throw new IllegalArgumentException()
-    }
 
   // STUFF BELOW USED BY APPEND / UPDATE
 
@@ -1102,9 +1093,9 @@ private[immutable] trait VectorPointer[T] {
       oldIndex: Int,
       newIndex: Int,
       xor: Int): Unit =
-    if (xor < (1 << 5)) { // level = 0
+    if (xor < (1 << 5)) // level = 0
       display0 = copyOf(display0)
-    } else if (xor < (1 << 10)) { // level = 1
+    else if (xor < (1 << 10)) { // level = 1
       display1 = copyOf(display1)
       display1((oldIndex >> 5) & 31) = display0
       display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
@@ -1168,9 +1159,8 @@ private[immutable] trait VectorPointer[T] {
         .asInstanceOf[Array[AnyRef]]
       display0 = nullSlotAndCopy(display1, (newIndex >> 5) & 31)
         .asInstanceOf[Array[AnyRef]]
-    } else { // level = 6
+    } else // level = 6
       throw new IllegalArgumentException()
-    }
 
   // USED IN DROP
 
@@ -1254,9 +1244,8 @@ private[immutable] trait VectorPointer[T] {
       display1 = display2((newIndex >> 10) & 31).asInstanceOf[Array[AnyRef]]
       if (display1 == null) display1 = new Array(32)
       display0 = new Array(32)
-    } else { // level = 6
+    } else // level = 6
       throw new IllegalArgumentException()
-    }
 
   // requires structure is dirty and at pos oldIndex,
   // ensures structure is dirty and at pos newIndex and writable at level 0

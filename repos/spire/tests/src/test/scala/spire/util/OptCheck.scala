@@ -96,9 +96,8 @@ class OptCheck extends FunSuite {
   }
 
   def parseInt(str: String): Opt[Int] =
-    try {
-      Opt(java.lang.Integer.parseInt(str))
-    } catch {
+    try Opt(java.lang.Integer.parseInt(str))
+    catch {
       case e: NumberFormatException => Opt.empty[Int]
     }
 

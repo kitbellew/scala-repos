@@ -73,26 +73,22 @@ class FieldFinder[T: ClassTag](
         // does the method return an actual instance of an actual class that's
         // associated with this Mapper class
         def validActualType(meth: Method): Boolean =
-          try {
-            // invoke the method
-            meth.invoke(onMagic) match {
-              case null =>
-                logger.debug(
-                  "Not a valid mapped field: %s".format(meth.getName))
-                false
-              case inst =>
-                // do we get a T of some sort back?
-                if (!typeFilter(inst.getClass)) false
-                else {
-                  // find out if the class name of the actual thing starts
-                  // with the name of this class or some superclass...
-                  // basically, is an inner class of this class
-                  getAllSupers(clz).find { c =>
-                    inst.getClass.getName.startsWith(c.getName)
-                  }.isDefined
-                }
-            }
-
+          try
+          // invoke the method
+          meth.invoke(onMagic) match {
+            case null =>
+              logger.debug("Not a valid mapped field: %s".format(meth.getName))
+              false
+            case inst =>
+              // do we get a T of some sort back?
+              if (!typeFilter(inst.getClass)) false
+              else
+                // find out if the class name of the actual thing starts
+                // with the name of this class or some superclass...
+                // basically, is an inner class of this class
+                getAllSupers(clz).find { c =>
+                  inst.getClass.getName.startsWith(c.getName)
+                }.isDefined
           } catch {
             case e: Exception =>
               logger.debug(

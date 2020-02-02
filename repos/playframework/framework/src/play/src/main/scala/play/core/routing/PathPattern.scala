@@ -52,7 +52,7 @@ case class PathPattern(parts: Seq[PathPart]) {
           matcher.group(groupCount)
       }
 
-  private lazy val (regex, groups) = {
+  private lazy val (regex, groups) =
     Some(
       parts.foldLeft(
         "",
@@ -60,17 +60,15 @@ case class PathPattern(parts: Seq[PathPart]) {
         0) { (s, e) =>
         e match {
           case StaticPart(p) => ((s._1 + Pattern.quote(p)), s._2, s._3)
-          case DynamicPart(k, r, encodeable) => {
+          case DynamicPart(k, r, encodeable) =>
             (
               (s._1 + "(" + r + ")"),
               (s._2 + (k -> decodeIfEncoded(encodeable, s._3 + 1))),
               s._3 + 1 + Pattern.compile(r).matcher("").groupCount)
-          }
         }
       }).map {
       case (r, g, _) => Pattern.compile("^" + r + "$") -> g
     }.get
-  }
 
   /**
     * Apply the path pattern to a given candidate path to see if it matches.
@@ -80,13 +78,12 @@ case class PathPattern(parts: Seq[PathPart]) {
     */
   def apply(path: String): Option[Map[String, Either[Throwable, String]]] = {
     val matcher = regex.matcher(path)
-    if (matcher.matches) {
+    if (matcher.matches)
       Some(groups.map {
         case (name, g) => name -> g(matcher)
       }.toMap)
-    } else {
+    else
       None
-    }
   }
 
   override def toString =

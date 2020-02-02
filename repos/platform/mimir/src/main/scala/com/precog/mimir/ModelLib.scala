@@ -79,13 +79,12 @@ trait ModelLibModule[M[+_]] {
             })(collection.breakOut)
 
           val idCols = modelCols ++ keyCols
-          if (idCols.isEmpty) {
+          if (idCols.isEmpty)
             Map(
               ColumnRef(CPath(paths.Key), CEmptyArray) -> Column.const(
                 CEmptyArray))
-          } else {
+          else
             idCols
-          }
         }
 
         def createRowIdentities(schema: CSchema): Int => ModelIdentity = {
@@ -197,9 +196,8 @@ trait ModelLibModule[M[+_]] {
                   includedDoubles.toArray) + model.constant
                 arr(i) = trans(res)
                 arr
-              } else {
+              } else
                 sys.error("Incorrect number of feature values.")
-              }
           }
 
           ScannerPrelims(
@@ -227,11 +225,10 @@ trait ModelLibModule[M[+_]] {
               case (col: DoubleColumn) => Some(col)
               case _                   => sys.error("Expected DoubleColumn.")
             }
-            else if (res.length == 0) {
+            else if (res.length == 0)
               None
-            } else {
+            else
               sys.error("Incorrect number of columns.")
-            }
           }
           (cpath, col)
         }

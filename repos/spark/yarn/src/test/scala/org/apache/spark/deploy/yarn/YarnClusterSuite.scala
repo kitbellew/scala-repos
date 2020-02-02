@@ -138,9 +138,7 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
       eventually(timeout(30 seconds), interval(100 millis)) {
         handle.getState() should be(SparkAppHandle.State.KILLED)
       }
-    } finally {
-      handle.kill()
-    }
+    } finally handle.kill()
   }
 
   private def testBasicYarnApp(clientMode: Boolean): Unit = {
@@ -169,11 +167,11 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
       "PYTHONPATH" -> pythonPath.mkString(File.pathSeparator))
 
     val moduleDir =
-      if (clientMode) {
+      if (clientMode)
         // In client-mode, .py files added with --py-files are not visible in the driver.
         // This is something that the launcher library would have to handle.
         tempDir
-      } else {
+      else {
         val subdir = new File(tempDir, "pyModules")
         subdir.mkdir()
         subdir
@@ -305,29 +303,24 @@ private object YarnClasspathTest extends Logging {
     logError(m, ex)
     // scalastyle:off println
     System.out.println(m)
-    if (ex != null) {
+    if (ex != null)
       ex.printStackTrace(System.out)
-    }
     // scalastyle:on println
   }
 
   def main(args: Array[String]): Unit = {
-    if (args.length != 2) {
+    if (args.length != 2)
       error(s"""
         |Invalid command line: ${args.mkString(" ")}
         |
         |Usage: YarnClasspathTest [driver result file] [executor result file]
         """.stripMargin)
-      // scalastyle:on println
-    }
+    // scalastyle:on println
 
     readResource(args(0))
     val sc = new SparkContext(new SparkConf())
-    try {
-      sc.parallelize(Seq(1)).foreach { x => readResource(args(1)) }
-    } finally {
-      sc.stop()
-    }
+    try sc.parallelize(Seq(1)).foreach { x => readResource(args(1)) } finally sc
+      .stop()
     System.exit(exitCode)
   }
 
@@ -343,9 +336,7 @@ private object YarnClasspathTest extends Logging {
         error(s"loading test.resource to $resultPath", t)
         // set the exit code if not yet set
         exitCode = 2
-    } finally {
-      Files.write(result, new File(resultPath), StandardCharsets.UTF_8)
-    }
+    } finally Files.write(result, new File(resultPath), StandardCharsets.UTF_8)
   }
 
 }

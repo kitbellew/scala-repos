@@ -256,11 +256,10 @@ object Task {
     val healthy =
       update.hasHealthy && (!current.hasHealthy || current.getHealthy != update.getHealthy)
     val changed = healthy || current.getState != update.getState
-    if (changed) {
+    if (changed)
       Some(update)
-    } else {
+    else
       None
-    }
   }
 
   def tasksById(tasks: Iterable[Task]): Map[Task.Id, Task] =

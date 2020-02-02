@@ -60,15 +60,14 @@ object Base64Long {
       builder: StringBuilder,
       l: Long,
       alphabet: Int => Char = StandardBase64Alphabet) {
-    if (l == 0) {
+    if (l == 0)
       // Special case for zero: Just like in decimal, if the number is
       // zero, represent it as a single zero digit.
       builder.append(alphabet(0))
-    } else {
+    else {
       var bitPosition = StartingBitPosition
-      while ((l >>> bitPosition) == 0) {
+      while ((l >>> bitPosition) == 0)
         bitPosition -= DigitWidth
-      }
       // Copy in the 6-bit segments, one at a time.
       while (bitPosition >= 0) {
         val shifted = l >>> bitPosition

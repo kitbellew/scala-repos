@@ -29,18 +29,14 @@ object FakeKeyStore {
   def shouldGenerate(keyStoreFile: File): Boolean = {
     import scala.collection.JavaConverters._
 
-    if (!keyStoreFile.exists()) {
+    if (!keyStoreFile.exists())
       return true
-    }
 
     // Should regenerate if we find an unacceptably weak key in there.
     val store = KeyStore.getInstance("JKS")
     val in = new FileInputStream(keyStoreFile)
-    try {
-      store.load(in, "".toCharArray)
-    } finally {
-      PlayIO.closeQuietly(in)
-    }
+    try store.load(in, "".toCharArray)
+    finally PlayIO.closeQuietly(in)
     store.aliases().asScala.exists { alias =>
       Option(store.getCertificate(alias)).exists(c => certificateTooWeak(c))
     }
@@ -80,18 +76,12 @@ object FakeKeyStore {
         Array(cert))
       keyStore.setCertificateEntry("playgeneratedtrusted", cert)
       val out = new FileOutputStream(keyStoreFile)
-      try {
-        keyStore.store(out, "".toCharArray)
-      } finally {
-        PlayIO.closeQuietly(out)
-      }
+      try keyStore.store(out, "".toCharArray)
+      finally PlayIO.closeQuietly(out)
     } else {
       val in = new FileInputStream(keyStoreFile)
-      try {
-        keyStore.load(in, "".toCharArray)
-      } finally {
-        PlayIO.closeQuietly(in)
-      }
+      try keyStore.load(in, "".toCharArray)
+      finally PlayIO.closeQuietly(in)
     }
 
     // Load the key and certificate into a key manager factory

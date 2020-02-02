@@ -55,9 +55,8 @@ object HttpRequest {
         }
       } else if (line.length > 0 && (line.head == ' ' || line.head == '\t')) {
         // continuation line
-        if (headers.size == 0) {
+        if (headers.size == 0)
           throw new ProtocolError("Malformed header line: " + line)
-        }
         val newHeaderLine =
           HeaderLine(headers.head.name, headers.head.value + " " + line.trim)
         readHeader(requestLine, newHeaderLine :: headers.drop(1))

@@ -87,11 +87,10 @@ class RequeueFilterTest extends FunSuite {
       if (s == "no" && numNos == 0) {
         numNos += 1
         Future.exception(new FailedFastException(s))
-      } else if (s == "fail") {
+      } else if (s == "fail")
         Future.exception(new FailedFastException(s))
-      } else {
+      else
         Future.value(s.length)
-      }
     })
 
     // a successful request

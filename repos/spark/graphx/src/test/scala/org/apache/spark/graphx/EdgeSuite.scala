@@ -32,8 +32,7 @@ class EdgeSuite extends SparkFunSuite {
     // to ascending order
     val sortedEdges = testEdges.sorted(Edge.lexicographicOrdering[Int])
 
-    for (i <- 0 until testEdges.length) {
+    for (i <- 0 until testEdges.length)
       assert(sortedEdges(i) == testEdges(testEdges.length - i - 1))
-    }
   }
 }

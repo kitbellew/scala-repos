@@ -218,9 +218,8 @@ private[stream] object ActorGraphInterpreter {
     // Call this when an error happens that does not come from the usual onError channel
     // (exceptions while calling RS interfaces, abrupt termination etc)
     def onInternalError(e: Throwable): Unit = {
-      if (!(upstreamCompleted || downstreamCanceled) && (upstream ne null)) {
+      if (!(upstreamCompleted || downstreamCanceled) && (upstream ne null))
         upstream.cancel()
-      }
       if (!isClosed(out)) onError(e)
     }
 
@@ -249,14 +248,13 @@ private[stream] object ActorGraphInterpreter {
       new OutHandler {
         override def onPull(): Unit =
           if (inputBufferElements > 1) push(out, dequeue())
-          else if (inputBufferElements == 1) {
+          else if (inputBufferElements == 1)
             if (upstreamCompleted) {
               push(out, dequeue())
               complete(out)
             } else push(out, dequeue())
-          } else if (upstreamCompleted) {
+          else if (upstreamCompleted)
             complete(out)
-          }
 
         override def onDownstreamFinish(): Unit = cancel()
 
@@ -559,7 +557,7 @@ private[stream] final class GraphInterpreterShell(
       val usingShellLimit = shellEventLimit < actorEventLimit
       val remainingQuota =
         interpreter.execute(Math.min(actorEventLimit, shellEventLimit))
-      if (interpreter.isCompleted) {
+      if (interpreter.isCompleted)
         // Cannot stop right away if not completely subscribed
         if (canShutDown) _isTerminated = true
         else {
@@ -571,7 +569,7 @@ private[stream] final class GraphInterpreterShell(
                 self ! Abort(GraphInterpreterShell.this)
             })
         }
-      } else if (interpreter.isSuspended && !resumeScheduled)
+      else if (interpreter.isSuspended && !resumeScheduled)
         sendResume(!usingShellLimit)
 
       if (usingShellLimit) actorEventLimit - shellEventLimit + remainingQuota
@@ -673,12 +671,11 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
       case Nil ⇒ if (activeInterpreters.isEmpty) context.stop(self)
       case shell :: tail ⇒
         newShells = tail
-        if (shell.isInitialized) {
+        if (shell.isInitialized)
           // yes, this steals another shell’s Resume, but that’s okay because extra ones will just not do anything
           finishShellRegistration()
-        } else if (!tryInit(shell)) {
+        else if (!tryInit(shell))
           if (activeInterpreters.isEmpty) finishShellRegistration()
-        }
     }
 
   override def preStart(): Unit = {

@@ -24,7 +24,7 @@ object TypeArgs {
           builder.advanceLexer() //Ate [
           builder.disableNewlines
           def checkTypeVariable: Boolean =
-            if (isPattern) {
+            if (isPattern)
               builder.getTokenType match {
                 case ScalaTokenTypes.tIDENTIFIER =>
                   val idText = builder.getTokenText
@@ -48,7 +48,7 @@ object TypeArgs {
                   } else false
                 case _ => false
               }
-            } else false
+            else false
 
           if (checkTypeVariable || Type.parse(builder)) {
             var parsedType = true

@@ -615,9 +615,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
               }
             case x => echo(s"Error exit from $ed ($x), ignoring")
           }
-        } finally {
-          tmp.delete()
-        }
+        } finally tmp.delete()
       case None =>
         if (history.historicize(text)) echo("Placing text in recent history.")
         else
@@ -646,7 +644,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           if ((s indexOf '+') > 0) {
             val (a, b) = s splitAt (s indexOf '+')
             (a.toInt, b.drop(1).toInt)
-          } else {
+          } else
             (s indexOf '-') match {
               case -1 => (s.toInt, 1)
               case 0  => val n = s.drop(1).toInt; (history.index - n, n)
@@ -654,7 +652,6 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
                 val n = s.init.toInt; (n, history.index - n)
               case i => val n = s.take(i).toInt; (n, s.drop(i + 1).toInt - n)
             }
-          }
         val index = (start - 1) max 0
         val text = history.asStrings(index, index + len) mkString "\n"
         edit(text)
@@ -752,9 +749,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       try {
         val reader = new ClassReader(input)
         reader.getClassName.replace('/', '.')
-      } finally {
-        input.close()
-      }
+      } finally input.close()
     }
     def alreadyDefined(clsName: String) =
       intp.classLoader.tryToLoadClass(clsName).isDefined
@@ -896,9 +891,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       val errless = intp compileSources new BatchSourceFile("<pastie>", code)
       if (!errless) echo("There were compilation errors!")
     }
-    if (code.nonEmpty) {
+    if (code.nonEmpty)
       if (raw) compileCode() else interpretCode()
-    }
     result
   }
 
@@ -952,17 +946,15 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
           case IR.Incomplete =>
             val saved = intp.partialInput
             intp.partialInput = code + "\n"
-            try {
-              in.readLine(paste.ContinuePrompt) match {
-                case null =>
-                  // we know compilation is going to fail since we're at EOF and the
-                  // parser thinks the input is still incomplete, but since this is
-                  // a file being read non-interactively we want to fail.  So we send
-                  // it straight to the compiler for the nice error message.
-                  intp.compileString(code)
-                  None
-                case line => interpretStartingWith(s"$code\n$line")
-              }
+            try in.readLine(paste.ContinuePrompt) match {
+              case null =>
+                // we know compilation is going to fail since we're at EOF and the
+                // parser thinks the input is still incomplete, but since this is
+                // a file being read non-interactively we want to fail.  So we send
+                // it straight to the compiler for the nice error message.
+                intp.compileString(code)
+                None
+              case line => interpretStartingWith(s"$code\n$line")
             } finally intp.partialInput = saved
         }
     }
@@ -1106,9 +1098,9 @@ object ILoop {
           override def readLine(): String = {
             mark(1) // default buffer is 8k
             val c = read()
-            if (c == -1 || c == 4) {
+            if (c == -1 || c == 4)
               null
-            } else {
+            else {
               reset()
               val s = super.readLine()
               // helping out by printing the line being interpreted.

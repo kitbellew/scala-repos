@@ -42,16 +42,14 @@ private[pickling] class IrScalaSymbols[
       Nil
     else if (sym.isClass) {
       val classSym = sym.asClass
-      if (tools.treatAsSealed(classSym)) {
+      if (tools.treatAsSealed(classSym))
         tools.directSubclasses(classSym).flatMap(cl => whyNotClosed(cl.asType))
-      } else {
+      else
         List(s"'${sym.fullName}' allows unknown subclasses (it is not sealed or final isCaseClass=${isCaseClass(
           sym.asInstanceOf[u.TypeSymbol])} isEffectivelyFinal=${sym.isEffectivelyFinal} isSealed=${classSym.isSealed} directSubclasses=${tools
           .directSubclasses(classSym)})")
-      }
-    } else {
+    } else
       List(s"'${sym.fullName}' is not a class or trait")
-    }
 
   def newClass(tpe: Type): IrClass =
     if (tpe.typeSymbol.isClass) {
@@ -116,10 +114,9 @@ private[pickling] class IrScalaSymbols[
     //private val fields? = allMethods.collect { case meth: MethodSymbol if meth.isAccessor || meth.isParamAccessor => meth }
 
     // Here we only return "accessor" methods.
-    override val methods: Seq[IrMethod] = {
+    override val methods: Seq[IrMethod] =
       (allMethods map { mth => new ScalaIrMethod(mth, this) })(
         collection.breakOut)
-    }
     override def fields: Seq[IrField] = {
       // TODO - It's possible some terms come from the constructor.  We don't really know if they are available at runtime
       //        or not, so we may ignore them.
@@ -208,14 +205,13 @@ private[pickling] class IrScalaSymbols[
     }
 
     /** This is part of a workaround for issues discovering transient annotations on fields. */
-    private[IrScalaSymbols] val transientArgNames: Set[String] = {
+    private[IrScalaSymbols] val transientArgNames: Set[String] =
       IrSymbol
         .allDeclaredMethodIncludingSubclasses(this)
         .filter(x => x.isParamAccessor || x.isVar || x.isVal)
         .filter(_.isMarkedTransient)
         .map(_.methodName)
         .toSet
-    }
 
   }
 
@@ -303,11 +299,10 @@ private[pickling] class IrScalaSymbols[
         case x                   => x
       }
     override def javaReflectionName: String = {
-      val isPrivateThis = {
+      val isPrivateThis =
         // Note: Scala 2.10 does not support this
         //mthd.isPrivateThis
         false
-      }
       if (mthd.isParamAccessor && (mthd.isPrivate || isPrivateThis)) {
         // Here we check to see if we need to encode the funky name that scala gives private fields to avoid conflicts
         // with fields in the parent class.

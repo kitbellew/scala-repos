@@ -14,7 +14,7 @@ object Reflector {
   private[this] val unmangledNames = new Memo[String, String]
   private[this] val descriptors = new Memo[ScalaType, ObjectDescriptor]
 
-  private[this] val primitives = {
+  private[this] val primitives =
     Set[Type](
       classOf[String],
       classOf[Char],
@@ -40,7 +40,6 @@ object Reflector {
       classOf[Symbol],
       classOf[Unit]
     )
-  }
 
   private[this] val defaultExcluded = Set(classOf[Nothing], classOf[Null])
 
@@ -80,32 +79,29 @@ object Reflector {
         sys.error(
           "resolveClass: expected 1+ classloaders but received empty list")
       case List(cl) => Some(Class.forName(c, true, cl).asInstanceOf[Class[X]])
-      case many => {
+      case many =>
         try {
           var clazz: Class[_] = null
           val iter = many.iterator
-          while (clazz == null && iter.hasNext) {
-            try {
-              clazz = Class.forName(c, true, iter.next())
-            } catch {
+          while (clazz == null && iter.hasNext)
+            try clazz = Class.forName(c, true, iter.next())
+            catch {
               case e: ClassNotFoundException => // keep going, maybe it's in the next one
             }
-          }
 
           if (clazz != null) Some(clazz.asInstanceOf[Class[X]]) else None
         } catch {
           case _: Throwable => None
         }
-      }
     }
 
   private[reflect] def createDescriptor(
       tpe: ScalaType,
       paramNameReader: ParameterNameReader = ParanamerReader)
       : ObjectDescriptor = {
-    if (tpe.isPrimitive) {
+    if (tpe.isPrimitive)
       PrimitiveDescriptor(tpe.simpleName, tpe.fullName, tpe)
-    } else {
+    else {
 
       val path =
         if (tpe.rawFullName.endsWith("$")) tpe.rawFullName
@@ -195,14 +191,14 @@ object Reflector {
             else scalaTypeOf[AnyRef]
           case x =>
             val st = scalaTypeOf(x)
-            if (st.erasure == classOf[java.lang.Object]) {
+            if (st.erasure == classOf[java.lang.Object])
               scalaTypeOf(
                 ScalaSigReader.readConstructor(
                   name,
                   owner,
                   idxes getOrElse List(index),
                   ctorParameterNames))
-            } else st
+            else st
         }
       }
 

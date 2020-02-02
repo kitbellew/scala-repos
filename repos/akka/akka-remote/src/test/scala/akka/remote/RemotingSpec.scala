@@ -646,9 +646,7 @@ class RemotingSpec
             proxySsl ! otherGuy
             expectMsg(3.seconds, ("pong", otherGuyRemoteTest))
           }(otherSystem)
-      } finally {
-        shutdown(otherSystem)
-      }
+      } finally shutdown(otherSystem)
     }
 
     "should not publish AddressTerminated even on InvalidAssociationExecptions" in {
@@ -942,12 +940,8 @@ class RemotingSpec
                   ._1 == "pong")
             }
           }
-        } finally {
-          shutdown(otherSystem)
-        }
-      } finally {
-        shutdown(thisSystem)
-      }
+        } finally shutdown(otherSystem)
+      } finally shutdown(thisSystem)
     }
 
     "allow other system to connect even if it's not there at first" in {
@@ -987,12 +981,8 @@ class RemotingSpec
                   ._1 == "pong")
             }
           }
-        } finally {
-          shutdown(otherSystem)
-        }
-      } finally {
-        shutdown(thisSystem)
-      }
+        } finally shutdown(otherSystem)
+      } finally shutdown(thisSystem)
     }
   }
 }

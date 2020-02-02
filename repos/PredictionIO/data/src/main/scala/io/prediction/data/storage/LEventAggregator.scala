@@ -93,20 +93,16 @@ object LEventAggregator {
   private def dataMapAggregator
       : ((Option[DataMap], Event) => Option[DataMap]) = { (p, e) =>
     e.event match {
-      case "$set" => {
-        if (p == None) {
+      case "$set" =>
+        if (p == None)
           Some(e.properties)
-        } else {
+        else
           p.map(_ ++ e.properties)
-        }
-      }
-      case "$unset" => {
-        if (p == None) {
+      case "$unset" =>
+        if (p == None)
           None
-        } else {
+        else
           p.map(_ -- e.properties.keySet)
-        }
-      }
       case "$delete" => None
       case _         => p // do nothing for others
     }
@@ -114,7 +110,7 @@ object LEventAggregator {
 
   private def propAggregator: ((Prop, Event) => Prop) = { (p, e) =>
     e.event match {
-      case "$set" | "$unset" | "$delete" => {
+      case "$set" | "$unset" | "$delete" =>
         Prop(
           dm = dataMapAggregator(p.dm, e),
           firstUpdated = p.firstUpdated
@@ -124,7 +120,6 @@ object LEventAggregator {
             .map { t => last(t, e.eventTime) }
             .orElse(Some(e.eventTime))
         )
-      }
       case _ => p // do nothing for others
     }
   }

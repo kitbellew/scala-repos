@@ -37,15 +37,15 @@ private[spark] class CountEvaluator(totalOutputs: Int, confidence: Double)
   }
 
   override def currentResult(): BoundedDouble =
-    if (outputsMerged == totalOutputs) {
+    if (outputsMerged == totalOutputs)
       new BoundedDouble(sum, 1.0, sum, sum)
-    } else if (outputsMerged == 0) {
+    else if (outputsMerged == 0)
       new BoundedDouble(
         0,
         0.0,
         Double.NegativeInfinity,
         Double.PositiveInfinity)
-    } else {
+    else {
       val p = outputsMerged.toDouble / totalOutputs
       val mean = (sum + 1 - p) / p
       val variance = (sum + 1) * (1 - p) / (p * p)

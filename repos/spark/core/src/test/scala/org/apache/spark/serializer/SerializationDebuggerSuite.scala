@@ -151,9 +151,9 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
     def findAndAssert(shouldSerialize: Boolean, obj: Any): Unit = {
       val s = find(obj)
-      if (shouldSerialize) {
+      if (shouldSerialize)
         assert(s.isEmpty)
-      } else {
+      else {
         assert(s.nonEmpty)
         assert(s.head.contains("NotSerializable"))
       }

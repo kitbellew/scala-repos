@@ -180,7 +180,7 @@ class ScalaScriptRunConfiguration(
       def applyFilter(line: String, entireLength: Int): Result = {
         val start = entireLength - line.length
         var end = entireLength - line.length
-        if (line.startsWith("(fragment of ")) {
+        if (line.startsWith("(fragment of "))
           try {
             var cache =
               line.replaceFirst("[(][f][r][a][g][m][e][n][t][ ][o][f][ ]", "")
@@ -195,7 +195,7 @@ class ScalaScriptRunConfiguration(
           } catch {
             case _: Exception => return null
           }
-        } else null
+        else null
       }
     }
   }

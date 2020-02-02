@@ -136,16 +136,15 @@ object ThriftServiceIface {
       ): Future[method.Result] = {
         methodStats.requestsCounter.incr()
         service(args).onSuccess { result =>
-          if (result.successField.isDefined) {
+          if (result.successField.isDefined)
             methodStats.successCounter.incr()
-          } else {
+          else
             result.firstException.map { ex =>
               methodStats.failuresCounter.incr()
               methodStats.failuresScope
                 .counter(Throwables.mkString(ex): _*)
                 .incr()
             }
-          }
         }
       }
     }

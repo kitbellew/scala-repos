@@ -52,9 +52,8 @@ object Bessel {
       if (z <= 8.0) {
         y = (z / 2.0) - 2.0
         z = chbevl(y, A_i1, 29) * z * math.exp(z)
-      } else {
+      } else
         z = math.exp(z) * chbevl(32.0 / z - 2.0, B_i1, 25) / math.sqrt(z)
-      }
       if (x < 0.0)
         z = -z
       z

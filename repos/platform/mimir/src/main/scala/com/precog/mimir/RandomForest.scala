@@ -181,9 +181,9 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
     def growTree(orders: Array[Array[Int]], tries: Int = 0): DecisionTree[A] = {
       val members = orders(0)
 
-      if (members.size < opts.minSplitSize || tries > opts.maxTries) {
+      if (members.size < opts.minSplitSize || tries > opts.maxTries)
         Leaf(region(members).value)
-      } else {
+      else {
         val vars = predictors()
         val region0 = region(members)
         var minError = region0.error
@@ -215,9 +215,9 @@ trait TreeMaker[ /*@specialized(Double) */ A] {
           f += 1
         }
 
-        if (minIdx < 0) {
+        if (minIdx < 0)
           growTree(orders, tries + 1)
-        } else {
+        else {
           val featureOrder = orders(minVar)
           val leftSplit = featureOrder take (minIdx + 1)
           val rightSplit = featureOrder drop (minIdx + 1)
@@ -303,11 +303,10 @@ class ClassificationTreeMaker[K] extends TreeMaker[K] {
     def -=(k: K) {
       if (m containsKey k) {
         val cnt = m.get(k) - 1
-        if (cnt == 0) {
+        if (cnt == 0)
           m.remove(k)
-        } else {
+        else
           m.put(k, cnt)
-        }
         n -= 1
       }
     }
@@ -378,9 +377,8 @@ object ClassificationForest {
 trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
   private def makeArrays(table: Table): M[Array[Array[Double]]] =
     extract(table) {
-      case (c: HomogeneousArrayColumn[_]) => { (row: Int) =>
-        c(row).asInstanceOf[Array[Double]]
-      }
+      case (c: HomogeneousArrayColumn[_]) =>
+        (row: Int) => c(row).asInstanceOf[Array[Double]]
     }
 
   private def collapse[@specialized(Double) A: Manifest](
@@ -408,20 +406,18 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       slice: Slice,
       zero: => A)(pf: PartialFunction[Column, Int => A]): Option[Array[A]] =
     slice.columns.values.collectFirst {
-      case c if pf.isDefinedAt(c) => {
+      case c if pf.isDefinedAt(c) =>
         val extract = pf(c)
         val xs = new Array[A](slice.size)
         var i = 0
         while (i < xs.length) {
-          if (c.isDefinedAt(i)) {
+          if (c.isDefinedAt(i))
             xs(i) = extract(i)
-          } else {
+          else
             xs(i) = zero
-          }
           i += 1
         }
         xs
-      }
     }
 
   private def extract[@specialized(Double) A: Manifest](table: Table)(
@@ -487,9 +483,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           values: Array[RValue]): Map[ColumnRef, Column] = {
         var i = 0
         while (i < values.length) {
-          if (!defined(i)) {
+          if (!defined(i))
             values(i) = CUndefined
-          }
           i += 1
         }
 
@@ -618,9 +613,9 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
 
       def makeForest(table: Table, tpe: JType, prev: F = Monoid[F].zero): M[F] =
-        if (prev.trees.size > maxForestSize) {
+        if (prev.trees.size > maxForestSize)
           M.point(prev)
-        } else {
+        else {
           val numTrainingSamples = chunkSize * numChunks
           val numOfSamples = numTrainingSamples + numChunks
 
@@ -680,11 +675,10 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
               errors map (variance) flatMap { s2 =>
                 val forest = forests.last
-                if (s2 < varianceThreshold) {
+                if (s2 < varianceThreshold)
                   M.point(forest)
-                } else {
+                else
                   makeForest(table, tpe, forest)
-                }
               }
             }
           }
@@ -712,7 +706,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           def predict(stream: StreamT[M, Slice]): StreamT[M, Slice] =
             StreamT(stream.uncons map {
-              case Some((head, tail)) => {
+              case Some((head, tail)) =>
                 val valueColumns =
                   models.foldLeft(Map.empty[ColumnRef, Column]) {
                     case (acc, (modelId, (_, forest))) =>
@@ -723,9 +717,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                         .toArray[Double]
                       val vecsOpt =
                         sliceToArray[Array[Double]](modelSlice, null) {
-                          case (c: HomogeneousArrayColumn[_]) => { (row: Int) =>
-                            c(row).asInstanceOf[Array[Double]]
-                          }
+                          case (c: HomogeneousArrayColumn[_]) =>
+                            (row: Int) => c(row).asInstanceOf[Array[Double]]
                         }
 
                       val defined: BitSet = BitSetUtil.create()
@@ -754,17 +747,16 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 val keyColumns = head.deref(paths.Key).wrap(paths.Key).columns
                 val columns = keyColumns ++ valueColumns
                 StreamT.Yield(Slice(columns, head.size), predict(tail))
-              }
 
               case None =>
                 StreamT.Done
             })
 
-          val predictions = if (forests.isEmpty) {
-            Table.empty
-          } else {
-            Table(predict(objectTable.slices), objectTable.size)
-          }
+          val predictions =
+            if (forests.isEmpty)
+              Table.empty
+            else
+              Table(predict(objectTable.slices), objectTable.size)
 
           M.point(predictions)
         }

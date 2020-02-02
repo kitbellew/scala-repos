@@ -65,9 +65,8 @@ class SortBasedAggregationIterator(
       val unsafeProjection =
         UnsafeProjection.create(bufferSchema.map(_.dataType))
       unsafeProjection.apply(genericMutableBuffer)
-    } else {
+    } else
       genericMutableBuffer
-    }
     initializeBuffer(buffer)
     buffer
   }
@@ -103,10 +102,9 @@ class SortBasedAggregationIterator(
       nextGroupingKey = groupingProjection(inputRow).copy()
       firstRowInNextGroup = inputRow.copy()
       sortedInputHasNewGroup = true
-    } else {
+    } else
       // This inputIter is empty.
       sortedInputHasNewGroup = false
-    }
 
   initialize()
 
@@ -127,9 +125,9 @@ class SortBasedAggregationIterator(
       val groupingKey = groupingProjection(currentRow)
 
       // Check if the current row belongs the current input row.
-      if (currentGroupingKey == groupingKey) {
+      if (currentGroupingKey == groupingKey)
         processRow(sortBasedAggregationBuffer, safeProj(currentRow))
-      } else {
+      else {
         // We find a new group.
         findNextPartition = true
         nextGroupingKey = groupingKey.copy()
@@ -138,9 +136,8 @@ class SortBasedAggregationIterator(
     }
     // We have not seen a new group. It means that there is no new row in the input
     // iter. The current group is the last group of the iter.
-    if (!findNextPartition) {
+    if (!findNextPartition)
       sortedInputHasNewGroup = false
-    }
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -160,10 +157,9 @@ class SortBasedAggregationIterator(
       initializeBuffer(sortBasedAggregationBuffer)
       numOutputRows += 1
       outputRow
-    } else {
+    } else
       // no more result
       throw new NoSuchElementException
-    }
 
   def outputForEmptyGroupingKeyWithoutInput(): UnsafeRow = {
     initializeBuffer(sortBasedAggregationBuffer)

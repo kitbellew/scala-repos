@@ -17,14 +17,12 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 object Params {
   def parse(builder: ScalaPsiBuilder): Boolean = {
-    if (!Param.parse(builder)) {
+    if (!Param.parse(builder))
       return false
-    }
     while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
       builder.advanceLexer() //Ate ,
-      if (!Param.parse(builder)) {
+      if (!Param.parse(builder))
         builder error ScalaBundle.message("wrong.parameter")
-      }
     }
     true
   }

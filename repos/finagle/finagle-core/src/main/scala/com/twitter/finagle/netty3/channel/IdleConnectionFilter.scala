@@ -142,9 +142,8 @@ class IdleConnectionFilter[Req, Rep](
     else if (connectionCount <= threshold.highWaterMark) {
       closeIdleConnections() // whatever the result of this, we accept the connection
       true
-    } else {
+    } else
       // Try to close idle connections, if we don't find any, then we refuse the connection
       closeIdleConnections()
-    }
   }
 }

@@ -100,16 +100,15 @@ abstract class JournalSpec(config: Config)
         writerUuid = writerUuid)
 
     val msgs =
-      if (supportsAtomicPersistAllOfSeveralEvents) {
+      if (supportsAtomicPersistAllOfSeveralEvents)
         (fromSnr to toSnr - 1).map { i ⇒
           if (i == toSnr - 1)
             AtomicWrite(List(persistentRepr(i), persistentRepr(i + 1)))
           else
             AtomicWrite(persistentRepr(i))
         }
-      } else {
+      else
         (fromSnr to toSnr).map { i ⇒ AtomicWrite(persistentRepr(i)) }
-      }
 
     val probe = TestProbe()
 

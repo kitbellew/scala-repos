@@ -45,7 +45,7 @@ class WebJarServlet extends HttpServlet {
     val resourceURI = s"/META-INF/resources/webjars$jar$resource"
 
     //log request data, since the names are not very intuitive
-    if (log.isDebugEnabled) {
+    if (log.isDebugEnabled)
       log.debug(s"""
          |pathinfo: ${req.getPathInfo}
          |context: ${req.getContextPath}
@@ -58,7 +58,6 @@ class WebJarServlet extends HttpServlet {
          |mime: $mime
          |resourceURI: $resourceURI
        """.stripMargin)
-    }
 
     //special rule for accessing root -> redirect to ui main page
     if (req.getRequestURI == "/") sendRedirect(resp, "ui/")

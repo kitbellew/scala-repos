@@ -87,11 +87,10 @@ private[stats] object StatsFormatter {
     protected def labelPercentile(p: Double): String = {
       // this has a strange quirk that p999 gets formatted as p9990
       val gname: String = "p" + (p * 10000).toInt
-      if (3 < gname.length && ("00" == gname.substring(3))) {
+      if (3 < gname.length && ("00" == gname.substring(3)))
         gname.substring(0, 3)
-      } else {
+      else
         gname
-      }
     }
 
     protected def labelMin: String = "min"

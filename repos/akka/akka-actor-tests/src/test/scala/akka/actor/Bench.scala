@@ -93,7 +93,7 @@ object Chameneos {
         }
 
       case msg @ Meet(a, c) ⇒
-        if (n > 0) {
+        if (n > 0)
           waitingChameneo match {
             case Some(chameneo) ⇒
               n -= 1
@@ -101,7 +101,7 @@ object Chameneos {
               waitingChameneo = None
             case None ⇒ waitingChameneo = Some(sender())
           }
-        } else {
+        else {
           waitingChameneo.foreach(_ ! Exit)
           sender() ! Exit
         }

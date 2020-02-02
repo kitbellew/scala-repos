@@ -96,28 +96,25 @@ final class CategoricalSplit private[ml] (
 
   /** Set of categories determining the splitting rule, along with [[isLeft]]. */
   private val categories: Set[Double] = {
-    if (isLeft) {
+    if (isLeft)
       _leftCategories.toSet
-    } else {
+    else
       setComplement(_leftCategories.toSet)
-    }
   }
 
   override private[ml] def shouldGoLeft(features: Vector): Boolean =
-    if (isLeft) {
+    if (isLeft)
       categories.contains(features(featureIndex))
-    } else {
+    else
       !categories.contains(features(featureIndex))
-    }
 
   override private[tree] def shouldGoLeft(
       binnedFeature: Int,
       splits: Array[Split]): Boolean =
-    if (isLeft) {
+    if (isLeft)
       categories.contains(binnedFeature.toDouble)
-    } else {
+    else
       !categories.contains(binnedFeature.toDouble)
-    }
 
   override def equals(o: Any): Boolean =
     o match {
@@ -128,11 +125,11 @@ final class CategoricalSplit private[ml] (
     }
 
   override private[tree] def toOld: OldSplit = {
-    val oldCats = if (isLeft) {
-      categories
-    } else {
-      setComplement(categories)
-    }
+    val oldCats =
+      if (isLeft)
+        categories
+      else
+        setComplement(categories)
     OldSplit(
       featureIndex,
       threshold = 0.0,
@@ -179,10 +176,10 @@ final class ContinuousSplit private[ml] (
   override private[tree] def shouldGoLeft(
       binnedFeature: Int,
       splits: Array[Split]): Boolean =
-    if (binnedFeature == splits.length) {
+    if (binnedFeature == splits.length)
       // > last split, so split right
       false
-    } else {
+    else {
       val featureValueUpperBound = splits(binnedFeature)
         .asInstanceOf[ContinuousSplit]
         .threshold

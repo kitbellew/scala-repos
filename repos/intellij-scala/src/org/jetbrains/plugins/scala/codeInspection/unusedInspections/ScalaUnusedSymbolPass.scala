@@ -163,9 +163,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       case x: ScMember => x.hasModifierProperty("implicit")
       case _           => false
     }
-    if (!isSpecialDef && !isImplicit) {
+    if (!isSpecialDef && !isImplicit)
       checkUnusedAndVarCouldBeVal(declElementHolder, state)
-    }
   }
 
   /** Highlight unused local symbols, and vals that could be vars */
@@ -190,9 +189,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
                 hasAssign = true
                 used = true
               }
-              if (holder.isValueReadUsed(decElem)) {
+              if (holder.isValueReadUsed(decElem))
                 used = true
-              }
             }
           }
           holder.retrieveUnusedReferencesInfo(runnable)

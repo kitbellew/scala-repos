@@ -69,11 +69,10 @@ object Algorithms {
   def keySize(key: java.security.Key): Option[Int] =
     key match {
       case sk: SecretKey =>
-        if ((sk.getFormat == "RAW") && sk.getEncoded != null) {
+        if ((sk.getFormat == "RAW") && sk.getEncoded != null)
           Some(sk.getEncoded.length * 8)
-        } else {
+        else
           None
-        }
       case pubk: RSAKey =>
         Some(pubk.getModulus.bitLength)
       case pubk: ECKey =>
@@ -106,15 +105,13 @@ object Algorithms {
   def translateKey(pubk: Key): Key = {
     val keyAlgName = getKeyAlgorithmName(pubk)
     foldVersion(
-      run16 = {
-        keyAlgName match {
-          case "EC" =>
-            // If we are on 1.6, then we can't use the EC factory and have to pull it directly.
-            translateECKey(pubk)
-          case _ =>
-            val keyFactory = KeyFactory.getInstance(keyAlgName)
-            keyFactory.translateKey(pubk)
-        }
+      run16 = keyAlgName match {
+        case "EC" =>
+          // If we are on 1.6, then we can't use the EC factory and have to pull it directly.
+          translateECKey(pubk)
+        case _ =>
+          val keyFactory = KeyFactory.getInstance(keyAlgName)
+          keyFactory.translateKey(pubk)
       },
       runHigher = {
         val keyFactory = KeyFactory.getInstance(keyAlgName)
@@ -147,26 +144,22 @@ object Algorithms {
     * Please override the method if need to support more name pattern.
     */
   def decomposes(algorithm: String): Set[String] = {
-    if (algorithm == null || algorithm.length == 0) {
+    if (algorithm == null || algorithm.length == 0)
       throw new IllegalArgumentException("Null or blank algorithm found!")
-    }
 
     val withAndPattern = new scala.util.matching.Regex("(?i)with|and")
     val tokens: Array[String] = "/".r.split(algorithm)
     val elements = (for {
       t <- tokens
       name <- withAndPattern.split(t)
-    } yield {
-      name
-    }).toSet
+    } yield name).toSet
 
-    if (elements.contains("SHA1") && !elements.contains("SHA-1")) {
+    if (elements.contains("SHA1") && !elements.contains("SHA-1"))
       elements + "SHA-1"
-    } else if (elements.contains("SHA-1") && !elements.contains("SHA1")) {
+    else if (elements.contains("SHA-1") && !elements.contains("SHA1"))
       elements + "SHA1"
-    } else {
+    else
       elements
-    }
   }
 
 }
@@ -225,9 +218,8 @@ case class AlgorithmConstraint(
     * Returns true if the algorithm name matches, and if there's a keySize constraint, will match on that as well.
     */
   def matches(algorithm: String, keySize: Int): Boolean = {
-    if (!matches(algorithm)) {
+    if (!matches(algorithm))
       return false
-    }
 
     constraint match {
       case Some(expression) =>

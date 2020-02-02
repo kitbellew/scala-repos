@@ -135,9 +135,9 @@ object ArrayUtil {
       blength: Int): Boolean = {
     val ac = a.getClass
     val bc = b.getClass
-    if (ac != bc || alength != blength) {
+    if (ac != bc || alength != blength)
       false
-    } else {
+    else
       a match {
         case x: Array[Double] =>
           val y = b.asInstanceOf[Array[Double]]
@@ -166,14 +166,13 @@ object ArrayUtil {
         case _ =>
           equals(a, aoffset, astride, alength, b, boffset, bstride, blength)
       }
-    }
   }
 
   def equals(a: Array[_], b: Array[_]): Boolean = {
     val ac = a.getClass
     val bc = b.getClass
     if (ac != bc) false
-    else {
+    else
       a match {
         case x: Array[Double] =>
           Arrays.equals(
@@ -211,7 +210,6 @@ object ArrayUtil {
             b.asInstanceOf[Array[AnyRef]])
         case _ => throw new RuntimeException("shouldn't be here!")
       }
-    }
 
   }
 
@@ -227,9 +225,9 @@ object ArrayUtil {
     val ac = a.getClass
     val bc = b.getClass
     if (ac != bc || alength != blength) false
-    else if (aoffset == 0 && astride == 1 && alength == a.length && boffset == 0 && bstride == 1 && blength == b.length) {
+    else if (aoffset == 0 && astride == 1 && alength == a.length && boffset == 0 && bstride == 1 && blength == b.length)
       ArrayUtil.equals(a, b)
-    } else {
+    else {
       a match {
         case x: Array[Double] =>
           val y = b.asInstanceOf[Array[Double]]
@@ -365,11 +363,10 @@ object ArrayUtil {
       high = fromIndex + step
     }
 
-    if (high < toIndex && objs(high) == toFind) {
+    if (high < toIndex && objs(high) == toFind)
       high
-    } else {
+    else
       Arrays.binarySearch(objs, low, math.min(high, toIndex), toFind)
-    }
   }
 
   def zeroSkippingHashCode[V](

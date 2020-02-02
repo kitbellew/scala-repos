@@ -112,11 +112,8 @@ trait IoHelpers {
     * Executes by-name function f and then closes the Cloaseables parameters
     */
   def doClose[T](is: java.io.Closeable*)(f: => T): T =
-    try {
-      f
-    } finally {
-      is.foreach(stream => tryo { stream.close })
-    }
+    try f
+    finally is.foreach(stream => tryo { stream.close })
 }
 
 /**

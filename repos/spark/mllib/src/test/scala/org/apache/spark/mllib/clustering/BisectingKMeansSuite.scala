@@ -170,11 +170,10 @@ class BisectingKMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
       (0, -1)
     ).map {
       case (x, y) =>
-        if (x == 0) {
+        if (x == 0)
           Vectors.sparse(2, Array(1), Array(y))
-        } else {
+        else
           Vectors.dense(x, y)
-        }
     }
     val data = sc.parallelize(points, 2)
     val bkm = new BisectingKMeans()

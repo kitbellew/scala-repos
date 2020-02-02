@@ -74,24 +74,18 @@ final class Solver(n: Int) {
         }
         k = k + 1
       }
-    } else {
+    } else
       puzzleSolved
-    }
   }
 
   private def puzzleSolved() = {
     val b = board.asString
     if (first == null) {
       first = b; last = b
-    } else {
-      if (b < first) {
-        first = b
-      } else {
-        if (b > last) {
-          last = b
-        }
-      }
-    }
+    } else if (b < first)
+      first = b
+    else if (b > last)
+      last = b
     countdown = countdown - 1
   }
 
@@ -192,9 +186,7 @@ final class Board {
 
       a = cellsPieceWillFill.filter(c => true)
       cache(p.number)(p.orientation)(pieceIndex)(boardIndex) = a
-    } else {
-      if (a == Board.noFit) return false
-    }
+    } else if (a == Board.noFit) return false
 
     var i = 0
     while (i < a.length) {
@@ -529,9 +521,8 @@ final class BoardCell(_number: Int) extends Cell {
       }
 
       count
-    } else {
+    } else
       0
-    }
 }
 
 // PieceCell.scala

@@ -31,9 +31,8 @@ class DtabStatsFilter[Req, Rsp](statsReceiver: StatsReceiver)
   private[this] val dtabSizes = statsReceiver.stat("dtab", "size")
 
   def apply(request: Req, service: Service[Req, Rsp]) = {
-    if (Dtab.local.nonEmpty) {
+    if (Dtab.local.nonEmpty)
       dtabSizes.add(Dtab.local.size)
-    }
     service(request)
   }
 }

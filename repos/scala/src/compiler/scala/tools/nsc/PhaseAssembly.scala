@@ -121,9 +121,8 @@ trait PhaseAssembly {
       }
       node.visited = true
 
-      for (edge <- node.before) {
+      for (edge <- node.before)
         collapseHardLinksAndLevels(edge.frm, lvl + 1)
-      }
 
       node.visited = false
     }
@@ -134,13 +133,12 @@ trait PhaseAssembly {
      */
     def validateAndEnforceHardlinks() {
       var hardlinks = edges.filter(_.hard)
-      for (hl <- hardlinks) {
+      for (hl <- hardlinks)
         if (hl.frm.after.size > 1) {
           dump("phase-order")
           throw new FatalError(
             s"Phase ${hl.frm.phasename} can't follow ${hl.to.phasename}, created phase-order.dot")
         }
-      }
 
       var rerun = true
       while (rerun) {
@@ -148,10 +146,10 @@ trait PhaseAssembly {
         hardlinks = edges.filter(_.hard)
         for (hl <- hardlinks) {
           val sanity = Nil ++ hl.to.before.filter(_.hard)
-          if (sanity.length == 0) {
+          if (sanity.length == 0)
             throw new FatalError(
               "There is no runs right after dependency, where there should be one! This is not supposed to happen!")
-          } else if (sanity.length > 1) {
+          else if (sanity.length > 1) {
             dump("phase-order")
             val following = (sanity map (_.frm.phasename)).sorted mkString ","
             throw new FatalError(
@@ -245,32 +243,27 @@ trait PhaseAssembly {
 
       phs.runsRightAfter match {
         case None =>
-          for (phsname <- phs.runsAfter) {
+          for (phsname <- phs.runsAfter)
             if (phsname != "terminal") {
               val tonode = graph.getNodeByPhase(phsname)
               graph.softConnectNodes(fromnode, tonode)
-            } else {
+            } else
               globalError(
                 "[phase assembly, after dependency on terminal phase not allowed: " + fromnode.phasename + " => " + phsname + "]")
-            }
-          }
-          for (phsname <- phs.runsBefore) {
+          for (phsname <- phs.runsBefore)
             if (phsname != "parser") {
               val tonode = graph.getNodeByPhase(phsname)
               graph.softConnectNodes(tonode, fromnode)
-            } else {
+            } else
               globalError(
                 "[phase assembly, before dependency on parser phase not allowed: " + phsname + " => " + fromnode.phasename + "]")
-            }
-          }
         case Some(phsname) =>
           if (phsname != "terminal") {
             val tonode = graph.getNodeByPhase(phsname)
             graph.hardConnectNodes(fromnode, tonode)
-          } else {
+          } else
             globalError(
               "[phase assembly, right after dependency on terminal phase not allowed: " + fromnode.phasename + " => " + phsname + "]")
-          }
       }
     }
     graph
@@ -296,14 +289,12 @@ trait PhaseAssembly {
       val color = if (edge.hard) "#0000ff" else "#000000"
       sbuf.append(s""" [color="$color"]\n""")
     }
-    for (node <- extnodes) {
+    for (node <- extnodes)
       sbuf.append(
         "\"" + node.allPhaseNames + "(" + node.level + ")" + "\" [color=\"#00ff00\"]\n")
-    }
-    for (node <- fatnodes) {
+    for (node <- fatnodes)
       sbuf.append(
         "\"" + node.allPhaseNames + "(" + node.level + ")" + "\" [color=\"#0000ff\"]\n")
-    }
     sbuf.append("}\n")
     import reflect.io._
     for (d <- settings.outputDirs.getSingleOutput if !d.isVirtual)

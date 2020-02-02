@@ -12,9 +12,9 @@ private[pickling] object AdtPickling extends PicklingAlgorithm {
   override def generate(
       tpe: IrClass,
       logger: AlgorithmLogger): AlgorithmResult =
-    if (!tpe.isAbstract) {
+    if (!tpe.isAbstract)
       AlgorithmFailure(s"Cannot use ADT algorithm because $tpe is not abstract")
-    } else
+    else
       tpe.closedSubclasses match {
         case scala.util.Failure(msgs) =>
           // TODO - SHould we warn here, or collect errors for later?

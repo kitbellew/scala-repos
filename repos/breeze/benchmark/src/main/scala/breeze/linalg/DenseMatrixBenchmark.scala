@@ -13,21 +13,19 @@ trait BuildsRandomMatrices {
       m: Int,
       n: Int,
       transpose: Boolean = false): DenseMatrix[Double] =
-    if (!transpose) {
+    if (!transpose)
       DenseMatrix.rand[Double](m, n)
-    } else {
+    else
       DenseMatrix.rand[Double](m, n).t
-    }
 
   def randomIntMatrix(
       m: Int,
       n: Int,
       transpose: Boolean = false): DenseMatrix[Int] =
-    if (!transpose) {
+    if (!transpose)
       DenseMatrix.rand[Int](m, n, rand = Rand.randInt(200))
-    } else {
+    else
       DenseMatrix.rand[Int](m, n, Rand.randInt(200)).t
-    }
 }
 
 class DenseMatrixBenchmark extends BreezeBenchmark with BuildsRandomMatrices {

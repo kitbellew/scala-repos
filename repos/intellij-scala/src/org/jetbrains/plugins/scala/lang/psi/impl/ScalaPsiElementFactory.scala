@@ -214,12 +214,11 @@ class ScalaPsiElementFactoryImpl(manager: PsiManager)
   def createType(aClass: PsiClass, parameters: PsiType*): PsiClassType = ???
 
   def createExpressionFromText(text: String, context: PsiElement): PsiElement =
-    try {
-      ScalaPsiElementFactory.createExpressionWithContextFromText(
-        text,
-        context,
-        context)
-    } catch {
+    try ScalaPsiElementFactory.createExpressionWithContextFromText(
+      text,
+      context,
+      context)
+    catch {
       case e: Throwable => throw new IncorrectOperationException
     }
 }
@@ -227,9 +226,8 @@ class ScalaPsiElementFactoryImpl(manager: PsiManager)
 object ScalaPsiElementFactory {
 
   def createExpressionFromText(text: String, context: PsiElement): PsiElement =
-    try {
-      createExpressionWithContextFromText(text, context, context)
-    } catch {
+    try createExpressionWithContextFromText(text, context, context)
+    catch {
       case e: Throwable =>
         throw new IncorrectOperationException(
           s"Cannot create expression from text $text with context ${context.getText}",
@@ -1070,7 +1068,7 @@ object ScalaPsiElementFactory {
         var hasOverride = false
         if (m.getModifierList.getNode != null)
           for (modifier <- m.getModifierList.getNode.getChildren(null);
-               modText = modifier.getText) {
+               modText = modifier.getText)
             modText match {
               case "override" =>
                 hasOverride = true;
@@ -1081,7 +1079,6 @@ object ScalaPsiElementFactory {
                 function.setModifierProperty("final", value = true)
               case _ =>
             }
-          }
         if (addOverride && !hasOverride)
           function.setModifierProperty("override", value = true)
     }
@@ -1138,7 +1135,7 @@ object ScalaPsiElementFactory {
             for (t <- method.typeParameters) yield buildText(t)
           builder ++= typeParamTexts.mkString("[", ", ", "]")
         }
-        if (method.paramClauses != null) {
+        if (method.paramClauses != null)
           for (paramClause <- method.paramClauses.clauses) {
             def buildText(param: ScParameter): String = {
               val name = param.name
@@ -1163,7 +1160,6 @@ object ScalaPsiElementFactory {
               ", ",
               ")")
           }
-        }
 
         val retType = method.returnType.toOption.map(t => substitutor.subst(t))
         val retAndBody = (needsInferType, retType) match {
@@ -1246,21 +1242,19 @@ object ScalaPsiElementFactory {
       substitutor: ScSubstitutor,
       body: String,
       needsOverride: Boolean): String =
-    try {
-      alias match {
-        case alias: ScTypeAliasDefinition =>
-          val overrideText =
-            if (needsOverride && !alias.hasModifierProperty("override"))
-              "override "
-            else ""
-          val modifiersText = alias.getModifierList.getText
-          val typeText = ScType.canonicalText(
-            substitutor.subst(alias.aliasedType(TypingContext.empty).getOrAny))
-          s"$overrideText$modifiersText type ${alias.name} = $typeText"
-        case alias: ScTypeAliasDeclaration =>
-          val overrideText = if (needsOverride) "override " else ""
-          s"$overrideText${alias.getModifierList.getText} type ${alias.name} = $body"
-      }
+    try alias match {
+      case alias: ScTypeAliasDefinition =>
+        val overrideText =
+          if (needsOverride && !alias.hasModifierProperty("override"))
+            "override "
+          else ""
+        val modifiersText = alias.getModifierList.getText
+        val typeText = ScType.canonicalText(
+          substitutor.subst(alias.aliasedType(TypingContext.empty).getOrAny))
+        s"$overrideText$modifiersText type ${alias.name} = $typeText"
+      case alias: ScTypeAliasDeclaration =>
+        val overrideText = if (needsOverride) "override " else ""
+        s"$overrideText${alias.getModifierList.getText} type ${alias.name} = $body"
     } catch {
       case e: Exception =>
         e.printStackTrace()
@@ -1432,9 +1426,8 @@ object ScalaPsiElementFactory {
           text.trim))
     val marker = builder.mark()
     parse(builder)
-    while (!builder.eof()) {
+    while (!builder.eof())
       builder.advanceLexer()
-    }
     marker.done(ScalaElementTypes.FILE)
     val fileNode = builder.getTreeBuilt
     val node = fileNode.getFirstChildNode
@@ -1461,9 +1454,8 @@ object ScalaPsiElementFactory {
           text.trim))
     val marker = builder.mark()
     parse(builder)
-    while (!builder.eof()) {
+    while (!builder.eof())
       builder.advanceLexer()
-    }
     marker.done(ScalaElementTypes.FILE)
     val fileNode = builder.getTreeBuilt
     val node = fileNode.getFirstChildNode

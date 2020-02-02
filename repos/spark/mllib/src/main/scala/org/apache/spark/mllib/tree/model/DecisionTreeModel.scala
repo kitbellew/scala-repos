@@ -232,20 +232,16 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
           .orElse(Option(System.getenv("SPARK_DRIVER_MEMORY")))
           .map(Utils.memoryStringToMb)
           .getOrElse(Utils.DEFAULT_DRIVER_MEM_MB)
-        if (driverMemory <= memThreshold) {
+        if (driverMemory <= memThreshold)
           logWarning(
             s"$thisClassName.save() was called, but it may fail because of too little" +
               s" driver memory (${driverMemory}m)." +
               s"  If failure occurs, try setting driver-memory ${memThreshold}m (or larger).")
-        }
-      } else {
-        if (sc.executorMemory <= memThreshold) {
-          logWarning(
-            s"$thisClassName.save() was called, but it may fail because of too little" +
-              s" executor memory (${sc.executorMemory}m)." +
-              s"  If failure occurs try setting executor-memory ${memThreshold}m (or larger).")
-        }
-      }
+      } else if (sc.executorMemory <= memThreshold)
+        logWarning(
+          s"$thisClassName.save() was called, but it may fail because of too little" +
+            s" executor memory (${sc.executorMemory}m)." +
+            s"  If failure occurs try setting executor-memory ${memThreshold}m (or larger).")
 
       // Create JSON metadata.
       val metadata = compact(
@@ -323,14 +319,13 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         id: Int,
         dataMap: Map[Int, NodeData],
         nodes: mutable.Map[Int, Node]): Node = {
-      if (nodes.contains(id)) {
+      if (nodes.contains(id))
         return nodes(id)
-      }
       val data = dataMap(id)
       val node =
-        if (data.isLeaf) {
+        if (data.isLeaf)
           Node(data.nodeId, data.predict.toPredict, data.impurity, data.isLeaf)
-        } else {
+        else {
           val leftNode = constructNode(data.leftNodeId.get, dataMap, nodes)
           val rightNode = constructNode(data.rightNodeId.get, dataMap, nodes)
           val stats = new InformationGainStats(

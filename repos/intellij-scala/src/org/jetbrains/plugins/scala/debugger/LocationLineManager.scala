@@ -63,11 +63,10 @@ trait LocationLineManager {
 
   def locationsOfLine(refType: ReferenceType, line: Int): Seq[Location] = {
     val jvmLocations: util.List[Location] =
-      try {
-        if (debugProcess.getVirtualMachineProxy.versionHigher("1.4"))
-          refType.locationsOfLine(DebugProcess.JAVA_STRATUM, null, line + 1)
-        else refType.locationsOfLine(line + 1)
-      } catch {
+      try if (debugProcess.getVirtualMachineProxy.versionHigher("1.4"))
+        refType.locationsOfLine(DebugProcess.JAVA_STRATUM, null, line + 1)
+      else refType.locationsOfLine(line + 1)
+      catch {
         case aie: AbsentInformationException => return Seq.empty
       }
 
@@ -149,17 +148,14 @@ trait LocationLineManager {
         .filter(_.declaringType() == refType)
       for {
         location <- methods.flatMap(_.allLineLocations().asScala)
-      } {
-        if (shouldPointAtStartLine(location)) {
-          val significantElem =
-            DebuggerUtil.getSignificantElement(generatingElem)
-          val lineNumber = elementStartLine(significantElem)
-          if (lineNumber != ScalaPositionManager.checkedLineNumber(location))
-            cacheCustomLine(location, lineNumber)
-        } else if (isReturnInstr(location)) {
-          cacheCustomLine(location, -1)
-        }
-      }
+      } if (shouldPointAtStartLine(location)) {
+        val significantElem =
+          DebuggerUtil.getSignificantElement(generatingElem)
+        val lineNumber = elementStartLine(significantElem)
+        if (lineNumber != ScalaPositionManager.checkedLineNumber(location))
+          cacheCustomLine(location, lineNumber)
+      } else if (isReturnInstr(location))
+        cacheCustomLine(location, -1)
     }
 
     def customizeCaseClauses(): Unit = {
@@ -286,9 +282,7 @@ trait LocationLineManager {
           m <- methods
           line <- baseLine
           if locationsOfLine(m, line).size > 1
-        } {
-          skipBaseLineExtraLocations(m, line)
-        }
+        } skipBaseLineExtraLocations(m, line)
       }
 
       val allCaseClauses = generatingElem.breadthFirst.collect {

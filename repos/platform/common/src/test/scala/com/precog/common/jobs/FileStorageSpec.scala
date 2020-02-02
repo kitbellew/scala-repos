@@ -106,7 +106,7 @@ trait FileStorageSpec[M[+_]] extends Specification {
         e1 <- fs.exists("f4")
         _ <- fs.remove("f4")
         e2 <- fs.exists("f4")
-      } yield { e1 -> e2 }
+      } yield e1 -> e2
 
       result.copoint must beLike { case (true, false) => ok }
     }

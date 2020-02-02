@@ -69,9 +69,8 @@ object CoreUtils extends Logging {
     * @param action The action to execute
     */
   def swallow(log: (Object, Throwable) => Unit, action: => Unit) {
-    try {
-      action
-    } catch {
+    try action
+    catch {
       case e: Throwable => log(e.getMessage(), e)
     }
   }
@@ -93,18 +92,16 @@ object CoreUtils extends Logging {
     * @param file The root file at which to begin deleting
     */
   def rm(file: File) {
-    if (file == null) {
+    if (file == null)
       return
-    } else if (file.isDirectory) {
+    else if (file.isDirectory) {
       val files = file.listFiles()
-      if (files != null) {
+      if (files != null)
         for (f <- files)
           rm(f)
-      }
       file.delete()
-    } else {
+    } else
       file.delete()
-    }
   }
 
   /**
@@ -128,10 +125,9 @@ object CoreUtils extends Logging {
         true
       }
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         error("Failed to register Mbean " + name, e)
         false
-      }
     }
 
   /**
@@ -205,9 +201,8 @@ object CoreUtils extends Logging {
   def parseCsvList(csvList: String): Seq[String] =
     if (csvList == null || csvList.isEmpty)
       Seq.empty[String]
-    else {
+    else
       csvList.split("\\s*,\\s*").filter(v => !v.equals(""))
-    }
 
   /**
     * Create an instance of the class with the given class name
@@ -253,11 +248,8 @@ object CoreUtils extends Logging {
     */
   def inLock[T](lock: Lock)(fun: => T): T = {
     lock.lock()
-    try {
-      fun
-    } finally {
-      lock.unlock()
-    }
+    try fun
+    finally lock.unlock()
   }
 
   def inReadLock[T](lock: ReadWriteLock)(fun: => T): T =

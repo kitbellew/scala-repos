@@ -104,10 +104,9 @@ private case class LibraryReference(level: Level, name: String) {
           s"component[@name='libraryTable']/library[@name='$name']")
         .asInstanceOf[Element]
     }
-    if (libraryElement == null) {
+    if (libraryElement == null)
       throw new IllegalArgumentException(
         s"Cannot delete project library: $name")
-    }
     libraryElement.detach()
   }
 }

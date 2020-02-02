@@ -264,9 +264,9 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def nnSizeMapRemove(h: Int) = if (sizemap ne null) {
-    sizemap(h >> sizeMapBucketBitSize) -= 1
-  }
+  protected def nnSizeMapRemove(h: Int) =
+    if (sizemap ne null)
+      sizemap(h >> sizeMapBucketBitSize) -= 1
 
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",

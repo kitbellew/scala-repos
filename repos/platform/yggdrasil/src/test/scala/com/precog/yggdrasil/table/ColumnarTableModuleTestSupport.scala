@@ -137,7 +137,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
 
           val (a2, arr) =
             mask.toList.foldLeft((a, new Array[BigDecimal](range.end))) {
-              case ((acc, arr), i) => {
+              case ((acc, arr), i) =>
                 val col = prioritized find { _ isDefinedAt i }
 
                 val acc2 = col map {
@@ -154,7 +154,6 @@ trait ColumnarTableModuleTestSupport[M[+_]]
                 acc2 foreach { arr(i) = _ }
 
                 (acc2 getOrElse acc, arr)
-              }
             }
 
           (

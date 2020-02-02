@@ -100,13 +100,12 @@ object Utils {
           if (6 < c && c < 14) {
             val i = 2 * (c - 7)
             out.append(EscapeJSChars, i, i + 2)
-          } else if (c == 34) {
+          } else if (c == 34)
             out.append(EscapeJSChars, 14, 16)
-          } else if (c == 92) {
+          else if (c == 92)
             out.append(EscapeJSChars, 16, 18)
-          } else {
+          else
             out.append(f"\\u$c%04x")
-          }
         escapeJSEncoded(c)
         i += 1
       }

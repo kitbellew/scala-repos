@@ -221,19 +221,18 @@ object JsMacroImpl {
           val jspathTree = q"""$JsPath \ ${name.decodedName.toString}"""
 
           // If we're not recursive, simple, just invoke read/write/format
-          if (!rec) {
+          if (!rec)
             // If we're an option, invoke the nullable version
-            if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor) {
+            if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor)
               q"$jspathTree.$callNullable($impl)"
-            } else {
+            else
               q"$jspathTree.$call($impl)"
-            }
-          } else {
+          else {
             // Otherwise we have to invoke the lazy version
             hasRec = true
-            if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor) {
+            if (t.typeConstructor <:< typeOf[Option[_]].typeConstructor)
               q"$jspathTree.$callNullable($JsPath.$lazyCall(this.lazyStuff))"
-            } else {
+            else {
               // If this is a list/set/seq/map, then we need to wrap the reads into that.
               def readsWritesHelper(methodName: String): List[Tree] =
                 conditionalList(Reads, Writes).map(s =>
@@ -266,9 +265,8 @@ object JsMacroImpl {
           l :+ q"val ${TermName(e.name.encodedName.toString)}: ${TypeTree()}")
 
         q"(..$vals) => $companionObject.apply(..${applyParams.init}, ${applyParams.last}: _*)"
-      } else {
+      } else
         q"$companionObject.apply _"
-      }
     }
 
     val unapplyFunction = q"$unlift($companionObject.$effectiveUnapply)"
@@ -282,17 +280,17 @@ object JsMacroImpl {
       $canBuild.$applyOrMap(..${conditionalList(applyFunction, unapplyFunction)})
     """
 
-    val lazyFinalTree = if (!hasRec) {
-      finalTree
-    } else {
-      // If we're recursive, we need to wrap the whole thing in a class that breaks the recursion using a
-      // lazy val
-      q"""
+    val lazyFinalTree =
+      if (!hasRec)
+        finalTree
+      else
+        // If we're recursive, we need to wrap the whole thing in a class that breaks the recursion using a
+        // lazy val
+        q"""
         new $LazyHelper[${matag.tpe.typeSymbol}, ${atag.tpe.typeSymbol}] {
           override lazy val lazyStuff: ${matag.tpe.typeSymbol}[${atag.tpe}] = $finalTree
         }.lazyStuff
        """
-    }
     c.Expr[M[A]](lazyFinalTree)
   }
 

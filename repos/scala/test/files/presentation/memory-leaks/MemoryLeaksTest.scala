@@ -106,9 +106,8 @@ object Test extends InteractiveTest {
   private def dumpDataToFile(filename: String, usedMem: Seq[Long]) {
     val outputFile = new PrintWriter(new FileOutputStream(filename))
     outputFile.println("\tusedMem")
-    for ((dataPoint, i) <- usedMem.zipWithIndex) {
+    for ((dataPoint, i) <- usedMem.zipWithIndex)
       outputFile.println("%d\t%d".format(i, dataPoint))
-    }
     outputFile.close()
   }
 

@@ -130,9 +130,8 @@ class RestartStrategySpec
             thirdRestartLatch.open()
 
         override def postStop() =
-          if (restartLatch.isOpen) {
+          if (restartLatch.isOpen)
             secondRestartLatch.open()
-          }
       })
       val slave =
         Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)

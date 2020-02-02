@@ -72,11 +72,8 @@ object Databases {
       name: String = "default",
       config: Map[String, _ <: Any] = Map.empty)(block: Database => T): T = {
     val database = Databases(driver, url, name, config)
-    try {
-      block(database)
-    } finally {
-      database.shutdown()
-    }
+    try block(database)
+    finally database.shutdown()
   }
 
   /**
@@ -93,11 +90,8 @@ object Databases {
       urlOptions: Map[String, String] = Map.empty,
       config: Map[String, _ <: Any] = Map.empty)(block: Database => T): T = {
     val database = inMemory(name, urlOptions, config)
-    try {
-      block(database)
-    } finally {
-      database.shutdown()
-    }
+    try block(database)
+    finally database.shutdown()
   }
 }
 
@@ -122,7 +116,7 @@ abstract class DefaultDatabase(
 
   // driver registration
 
-  lazy val driver: Option[Driver] = {
+  lazy val driver: Option[Driver] =
     databaseConfig.driver.map { driverClassName =>
       try {
         val proxyDriver = new ProxyDriver(
@@ -138,7 +132,6 @@ abstract class DefaultDatabase(
             Some(e))
       }
     }
-  }
 
   // lazy data source creation
 
@@ -149,11 +142,8 @@ abstract class DefaultDatabase(
 
   lazy val url: String = {
     val connection = dataSource.getConnection
-    try {
-      connection.getMetaData.getURL
-    } finally {
-      connection.close()
-    }
+    try connection.getMetaData.getURL
+    finally connection.close()
   }
 
   // connection methods
@@ -172,11 +162,8 @@ abstract class DefaultDatabase(
 
   def withConnection[A](autocommit: Boolean)(block: Connection => A): A = {
     val connection = getConnection(autocommit)
-    try {
-      block(connection)
-    } finally {
-      connection.close()
-    }
+    try block(connection)
+    finally connection.close()
   }
 
   def withTransaction[A](block: Connection => A): A =
@@ -231,9 +218,8 @@ class PooledDatabase(
       val proxyDatasource = new LogSqlDataSource()
       proxyDatasource.setTargetDSDirect(datasource)
       proxyDatasource
-    } else {
+    } else
       datasource
-    }
   }
 
   def closeDataSource(dataSource: DataSource): Unit =

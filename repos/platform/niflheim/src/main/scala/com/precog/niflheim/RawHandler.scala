@@ -67,7 +67,7 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
   def length: Int = count
 
   def handleNonempty =
-    if (!rows.isEmpty) {
+    if (!rows.isEmpty)
       rowLock.synchronized {
         if (!rows.isEmpty) {
           segments.extendWithRows(rows)
@@ -75,7 +75,6 @@ class RawReader private[niflheim] (val id: Long, val log: File, rs: Seq[JValue])
         }
         segments
       }
-    }
 
   def snapshot(pathConstraint: Option[Set[CPath]]): Block = {
     handleNonempty
@@ -107,13 +106,12 @@ class RawHandler private[niflheim] (
     private var os: OutputStream)
     extends RawReader(id, log, rs) {
   def write(eventid: Long, values: Seq[JValue]) {
-    if (!values.isEmpty) {
+    if (!values.isEmpty)
       rowLock.synchronized {
         count += values.length
         RawLoader.writeEvents(os, eventid, values)
         rows ++= values
       }
-    }
   }
 
   override def isStable: Boolean = os == null

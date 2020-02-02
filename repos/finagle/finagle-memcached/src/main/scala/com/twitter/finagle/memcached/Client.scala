@@ -280,11 +280,10 @@ trait BaseClient[T] {
     */
   def get(keys: Iterable[String]): Future[Map[String, T]] =
     getResult(keys) flatMap { result =>
-      if (result.failures.nonEmpty) {
+      if (result.failures.nonEmpty)
         Future.exception(result.failures.values.head)
-      } else {
+      else
         Future.value(result.values.mapValues { bufferToType(_) })
-      }
     }
 
   /**
@@ -297,13 +296,12 @@ trait BaseClient[T] {
     */
   def gets(keys: Iterable[String]): Future[Map[String, (T, Buf)]] =
     getsResult(keys) flatMap { result =>
-      if (result.failures.nonEmpty) {
+      if (result.failures.nonEmpty)
         Future.exception(result.failures.values.head)
-      } else {
+      else
         Future.value(result.valuesWithTokens.mapValues {
           case (v, u) => (bufferToType(v), u)
         })
-      }
     }
 
   /**
@@ -538,12 +536,10 @@ protected class ConnectedClient(
     }
 
   def set(key: String, flags: Int, expiry: Time, value: Buf): Future[Unit] =
-    try {
-      service(Set(key, flags, expiry, value)).map {
-        case Stored() => ()
-        case Error(e) => throw e
-        case _        => throw new IllegalStateException
-      }
+    try service(Set(key, flags, expiry, value)).map {
+      case Stored() => ()
+      case Error(e) => throw e
+      case _        => throw new IllegalStateException
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -555,27 +551,23 @@ protected class ConnectedClient(
       expiry: Time,
       value: Buf,
       casUnique: Buf): Future[CasResult] =
-    try {
-      service(Cas(key, flags, expiry, value, casUnique)).flatMap {
-        case Stored()   => FutureStored
-        case Exists()   => FutureExists
-        case NotFound() => FutureNotFound
-        case Error(e)   => Future.exception(e)
-        case _          => Future.exception(new IllegalStateException)
-      }
+    try service(Cas(key, flags, expiry, value, casUnique)).flatMap {
+      case Stored()   => FutureStored
+      case Exists()   => FutureExists
+      case NotFound() => FutureNotFound
+      case Error(e)   => Future.exception(e)
+      case _          => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
 
   def add(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
-    try {
-      service(Add(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
-      }
+    try service(Add(key, flags, expiry, value)).flatMap {
+      case Stored()    => JavaTrue
+      case NotStored() => JavaFalse
+      case Error(e)    => Future.exception(e)
+      case _           => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -586,13 +578,11 @@ protected class ConnectedClient(
       flags: Int,
       expiry: Time,
       value: Buf): Future[JBoolean] =
-    try {
-      service(Append(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
-      }
+    try service(Append(key, flags, expiry, value)).flatMap {
+      case Stored()    => JavaTrue
+      case NotStored() => JavaFalse
+      case Error(e)    => Future.exception(e)
+      case _           => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -603,13 +593,11 @@ protected class ConnectedClient(
       flags: Int,
       expiry: Time,
       value: Buf): Future[JBoolean] =
-    try {
-      service(Prepend(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
-      }
+    try service(Prepend(key, flags, expiry, value)).flatMap {
+      case Stored()    => JavaTrue
+      case NotStored() => JavaFalse
+      case Error(e)    => Future.exception(e)
+      case _           => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -620,52 +608,44 @@ protected class ConnectedClient(
       flags: Int,
       expiry: Time,
       value: Buf): Future[JBoolean] =
-    try {
-      service(Replace(key, flags, expiry, value)).flatMap {
-        case Stored()    => JavaTrue
-        case NotStored() => JavaFalse
-        case Error(e)    => Future.exception(e)
-        case _           => Future.exception(new IllegalStateException)
-      }
+    try service(Replace(key, flags, expiry, value)).flatMap {
+      case Stored()    => JavaTrue
+      case NotStored() => JavaFalse
+      case Error(e)    => Future.exception(e)
+      case _           => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
 
   def delete(key: String): Future[JBoolean] =
-    try {
-      service(Delete(key)).flatMap {
-        case Deleted()  => JavaTrue
-        case NotFound() => JavaFalse
-        case Error(e)   => Future.exception(e)
-        case _          => Future.exception(new IllegalStateException)
-      }
+    try service(Delete(key)).flatMap {
+      case Deleted()  => JavaTrue
+      case NotFound() => JavaFalse
+      case Error(e)   => Future.exception(e)
+      case _          => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
 
   def incr(key: String, delta: Long): Future[Option[JLong]] =
-    try {
-      service(Incr(key, delta)).flatMap {
-        case Number(value) => Future.value(Some(value))
-        case NotFound()    => Future.None
-        case Error(e)      => Future.exception(e)
-        case _             => Future.exception(new IllegalStateException)
-      }
+    try service(Incr(key, delta)).flatMap {
+      case Number(value) => Future.value(Some(value))
+      case NotFound()    => Future.None
+      case Error(e)      => Future.exception(e)
+      case _             => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
     }
 
   def decr(key: String, delta: Long): Future[Option[JLong]] =
-    try {
-      service(Decr(key, delta)).flatMap {
-        case Number(value) => Future.value(Some(value))
-        case NotFound()    => Future.None
-        case Error(e)      => Future.exception(e)
-        case _             => Future.exception(new IllegalStateException)
-      }
+    try service(Decr(key, delta)).flatMap {
+      case Number(value) => Future.value(Some(value))
+      case NotFound()    => Future.None
+      case Error(e)      => Future.exception(e)
+      case _             => Future.exception(new IllegalStateException)
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -712,22 +692,20 @@ trait PartitionedClient extends Client {
     )
 
   def getResult(keys: Iterable[String]) =
-    if (keys.nonEmpty) {
+    if (keys.nonEmpty)
       withKeysGroupedByClient(keys) {
         _.getResult(_)
       }.map { GetResult.merged(_) }
-    } else {
+    else
       Future.value(GetResult.Empty)
-    }
 
   def getsResult(keys: Iterable[String]) =
-    if (keys.nonEmpty) {
+    if (keys.nonEmpty)
       withKeysGroupedByClient(keys) {
         _.getsResult(_)
       }.map { GetResult.merged(_) }
-    } else {
+    else
       Future.value(GetsResult(GetResult.Empty))
-    }
 
   def set(key: String, flags: Int, expiry: Time, value: Buf) =
     clientOf(key).set(key, flags, expiry, value)
@@ -1182,26 +1160,25 @@ case class KetamaClientBuilder private[memcached] (
       name: Name,
       useOnlyResolvedAddress: Boolean = false
   ): KetamaClientBuilder = {
-    val Name.Bound(va) = if (LocalMemcached.enabled) {
-      localMemcachedName
-    } else {
-      name
-    }
+    val Name.Bound(va) =
+      if (LocalMemcached.enabled)
+        localMemcachedName
+      else
+        name
     copy(_group = CacheNodeGroup.fromVarAddr(va, useOnlyResolvedAddress))
   }
 
   def dest(name: String): KetamaClientBuilder =
-    if (LocalMemcached.enabled) {
+    if (LocalMemcached.enabled)
       withLocalMemcached
-    } else dest(Resolver.eval(name))
+    else dest(Resolver.eval(name))
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
   def group(group: Group[CacheNode]): KetamaClientBuilder =
-    if (LocalMemcached.enabled) {
+    if (LocalMemcached.enabled)
       withLocalMemcached
-    } else {
+    else
       copy(_group = group)
-    }
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
   def cluster(cluster: Cluster[InetSocketAddress]): KetamaClientBuilder =
@@ -1211,20 +1188,18 @@ case class KetamaClientBuilder private[memcached] (
 
   @deprecated("Use `KetamaClientBuilder.dest(name: Name)` instead", "7.0.0")
   def cachePoolCluster(cluster: Cluster[CacheNode]): KetamaClientBuilder =
-    if (LocalMemcached.enabled) {
+    if (LocalMemcached.enabled)
       withLocalMemcached
-    } else {
+    else
       copy(_group = Group.fromCluster(cluster))
-    }
 
   def nodes(nodes: Seq[(String, Int, Int)]): KetamaClientBuilder =
-    if (LocalMemcached.enabled) {
+    if (LocalMemcached.enabled)
       withLocalMemcached
-    } else {
+    else
       copy(_group = Group(nodes.map {
         case (host, port, weight) => new CacheNode(host, port, weight)
       }: _*))
-    }
 
   def nodes(hostPortWeights: String): KetamaClientBuilder =
     group(CacheNodeGroup(hostPortWeights))

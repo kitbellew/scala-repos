@@ -23,9 +23,8 @@ trait BootableActorLoaderService extends Bootable {
       if (HOME.isDefined) {
         val DEPLOY = HOME.get + "/deploy"
         val DEPLOY_DIR = new File(DEPLOY)
-        if (!DEPLOY_DIR.exists) {
+        if (!DEPLOY_DIR.exists)
           System.exit(-1)
-        }
         val filesToDeploy = DEPLOY_DIR.listFiles.toArray.toList
           .asInstanceOf[List[File]]
           .filter(_.getName.endsWith(".jar"))
@@ -53,9 +52,8 @@ trait BootableActorLoaderService extends Bootable {
   abstract override def onLoad = {
     super.onLoad
 
-    for (loader ← applicationLoader; clazz ← BOOT_CLASSES) {
+    for (loader ← applicationLoader; clazz ← BOOT_CLASSES)
       loader.loadClass(clazz).newInstance
-    }
   }
 
   abstract override def onUnload = {

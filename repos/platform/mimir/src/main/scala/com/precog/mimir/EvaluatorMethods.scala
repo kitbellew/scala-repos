@@ -151,13 +151,12 @@ trait EvaluatorMethodsModule[M[+_]]
       val keyValueSpec =
         InnerObjectConcat(wrappedValueSpec, wrappedIdentitySpec)
 
-      if (valueKeySpecs.isEmpty) {
+      if (valueKeySpecs.isEmpty)
         keyValueSpec
-      } else {
+      else
         InnerObjectConcat(
           keyValueSpec,
           OuterObjectConcat(valueKeySpecs.toList: _*))
-      }
     }
 
     def buildWrappedCrossSpec(

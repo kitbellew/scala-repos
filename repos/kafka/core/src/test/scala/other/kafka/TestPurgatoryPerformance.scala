@@ -194,23 +194,21 @@ object TestPurgatoryPerformance {
 
   // Use JRE-specific class to get process CPU time
   private def getProcessCpuTimeNanos(osMXBean: OperatingSystemMXBean) =
-    try {
-      Some(
-        Class
-          .forName("com.sun.management.OperatingSystemMXBean")
-          .getMethod("getProcessCpuTime")
-          .invoke(osMXBean)
-          .asInstanceOf[Long])
-    } catch {
+    try Some(
+      Class
+        .forName("com.sun.management.OperatingSystemMXBean")
+        .getMethod("getProcessCpuTime")
+        .invoke(osMXBean)
+        .asInstanceOf[Long])
+    catch {
       case _: Throwable =>
-        try {
-          Some(
-            Class
-              .forName("com.ibm.lang.management.OperatingSystemMXBean")
-              .getMethod("getProcessCpuTimeByNS")
-              .invoke(osMXBean)
-              .asInstanceOf[Long])
-        } catch {
+        try Some(
+          Class
+            .forName("com.ibm.lang.management.OperatingSystemMXBean")
+            .getMethod("getProcessCpuTimeByNS")
+            .invoke(osMXBean)
+            .asInstanceOf[Long])
+        catch {
           case _: Throwable => None
         }
     }
@@ -315,9 +313,8 @@ object TestPurgatoryPerformance {
       isInterruptible = false) {
       override def doWork(): Unit = {
         val scheduled = delayQueue.poll(100, TimeUnit.MILLISECONDS)
-        if (scheduled != null) {
+        if (scheduled != null)
           scheduled.operation.forceComplete()
-        }
       }
     }
     thread.start()

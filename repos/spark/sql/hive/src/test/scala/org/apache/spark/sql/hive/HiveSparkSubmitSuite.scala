@@ -236,10 +236,9 @@ class HiveSparkSubmitSuite
             s"\n$historyLog",
           to)
       case t: Throwable => throw t
-    } finally {
-      // Ensure we still kill the process in case it timed out
-      process.destroy()
-    }
+    } finally
+    // Ensure we still kill the process in case it timed out
+    process.destroy()
   }
 }
 
@@ -279,9 +278,8 @@ object SparkSubmitClassLoaderTest extends Logging {
         Option(exception).toSeq.iterator
       }
       .collect()
-    if (result.nonEmpty) {
+    if (result.nonEmpty)
       throw new Exception("Could not load user class from jar:\n" + result(0))
-    }
 
     // Load a Hive UDF from the jar.
     logInfo("Registering temporary Hive UDF provided in a jar.")
@@ -307,10 +305,9 @@ object SparkSubmitClassLoaderTest extends Logging {
       "INSERT INTO TABLE t1 SELECT example_max(key) as key, val FROM sourceTable GROUP BY val")
     logInfo("Running a simple query on the table.")
     val count = hiveContext.table("t1").orderBy("key", "val").count()
-    if (count != 10) {
+    if (count != 10)
       throw new Exception(
         s"table t1 should have 10 rows instead of $count rows")
-    }
     logInfo("Test finishes.")
     sc.stop()
   }
@@ -433,11 +430,8 @@ object SPARK_11009 extends QueryTest {
       val df3 = df2
         .select(df2("A"), df2("B"), row_number().over(ws).alias("rn"))
         .filter("rn < 0")
-      if (df3.rdd.count() != 0) {
+      if (df3.rdd.count() != 0)
         throw new Exception("df3 should have 0 output row.")
-      }
-    } finally {
-      sparkContext.stop()
-    }
+    } finally sparkContext.stop()
   }
 }

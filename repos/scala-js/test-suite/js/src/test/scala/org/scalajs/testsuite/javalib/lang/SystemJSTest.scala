@@ -82,7 +82,7 @@ class SystemJSTest {
     assertEquals("testtag.value", get("scalajs.testsuite.testtag"))
 
     val compliantAsInstanceOf = get("scalajs.compliant-asinstanceofs") == "true"
-    if (compliantAsInstanceOf) {
+    if (compliantAsInstanceOf)
       try {
         Int.box(5).asInstanceOf[String]
         fail(
@@ -91,7 +91,6 @@ class SystemJSTest {
       } catch {
         case _: ClassCastException => // As expected
       }
-    }
     assertEquals(compliantAsInstanceOf, Platform.hasCompliantAsInstanceOfs)
 
     val compliantModule = get("scalajs.compliant-moduleinit") == "true"
@@ -118,9 +117,8 @@ class SystemJSTest {
     } else if (inRhino) {
       assertFalse(js.isUndefined(js.Dynamic.global.Packages))
       assertFalse(inNode || inPhantomJS)
-    } else {
+    } else
       fail("No known platform tag found.")
-    }
     assertEquals(inNode, Platform.executingInNodeJS)
     assertEquals(inPhantomJS, Platform.executingInPhantomJS)
     assertEquals(inRhino, Platform.executingInRhino)

@@ -116,14 +116,13 @@ object Concurrent {
         case (it, p) =>
           it.fold {
               case Step.Done(a, e) => Future.successful(Left(Done(a, e)))
-              case Step.Cont(k) => {
+              case Step.Cont(k) =>
                 val next = k(in)
                 next.pureFold {
                   case Step.Done(a, e)    => Left(Done(a, e))
                   case Step.Cont(k)       => Right((Cont(k), p))
                   case Step.Error(msg, e) => Left(Error(msg, e))
                 }(dec)
-              }
               case Step.Error(msg, e) => Future.successful(Left(Error(msg, e)))
             }(dec)
             .map {
@@ -206,14 +205,13 @@ object Concurrent {
 
         next.onComplete {
           case Success(it) => itPromise.success(it)
-          case Failure(e) => {
+          case Failure(e) =>
             val its = atomic { implicit txn =>
               redeemed() = Some(Failure(e))
               iteratees.swap(List())
             }
             itPromise.failure(e)
             its.foreach { case (it, p) => p.success(it) }
-          }
         }(dec)
       }
 
@@ -547,12 +545,11 @@ object Concurrent {
                 val n = {
                   val next = k(item)
                   next.fold {
-                    case Step.Done(a, in) => {
+                    case Step.Done(a, in) =>
                       Future(onComplete)(pec).map { _ =>
                         promise.success(next)
                         None
                       }(dec)
-                    }
                     case Step.Error(msg, e) =>
                       Future(onError(msg, e))(pec).map { _ =>
                         promise.success(next)
@@ -661,17 +658,15 @@ object Concurrent {
                 case Step.Cont(k) =>
                   val next = k(in)
                   next.pureFold {
-                    case Step.Done(a, e) => {
+                    case Step.Done(a, e) =>
                       p.success(Done(a, e))
                       commitDone.single.transform(_ :+ index)
-                    }
                     case Step.Cont(k) =>
                       commitReady.single.transform(
                         _ :+ (index -> (Cont(k) -> p)))
-                    case Step.Error(msg, e) => {
+                    case Step.Error(msg, e) =>
                       p.success(Error(msg, e))
                       commitDone.single.transform(_ :+ index)
-                    }
                   }(dec)
 
                 case Step.Error(msg, e) =>
@@ -806,21 +801,18 @@ object Concurrent {
         val next = Promise[Iteratee[E, Option[A]]]()
         val current = ref.single.swap(Iteratee.flatten(next.future))
         current.pureFlatFold {
-          case Step.Done(a, e) => {
+          case Step.Done(a, e) =>
             a.foreach(aa => result.success(Done(aa, e)))
             next.success(Done(a, e))
             Done(a, e)
-          }
-          case Step.Cont(k) => {
+          case Step.Cont(k) =>
             next.success(current)
             Cont(step(ref))
-          }
-          case Step.Error(msg, e) => {
+          case Step.Error(msg, e) =>
             result.success(Error(msg, e))
             next.success(Error(msg, e))
             Error(msg, e)
 
-          }
         }(dec)
 
       }
@@ -830,29 +822,24 @@ object Concurrent {
         val next = Promise[Iteratee[E, Option[A]]]()
         val current = ref.single.swap(Iteratee.flatten(next.future))
         current.pureFlatFold {
-          case Step.Done(a, e) => {
+          case Step.Done(a, e) =>
             next.success(Done(a, e))
             Done(a, e)
-          }
-          case Step.Cont(k) => {
+          case Step.Cont(k) =>
             val n = k(in)
             next.success(n)
             n.pureFlatFold {
-              case Step.Done(a, e) => {
+              case Step.Done(a, e) =>
                 a.foreach(aa => result.success(Done(aa, e)))
                 Done(a, e)
-              }
               case Step.Cont(k) => Cont(step(ref))
-              case Step.Error(msg, e) => {
+              case Step.Error(msg, e) =>
                 result.success(Error(msg, e))
                 Error(msg, e)
-              }
             }(dec)
-          }
-          case Step.Error(msg, e) => {
+          case Step.Error(msg, e) =>
             next.success(Error(msg, e))
             Error(msg, e)
-          }
         }(dec)
       }
 
@@ -900,13 +887,11 @@ object Concurrent {
             def fold[C](folder: (Step[A, B]) => Future[C])(
                 implicit ec: ExecutionContext) = {
               val toReturn = delegate.fold {
-                case done @ Step.Done(a, in) => {
+                case done @ Step.Done(a, in) =>
                   doneIteratee.success(done.it)
                   folder(done)
-                }
-                case Step.Cont(k) => {
+                case Step.Cont(k) =>
                   folder(Step.Cont(k.andThen(wrap)))
-                }
                 case err => folder(err)
               }(ec)
               toReturn.onFailure {
@@ -916,12 +901,11 @@ object Concurrent {
             }
           }
 
-        if (promisedIteratee.trySuccess(wrap(i).map(_ => ())(dec))) {
+        if (promisedIteratee.trySuccess(wrap(i).map(_ => ())(dec)))
           doneIteratee.future
-        } else {
+        else
           throw new IllegalStateException(
             "Joined enumerator may only be applied once")
-        }
       }
     }
     (Iteratee.flatten(promisedIteratee.future), enumerator)

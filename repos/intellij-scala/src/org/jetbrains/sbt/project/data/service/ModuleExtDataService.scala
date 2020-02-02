@@ -124,10 +124,8 @@ object ModuleExtDataService {
         targetPos <- Option(javacOptions.indexOf("-target")).filterNot(_ == -1)
         targetValue <- javacOptions.lift(targetPos + 1)
         compilerSettings = CompilerConfiguration.getInstance(module.getProject)
-      } {
-        executeProjectChangeAction(
-          compilerSettings.setBytecodeTargetLevel(module, targetValue))
-      }
+      } executeProjectChangeAction(
+        compilerSettings.setBytecodeTargetLevel(module, targetValue))
 
     private def showWarning(message: String): Unit = {
       val notification = new NotificationData(

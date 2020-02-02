@@ -66,15 +66,13 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     val addr = RpcEndpointAddress(nettyEnv.address, name)
     val endpointRef = new NettyRpcEndpointRef(nettyEnv.conf, addr, nettyEnv)
     synchronized {
-      if (stopped) {
+      if (stopped)
         throw new IllegalStateException("RpcEnv has been stopped")
-      }
       if (endpoints.putIfAbsent(
             name,
-            new EndpointData(name, endpoint, endpointRef)) != null) {
+            new EndpointData(name, endpoint, endpointRef)) != null)
         throw new IllegalArgumentException(
           s"There is already an RpcEndpoint called $name")
-      }
       val data = endpoints.get(name)
       endpointRefs.put(data.endpoint, data.ref)
       receivers.offer(data) // for the OnStart message
@@ -102,10 +100,9 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
 
   def stop(rpcEndpointRef: RpcEndpointRef): Unit =
     synchronized {
-      if (stopped) {
+      if (stopped)
         // This endpoint will be stopped by Dispatcher.stop() method.
         return
-      }
       unregisterRpcEndpoint(rpcEndpointRef.name)
     }
 
@@ -165,9 +162,9 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
       callbackIfStopped: (Exception) => Unit): Unit = {
     val shouldCallOnStop = synchronized {
       val data = endpoints.get(endpointName)
-      if (stopped || data == null) {
+      if (stopped || data == null)
         true
-      } else {
+      else {
         data.inbox.post(message)
         receivers.offer(data)
         false
@@ -175,21 +172,20 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
     }
     if (shouldCallOnStop) {
       // We don't need to call `onStop` in the `synchronized` block
-      val error = if (stopped) {
-        new RpcEnvStoppedException()
-      } else {
-        new SparkException(
-          s"Could not find $endpointName or it has been stopped.")
-      }
+      val error =
+        if (stopped)
+          new RpcEnvStoppedException()
+        else
+          new SparkException(
+            s"Could not find $endpointName or it has been stopped.")
       callbackIfStopped(error)
     }
   }
 
   def stop(): Unit = {
     synchronized {
-      if (stopped) {
+      if (stopped)
         return
-      }
       stopped = true
     }
     // Stop all endpoints. This will queue all endpoints for processing by the message loops.
@@ -215,30 +211,26 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
       math.max(2, Runtime.getRuntime.availableProcessors()))
     val pool =
       ThreadUtils.newDaemonFixedThreadPool(numThreads, "dispatcher-event-loop")
-    for (i <- 0 until numThreads) {
+    for (i <- 0 until numThreads)
       pool.execute(new MessageLoop)
-    }
     pool
   }
 
   /** Message loop used for dispatching messages. */
   private class MessageLoop extends Runnable {
     override def run(): Unit =
-      try {
-        while (true) {
-          try {
-            val data = receivers.take()
-            if (data == PoisonPill) {
-              // Put PoisonPill back so that other MessageLoops can see it.
-              receivers.offer(PoisonPill)
-              return
-            }
-            data.inbox.process(Dispatcher.this)
-          } catch {
-            case NonFatal(e) => logError(e.getMessage, e)
+      try while (true)
+        try {
+          val data = receivers.take()
+          if (data == PoisonPill) {
+            // Put PoisonPill back so that other MessageLoops can see it.
+            receivers.offer(PoisonPill)
+            return
           }
-        }
-      } catch {
+          data.inbox.process(Dispatcher.this)
+        } catch {
+          case NonFatal(e) => logError(e.getMessage, e)
+        } catch {
         case ie: InterruptedException => // exit
       }
   }

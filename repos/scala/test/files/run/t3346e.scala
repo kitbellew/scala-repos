@@ -18,9 +18,9 @@ class QuickSort[Coll](a: Coll) {
       cbf: CanBuildFrom[Coll, T, Coll],
       n: Ordering[T]): Coll = {
     import n._
-    if (a.size < 2) {
+    if (a.size < 2)
       a
-    } else {
+    else {
       // We pick the first value for the pivot.
       val pivot = a.head
       val (lower, tmp) = a.partition(_ < pivot)

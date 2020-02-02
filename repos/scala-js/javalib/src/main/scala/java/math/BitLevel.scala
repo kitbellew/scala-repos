@@ -58,16 +58,16 @@ private[math] object BitLevel {
     */
   def bitCount(bi: BigInteger): Int = {
     var bCount = 0
-    if (bi.sign == 0) {
+    if (bi.sign == 0)
       0
-    } else {
+    else {
       var i = bi.getFirstNonzeroDigit
-      if (bi.sign > 0) {
+      if (bi.sign > 0)
         while (i < bi.numberLength) {
           bCount += java.lang.Integer.bitCount(bi.digits(i))
           i += 1
         }
-      } else {
+      else {
         // (sign < 0) this digit absorbs the carry
         bCount += java.lang.Integer.bitCount(-bi.digits(i))
         i += 1
@@ -88,9 +88,9 @@ private[math] object BitLevel {
     *  @return
     */
   def bitLength(bi: BigInteger): Int =
-    if (bi.sign == 0) {
+    if (bi.sign == 0)
       0
-    } else {
+    else {
       var bLength = bi.numberLength << 5
       var highDigit = bi.digits(bi.numberLength - 1)
       if (bi.sign < 0) {
@@ -120,14 +120,14 @@ private[math] object BitLevel {
     var i: Int = 0
     val bitNumber = 1 << bitN
     System.arraycopy(bi.digits, 0, resDigits, 0, bi.numberLength)
-    if (bi.sign < 0) {
-      if (intCount >= bi.numberLength) {
+    if (bi.sign < 0)
+      if (intCount >= bi.numberLength)
         resDigits(intCount) = bitNumber
-      } else {
+      else {
         val firstNonZeroDigit = bi.getFirstNonzeroDigit
-        if (intCount > firstNonZeroDigit) {
+        if (intCount > firstNonZeroDigit)
           resDigits(intCount) ^= bitNumber
-        } else if (intCount < firstNonZeroDigit) {
+        else if (intCount < firstNonZeroDigit) {
           resDigits(intCount) = -bitNumber
           i = intCount + 1
           while (i < firstNonZeroDigit) {
@@ -148,10 +148,9 @@ private[math] object BitLevel {
           }
         }
       }
-    } else {
+    else
       // case where val is positive
       resDigits(intCount) ^= bitNumber
-    }
     val result = new BigInteger(resSign, resLength, resDigits)
     result.cutOffLeadingZeroes()
     result
@@ -204,9 +203,8 @@ private[math] object BitLevel {
     val intCount = numberOfBits >> 5
     val bitCount = numberOfBits & 31
     var i = 0
-    while (i < intCount && digits(i) == 0) {
+    while (i < intCount && digits(i) == 0)
       i += 1
-    }
     (i != intCount) || (digits(i) << (32 - bitCount) != 0)
   }
 
@@ -242,9 +240,9 @@ private[math] object BitLevel {
       source: Array[Int],
       intCount: Int,
       count: Int): Unit = {
-    if (count == 0) {
+    if (count == 0)
       System.arraycopy(source, 0, result, intCount, result.length - intCount)
-    } else {
+    else {
       val rightShiftCount: Int = 32 - count
       result(result.length - 1) = 0
       var i = result.length - 1
@@ -254,9 +252,8 @@ private[math] object BitLevel {
         i -= 1
       }
     }
-    for (i <- 0 until intCount) {
+    for (i <- 0 until intCount)
       result(i) = 0
-    }
   }
 
   def shiftLeftOneBit(source: BigInteger): BigInteger = {
@@ -304,10 +301,10 @@ private[math] object BitLevel {
     val intCount: Int = count >> 5
     val andCount: Int = count & 31 // count of remaining bits
 
-    if (intCount >= source.numberLength) {
+    if (intCount >= source.numberLength)
       if (source.sign < 0) BigInteger.MINUS_ONE
       else BigInteger.ZERO
-    } else {
+    else {
       var resLength: Int = source.numberLength - intCount
       val resDigits = new Array[Int](resLength + 1)
 
@@ -315,9 +312,8 @@ private[math] object BitLevel {
       if (source.sign < 0) {
         // Checking if the dropped bits are zeros (the remainder equals to 0)
         var i: Int = 0
-        while ((i < intCount) && (source.digits(i) == 0)) {
+        while ((i < intCount) && (source.digits(i) == 0))
           i += 1
-        }
         // If the remainder is not zero, add 1 to the result
         val cmp = (source.digits(i) << (32 - andCount)) != 0
         if (i < intCount || (andCount > 0 && cmp)) {
@@ -360,9 +356,9 @@ private[math] object BitLevel {
       allZero &= (source(i) == 0)
       i += 1
     }
-    if (count == 0) {
+    if (count == 0)
       System.arraycopy(source, intCount, result, 0, resultLen)
-    } else {
+    else {
       val leftShiftCount = 32 - count
       allZero &= ((source(i) << leftShiftCount) == 0)
       i = 0

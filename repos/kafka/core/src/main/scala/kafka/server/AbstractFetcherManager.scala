@@ -120,9 +120,8 @@ abstract class AbstractFetcherManager(
 
   def removeFetcherForPartitions(partitions: Set[TopicAndPartition]) {
     mapLock synchronized {
-      for ((key, fetcher) <- fetcherThreadMap) {
+      for ((key, fetcher) <- fetcherThreadMap)
         fetcher.removePartitions(partitions)
-      }
     }
     info("Removed fetcher for partitions %s".format(partitions.mkString(",")))
   }
@@ -130,21 +129,19 @@ abstract class AbstractFetcherManager(
   def shutdownIdleFetcherThreads() {
     mapLock synchronized {
       val keysToBeRemoved = new mutable.HashSet[BrokerAndFetcherId]
-      for ((key, fetcher) <- fetcherThreadMap) {
+      for ((key, fetcher) <- fetcherThreadMap)
         if (fetcher.partitionCount <= 0) {
           fetcher.shutdown()
           keysToBeRemoved += key
         }
-      }
       fetcherThreadMap --= keysToBeRemoved
     }
   }
 
   def closeAllFetchers() {
     mapLock synchronized {
-      for ((_, fetcher) <- fetcherThreadMap) {
+      for ((_, fetcher) <- fetcherThreadMap)
         fetcher.shutdown()
-      }
       fetcherThreadMap.clear()
     }
   }

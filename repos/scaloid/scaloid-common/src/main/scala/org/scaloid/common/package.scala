@@ -54,9 +54,8 @@ package object common
 
   def getUniqueId(implicit activity: Activity): Int = {
     var candidate: Int = 0
-    do {
-      candidate = idSequence.incrementAndGet
-    } while (activity.findViewById(candidate) != null)
+    do candidate = idSequence.incrementAndGet while (activity.findViewById(
+      candidate) != null)
     candidate
   }
 
@@ -68,20 +67,19 @@ package object common
   lazy val uiThread = Looper.getMainLooper.getThread
 
   def runOnUiThread(f: => Unit): Unit =
-    if (uiThread == Thread.currentThread) {
+    if (uiThread == Thread.currentThread)
       f
-    } else {
+    else
       handler.post(new Runnable() {
         def run() {
           f
         }
       })
-    }
 
   def evalOnUiThread[T](f: => T): Future[T] =
-    if (uiThread == Thread.currentThread) {
+    if (uiThread == Thread.currentThread)
       Future.fromTry(Try(f))
-    } else {
+    else {
       val p = Promise[T]()
       handler.post(new Runnable() {
         def run() {

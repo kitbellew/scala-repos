@@ -32,12 +32,10 @@ private[spark] abstract class SparkFunSuite
 // scalastyle:on
 
   protected override def afterAll(): Unit =
-    try {
-      // Avoid leaking map entries in tests that use accumulators without SparkContext
-      Accumulators.clear()
-    } finally {
-      super.afterAll()
-    }
+    try
+    // Avoid leaking map entries in tests that use accumulators without SparkContext
+    Accumulators.clear()
+    finally super.afterAll()
 
   /**
     * Log the suite name and the test name before and after each test.
@@ -53,9 +51,8 @@ private[spark] abstract class SparkFunSuite
     try {
       logInfo(s"\n\n===== TEST OUTPUT FOR $shortSuiteName: '$testName' =====\n")
       test()
-    } finally {
-      logInfo(s"\n\n===== FINISHED $shortSuiteName: '$testName' =====\n")
-    }
+    } finally logInfo(
+      s"\n\n===== FINISHED $shortSuiteName: '$testName' =====\n")
   }
 
 }

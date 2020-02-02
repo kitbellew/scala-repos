@@ -318,11 +318,10 @@ private[ml] trait DecisionTreeRegressorParams
       featuresDataType: DataType): StructType = {
     val newSchema =
       super.validateAndTransformSchema(schema, fitting, featuresDataType)
-    if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
+    if (isDefined(varianceCol) && $(varianceCol).nonEmpty)
       SchemaUtils.appendColumn(newSchema, $(varianceCol), DoubleType)
-    } else {
+    else
       newSchema
-    }
   }
 }
 

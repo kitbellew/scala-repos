@@ -39,14 +39,13 @@ trait BooleanTypedField extends TypedField[Boolean] {
   }
 
   def setFromString(s: String): Box[Boolean] =
-    if (s == null || s.isEmpty) {
+    if (s == null || s.isEmpty)
       if (optional_?)
         setBox(Empty)
       else
         setBox(Failure(notOptionalErrorMessage))
-    } else {
+    else
       setBox(tryo(toBoolean(s)))
-    }
 
   private def elem(attrs: SHtml.ElemAttr*) =
     SHtml.checkbox(

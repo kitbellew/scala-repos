@@ -27,18 +27,16 @@ abstract class Page {
   def createFileOutputStream(site: HtmlFactory, suffix: String = "") = {
     val file = new File(site.siteRoot, absoluteLinkTo(thisPage.path) + suffix)
     val folder = file.getParentFile
-    if (!folder.exists) {
+    if (!folder.exists)
       folder.mkdirs
-    }
     new FileOutputStream(file.getPath)
   }
 
   def writeFile(site: HtmlFactory, suffix: String = "")(fn: Writer => Unit) = {
     val fos = createFileOutputStream(site, suffix)
     val w = Channels.newWriter(fos.getChannel, site.encoding)
-    try {
-      fn(w)
-    } finally {
+    try fn(w)
+    finally {
       w.close()
       fos.close()
     }

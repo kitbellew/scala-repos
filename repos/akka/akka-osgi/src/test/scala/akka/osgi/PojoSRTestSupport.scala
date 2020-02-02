@@ -51,19 +51,16 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
 
     val oldErr = System.err
     System.setErr(new PrintStream(bufferedLoadingErrors))
-    try {
-      ServiceLoader
-        .load(classOf[PojoServiceRegistryFactory])
-        .iterator
-        .next
-        .newPojoServiceRegistry(config)
-        .getBundleContext
-    } catch {
+    try ServiceLoader
+      .load(classOf[PojoServiceRegistryFactory])
+      .iterator
+      .next
+      .newPojoServiceRegistry(config)
+      .getBundleContext
+    catch {
       case e: Throwable ⇒
         oldErr.write(bufferedLoadingErrors.toByteArray); throw e
-    } finally {
-      System.setErr(oldErr)
-    }
+    } finally System.setErr(oldErr)
   }
 
   // Ensure bundles get stopped at the end of the test to release resources and stop threads
@@ -180,10 +177,9 @@ class BundleDescriptorBuilder(name: String) {
     import scala.collection.JavaConverters.iterableAsScalaIterableConverter
     val headers = new HashMap[String, String]()
     val jis = new JarInputStream(new FileInputStream(file))
-    try {
-      for (entry ← jis.getManifest.getMainAttributes.entrySet.asScala)
-        headers.put(entry.getKey.toString, entry.getValue.toString)
-    } finally jis.close()
+    try for (entry ← jis.getManifest.getMainAttributes.entrySet.asScala)
+      headers.put(entry.getKey.toString, entry.getValue.toString)
+    finally jis.close()
 
     headers
   }

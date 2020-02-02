@@ -37,9 +37,9 @@ class ConcurrentMultiMap[K <% Ordered[K], V <% Ordered[V]] {
   def get(k: K): List[V] = {
     def traverse(entry: Container): List[V] = {
       val nextEntry = underlying.higherKey(entry)
-      if (nextEntry == null || nextEntry.key != k) {
+      if (nextEntry == null || nextEntry.key != k)
         Nil
-      } else {
+      else {
         assert(nextEntry.value.isDefined)
         nextEntry.value.get :: traverse(nextEntry)
       }

@@ -27,14 +27,14 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
 
   import FlatClassPath.RootPackage
   private def getDirectory(forPackage: String): Option[File] =
-    if (forPackage == RootPackage) {
+    if (forPackage == RootPackage)
       Some(dir)
-    } else {
+    else {
       val packageDirName = FileUtils.dirPath(forPackage)
       val packageDir = new File(dir, packageDirName)
-      if (packageDir.exists && packageDir.isDirectory) {
+      if (packageDir.exists && packageDir.isDirectory)
         Some(packageDir)
-      } else None
+      else None
     }
 
   override private[nsc] def packages(inPackage: String): Seq[PackageEntry] = {
@@ -73,7 +73,7 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
     val packagePrefix = PackageNameUtils.packagePrefix(inPackage)
     val packageBuf = collection.mutable.ArrayBuffer.empty[PackageEntry]
     val fileBuf = collection.mutable.ArrayBuffer.empty[FileEntryType]
-    for (file <- files) {
+    for (file <- files)
       if (file.isPackage) {
         val pkgEntry = PackageEntryImpl(packagePrefix + file.getName)
         packageBuf += pkgEntry
@@ -82,7 +82,6 @@ trait DirectoryFileLookup[FileEntryType <: ClassRepClassPathEntry]
         val abstractFile = new PlainFile(wrappedFile)
         fileBuf += createFileEntry(abstractFile)
       }
-    }
     FlatClassPathEntries(packageBuf, fileBuf)
   }
 

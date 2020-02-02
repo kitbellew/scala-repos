@@ -51,9 +51,9 @@ object Pack {
     (b1 & 0xff) << 24 | (b2 & 0xff) << 16 | (b3 & 0xff) << 8 | (b4 & 0xff)
 
   def intFromByteBuffer(bb: ByteBuffer): Int =
-    if (bb.remaining >= 4) {
+    if (bb.remaining >= 4)
       bb.getInt()
-    } else {
+    else {
       var n = 0
       while (bb.remaining > 0) n = (n << 8) | bb.get
       n
@@ -129,9 +129,9 @@ object Pack {
       (b7 & 0xFFL) << 8 | (b8 & 0xFFL)
 
   def longFromByteBuffer(bb: ByteBuffer): Long =
-    if (bb.remaining >= 8) {
+    if (bb.remaining >= 8)
       bb.getLong()
-    } else {
+    else {
       var n = 0L
       while (bb.remaining > 0) n = (n << 8) | bb.get
       n
@@ -153,9 +153,9 @@ object Pack {
 
   def bytesFromByteBuffer(bb: ByteBuffer, n: Int): Array[Byte] = {
     val out = new Array[Byte](n)
-    if (bb.remaining >= n) {
+    if (bb.remaining >= n)
       bb.get(out)
-    } else {
+    else {
       var i = 0
       while (bb.remaining > 0) {
         out(i) = bb.get;
@@ -168,11 +168,10 @@ object Pack {
   // macro stuff beyond this point
 
   def intToByteRuntime(n: Int)(index: Int): Byte =
-    if (0 <= index && index < 4) {
+    if (0 <= index && index < 4)
       ((n >>> (24 - index * 8)) & 0xff).toByte
-    } else {
+    else
       throw new IllegalArgumentException(s"$index outside of 0-3")
-    }
 
   def intToByteMacro(c: Context)(n: c.Expr[Int])(
       index: c.Expr[Int]): c.Expr[Byte] = {
@@ -182,20 +181,18 @@ object Pack {
         if (0 <= i && i < 4) {
           val offset = c.Expr[Int](Literal(Constant(24 - i * 8)))
           reify { ((n.splice >>> offset.splice) & 0xff).toByte }
-        } else {
+        } else
           c.abort(c.enclosingPosition, "index outside of 0-3")
-        }
       case _ =>
         reify { Pack.intToByteRuntime(n.splice)(index.splice) }
     }
   }
 
   def longToByteRuntime(n: Long)(index: Int): Byte =
-    if (0 <= index && index < 8) {
+    if (0 <= index && index < 8)
       ((n >>> (56 - index * 8)) & 0xff).toByte
-    } else {
+    else
       throw new IllegalArgumentException(s"$index outside of 0-7")
-    }
 
   def longToByteMacro(c: Context)(n: c.Expr[Long])(
       index: c.Expr[Int]): c.Expr[Byte] = {
@@ -205,9 +202,8 @@ object Pack {
         if (0 <= i && i < 8) {
           val offset = c.Expr[Int](Literal(Constant(56 - i * 8)))
           reify { ((n.splice >>> offset.splice) & 0xff).toByte }
-        } else {
+        } else
           c.abort(c.enclosingPosition, "index outside of 0-7")
-        }
       case _ =>
         reify { Pack.longToByteRuntime(n.splice)(index.splice) }
     }

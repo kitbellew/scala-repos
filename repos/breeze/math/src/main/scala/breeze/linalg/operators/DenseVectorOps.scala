@@ -93,9 +93,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val ad = a.data
         var aoff = a.offset
 
-        for ((i, v) <- b.activeIterator) {
+        for ((i, v) <- b.activeIterator)
           a(i) = op(a(i), v)
-        }
       }
       implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
         .register(this)
@@ -127,13 +126,12 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val stride = a.stride
 
         // https://wikis.oracle.com/display/HotSpotInternals/RangeCheckElimination
-        if (stride == 1) {
-          if (aoff == 0) {
+        if (stride == 1)
+          if (aoff == 0)
             cforRange(0 until rd.length) { j => rd(j) = op(ad(j), b) }
-          } else {
+          else
             cforRange(0 until rd.length) { j => rd(j) = op(ad(j + aoff), b) }
-          }
-        } else {
+        else {
           var i = 0
           var j = aoff
           while (i < rd.length) {
@@ -204,13 +202,13 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val result = DenseVector.zeros[T](a.length)
         val rd = result.data
 
-        if (a.noOffsetOrStride && b.noOffsetOrStride) {
+        if (a.noOffsetOrStride && b.noOffsetOrStride)
           cforRange(0 until a.length) { j => rd(j) = op(ad(j), bd(j)) }
-        } else if (a.stride == 1 && b.stride == 1) {
+        else if (a.stride == 1 && b.stride == 1)
           cforRange(0 until a.length) { j =>
             rd(j) = op(ad(j + aoff), bd(j + boff))
           }
-        } else {
+        else {
           var i = 0
           while (i < a.length) {
             rd(i) = op(ad(aoff), bd(boff))
@@ -245,18 +243,17 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val bstride = b.stride
         val length = a.length
 
-        if (a.noOffsetOrStride && b.noOffsetOrStride) {
+        if (a.noOffsetOrStride && b.noOffsetOrStride)
           cforRange(0 until length) { j => ad(j) = op(ad(j), bd(j)) }
-        } else if (astride == 1 && bstride == 1) {
+        else if (astride == 1 && bstride == 1)
           cforRange(0 until length) { j =>
             ad(j + aoff) = op(ad(j + aoff), bd(j + boff))
           }
-        } else {
+        else
           cforRange(0 until length) { i =>
             ad(aoff + astride * i) =
               op(ad(aoff + astride * i), bd(boff + bstride * i))
           }
-        }
       }
       implicitly[BinaryUpdateRegistry[Vector[T], Vector[T], Op.type]]
         .register(this)
@@ -280,13 +277,12 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
         val length = a.length
 
         // ABCE branching
-        if (aoff == 0 && stride == 1) {
+        if (aoff == 0 && stride == 1)
           fastPath(b, ad, length)
-        } else if (stride == 1) {
+        else if (stride == 1)
           medPath(ad, aoff, b, length)
-        } else {
+        else
           slowPath(ad, aoff, stride, b, length)
-        }
 
       }
 
@@ -393,9 +389,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
                 cforRange(0 until v1.length) { i =>
                   fn(data1(offset1 + i), data2(offset2 + i))
                 }
-              } else {
+              } else
                 slowPath(fn)
-              }
             }
 
             def slowPath(fn: (T, T) => Unit): Unit = {
@@ -457,9 +452,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           val ad = x.data
           val bd = y.data
           cforRange(0 until x.length) { i => bd(i) += ad(i) * s }
-        } else {
+        } else
           cforRange(0 until x.length) { i => y(i) += x(i) * s }
-        }
       }
       implicitly[TernaryUpdateRegistry[Vector[V], V, Vector[V], scaleAdd.type]]
         .register(this)
@@ -582,9 +576,8 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
     new OpMulInner.Impl2[DenseVector[T], DenseVector[T], T] {
       override def apply(v: DenseVector[T], v2: DenseVector[T]): T = {
         var acc = field.zero
-        for (i <- 0 until v.length) {
+        for (i <- 0 until v.length)
           acc = field.+(acc, field.*(v(i), v2(i)))
-        }
         acc
       }
     }
@@ -599,14 +592,13 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
 trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
 
   implicit val canAddIntoF
-      : OpAdd.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] = {
+      : OpAdd.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] =
     new OpAdd.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] {
       def apply(a: DenseVector[Float], b: DenseVector[Float]) =
         canSaxpy(a, 1.0f, b)
       implicitly[BinaryUpdateRegistry[Vector[Float], Vector[Float], OpAdd.type]]
         .register(this)
     }
-  }
 
   implicit object canSaxpy
       extends scaleAdd.InPlaceImpl3[
@@ -623,9 +615,8 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
 
         cforRange(0 until x.length) { i => bd(i) += ad(i) * a }
 
-      } else {
+      } else
         slowPath(y, a, x)
-      }
     }
 
     private def slowPath(
@@ -641,15 +632,14 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   implicit val canAddF: OpAdd.Impl2[
     DenseVector[Float],
     DenseVector[Float],
-    DenseVector[Float]] = {
+    DenseVector[Float]] =
     pureFromUpdate_Float(canAddIntoF)
-  }
   implicitly[
     BinaryRegistry[Vector[Float], Vector[Float], OpAdd.type, Vector[Float]]]
     .register(canAddF)
 
   implicit val canSubIntoF
-      : OpSub.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] = {
+      : OpSub.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] =
     new OpSub.InPlaceImpl2[DenseVector[Float], DenseVector[Float]] {
       def apply(a: DenseVector[Float], b: DenseVector[Float]) =
         canSaxpy(a, -1.0f, b)
@@ -657,32 +647,29 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
         .register(this)
     }
 
-  }
   implicit val canSubF: OpSub.Impl2[
     DenseVector[Float],
     DenseVector[Float],
-    DenseVector[Float]] = {
+    DenseVector[Float]] =
     pureFromUpdate_Float(canSubIntoF)
-  }
 
   implicit val canDot_DV_DV_Float: breeze.linalg.operators.OpMulInner.Impl2[
     DenseVector[Float],
     DenseVector[Float],
-    Float] = {
+    Float] =
     new breeze.linalg.operators.OpMulInner.Impl2[
       DenseVector[Float],
       DenseVector[Float],
       Float] {
       def apply(a: DenseVector[Float], b: DenseVector[Float]) = {
         require(a.length == b.length, s"Vectors must have same length")
-        if (a.noOffsetOrStride && b.noOffsetOrStride && a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH) {
+        if (a.noOffsetOrStride && b.noOffsetOrStride && a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH)
           DenseVectorSupportMethods.smallDotProduct_Float(
             a.data,
             b.data,
             a.length)
-        } else {
+        else
           blasPath(a, b)
-        }
       }
 
       val UNROLL_FACTOR = 6
@@ -690,14 +677,14 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
       private def blasPath(
           a: DenseVector[Float],
           b: DenseVector[Float]): Float =
-        if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1) {
+        if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1)
           DenseVectorSupportMethods.dotProduct_Float(
             a.data,
             a.offset,
             b.data,
             b.offset,
             a.length)
-        } else {
+        else {
           val boff =
             if (b.stride >= 0) b.offset
             else (b.offset + b.stride * (b.length - 1))
@@ -710,7 +697,6 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
         BinaryRegistry[Vector[Float], Vector[Float], OpMulInner.type, Float]]
         .register(this)
     }
-  }
 }
 
 /**
@@ -850,9 +836,9 @@ trait DenseVector_GenericOps { this: DenseVector.type =>
     new OpSet.InPlaceImpl2[DenseVector[V], V] {
       def apply(a: DenseVector[V], b: V): Unit = {
         val ad: Array[V] = a.data
-        if (a.stride == 1) {
+        if (a.stride == 1)
           ArrayUtil.fill(ad, a.offset, a.length, b)
-        } else {
+        else {
           var i = 0
           var aoff = a.offset
           while (i < a.length) {

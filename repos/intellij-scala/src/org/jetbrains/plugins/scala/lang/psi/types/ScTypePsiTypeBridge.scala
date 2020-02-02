@@ -70,23 +70,22 @@ trait ScTypePsiTypeBridge {
               val containingClass: PsiClass = clazz.containingClass
               val res =
                 if (containingClass == null) ScDesignatorType(clazz)
-                else {
+                else
                   ScProjectionType(
                     constructTypeForClass(
                       containingClass,
                       withTypeParameters = !clazz.hasModifierProperty("static")),
                     clazz,
                     superReference = false)
-                }
               if (withTypeParameters) {
                 val typeParameters: Array[PsiTypeParameter] =
                   clazz.getTypeParameters
-                if (typeParameters.length > 0) {
+                if (typeParameters.length > 0)
                   ScParameterizedType(
                     res,
                     typeParameters.map(ptp =>
                       new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-                } else res
+                else res
               } else res
             }
             val des = constructTypeForClass(clazz)
@@ -221,7 +220,7 @@ trait ScTypePsiTypeBridge {
       case d: PsiDisjunctionType => types.Any
       case d: PsiDiamondType =>
         val tps: util.List[PsiType] = d.resolveInferredTypes().getInferredTypes
-        if (tps.size() > 0) {
+        if (tps.size() > 0)
           create(
             tps.get(0),
             project,
@@ -229,10 +228,8 @@ trait ScTypePsiTypeBridge {
             visitedRawTypes,
             paramTopLevel,
             treatJavaObjectAsAny)
-        } else {
-          if (paramTopLevel && treatJavaObjectAsAny) types.Any
-          else types.AnyRef
-        }
+        else if (paramTopLevel && treatJavaObjectAsAny) types.Any
+        else types.AnyRef
       case p: PsiIntersectionType =>
         ScCompoundType(
           p.getConjuncts.map(

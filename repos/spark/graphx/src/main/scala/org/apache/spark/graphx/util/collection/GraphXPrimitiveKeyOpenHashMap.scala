@@ -83,11 +83,10 @@ private[graphx] class GraphXPrimitiveKeyOpenHashMap[
   def setMerge(k: K, v: V, mergeF: (V, V) => V) {
     val pos = keySet.addWithoutResize(k)
     val ind = pos & OpenHashSet.POSITION_MASK
-    if ((pos & OpenHashSet.NONEXISTENCE_MASK) != 0) { // if first add
+    if ((pos & OpenHashSet.NONEXISTENCE_MASK) != 0) // if first add
       _values(ind) = v
-    } else {
+    else
       _values(ind) = mergeF(_values(ind), v)
-    }
     keySet.rehashIfNeeded(k, grow, move)
     _oldValues = null
   }
@@ -122,9 +121,8 @@ private[graphx] class GraphXPrimitiveKeyOpenHashMap[
         val ret = (keySet.getValue(pos), _values(pos))
         pos += 1
         ret
-      } else {
+      } else
         null
-      }
     }
 
     def hasNext: Boolean = nextPair != null

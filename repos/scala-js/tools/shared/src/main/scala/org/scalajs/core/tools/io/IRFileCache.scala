@@ -159,11 +159,10 @@ final class IRFileCache {
         // we are a tombstone, help cleaning up and bail out
         cleanup()
         false
-      } else {
-        // try to increase ref count
-        if (_references.compareAndSet(refs, refs + 1)) true // done
-        else reference() // something changed, try again
-      }
+      } else
+      // try to increase ref count
+      if (_references.compareAndSet(refs, refs + 1)) true // done
+      else reference() // something changed, try again
     }
 
     /** Unreference this file.
@@ -178,9 +177,8 @@ final class IRFileCache {
       /* If we have 0 references, try to become a tombstone. We could be
        * referenced again in a race. In this case, don't do anything.
        */
-      if (refs == 0 && _references.compareAndSet(0, -1)) {
+      if (refs == 0 && _references.compareAndSet(0, -1))
         cleanup()
-      }
     }
 
     /** Clean up, after becoming a tombstone */
@@ -206,22 +204,21 @@ final class IRFileCache {
       @inline
       def upToDate(v: Option[String]) = v.isDefined && v == file.version
 
-      if (upToDate(_version)) {
+      if (upToDate(_version))
         // yeepeeh, nothing to do
         statsReused.incrementAndGet()
-      } else {
+      else
         // We need to update this. We synchronize
         synchronized {
-          if (upToDate(_version)) {
+          if (upToDate(_version))
             // someone else had the same idea and did our work
             statsReused.incrementAndGet()
-          } else {
+          else {
             statsInvalidated.incrementAndGet()
             _files = extractIRFiles(file).map(new PersistentIRFile(_))
             _version = file.version
           }
         }
-      }
     }
 
     private def extractIRFiles(file: IRContainer) = file match {
@@ -250,13 +247,11 @@ final class IRFileCache {
       _tree != null || _irFile.exists
 
     override def tree: ClassDef = {
-      if (_tree == null) {
+      if (_tree == null)
         synchronized {
-          if (_tree == null) { // check again, race!
+          if (_tree == null) // check again, race!
             loadTree()
-          }
         }
-      }
 
       _tree
     }

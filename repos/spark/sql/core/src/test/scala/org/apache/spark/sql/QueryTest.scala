@@ -52,17 +52,15 @@ abstract class QueryTest extends PlanTest {
     */
   def checkExistence(df: DataFrame, exists: Boolean, keywords: String*) {
     val outputs = df.collect().map(_.mkString).mkString
-    for (key <- keywords) {
-      if (exists) {
+    for (key <- keywords)
+      if (exists)
         assert(
           outputs.contains(key),
           s"Failed for $df ($key doesn't exist in result)")
-      } else {
+      else
         assert(
           !outputs.contains(key),
           s"Failed for $df ($key existed in the result)")
-      }
-    }
   }
 
   /**
@@ -138,16 +136,15 @@ abstract class QueryTest extends PlanTest {
       try df
       catch {
         case ae: AnalysisException =>
-          if (ae.plan.isDefined) {
+          if (ae.plan.isDefined)
             fail(s"""
                |Failed to analyze query: $ae
                |${ae.plan.get}
                |
                |${stackTraceToString(ae)}
                |""".stripMargin)
-          } else {
+          else
             throw ae
-          }
       }
 
     checkJsonFormat(analyzedDF)
@@ -228,9 +225,8 @@ abstract class QueryTest extends PlanTest {
     if (this.getClass.getName.startsWith("org.apache.spark.sql.hive")) return
 
     val jsonString =
-      try {
-        logicalPlan.toJSON
-      } catch {
+      try logicalPlan.toJSON
+      catch {
         case NonFatal(e) =>
           fail(
             s"""
@@ -257,9 +253,8 @@ abstract class QueryTest extends PlanTest {
     }
 
     val jsonBackPlan =
-      try {
-        TreeNode.fromJSON[LogicalPlan](jsonString, sqlContext.sparkContext)
-      } catch {
+      try TreeNode.fromJSON[LogicalPlan](jsonString, sqlContext.sparkContext)
+      catch {
         case NonFatal(e) =>
           fail(
             s"""
@@ -300,13 +295,12 @@ abstract class QueryTest extends PlanTest {
     assert(localRelations.isEmpty)
     assert(inMemoryRelations.isEmpty)
 
-    if (normalized1 != normalized2) {
+    if (normalized1 != normalized2)
       fail(s"""
            |== FAIL: the logical plan parsed from json does not match the original one ===
            |${sideBySide(logicalPlan.treeString, normalized2.treeString)
                 .mkString("\n")}
           """.stripMargin)
-    }
   }
 
   /**

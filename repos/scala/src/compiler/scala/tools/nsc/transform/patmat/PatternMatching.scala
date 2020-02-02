@@ -67,9 +67,8 @@ trait PatternMatching
             tree,
             transform(sel),
             transformTrees(cases).asInstanceOf[List[CaseDef]]))
-        try {
-          localTyper.typed(translated) setType origTp
-        } catch {
+        try localTyper.typed(translated) setType origTp
+        catch {
           case x: (Types#TypeError) =>
             // TODO: this should never happen; error should've been reported during type checking
             reporter.error(
@@ -285,7 +284,7 @@ trait Interface extends ast.TreeDSL {
             tree1.modifyType(_.substituteTypes(from, toTypes))
           }
         }
-        if (containsSym) {
+        if (containsSym)
           if (to.forall(_.isInstanceOf[Ident]))
             tree.duplicate
               .substituteSymbols(
@@ -294,7 +293,7 @@ trait Interface extends ast.TreeDSL {
               ) // SI-7459 catches `case t => new t.Foo`
           else
             substIdentsForTrees.transform(tree)
-        } else tree
+        else tree
       }
 
       // the substitution that chains `other` before `this` substitution

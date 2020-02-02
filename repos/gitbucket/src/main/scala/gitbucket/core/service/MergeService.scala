@@ -101,13 +101,11 @@ trait MergeService {
           val mergeBaseTip =
             git.getRepository.resolve(s"refs/heads/$localBranch")
           val mergeTip = git.getRepository.resolve(tmpRefName)
-          try {
-            if (merger.merge(mergeBaseTip, mergeTip)) {
-              Some((merger.getResultTreeId, mergeBaseTip, mergeTip))
-            } else {
-              None
-            }
-          } catch {
+          try if (merger.merge(mergeBaseTip, mergeTip))
+            Some((merger.getResultTreeId, mergeBaseTip, mergeTip))
+          else
+            None
+          catch {
             case e: NoMergeBaseException => None
           }
         } finally {
@@ -223,32 +221,29 @@ object MergeService {
         .flatMap { merged =>
           if (parseCommit(merged).getParents().toSet == Set(
                 mergeBaseTip,
-                mergeTip)) {
+                mergeTip))
             // merged branch exists
             Some(false)
-          } else {
+          else
             None
-          }
         }
         .orElse(Option(repository.resolve(conflictedBranchName)).flatMap {
           conflicted =>
             if (parseCommit(conflicted).getParents().toSet == Set(
                   mergeBaseTip,
-                  mergeTip)) {
+                  mergeTip))
               // conflict branch exists
               Some(true)
-            } else {
+            else
               None
-            }
         })
     def checkConflict(): Boolean =
       checkConflictCache.getOrElse(checkConflictForce)
     def checkConflictForce(): Boolean = {
       val merger = MergeStrategy.RECURSIVE.newMerger(repository, true)
       val conflicted =
-        try {
-          !merger.merge(mergeBaseTip, mergeTip)
-        } catch {
+        try !merger.merge(mergeBaseTip, mergeTip)
+        catch {
           case e: NoMergeBaseException => true
         }
       val mergeTipCommit =
@@ -284,10 +279,9 @@ object MergeService {
     }
     // update branch from cache
     def merge(message: String, committer: PersonIdent) = {
-      if (checkConflict()) {
+      if (checkConflict())
         throw new RuntimeException(
           "This pull request can't merge automatically.")
-      }
       val mergeResultCommit = parseCommit(
         Option(repository.resolve(mergedBranchName)).getOrElse(
           throw new RuntimeException(s"not found branch $mergedBranchName")))

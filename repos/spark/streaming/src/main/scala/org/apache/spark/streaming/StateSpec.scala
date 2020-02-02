@@ -217,11 +217,10 @@ object StateSpec {
     val wrappedFunc =
       (time: Time, k: KeyType, v: Option[ValueType], s: State[StateType]) => {
         val t = mappingFunction.call(time, k, JavaUtils.optionToOptional(v), s)
-        if (t.isPresent) {
+        if (t.isPresent)
           Some(t.get)
-        } else {
+        else
           None
-        }
       }
     StateSpec.function(wrappedFunc)
   }

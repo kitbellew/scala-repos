@@ -41,9 +41,8 @@ class WhileFilter extends ElementFilter {
             .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
             .matcher(text)
             .replaceAll(Matcher.quoteReplacement(" while (true)"))
-        } else {
+        } else
           text = doStmt.getText + " while (true)"
-        }
         return checkDoWith(text, parent.getManager)
       }
     }

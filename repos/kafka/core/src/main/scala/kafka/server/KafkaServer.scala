@@ -369,10 +369,9 @@ class KafkaServer(
     val secureAclsEnabled = JaasUtils
       .isZkSecurityEnabled() && config.zkEnableSecureAcls
 
-    if (config.zkEnableSecureAcls && !secureAclsEnabled) {
+    if (config.zkEnableSecureAcls && !secureAclsEnabled)
       throw new java.lang.SecurityException(
         "zkEnableSecureAcls is true, but the verification of the JAAS login file failed.")
-    }
     if (chroot.length > 1) {
       val zkConnForChrootCreation =
         config.zkConnect.substring(0, config.zkConnect.indexOf("/"))
@@ -486,7 +485,7 @@ class KafkaServer(
           }
 
           // 2. issue a controlled shutdown to the controller
-          if (prevController != null) {
+          if (prevController != null)
             try {
 
               if (!networkClient.blockingReady(
@@ -533,7 +532,6 @@ class KafkaServer(
                     .format(ioe.getMessage))
               // ignore and try again
             }
-          }
           if (!shutdownSucceeded) {
             Thread.sleep(config.controlledShutdownRetryBackoffMs)
             warn(
@@ -550,88 +548,84 @@ class KafkaServer(
       var channel: BlockingChannel = null
       var prevController: Broker = null
       var shutdownSucceeded: Boolean = false
-      try {
-        while (!shutdownSucceeded && remainingRetries > 0) {
-          remainingRetries = remainingRetries - 1
+      try while (!shutdownSucceeded && remainingRetries > 0) {
+        remainingRetries = remainingRetries - 1
 
-          // 1. Find the controller and establish a connection to it.
+        // 1. Find the controller and establish a connection to it.
 
-          // Get the current controller info. This is to ensure we use the most recent info to issue the
-          // controlled shutdown request
-          val controllerId = zkUtils.getController()
-          zkUtils.getBrokerInfo(controllerId) match {
-            case Some(broker) =>
-              if (channel == null || prevController == null || !prevController
-                    .equals(broker)) {
-                // if this is the first attempt or if the controller has changed, create a channel to the most recent
-                // controller
-                if (channel != null)
-                  channel.disconnect()
-
-                channel = new BlockingChannel(
-                  broker
-                    .getBrokerEndPoint(config.interBrokerSecurityProtocol)
-                    .host,
-                  broker
-                    .getBrokerEndPoint(config.interBrokerSecurityProtocol)
-                    .port,
-                  BlockingChannel.UseDefaultBufferSize,
-                  BlockingChannel.UseDefaultBufferSize,
-                  config.controllerSocketTimeoutMs)
-                channel.connect()
-                prevController = broker
-              }
-            case None => //ignore and try again
-          }
-
-          // 2. issue a controlled shutdown to the controller
-          if (channel != null) {
-            var response: NetworkReceive = null
-            try {
-              // send the controlled shutdown request
-              val request = new kafka.api.ControlledShutdownRequest(
-                0,
-                correlationId.getAndIncrement,
-                None,
-                config.brokerId)
-              channel.send(request)
-
-              response = channel.receive()
-              val shutdownResponse = kafka.api.ControlledShutdownResponse
-                .readFrom(response.payload())
-              if (shutdownResponse.errorCode == Errors.NONE.code && shutdownResponse.partitionsRemaining != null &&
-                  shutdownResponse.partitionsRemaining.size == 0) {
-                shutdownSucceeded = true
-                info("Controlled shutdown succeeded")
-              } else {
-                info(
-                  "Remaining partitions to move: %s".format(
-                    shutdownResponse.partitionsRemaining.mkString(",")))
-                info(
-                  "Error code from controller: %d".format(
-                    shutdownResponse.errorCode))
-              }
-            } catch {
-              case ioe: java.io.IOException =>
+        // Get the current controller info. This is to ensure we use the most recent info to issue the
+        // controlled shutdown request
+        val controllerId = zkUtils.getController()
+        zkUtils.getBrokerInfo(controllerId) match {
+          case Some(broker) =>
+            if (channel == null || prevController == null || !prevController
+                  .equals(broker)) {
+              // if this is the first attempt or if the controller has changed, create a channel to the most recent
+              // controller
+              if (channel != null)
                 channel.disconnect()
-                channel = null
-                warn(
-                  "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
-                    .format(ioe.getMessage))
-              // ignore and try again
+
+              channel = new BlockingChannel(
+                broker
+                  .getBrokerEndPoint(config.interBrokerSecurityProtocol)
+                  .host,
+                broker
+                  .getBrokerEndPoint(config.interBrokerSecurityProtocol)
+                  .port,
+                BlockingChannel.UseDefaultBufferSize,
+                BlockingChannel.UseDefaultBufferSize,
+                config.controllerSocketTimeoutMs)
+              channel.connect()
+              prevController = broker
             }
-          }
-          if (!shutdownSucceeded) {
-            Thread.sleep(config.controlledShutdownRetryBackoffMs)
-            warn(
-              "Retrying controlled shutdown after the previous attempt failed...")
-          }
+          case None => //ignore and try again
         }
-      } finally {
+
+        // 2. issue a controlled shutdown to the controller
         if (channel != null) {
-          channel.disconnect()
-          channel = null
+          var response: NetworkReceive = null
+          try {
+            // send the controlled shutdown request
+            val request = new kafka.api.ControlledShutdownRequest(
+              0,
+              correlationId.getAndIncrement,
+              None,
+              config.brokerId)
+            channel.send(request)
+
+            response = channel.receive()
+            val shutdownResponse = kafka.api.ControlledShutdownResponse
+              .readFrom(response.payload())
+            if (shutdownResponse.errorCode == Errors.NONE.code && shutdownResponse.partitionsRemaining != null &&
+                shutdownResponse.partitionsRemaining.size == 0) {
+              shutdownSucceeded = true
+              info("Controlled shutdown succeeded")
+            } else {
+              info(
+                "Remaining partitions to move: %s".format(
+                  shutdownResponse.partitionsRemaining.mkString(",")))
+              info(
+                "Error code from controller: %d".format(
+                  shutdownResponse.errorCode))
+            }
+          } catch {
+            case ioe: java.io.IOException =>
+              channel.disconnect()
+              channel = null
+              warn(
+                "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
+                  .format(ioe.getMessage))
+            // ignore and try again
+          }
         }
+        if (!shutdownSucceeded) {
+          Thread.sleep(config.controlledShutdownRetryBackoffMs)
+          warn(
+            "Retrying controlled shutdown after the previous attempt failed...")
+        }
+      } finally if (channel != null) {
+        channel.disconnect()
+        channel = null
       }
       shutdownSucceeded
     }
@@ -813,9 +807,8 @@ class KafkaServer(
   }
 
   private def generateBrokerId: Int =
-    try {
-      zkUtils.getBrokerSequenceId(config.maxReservedBrokerId)
-    } catch {
+    try zkUtils.getBrokerSequenceId(config.maxReservedBrokerId)
+    catch {
       case e: Exception =>
         error("Failed to generate broker.id due to ", e)
         throw new GenerateBrokerIdException("Failed to generate broker.id", e)

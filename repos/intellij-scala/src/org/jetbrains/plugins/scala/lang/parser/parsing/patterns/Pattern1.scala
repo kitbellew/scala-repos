@@ -30,17 +30,16 @@ object Pattern1 {
     val backupMarker = builder.mark
     builder.getTokenType match {
       case ScalaTokenTypes.tIDENTIFIER =>
-        if (isVarId) {
+        if (isVarId)
           backupMarker.rollbackTo()
-        } else {
+        else {
           builder.advanceLexer() //Ate id
           builder.getTokenType match {
             case ScalaTokenTypes.tCOLON =>
               builder.advanceLexer() //Ate :
               backupMarker.drop()
-              if (!TypePattern.parse(builder)) {
+              if (!TypePattern.parse(builder))
                 builder error ScalaBundle.message("wrong.type")
-              }
               pattern1Marker.done(ScalaElementTypes.TYPED_PATTERN)
               return true
 
@@ -54,9 +53,8 @@ object Pattern1 {
           case ScalaTokenTypes.tCOLON =>
             builder.advanceLexer() //Ate :
             backupMarker.drop()
-            if (!TypePattern.parse(builder)) {
+            if (!TypePattern.parse(builder))
               builder error ScalaBundle.message("wrong.type")
-            }
             pattern1Marker.done(ScalaElementTypes.TYPED_PATTERN)
             return true
           case _ =>

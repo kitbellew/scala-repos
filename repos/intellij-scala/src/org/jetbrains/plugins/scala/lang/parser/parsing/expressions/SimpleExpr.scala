@@ -85,19 +85,17 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
                        ScalaTokenTypes.tRPARENTHESIS)) {
                 isTuple = true
                 builder.advanceLexer()
-                if (!Expr.parse(builder)) {
+                if (!Expr.parse(builder))
                   builder error ErrMsg("wrong.expression")
-                }
               }
               if (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
                 builder.advanceLexer()
                 isTuple = true
               }
-              if (builder.getTokenType != ScalaTokenTypes.tRPARENTHESIS) {
+              if (builder.getTokenType != ScalaTokenTypes.tRPARENTHESIS)
                 builder error ErrMsg("rparenthesis.expected")
-              } else {
+              else
                 builder.advanceLexer()
-              }
               builder.restoreNewlinesState
               newMarker = simpleMarker.precede
               simpleMarker.done(
@@ -107,14 +105,12 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
         }
       case _ =>
         state = true
-        if (!Literal.parse(builder)) {
-          if (!XmlExpr.parse(builder)) {
+        if (!Literal.parse(builder))
+          if (!XmlExpr.parse(builder))
             if (!Path.parse(builder, ScalaElementTypes.REFERENCE_EXPRESSION)) {
               simpleMarker.drop()
               return false
             }
-          }
-        }
         newMarker = simpleMarker.precede
         simpleMarker.drop()
     }
@@ -127,9 +123,8 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
             val tMarker = marker.precede
             marker.done(ScalaElementTypes.PLACEHOLDER_EXPR)
             subparse(tMarker)
-          } else {
+          } else
             marker.drop()
-          }
         case ScalaTokenTypes.tDOT =>
           state = true
           builder.advanceLexer() //Ate .
@@ -149,9 +144,8 @@ object SimpleExpr extends ParserNode with ScalaTokenTypes {
             val tMarker = marker.precede
             marker.done(ScalaElementTypes.METHOD_CALL)
             subparse(tMarker)
-          } else {
+          } else
             marker.drop()
-          }
         case ScalaTokenTypes.tLSQBRACKET =>
           state = true
           TypeArgs.parse(builder, isPattern = false)

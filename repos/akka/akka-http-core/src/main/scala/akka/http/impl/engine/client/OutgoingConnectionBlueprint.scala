@@ -205,9 +205,9 @@ private[http] object OutgoingConnectionBlueprint {
         private var completionDeferred = false
 
         def setIdleHandlers(): Unit =
-          if (completionDeferred) {
+          if (completionDeferred)
             completeStage()
-          } else {
+          else {
             setHandler(in, idle)
             setHandler(out, idle)
           }
@@ -239,11 +239,10 @@ private[http] object OutgoingConnectionBlueprint {
           // if downstream cancels while streaming entity,
           // make sure we also cancel the entity source, but
           // after being done with streaming the entity
-          if (entitySubstreamStarted) {
+          if (entitySubstreamStarted)
             completionDeferred = true
-          } else {
+          else
             completeStage()
-          }
 
         setIdleHandlers()
 
@@ -361,13 +360,10 @@ private[http] object OutgoingConnectionBlueprint {
             }
             override def onUpstreamFinish(): Unit =
               if (waitingForMethod) completeStage()
-              else {
-                if (parser.onUpstreamFinish()) {
-                  completeStage()
-                } else {
-                  emit(out, parser.onPull() :: Nil, () ⇒ completeStage())
-                }
-              }
+              else if (parser.onUpstreamFinish())
+                completeStage()
+              else
+                emit(out, parser.onPull() :: Nil, () ⇒ completeStage())
           }
         )
 

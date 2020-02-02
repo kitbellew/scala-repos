@@ -34,11 +34,10 @@ class DataSource(val dsp: DataSourceParams)
       )(sc)
       .map {
         case (entityId, properties) =>
-          try {
-            Item(
-              id = entityId,
-              categories = properties.get[List[String]]("categories"))
-          } catch {
+          try Item(
+            id = entityId,
+            categories = properties.get[List[String]]("categories"))
+          catch {
             case e: Exception =>
               logger.error(
                 s"Failed to get properties $properties of" +
@@ -68,10 +67,9 @@ class DataSource(val dsp: DataSourceParams)
             // entityId and targetEntityId is String
             Rating(event.entityId, event.targetEntityId.get, ratingValue)
           } catch {
-            case e: Exception => {
+            case e: Exception =>
               logger.error(s"Cannot convert $event to Rating. Exception: $e.")
               throw e
-            }
           }
         rating
       }

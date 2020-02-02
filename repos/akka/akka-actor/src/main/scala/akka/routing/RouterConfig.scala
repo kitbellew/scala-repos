@@ -102,8 +102,7 @@ private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
 
   final def overrideUnsetConfig(other: RouterConfig): RouterConfig =
     if (other == NoRouter) this // NoRouter is the default, hence “neutral”
-    else {
-
+    else
       other match {
         case p: Pool ⇒
           val wssConf: PoolOverrideUnsetConfig[T] =
@@ -120,7 +119,6 @@ private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
             wssConf
         case _ ⇒ this
       }
-    }
 
   def withSupervisorStrategy(strategy: SupervisorStrategy): T
 

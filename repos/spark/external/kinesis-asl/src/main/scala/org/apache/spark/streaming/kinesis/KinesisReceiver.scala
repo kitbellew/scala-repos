@@ -196,9 +196,8 @@ private[kinesis] class KinesisReceiver[T](
     worker = new Worker(recordProcessorFactory, kinesisClientLibConfiguration)
     workerThread = new Thread() {
       override def run(): Unit =
-        try {
-          worker.run()
-        } catch {
+        try worker.run()
+        catch {
           case NonFatal(e) =>
             restart("Error running the KCL worker in Receiver", e)
         }
@@ -313,7 +312,7 @@ private[kinesis] class KinesisReceiver[T](
     var attempt = 0
     var stored = false
     var throwable: Throwable = null
-    while (!stored && attempt <= 3) {
+    while (!stored && attempt <= 3)
       try {
         store(arrayBuffer, rangesToReport)
         stored = true
@@ -322,10 +321,8 @@ private[kinesis] class KinesisReceiver[T](
           attempt += 1
           throwable = th
       }
-    }
-    if (!stored) {
+    if (!stored)
       stop("Error while storing block into Spark", throwable)
-    }
 
     // Update the latest sequence number that have been successfully stored for each shard
     // Note that we are doing this sequentially because the array of sequence number ranges

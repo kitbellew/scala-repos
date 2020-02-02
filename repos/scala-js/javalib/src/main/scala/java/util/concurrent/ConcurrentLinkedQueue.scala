@@ -21,9 +21,9 @@ class ConcurrentLinkedQueue[E]()
   private var _size: Double = 0
 
   override def add(e: E): Boolean =
-    if (e == null) {
+    if (e == null)
       throw new NullPointerException()
-    } else {
+    else {
       val oldLast = last
 
       last = new Node(e)
@@ -72,9 +72,9 @@ class ConcurrentLinkedQueue[E]()
   }
 
   private def removeNode(node: Node[E]): Unit =
-    if (node eq head) {
+    if (node eq head)
       poll()
-    } else if (head ne null) {
+    else if (head ne null) {
       var prev = head
       var current: Node[E] = head.next
 
@@ -83,9 +83,9 @@ class ConcurrentLinkedQueue[E]()
         current = current.next
       }
 
-      if (current eq null) {
+      if (current eq null)
         null.asInstanceOf[E]
-      } else {
+      else {
         _size -= 1
 
         prev.next = current.next

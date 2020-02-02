@@ -62,9 +62,8 @@ case class ImportInfo(
     }
     result ++= renames.map { rename => template.copy(renames = Map(rename)) }
     result ++= hiddenNames.map { hidden => this.toHiddenNameInfo(hidden) }
-    if (hasWildcard) {
+    if (hasWildcard)
       result += this.toWildcardInfo
-    }
     result
   }
 
@@ -198,9 +197,9 @@ object ImportInfo {
         val refName: String = selector.reference.refName
         if (selector.isAliasedImport) {
           val importedName: String = selector.importedName
-          if (importedName == "_") {
+          if (importedName == "_")
             hiddenNames += refName
-          } else if (importedName == refName) {
+          else if (importedName == refName) {
             singleNames += refName
             addAllNames(selector.reference, refName)
           } else {

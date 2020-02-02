@@ -95,15 +95,13 @@ class VectorOps_DoubleTest
         z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
         bz <- Arbitrary.arbitrary[Boolean]
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          if (bx) DenseVector.fill(N)(math.random * x)
-          else SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
-          if (by) DenseVector.fill(N)(math.random * y)
-          else SparseVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
-          if (bz) DenseVector.fill(N)(math.random * z)
-          else SparseVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
-      }
+      } yield (
+        if (bx) DenseVector.fill(N)(math.random * x)
+        else SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
+        if (by) DenseVector.fill(N)(math.random * y)
+        else SparseVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
+        if (bz) DenseVector.fill(N)(math.random * z)
+        else SparseVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
     }
 
   def genScalar: Arbitrary[Double] =
@@ -130,21 +128,19 @@ class VectorOps_FloatTest
         z <- Arbitrary.arbitrary[Float].map { _ % 1000f }
         bz <- Arbitrary.arbitrary[Boolean]
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          if (bx) DenseVector.fill(N)(math.random * x toFloat)
-          else
-            SparseVector(N)(
-              xl.map(i => (i % N).abs -> (math.random * x toFloat)): _*),
-          if (by) DenseVector.fill(N)(math.random * y toFloat)
-          else
-            SparseVector(N)(
-              yl.map(i => (i % N).abs -> (math.random * y toFloat)): _*),
-          if (bz) DenseVector.fill(N)(math.random * z toFloat)
-          else
-            SparseVector(N)(
-              zl.map(i => (i % N).abs -> (math.random * z toFloat)): _*))
-      }
+      } yield (
+        if (bx) DenseVector.fill(N)(math.random * x toFloat)
+        else
+          SparseVector(N)(
+            xl.map(i => (i % N).abs -> (math.random * x toFloat)): _*),
+        if (by) DenseVector.fill(N)(math.random * y toFloat)
+        else
+          SparseVector(N)(
+            yl.map(i => (i % N).abs -> (math.random * y toFloat)): _*),
+        if (bz) DenseVector.fill(N)(math.random * z toFloat)
+        else
+          SparseVector(N)(
+            zl.map(i => (i % N).abs -> (math.random * z toFloat)): _*))
     }
 
   def genScalar: Arbitrary[Float] =
@@ -168,21 +164,19 @@ class VectorOps_IntTest extends TensorSpaceTestBase[Vector[Int], Int, Int] {
         z <- Arbitrary.arbitrary[Int].map { _ % 1000 }
         bz <- Arbitrary.arbitrary[Boolean]
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          if (bx) DenseVector.fill(N)(math.random * x toInt)
-          else
-            SparseVector(N)(
-              xl.map(i => (i % N).abs -> (math.random * x toInt)): _*),
-          if (by) DenseVector.fill(N)(math.random * y toInt)
-          else
-            SparseVector(N)(
-              yl.map(i => (i % N).abs -> (math.random * y toInt)): _*),
-          if (bz) DenseVector.fill(N)(math.random * z toInt)
-          else
-            SparseVector(N)(
-              zl.map(i => (i % N).abs -> (math.random * z toInt)): _*))
-      }
+      } yield (
+        if (bx) DenseVector.fill(N)(math.random * x toInt)
+        else
+          SparseVector(N)(
+            xl.map(i => (i % N).abs -> (math.random * x toInt)): _*),
+        if (by) DenseVector.fill(N)(math.random * y toInt)
+        else
+          SparseVector(N)(
+            yl.map(i => (i % N).abs -> (math.random * y toInt)): _*),
+        if (bz) DenseVector.fill(N)(math.random * z toInt)
+        else
+          SparseVector(N)(
+            zl.map(i => (i % N).abs -> (math.random * z toInt)): _*))
     }
 
   def genScalar: Arbitrary[Int] =
@@ -208,18 +202,16 @@ class VectorOps_ComplexTest
         z <- Arbitrary.arbitrary[Complex]
         bz <- Arbitrary.arbitrary[Boolean]
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          if (bx) DenseVector.fill(N)(math.random * x)
-          else
-            SparseVector(N)(xl.map(i => (i % N).abs -> (math.random * x)): _*),
-          if (by) DenseVector.fill(N)(math.random * y)
-          else
-            SparseVector(N)(yl.map(i => (i % N).abs -> (math.random * y)): _*),
-          if (bz) DenseVector.fill(N)(math.random * z)
-          else
-            SparseVector(N)(zl.map(i => (i % N).abs -> (math.random * z)): _*))
-      }
+      } yield (
+        if (bx) DenseVector.fill(N)(math.random * x)
+        else
+          SparseVector(N)(xl.map(i => (i % N).abs -> (math.random * x)): _*),
+        if (by) DenseVector.fill(N)(math.random * y)
+        else
+          SparseVector(N)(yl.map(i => (i % N).abs -> (math.random * y)): _*),
+        if (bz) DenseVector.fill(N)(math.random * z)
+        else
+          SparseVector(N)(zl.map(i => (i % N).abs -> (math.random * z)): _*))
     }
 
   implicit def genScalar: Arbitrary[Complex] = Arbitrary {

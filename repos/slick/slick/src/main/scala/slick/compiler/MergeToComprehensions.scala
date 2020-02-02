@@ -267,11 +267,11 @@ class MergeToComprehensions extends Phase {
           case Pure(StructNode(ConstArray()), _) => true
           case _                                 => false
         }
-        if (noLeft && noCondition) {
+        if (noLeft && noCondition)
           Some((r2, rmap))
-        } else if (noRight && noCondition) {
+        else if (noRight && noCondition)
           Some((l2, lmap))
-        } else {
+        else {
           val mappings =
             lmap.map { case (key, ss)   => (key, ElementSymbol(1) :: ss) } ++
               rmap.map { case (key, ss) => (key, ElementSymbol(2) :: ss) }

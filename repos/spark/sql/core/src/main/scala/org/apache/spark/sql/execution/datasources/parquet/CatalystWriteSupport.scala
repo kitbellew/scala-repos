@@ -111,11 +111,10 @@ private[parquet] class CatalystWriteSupport
       fieldWriters: Seq[ValueWriter]): Unit = {
     var i = 0
     while (i < row.numFields) {
-      if (!row.isNullAt(i)) {
+      if (!row.isNullAt(i))
         consumeField(schema(i).name, i) {
           fieldWriters(i).apply(row, i)
         }
-      }
       i += 1
     }
   }
@@ -243,24 +242,29 @@ private[parquet] class CatalystWriteSupport
       (row: SpecializedGetters, ordinal: Int) => {
         val decimal = row.getDecimal(ordinal, precision, scale)
         val bytes = decimal.toJavaBigDecimal.unscaledValue().toByteArray
-        val fixedLengthBytes = if (bytes.length == numBytes) {
-          // If the length of the underlying byte array of the unscaled `BigInteger` happens to be
-          // `numBytes`, just reuse it, so that we don't bother copying it to `decimalBuffer`.
-          bytes
-        } else {
-          // Otherwise, the length must be less than `numBytes`.  In this case we copy contents of
-          // the underlying bytes with padding sign bytes to `decimalBuffer` to form the result
-          // fixed-length byte array.
-          val signByte = if (bytes.head < 0) -1: Byte else 0: Byte
-          util.Arrays.fill(decimalBuffer, 0, numBytes - bytes.length, signByte)
-          System.arraycopy(
-            bytes,
-            0,
-            decimalBuffer,
-            numBytes - bytes.length,
-            bytes.length)
-          decimalBuffer
-        }
+        val fixedLengthBytes =
+          if (bytes.length == numBytes)
+            // If the length of the underlying byte array of the unscaled `BigInteger` happens to be
+            // `numBytes`, just reuse it, so that we don't bother copying it to `decimalBuffer`.
+            bytes
+          else {
+            // Otherwise, the length must be less than `numBytes`.  In this case we copy contents of
+            // the underlying bytes with padding sign bytes to `decimalBuffer` to form the result
+            // fixed-length byte array.
+            val signByte = if (bytes.head < 0) -1: Byte else 0: Byte
+            util.Arrays.fill(
+              decimalBuffer,
+              0,
+              numBytes - bytes.length,
+              signByte)
+            System.arraycopy(
+              bytes,
+              0,
+              decimalBuffer,
+              numBytes - bytes.length,
+              bytes.length)
+            decimalBuffer
+          }
 
         recordConsumer.addBinary(
           Binary.fromByteArray(fixedLengthBytes, 0, numBytes))
@@ -292,22 +296,20 @@ private[parquet] class CatalystWriteSupport
         val array = row.getArray(ordinal)
         consumeGroup {
           // Only creates the repeated field if the array is non-empty.
-          if (array.numElements() > 0) {
+          if (array.numElements() > 0)
             consumeField(repeatedGroupName, 0) {
               var i = 0
               while (i < array.numElements()) {
                 consumeGroup {
                   // Only creates the element field if the current array element is not null.
-                  if (!array.isNullAt(i)) {
+                  if (!array.isNullAt(i))
                     consumeField(elementFieldName, 0) {
                       elementWriter.apply(array, i)
                     }
-                  }
                 }
                 i += 1
               }
             }
-          }
         }
       }
 
@@ -316,7 +318,7 @@ private[parquet] class CatalystWriteSupport
         val array = row.getArray(ordinal)
         consumeGroup {
           // Only creates the repeated field if the array is non-empty.
-          if (array.numElements() > 0) {
+          if (array.numElements() > 0)
             consumeField(repeatedFieldName, 0) {
               var i = 0
               while (i < array.numElements()) {
@@ -324,7 +326,6 @@ private[parquet] class CatalystWriteSupport
                 i += 1
               }
             }
-          }
         }
       }
 
@@ -371,29 +372,29 @@ private[parquet] class CatalystWriteSupport
   private def makeMapWriter(mapType: MapType): ValueWriter = {
     val keyWriter = makeWriter(mapType.keyType)
     val valueWriter = makeWriter(mapType.valueType)
-    val repeatedGroupName = if (writeLegacyParquetFormat) {
-      // Legacy mode:
-      //
-      //   <map-repetition> group <name> (MAP) {
-      //     repeated group map (MAP_KEY_VALUE) {
-      //                    ^~~  repeatedGroupName
-      //       required <key-type> key;
-      //       <value-repetition> <value-type> value;
-      //     }
-      //   }
-      "map"
-    } else {
-      // Standard mode:
-      //
-      //   <map-repetition> group <name> (MAP) {
-      //     repeated group key_value {
-      //                    ^~~~~~~~~  repeatedGroupName
-      //       required <key-type> key;
-      //       <value-repetition> <value-type> value;
-      //     }
-      //   }
-      "key_value"
-    }
+    val repeatedGroupName =
+      if (writeLegacyParquetFormat)
+        // Legacy mode:
+        //
+        //   <map-repetition> group <name> (MAP) {
+        //     repeated group map (MAP_KEY_VALUE) {
+        //                    ^~~  repeatedGroupName
+        //       required <key-type> key;
+        //       <value-repetition> <value-type> value;
+        //     }
+        //   }
+        "map"
+      else
+        // Standard mode:
+        //
+        //   <map-repetition> group <name> (MAP) {
+        //     repeated group key_value {
+        //                    ^~~~~~~~~  repeatedGroupName
+        //       required <key-type> key;
+        //       <value-repetition> <value-type> value;
+        //     }
+        //   }
+        "key_value"
 
     (row: SpecializedGetters, ordinal: Int) => {
       val map = row.getMap(ordinal)
@@ -402,7 +403,7 @@ private[parquet] class CatalystWriteSupport
 
       consumeGroup {
         // Only creates the repeated field if the map is non-empty.
-        if (map.numElements() > 0) {
+        if (map.numElements() > 0)
           consumeField(repeatedGroupName, 0) {
             var i = 0
             while (i < map.numElements()) {
@@ -412,16 +413,14 @@ private[parquet] class CatalystWriteSupport
                 }
 
                 // Only creates the "value" field if the value if non-empty
-                if (!map.valueArray().isNullAt(i)) {
+                if (!map.valueArray().isNullAt(i))
                   consumeField("value", 1) {
                     valueWriter.apply(valueArray, i)
                   }
-                }
               }
               i += 1
             }
           }
-        }
       }
     }
   }

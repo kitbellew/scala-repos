@@ -46,10 +46,9 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
     * @throws IllegalStateException if the block already exists in the disk store.
     */
   def put(blockId: BlockId)(writeFunc: FileOutputStream => Unit): Unit = {
-    if (contains(blockId)) {
+    if (contains(blockId))
       throw new IllegalStateException(
         s"Block $blockId is already present in the disk store")
-    }
     logDebug(s"Attempting to put block $blockId")
     val startTime = System.currentTimeMillis
     val file = diskManager.getFile(blockId)
@@ -58,15 +57,9 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
     try {
       writeFunc(fileOutputStream)
       threwException = false
-    } finally {
-      try {
-        Closeables.close(fileOutputStream, threwException)
-      } finally {
-        if (threwException) {
-          remove(blockId)
-        }
-      }
-    }
+    } finally try Closeables.close(fileOutputStream, threwException)
+    finally if (threwException)
+      remove(blockId)
     val finishTime = System.currentTimeMillis
     logDebug(
       "Block %s stored as %s file on disk in %d ms".format(
@@ -93,17 +86,14 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
       if (file.length < minMemoryMapBytes) {
         val buf = ByteBuffer.allocate(file.length.toInt)
         channel.position(0)
-        while (buf.remaining() != 0) {
-          if (channel.read(buf) == -1) {
+        while (buf.remaining() != 0)
+          if (channel.read(buf) == -1)
             throw new IOException("Reached EOF before filling buffer\n" +
               s"offset=0\nfile=${file.getAbsolutePath}\nbuf.remaining=${buf.remaining}")
-          }
-        }
         buf.flip()
         new ChunkedByteBuffer(buf)
-      } else {
+      } else
         new ChunkedByteBuffer(channel.map(MapMode.READ_ONLY, 0, file.length))
-      }
     } {
       channel.close()
     }
@@ -113,13 +103,11 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
     val file = diskManager.getFile(blockId.name)
     if (file.exists()) {
       val ret = file.delete()
-      if (!ret) {
+      if (!ret)
         logWarning(s"Error deleting ${file.getPath()}")
-      }
       ret
-    } else {
+    } else
       false
-    }
   }
 
   def contains(blockId: BlockId): Boolean = {

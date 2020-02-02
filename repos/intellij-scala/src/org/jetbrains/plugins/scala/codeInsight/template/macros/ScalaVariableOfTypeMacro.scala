@@ -62,15 +62,14 @@ class ScalaVariableOfTypeMacro extends Macro {
             val clazz =
               PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
             if (clazz == null) true
-            else {
+            else
               clazz.qualifiedName match {
                 case "scala.Predef" => false
                 case "scala"        => false
                 case _              => true
               }
-            }
           }
-        for (variant <- variants) {
+        for (variant <- variants)
           variant.getElement match {
             case typed: ScTypedDefinition =>
               for (t <- typed.getType(TypingContext.empty))
@@ -83,7 +82,6 @@ class ScalaVariableOfTypeMacro extends Macro {
                   array)
             case _ =>
           }
-        }
       case _ =>
     }
     if (array.length < 2 && !showOne) return null
@@ -111,15 +109,14 @@ class ScalaVariableOfTypeMacro extends Macro {
             val clazz =
               PsiTreeUtil.getParentOfType(r.element, classOf[PsiClass])
             if (clazz == null) true
-            else {
+            else
               clazz.qualifiedName match {
                 case "scala.Predef" => false
                 case "scala"        => false
                 case _              => true
               }
-            }
           }
-        for (variant <- variants) {
+        for (variant <- variants)
           variant.getElement match {
             case typed: ScTypedDefinition =>
               for (t <- typed.getType(TypingContext.empty))
@@ -127,7 +124,6 @@ class ScalaVariableOfTypeMacro extends Macro {
                   .map(return _)
             case _ =>
           }
-        }
         null
       case _ => null
     }
@@ -212,7 +208,7 @@ class ScalaVariableOfTypeMacro extends Macro {
           case _ =>
         }
       case _ =>
-        for (expr <- exprs) {
+        for (expr <- exprs)
           if ((ScType.extractClass(scType) match {
                 case Some(x) => x.qualifiedName
                 case None    => ""
@@ -220,7 +216,6 @@ class ScalaVariableOfTypeMacro extends Macro {
             array += LookupElementBuilder.create(
               variant.getElement,
               variant.getElement.name)
-        }
     }
   }
 }

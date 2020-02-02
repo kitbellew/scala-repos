@@ -126,9 +126,9 @@ trait Parsers { self: Quasiquotes =>
           owner: Name,
           implicitmod: Int,
           caseParam: Boolean): ValDef =
-        if (isHole && lookingAhead { in.token == COMMA || in.token == RPAREN }) {
+        if (isHole && lookingAhead { in.token == COMMA || in.token == RPAREN })
           ParamPlaceholder(implicitmod, ident())
-        } else super.param(owner, implicitmod, caseParam)
+        else super.param(owner, implicitmod, caseParam)
 
       // q"($x) => ..." && q"class X { selfie => }
       override def convertToParam(tree: Tree): ValDef = tree match {

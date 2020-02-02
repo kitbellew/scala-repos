@@ -93,20 +93,18 @@ private[execution] trait UniqueHashedRelation extends HashedRelation {
 
   override def get(key: InternalRow): Seq[InternalRow] = {
     val row = getValue(key)
-    if (row != null) {
+    if (row != null)
       CompactBuffer[InternalRow](row)
-    } else {
+    else
       null
-    }
   }
 
   override def get(key: Long): Seq[InternalRow] = {
     val row = getValue(key)
-    if (row != null) {
+    if (row != null)
       CompactBuffer[InternalRow](row)
-    } else {
+    else
       null
-    }
   }
 }
 
@@ -163,12 +161,11 @@ private[execution] object HashedRelation {
       keyGenerator: Projection,
       sizeEstimate: Int = 64): HashedRelation = {
 
-    if (keyGenerator.isInstanceOf[UnsafeProjection]) {
+    if (keyGenerator.isInstanceOf[UnsafeProjection])
       return UnsafeHashedRelation(
         input,
         keyGenerator.asInstanceOf[UnsafeProjection],
         sizeEstimate)
-    }
 
     // TODO: Use Spark's HashMap implementation.
     val hashTable =
@@ -206,9 +203,8 @@ private[execution] object HashedRelation {
         uniqHashTable.put(entry.getKey, entry.getValue()(0))
       }
       new UniqueKeyHashedRelation(uniqHashTable)
-    } else {
+    } else
       new GeneralHashedRelation(hashTable)
-    }
   }
 }
 
@@ -252,18 +248,16 @@ private[joins] final class UnsafeHashedRelation(
     * For non-broadcast joins or in local mode, return 0.
     */
   override def getMemorySize: Long =
-    if (binaryMap != null) {
+    if (binaryMap != null)
       binaryMap.getTotalMemoryConsumption
-    } else {
+    else
       0
-    }
 
   override def estimatedSize: Long =
-    if (binaryMap != null) {
+    if (binaryMap != null)
       binaryMap.getTotalMemoryConsumption
-    } else {
+    else
       SizeEstimator.estimate(hashTable)
-    }
 
   override def get(key: InternalRow): Seq[InternalRow] = {
     val unsafeKey = key.asInstanceOf[UnsafeRow]
@@ -295,14 +289,12 @@ private[joins] final class UnsafeHashedRelation(
           offset += sizeInBytes
         }
         buffer
-      } else {
+      } else
         null
-      }
 
-    } else {
+    } else
       // Use the Java HashMap in local mode or for non-broadcast joins (e.g. ShuffleHashJoin)
       hashTable.get(unsafeKey)
-    }
   }
 
   override def writeExternal(out: ObjectOutput): Unit = Utils.tryOrIOException {
@@ -312,9 +304,8 @@ private[joins] final class UnsafeHashedRelation(
 
       var buffer = new Array[Byte](64)
       def write(base: Object, offset: Long, length: Int): Unit = {
-        if (buffer.length < length) {
+        if (buffer.length < length)
           buffer = new Array[Byte](length)
-        }
         Platform
           .copyMemory(base, offset, buffer, Platform.BYTE_ARRAY_OFFSET, length)
         out.write(buffer, 0, length)
@@ -402,13 +393,11 @@ private[joins] final class UnsafeHashedRelation(
     while (i < nKeys) {
       val keySize = in.readInt()
       val valuesSize = in.readInt()
-      if (keySize > keyBuffer.length) {
+      if (keySize > keyBuffer.length)
         keyBuffer = new Array[Byte](keySize)
-      }
       in.readFully(keyBuffer, 0, keySize)
-      if (valuesSize > valuesBuffer.length) {
+      if (valuesSize > valuesBuffer.length)
         valuesBuffer = new Array[Byte](valuesSize)
-      }
       in.readFully(valuesBuffer, 0, valuesSize)
 
       // put it into binary map
@@ -421,10 +410,9 @@ private[joins] final class UnsafeHashedRelation(
         valuesBuffer,
         Platform.BYTE_ARRAY_OFFSET,
         valuesSize)
-      if (!putSuceeded) {
+      if (!putSuceeded)
         throw new IOException(
           "Could not allocate memory to grow BytesToBytesMap")
-      }
       i += 1
     }
   }
@@ -451,9 +439,8 @@ private[joins] object UnsafeHashedRelation {
           val newMatchList = new CompactBuffer[UnsafeRow]()
           hashTable.put(rowKey.copy(), newMatchList)
           newMatchList
-        } else {
+        } else
           existingMatchList
-        }
         matchList += unsafeRow
       }
     }
@@ -559,9 +546,8 @@ private[joins] final class LongArrayRelation(
         Platform.BYTE_ARRAY_OFFSET + offsets(idx),
         sizes(idx))
       result
-    } else {
+    } else
       null
-    }
   }
 
   override def writeExternal(out: ObjectOutput): Unit = {
@@ -642,7 +628,7 @@ private[joins] object LongHashedRelation {
       }
     }
 
-    if (keyIsUnique) {
+    if (keyIsUnique)
       if (hashTable.size() > (maxKey - minKey) * DENSE_FACTOR) {
         // The keys are dense enough, so use LongArrayRelation
         val length = (maxKey - minKey).toInt + 1
@@ -663,10 +649,9 @@ private[joins] object LongHashedRelation {
         i = 0
         while (i < length) {
           val rows = hashTable.get(i + minKey)
-          if (rows != null) {
+          if (rows != null)
             rows(0)
               .writeToMemory(bytes, Platform.BYTE_ARRAY_OFFSET + offsets(i))
-          }
           i += 1
         }
         new LongArrayRelation(numFields, minKey, offsets, sizes, bytes)
@@ -681,9 +666,8 @@ private[joins] object LongHashedRelation {
         }
         new UniqueLongHashedRelation(uniqHashTable)
       }
-    } else {
+    else
       new GeneralLongHashedRelation(hashTable)
-    }
   }
 }
 
@@ -696,16 +680,14 @@ private[execution] case class HashedRelationBroadcastMode(
 
   override def transform(rows: Array[InternalRow]): HashedRelation = {
     val generator = UnsafeProjection.create(keys, attributes)
-    if (canJoinKeyFitWithinLong) {
+    if (canJoinKeyFitWithinLong)
       LongHashedRelation(rows.iterator, generator, rows.length)
-    } else {
+    else
       HashedRelation(rows.iterator, generator, rows.length)
-    }
   }
 
-  private lazy val canonicalizedKeys: Seq[Expression] = {
+  private lazy val canonicalizedKeys: Seq[Expression] =
     keys.map { e => BindReferences.bindReference(e.canonicalized, attributes) }
-  }
 
   override def compatibleWith(other: BroadcastMode): Boolean = other match {
     case m: HashedRelationBroadcastMode =>

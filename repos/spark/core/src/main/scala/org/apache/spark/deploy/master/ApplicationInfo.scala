@@ -134,11 +134,10 @@ private[spark] class ApplicationInfo(
   private[deploy] def getExecutorLimit: Int = executorLimit
 
   def duration: Long =
-    if (endTime != -1) {
+    if (endTime != -1)
       endTime - startTime
-    } else {
+    else
       System.currentTimeMillis() - startTime
-    }
 
   /**
     * Returns the original application UI url unless there is its address at history server

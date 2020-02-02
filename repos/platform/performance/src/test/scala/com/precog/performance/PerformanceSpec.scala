@@ -45,13 +45,12 @@ trait PerformanceSpec extends ExamplesFactory {
     test("warmup", batchTest(iterations))
     val testTime = test("measure", batchTest(iterations))
     val millis = testTime / 1000000
-    if (millis <= time) {
+    if (millis <= time)
       new Success(
         "Nailed it! %.02f%% of %d".format(millis * 100.0 / time, time))
-    } else {
+    else
       new Failure(
         "Wiff! %.02f times goal of %d".format(millis.toDouble / time, time))
-    }
   }
 
   def test(msg: String, test: => Any): Long = {

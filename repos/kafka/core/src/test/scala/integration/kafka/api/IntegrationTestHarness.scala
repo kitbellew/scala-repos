@@ -80,13 +80,12 @@ trait IntegrationTestHarness extends KafkaServerTestHarness {
         securityProtocol = this.securityProtocol,
         trustStoreFile = this.trustStoreFile,
         props = Some(producerConfig))
-    for (i <- 0 until consumerCount) {
+    for (i <- 0 until consumerCount)
       consumers += TestUtils.createNewConsumer(
         brokerList,
         securityProtocol = this.securityProtocol,
         trustStoreFile = this.trustStoreFile,
         props = Some(consumerConfig))
-    }
 
     // create the consumer offset topic
     TestUtils.createTopic(

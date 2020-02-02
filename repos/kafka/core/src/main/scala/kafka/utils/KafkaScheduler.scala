@@ -131,9 +131,8 @@ class KafkaScheduler(
         } catch {
           case t: Throwable =>
             error("Uncaught exception in scheduled task '" + name + "'", t)
-        } finally {
-          trace("Completed execution of scheduled task '%s'.".format(name))
-        }
+        } finally trace(
+          "Completed execution of scheduled task '%s'.".format(name))
       }
       if (period >= 0)
         executor.scheduleAtFixedRate(runnable, delay, period, unit)

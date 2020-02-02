@@ -104,12 +104,11 @@ class ObjectMapping1[R, A1](
   def bind(data: Map[String, String]): Either[Seq[FormError], R] =
     merge(field1.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -167,13 +166,12 @@ class ObjectMapping2[R, A1, A2](
   def bind(data: Map[String, String]): Either[Seq[FormError], R] =
     merge(field1.bind(data), field2.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
             values(1).asInstanceOf[A2]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -236,14 +234,13 @@ class ObjectMapping3[R, A1, A2, A3](
   def bind(data: Map[String, String]): Either[Seq[FormError], R] =
     merge(field1.bind(data), field2.bind(data), field3.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
             values(1).asInstanceOf[A2],
             values(2).asInstanceOf[A3]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -316,7 +313,7 @@ class ObjectMapping4[R, A1, A2, A3, A4](
       field3.bind(data),
       field4.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -324,7 +321,6 @@ class ObjectMapping4[R, A1, A2, A3, A4](
             values(2).asInstanceOf[A3],
             values(3).asInstanceOf[A4]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -405,7 +401,7 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
       field4.bind(data),
       field5.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -414,7 +410,6 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
             values(3).asInstanceOf[A4],
             values(4).asInstanceOf[A5]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -510,7 +505,7 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
       field5.bind(data),
       field6.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -520,7 +515,6 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
             values(4).asInstanceOf[A5],
             values(5).asInstanceOf[A6]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -623,7 +617,7 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
       field6.bind(data),
       field7.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -634,7 +628,6 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
             values(5).asInstanceOf[A6],
             values(6).asInstanceOf[A7]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -746,7 +739,7 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
       field7.bind(data),
       field8.bind(data)) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -758,7 +751,6 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
             values(6).asInstanceOf[A7],
             values(7).asInstanceOf[A8]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -878,7 +870,7 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
       field9.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -891,7 +883,6 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
             values(7).asInstanceOf[A8],
             values(8).asInstanceOf[A9]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -1018,7 +1009,7 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
       field10.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -1032,7 +1023,6 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
             values(8).asInstanceOf[A9],
             values(9).asInstanceOf[A10]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -1169,7 +1159,7 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
       field11.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -1184,7 +1174,6 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
             values(9).asInstanceOf[A10],
             values(10).asInstanceOf[A11]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -1328,7 +1317,7 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
       field12.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -1344,7 +1333,6 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
             values(10).asInstanceOf[A11],
             values(11).asInstanceOf[A12]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -1509,7 +1497,7 @@ class ObjectMapping13[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13]
       field13.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -1526,7 +1514,6 @@ class ObjectMapping13[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13]
             values(11).asInstanceOf[A12],
             values(12).asInstanceOf[A13]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -1741,7 +1728,7 @@ class ObjectMapping14[
       field14.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -1759,7 +1746,6 @@ class ObjectMapping14[
             values(12).asInstanceOf[A13],
             values(13).asInstanceOf[A14]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -1988,7 +1974,7 @@ class ObjectMapping15[
       field15.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -2007,7 +1993,6 @@ class ObjectMapping15[
             values(13).asInstanceOf[A14],
             values(14).asInstanceOf[A15]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -2262,7 +2247,7 @@ class ObjectMapping16[
       field16.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -2282,7 +2267,6 @@ class ObjectMapping16[
             values(14).asInstanceOf[A15],
             values(15).asInstanceOf[A16]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -2581,7 +2565,7 @@ class ObjectMapping17[
       field17.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -2602,7 +2586,6 @@ class ObjectMapping17[
             values(15).asInstanceOf[A16],
             values(16).asInstanceOf[A17]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -2915,7 +2898,7 @@ class ObjectMapping18[
       field18.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -2937,7 +2920,6 @@ class ObjectMapping18[
             values(16).asInstanceOf[A17],
             values(17).asInstanceOf[A18]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -3264,7 +3246,7 @@ class ObjectMapping19[
       field19.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -3287,7 +3269,6 @@ class ObjectMapping19[
             values(17).asInstanceOf[A18],
             values(18).asInstanceOf[A19]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -3629,7 +3610,7 @@ class ObjectMapping20[
       field20.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -3653,7 +3634,6 @@ class ObjectMapping20[
             values(18).asInstanceOf[A19],
             values(19).asInstanceOf[A20]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -4009,7 +3989,7 @@ class ObjectMapping21[
       field21.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -4034,7 +4014,6 @@ class ObjectMapping21[
             values(19).asInstanceOf[A20],
             values(20).asInstanceOf[A21]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =
@@ -4404,7 +4383,7 @@ class ObjectMapping22[
       field22.bind(data)
     ) match {
       case Left(errors) => Left(errors)
-      case Right(values) => {
+      case Right(values) =>
         applyConstraints(
           apply(
             values(0).asInstanceOf[A1],
@@ -4430,7 +4409,6 @@ class ObjectMapping22[
             values(20).asInstanceOf[A21],
             values(21).asInstanceOf[A22]
           ))
-      }
     }
 
   def unbind(value: R): Map[String, String] =

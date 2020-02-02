@@ -8,13 +8,13 @@ object GenProductTypes {
     val prefix = "structure"
     def typeName(i: Int): String = (64 + i).toChar.toString
     val types = (1 to arity) map (typeName(_)) mkString ", "
-    val specTypes = if (arity == 2) {
-      (1 to arity) map { i =>
-        spec + typeName(i)
-      } mkString ","
-    } else {
-      types
-    }
+    val specTypes =
+      if (arity == 2)
+        (1 to arity) map { i =>
+          spec + typeName(i)
+        } mkString ","
+      else
+        types
     val name = structure + "Product" + arity
   }
 
@@ -192,15 +192,14 @@ object ProductTypes {
 
     def gen(i: Int): String = {
       val indent = "  " * i
-      if (i <= arity) {
+      if (i <= arity)
         """%s  cmp = %s%d.compare(x0._%d, x1._%d)
             |%s  if (cmp != 0) cmp else {
             |%s
             |%s  }""".stripMargin format (indent, prefix, i, i, i, indent, gen(
           i + 1), indent)
-      } else {
+      else
         indent + "  0"
-      }
     }
 
     """  def compare(x0: (%s), x1: (%s)): Int = {

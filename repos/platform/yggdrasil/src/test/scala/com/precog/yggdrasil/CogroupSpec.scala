@@ -85,7 +85,7 @@ trait CogroupSpec[M[+_]]
     (l, r) match {
       case (lh #:: lt, rh #:: rt) =>
         ord.order(lh, rh) match {
-          case EQ => {
+          case EQ =>
             val (leftSpan, leftRemain) = l.partition(ord.order(_, lh) == EQ)
             val (rightSpan, rightRemain) = r.partition(ord.order(_, rh) == EQ)
 
@@ -94,21 +94,18 @@ trait CogroupSpec[M[+_]]
             }
 
             computeCogroup(leftRemain, rightRemain, acc ++ cartesian)
-          }
-          case LT => {
+          case LT =>
             val (leftRun, leftRemain) = l.partition(ord.order(_, rh) == LT)
 
             computeCogroup(leftRemain, r, acc ++ leftRun.map {
               case v => left3(v)
             })
-          }
-          case GT => {
+          case GT =>
             val (rightRun, rightRemain) = r.partition(ord.order(lh, _) == GT)
 
             computeCogroup(l, rightRemain, acc ++ rightRun.map {
               case v => right3(v)
             })
-          }
         }
       case (Stream.Empty, _) => acc ++ r.map { case v => right3(v) }
       case (_, Stream.Empty) => acc ++ l.map { case v => left3(v) }
@@ -701,10 +698,8 @@ trait CogroupSpec[M[+_]]
     val expected = (for {
       left <- 0 until 22
       right <- 0 until 22
-    } yield {
-      JParser.parseUnsafe(
-        """{ "left": %d, "right": %d }""" format (left, right))
-    }).toStream
+    } yield JParser.parseUnsafe(
+      """{ "left": %d, "right": %d }""" format (left, right))).toStream
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("key"))
     val result: Table = table.cogroup(keySpec, keySpec, table)(

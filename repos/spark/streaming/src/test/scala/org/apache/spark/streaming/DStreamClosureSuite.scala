@@ -47,9 +47,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     try {
       ssc.stop(stopSparkContext = true)
       ssc = null
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   test("user provided closures are actually cleaned") {
     val dstream = new DummyInputDStream(ssc)
@@ -82,9 +80,8 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
     * We expect closure cleaner to find the return statements in the user provided closures.
     */
   private def expectCorrectException(body: => Unit): Unit =
-    try {
-      body
-    } catch {
+    try body
+    catch {
       case rse: ReturnStatementInClosureException => // Success!
       case e @ (_: NotSerializableException | _: SparkException) =>
         throw new TestException(

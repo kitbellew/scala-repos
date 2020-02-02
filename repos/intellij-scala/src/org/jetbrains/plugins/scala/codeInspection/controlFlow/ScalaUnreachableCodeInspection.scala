@@ -35,15 +35,12 @@ class ScalaUnreachableCodeInspection
     case funDef: ScFunctionDefinition =>
       val cfg = funDef.getControlFlow()
       val components = ControlFlowUtil.detectConnectedComponents(cfg)
-      if (components.length > 1) {
+      if (components.length > 1)
         for {
           comp <- components.tail
           unreachable = comp.diff(components.head)
           fragm <- fragments(unreachable)
-        } {
-          registerProblem(fragm, holder)
-        }
-      }
+        } registerProblem(fragm, holder)
   }
 
   def getElementsRange(start: PsiElement, end: PsiElement): Seq[PsiElement] = {

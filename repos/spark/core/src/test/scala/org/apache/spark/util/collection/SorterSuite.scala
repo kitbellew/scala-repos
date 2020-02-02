@@ -280,9 +280,9 @@ class KeyReuseIntArraySortDataFormat
       data: Array[Int],
       pos: Int,
       reuse: IntWrapper): IntWrapper =
-    if (reuse == null) {
+    if (reuse == null)
       new IntWrapper(data(pos))
-    } else {
+    else {
       reuse.key = data(pos)
       reuse
     }

@@ -6,20 +6,16 @@ class A {
   var x = ""
 
   def bar =
-    try {
-      "bar"
-    } finally {
+    try "bar"
+    finally try x += "a"
+    finally {
+      x += "b"
       try {
-        x += "a"
-      } finally {
-        x += "b"
-        try {
-          x += "c"
-          throw null
-        } catch {
-          case Ex(_) =>
-            x += "d"
-        }
+        x += "c"
+        throw null
+      } catch {
+        case Ex(_) =>
+          x += "d"
       }
     }
 }

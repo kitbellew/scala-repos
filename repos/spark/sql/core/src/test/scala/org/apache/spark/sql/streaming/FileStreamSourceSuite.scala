@@ -67,11 +67,10 @@ class FileStreamSourceTest extends StreamTest with SharedSQLContext {
       path: String,
       schema: Option[StructType] = None): FileStreamSource = {
     val reader =
-      if (schema.isDefined) {
+      if (schema.isDefined)
         sqlContext.read.format(format).schema(schema.get)
-      } else {
+      else
         sqlContext.read.format(format)
-      }
     reader
       .stream(path)
       .queryExecution
@@ -95,11 +94,10 @@ class FileStreamSourceSuite extends FileStreamSourceTest with SharedSQLContext {
     format.foreach(reader.format)
     schema.foreach(reader.schema)
     val df =
-      if (path.isDefined) {
+      if (path.isDefined)
         reader.stream(path.get)
-      } else {
+      else
         reader.stream()
-      }
     df.queryExecution.analyzed
       .collect { case StreamingRelation(s: FileStreamSource, _) => s }
       .head

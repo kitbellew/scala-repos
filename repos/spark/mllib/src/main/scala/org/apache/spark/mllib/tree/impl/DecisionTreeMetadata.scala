@@ -76,11 +76,10 @@ private[spark] class DecisionTreeMetadata(
     * For ordered features, there is 1 more bin than split.
     */
   def numSplits(featureIndex: Int): Int =
-    if (isUnordered(featureIndex)) {
+    if (isUnordered(featureIndex))
       numBins(featureIndex)
-    } else {
+    else
       numBins(featureIndex) - 1
-    }
 
   /**
     * Set number of splits for a continuous feature.
@@ -125,11 +124,10 @@ private[spark] object DecisionTreeMetadata extends Logging {
     }
 
     val maxPossibleBins = math.min(strategy.maxBins, numExamples).toInt
-    if (maxPossibleBins < strategy.maxBins) {
+    if (maxPossibleBins < strategy.maxBins)
       logWarning(
         s"DecisionTree reducing maxBins from ${strategy.maxBins} to $maxPossibleBins" +
           s" (= number of training instances)")
-    }
 
     // We check the number of bins here against maxPossibleBins.
     // This needs to be checked here instead of in Strategy since maxPossibleBins can be modified
@@ -160,7 +158,7 @@ private[spark] object DecisionTreeMetadata extends Logging {
         case (featureIndex, numCategories) =>
           // Hack: If a categorical feature has only 1 category, we treat it as continuous.
           // TODO(SPARK-9957): Handle this properly by filtering out those features.
-          if (numCategories > 1) {
+          if (numCategories > 1)
             // Decide if some categorical features should be treated as unordered features,
             //  which require 2 * ((1 << numCategories - 1) - 1) bins.
             // We do this check with log values to prevent overflows in case numCategories is large.
@@ -168,34 +166,27 @@ private[spark] object DecisionTreeMetadata extends Logging {
             if (numCategories <= maxCategoriesForUnorderedFeature) {
               unorderedFeatures.add(featureIndex)
               numBins(featureIndex) = numUnorderedBins(numCategories)
-            } else {
+            } else
               numBins(featureIndex) = numCategories
-            }
-          }
       }
-    } else {
+    } else
       // Binary classification or regression
       strategy.categoricalFeaturesInfo.foreach {
         case (featureIndex, numCategories) =>
           // If a categorical feature has only 1 category, we treat it as continuous: SPARK-9957
-          if (numCategories > 1) {
+          if (numCategories > 1)
             numBins(featureIndex) = numCategories
-          }
       }
-    }
 
     // Set number of features to use per node (for random forests).
     val _featureSubsetStrategy = featureSubsetStrategy match {
       case "auto" =>
-        if (numTrees == 1) {
+        if (numTrees == 1)
           "all"
-        } else {
-          if (strategy.algo == Classification) {
-            "sqrt"
-          } else {
-            "onethird"
-          }
-        }
+        else if (strategy.algo == Classification)
+          "sqrt"
+        else
+          "onethird"
       case _ => featureSubsetStrategy
     }
     val numFeaturesPerNode: Int = _featureSubsetStrategy match {

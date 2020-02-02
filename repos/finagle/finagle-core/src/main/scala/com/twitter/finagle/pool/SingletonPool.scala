@@ -145,9 +145,8 @@ class SingletonPool[Req, Rep](
         if (state.compareAndSet(Idle, Awaiting(done))) {
           connect(done, conn)
           awaitApply(done, conn)
-        } else {
+        } else
           apply(conn)
-        }
 
       case Awaiting(done) =>
         awaitApply(done, conn)

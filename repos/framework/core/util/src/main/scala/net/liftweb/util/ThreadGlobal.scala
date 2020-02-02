@@ -68,9 +68,7 @@ class ThreadGlobal[T] {
     try {
       threadLocal.set(x)
       f
-    } finally {
-      threadLocal.set(original)
-    }
+    } finally threadLocal.set(original)
   }
 }
 
@@ -92,8 +90,6 @@ trait DynoVar[T] {
     try {
       threadLocal.set(x)
       f
-    } finally {
-      threadLocal.set(original)
-    }
+    } finally threadLocal.set(original)
   }
 }

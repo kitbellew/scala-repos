@@ -85,21 +85,18 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
       val result: util.List[PropertiesFile] =
         new util.ArrayList[PropertiesFile](propertiesFiles.size)
       import scala.collection.JavaConversions._
-      for (file <- propertiesFiles) {
+      for (file <- propertiesFiles)
         if (!fileIndex.isInLibraryClasses(file.getVirtualFile) && !fileIndex
-              .isInLibrarySource(file.getVirtualFile)) {
+              .isInLibrarySource(file.getVirtualFile))
           result.add(file)
-        }
-      }
       result
     }
 
     def isComputablePropertyExpression(myExpression: ScExpression): Boolean = {
       var expression = myExpression
       while (expression != null && expression.getParent
-               .isInstanceOf[ScParenthesisedExpr]) {
+               .isInstanceOf[ScParenthesisedExpr])
         expression = expression.getParent.asInstanceOf[ScExpression]
-      }
       expression != null && expression.getParent.isInstanceOf[ScExpression]
     }
   }
@@ -120,7 +117,7 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
             myManager.getProject,
             expression,
             key,
-            resourceBundleName)) {
+            resourceBundleName))
         UnresolvedPropertyVisitor.appendPropertyKeyNotFoundProblem(
           resourceBundleName.get,
           key,
@@ -128,7 +125,7 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
           myManager,
           myProblems,
           onTheFly)
-      } else {
+      else
         expression.getParent match {
           case nvp: ScNameValuePair =>
             if (Comparing.equal(
@@ -184,7 +181,7 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
                         val parameters = method.getParameterList.getParameters
                         if (i + paramsCount >= args.length && method != null &&
                             method.getParameterList.getParametersCount == i + 2 &&
-                            parameters(i + 1).isVarArgs) {
+                            parameters(i + 1).isVarArgs)
                           myProblems.add(
                             myManager.createProblemDescriptor(
                               methodCall,
@@ -197,7 +194,6 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
                               new Array[LocalQuickFix](0),
                               ProblemHighlightType.GENERIC_ERROR
                             ))
-                        }
                         flag = false
                       }
                       i += 1
@@ -209,7 +205,6 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
             }
           case _ =>
         }
-      }
     }
 
     def getProblems: util.List[ProblemDescriptor] = myProblems

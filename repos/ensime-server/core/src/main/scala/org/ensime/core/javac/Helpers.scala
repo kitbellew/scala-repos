@@ -64,16 +64,15 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
 
   def fqn(info: CompilationInfo, el: Element): Option[JavaFqn] = {
     val kind = el.getKind
-    if (kind == ElementKind.LOCAL_VARIABLE || kind == ElementKind.PARAMETER) {
+    if (kind == ElementKind.LOCAL_VARIABLE || kind == ElementKind.PARAMETER)
       Some(JavaFqn(None, None, Some(el.getSimpleName.toString)))
-    } else if (kind == ElementKind.CONSTRUCTOR || kind == ElementKind.ENUM_CONSTANT ||
-               kind == ElementKind.METHOD || kind == ElementKind.FIELD) {
+    else if (kind == ElementKind.CONSTRUCTOR || kind == ElementKind.ENUM_CONSTANT ||
+             kind == ElementKind.METHOD || kind == ElementKind.FIELD)
       Option(el.getEnclosingElement)
         .flatMap(fqn(info, _))
         .map(_.copy(fieldOrMethod = Some(el.toString)))
-    } else {
+    else
       parseFqnAsClass(el.toString)
-    }
   }
 
   def fqn(info: CompilationInfo, p: TreePath): Option[JavaFqn] =
@@ -100,14 +99,12 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
     // object implement multiple TypeMirror subinterfaces." --
     // TypeMirror docs
     tm match {
-      case tm: DeclaredType if tm.getKind == TypeKind.DECLARED => {
+      case tm: DeclaredType if tm.getKind == TypeKind.DECLARED =>
         tm.asElement match {
           case te: TypeElement => parseFqnAsClass(te.getQualifiedName.toString)
-          case _ => {
+          case _ =>
             None
-          }
         }
-      }
       case tm: PrimitiveType if tm.getKind.isPrimitive =>
         Some(JavaFqn(None, Some(tm.toString), None))
       case _ => None

@@ -87,9 +87,9 @@ private[csv] object CSVInferSchema {
       typeSoFar: DataType,
       field: String,
       nullValue: String = ""): DataType =
-    if (field == null || field.isEmpty || field == nullValue) {
+    if (field == null || field.isEmpty || field == nullValue)
       typeSoFar
-    } else {
+    else
       typeSoFar match {
         case NullType      => tryParseInteger(field)
         case IntegerType   => tryParseInteger(field)
@@ -102,42 +102,36 @@ private[csv] object CSVInferSchema {
           throw new UnsupportedOperationException(
             s"Unexpected data type $other")
       }
-    }
 
   private def tryParseInteger(field: String): DataType =
-    if ((allCatch opt field.toInt).isDefined) {
+    if ((allCatch opt field.toInt).isDefined)
       IntegerType
-    } else {
+    else
       tryParseLong(field)
-    }
 
   private def tryParseLong(field: String): DataType =
-    if ((allCatch opt field.toLong).isDefined) {
+    if ((allCatch opt field.toLong).isDefined)
       LongType
-    } else {
+    else
       tryParseDouble(field)
-    }
 
   private def tryParseDouble(field: String): DataType =
-    if ((allCatch opt field.toDouble).isDefined) {
+    if ((allCatch opt field.toDouble).isDefined)
       DoubleType
-    } else {
+    else
       tryParseTimestamp(field)
-    }
 
   def tryParseTimestamp(field: String): DataType =
-    if ((allCatch opt DateTimeUtils.stringToTime(field)).isDefined) {
+    if ((allCatch opt DateTimeUtils.stringToTime(field)).isDefined)
       TimestampType
-    } else {
+    else
       tryParseBoolean(field)
-    }
 
   def tryParseBoolean(field: String): DataType =
-    if ((allCatch opt field.toBoolean).isDefined) {
+    if ((allCatch opt field.toBoolean).isDefined)
       BooleanType
-    } else {
+    else
       stringType()
-    }
 
   // Defining a function to return the StringType constant is necessary in order to work around
   // a Scala compiler issue which leads to runtime incompatibilities with certain Spark versions;
@@ -186,9 +180,9 @@ private[csv] object CSVTypeCast {
       nullable: Boolean = true,
       nullValue: String = ""): Any =
     if (datum == nullValue && nullable && (!castType
-          .isInstanceOf[StringType])) {
+          .isInstanceOf[StringType]))
       null
-    } else {
+    else
       castType match {
         case _: ByteType    => datum.toByte
         case _: ShortType   => datum.toShort
@@ -224,7 +218,6 @@ private[csv] object CSVTypeCast {
         case _ =>
           throw new RuntimeException(s"Unsupported type: ${castType.typeName}")
       }
-    }
 
   /**
     * Helper method that converts string representation of a character to actual character.
@@ -233,7 +226,7 @@ private[csv] object CSVTypeCast {
     */
   @throws[IllegalArgumentException]
   def toChar(str: String): Char =
-    if (str.charAt(0) == '\\') {
+    if (str.charAt(0) == '\\')
       str.charAt(1) match {
         case 't' => '\t'
         case 'r' => '\r'
@@ -247,10 +240,9 @@ private[csv] object CSVTypeCast {
           throw new IllegalArgumentException(
             s"Unsupported special character for delimiter: $str")
       }
-    } else if (str.length == 1) {
+    else if (str.length == 1)
       str.charAt(0)
-    } else {
+    else
       throw new IllegalArgumentException(
         s"Delimiter cannot be more than one character: $str")
-    }
 }

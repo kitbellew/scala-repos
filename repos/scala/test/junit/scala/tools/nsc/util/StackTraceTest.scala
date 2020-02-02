@@ -28,28 +28,24 @@ class StackTraceTest extends Expecting {
 
   // repackage with message
   def resample: String =
-    try {
-      sample
-    } catch { case e: Throwable => throw new RuntimeException("resample", e) }
+    try sample
+    catch { case e: Throwable => throw new RuntimeException("resample", e) }
   def resampler: String = resample
 
   // simple wrapper
   def wrapper: String =
-    try {
-      sample
-    } catch { case e: Throwable => throw new RuntimeException(e) }
+    try sample
+    catch { case e: Throwable => throw new RuntimeException(e) }
   // another onion skin
   def rewrapper: String =
-    try {
-      wrapper
-    } catch { case e: Throwable => throw new RuntimeException(e) }
+    try wrapper
+    catch { case e: Throwable => throw new RuntimeException(e) }
   def rewrapperer: String = rewrapper
 
   // only an insane wretch would do this
   def insane: String =
-    try {
-      sample
-    } catch {
+    try sample
+    catch {
       case e: Throwable =>
         val t = new RuntimeException(e)
         e initCause t
@@ -62,14 +58,12 @@ class StackTraceTest extends Expecting {
   type Suppressing = { def addSuppressed(t: Throwable): Unit }
 
   def repressed: String =
-    try {
-      sample
-    } catch {
+    try sample
+    catch {
       case e: Throwable =>
         val t = new RuntimeException("My problem")
-        if (suppressable) {
+        if (suppressable)
           t.asInstanceOf[Suppressing] addSuppressed e
-        }
         throw t
     }
   def represser: String = repressed

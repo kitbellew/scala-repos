@@ -211,9 +211,7 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
           hashCodeMethod ++: equalsMethod ++: canEqualMethod ++: Nil
         GenerationUtil.addMembers(aClass, newMethods, editor.getDocument)
       }
-    } finally {
-      cleanup()
-    }
+    } finally cleanup()
   }
 
   def startInWriteAction(): Boolean = true

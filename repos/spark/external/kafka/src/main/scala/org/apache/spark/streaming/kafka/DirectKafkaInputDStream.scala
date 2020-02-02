@@ -77,14 +77,13 @@ private[streaming] class DirectKafkaInputDStream[
     * Asynchronously maintains & sends new rate limits to the receiver through the receiver tracker.
     */
   override protected[streaming] val rateController: Option[RateController] = {
-    if (RateController.isBackPressureEnabled(ssc.conf)) {
+    if (RateController.isBackPressureEnabled(ssc.conf))
       Some(
         new DirectKafkaRateController(
           id,
           RateEstimator.create(ssc.conf, context.graph.batchDuration)))
-    } else {
+    else
       None
-    }
   }
 
   protected val kc = new KafkaCluster(kafkaParams)
@@ -110,9 +109,9 @@ private[streaming] class DirectKafkaInputDStream[
           lagPerPartition.map {
             case (tp, lag) =>
               val backpressureRate = Math.round(lag / totalLag.toFloat * rate)
-              tp -> (if (maxRateLimitPerPartition > 0) {
+              tp -> (if (maxRateLimitPerPartition > 0)
                        Math.min(backpressureRate, maxRateLimitPerPartition)
-                     } else backpressureRate)
+                     else backpressureRate)
           }
         case None =>
           offsets.map { case (tp, offset) => tp -> maxRateLimitPerPartition }
@@ -124,9 +123,8 @@ private[streaming] class DirectKafkaInputDStream[
       Some(effectiveRateLimitPerPartition.map {
         case (tp, limit) => tp -> (secsPerBatch * limit).toLong
       })
-    } else {
+    } else
       None
-    }
   }
 
   protected var currentOffsets = fromOffsets
@@ -138,16 +136,15 @@ private[streaming] class DirectKafkaInputDStream[
     // Either.fold would confuse @tailrec, do it manually
     if (o.isLeft) {
       val err = o.left.get.toString
-      if (retries <= 0) {
+      if (retries <= 0)
         throw new SparkException(err)
-      } else {
+      else {
         log.error(err)
         Thread.sleep(kc.config.refreshLeaderBackoffMs)
         latestLeaderOffsets(retries - 1)
       }
-    } else {
+    } else
       o.right.get
-    }
   }
 
   // limits the maximum number of messages per partition

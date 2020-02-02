@@ -106,9 +106,7 @@ object ScalaSyntheticProvider {
           traitImpl <- allTraitImpls
           if traitImpl.name().stripSuffix("$class") == interface
             .name() && !traitImpl.methodsByName(m.name).isEmpty
-        } {
-          return true
-        }
+        } return true
         false
       case _ => false
     }

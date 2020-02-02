@@ -34,11 +34,10 @@ trait BatchDiffFunction[T]
   def apply(x: T, batch: IndexedSeq[Int]) = valueAt(x, batch)
 
   override def cached(implicit copy: CanCopy[T]) =
-    if (this.isInstanceOf[CachedBatchDiffFunction[_]]) {
+    if (this.isInstanceOf[CachedBatchDiffFunction[_]])
       this
-    } else {
+    else
       new CachedBatchDiffFunction[T](this)
-    }
 
   /**
     * The full size of the data

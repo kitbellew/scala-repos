@@ -137,9 +137,7 @@ class MongoAPIKeyManagerSpec
         deleted <- apiKeyManager.deleteAPIKey(before.get.apiKey)
         after <- apiKeyManager.findAPIKey(child2.apiKey)
         deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
-      } yield {
-        (before, deleted, after, deleteCol)
-      }
+      } yield (before, deleted, after, deleteCol)
 
       val result = Await.result(fut, timeout)
 
@@ -164,9 +162,7 @@ class MongoAPIKeyManagerSpec
         deleted2 <- apiKeyManager.deleteAPIKey(before.get.apiKey)
         after <- apiKeyManager.findAPIKey(child2.apiKey)
         deleteCol <- apiKeyManager.findDeletedAPIKey(child2.apiKey)
-      } yield {
-        (before, deleted1, deleted2, after, deleteCol)
-      }
+      } yield (before, deleted1, deleted2, after, deleteCol)
 
       val result = Await.result(fut, timeout)
 
@@ -186,9 +182,8 @@ class MongoAPIKeyManagerSpec
 
     val dbName = "test_v1_" + dbId.getAndIncrement()
     val testDB =
-      try {
-        mongo.database(dbName)
-      } catch {
+      try mongo.database(dbName)
+      catch {
         case t => logger.error("Error during DB setup: " + t); throw t
       }
 

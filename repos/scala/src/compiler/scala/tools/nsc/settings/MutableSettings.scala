@@ -35,9 +35,8 @@ class MutableSettings(val errorFn: String => Unit)
         _.name == thisSetting.name
       }
       otherSetting foreach { otherSetting =>
-        if (thisSetting.isSetByUser || otherSetting.isSetByUser) {
+        if (thisSetting.isSetByUser || otherSetting.isSetByUser)
           otherSetting.value = thisSetting.value.asInstanceOf[otherSetting.T]
-        }
       }
     }
   }
@@ -76,13 +75,13 @@ class MutableSettings(val errorFn: String => Unit)
       case "" :: xs =>
         loop(xs, residualArgs)
       case x :: xs =>
-        if (x startsWith "-") {
+        if (x startsWith "-")
           parseParams(args) match {
             case newArgs if newArgs eq args =>
               errorFn(s"bad option: '$x'"); (false, args)
             case newArgs => loop(newArgs, residualArgs)
           }
-        } else if (processAll)
+        else if (processAll)
           loop(xs, residualArgs :+ x)
         else
           (checkDependencies, args)
@@ -144,9 +143,9 @@ class MutableSettings(val errorFn: String => Unit)
     // the entire arg is consumed, so return None for failure
     // any non-Nil return value means failure and we return s unmodified
     def parseColonArg(s: String): Option[List[String]] =
-      if (s endsWith ":") {
+      if (s endsWith ":")
         clearIfExists(s.init)
-      } else {
+      else
         for {
           (p, args) <- StringOps.splitWhere(s, _ == ':', doDropIndex = true)
           rest <- tryToSetIfExists(
@@ -154,7 +153,6 @@ class MutableSettings(val errorFn: String => Unit)
             (args split ",").toList,
             (s: Setting) => s.tryToSetColon _)
         } yield rest
-      }
 
     // if arg is of form -Xfoo or -Xfoo bar (name = "-Xfoo")
     def parseNormalArg(p: String, args: List[String]): Option[List[String]] =
@@ -492,9 +490,8 @@ class MutableSettings(val errorFn: String => Unit)
 
     def parseArgument(x: String): Option[Int] =
       parser(x) orElse {
-        try {
-          Some(x.toInt)
-        } catch { case _: NumberFormatException => None }
+        try Some(x.toInt)
+        catch { case _: NumberFormatException => None }
       }
 
     def errorMsg() =
@@ -825,9 +822,8 @@ class MutableSettings(val errorFn: String => Unit)
         case Some(defaults) => defaults foreach add
         case None           => errorFn(s"'$name' requires an option. See '$name:help'.")
       }
-      else {
+      else
         added foreach add
-      }
 
       Some(rest)
     }
@@ -987,13 +983,11 @@ class MutableSettings(val errorFn: String => Unit)
       else tryToSetColon(List(default)) map (_ => args)
 
     override def tryToSetColon(args: List[String]) =
-      try {
-        args match {
-          case Nil =>
-            if (default == "") errorAndValue("missing phase", None)
-            else tryToSetColon(List(default))
-          case xs => value = (value ++ xs).distinct.sorted; Some(Nil)
-        }
+      try args match {
+        case Nil =>
+          if (default == "") errorAndValue("missing phase", None)
+          else tryToSetColon(List(default))
+        case xs => value = (value ++ xs).distinct.sorted; Some(Nil)
       } catch { case _: NumberFormatException => None }
 
     def clear(): Unit = (v = Nil)

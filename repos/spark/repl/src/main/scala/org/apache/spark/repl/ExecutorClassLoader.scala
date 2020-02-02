@@ -79,11 +79,10 @@ class ExecutorClassLoader(
     userClassPathFirst match {
       case true =>
         findClassLocally(name).getOrElse(parentLoader.loadClass(name))
-      case false => {
-        try {
-          parentLoader.loadClass(name)
-        } catch {
-          case e: ClassNotFoundException => {
+      case false =>
+        try parentLoader.loadClass(name)
+        catch {
+          case e: ClassNotFoundException =>
             val classOption = findClassLocally(name)
             classOption match {
               case None =>
@@ -95,9 +94,7 @@ class ExecutorClassLoader(
                 throw new ClassNotFoundException(name)
               case Some(a) => a
             }
-          }
         }
-      }
     }
 
   private def getClassFileInputStreamFromSparkRPC(path: String): InputStream = {
@@ -112,9 +109,8 @@ class ExecutorClassLoader(
         toClassNotFound(super.read(b, offset, len))
 
       private def toClassNotFound(fn: => Int): Int =
-        try {
-          fn
-        } catch {
+        try fn
+        catch {
           case e: Exception =>
             throw new ClassNotFoundException(path, e)
         }
@@ -128,9 +124,8 @@ class ExecutorClassLoader(
       val newuri =
         Utils.constructURIForAuthentication(uri, SparkEnv.get.securityManager)
       newuri.toURL
-    } else {
+    } else
       new URL(classUri + "/" + urlEncode(pathInDirectory))
-    }
     val connection: HttpURLConnection = Utils
       .setupSecureURLConnection(
         url.openConnection(),
@@ -142,20 +137,17 @@ class ExecutorClassLoader(
       connection.setReadTimeout(httpUrlConnectionTimeoutMillis)
     }
     connection.connect()
-    try {
-      if (connection.getResponseCode != 200) {
-        // Close the error stream so that the connection is eligible for re-use
-        try {
-          connection.getErrorStream.close()
-        } catch {
-          case ioe: IOException =>
-            logError("Exception while closing error stream", ioe)
-        }
-        throw new ClassNotFoundException(s"Class file not found at URL $url")
-      } else {
-        connection.getInputStream
+    try if (connection.getResponseCode != 200) {
+      // Close the error stream so that the connection is eligible for re-use
+      try connection.getErrorStream.close()
+      catch {
+        case ioe: IOException =>
+          logError("Exception while closing error stream", ioe)
       }
-    } catch {
+      throw new ClassNotFoundException(s"Class file not found at URL $url")
+    } else
+      connection.getInputStream
+    catch {
       case NonFatal(e) if !e.isInstanceOf[ClassNotFoundException] =>
         connection.disconnect()
         throw e
@@ -165,11 +157,10 @@ class ExecutorClassLoader(
   private def getClassFileInputStreamFromFileSystem(fileSystem: FileSystem)(
       pathInDirectory: String): InputStream = {
     val path = new Path(directory, pathInDirectory)
-    if (fileSystem.exists(path)) {
+    if (fileSystem.exists(path))
       fileSystem.open(path)
-    } else {
+    else
       throw new ClassNotFoundException(s"Class file not found at path $path")
-    }
   }
 
   def findClassLocally(name: String): Option[Class[_]] = {
@@ -190,16 +181,12 @@ class ExecutorClassLoader(
           s"Failed to check existence of class $name on REPL class server at $uri",
           e)
         None
-    } finally {
-      if (inputStream != null) {
-        try {
-          inputStream.close()
-        } catch {
-          case e: Exception =>
-            logError("Exception while closing inputStream", e)
-        }
+    } finally if (inputStream != null)
+      try inputStream.close()
+      catch {
+        case e: Exception =>
+          logError("Exception while closing inputStream", e)
       }
-    }
   }
 
   def readAndTransformClass(name: String, in: InputStream): Array[Byte] =
@@ -221,11 +208,10 @@ class ExecutorClassLoader(
       var done = false
       while (!done) {
         val num = in.read(bytes)
-        if (num >= 0) {
+        if (num >= 0)
           bos.write(bytes, 0, num)
-        } else {
+        else
           done = true
-        }
       }
       return bos.toByteArray
     }
@@ -265,8 +251,7 @@ class ConstructorCleaner(className: String, cv: ClassVisitor)
       mv.visitMaxs(-1, -1) // stack size and local vars will be auto-computed
       mv.visitEnd()
       return null
-    } else {
+    } else
       return mv
-    }
   }
 }

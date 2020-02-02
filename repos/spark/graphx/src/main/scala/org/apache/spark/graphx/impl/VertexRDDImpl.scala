@@ -43,11 +43,10 @@ class VertexRDDImpl[VD] private[graphx] (
     partitionsRDD.preferredLocations(s)
 
   override def setName(_name: String): this.type = {
-    if (partitionsRDD.name != null) {
+    if (partitionsRDD.name != null)
       partitionsRDD.setName(partitionsRDD.name + ", " + _name)
-    } else {
+    else
       partitionsRDD.setName(_name)
-    }
     this
   }
   setName("VertexRDD")

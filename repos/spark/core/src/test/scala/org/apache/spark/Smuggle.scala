@@ -51,11 +51,8 @@ object Smuggle {
   def apply[T](smuggledObject: T): Smuggle[T] = {
     val key = Symbol(UUID.randomUUID().toString)
     lock.writeLock().lock()
-    try {
-      smuggledObjects += key -> smuggledObject
-    } finally {
-      lock.writeLock().unlock()
-    }
+    try smuggledObjects += key -> smuggledObject
+    finally lock.writeLock().unlock()
     new Smuggle(key)
   }
 
@@ -64,11 +61,8 @@ object Smuggle {
 
   private def get[T](key: Symbol): T = {
     lock.readLock().lock()
-    try {
-      smuggledObjects(key).asInstanceOf[T]
-    } finally {
-      lock.readLock().unlock()
-    }
+    try smuggledObjects(key).asInstanceOf[T]
+    finally lock.readLock().unlock()
   }
 
   /**

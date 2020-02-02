@@ -36,9 +36,9 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
       }
     }
     val bodyText = {
-      if (returnTypeText != "") {
+      if (returnTypeText != "")
         ""
-      } else {
+      else
         psi match {
           case fDef: ScFunctionDefinition =>
             fDef.body match {
@@ -47,7 +47,6 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
             }
           case _ => ""
         }
-      }
     }
     val assign = {
       psi match {
@@ -74,9 +73,8 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
     dataStream.writeBoolean(stub.isDeclaration)
     val annotations = stub.getAnnotations
     dataStream.writeInt(annotations.length)
-    for (annotation <- annotations) {
+    for (annotation <- annotations)
       dataStream.writeName(annotation)
-    }
     dataStream.writeName(stub.getReturnTypeText)
     dataStream.writeName(stub.getBodyText)
     dataStream.writeBoolean(stub.hasAssign)
@@ -91,9 +89,8 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
     val isDecl = dataStream.readBoolean
     val length = dataStream.readInt
     val annotations = new Array[StringRef](length)
-    for (i <- 0 until length) {
+    for (i <- 0 until length)
       annotations(i) = dataStream.readName
-    }
     val parent = parentStub.asInstanceOf[StubElement[PsiElement]]
     val returnTypeText = dataStream.readName
     val bodyText = dataStream.readName
@@ -116,9 +113,8 @@ abstract class ScFunctionElementType[Func <: ScFunction](debugName: String)
   def indexStub(stub: ScFunctionStub, sink: IndexSink) {
 
     val name = stub.getName
-    if (name != null) {
+    if (name != null)
       sink.occurrence(ScalaIndexKeys.METHOD_NAME_KEY, name)
-    }
     if (stub.isImplicit)
       sink.occurrence(ScalaIndexKeys.IMPLICITS_KEY, "implicit")
   }

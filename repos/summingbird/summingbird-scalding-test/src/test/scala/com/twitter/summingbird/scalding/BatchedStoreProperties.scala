@@ -53,7 +53,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
       .map { Timestamp(_) }
   }
 
-  implicit val arbitraryPipeFactory: Arbitrary[PipeFactory[Nothing]] = {
+  implicit val arbitraryPipeFactory: Arbitrary[PipeFactory[Nothing]] =
     Arbitrary {
       Gen.const {
         StateWithError[
@@ -68,7 +68,6 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
         }
       }
     }
-  }
 
   implicit def timeExtractor[T <: (Long, Any)] = TestUtil.simpleTimeExtractor[T]
 
@@ -95,7 +94,7 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
   }
 
   property(
-    "readAfterLastBatch should return interval starting from the last batch written") = {
+    "readAfterLastBatch should return interval starting from the last batch written") =
     forAll {
       (
           diskPipeFactory: PipeFactory[Nothing],
@@ -118,20 +117,18 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                     InclusiveLower(readIntervalLower),
                     ExclusiveUpper(_)),
                   _),
-                _)) => {
+                _)) =>
             //readInterval should start from the last written interval in the store
             val start: Timestamp =
               batcher.earliestTimeOf(testStore.initBatch.next)
             implicitly[Ordering[Timestamp]].equiv(readIntervalLower, start)
-          }
           case Right(_) => false
           case Left(_)  => interval == Empty()
         }
     }
-  }
 
   property(
-    "readAfterLastBatch should not extend the end of interval requested") = {
+    "readAfterLastBatch should not extend the end of interval requested") =
     forAll {
       (
           diskPipeFactory: PipeFactory[Nothing],
@@ -154,50 +151,46 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                     InclusiveLower(_),
                     ExclusiveUpper(readIntervalUpper)),
                   _),
-                _)) => {
+                _)) =>
             //readInterval should start from the last written interval in the store
             implicitly[Ordering[Timestamp]]
               .lteq(readIntervalUpper, interval.upper.upper)
-          }
           case Right(_) => false
           case Left(_)  => interval == Empty()
         }
     }
-  }
 
-  property("the end of merged interval is never extended") = {
-    forAll {
-      (
-          diskPipeFactory: PipeFactory[Nothing],
-          interval: Intersection[InclusiveLower, ExclusiveUpper, Timestamp],
-          inputWithTimeStampAndBatcherAndStore: (
-              List[(Long, Int)],
-              Batcher,
-              TestStore[Int, Int]),
-          commutativity: Commutativity,
-          mode: Mode) =>
-        val (inputWithTimeStamp, batcher, testStore) =
-          inputWithTimeStampAndBatcherAndStore
-        val mergeResult = testStore.merge(
-          diskPipeFactory,
-          implicitly[Semigroup[Int]],
-          commutativity,
-          10)((interval, mode))
-        mergeResult.isRight ==> {
-          val Right(
+  property("the end of merged interval is never extended") = forAll {
+    (
+        diskPipeFactory: PipeFactory[Nothing],
+        interval: Intersection[InclusiveLower, ExclusiveUpper, Timestamp],
+        inputWithTimeStampAndBatcherAndStore: (
+            List[(Long, Int)],
+            Batcher,
+            TestStore[Int, Int]),
+        commutativity: Commutativity,
+        mode: Mode) =>
+      val (inputWithTimeStamp, batcher, testStore) =
+        inputWithTimeStampAndBatcherAndStore
+      val mergeResult = testStore.merge(
+        diskPipeFactory,
+        implicitly[Semigroup[Int]],
+        commutativity,
+        10)((interval, mode))
+      mergeResult.isRight ==> {
+        val Right(
+          (
             (
-              (
-                Intersection(
-                  InclusiveLower(_),
-                  ExclusiveUpper(readIntervalUpper)),
-                _),
-              _)) = mergeResult
-          val requestedEndingTimestamp: Timestamp = interval.upper.upper
-          val readIntervalEndingTimestamp: Timestamp = readIntervalUpper
-          implicitly[Ordering[Timestamp]]
-            .lteq(readIntervalEndingTimestamp, requestedEndingTimestamp)
-        }
-    }
+              Intersection(
+                InclusiveLower(_),
+                ExclusiveUpper(readIntervalUpper)),
+              _),
+            _)) = mergeResult
+        val requestedEndingTimestamp: Timestamp = interval.upper.upper
+        val readIntervalEndingTimestamp: Timestamp = readIntervalUpper
+        implicitly[Ordering[Timestamp]]
+          .lteq(readIntervalEndingTimestamp, requestedEndingTimestamp)
+      }
   }
 
   property(
@@ -264,11 +257,10 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
             10)((interval, mode))
 
           mergeResult match {
-            case Left(l) => {
+            case Left(l) =>
               l.mkString
                 .contains("readTimespan is not convering at least one batch")
                 .label("fail with right reason")
-            }
             case Right(_) =>
               false.label(
                 "should fail when readTimespan is not covering at least one batch")

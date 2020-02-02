@@ -194,7 +194,7 @@ private[camel] class ProducerRegistrar(activationTracker: ActorRef)
 
   def receive = {
     case Register(producer, endpointUri, _) ⇒
-      if (!camelObjects.contains(producer)) {
+      if (!camelObjects.contains(producer))
         try {
           val endpoint = camelContext.getEndpoint(endpointUri)
           val processor = new SendProcessor(endpoint)
@@ -206,12 +206,11 @@ private[camel] class ProducerRegistrar(activationTracker: ActorRef)
         } catch {
           case NonFatal(e) ⇒ throw new ActorActivationException(producer, e)
         }
-      } else {
+      else
         camelObjects.get(producer) foreach {
           case (endpoint, processor) ⇒
             producer ! CamelProducerObjects(endpoint, processor)
         }
-      }
     case DeRegister(producer) ⇒
       camelObjects.get(producer) foreach {
         case (_, processor) ⇒

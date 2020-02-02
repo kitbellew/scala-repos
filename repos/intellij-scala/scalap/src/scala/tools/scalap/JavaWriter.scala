@@ -140,9 +140,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
           getName(((data(0) & 0xff) << 8) + (data(1) & 0xff)).trim())
         mp.parse match {
           case None =>
-            if (getName(name) == "<init>") {
+            if (getName(name) == "<init>")
               print("def this" + getType(tpe) + ";").newline
-            } else {
+            else {
               print("def " + Names.decode(getName(name)))
               print(getType(tpe) + ";").newline
             }
@@ -153,9 +153,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
               print("def " + Names.decode(getName(name)) + str + ";").newline
         }
       case None =>
-        if (getName(name) == "<init>") {
+        if (getName(name) == "<init>")
           print("def this" + getType(tpe) + ";").newline
-        } else {
+        else {
           print("def " + Names.decode(getName(name)))
           print(getType(tpe) + ";").newline
         }
@@ -177,9 +177,9 @@ class JavaWriter(classfile: Classfile, writer: Writer)
   }
 
   def printClassHeader {
-    if (isInterface(cf.flags)) {
+    if (isInterface(cf.flags))
       print("trait " + getSimpleClassName(cf.classname))
-    } else {
+    else {
       print("class " + getSimpleClassName(cf.classname))
       if (cf.pool(cf.superclass) != null)
         print(" extends " + nameToClass0(getName(cf.superclass)))

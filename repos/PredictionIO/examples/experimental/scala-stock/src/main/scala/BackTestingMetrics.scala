@@ -84,14 +84,13 @@ class BacktestingEvaluator(val params: BacktestingParams)
     // Decide enter / exit, also sort by pValue desc
     val data = prediction.data
       .map {
-        case (ticker, pValue) => {
+        case (ticker, pValue) =>
           val dir = pValue match {
             case p if p >= params.enterThreshold => 1
             case p if p <= params.exitThreshold  => -1
             case _                               => 0
           }
           (ticker, dir, pValue)
-        }
       }
       .toArray
       .sortBy(-_._3)

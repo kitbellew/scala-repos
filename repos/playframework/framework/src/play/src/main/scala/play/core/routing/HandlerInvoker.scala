@@ -110,21 +110,19 @@ object HandlerInvokerFactory {
     }
 
   private def loadJavaControllerClass(handlerDef: HandlerDef): Class[_] =
-    try {
-      handlerDef.classLoader.loadClass(handlerDef.controller)
-    } catch {
+    try handlerDef.classLoader.loadClass(handlerDef.controller)
+    catch {
       case e: ClassNotFoundException =>
         // Try looking up relative to the routers package name.
         // This was primarily implemented for the documentation project so that routers could be namespaced and so
         // they could reference controllers relative to their own package.
-        if (handlerDef.routerPackage.length > 0) {
-          try {
-            handlerDef.classLoader.loadClass(
-              handlerDef.routerPackage + "." + handlerDef.controller)
-          } catch {
+        if (handlerDef.routerPackage.length > 0)
+          try handlerDef.classLoader.loadClass(
+            handlerDef.routerPackage + "." + handlerDef.controller)
+          catch {
             case NonFatal(_) => throw e
           }
-        } else throw e
+        else throw e
     }
 
   /**
@@ -170,11 +168,10 @@ object HandlerInvokerFactory {
         parser.apply(new play.core.j.RequestHeaderImpl(request)).asScala()
       import play.api.libs.iteratee.Execution.Implicits.trampoline
       accumulator.map { javaEither =>
-        if (javaEither.left.isPresent) {
+        if (javaEither.left.isPresent)
           Left(javaEither.left.get().asScala())
-        } else {
+        else
           Right(new RequestBody(javaEither.right.get()))
-        }
       }
   }
 
@@ -263,9 +260,9 @@ object HandlerInvokerFactory {
               FutureConverters
                 .toScala(call(new j.RequestHeaderImpl(request)))
                 .map { resultOrFlow =>
-                  if (resultOrFlow.left.isPresent) {
+                  if (resultOrFlow.left.isPresent)
                     Left(resultOrFlow.left.get.asScala())
-                  } else {
+                  else
                     Right(
                       Flow[Message]
                         .map {
@@ -294,7 +291,6 @@ object HandlerInvokerFactory {
                                 .asInstanceOf[Option[Int]],
                               close.reason)
                         })
-                  }
 
                 }
             }

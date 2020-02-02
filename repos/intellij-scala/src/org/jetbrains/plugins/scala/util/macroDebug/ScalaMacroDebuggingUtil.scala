@@ -92,9 +92,8 @@ object ScalaMacroDebuggingUtil {
       line split '|' foreach {
         case s =>
           val nums = s split ","
-          if (nums.length == 3) {
+          if (nums.length == 3)
             offsets.append((parse(nums(0)), parse(nums(1)), parse(nums(2))))
-          }
       }
       SYNTHETIC_OFFSETS_MAP += (canonicalPath -> offsets.result())
       // /unpack
@@ -149,9 +148,9 @@ object ScalaMacroDebuggingUtil {
   def checkMarkers(fileName: String, markersCount: Int) =
     MARKERS_CACHE get fileName match {
       case Some(oldCount) =>
-        if (oldCount == markersCount) {
+        if (oldCount == markersCount)
           false
-        } else {
+        else {
           MARKERS_CACHE += (fileName -> markersCount); true
         }
       case None => MARKERS_CACHE += (fileName -> markersCount); true
@@ -199,10 +198,9 @@ object ScalaMacroDebuggingUtil {
            a.getTextOffset > b.getTextOffset)) {
       var macroCall = macrosheetFile.findElementAt(elt.getTextOffset)
       while (macroCall != null && !ScalaMacroDebuggingUtil.isMacroCall(
-               macroCall)) {
+               macroCall))
         macroCall = macroCall.getParent
-      }
-      if (macroCall != null) {
+      if (macroCall != null)
         //        extensions.inWriteAction {
         WriteCommandAction.runWriteCommandAction(
           project,
@@ -227,7 +225,6 @@ object ScalaMacroDebuggingUtil {
             }
           }
         )
-      }
     }
   }
 

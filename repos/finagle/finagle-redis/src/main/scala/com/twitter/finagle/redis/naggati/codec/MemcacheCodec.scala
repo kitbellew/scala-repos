@@ -56,9 +56,8 @@ case class MemcacheResponse(
         buffer.writeBytes(MemcacheCodec.END)
       }
       Some(buffer)
-    } else {
+    } else
       None
-    }
 }
 
 object MemcacheCodec {
@@ -82,9 +81,8 @@ object MemcacheCodec {
 
     val command = segments(0)
     if (STORAGE_COMMANDS contains command) {
-      if (segments.length < 5) {
+      if (segments.length < 5)
         throw new ProtocolError("Malformed request line")
-      }
       val dataBytes = segments(4).toInt
       ensureBytes(dataBytes + 2) { buffer =>
         // final 2 bytes are just "\r\n" mandated by protocol.
@@ -98,9 +96,8 @@ object MemcacheCodec {
             Some(bytes),
             line.length + dataBytes + 4))
       }
-    } else {
+    } else
       emit(MemcacheRequest(segments.toList, None, line.length + 2))
-    }
   }
 
   val writeAscii = new Encoder[MemcacheResponse] {

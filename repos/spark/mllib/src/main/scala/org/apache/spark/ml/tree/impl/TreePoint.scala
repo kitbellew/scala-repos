@@ -66,11 +66,10 @@ private[spark] object TreePoint {
     }
     val thresholds: Array[Array[Double]] = featureArity.zipWithIndex.map {
       case (arity, idx) =>
-        if (arity == 0) {
+        if (arity == 0)
           splits(idx).map(_.asInstanceOf[ContinuousSplit].threshold)
-        } else {
+        else
           Array.empty[Double]
-        }
     }
     input.map { x =>
       TreePoint.labeledPointToTreePoint(x, thresholds, featureArity)
@@ -119,20 +118,18 @@ private[spark] object TreePoint {
 
     if (featureArity == 0) {
       val idx = java.util.Arrays.binarySearch(thresholds, featureValue)
-      if (idx >= 0) {
+      if (idx >= 0)
         idx
-      } else {
+      else
         -idx - 1
-      }
     } else {
       // Categorical feature bins are indexed by feature values.
-      if (featureValue < 0 || featureValue >= featureArity) {
+      if (featureValue < 0 || featureValue >= featureArity)
         throw new IllegalArgumentException(
           s"DecisionTree given invalid data:" +
             s" Feature $featureIndex is categorical with values in {0,...,${featureArity - 1}," +
             s" but a data point gives it value $featureValue.\n" +
             "  Bad data point: " + labeledPoint.toString)
-      }
       featureValue.toInt
     }
   }

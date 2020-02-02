@@ -42,12 +42,11 @@ class Channel[A] {
     * @return next object dequeued from this channel
     */
   def read: A = synchronized {
-    while (written.next == null) {
+    while (written.next == null)
       try {
         nreaders += 1
         wait()
       } finally nreaders -= 1
-    }
     val x = written.elem
     written = written.next
     x

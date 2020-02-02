@@ -53,7 +53,7 @@ class ScalaScriptConfugurationProducer extends {
     file match {
       case null => null
       case scalaFile: ScalaFile
-          if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile => {
+          if scalaFile.isScriptFile() && !scalaFile.isWorksheetFile =>
         val settings = RunManager
           .getInstance(location.getProject)
           .createRunConfiguration(scalaFile.name, confFactory)
@@ -66,7 +66,6 @@ class ScalaScriptConfugurationProducer extends {
         conf.setModule(module)
         conf.setScriptPath(scalaFile.getVirtualFile.getPath)
         settings
-      }
       case _ => null
     }
   }
@@ -75,11 +74,10 @@ class ScalaScriptConfugurationProducer extends {
       configuration: RunConfiguration,
       location: Location[_ <: PsiElement]): Boolean =
     configuration match {
-      case conf: ScalaScriptRunConfiguration => {
+      case conf: ScalaScriptRunConfiguration =>
         val file: PsiFile = location.getPsiElement.getContainingFile
         if (file == null || !file.isInstanceOf[ScalaFile]) return false
         conf.getScriptPath.trim == file.getVirtualFile.getPath.trim
-      }
       case _ => false
     }
 }

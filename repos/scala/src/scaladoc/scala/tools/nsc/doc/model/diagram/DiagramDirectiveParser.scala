@@ -144,24 +144,21 @@ trait DiagramDirectiveParser {
     def hideNode(clazz: Node): Boolean = {
       val qualifiedName = getName(clazz)
       for (hideFilter <- hideNodesFilter)
-        if (hideFilter.matcher(qualifiedName).matches) {
+        if (hideFilter.matcher(qualifiedName).matches)
           // println(hideFilter + ".matcher(" + qualifiedName + ").matches = " + hideFilter.matcher(qualifiedName).matches)
           return true
-        }
       false
     }
 
     def hideEdge(clazz1: Node, clazz2: Node): Boolean = {
       val clazz1Name = getName(clazz1)
       val clazz2Name = getName(clazz2)
-      for ((clazz1Filter, clazz2Filter) <- hideEdgesFilter) {
+      for ((clazz1Filter, clazz2Filter) <- hideEdgesFilter)
         if (clazz1Filter.matcher(clazz1Name).matches &&
-            clazz2Filter.matcher(clazz2Name).matches) {
+            clazz2Filter.matcher(clazz2Name).matches)
           // println(clazz1Filter + ".matcher(" + clazz1Name + ").matches = " + clazz1Filter.matcher(clazz1Name).matches)
           // println(clazz2Filter + ".matcher(" + clazz2Name + ").matches = " + clazz2Filter.matcher(clazz2Name).matches)
           return true
-        }
-      }
       false
     }
   }

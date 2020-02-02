@@ -6,9 +6,8 @@ class HaltTestServlet extends ScalatraServlet {
   before() {
     status = 501
     response.setHeader("Before-Header", "before")
-    if (params.isDefinedAt("haltBefore")) {
+    if (params.isDefinedAt("haltBefore"))
       halt(503)
-    }
   }
 
   get("/no-args") {

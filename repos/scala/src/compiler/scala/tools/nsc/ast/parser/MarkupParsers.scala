@@ -344,10 +344,9 @@ trait MarkupParsers {
       val buf = new StringBuilder
       if (ch != SU)
         do {
-          if (ch == '}') {
+          if (ch == '}')
             if (charComingAfter(nextch()) == '}') nextch()
             else errorBraces()
-          }
           buf append ch
           nextch()
         } while (!(ch == SU || xCheckEmbeddedBlock || ch == '<' || ch == '&'))
@@ -479,9 +478,7 @@ trait MarkupParsers {
 
               case '{'
                   if xCheckEmbeddedBlock => // embedded Scala patterns, if not double brace
-                do {
-                  ts ++= xScalaPatterns
-                } while (xCheckEmbeddedBlock)
+                do ts ++= xScalaPatterns while (xCheckEmbeddedBlock)
                 assert(!xEmbeddedBlock, "problem with embedded block")
 
               case SU =>

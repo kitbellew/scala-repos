@@ -107,11 +107,10 @@ object ReflectiveAccess {
         message: Any,
         future: Future[_]): Boolean = {
       ensureEnabled
-      if (typedActorObjectInstance.get.isJoinPointAndOneWay(message)) {
+      if (typedActorObjectInstance.get.isJoinPointAndOneWay(message))
         future
           .asInstanceOf[CompletableFuture[Option[_]]]
           .completeWithResult(None)
-      }
       typedActorObjectInstance.get.isJoinPoint(message)
     }
   }
@@ -197,19 +196,17 @@ object ReflectiveAccess {
   def getObjectFor[T](
       fqn: String,
       classloader: ClassLoader = loader): Either[Exception, T] =
-    try {
-      getClassFor(fqn) match {
-        case Right(value) =>
-          val instance = value.getDeclaredField("MODULE$")
-          instance.setAccessible(true)
-          val obj = instance.get(null)
-          if (obj eq null) Left(new NullPointerException)
-          else Right(obj.asInstanceOf[T])
-        case Left(exception) =>
-          Left(
-            exception
-          ) //We could just cast this to Either[Exception, T] but it's ugly
-      }
+    try getClassFor(fqn) match {
+      case Right(value) =>
+        val instance = value.getDeclaredField("MODULE$")
+        instance.setAccessible(true)
+        val obj = instance.get(null)
+        if (obj eq null) Left(new NullPointerException)
+        else Right(obj.asInstanceOf[T])
+      case Left(exception) =>
+        Left(
+          exception
+        ) //We could just cast this to Either[Exception, T] but it's ugly
     } catch {
       case e: Exception =>
         Left(e)
@@ -223,9 +220,8 @@ object ReflectiveAccess {
 
       // First, use the specified CL
       val first =
-        try {
-          Right(classloader.loadClass(fqn).asInstanceOf[Class[T]])
-        } catch {
+        try Right(classloader.loadClass(fqn).asInstanceOf[Class[T]])
+        catch {
           case c: ClassNotFoundException => Left(c)
         }
 
@@ -233,36 +229,32 @@ object ReflectiveAccess {
       else {
         // Second option is to use the ContextClassLoader
         val second =
-          try {
-            Right(
-              Thread.currentThread.getContextClassLoader
-                .loadClass(fqn)
-                .asInstanceOf[Class[T]])
-          } catch {
+          try Right(
+            Thread.currentThread.getContextClassLoader
+              .loadClass(fqn)
+              .asInstanceOf[Class[T]])
+          catch {
             case c: ClassNotFoundException => Left(c)
           }
 
         if (second.isRight) second
         else {
           val third =
-            try {
-              if (classloader ne loader)
-                Right(loader.loadClass(fqn).asInstanceOf[Class[T]])
-              else Left(null) //Horrid
-            } catch {
+            try if (classloader ne loader)
+              Right(loader.loadClass(fqn).asInstanceOf[Class[T]])
+            else Left(null) //Horrid
+            catch {
               case c: ClassNotFoundException => Left(c)
             }
 
           if (third.isRight) third
-          else {
-            try {
-              Right(
-                Class.forName(fqn).asInstanceOf[Class[T]]
-              ) // Last option is Class.forName
-            } catch {
+          else
+            try Right(
+              Class.forName(fqn).asInstanceOf[Class[T]]
+            ) // Last option is Class.forName
+            catch {
               case c: ClassNotFoundException => Left(c)
             }
-          }
         }
       }
     } catch {

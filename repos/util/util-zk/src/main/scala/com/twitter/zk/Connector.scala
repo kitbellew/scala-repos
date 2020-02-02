@@ -26,14 +26,13 @@ trait Connector {
     log.debug("propagating event to %d listeners %s", listening.size, event)
     val stateEvent = StateEvent(event)
     listening.foreach { listener =>
-      if (listener.isDefinedAt(stateEvent)) {
-        try {
-          listener(stateEvent)
-        } catch {
+      if (listener.isDefinedAt(stateEvent))
+        try listener(stateEvent)
+        catch {
           case e: Throwable =>
             log.error(e, "Exception in connection event listener")
         }
-      } else log.debug("listener does not handle %s", event)
+      else log.debug("listener does not handle %s", event)
     }
   }
 
@@ -66,9 +65,8 @@ object Connector {
     private[this] var index = 0
     protected[this] def nextConnector() = {
       val i = synchronized {
-        if (index == Int.MaxValue) {
+        if (index == Int.MaxValue)
           index = 0
-        }
         index = index + 1
         index % connectors.length
       }

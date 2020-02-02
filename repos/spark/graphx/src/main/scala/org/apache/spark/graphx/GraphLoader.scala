@@ -66,27 +66,24 @@ object GraphLoader extends Logging {
 
     // Parse the edge data table directly into edge partitions
     val lines =
-      if (numEdgePartitions > 0) {
+      if (numEdgePartitions > 0)
         sc.textFile(path, numEdgePartitions).coalesce(numEdgePartitions)
-      } else {
+      else
         sc.textFile(path)
-      }
     val edges = lines
       .mapPartitionsWithIndex { (pid, iter) =>
         val builder = new EdgePartitionBuilder[Int, Int]
         iter.foreach { line =>
           if (!line.isEmpty && line(0) != '#') {
             val lineArray = line.split("\\s+")
-            if (lineArray.length < 2) {
+            if (lineArray.length < 2)
               throw new IllegalArgumentException("Invalid line: " + line)
-            }
             val srcId = lineArray(0).toLong
             val dstId = lineArray(1).toLong
-            if (canonicalOrientation && srcId > dstId) {
+            if (canonicalOrientation && srcId > dstId)
               builder.add(dstId, srcId, 1)
-            } else {
+            else
               builder.add(srcId, dstId, 1)
-            }
           }
         }
         Iterator((pid, builder.toEdgePartition))

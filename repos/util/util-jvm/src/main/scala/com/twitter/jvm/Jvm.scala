@@ -164,16 +164,15 @@ trait Jvm {
 
       for (gc @ Gc(count, name, _, _) <- gcs) {
         val lastCount = lastByName.get(name)
-        if (lastCount == null) {
+        if (lastCount == null)
           f(gc)
-        } else if (lastCount != count) {
+        else if (lastCount != count) {
           missedCollections += count - 1 - lastCount
           if (missedCollections > 0 && Time.now - lastLog > LogPeriod) {
-            if (log.isLoggable(Level.FINE)) {
+            if (log.isLoggable(Level.FINE))
               log.fine(
                 "Missed %d collections for %s due to sampling"
                   .format(missedCollections, name))
-            }
             lastLog = Time.now
             missedCollections = 0
           }
@@ -245,12 +244,11 @@ object Jvm {
     * @note this is fragile as the RuntimeMXBean doesn't specify the name format.
     */
   lazy val ProcessId: Option[Int] =
-    try {
-      ManagementFactory.getRuntimeMXBean.getName
-        .split("@")
-        .headOption
-        .map(_.toInt)
-    } catch {
+    try ManagementFactory.getRuntimeMXBean.getName
+      .split("@")
+      .headOption
+      .map(_.toInt)
+    catch {
       case NonFatal(t) =>
         log.log(Level.WARNING, "failed to find process id", t)
         None

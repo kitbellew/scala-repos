@@ -143,7 +143,7 @@ trait Positions extends api.Positions { self: SymbolTable =>
 
           findOverlapping(tree.children flatMap solidDescendants) match {
             case List() => ;
-            case xs => {
+            case xs =>
               positionError(
                 "Overlapping trees " + xs
                   .map { case (x, y) => (x.id, y.id) }
@@ -154,7 +154,6 @@ trait Positions extends api.Positions { self: SymbolTable =>
                   reportTree("Second overlapping", y)
                 }
               }
-            }
           }
         }
         for (ct <- tree.children flatMap solidDescendants) validate(ct, tree)
@@ -192,12 +191,12 @@ trait Positions extends api.Positions { self: SymbolTable =>
       rs
     case r :: rs1 =>
       assert(!t.pos.isTransparent)
-      if (r.isFree && (r.pos includes t.pos)) {
+      if (r.isFree && (r.pos includes t.pos))
 //      inform("subdividing "+r+"/"+t.pos)
         maybeFree(t.pos.end, r.pos.end) ::: List(Range(t.pos, t)) ::: maybeFree(
           r.pos.start,
           t.pos.start) ::: rs1
-      } else {
+      else {
         if (!r.isFree && (r.pos overlaps t.pos)) conflicting += r.tree
         r :: insert(rs1, t, conflicting)
       }
@@ -216,13 +215,12 @@ trait Positions extends api.Positions { self: SymbolTable =>
     */
   def findOverlapping(cts: List[Tree]): List[(Tree, Tree)] = {
     var ranges = List(maxFree)
-    for (ct <- cts) {
+    for (ct <- cts)
       if (ct.pos.isOpaqueRange) {
         val conflicting = new ListBuffer[Tree]
         ranges = insert(ranges, ct, conflicting)
         if (conflicting.nonEmpty) return conflicting.toList map (t => (t, ct))
       }
-    }
     List()
   }
 
@@ -234,19 +232,16 @@ trait Positions extends api.Positions { self: SymbolTable =>
     *  @param  trees  The children to position. All children must be positionable.
     */
   private def setChildrenPos(pos: Position, trees: List[Tree]): Unit =
-    try {
-      for (tree <- trees) {
-        if (!tree.isEmpty && tree.canHaveAttrs && tree.pos == NoPosition) {
-          val children = tree.children
-          if (children.isEmpty) {
-            tree setPos pos.focus
-          } else {
-            setChildrenPos(pos, children)
-            tree setPos wrappingPos(pos, children)
-          }
+    try for (tree <- trees)
+      if (!tree.isEmpty && tree.canHaveAttrs && tree.pos == NoPosition) {
+        val children = tree.children
+        if (children.isEmpty)
+          tree setPos pos.focus
+        else {
+          setChildrenPos(pos, children)
+          tree setPos wrappingPos(pos, children)
         }
-      }
-    } catch {
+      } catch {
       case ex: Exception =>
         inform("error while set children pos " + pos + " of " + trees)
         throw ex
@@ -342,10 +337,9 @@ trait Positions extends api.Positions { self: SymbolTable =>
       if (!tree.isEmpty && tree.canHaveAttrs && tree.pos == NoPosition) {
         tree.setPos(pos)
         val children = tree.children
-        if (children.nonEmpty) {
+        if (children.nonEmpty)
           if (children.tail.isEmpty) atPos(pos)(children.head)
           else setChildrenPos(pos, children)
-        }
       }
       tree
     }

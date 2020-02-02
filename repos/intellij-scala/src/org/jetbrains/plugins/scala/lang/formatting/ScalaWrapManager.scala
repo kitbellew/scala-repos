@@ -57,12 +57,12 @@ object ScalaWrapManager {
           val childPriority =
             priority(elementOperation(psi).getText, assignments)
           val notSamePriority = parentPriority != childPriority
-          if (notSamePriority) {
+          if (notSamePriority)
             Wrap.createChildWrap(
               block.getWrap,
               WrapType.byLegacyRepresentation(settings.BINARY_OPERATION_WRAP),
               false)
-          } else Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
+          else Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
         case _ => Wrap.createWrap(settings.BINARY_OPERATION_WRAP, false)
       }
 
@@ -93,9 +93,8 @@ object ScalaWrapManager {
               WrapType.byLegacyRepresentation(settings.CALL_PARAMETERS_WRAP),
               false)
           else Wrap.createWrap(settings.CALL_PARAMETERS_WRAP, false)
-        if (settings.PREFER_PARAMETERS_WRAP) {
+        if (settings.PREFER_PARAMETERS_WRAP)
           wrap.ignoreParentWraps()
-        }
         return wrap
       case psi: ScReferenceExpression =>
         return Wrap.createWrap(settings.METHOD_CALL_CHAIN_WRAP, true)
@@ -229,17 +228,16 @@ object ScalaWrapManager {
         }
         if (first == null) return null
         if (childPsi == first) return suggestedWrap
-        if (scalaSettings.WRAP_BEFORE_WITH_KEYWORD) {
+        if (scalaSettings.WRAP_BEFORE_WITH_KEYWORD)
           if (child.getElementType == ScalaTokenTypes.kWITH)
             return suggestedWrap
           else return null
-        } else {
+        else
           e.templateParents match {
             case Some(tp) if tp.typeElements.contains(childPsi) =>
               return suggestedWrap
             case _ => return null
           }
-        }
       case _ =>
     }
     null

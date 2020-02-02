@@ -804,9 +804,8 @@ private[transport] class ProtocolStateActor(
   private def sendAssociate(
       wrappedHandle: AssociationHandle,
       info: HandshakeInfo): Boolean =
-    try {
-      wrappedHandle.write(codec.constructAssociate(info))
-    } catch {
+    try wrappedHandle.write(codec.constructAssociate(info))
+    catch {
       case NonFatal(e) ⇒
         throw new AkkaProtocolException(
           "Error writing ASSOCIATE to transport",

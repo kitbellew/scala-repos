@@ -283,13 +283,12 @@ class EhCacheApi @Inject() (cache: Ehcache) extends CacheApi {
       case infinite: Duration.Infinite => element.setEternal(true)
       case finite: FiniteDuration =>
         val seconds = finite.toSeconds
-        if (seconds <= 0) {
+        if (seconds <= 0)
           element.setTimeToLive(1)
-        } else if (seconds > Int.MaxValue) {
+        else if (seconds > Int.MaxValue)
           element.setTimeToLive(Int.MaxValue)
-        } else {
+        else
           element.setTimeToLive(seconds.toInt)
-        }
     }
     cache.put(element)
   }

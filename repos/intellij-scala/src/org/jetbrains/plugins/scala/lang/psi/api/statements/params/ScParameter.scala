@@ -96,9 +96,9 @@ trait ScParameter
             "scala.collection.Seq",
             getResolveScope,
             ScalaPsiManager.ClassCategory.TYPE)
-        if (seq != null) {
+        if (seq != null)
           Success(ScParameterizedType(ScType.designator(seq), Seq(tp)), elem)
-        } else f
+        else f
       case f => f
     }
   }
@@ -225,16 +225,16 @@ trait ScParameter
 
   def getDefaultExpression: Option[ScExpression] = {
     val res = getActualDefaultExpression
-    if (res.isEmpty) {
+    if (res.isEmpty)
       getSuperParameter.flatMap(_.getDefaultExpression)
-    } else res
+    else res
   }
 
   def getDefaultExpressionInSource: Option[ScExpression] = {
     val res = getActualDefaultExpression
-    if (res.isEmpty) {
+    if (res.isEmpty)
       getSuperParameter.flatMap(_.getDefaultExpressionInSource)
-    } else {
+    else
       getContainingFile match {
         case file: ScalaFile =>
           if (file.isCompiled) {
@@ -265,7 +265,6 @@ trait ScParameter
           } else res
         case _ => res
       }
-    }
   }
 
   def getSuperParameter: Option[ScParameter] =

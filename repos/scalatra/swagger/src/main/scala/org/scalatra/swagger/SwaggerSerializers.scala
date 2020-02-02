@@ -185,9 +185,8 @@ object SwaggerSerializers {
     override val dateFormat = new DateFormat {
       def format(d: JDate) = new DateTime(d).toString(Iso8601Date)
       def parse(s: String) =
-        try {
-          Option(Iso8601Date.parseDateTime(s).toDate)
-        } catch {
+        try Option(Iso8601Date.parseDateTime(s).toDate)
+        catch {
           case _: Throwable ⇒ None
         }
     }
@@ -237,7 +236,7 @@ object SwaggerSerializers {
         "Couldn't determine the type for this data type from " + value)
     val t = str(value \ "format") orElse str(value \ "type") orElse str(
       value \ "$ref") getOrElse karmaIsABitch
-    if (isSimpleType(t)) {
+    if (isSimpleType(t))
       if (t == "array") {
         val items = value \ "items" match {
           case JNothing => None
@@ -249,12 +248,10 @@ object SwaggerSerializers {
           case _ =>
             items map (DataType.GenList(_)) getOrElse DataType.GenList()
         }
-      } else {
+      } else
         DataType((value \ "type").as[String], format = str(value \ "format"))
-      }
-    } else {
+    else
       DataType(t, qualifiedName = str(value \ "qualifiedType"))
-    }
   }
 
   class AllowableValuesSerializer
@@ -322,10 +319,9 @@ object SwaggerSerializers {
         ({
           case json: JObject =>
             val properties = json \ "properties" match {
-              case JObject(entries) => {
+              case JObject(entries) =>
                 for ((key, value) <- entries)
                   yield key -> value.extract[ModelProperty]
-              }
               case _ => Nil
             }
 
@@ -575,9 +571,8 @@ object SwaggerSerializers {
             ("type" -> obj.`type`) ~
               ("scopes" -> scopes) ~
               ("grantTypes" ->
-                (for (t <- grantTypes) yield {
-                  (t.`type`, Extraction.decompose(t))
-                }).toMap)
+                (for (t <- grantTypes)
+                  yield (t.`type`, Extraction.decompose(t))).toMap)
           case obj @ ApiKey(keyname, passAs) =>
             ("type" -> obj.`type`) ~
               ("passAs" -> passAs) ~

@@ -30,8 +30,8 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
   val settings = RARP(system).provider.remoteSettings
 
   private val adaptersTable: Map[String, TransportAdapterProvider] =
-    for ((name, fqn) ← settings.Adapters) yield {
-      name -> system.dynamicAccess
+    for ((name, fqn) ← settings.Adapters)
+      yield name -> system.dynamicAccess
         .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
         .recover({
           case e ⇒
@@ -40,7 +40,6 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
               e)
         })
         .get
-    }
 
   def getAdapterProvider(name: String): TransportAdapterProvider =
     adaptersTable.get(name) match {

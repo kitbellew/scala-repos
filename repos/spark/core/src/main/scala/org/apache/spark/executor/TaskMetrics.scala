@@ -210,9 +210,9 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
       // this task, we return a new dummy one to avoid clobbering the values of the old metrics.
       // In the future we should try to store input metrics from all different read methods at
       // the same time (SPARK-5225).
-      if (metrics.readMethod == readMethod) {
+      if (metrics.readMethod == readMethod)
         metrics
-      } else {
+      else {
         val m = new InputMetrics
         m.setReadMethod(readMethod)
         m
@@ -367,18 +367,14 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
           case _                                            =>
         }
       }
-    if (hasShuffleRead) {
+    if (hasShuffleRead)
       _shuffleReadMetrics = Some(new ShuffleReadMetrics(initialAccumsMap))
-    }
-    if (hasShuffleWrite) {
+    if (hasShuffleWrite)
       _shuffleWriteMetrics = Some(new ShuffleWriteMetrics(initialAccumsMap))
-    }
-    if (hasInput) {
+    if (hasInput)
       _inputMetrics = Some(new InputMetrics(initialAccumsMap))
-    }
-    if (hasOutput) {
+    if (hasOutput)
       _outputMetrics = Some(new OutputMetrics(initialAccumsMap))
-    }
   }
 
 }
@@ -416,10 +412,10 @@ private[spark] object TaskMetrics extends Logging {
       name: String): Accumulator[T] = {
     require(accumMap.contains(name), s"metric '$name' is missing")
     val accum = accumMap(name)
-    try {
-      // Note: we can't do pattern matching here because types are erased by compile time
-      accum.asInstanceOf[Accumulator[T]]
-    } catch {
+    try
+    // Note: we can't do pattern matching here because types are erased by compile time
+    accum.asInstanceOf[Accumulator[T]]
+    catch {
       case e: ClassCastException =>
         throw new SparkException(s"accumulator $name was of unexpected type", e)
     }

@@ -215,9 +215,8 @@ class FPGrowth private (
     */
   @Since("1.3.0")
   def run[Item: ClassTag](data: RDD[Array[Item]]): FPGrowthModel[Item] = {
-    if (data.getStorageLevel == StorageLevel.NONE) {
+    if (data.getStorageLevel == StorageLevel.NONE)
       logWarning("Input data is not cached.")
-    }
     val count = data.count()
     val minCount = math.ceil(minSupport * count).toLong
     val numParts =
@@ -249,10 +248,9 @@ class FPGrowth private (
     data
       .flatMap { t =>
         val uniq = t.toSet
-        if (t.length != uniq.size) {
+        if (t.length != uniq.size)
           throw new SparkException(
             s"Items in a transaction must be unique but got ${t.toSeq}.")
-        }
         t
       }
       .map(v => (v, 1L))
@@ -313,9 +311,8 @@ class FPGrowth private (
     while (i >= 0) {
       val item = filtered(i)
       val part = partitioner.getPartition(item)
-      if (!output.contains(part)) {
+      if (!output.contains(part))
         output(part) = filtered.slice(0, i + 1)
-      }
       i -= 1
     }
     output

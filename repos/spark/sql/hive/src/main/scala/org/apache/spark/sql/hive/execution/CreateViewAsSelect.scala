@@ -78,21 +78,21 @@ private[hive] case class CreateViewAsSelect(
   }
 
   private def prepareTable(sqlContext: SQLContext): CatalogTable = {
-    val expandedText = if (sqlContext.conf.canonicalView) {
-      try rebuildViewQueryString(sqlContext)
-      catch {
-        case NonFatal(e) => wrapViewTextWithSelect
-      }
-    } else {
-      wrapViewTextWithSelect
-    }
+    val expandedText =
+      if (sqlContext.conf.canonicalView)
+        try rebuildViewQueryString(sqlContext)
+        catch {
+          case NonFatal(e) => wrapViewTextWithSelect
+        }
+      else
+        wrapViewTextWithSelect
 
     val viewSchema = {
-      if (tableDesc.schema.isEmpty) {
+      if (tableDesc.schema.isEmpty)
         childSchema.map { a =>
           CatalogColumn(a.name, HiveMetastoreTypes.toMetastoreType(a.dataType))
         }
-      } else {
+      else
         childSchema.zip(tableDesc.schema).map {
           case (a, col) =>
             CatalogColumn(
@@ -101,7 +101,6 @@ private[hive] case class CreateViewAsSelect(
               nullable = true,
               col.comment)
         }
-      }
     }
 
     tableDesc.copy(schema = viewSchema, viewText = Some(expandedText))
@@ -113,16 +112,15 @@ private[hive] case class CreateViewAsSelect(
     // we need, to make us more robust to top level `*`s.
     val viewOutput = {
       val columnNames = childSchema.map(f => quote(f.name))
-      if (tableDesc.schema.isEmpty) {
+      if (tableDesc.schema.isEmpty)
         columnNames.mkString(", ")
-      } else {
+      else
         columnNames
           .zip(tableDesc.schema.map(f => quote(f.name)))
           .map {
             case (name, alias) => s"$name AS $alias"
           }
           .mkString(", ")
-      }
     }
 
     val viewText = tableDesc.viewText.get
@@ -131,14 +129,15 @@ private[hive] case class CreateViewAsSelect(
   }
 
   private def rebuildViewQueryString(sqlContext: SQLContext): String = {
-    val logicalPlan = if (tableDesc.schema.isEmpty) {
-      child
-    } else {
-      val projectList = childSchema.zip(tableDesc.schema).map {
-        case (attr, col) => Alias(attr, col.name)()
+    val logicalPlan =
+      if (tableDesc.schema.isEmpty)
+        child
+      else {
+        val projectList = childSchema.zip(tableDesc.schema).map {
+          case (attr, col) => Alias(attr, col.name)()
+        }
+        sqlContext.executePlan(Project(projectList, child)).analyzed
       }
-      sqlContext.executePlan(Project(projectList, child)).analyzed
-    }
     new SQLBuilder(logicalPlan, sqlContext).toSQL
   }
 

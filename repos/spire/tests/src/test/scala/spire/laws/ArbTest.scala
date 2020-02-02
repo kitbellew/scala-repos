@@ -26,17 +26,13 @@ class ArbTest extends FunSuite {
       else if (x.isOne) "one"
       else if (x.isValidLong) "long"
       else if (x.isWhole) "big"
-      else {
-        if (x.numerator.isValidLong && x.denominator.isValidLong) {
-          if (x.numerator == 1) "1/long"
-          else "long/long"
-        } else {
-          if (x.numerator == 1) "1/big"
-          else if (x.numerator.isValidLong) "long/big"
-          else if (x.denominator.isValidLong) "big/long"
-          else "big/big"
-        }
-      }
+      else if (x.numerator.isValidLong && x.denominator.isValidLong)
+        if (x.numerator == 1) "1/long"
+        else "long/long"
+      else if (x.numerator == 1) "1/big"
+      else if (x.numerator.isValidLong) "long/big"
+      else if (x.denominator.isValidLong) "big/long"
+      else "big/big"
     val kinds = samples.map(classify).toSet
     val expected = Set(
       "zero",

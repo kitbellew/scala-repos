@@ -41,7 +41,7 @@ class ScGenericCallImpl(node: ASTNode)
     val methodName = if (isUpdate) "update" else "apply"
     val args: List[Seq[ScExpression]] =
       if (curr == this && !isUpdate) List.empty
-      else {
+      else
         (curr match {
           case call: ScMethodCall => call.args.exprs
           case _                  => Seq.empty[ScExpression]
@@ -59,7 +59,6 @@ class ScGenericCallImpl(node: ASTNode)
                      ) //we can't to not add something => add Nothing expression
                  }
                else Seq.empty) :: Nil
-      }
     val typeArgs: Seq[ScTypeElement] = this.arguments
     import org.jetbrains.plugins.scala.lang.psi.types.Compatibility.Expression._
     val processor = new MethodResolveProcessor(
@@ -73,7 +72,7 @@ class ScGenericCallImpl(node: ASTNode)
     processor.processType(tp, referencedExpr, ResolveState.initial)
     val candidates = processor.candidates
     if (candidates.length != 1) types.Nothing
-    else {
+    else
       candidates(0) match {
         case ScalaResolveResult(fun: PsiMethod, s: ScSubstitutor) =>
           fun match {
@@ -84,7 +83,6 @@ class ScGenericCallImpl(node: ASTNode)
           }
         case _ => types.Nothing
       }
-    }
   }
 
   private def convertReferencedType(

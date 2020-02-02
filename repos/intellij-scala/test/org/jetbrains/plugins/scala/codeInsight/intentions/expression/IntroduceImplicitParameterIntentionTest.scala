@@ -74,9 +74,8 @@ class IntroduceImplicitParameterIntentionTest extends ScalaIntentionTestBase {
     | }
     """
 
-    try {
-      doTest(text, resultText)
-    } catch {
+    try doTest(text, resultText)
+    catch {
       case _: RuntimeException => // Expected, so continue
     }
   }
@@ -85,9 +84,8 @@ class IntroduceImplicitParameterIntentionTest extends ScalaIntentionTestBase {
     val text = "val a: (Int => Int) = i =<caret>> i + i + i + 5"
     val resultText = "val a: (Int => Int) = i => i + i + i + 5"
 
-    try {
-      doTest(text, resultText)
-    } catch {
+    try doTest(text, resultText)
+    catch {
       case _: RuntimeException => // Expected, so continue
     }
   }
@@ -98,9 +96,8 @@ class IntroduceImplicitParameterIntentionTest extends ScalaIntentionTestBase {
     val resultText =
       "val a: ((Int, Int, Int) => Int) = (i, i1, i2) => i + i2 + i1 + 5"
 
-    try {
-      doTest(text, resultText)
-    } catch {
+    try doTest(text, resultText)
+    catch {
       case _: RuntimeException => // Expected, so continue
     }
   }

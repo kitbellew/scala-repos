@@ -146,7 +146,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         case s1 ⇒
           if (manifest == "")
             s1.fromBinary(bytes, None)
-          else {
+          else
             system.dynamicAccess.getClassFor[AnyRef](manifest) match {
               case Success(classManifest) ⇒
                 s1.fromBinary(bytes, Some(classManifest))
@@ -154,7 +154,6 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
                 throw new NotSerializableException(
                   s"Cannot find manifest class [$manifest] for serializer with id [$serializerId].")
             }
-          }
       }
     }
 
@@ -204,14 +203,13 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         }
         serializerMap.putIfAbsent(clazz, ser) match {
           case null ⇒
-            if (shouldWarnAboutJavaSerializer(clazz, ser)) {
+            if (shouldWarnAboutJavaSerializer(clazz, ser))
               log.warning(
                 "Using the default Java serializer for class [{}] which is not recommended because of " +
                   "performance implications. Use another serializer or disable this warning using the setting " +
                   "'akka.actor.warn-about-java-serializer-usage'",
                 clazz.getName
               )
-            }
             log.debug(
               "Using serializer[{}] for message [{}]",
               ser.getClass.getName,

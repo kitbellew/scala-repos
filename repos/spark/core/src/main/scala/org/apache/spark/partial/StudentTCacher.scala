@@ -33,9 +33,9 @@ private[spark] class StudentTCacher(confidence: Double) {
   val cache = Array.fill[Double](NORMAL_APPROX_SAMPLE_SIZE)(-1.0)
 
   def get(sampleSize: Long): Double =
-    if (sampleSize >= NORMAL_APPROX_SAMPLE_SIZE) {
+    if (sampleSize >= NORMAL_APPROX_SAMPLE_SIZE)
       normalApprox
-    } else {
+    else {
       val size = sampleSize.toInt
       if (cache(size) < 0) {
         val tDist = new TDistribution(size - 1)

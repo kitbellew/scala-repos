@@ -152,7 +152,7 @@ trait IndicesModule[M[+_]]
           stream: StreamT[M, SliceIndex]): M[TableIndex] =
         stream.uncons flatMap {
           case None             => M.point(new TableIndex(buf.toList))
-          case Some((si, tail)) => { buf += si; accumulate(buf, tail) }
+          case Some((si, tail)) => buf += si; accumulate(buf, tail)
         }
 
       // We are given TransSpec1s; to apply these to slices we need to
@@ -266,11 +266,11 @@ trait IndicesModule[M[+_]]
       while (i < alen && j < blen) {
         val a = as.get(i)
         val b = bs.get(j)
-        if (a < b) {
+        if (a < b)
           i += 1
-        } else if (a > b) {
+        else if (a > b)
           j += 1
-        } else {
+        else {
           out.add(a)
           i += 1
           j += 1
@@ -390,11 +390,10 @@ trait IndicesModule[M[+_]]
           var k = 0
           while (!dead && k < numKeys) {
             val jv = keys(k)(i)
-            if (jv != null) {
+            if (jv != null)
               row(k) = jv
-            } else {
+            else
               dead = true
-            }
             k += 1
           }
 
@@ -406,9 +405,9 @@ trait IndicesModule[M[+_]]
               vals.get(k).map { jvs =>
                 jvs.add(jv)
                 val key = (k, jv)
-                if (dict.contains(key)) {
+                if (dict.contains(key))
                   dict(key).add(i)
-                } else {
+                else {
                   val as = new ArrayIntList(0)
                   as.add(i)
                   dict(key) = as
@@ -452,7 +451,7 @@ trait IndicesModule[M[+_]]
         val st: SliceTransform1[_] = sts(k)
 
         keys(k) = st(slice) map {
-          case (_, keySlice) => {
+          case (_, keySlice) =>
             val arr = new Array[RValue](n)
 
             var i = 0
@@ -466,7 +465,6 @@ trait IndicesModule[M[+_]]
             }
 
             arr
-          }
         }
 
         k += 1
@@ -474,11 +472,10 @@ trait IndicesModule[M[+_]]
 
       val back = (0 until keys.length)
         .foldLeft(M.point(Vector.fill[Array[RValue]](numKeys)(null))) {
-          case (accM, i) => {
+          case (accM, i) =>
             val arrM = keys(i)
 
             M.apply2(accM, arrM) { (acc, arr) => acc.updated(i, arr) }
-          }
         }
 
       back map { _.toArray }

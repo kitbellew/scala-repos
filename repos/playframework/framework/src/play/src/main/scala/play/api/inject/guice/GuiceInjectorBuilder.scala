@@ -209,13 +209,12 @@ abstract class GuiceBuilder[Self] protected (
       case e: CreationException =>
         e.getCause match {
           case p: PlayException => throw p
-          case _ => {
+          case _ =>
             e.getErrorMessages.asScala.foreach(_.getCause match {
               case p: PlayException => throw p
               case _                => // do nothing
             })
             throw e
-          }
         }
     }
 

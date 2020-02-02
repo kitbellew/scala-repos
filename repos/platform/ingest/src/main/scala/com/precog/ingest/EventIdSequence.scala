@@ -42,9 +42,8 @@ class SystemEventIdSequence private (
   import SystemEventIdSequence.InternalState
 
   def next(offset: Long) = {
-    if (state.isEmpty) {
+    if (state.isEmpty)
       state = refill(offset)
-    }
     state.next()
   }
 

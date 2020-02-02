@@ -255,11 +255,10 @@ trait MapTest {
       mp.putAll(mutableMapAsJavaMap(nullMap))
       assertEquals("y", mp.get(null))
       assertEquals("y", mp.get("X"))
-    } else {
+    } else
       expectThrows(
         classOf[NullPointerException],
         mp.putAll(mutableMapAsJavaMap(nullMap)))
-    }
   }
 
   class SimpleQueryableMap[K, V](inner: mu.HashMap[K, V])

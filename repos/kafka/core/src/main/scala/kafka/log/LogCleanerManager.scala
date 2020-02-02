@@ -114,9 +114,8 @@ private[log] class LogCleanerManager(
                   "Resetting first dirty offset to log start offset %d since the checkpointed offset %d is invalid."
                     .format(logStartOffset, offset))
                 logStartOffset
-              } else {
+              } else
                 offset
-              }
             }
             LogToClean(topicAndPartition, log, firstDirtyOffset)
         }
@@ -127,9 +126,9 @@ private[log] class LogCleanerManager(
       // and must meet the minimum threshold for dirty byte ratio
       val cleanableLogs = dirtyLogs.filter(ltc =>
         ltc.cleanableRatio > ltc.log.config.minCleanableRatio)
-      if (cleanableLogs.isEmpty) {
+      if (cleanableLogs.isEmpty)
         None
-      } else {
+      else {
         val filthiest = cleanableLogs.max
         inProgress.put(filthiest.topicPartition, LogCleaningInProgress)
         Some(filthiest)

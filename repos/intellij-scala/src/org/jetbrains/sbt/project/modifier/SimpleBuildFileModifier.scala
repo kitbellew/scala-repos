@@ -170,15 +170,14 @@ object SimpleBuildFileModifier {
       case Some((parent, index))
           if (index == 0) || parent.getChildren.size >= index =>
         val children = parent.getChildren
-        if (children.isEmpty) {
+        if (children.isEmpty)
           for (psiElement <- psiElements) parent.add(psiElement)
-        } else if (index == 0) {
+        else if (index == 0)
           for (psiElement <- psiElements)
             parent.addBefore(psiElement, children(0))
-        } else {
+        else
           for (psiElement <- psiElements.reverse)
             parent.addAfter(psiElement, children(index - 1))
-        }
         val psiFile = parent.getContainingFile
         val res = psiFile.getVirtualFile
         //TODO: this 'saveText' seems extremely weird here

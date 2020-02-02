@@ -472,12 +472,11 @@ class CleanerTest extends JUnitSuite {
     //    On recovery, clean operation is aborted. All messages should be present in the log
     log.logSegments.head.changeFileSuffixes("", Log.CleanedFileSuffix)
     for (file <- dir.listFiles
-         if file.getName.endsWith(Log.DeletedFileSuffix)) {
+         if file.getName.endsWith(Log.DeletedFileSuffix))
       Utils.atomicMoveWithFallback(
         file.toPath,
         Paths.get(
           CoreUtils.replaceSuffix(file.getPath, Log.DeletedFileSuffix, "")))
-    }
     log = recoverAndCheck(config, allKeys)
 
     // clean again
@@ -488,12 +487,11 @@ class CleanerTest extends JUnitSuite {
     //    renamed to .deleted. Clean operation is resumed during recovery.
     log.logSegments.head.changeFileSuffixes("", Log.SwapFileSuffix)
     for (file <- dir.listFiles
-         if file.getName.endsWith(Log.DeletedFileSuffix)) {
+         if file.getName.endsWith(Log.DeletedFileSuffix))
       Utils.atomicMoveWithFallback(
         file.toPath,
         Paths.get(
           CoreUtils.replaceSuffix(file.getPath, Log.DeletedFileSuffix, "")))
-    }
     log = recoverAndCheck(config, cleanedKeys)
 
     // add some more messages and clean the log again

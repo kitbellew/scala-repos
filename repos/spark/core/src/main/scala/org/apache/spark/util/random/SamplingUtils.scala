@@ -56,9 +56,8 @@ private[spark] object SamplingUtils {
       while (input.hasNext) {
         val item = input.next()
         val replacementIndex = (rand.nextDouble() * l).toLong
-        if (replacementIndex < k) {
+        if (replacementIndex < k)
           reservoir(replacementIndex.toInt) = item
-        }
         l += 1
       }
       (reservoir, l)
@@ -93,9 +92,9 @@ private[spark] object SamplingUtils {
       sampleSizeLowerBound: Int,
       total: Long,
       withReplacement: Boolean): Double =
-    if (withReplacement) {
+    if (withReplacement)
       PoissonBounds.getUpperBound(sampleSizeLowerBound) / total
-    } else {
+    else {
       val fraction = sampleSizeLowerBound.toDouble / total
       BinomialBounds.getUpperBound(1e-4, total, fraction)
     }
@@ -123,13 +122,12 @@ private[spark] object PoissonBounds {
 
   private def numStd(s: Double): Double =
     // TODO: Make it tighter.
-    if (s < 6.0) {
+    if (s < 6.0)
       12.0
-    } else if (s < 16.0) {
+    else if (s < 16.0)
       9.0
-    } else {
+    else
       6.0
-    }
 }
 
 /**

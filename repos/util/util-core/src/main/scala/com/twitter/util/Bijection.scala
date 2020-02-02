@@ -36,13 +36,12 @@ trait Bijection[A, B] extends (A => B) { self =>
     */
   def inverse: Bijection[B, A] = _inverse
 
-  private lazy val _inverse = {
+  private lazy val _inverse =
     new Bijection[B, A] {
       def apply(b: B) = self.invert(b)
       def invert(a: A) = self.apply(a)
       override def inverse = self
     }
-  }
 
   /**
     * Composes two instances of Bijection in a new Bijection, with this one applied first.

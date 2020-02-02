@@ -141,9 +141,8 @@ class ObservableFloatArraySpec
     assert(oa.size === expected.length)
     assert(oa.isEmpty === false)
     testOutOfBoundsExceptionThrown(oa(-1))
-    for (i <- 0 until expected.length) {
+    for (i <- 0 until expected.length)
       assert((oa(i) - expected(i)).abs < 1.0e-6f)
-    }
     testOutOfBoundsExceptionThrown(oa(expected.length))
   }
 

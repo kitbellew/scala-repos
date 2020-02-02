@@ -151,13 +151,9 @@ object arityize {
       case Apply(who, args) =>
         for (w2 <- expandArity(c, order, bindings)(who);
              args2 = args.flatMap(arg => expandArity(c, order, bindings)(arg)))
-          yield {
-            Apply(w2, args2)
-          }
+          yield Apply(w2, args2)
       case Select(lhs, name) =>
-        for (w2 <- expandArity(c, order, bindings)(lhs)) yield {
-          Select(w2, name)
-        }
+        for (w2 <- expandArity(c, order, bindings)(lhs)) yield Select(w2, name)
       case AppliedTypeTree(lhs, targs) =>
         val newLHS = expandArity(c, order, bindings)(lhs).head
 
@@ -175,7 +171,7 @@ object arityize {
   def expandValDef(c: Context, order: Int, bindings: Map[String, Int])(
       vdef: c.universe.ValDef): List[c.universe.ValDef] = {
     import c.mirror.universe._
-    if (shouldExpand(c)(vdef.mods)) {
+    if (shouldExpand(c)(vdef.mods))
       List.tabulate(order) { i =>
         val newBindings = bindings + (vdef.name.encoded -> (i + 1))
 //        println(vdef.tpt + " " + expandArity(c, order, newBindings)(vdef.tpt).head)
@@ -185,7 +181,7 @@ object arityize {
           expandArity(c, order, newBindings)(vdef.tpt).head,
           vdef.rhs)
       }
-    } else {
+    else
       shouldRelativize(c)(vdef.mods) match {
         case Some(x) =>
           val newBindings = bindings + (vdef.name.encoded -> bindings(x))
@@ -200,23 +196,22 @@ object arityize {
           val newTpt = expandArity(c, order, bindings)(vdef.tpt).head
           List(ValDef(vdef.mods, vdef.name, newTpt, vdef.rhs))
       }
-    }
 
   }
 
   def expandTypeDef(c: Context, order: Int, bindings: Map[String, Int])(
       vdef: c.universe.TypeDef): List[c.universe.TypeDef] = {
     import c.mirror.universe._
-    if (shouldExpand(c)(vdef.mods)) {
+    if (shouldExpand(c)(vdef.mods))
       List.tabulate(order)(i =>
         TypeDef(
           vdef.mods,
           newTypeName(vdef.name.encoded + (i + 1)),
           vdef.tparams,
           vdef.rhs))
-    } else if (shouldRepeat(c)(vdef.mods)) {
+    else if (shouldRepeat(c)(vdef.mods))
       List.fill(order)(vdef)
-    } else {
+    else
       shouldRelativize(c)(vdef.mods) match {
         case Some(x) =>
           List(
@@ -228,7 +223,6 @@ object arityize {
         case _ =>
           List(vdef)
       }
-    }
 
   }
 

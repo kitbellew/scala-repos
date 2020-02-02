@@ -16,15 +16,15 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
       @group Basic customization overrides */
   def code =
     "import slick.model.ForeignKeyAction\n" +
-      (if (tables.exists(_.hlistEnabled)) {
+      (if (tables.exists(_.hlistEnabled))
          "import slick.collection.heterogeneous._\n" +
            "import slick.collection.heterogeneous.syntax._\n"
-       } else "") +
-      (if (tables.exists(_.PlainSqlMapper.enabled)) {
+       else "") +
+      (if (tables.exists(_.PlainSqlMapper.enabled))
          "// NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.\n" +
            "import slick.jdbc.{GetResult => GR}\n"
-       } else "") +
-      (if (ddlEnabled) {
+       else "") +
+      (if (ddlEnabled)
          "\n/** DDL for all tables. Call .create to execute. */" +
            (
              if (tables.length > 5)
@@ -41,7 +41,7 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
            "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")" +
            "\ndef ddl = schema" +
            "\n\n"
-       } else "") +
+       else "") +
       tables.map(_.code.mkString("\n")).mkString("\n\n")
 
   protected def tuple(i: Int) = termName(s"_${i + 1}")
@@ -85,7 +85,7 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
             .drop(1)
             .map(" with " + _)).mkString("")
           s"""case class $name($args)$prns"""
-        } else {
+        } else
           s"""
 type $name = $types
 /** Constructor for $name providing default values if available in the database schema. */
@@ -93,7 +93,6 @@ def $name($args): $name = {
   ${compoundValue(columns.map(_.name))}
 }
           """.trim
-        }
       }
     }
 
@@ -114,13 +113,13 @@ def $name($args): $name = {
         def result(args: String) =
           if (mappingEnabled) s"$factory($args)" else args
         val body =
-          if (autoIncLastAsOption && columns.size > 1) {
+          if (autoIncLastAsOption && columns.size > 1)
             s"""
 val r = $positional
 import r._
 ${result(rearranged)} // putting AutoInc last
             """.trim
-          } else
+          else
             result(positional)
         s"""
 implicit def $name(implicit $dependencies): GR[${TableClass.elementType}] = GR{

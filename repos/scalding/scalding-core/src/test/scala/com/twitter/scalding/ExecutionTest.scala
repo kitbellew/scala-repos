@@ -431,13 +431,12 @@ class ExecutionTest extends WordSpec with Matchers {
         })
 
       def writeAll(numExecutions: Int): Execution[Unit] =
-        if (numExecutions > 0) {
+        if (numExecutions > 0)
           memoryWastingExecutionGenerator(numExecutions).flatMap { _ =>
             writeAll(numExecutions - 1)
           }
-        } else {
+        else
           Execution.from(())
-        }
 
       writeAll(400).shouldSucceed()
     }

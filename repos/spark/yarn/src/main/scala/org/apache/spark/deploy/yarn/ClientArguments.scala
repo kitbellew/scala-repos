@@ -108,32 +108,26 @@ private[spark] class ClientArguments(
     * This is intended to be called only after the provided arguments have been parsed.
     */
   private def validateArgs(): Unit = {
-    if (numExecutors < 0 || (!isDynamicAllocationEnabled && numExecutors == 0)) {
+    if (numExecutors < 0 || (!isDynamicAllocationEnabled && numExecutors == 0))
       throw new IllegalArgumentException(s"""
            |Number of executors was $numExecutors, but must be at least 1
            |(or 0 if dynamic executor allocation is enabled).
            |${getUsageMessage()}
          """.stripMargin)
-    }
-    if (executorCores < sparkConf.get(CPUS_PER_TASK)) {
+    if (executorCores < sparkConf.get(CPUS_PER_TASK))
       throw new SparkException(
         s"Executor cores must not be less than ${CPUS_PER_TASK.key}.")
-    }
     // scalastyle:off println
     if (isClusterMode) {
-      for (key <- Seq(AM_MEMORY.key, AM_MEMORY_OVERHEAD.key, AM_CORES.key)) {
-        if (sparkConf.contains(key)) {
+      for (key <- Seq(AM_MEMORY.key, AM_MEMORY_OVERHEAD.key, AM_CORES.key))
+        if (sparkConf.contains(key))
           println(s"$key is set but does not apply in cluster mode.")
-        }
-      }
       amMemory = driverMemory
       amCores = driverCores
     } else {
-      for (key <- Seq(DRIVER_MEMORY_OVERHEAD.key, DRIVER_CORES.key)) {
-        if (sparkConf.contains(key)) {
+      for (key <- Seq(DRIVER_MEMORY_OVERHEAD.key, DRIVER_CORES.key))
+        if (sparkConf.contains(key))
           println(s"$key is set but does not apply in client mode.")
-        }
-      }
       amMemory = sparkConf.get(AM_MEMORY).toInt
       amCores = sparkConf.get(AM_CORES)
     }
@@ -163,9 +157,8 @@ private[spark] class ClientArguments(
           args = tail
 
         case ("--args" | "--arg") :: value :: tail =>
-          if (args(0) == "--args") {
+          if (args(0) == "--args")
             println("--args is deprecated. Use --arg instead.")
-          }
           userArgs += value
           args = tail
 
@@ -175,10 +168,9 @@ private[spark] class ClientArguments(
 
         case ("--master-memory" |
             "--driver-memory") :: MemoryParam(value) :: tail =>
-          if (args(0) == "--master-memory") {
+          if (args(0) == "--master-memory")
             println(
               "--master-memory is deprecated. Use --driver-memory instead.")
-          }
           driverMemory = value
           args = tail
 
@@ -187,27 +179,24 @@ private[spark] class ClientArguments(
           args = tail
 
         case ("--num-workers" | "--num-executors") :: IntParam(value) :: tail =>
-          if (args(0) == "--num-workers") {
+          if (args(0) == "--num-workers")
             println("--num-workers is deprecated. Use --num-executors instead.")
-          }
           numExecutors = value
           args = tail
 
         case ("--worker-memory" |
             "--executor-memory") :: MemoryParam(value) :: tail =>
-          if (args(0) == "--worker-memory") {
+          if (args(0) == "--worker-memory")
             println(
               "--worker-memory is deprecated. Use --executor-memory instead.")
-          }
           executorMemory = value
           args = tail
 
         case ("--worker-cores" |
             "--executor-cores") :: IntParam(value) :: tail =>
-          if (args(0) == "--worker-cores") {
+          if (args(0) == "--worker-cores")
             println(
               "--worker-cores is deprecated. Use --executor-cores instead.")
-          }
           executorCores = value
           args = tail
 
@@ -250,11 +239,10 @@ private[spark] class ClientArguments(
     }
     // scalastyle:on println
 
-    if (primaryPyFile != null && primaryRFile != null) {
+    if (primaryPyFile != null && primaryRFile != null)
       throw new IllegalArgumentException(
         "Cannot have primary-py-file and primary-r-file" +
           " at the same time")
-    }
   }
 
   private def getUsageMessage(unknownParam: List[String] = null): String = {

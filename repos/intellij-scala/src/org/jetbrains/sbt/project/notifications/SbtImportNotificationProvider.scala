@@ -126,9 +126,7 @@ abstract class SbtImportNotificationProvider(
       sbtSettings <- Option(SbtSystemSettings.getInstance(project))
       projectSettings <- Option(
         sbtSettings.getLinkedProjectSettings(externalProjectPath))
-    } yield {
-      projectSettings
-    }
+    } yield projectSettings
 
   protected def ignoreFile(file: VirtualFile): Unit =
     ignoredFiles.synchronized {

@@ -53,13 +53,12 @@ class SliderControl(title: String) extends HBox {
   def value = this.realValue
 
   def value_=(d: Double) {
-    if (d < Min) {
+    if (d < Min)
       value() = Min
-    } else if (d > Max) {
+    else if (d > Max)
       value() = Max
-    } else {
+    else
       value() = d
-    }
   }
 
   val selectedControl = new BooleanProperty()

@@ -60,10 +60,10 @@ private class BoyerMoore(needle: Array[Byte]) {
   def nextIndex(haystack: ByteString, offset: Int): Int = {
     @tailrec def rec(i: Int, j: Int): Int = {
       val byte = byteAt(haystack, i)
-      if (needle(j) == byte) {
+      if (needle(j) == byte)
         if (j == 0) i // found
         else rec(i - 1, j - 1)
-      } else
+      else
         rec(i + math.max(offsetTable(nl1 - j), charTable(byte & 0xff)), nl1)
     }
     rec(offset + nl1, nl1)

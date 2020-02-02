@@ -82,9 +82,9 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
 
   def init(fastq: FastFactors, slowq: FactorHeap): Unit = {
     initMod30()
-    if (start == 0) {
+    if (start == 0)
       initFirst(fastq, slowq)
-    } else {
+    else {
       val limit = min(cutoff ** 2, start + primes.length)
       initFromArray(fastq)
       initFromQueue(limit, slowq)
@@ -153,9 +153,8 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
       factor.next = m2
       q += factor
       initFromQueue(limit, q)
-    } else {
+    } else
       q += factor
-    }
   }
 
   def initFirst(fastq: FastFactors, slowq: FactorHeap): Unit = {
@@ -173,11 +172,10 @@ case class SieveSegment(start: SafeLong, primes: BitSet, cutoff: SafeLong) {
           while (k < lim) { k += pp; primes -= k }
           m = k.toLong + pp
         }
-        if (p < 7) {} else if (m - primes.length < primes.length) {
+        if (p < 7) {} else if (m - primes.length < primes.length)
           buf += FastFactor(p, SafeLong(m))
-        } else if (cutoff > p) {
+        else if (cutoff > p)
           slowq += Factor(SafeLong(p), SafeLong(m))
-        }
       }
       p += 2
     }

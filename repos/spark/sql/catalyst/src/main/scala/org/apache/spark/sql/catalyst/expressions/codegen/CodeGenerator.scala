@@ -188,11 +188,11 @@ class CodegenContext {
     * Returns a term name that is unique within this instance of a `CodegenContext`.
     */
   def freshName(name: String): String = synchronized {
-    val fullName = if (freshNamePrefix == "") {
-      name
-    } else {
-      s"${freshNamePrefix}_$name"
-    }
+    val fullName =
+      if (freshNamePrefix == "")
+        name
+      else
+        s"${freshNamePrefix}_$name"
     if (freshNameIds.contains(fullName)) {
       val id = freshNameIds(fullName)
       freshNameIds(fullName) = id + 1
@@ -256,9 +256,9 @@ class CodegenContext {
       ordinal: Int,
       ev: ExprCode,
       nullable: Boolean): String =
-    if (nullable) {
+    if (nullable)
       // Can't call setNullAt on DecimalType, because we need to keep the offset
-      if (dataType.isInstanceOf[DecimalType]) {
+      if (dataType.isInstanceOf[DecimalType])
         s"""
            if (!${ev.isNull}) {
              ${setColumn(row, dataType, ordinal, ev.value)};
@@ -266,7 +266,7 @@ class CodegenContext {
              ${setColumn(row, dataType, ordinal, "null")};
            }
          """
-      } else {
+      else
         s"""
            if (!${ev.isNull}) {
              ${setColumn(row, dataType, ordinal, ev.value)};
@@ -274,10 +274,8 @@ class CodegenContext {
              $row.setNullAt($ordinal);
            }
          """
-      }
-    } else {
+    else
       s"""${setColumn(row, dataType, ordinal, ev.value)};"""
-    }
 
   /**
     * Returns the name used in accessor and setter for a Java primitive type.
@@ -473,15 +471,14 @@ class CodegenContext {
     * @param execute the code that should only be executed when the input is not null.
     */
   def nullSafeExec(nullable: Boolean, isNull: String)(execute: String): String =
-    if (nullable) {
+    if (nullable)
       s"""
         if (!$isNull) {
           $execute
         }
       """
-    } else {
+    else
       "\n" + execute
-    }
 
   /**
     * List of java data types that have special accessors and setters in [[InternalRow]].
@@ -523,10 +520,10 @@ class CodegenContext {
     }
     blocks.append(blockBuilder.toString())
 
-    if (blocks.length == 1) {
+    if (blocks.length == 1)
       // inline execution if only one block
       blocks.head
-    } else {
+    else {
       val apply = freshName("apply")
       val functions = blocks.zipWithIndex.map {
         case (body, i) =>
@@ -708,9 +705,8 @@ object CodeGenerator extends Logging {
       formatted
     })
 
-    try {
-      evaluator.cook("generated.java", code)
-    } catch {
+    try evaluator.cook("generated.java", code)
+    catch {
       case e: Exception =>
         val msg = s"failed to compile: $e\n$formatted"
         logError(msg, e)

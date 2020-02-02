@@ -67,18 +67,17 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
             SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES)
         }
 
-        if (firstPart.contains(item)) {
+        if (firstPart.contains(item))
           colored.setBackground(
             if (isSelected) UIUtil.getListSelectionBackground
             else implicitFirstPart)
-        } else if (secondPart.contains(item)) {
+        else if (secondPart.contains(item))
           colored.setBackground(
             if (isSelected) UIUtil.getListSelectionBackground
             else implicitSecondPart)
-        } else {
+        else
           throw new RuntimeException(
             "Implicit conversions list contains unknown value: " + item)
-        }
 
         val rightRenderer: DefaultListCellRenderer = getRightCellRenderer(item)
         if (rightRenderer != null) {

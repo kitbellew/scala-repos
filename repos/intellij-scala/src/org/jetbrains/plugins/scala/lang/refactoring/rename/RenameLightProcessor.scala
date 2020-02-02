@@ -38,9 +38,8 @@ class RenameLightProcessor extends RenamePsiElementProcessor {
     val orig = originalElement(element)
     allRenames.put(orig, newName)
     import scala.collection.JavaConverters.asScalaBufferConverter
-    for (processor <- RenamePsiElementProcessor.allForElement(orig).asScala) {
+    for (processor <- RenamePsiElementProcessor.allForElement(orig).asScala)
       processor.prepareRenaming(orig, newName, allRenames)
-    }
   }
 
   override def substituteElementToRename(

@@ -89,21 +89,19 @@ private class NameTreeParsers private (str: String) {
   private[this] def parseLabel(): Buf = {
     val baos = new Baos(16)
 
-    do {
-      peek match {
-        case c if Path.isShowable(c) =>
-          next()
-          baos.write(c.toByte)
+    do peek match {
+      case c if Path.isShowable(c) =>
+        next()
+        baos.write(c.toByte)
 
-        case '\\' =>
-          next()
-          eat('x')
-          val fst = parseHexChar()
-          val snd = parseHexChar()
-          baos.write(Character.digit(fst, 16) << 4 | Character.digit(snd, 16))
+      case '\\' =>
+        next()
+        eat('x')
+        val fst = parseHexChar()
+        val snd = parseHexChar()
+        baos.write(Character.digit(fst, 16) << 4 | Character.digit(snd, 16))
 
-        case c => illegal("label char", c)
-      }
+      case c => illegal("label char", c)
     } while (isLabelChar(peek))
 
     Buf.ByteArray.Owned(baos.getBuf, 0, baos.size)
@@ -116,16 +114,14 @@ private class NameTreeParsers private (str: String) {
     var seenDot = false
 
     while (isNumberChar(peek)) {
-      if (peek == '.') {
+      if (peek == '.')
         if (seenDot) illegal("number char", peek)
         else seenDot = true
-      }
       sb += peek
       next()
     }
-    if (sb.length == 1 && sb.charAt(0) == '.') {
+    if (sb.length == 1 && sb.charAt(0) == '.')
       illegal("weight", '.')
-    }
     sb.toString.toDouble // can fail if string is too long
   }
 
@@ -138,9 +134,7 @@ private class NameTreeParsers private (str: String) {
     else {
       val labels = Buffer[Buf]()
 
-      do {
-        labels += parseLabel()
-      } while (maybeEat('/'))
+      do labels += parseLabel() while (maybeEat('/'))
 
       Path(labels: _*)
     }

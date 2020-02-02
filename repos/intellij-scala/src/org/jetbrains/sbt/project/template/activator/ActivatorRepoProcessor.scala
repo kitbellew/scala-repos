@@ -81,9 +81,7 @@ object ActivatorRepoProcessor {
       } else None
     } catch {
       case _: Exception => None
-    } finally {
-      if (connection != null) connection.disconnect()
-    }
+    } finally if (connection != null) connection.disconnect()
   }
 
   def downloadFile(

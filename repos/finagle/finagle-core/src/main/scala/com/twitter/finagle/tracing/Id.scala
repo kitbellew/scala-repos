@@ -46,9 +46,8 @@ object SpanId {
   def apply(spanId: Long): SpanId = new SpanId(spanId)
 
   def fromString(spanId: String): Option[SpanId] =
-    try {
-      Some(SpanId(new RichU64String(spanId).toU64Long))
-    } catch {
+    try Some(SpanId(new RichU64String(spanId).toU64Long))
+    catch {
       case NonFatal(_) => None
     }
 }
@@ -91,18 +90,19 @@ object TraceId {
     * Deserialize a TraceId from an array of bytes.
     */
   def deserialize(bytes: Array[Byte]): Try[TraceId] =
-    if (bytes.length != 32) {
+    if (bytes.length != 32)
       Throw(new IllegalArgumentException("Expected 32 bytes"))
-    } else {
+    else {
       val span64 = ByteArrays.get64be(bytes, 0)
       val parent64 = ByteArrays.get64be(bytes, 8)
       val trace64 = ByteArrays.get64be(bytes, 16)
       val flags64 = ByteArrays.get64be(bytes, 24)
 
       val flags = Flags(flags64)
-      val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
-        Some(flags.isFlagSet(Flags.Sampled))
-      } else None
+      val sampled =
+        if (flags.isFlagSet(Flags.SamplingKnown))
+          Some(flags.isFlagSet(Flags.Sampled))
+        else None
 
       val traceId = TraceId(
         if (trace64 == parent64) None else Some(SpanId(trace64)),

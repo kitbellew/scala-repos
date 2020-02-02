@@ -447,7 +447,7 @@ private[akka] object LocalActorRefProvider {
         // termination hooks, they will reply with TerminationHookDone
         // and when all are done the systemGuardian is stopped
         context.become(terminating)
-        terminationHooks foreach { _ ! TerminationHook }
+        terminationHooks foreach _ ! TerminationHook
         stopWhenAllTerminationHooksDone()
       case Terminated(a) ⇒
         // a registered, and watched termination hook terminated before
@@ -576,7 +576,7 @@ private[akka] class LocalActorRefProvider private[akka] (
           }
 
       override def sendSystemMessage(message: SystemMessage): Unit =
-        if (isWalking) {
+        if (isWalking)
           message match {
             case Failed(child: InternalActorRef, ex, _) ⇒
               log.error(ex, s"guardian $child failed, shutting down!")
@@ -587,7 +587,6 @@ private[akka] class LocalActorRefProvider private[akka] (
             case _ ⇒
               log.error(s"$this received unexpected system message [$message]")
           }
-        }
     }
 
   /*
@@ -817,14 +816,13 @@ private[akka] class LocalActorRefProvider private[akka] (
       async: Boolean): InternalActorRef = {
     props.deploy.routerConfig match {
       case NoRouter ⇒
-        if (settings.DebugRouterMisconfiguration) {
+        if (settings.DebugRouterMisconfiguration)
           deployer.lookup(path) foreach { d ⇒
             if (d.routerConfig != NoRouter)
               log.warning(
                 "Configuration says that [{}] should be a router, but code disagrees. Remove the config or add a routerConfig to its Props.",
                 path)
           }
-        }
 
         val props2 =
           // mailbox and dispatcher defined in deploy should override props

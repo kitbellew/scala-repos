@@ -26,9 +26,7 @@ class AkkaSpecSpec extends WordSpec with Matchers {
         EventFilter.warning(start = "unhandled message", occurrences = 1) intercept {
           a ! 42
         }
-      } finally {
-        TestKit.shutdownActorSystem(system)
-      }
+      } finally TestKit.shutdownActorSystem(system)
     }
 
     "terminate all actors" in {

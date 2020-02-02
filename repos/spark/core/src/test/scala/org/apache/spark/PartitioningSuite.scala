@@ -81,15 +81,12 @@ class PartitioningSuite
         1.to(1000).map { element =>
           val partition = partitioner.getPartition(element)
           if (numPartitions > 1) {
-            if (partition < rangeBounds.size) {
+            if (partition < rangeBounds.size)
               assert(element <= rangeBounds(partition))
-            }
-            if (partition > 0) {
+            if (partition > 0)
               assert(element > rangeBounds(partition - 1))
-            }
-          } else {
+          } else
             assert(partition === 0)
-          }
         }
     }
   }

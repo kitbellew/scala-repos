@@ -13,9 +13,8 @@ class WorkScheduler {
 
   /** Called from server: block until one of todo list, throwables or interruptReqs is nonempty */
   def waitForMoreWork() = synchronized {
-    while (todo.isEmpty && throwables.isEmpty && interruptReqs.isEmpty) {
+    while (todo.isEmpty && throwables.isEmpty && interruptReqs.isEmpty)
       wait()
-    }
   }
 
   /** called from Server: test whether one of todo list, throwables, or InterruptReqs is nonempty */

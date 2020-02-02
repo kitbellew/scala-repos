@@ -170,9 +170,9 @@ private[parquet] object CatalystReadSupport {
     // Unannotated repeated group should be interpreted as required list of required element, so
     // list element type is just the group itself.  Clip it.
     if (parquetList.getOriginalType == null && parquetList.isRepetition(
-          Repetition.REPEATED)) {
+          Repetition.REPEATED))
       clipParquetType(parquetList, elementType)
-    } else {
+    else {
       assert(
         parquetList.getOriginalType == OriginalType.LIST,
         "Invalid Parquet schema. " +
@@ -201,13 +201,13 @@ private[parquet] object CatalystReadSupport {
       // only field.
       if (repeatedGroup.getFieldCount > 1 ||
           repeatedGroup.getName == "array" ||
-          repeatedGroup.getName == parquetList.getName + "_tuple") {
+          repeatedGroup.getName == parquetList.getName + "_tuple")
         Types
           .buildGroup(parquetList.getRepetition)
           .as(OriginalType.LIST)
           .addField(clipParquetType(repeatedGroup, elementType))
           .named(parquetList.getName)
-      } else {
+      else
         // Otherwise, the repeated field's type is the element type with the repeated field's
         // repetition.
         Types
@@ -219,7 +219,6 @@ private[parquet] object CatalystReadSupport {
               .addField(clipParquetType(repeatedGroup.getType(0), elementType))
               .named(repeatedGroup.getName))
           .named(parquetList.getName)
-      }
     }
   }
 

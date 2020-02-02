@@ -96,9 +96,7 @@ class SecurityServiceHandlers(
               .toSuccess(badRequest(missingContentMessage))
               .sequence[Future, JValue]
             response <- content.map(create(authAPIKey, _)).sequence[Future, R]
-          } yield {
-            response.toEither.merge
-          }
+          } yield response.toEither.merge
         }
   }
 
@@ -106,26 +104,24 @@ class SecurityServiceHandlers(
     protected def create(authAPIKey: APIKey, requestBody: JValue): Future[R] =
       requestBody.validated[v1.NewAPIKeyRequest] match {
         case Success(request) =>
-          if (request.grants.exists(_.isExpired(some(clock.now())))) {
+          if (request.grants.exists(_.isExpired(some(clock.now()))))
             Promise successful badRequest(
               "Error creating new API key.",
               Some("Unable to create API key with expired permission"))
-          } else {
+          else
             apiKeyManager.newAPIKeyWithGrants(
               request.name,
               request.description,
               authAPIKey,
               request.grants.toSet) flatMap { k =>
-              if (k.isDefined) {
+              if (k.isDefined)
                 (k collect recordDetails sequence) map { ok[v1.APIKeyDetails] }
-              } else {
+              else
                 Promise successful badRequest(
                   "Error creating new API key.",
                   Some(
                     "Requestor lacks permission to assign given grants to API key"))
-              }
             }
-          }
 
         case Failure(e) =>
           logger.warn(
@@ -412,7 +408,7 @@ class SecurityServiceHandlers(
           apiKeyManager.findGrant(grantId) flatMap {
             case Some(grant) =>
               if (grant.issuerKey == authAPIKey) deleteGrant(grantId)
-              else {
+              else
                 apiKeyManager.findAPIKeyAncestry(grant.issuerKey) flatMap {
                   ancestry =>
                     if (ancestry.exists(_.apiKey == authAPIKey))
@@ -421,7 +417,6 @@ class SecurityServiceHandlers(
                       Promise successful badRequest(
                         "Requestor does not have permission to delete grant " + grantId)
                 }
-              }
 
             case None =>
               Promise successful badRequest(

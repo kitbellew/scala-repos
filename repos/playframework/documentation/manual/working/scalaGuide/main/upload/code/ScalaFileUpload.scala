@@ -92,11 +92,8 @@ package scalaguide.upload.fileupload {
     def writeFile(file: File, content: String) = {
       file.getParentFile.mkdirs()
       val out = new FileWriter(file)
-      try {
-        out.write(content)
-      } finally {
-        out.close()
-      }
+      try out.write(content)
+      finally out.close()
     }
 
   }

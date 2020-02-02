@@ -54,9 +54,8 @@ private[deploy] object CommandUtils extends Logging {
     val commandSeq = buildCommandSeq(localCommand, memory, sparkHome)
     val builder = new ProcessBuilder(commandSeq: _*)
     val environment = builder.environment()
-    for ((key, value) <- localCommand.environment) {
+    for ((key, value) <- localCommand.environment)
       environment.put(key, value)
-    }
     builder
   }
 
@@ -94,14 +93,12 @@ private[deploy] object CommandUtils extends Logging {
           (
             libraryPathName,
             libraryPaths.mkString(File.pathSeparator)))
-      } else {
+      } else
         command.environment
-      }
 
     // set auth secret to env variable if needed
-    if (securityMgr.isAuthenticationEnabled) {
+    if (securityMgr.isAuthenticationEnabled)
       newEnvironment += (SecurityManager.ENV_AUTH_SECRET -> securityMgr.getSecretKey)
-    }
 
     Command(
       command.mainClass,
@@ -122,9 +119,8 @@ private[deploy] object CommandUtils extends Logging {
     //       terminating. Otherwise if the worker dies the executor logs will silently stop.
     new Thread("redirect output to " + file) {
       override def run() {
-        try {
-          Utils.copyStream(in, out, true)
-        } catch {
+        try Utils.copyStream(in, out, true)
+        catch {
           case e: IOException =>
             logInfo("Redirection to " + file + " closed: " + e.getMessage)
         }

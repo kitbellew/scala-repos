@@ -32,7 +32,7 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
   final def sort(a: Seq[Int]): Task[Seq[Int]] =
     if (a.length < 200)
       task(sortDirect(a))
-    else {
+    else
       task(a) flatMap { a =>
         val pivot = a(0)
         val (lt, gte) = a.view.drop(1).partition(_ < pivot)
@@ -40,5 +40,4 @@ object TaskRunnerSortTest extends Properties("TaskRunnerSort") {
           case (l, g) => l ++ List(pivot) ++ g
         }
       }
-    }
 }

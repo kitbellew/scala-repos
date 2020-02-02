@@ -49,11 +49,10 @@ case class Min(child: Expression) extends DeclarativeAggregate {
     /* min = */ Least(Seq(min, child))
   )
 
-  override lazy val mergeExpressions: Seq[Expression] = {
+  override lazy val mergeExpressions: Seq[Expression] =
     Seq(
       /* min = */ Least(Seq(min.left, min.right))
     )
-  }
 
   override lazy val evaluateExpression: AttributeReference = min
 }

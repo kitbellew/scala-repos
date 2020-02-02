@@ -71,9 +71,8 @@ object FileUtils {
         }
 
       val deleteFiles = changes.collect { case ed: DeleteFile => ed }
-      for (ed <- deleteFiles) {
+      for (ed <- deleteFiles)
         ed.file.delete()
-      }
 
       Right(
         for {

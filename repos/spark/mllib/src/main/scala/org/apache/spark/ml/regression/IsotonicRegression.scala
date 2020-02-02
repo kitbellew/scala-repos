@@ -95,14 +95,13 @@ private[regression] trait IsotonicRegressionBase
         val idx = $(featureIndex)
         val extract = udf { v: Vector => v(idx) }
         extract(col($(featuresCol)))
-      } else {
+      } else
         col($(featuresCol))
-      }
-    val w = if (hasWeightCol) {
-      col($(weightCol))
-    } else {
-      lit(1.0)
-    }
+    val w =
+      if (hasWeightCol)
+        col($(weightCol))
+      else
+        lit(1.0)
     dataset.select(col($(labelCol)), f, w).rdd.map {
       case Row(label: Double, feature: Double, weight: Double) =>
         (label, feature, weight)
@@ -120,12 +119,11 @@ private[regression] trait IsotonicRegressionBase
       fitting: Boolean): StructType = {
     if (fitting) {
       SchemaUtils.checkColumnType(schema, $(labelCol), DoubleType)
-      if (hasWeightCol) {
+      if (hasWeightCol)
         SchemaUtils.checkColumnType(schema, $(weightCol), DoubleType)
-      } else {
+      else
         logInfo(
           "The weight column is not defined. Treat all instance weights as 1.0.")
-      }
     }
     val featuresType = schema($(featuresCol)).dataType
     require(featuresType == DoubleType || featuresType.isInstanceOf[VectorUDT])

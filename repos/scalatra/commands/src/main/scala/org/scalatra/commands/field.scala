@@ -288,9 +288,9 @@ class BoundFieldDescriptor[S, T](
 
   def validate: ValidatedFieldDescriptor[S, T] = {
     val defaultValidator: Validator[T] = validator getOrElse identity
-    if (!isRequired && original.isEmpty) {
+    if (!isRequired && original.isEmpty)
       new ValidatedBoundFieldDescriptor(value map transformations, this)
-    } else {
+    else {
       val doValidation: Validator[T] = if (isRequired) {
         (x: FieldValidation[T]) =>
           x flatMap { v =>

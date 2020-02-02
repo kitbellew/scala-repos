@@ -165,25 +165,23 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   }
 
   // create supervisor for daemons under path "/system/cluster"
-  private val clusterDaemons: ActorRef = {
+  private val clusterDaemons: ActorRef =
     system.systemActorOf(
       Props(classOf[ClusterDaemon], settings)
         .withDispatcher(UseDispatcher)
         .withDeploy(Deploy.local),
       name = "cluster")
-  }
 
   /**
     * INTERNAL API
     */
   private[cluster] val clusterCore: ActorRef = {
     implicit val timeout = system.settings.CreationTimeout
-    try {
-      Await.result(
-        (clusterDaemons ? InternalClusterAction.GetClusterCoreRef)
-          .mapTo[ActorRef],
-        timeout.duration)
-    } catch {
+    try Await.result(
+      (clusterDaemons ? InternalClusterAction.GetClusterCoreRef)
+        .mapTo[ActorRef],
+      timeout.duration)
+    catch {
       case NonFatal(e) ⇒
         log.error(
           e,
@@ -400,11 +398,10 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     */
   def remotePathOf(actorRef: ActorRef): ActorPath = {
     val path = actorRef.path
-    if (path.address.host.isDefined) {
+    if (path.address.host.isDefined)
       path
-    } else {
+    else
       path.root.copy(selfAddress) / path.elements withUid path.uid
-    }
   }
 
   // ========================================================

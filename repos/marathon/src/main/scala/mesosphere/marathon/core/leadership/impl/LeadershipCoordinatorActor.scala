@@ -57,7 +57,7 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
         ackStartRef ! PreparationMessages.Prepared(self)
       }
       active
-    } else {
+    } else
       LoggingReceive.withLabel("preparingForStart") {
         case PreparationMessages.PrepareForStart =>
           context.become(
@@ -88,7 +88,6 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
           }
           context.become(suspended)
       }
-    }
 
   private[impl] def active: Receive = LoggingReceive.withLabel("active") {
     log.info(

@@ -57,9 +57,8 @@ class FlowExpandSpec extends AkkaSpec {
 
       publisher.sendNext(42)
 
-      for (i ← 1 to 100) {
+      for (i ← 1 to 100)
         subscriber.requestNext(42)
-      }
 
       publisher.sendNext(-42)
 

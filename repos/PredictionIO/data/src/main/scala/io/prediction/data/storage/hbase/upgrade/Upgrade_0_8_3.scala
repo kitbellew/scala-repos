@@ -38,10 +38,9 @@ object CheckDistribution {
     eventClient
       .find(appId = appId)
       .foldLeft(Map[(String, Option[String]), Int]().withDefaultValue(0)) {
-        case (m, e) => {
+        case (m, e) =>
           val k = (e.entityType, e.targetEntityType)
           m.updated(k, m(k) + 1)
-        }
       }
 
   def runMain(appId: Int) {
@@ -108,11 +107,10 @@ object Upgrade_0_8_3 {
       .find(appId = fromAppId)
       .zipWithIndex
       .foreach {
-        case (fromEvent, index) => {
-          if (index % 50000 == 0) {
+        case (fromEvent, index) =>
+          if (index % 50000 == 0)
             // logger.info(s"Progress: $fromEvent $index")
             logger.info(s"Progress: $index")
-          }
 
           val fromEntityType = fromEvent.entityType
           val toEntityType = NameMap.getOrElse(fromEntityType, fromEntityType)
@@ -137,7 +135,6 @@ object Upgrade_0_8_3 {
             properties = toProperties)
 
           eventClient.insert(toEvent, toAppId)
-        }
       }
 
     val toDist = CheckDistribution.entityType(eventClient, toAppId)
@@ -150,41 +147,36 @@ object Upgrade_0_8_3 {
 
     val fromGood = fromDist.toSeq
       .forall {
-        case (k, c) => {
+        case (k, c) =>
           val (et, tet) = k
           val net = NameMap.getOrElse(et, et)
           val ntet = tet.map(tet => NameMap.getOrElse(tet, tet))
           val nk = (net, ntet)
           val nc = toDist.getOrElse(nk, -1)
           val checkMatch = (c == nc)
-          if (!checkMatch) {
+          if (!checkMatch)
             logger.info(s"$k doesn't match: old has $c. new has $nc.")
-          }
           checkMatch
-        }
       }
 
     val toGood = toDist.toSeq
       .forall {
-        case (k, c) => {
+        case (k, c) =>
           val (et, tet) = k
           val oet = RevNameMap.getOrElse(et, et)
           val otet = tet.map(tet => RevNameMap.getOrElse(tet, tet))
           val ok = (oet, otet)
           val oc = fromDist.getOrElse(ok, -1)
           val checkMatch = (c == oc)
-          if (!checkMatch) {
+          if (!checkMatch)
             logger.info(s"$k doesn't match: new has $c. old has $oc.")
-          }
           checkMatch
-        }
       }
 
-    if (!fromGood || !toGood) {
+    if (!fromGood || !toGood)
       logger.error("Doesn't match!! There is an import error.")
-    } else {
+    else
       logger.info("Count matches. Looks like we are good to go.")
-    }
   }
 
   /* For upgrade from 0.8.2 to 0.8.3 only */
@@ -207,14 +199,13 @@ object Upgrade_0_8_3 {
 
       upgradeCopy(eventClient, fromAppId, toAppId)
 
-    } else {
+    } else
       logger.info(
         s"From appId: $fromAppId doesn't contain"
           + s" obsolete entityTypes $obsEntityTypes or"
           + s" obsolete properties $obsProperties."
           + " No need data migration."
           + s" You can continue to use appId $fromAppId.")
-    }
 
     logger.info("Done.")
   }

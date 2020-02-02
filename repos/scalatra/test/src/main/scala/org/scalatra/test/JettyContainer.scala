@@ -48,10 +48,9 @@ trait JettyContainer extends Container {
     val holder = new ServletHolder(name, servlet)
 
     servlet match {
-      case s: HasMultipartConfig => {
+      case s: HasMultipartConfig =>
         holder.getRegistration.setMultipartConfig(
           s.multipartConfig.toMultipartConfigElement)
-      }
       case s: ScalatraAsyncSupport =>
         holder.getRegistration.setAsyncSupported(true)
       case _ =>

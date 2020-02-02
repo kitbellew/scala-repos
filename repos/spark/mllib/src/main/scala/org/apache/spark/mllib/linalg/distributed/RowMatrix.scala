@@ -67,17 +67,16 @@ class RowMatrix @Since("1.0.0") (
   /** Gets or computes the number of columns. */
   @Since("1.0.0")
   override def numCols(): Long = {
-    if (nCols <= 0) {
-      try {
-        // Calling `first` will throw an exception if `rows` is empty.
-        nCols = rows.first().size
-      } catch {
+    if (nCols <= 0)
+      try
+      // Calling `first` will throw an exception if `rows` is empty.
+      nCols = rows.first().size
+      catch {
         case err: UnsupportedOperationException =>
           sys.error(
             "Cannot determine the number of cols because it is not specified in the " +
               "constructor and the rows RDD is empty.")
       }
-    }
     nCols
   }
 
@@ -86,11 +85,10 @@ class RowMatrix @Since("1.0.0") (
   override def numRows(): Long = {
     if (nRows <= 0L) {
       nRows = rows.count()
-      if (nRows == 0L) {
+      if (nRows == 0L)
         sys.error(
           "Cannot determine the number of rows because it is not specified in the " +
             "constructor and the rows RDD is empty.")
-      }
     }
     nRows
   }
@@ -146,10 +144,9 @@ class RowMatrix @Since("1.0.0") (
   }
 
   private def checkNumColumns(cols: Int): Unit = {
-    if (cols > 65535) {
+    if (cols > 65535)
       throw new IllegalArgumentException(
         s"Argument with more than 65535 cols: $cols")
-    }
     if (cols > 10000) {
       val memMB = (cols.toLong * cols) / 125000
       logWarning(
@@ -245,24 +242,21 @@ class RowMatrix @Since("1.0.0") (
 
     val computeMode = mode match {
       case "auto" =>
-        if (k > 5000) {
+        if (k > 5000)
           logWarning(
             s"computing svd with k=$k and n=$n, please check necessity")
-        }
 
         // TODO: The conditions below are not fully tested.
-        if (n < 100 || (k > n / 2 && n <= 15000)) {
+        if (n < 100 || (k > n / 2 && n <= 15000))
           // If n is small or k is large compared with n, we better compute the Gramian matrix first
           // and then compute its eigenvalues locally, instead of making multiple passes.
-          if (k < n / 3) {
+          if (k < n / 3)
             SVDMode.LocalARPACK
-          } else {
+          else
             SVDMode.LocalLAPACK
-          }
-        } else {
+        else
           // If k is small compared with n, we use ARPACK with distributed multiplication.
           SVDMode.DistARPACK
-        }
       case "local-svd"  => SVDMode.LocalLAPACK
       case "local-eigs" => SVDMode.LocalARPACK
       case "dist-eigs"  => SVDMode.DistARPACK
@@ -286,11 +280,10 @@ class RowMatrix @Since("1.0.0") (
           brzSvd(G)
         (sigmaSquaresFull, uFull)
       case SVDMode.DistARPACK =>
-        if (rows.getStorageLevel == StorageLevel.NONE) {
+        if (rows.getStorageLevel == StorageLevel.NONE)
           logWarning(
             "The input data is not directly cached, which may hurt performance if its"
               + " parent RDDs are also uncached.")
-        }
         require(
           k < n,
           s"k must be smaller than n in dist-eigs mode but got k=$k and n=$n.")
@@ -311,25 +304,21 @@ class RowMatrix @Since("1.0.0") (
     // sigmas might have a length smaller than k, if some Ritz values do not satisfy the convergence
     // criterion specified by tol after max number of iterations.
     // Thus use i < min(k, sigmas.length) instead of i < k.
-    if (sigmas.length < k) {
+    if (sigmas.length < k)
       logWarning(
         s"Requested $k singular values but only found ${sigmas.length} converged.")
-    }
-    while (i < math.min(k, sigmas.length) && sigmas(i) >= threshold) {
+    while (i < math.min(k, sigmas.length) && sigmas(i) >= threshold)
       i += 1
-    }
     val sk = i
 
-    if (sk < k) {
+    if (sk < k)
       logWarning(s"Requested $k singular values but only found $sk nonzeros.")
-    }
 
     // Warn at the end of the run as well, for increased visibility.
-    if (computeMode == SVDMode.DistARPACK && rows.getStorageLevel == StorageLevel.NONE) {
+    if (computeMode == SVDMode.DistARPACK && rows.getStorageLevel == StorageLevel.NONE)
       logWarning(
         "The input data was not directly cached, which may hurt performance if its"
           + " parent RDDs are also uncached.")
-    }
 
     val s = Vectors.dense(Arrays.copyOfRange(sigmas.data, 0, sk))
     val V = Matrices.dense(n, sk, Arrays.copyOfRange(u.data, 0, n * sk))
@@ -350,9 +339,8 @@ class RowMatrix @Since("1.0.0") (
       }
       val U = this.multiply(Matrices.fromBreeze(N))
       SingularValueDecomposition(U, s, V)
-    } else {
+    } else
       SingularValueDecomposition(null, s, V)
-    }
   }
 
   /**
@@ -373,11 +361,10 @@ class RowMatrix @Since("1.0.0") (
           (s1._1 + s2._1, s1._2 += s2._2)
       )
 
-    if (m <= 1) {
+    if (m <= 1)
       sys.error(
         s"RowMatrix.computeCovariance called on matrix with only $m rows." +
           "  Cannot compute the covariance of a RowMatrix with <= 1 row.")
-    }
     updateNumRows(m)
 
     mean :/= m.toDouble
@@ -437,13 +424,12 @@ class RowMatrix @Since("1.0.0") (
     val eigenSum = s.data.sum
     val explainedVariance = s.data.map(_ / eigenSum)
 
-    if (k == n) {
+    if (k == n)
       (Matrices.dense(n, k, u.data), Vectors.dense(explainedVariance))
-    } else {
+    else
       (
         Matrices.dense(n, k, Arrays.copyOfRange(u.data, 0, n * k)),
         Vectors.dense(Arrays.copyOfRange(explainedVariance, 0, k)))
-    }
   }
 
   /**
@@ -558,18 +544,17 @@ class RowMatrix @Since("1.0.0") (
   def columnSimilarities(threshold: Double): CoordinateMatrix = {
     require(threshold >= 0, s"Threshold cannot be negative: $threshold")
 
-    if (threshold > 1) {
+    if (threshold > 1)
       logWarning(
         s"Threshold is greater than 1: $threshold " +
           "Computation will be more efficient with promoted sparsity, " +
           " however there is no correctness guarantee.")
-    }
 
-    val gamma = if (threshold < 1e-6) {
-      Double.PositiveInfinity
-    } else {
-      10 * math.log(numCols()) / threshold
-    }
+    val gamma =
+      if (threshold < 1e-6)
+        Double.PositiveInfinity
+      else
+        10 * math.log(numCols()) / threshold
 
     columnSimilaritiesDIMSUM(
       computeColumnSummaryStatistics().normL2.toArray,
@@ -607,18 +592,18 @@ class RowMatrix @Since("1.0.0") (
       breeze.linalg.qr.reduced(stackedR).r
     }
     val finalR = Matrices.fromBreeze(combinedR.toDenseMatrix)
-    val finalQ = if (computeQ) {
-      try {
-        val invR = inv(combinedR)
-        this.multiply(Matrices.fromBreeze(invR))
-      } catch {
-        case err: MatrixSingularException =>
-          logWarning("R is not invertible and return Q as null")
-          null
-      }
-    } else {
-      null
-    }
+    val finalQ =
+      if (computeQ)
+        try {
+          val invR = inv(combinedR)
+          this.multiply(Matrices.fromBreeze(invR))
+        } catch {
+          case err: MatrixSingularException =>
+            logWarning("R is not invertible and return Q as null")
+            null
+        }
+      else
+        null
     QRDecomposition(finalQ, finalR)
   }
 
@@ -678,9 +663,8 @@ class RowMatrix @Since("1.0.0") (
                     while (l < nnz) {
                       val j = indices(l)
                       val jVal = scaled(l)
-                      if (jVal != 0 && rand.nextDouble() < p(j)) {
+                      if (jVal != 0 && rand.nextDouble() < p(j))
                         buf += (((i, j), iVal * jVal))
-                      }
                       l += 1
                     }
                   }
@@ -702,9 +686,8 @@ class RowMatrix @Since("1.0.0") (
                     var j = i + 1
                     while (j < n) {
                       val jVal = scaled(j)
-                      if (jVal != 0 && rand.nextDouble() < p(j)) {
+                      if (jVal != 0 && rand.nextDouble() < p(j))
                         buf += (((i, j), iVal * jVal))
-                      }
                       j += 1
                     }
                   }
@@ -739,13 +722,12 @@ class RowMatrix @Since("1.0.0") (
 
   /** Updates or verifies the number of rows. */
   private def updateNumRows(m: Long) {
-    if (nRows <= 0) {
+    if (nRows <= 0)
       nRows = m
-    } else {
+    else
       require(
         nRows == m,
         s"The number of rows $m is different from what specified or previously computed: $nRows.")
-    }
   }
 }
 

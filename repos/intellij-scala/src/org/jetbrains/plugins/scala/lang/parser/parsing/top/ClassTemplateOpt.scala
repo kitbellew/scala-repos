@@ -36,19 +36,16 @@ object ClassTemplateOpt {
         if (builder.twoNewlinesBeforeCurrentToken) {
           extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
           return
-        } else {
+        } else
           builder.getTokenType match {
-            case ScalaTokenTypes.tLBRACE => {
+            case ScalaTokenTypes.tLBRACE =>
               TemplateBody parse builder
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
-            case _ => {
+            case _ =>
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
           }
-        }
     }
     // try to split ClassParents and TemplateBody
     builder.getTokenType match {
@@ -59,72 +56,60 @@ object ClassTemplateOpt {
           ClassParents parse builder
           //parse template body
           builder.getTokenType match {
-            case ScalaTokenTypes.tLBRACE => {
+            case ScalaTokenTypes.tLBRACE =>
               TemplateBody parse builder
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
-            case _ => {
+            case _ =>
               if (builder.twoNewlinesBeforeCurrentToken) {
                 extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
                 return
-              } else {
+              } else
                 builder.getTokenType match {
-                  case ScalaTokenTypes.tLBRACE => {
+                  case ScalaTokenTypes.tLBRACE =>
                     TemplateBody parse builder
                     extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
                     return
-                  }
-                  case _ => {
+                  case _ =>
                     extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
                     return
-                  }
                 }
-              }
-            }
           }
-        } else {
+        } else
           //parse template body
           builder.getTokenType match {
-            case ScalaTokenTypes.tLBRACE => {
+            case ScalaTokenTypes.tLBRACE =>
               TemplateBody parse builder
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
-            case _ => {
+            case _ =>
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
           }
-        }
       //if we find nl => it could be TemplateBody only, but we can't find nl after extends keyword
       //In this case of course it's ClassParents
       case _ =>
         ClassParents parse builder
         //parse template body
         builder.getTokenType match {
-          case ScalaTokenTypes.tLBRACE => {
+          case ScalaTokenTypes.tLBRACE =>
             TemplateBody parse builder
             extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
             return
-          }
           case _ =>
             if (builder.twoNewlinesBeforeCurrentToken) {
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            } else {
+            } else
               builder.getTokenType match {
-                case ScalaTokenTypes.tLBRACE => {
+                case ScalaTokenTypes.tLBRACE =>
                   TemplateBody parse builder
                   extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
                   return
-                }
-                case _ => {
+                case _ =>
                   extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
                   return
-                }
               }
-            }
         }
     }
   }

@@ -133,10 +133,9 @@ private[streaming] class InternalMapWithStateDStream[
 
   /** Override the default checkpoint duration */
   override def initialize(time: Time): Unit = {
-    if (checkpointDuration == null) {
+    if (checkpointDuration == null)
       checkpointDuration =
         slideDuration * DEFAULT_CHECKPOINT_DURATION_MULTIPLIER
-    }
     super.initialize(time)
   }
 
@@ -146,16 +145,15 @@ private[streaming] class InternalMapWithStateDStream[
     // Get the previous state or create a new empty state RDD
     val prevStateRDD = getOrCompute(validTime - slideDuration) match {
       case Some(rdd) =>
-        if (rdd.partitioner != Some(partitioner)) {
+        if (rdd.partitioner != Some(partitioner))
           // If the RDD is not partitioned the right way, let us repartition it using the
           // partition index as the key. This is to ensure that state RDD is always partitioned
           // before creating another state RDD using it
           MapWithStateRDD.createFromRDD[K, V, S, E](rdd.flatMap {
             _.stateMap.getAll()
           }, partitioner, validTime)
-        } else {
+        else
           rdd
-        }
       case None =>
         MapWithStateRDD.createFromPairRDD[K, V, S, E](
           spec

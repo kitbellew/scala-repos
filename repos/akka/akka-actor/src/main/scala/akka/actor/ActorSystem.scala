@@ -604,7 +604,7 @@ private[akka] class ActorSystemImpl(
               _: ControlThrowable ⇒
             log.error(cause, "Uncaught error from thread [{}]", thread.getName)
           case _ ⇒
-            if (settings.JvmExitOnFatalError) {
+            if (settings.JvmExitOnFatalError)
               try {
                 log.error(
                   cause,
@@ -619,10 +619,8 @@ private[akka] class ActorSystemImpl(
                 err.println("]")
                 cause.printStackTrace(System.err)
                 System.err.flush()
-              } finally {
-                System.exit(-1)
-              }
-            } else {
+              } finally System.exit(-1)
+            else {
               log.error(
                 cause,
                 "Uncaught fatal error from thread [{}] shutting down ActorSystem [{}]",
@@ -871,19 +869,18 @@ private[akka] class ActorSystemImpl(
         val inProcessOfRegistration = new CountDownLatch(1)
         extensions.putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
           case null ⇒
-            try { // Signal was successfully sent
-              ext.createExtension(this) match { // Create and initialize the extension
-                case null ⇒
-                  throw new IllegalStateException(
-                    "Extension instance created as 'null' for extension [" + ext + "]")
-                case instance ⇒
-                  extensions.replace(
-                    ext,
-                    inProcessOfRegistration,
-                    instance
-                  ) //Replace our in process signal with the initialized extension
-                  instance //Profit!
-              }
+            try // Signal was successfully sent
+            ext.createExtension(this) match { // Create and initialize the extension
+              case null ⇒
+                throw new IllegalStateException(
+                  "Extension instance created as 'null' for extension [" + ext + "]")
+              case instance ⇒
+                extensions.replace(
+                  ext,
+                  inProcessOfRegistration,
+                  instance
+                ) //Replace our in process signal with the initialized extension
+                instance //Profit!
             } catch {
               case t: Throwable ⇒
                 extensions.replace(
@@ -892,9 +889,7 @@ private[akka] class ActorSystemImpl(
                   t
                 ) //In case shit hits the fan, remove the inProcess signal
                 throw t //Escalate to caller
-            } finally {
-              inProcessOfRegistration.countDown //Always notify listeners of the inProcess signal
-            }
+            } finally inProcessOfRegistration.countDown //Always notify listeners of the inProcess signal
           case other ⇒
             registerExtension(
               ext

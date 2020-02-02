@@ -85,7 +85,7 @@ object ActorPublisherSpec {
 
     @tailrec
     final def deliverBuf(): Unit =
-      if (totalDemand > 0) {
+      if (totalDemand > 0)
         if (totalDemand <= Int.MaxValue) {
           val (use, keep) = buf.splitAt(totalDemand.toInt)
           buf = keep
@@ -96,7 +96,6 @@ object ActorPublisherSpec {
           use foreach onNext
           deliverBuf()
         }
-      }
   }
 
   def timeoutingProps(probe: ActorRef, timeout: FiniteDuration): Props =
@@ -341,7 +340,7 @@ class ActorPublisherSpec
           .toMat(sink)(Keep.both)
           .run()
 
-        (1 to 3) foreach { snd ! _ }
+        (1 to 3) foreach snd ! _
         probe.expectMsg("elem-2")
 
         (4 to 500) foreach { n ⇒

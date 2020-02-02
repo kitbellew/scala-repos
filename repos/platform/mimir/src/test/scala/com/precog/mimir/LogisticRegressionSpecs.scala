@@ -79,11 +79,10 @@ trait LogisticRegressionTestSupport[M[+_]]
 
     val testSeqY = {
       (testSeqX zip deciders) map {
-        case (xs, p) => {
+        case (xs, p) =>
           val product: Double = dotProduct(actualThetas, 1.0 +: xs)
           if (sigmoid(product) > p) 1.0
           else 0.0
-        }
       }
     }
 
@@ -230,7 +229,7 @@ trait LogisticRegressionSpecs[M[+_]]
       tmpFile.delete()
 
       val theta = result collect {
-        case (ids, SObject(elems)) if ids.length == 0 => {
+        case (ids, SObject(elems)) if ids.length == 0 =>
           elems.keys mustEqual Set("model1")
 
           val SObject(fields) = elems("model1")
@@ -267,7 +266,6 @@ trait LogisticRegressionSpecs[M[+_]]
             theta1.toDouble,
             theta2.toDouble,
             theta3.toDouble)
-        }
       }
 
       thetas = thetas ++ theta
@@ -333,7 +331,7 @@ trait LogisticRegressionSpecs[M[+_]]
       result must haveSize(1)
 
       def theta(model: String) = result collect {
-        case (ids, SObject(elems)) if ids.length == 0 => {
+        case (ids, SObject(elems)) if ids.length == 0 =>
           elems.keys mustEqual Set("model1", "model2", "model3")
 
           val SObject(fields) = elems(model)
@@ -367,7 +365,6 @@ trait LogisticRegressionSpecs[M[+_]]
           }
 
           List(theta0.toDouble, theta1.toDouble, theta2.toDouble)
-        }
       }
 
       thetasSchema1 = thetasSchema1 ++ theta("model1")
@@ -384,7 +381,7 @@ trait LogisticRegressionSpecs[M[+_]]
 
     val allThetas = List(thetasSchema1, thetasSchema2, thetasSchema3)
 
-    val result = allThetas map { getBooleans }
+    val result = allThetas map getBooleans
 
     val expected = Array.fill(num)(true)
 

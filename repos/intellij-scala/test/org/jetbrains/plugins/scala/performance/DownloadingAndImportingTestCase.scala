@@ -66,7 +66,7 @@ abstract class DownloadingAndImportingTestCase
     super.setUpInWriteAction()
     val outputZipFile = new File(outputZipFileName)
     val projectDir = new File(projectDirPath)
-    if (!outputZipFile.exists() && !projectDir.exists()) {
+    if (!outputZipFile.exists() && !projectDir.exists())
       //don't download if zip file is already there
       GithubDownloadUtil.downloadAtomically(
         null,
@@ -74,11 +74,9 @@ abstract class DownloadingAndImportingTestCase
         outputZipFile,
         githubUsername,
         githubRepoName)
-    }
-    if (!projectDir.exists()) {
+    if (!projectDir.exists())
       //don't unpack if the project is already unpacked
       ZipUtil.unzip(null, projectDir, outputZipFile, null, null, true)
-    }
     Assert.assertTrue(
       "Project dir does not exist. Download or unpack failed!",
       projectDir.exists())
@@ -92,9 +90,8 @@ abstract class DownloadingAndImportingTestCase
         if (internalSdk == null) IdeaTestUtil.getMockJdk17
         else internalSdk
 
-      if (ProjectJdkTable.getInstance().findJdk(sdk.getName) == null) {
+      if (ProjectJdkTable.getInstance().findJdk(sdk.getName) == null)
         ProjectJdkTable.getInstance().addJdk(sdk)
-      }
       ProjectRootManager.getInstance(myProject).setProjectSdk(sdk)
     }
   }

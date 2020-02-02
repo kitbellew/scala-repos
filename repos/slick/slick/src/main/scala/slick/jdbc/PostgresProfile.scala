@@ -81,18 +81,17 @@ trait PostgresProfile extends JdbcProfile {
             case (IntPattern(v), "Int")                => Some(Some(v.toInt))
             case (IntPattern(v), "Long")               => Some(Some(v.toLong))
             case ("NULL::character varying", "String") => Some(None)
-            case (v, "java.util.UUID") => {
+            case (v, "java.util.UUID") =>
               val uuid = v
                 .replaceAll("[\'\"]", "") //strip quotes
                 .stripSuffix("::uuid") //strip suffix
               Some(Some(java.util.UUID.fromString(uuid)))
-            }
           }
           .getOrElse {
             val d = super.default
-            if (meta.nullable == Some(true) && d == None) {
+            if (meta.nullable == Some(true) && d == None)
               Some(None)
-            } else d
+            else d
           }
       override def length: Option[Int] = {
         val l = super.length
@@ -243,10 +242,10 @@ trait PostgresProfile extends JdbcProfile {
       extends super.ColumnDDLBuilder(column) {
     override def appendColumn(sb: StringBuilder) {
       sb append quoteIdentifier(column.name) append ' '
-      if (autoIncrement && !customSqlType) {
+      if (autoIncrement && !customSqlType)
         sb append (if (sqlType.toUpperCase == "BIGINT") "BIGSERIAL"
                    else "SERIAL")
-      } else appendType(sb)
+      else appendType(sb)
       autoIncrement = false
       appendOptions(sb)
     }

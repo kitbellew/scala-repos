@@ -72,19 +72,16 @@ private[spark] object TaskLocation {
     */
   def apply(str: String): TaskLocation = {
     val hstr = str.stripPrefix(inMemoryLocationTag)
-    if (hstr.equals(str)) {
+    if (hstr.equals(str))
       if (str.startsWith(executorLocationTag)) {
         val splits = str.split("_")
-        if (splits.length != 3) {
+        if (splits.length != 3)
           throw new IllegalArgumentException(
             "Illegal executor location format: " + str)
-        }
         new ExecutorCacheTaskLocation(splits(1), splits(2))
-      } else {
+      } else
         new HostTaskLocation(str)
-      }
-    } else {
+    else
       new HDFSCacheTaskLocation(hstr)
-    }
   }
 }

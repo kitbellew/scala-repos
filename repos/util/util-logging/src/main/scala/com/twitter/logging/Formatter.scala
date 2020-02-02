@@ -109,11 +109,11 @@ class Formatter(
   /**
     * Calendar to use for time zone display in date-time formatting.
     */
-  val calendar = if (timezone.isDefined) {
-    new GregorianCalendar(TimeZone.getTimeZone(timezone.get))
-  } else {
-    new GregorianCalendar
-  }
+  val calendar =
+    if (timezone.isDefined)
+      new GregorianCalendar(TimeZone.getTimeZone(timezone.get))
+    else
+      new GregorianCalendar
   dateFormat.setCalendar(calendar)
 
   /**
@@ -147,9 +147,9 @@ class Formatter(
     val message = truncateText(formatText(record))
 
     val containsNewLine = message.indexOf('\n') >= 0
-    if (!containsNewLine && record.getThrown == null) {
+    if (!containsNewLine && record.getThrown == null)
       Array(message)
-    } else {
+    else {
       val splitOnNewlines = message.split("\n")
       val numThrowLines = if (record.getThrown == null) 0 else 20
 
@@ -174,18 +174,16 @@ class Formatter(
   def formatText(record: javalog.LogRecord): String =
     record match {
       case null => ""
-      case r: LogRecord => {
+      case r: LogRecord =>
         r.getParameters match {
           case null       => r.getMessage
           case formatArgs => String.format(r.getMessage, formatArgs: _*)
         }
-      }
-      case r: javalog.LogRecord => {
+      case r: javalog.LogRecord =>
         r.getParameters match {
           case null       => r.getMessage
           case formatArgs => MessageFormat.format(r.getMessage, formatArgs: _*)
         }
-      }
     }
 
   override def format(record: javalog.LogRecord): String = {
@@ -207,18 +205,15 @@ class Formatter(
     record.getLoggerName match {
       case null => "(root)"
       case ""   => "(root)"
-      case n => {
+      case n =>
         val nameSegments = n.split("\\.")
-        if (nameSegments.length >= 2) {
-          if (useFullPackageNames) {
+        if (nameSegments.length >= 2)
+          if (useFullPackageNames)
             nameSegments.slice(0, nameSegments.length - 1).mkString(".")
-          } else {
+          else
             nameSegments(nameSegments.length - 2)
-          }
-        } else {
+        else
           n
-        }
-      }
     }
 
   /**

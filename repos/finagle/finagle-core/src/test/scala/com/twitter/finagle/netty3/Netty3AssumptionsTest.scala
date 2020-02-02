@@ -66,9 +66,8 @@ class Netty3AssumptionsTest extends FunSuite {
             Channels.close(channel)
             assert(!channel.isOpen)
             latch.countDown()
-          } else {
+          } else
             throw new Exception("connect attempt failed: " + f)
-          }
       })
 
     assert(latch.await(1.second))

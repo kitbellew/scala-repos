@@ -103,9 +103,8 @@ object Compatibility {
                           case Some(subst) =>
                             val rt = subst.subst(secondArg)
                             if (rt.isInstanceOf[ScUndefinedType]) defaultResult
-                            else {
+                            else
                               (Success(rt, Some(place)), res.importsUsed)
-                            }
                           case None => defaultResult
                         }
                       case _ => defaultResult
@@ -229,9 +228,8 @@ object Compatibility {
       val count = minParams - exprs.length
       val problems = new ArrayBuffer[ApplicabilityProblem]()
       parameters.reverseIterator.foreach { param =>
-        if (!param.isRepeated && !param.isDefault && problems.length < count) {
+        if (!param.isRepeated && !param.isDefault && problems.length < count)
           problems += new MissedValueParameter(param)
-        }
       }
       return ConformanceExtResult(problems.toSeq, undefSubst)
     }
@@ -250,9 +248,9 @@ object Compatibility {
     var defaultParameterUsed = false
 
     def doNoNamed(expr: Expression): List[ApplicabilityProblem] =
-      if (namedMode) {
+      if (namedMode)
         List(new PositionalAfterNamedArgument(expr.expr))
-      } else {
+      else {
         val getIt = used.indexOf(false)
         used(getIt) = true
         val param: Parameter = parameters(getIt)
@@ -270,9 +268,9 @@ object Compatibility {
             Conformance.conforms(paramType, exprType, checkWeak = true)
           matched ::= (param, expr.expr)
           matchedTypes ::= (param, exprType)
-          if (!conforms) {
+          if (!conforms)
             List(new TypeMismatch(expr.expr, paramType))
-          } else {
+          else {
             undefSubst += Conformance.undefinedSubst(
               paramType,
               exprType,
@@ -310,23 +308,22 @@ object Compatibility {
                    .tr) yield {
               val conforms =
                 Conformance.conforms(tp, exprType, checkWeak = true)
-              if (!conforms) {
+              if (!conforms)
                 return ConformanceExtResult(
                   Seq(new TypeMismatch(expr, tp)),
                   undefSubst,
                   defaultParameterUsed,
                   matched,
                   matchedTypes)
-              } else {
+              else {
                 matched ::= (param, expr)
                 matchedTypes ::= (param, exprType)
                 undefSubst += Conformance
                   .undefinedSubst(tp, exprType, checkWeak = true)
               }
             }
-          } else {
+          } else
             problems :::= doNoNamed(Expression(expr)).reverse
-          }
         case Expression(assign @ NamedAssignStmt(name)) =>
           val index = parameters.indexWhere { p =>
             ScalaPsiUtil.memberNamesEquals(p.name, name) ||
@@ -347,9 +344,8 @@ object Compatibility {
                 matchedTypes)
             used(index) = true
             val param: Parameter = parameters(index)
-            if (index != k) {
+            if (index != k)
               namedMode = true
-            }
             assign.getRExpression match {
               case Some(expr: ScExpression) =>
                 val paramType = param.paramType
@@ -362,9 +358,9 @@ object Compatibility {
                        .tr) {
                   val conforms =
                     Conformance.conforms(paramType, exprType, checkWeak = true)
-                  if (!conforms) {
+                  if (!conforms)
                     problems ::= TypeMismatch(expr, paramType)
-                  } else {
+                  else {
                     matched ::= (param, expr)
                     matchedTypes ::= (param, exprType)
                     undefSubst += Conformance.undefinedSubst(
@@ -429,7 +425,7 @@ object Compatibility {
                ._1) {
           val conforms =
             Conformance.conforms(paramType, exprType, checkWeak = true)
-          if (!conforms) {
+          if (!conforms)
             return ConformanceExtResult(
               Seq(
                 new ElementApplicabilityProblem(
@@ -440,7 +436,7 @@ object Compatibility {
               defaultParameterUsed,
               matched,
               matchedTypes)
-          } else {
+          else {
             matched ::= (parameters.last, exprs(k).expr)
             matchedTypes ::= (parameters.last, exprType)
             undefSubst += Conformance.undefinedSubst(

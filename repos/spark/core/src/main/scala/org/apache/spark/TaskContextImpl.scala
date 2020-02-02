@@ -79,17 +79,15 @@ private[spark] class TaskContextImpl(
     val errorMsgs = new ArrayBuffer[String](2)
     // Process failure callbacks in the reverse order of registration
     onFailureCallbacks.reverse.foreach { listener =>
-      try {
-        listener.onTaskFailure(this, error)
-      } catch {
+      try listener.onTaskFailure(this, error)
+      catch {
         case e: Throwable =>
           errorMsgs += e.getMessage
           logError("Error in TaskFailureListener", e)
       }
     }
-    if (errorMsgs.nonEmpty) {
+    if (errorMsgs.nonEmpty)
       throw new TaskCompletionListenerException(errorMsgs, Option(error))
-    }
   }
 
   /** Marks the task as completed and triggers the completion listeners. */
@@ -98,17 +96,15 @@ private[spark] class TaskContextImpl(
     val errorMsgs = new ArrayBuffer[String](2)
     // Process complete callbacks in the reverse order of registration
     onCompleteCallbacks.reverse.foreach { listener =>
-      try {
-        listener.onTaskCompletion(this)
-      } catch {
+      try listener.onTaskCompletion(this)
+      catch {
         case e: Throwable =>
           errorMsgs += e.getMessage
           logError("Error in TaskCompletionListener", e)
       }
     }
-    if (errorMsgs.nonEmpty) {
+    if (errorMsgs.nonEmpty)
       throw new TaskCompletionListenerException(errorMsgs)
-    }
   }
 
   /** Marks the task for interruption, i.e. cancellation. */

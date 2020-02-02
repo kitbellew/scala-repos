@@ -132,16 +132,14 @@ object Test {
     Console.print("test " + name);
     try {
       val actual: Int = closure;
-      if (actual == expected) {
+      if (actual == expected)
         Console.print(" was successful");
-      } else {
+      else
         Console.print(" failed: expected " + expected + ", found " + actual);
-      }
     } catch {
-      case exception: Throwable => {
+      case exception: Throwable =>
         Console.print(" raised exception " + exception);
         exception.printStackTrace();
-      }
     }
     Console.println;
   }

@@ -107,10 +107,9 @@ abstract class UnaryTransformer[IN, OUT, T <: UnaryTransformer[IN, OUT, T]]
   override def transformSchema(schema: StructType): StructType = {
     val inputType = schema($(inputCol)).dataType
     validateInputType(inputType)
-    if (schema.fieldNames.contains($(outputCol))) {
+    if (schema.fieldNames.contains($(outputCol)))
       throw new IllegalArgumentException(
         s"Output column ${$(outputCol)} already exists.")
-    }
     val outputFields = schema.fields :+
       StructField($(outputCol), outputDataType, nullable = false)
     StructType(outputFields)

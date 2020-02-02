@@ -27,24 +27,21 @@ object DependencyResolver {
     val allFlatDeps = for {
       manifest <- manifests
       dep <- manifest.libDeps
-    } yield {
-      new FlatJSDependency(
-        manifest.origin,
-        resolvedJSLibs(dep.resourceName),
-        dep.dependencies.map(resolvedJSLibs),
-        dep.commonJSName,
-        dep.minifiedResourceName.map(resolvedJSLibs))
-    }
+    } yield new FlatJSDependency(
+      manifest.origin,
+      resolvedJSLibs(dep.resourceName),
+      dep.dependencies.map(resolvedJSLibs),
+      dep.commonJSName,
+      dep.minifiedResourceName.map(resolvedJSLibs))
 
     val flatDeps = dependencyFilter(allFlatDeps)
     val includeList = createIncludeList(flatDeps)
 
-    for (info <- includeList) yield {
-      new ResolvedJSDependency(
+    for (info <- includeList)
+      yield new ResolvedJSDependency(
         availableLibs(info.relPath),
         info.relPathMinified.map(availableLibs),
         info)
-    }
   }
 
   /** Collects all the resource names mentioned in the manifests.
@@ -77,10 +74,9 @@ object DependencyResolver {
     val problems = mutable.ListBuffer.empty[Problem]
     val resolvedLibs = Map.newBuilder[String, String]
 
-    for ((resourceName, origins) <- allResourceNames) {
+    for ((resourceName, origins) <- allResourceNames)
       resolveResourceName(resourceName, origins, relPaths)
         .fold[Unit](problems += _, resolvedLibs += resourceName -> _)
-    }
 
     if (problems.nonEmpty)
       throw new JSLibResolveException(problems.toList)

@@ -114,10 +114,9 @@ abstract class TimeSeqPathedSource(
   override def hdfsReadPathsAreGood(conf: Configuration): Boolean =
     getPathStatuses(conf).forall {
       case (path, good) =>
-        if (!good) {
+        if (!good)
           System.err.println(
             "[ERROR] Path: " + path + " is missing in: " + toString)
-        }
         good
     }
 

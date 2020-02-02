@@ -230,19 +230,18 @@ abstract class FileSource
       implicit mode: Mode): Tap[_, _, _] =
     mode match {
       // TODO support strict in Local
-      case Local(_) => {
+      case Local(_) =>
         readOrWrite match {
           case Read  => createLocalTap(sinkMode)
           case Write => new FileTap(localScheme, localWritePath, sinkMode)
         }
-      }
       case hdfsMode @ Hdfs(_, _) =>
         readOrWrite match {
           case Read => createHdfsReadTap(hdfsMode)
           case Write =>
             CastHfsTap(createHfsTap(hdfsScheme, hdfsWritePath, sinkMode))
         }
-      case _ => {
+      case _ =>
         val tryTtp = Try(TestTapFactory(this, hdfsScheme, sinkMode))
           .map {
             // these java types are invariant, so we cast here
@@ -264,7 +263,6 @@ abstract class FileSource
               s"Failed to create tap for: $toString, with error: ${e.getMessage}",
               e)
         }
-      }
     }
 
   // This is only called when Mode.sourceStrictness is true
@@ -279,29 +277,25 @@ abstract class FileSource
    */
   override def validateTaps(mode: Mode): Unit =
     mode match {
-      case Hdfs(strict, conf) => {
-        if (strict && (!hdfsReadPathsAreGood(conf))) {
+      case Hdfs(strict, conf) =>
+        if (strict && (!hdfsReadPathsAreGood(conf)))
           throw new InvalidSourceException(
             "[" + this.toString + "] Data is missing from one or more paths in: " +
               hdfsPaths.toString)
-        } else if (!hdfsPaths.exists { pathIsGood(_, conf) }) {
+        else if (!hdfsPaths.exists { pathIsGood(_, conf) })
           //Check that there is at least one good path:
           throw new InvalidSourceException(
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)
-        }
-      }
 
-      case Local(strict) => {
+      case Local(strict) =>
         val files = localPaths.map { p => new java.io.File(p) }
-        if (strict && !files.forall(_.exists)) {
+        if (strict && !files.forall(_.exists))
           throw new InvalidSourceException(
             "[" + this.toString + s"] Data is missing from: ${localPaths
               .filterNot { p => new java.io.File(p).exists }}")
-        } else if (!files.exists(_.exists)) {
+        else if (!files.exists(_.exists))
           throw new InvalidSourceException(
             "[" + this.toString + "] No good paths in: " + hdfsPaths.toString)
-        }
-      }
       case _ => ()
     }
 
@@ -322,13 +316,12 @@ abstract class FileSource
         CastHfsTap(createHfsTap(hdfsScheme, path, sinkMode))
       }
     taps.size match {
-      case 0 => {
+      case 0 =>
         // This case is going to result in an error, but we don't want to throw until
         // validateTaps. Return an InvalidSource here so the Job constructor does not fail.
         // In the worst case if the flow plan is misconfigured,
         //openForRead on mappers should fail when using this tap.
         new InvalidSourceTap(hdfsPaths)
-      }
       case 1 => taps.head
       case _ => new ScaldingMultiSourceTap(taps)
     }
@@ -491,11 +484,10 @@ abstract class FixedPathSource(path: String*) extends FileSource {
   protected def stripTrailing(path: String): String = {
     assert(path != "*", "Path must not be *")
     assert(path != "/*", "Path must not be /*")
-    if (path.takeRight(2) == "/*") {
+    if (path.takeRight(2) == "/*")
       path.dropRight(2)
-    } else {
+    else
       path
-    }
   }
 }
 

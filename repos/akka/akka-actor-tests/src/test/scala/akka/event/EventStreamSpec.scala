@@ -47,7 +47,7 @@ object EventStreamSpec {
         bus.subscribe(context.self, classOf[SetTarget])
         bus.subscribe(context.self, classOf[UnhandledMessage])
         sender() ! Logging.LoggerInitialized
-      case SetTarget(ref) ⇒ { dst = ref; dst ! "OK" }
+      case SetTarget(ref) ⇒ dst = ref; dst ! "OK"
       case e: Logging.LogEvent ⇒ dst ! e
       case u: UnhandledMessage ⇒ dst ! u
     }
@@ -120,9 +120,7 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
             sys.deadLetters.getClass,
             "unhandled message from " + sys.deadLetters + ": 42"))
         sys.eventStream.unsubscribe(testActor)
-      } finally {
-        shutdown(sys)
-      }
+      } finally shutdown(sys)
     }
 
     "manage log levels" in {
@@ -316,9 +314,7 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
 
         a1.expectNoMsg(1 second)
         a2.expectMsg(tm)
-      } finally {
-        shutdown(sys)
-      }
+      } finally shutdown(sys)
     }
 
     "unsubscribe the actor, when it subscribes already in terminated state" in {
@@ -346,9 +342,7 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
 
         es.subscribe(target, classOf[A]) should ===(true)
         fishForDebugMessage(a2, s"unsubscribing $target from all channels")
-      } finally {
-        shutdown(sys)
-      }
+      } finally shutdown(sys)
     }
 
     "not allow initializing a TerminatedUnsubscriber twice" in {
@@ -364,9 +358,7 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
 
         refWillBeUsedAsUnsubscriber should equal(false)
 
-      } finally {
-        shutdown(sys)
-      }
+      } finally shutdown(sys)
     }
 
     "unwatch an actor from unsubscriber when that actor unsubscribes from the stream" in {
@@ -385,9 +377,7 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         es.unsubscribe(a2.ref)
         fishForDebugMessage(a1, s"unwatching ${a2.ref}")
 
-      } finally {
-        shutdown(sys)
-      }
+      } finally shutdown(sys)
     }
 
     "unwatch an actor from unsubscriber when that actor unsubscribes from channels it subscribed" in {
@@ -427,9 +417,7 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
 
         es.unsubscribe(a2.ref, classOf[T]) should equal(false)
 
-      } finally {
-        shutdown(sys)
-      }
+      } finally shutdown(sys)
     }
 
   }

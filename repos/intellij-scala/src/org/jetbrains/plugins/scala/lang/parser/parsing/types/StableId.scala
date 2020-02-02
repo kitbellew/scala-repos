@@ -117,17 +117,15 @@ object StableId extends ParserNode {
     if (builder.getTokenType != tLSQBRACKET) return
     builder.advanceLexer()
     builder.disableNewlines
-    if (builder.getTokenType != tIDENTIFIER) {
+    if (builder.getTokenType != tIDENTIFIER)
       builder.error(ErrMsg("identifier.expected"))
-    } else {
+    else
       builder.advanceLexer()
-    }
 
-    if (builder.getTokenType != tRSQBRACKET) {
+    if (builder.getTokenType != tRSQBRACKET)
       builder.error(ErrMsg("rsqbracket.expected"))
-    } else {
+    else
       builder.advanceLexer()
-    }
     builder.restoreNewlinesState
   }
 
@@ -137,9 +135,8 @@ object StableId extends ParserNode {
       nm: PsiBuilder.Marker,
       element: IElementType,
       forImport: Boolean): Boolean = {
-    if (builder.getTokenType != ScalaTokenTypes.tDOT) {
+    if (builder.getTokenType != ScalaTokenTypes.tDOT)
       builder.error(ErrMsg("dot.expected"))
-    }
     builder.advanceLexer()
     if (builder.getTokenType != ScalaTokenTypes.tIDENTIFIER) {
       builder.error(ErrMsg("identifier.expected"))

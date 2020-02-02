@@ -32,9 +32,8 @@ private[spark] class WorkerWatcher(
     with Logging {
 
   logInfo(s"Connecting to worker $workerUrl")
-  if (!isTesting) {
+  if (!isTesting)
     rpcEnv.asyncSetupEndpointRefByURI(workerUrl)
-  }
 
   // Used to avoid shutting down JVM during tests
   // In the normal case, exitNonZero will call `System.exit(-1)` to shutdown the JVM. In the unit
@@ -55,9 +54,8 @@ private[spark] class WorkerWatcher(
   }
 
   override def onConnected(remoteAddress: RpcAddress): Unit =
-    if (isWorker(remoteAddress)) {
+    if (isWorker(remoteAddress))
       logInfo(s"Successfully connected to $workerUrl")
-    }
 
   override def onDisconnected(remoteAddress: RpcAddress): Unit =
     if (isWorker(remoteAddress)) {

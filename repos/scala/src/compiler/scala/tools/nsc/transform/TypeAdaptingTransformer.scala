@@ -110,11 +110,11 @@ trait TypeAdaptingTransformer {
           case ErasedValueType(clazz, underlying) =>
             val tree0 =
               if (tree.tpe.typeSymbol == NullClass &&
-                  isPrimitiveValueClass(underlying.typeSymbol)) {
+                  isPrimitiveValueClass(underlying.typeSymbol))
                 // convert `null` directly to underlying type, as going
                 // via the unboxed type would yield a NPE (see SI-5866)
                 unbox1(tree, underlying)
-              } else
+              else
                 Apply(
                   Select(
                     adaptToType(tree, clazz.tpe),
@@ -184,9 +184,9 @@ trait TypeAdaptingTransformer {
         adaptToType(box(tree, pt.toString), pt)
       else if (isDifferentErasedValueType(pt, tree.tpe))
         adaptToType(unbox(tree, pt), pt)
-      else if (isPrimitiveValueType(tree.tpe) && !isPrimitiveValueType(pt)) {
+      else if (isPrimitiveValueType(tree.tpe) && !isPrimitiveValueType(pt))
         adaptToType(box(tree, pt.toString), pt)
-      } else if (isMethodTypeWithEmptyParams(tree.tpe)) {
+      else if (isMethodTypeWithEmptyParams(tree.tpe))
         // [H] this assert fails when trying to typecheck tree !(SomeClass.this.bitmap) for single lazy val
         //assert(tree.symbol.isStable, "adapt "+tree+":"+tree.tpe+" to "+pt)
         adaptToType(
@@ -194,7 +194,7 @@ trait TypeAdaptingTransformer {
           pt)
 //      } else if (pt <:< tree.tpe)
 //        cast(tree, pt)
-      } else if (isPrimitiveValueType(pt) && !isPrimitiveValueType(tree.tpe))
+      else if (isPrimitiveValueType(pt) && !isPrimitiveValueType(tree.tpe))
         adaptToType(unbox(tree, pt), pt)
       else
         cast(tree, pt)

@@ -234,9 +234,8 @@ class SparkListenerSuite
     sc.addSparkListener(new StatsReportListener)
     // just to make sure some of the tasks take a noticeable amount of time
     val w = { i: Int =>
-      if (i == 0) {
+      if (i == 0)
         Thread.sleep(100)
-      }
       i
     }
 
@@ -437,9 +436,8 @@ class SparkListenerSuite
     override def onTaskEnd(task: SparkListenerTaskEnd) {
       val info = task.taskInfo
       val metrics = task.taskMetrics
-      if (info != null && metrics != null) {
+      if (info != null && metrics != null)
         taskInfoMetrics += ((info, metrics))
-      }
     }
 
     override def onStageCompleted(stage: SparkListenerStageCompleted) {
@@ -501,9 +499,8 @@ private class SparkContextStoppingListener(val sc: SparkContext)
     extends SparkListener {
   @volatile var sparkExSeen = false
   override def onJobEnd(job: SparkListenerJobEnd): Unit =
-    try {
-      sc.stop()
-    } catch {
+    try sc.stop()
+    catch {
       case se: SparkException =>
         sparkExSeen = true
     }

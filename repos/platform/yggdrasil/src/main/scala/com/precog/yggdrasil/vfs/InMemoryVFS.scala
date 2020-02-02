@@ -94,7 +94,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     }
 
     def recordCount(implicit M: Monad[M]): M[Long] = M point { proj.length }
-    def projection(implicit M: Monad[M]): M[Projection] = M point { proj }
+    def projection(implicit M: Monad[M]): M[Projection] = M point proj
     def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) = OptionT {
       M.point {
         table.ColumnarTableModule
@@ -357,11 +357,11 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
         data
           .get((path, version))
           .toRightDisjunction(NotFound("No data found for path %s version %s"
-            .format(path.path, version))) traverse { toResource }
+            .format(path.path, version))) traverse toResource
       }
 
     private def childMetadata(path: Path): Set[PathMetadata] =
-      data.keySet.map(_._1) flatMap { _ - path } flatMap { p0 =>
+      data.keySet.map(_._1) flatMap _ - path flatMap { p0 =>
         val childPath = path / Path(p0.elements.headOption.toList)
         val isDir = p0.length > 1
         data.get((childPath, Version.Current)) map { record =>

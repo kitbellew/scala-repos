@@ -192,7 +192,7 @@ object Team extends LilaController {
       requestOption ← api request requestId
       teamOption ← requestOption.??(req => TeamRepo.owned(req.team, me.id))
     } yield (teamOption |@| requestOption).tupled) {
-      case (team, request) => {
+      case (team, request) =>
         implicit val req = ctx.body
         forms.processRequest.bindFromRequest.fold(
           _ => fuccess(routes.Team.show(team.id).toString), {
@@ -200,7 +200,6 @@ object Team extends LilaController {
               api.processRequest(team, request, (decision === "accept")) inject url
           }
         )
-      }
     }
   }
 
@@ -217,7 +216,8 @@ object Team extends LilaController {
     }
 
   private def Owner(team: TeamModel)(a: => Fu[Result])(
-      implicit ctx: Context): Fu[Result] = {
-    ctx.me.??(me => team.isCreator(me.id) || Granter.superAdmin(me))
-  }.fold(a, renderTeam(team) map { Forbidden(_) })
+      implicit ctx: Context): Fu[Result] =
+    ctx.me
+      .??(me => team.isCreator(me.id) || Granter.superAdmin(me))
+      .fold(a, renderTeam(team) map { Forbidden(_) })
 }

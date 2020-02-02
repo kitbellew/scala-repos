@@ -203,13 +203,12 @@ object Parsed {
       * available on this object, so feel free to use the data yourself if
       * the default error message isn't to your liking.
       */
-    lazy val trace = {
+    lazy val trace =
       Failure.formatStackTrace(
         stack,
         input,
         index,
         Failure.formatParser(expected0, input, index))
-    }
   }
   object TracedFailure {
     def apply(
@@ -452,15 +451,13 @@ trait ParserResults[+T] { this: Parser[T] =>
     f.index = index
     f.cut = cut
     f.fullStack.clear()
-    if (f.traceIndex != -1 && f.traceIndex >= index) {
-      if (f.traceIndex == index) {
+    if (f.traceIndex != -1 && f.traceIndex >= index)
+      if (f.traceIndex == index)
         f.traceParsers =
           if (traceParsers == null) Set(this)
           else traceParsers
-      } else {
+      else
         f.traceParsers = Set.empty
-      }
-    }
     f.lastParser = this
     f
   }
@@ -485,16 +482,13 @@ trait ParserResults[+T] { this: Parser[T] =>
       traceParsers: Set[Parser[_]] = null,
       cut: Boolean = false) = {
 
-    if (f.traceIndex != -1) {
-      if (index >= f.traceIndex && traceParsers != null) {
+    if (f.traceIndex != -1)
+      if (index >= f.traceIndex && traceParsers != null)
         f.traceParsers = traceParsers
-      }
-    }
     // Record the failure stack if we're tracing or if
     // we're logging, otherwise ignore it for performance.
-    if (f.traceIndex != -1 || logDepth > 0) {
+    if (f.traceIndex != -1 || logDepth > 0)
       f.fullStack += new Frame(index, this)
-    }
     f.cut = f.cut | cut
     f
   }

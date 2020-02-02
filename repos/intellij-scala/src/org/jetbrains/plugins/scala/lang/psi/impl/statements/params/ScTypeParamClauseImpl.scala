@@ -36,21 +36,20 @@ class ScTypeParamClauseImpl private (
 
   def getTextByStub: String = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTypeParamClauseStub].getTypeParamClauseText
-    }
     getText
   }
 
   def typeParameters: Seq[ScTypeParam] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub
         .getChildrenByType(
           ScalaElementTypes.TYPE_PARAM,
           JavaArrayFactoryUtil.ScTypeParamFactory)
         .toSeq
-    } else {
+    else {
       val buffer = new ArrayBuffer[ScTypeParam]
       var curr = getFirstChild
       while (curr != null) {
@@ -69,11 +68,9 @@ class ScTypeParamClauseImpl private (
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (!processor.isInstanceOf[BaseProcessor]) {
-      for (param <- typeParameters) {
+    if (!processor.isInstanceOf[BaseProcessor])
+      for (param <- typeParameters)
         if (!processor.execute(param, state)) return false
-      }
-    }
     true
   }
 }

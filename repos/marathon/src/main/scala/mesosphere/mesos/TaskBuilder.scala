@@ -47,17 +47,17 @@ class TaskBuilder(
       val staticHostPorts = hostPorts.filter(_ != 0)
       val numberDynamicHostPorts = hostPorts.count(_ == 0)
 
-      val maybeStatic: Option[String] = if (staticHostPorts.nonEmpty) {
-        Some(s"[${staticHostPorts.mkString(", ")}] required")
-      } else {
-        None
-      }
+      val maybeStatic: Option[String] =
+        if (staticHostPorts.nonEmpty)
+          Some(s"[${staticHostPorts.mkString(", ")}] required")
+        else
+          None
 
-      val maybeDynamic: Option[String] = if (numberDynamicHostPorts > 0) {
-        Some(s"$numberDynamicHostPorts dynamic")
-      } else {
-        None
-      }
+      val maybeDynamic: Option[String] =
+        if (numberDynamicHostPorts > 0)
+          Some(s"$numberDynamicHostPorts dynamic")
+        else
+          None
 
       val portStrings = Seq(maybeStatic, maybeDynamic).flatten.mkString(" + ")
 
@@ -108,11 +108,11 @@ class TaskBuilder(
       volumeMatchOpt: Option[PersistentVolumeMatcher.VolumeMatch])
       : Some[(TaskInfo, Seq[Int])] = {
 
-    val executor: Executor = if (app.executor == "") {
-      config.executor
-    } else {
-      Executor.dispatch(app.executor)
-    }
+    val executor: Executor =
+      if (app.executor == "")
+        config.executor
+      else
+        Executor.dispatch(app.executor)
 
     val host: Option[String] = Some(offer.getHostname)
 
@@ -256,11 +256,10 @@ class TaskBuilder(
                 // Since they generally know there container port and advertise that, this is
                 // fixed most easily if the container port is the same as the externally visible host
                 // port.
-                if (mapping.containerPort == 0) {
+                if (mapping.containerPort == 0)
                   mapping.copy(hostPort = port, containerPort = port)
-                } else {
+                else
                   mapping.copy(hostPort = port)
-                }
             }
           }
         }
@@ -299,12 +298,11 @@ class TaskBuilder(
       if (!builder.hasType)
         builder.setType(ContainerInfo.Type.MESOS)
 
-      if (builder.getType.equals(ContainerInfo.Type.MESOS)) {
+      if (builder.getType.equals(ContainerInfo.Type.MESOS))
         builder.setMesos(
           ContainerInfo.MesosInfo
             .newBuilder()
             .build())
-      }
       Some(builder.build)
     }
 
@@ -352,9 +350,8 @@ object TaskBuilder {
       if (app.container.isEmpty) builder.setValue(argv.head)
     }
 
-    if (app.fetch.nonEmpty) {
+    if (app.fetch.nonEmpty)
       builder.addAllUris(app.fetch.map(_.toProto()).asJava)
-    }
 
     app.user.foreach(builder.setUser)
 
@@ -375,9 +372,9 @@ object TaskBuilder {
   def portsEnv(
       definedPorts: Seq[Int],
       assignedPorts: Seq[Int]): Map[String, String] =
-    if (assignedPorts.isEmpty) {
+    if (assignedPorts.isEmpty)
       Map.empty
-    } else {
+    else {
       val env = Map.newBuilder[String, String]
 
       assignedPorts.zipWithIndex.foreach {
@@ -387,9 +384,8 @@ object TaskBuilder {
 
       definedPorts.zip(assignedPorts).foreach {
         case (defined, assigned) =>
-          if (defined != AppDefinition.RandomPortValue) {
+          if (defined != AppDefinition.RandomPortValue)
             env += (s"PORT_$defined" -> assigned.toString)
-          }
       }
 
       env += ("PORT" -> assignedPorts.head.toString)
@@ -409,10 +405,10 @@ object TaskBuilder {
   def taskContextEnv(
       app: AppDefinition,
       taskId: Option[Task.Id]): Map[String, String] =
-    if (taskId.isEmpty) {
+    if (taskId.isEmpty)
       // This branch is taken during serialization. Do not add environment variables in this case.
       Map.empty
-    } else {
+    else
       Seq(
         "MESOS_TASK_ID" -> taskId.map(_.idString),
         "MARATHON_APP_ID" -> Some(app.id.toString),
@@ -425,7 +421,6 @@ object TaskBuilder {
       ).collect {
         case (key, Some(value)) => key -> value
       }.toMap ++ labelsToEnvVars(app.labels)
-    }
 
   def labelsToEnvVars(labels: Map[String, String]): Map[String, String] = {
     def escape(name: String): String =

@@ -36,7 +36,7 @@ object GradientTester extends SerializableLogging {
       skipZeros: Boolean = false,
       epsilon: Double = 1e-8,
       tolerance: Double = 1e-3,
-      toString: K => String = { (_: K).toString })(
+      toString: K => String = (_: K).toString)(
       implicit view2: T <:< NumericOps[T],
       view: T <:< Tensor[K, Double],
       copy: CanCopy[T],
@@ -55,7 +55,7 @@ object GradientTester extends SerializableLogging {
       x: T,
       indices: Traversable[K],
       skipZeros: Boolean = false,
-      toString: (K) => String = { (_: K).toString },
+      toString: (K) => String = (_: K).toString,
       epsilon: Double = 1e-8,
       tolerance: Double = 1e-3)(
       implicit view2: T <:< NumericOps[T],
@@ -82,18 +82,16 @@ object GradientTester extends SerializableLogging {
         if (relDif < tolerance) {
           ok += 1
           logger.debug(s"OK: ${toString(k)} $relDif")
-        } else {
+        } else
           logger.warn(
             toString(k) + " relDif: %.3e [eps : %e, calculated: %4.3e empirical: %4.3e]"
               .format(relDif, epsilon, trueGrad(k), grad))
-        }
         differences(k) = relDif
         tried += 1
       }
-      if (tried % 100 == 0 || tried == sz) {
+      if (tried % 100 == 0 || tried == sz)
         logger.info(
           f"Checked $tried of $sz (out of dimension ${x.size}). ${ok * 100.0 / tried}%.4g%% ok.")
-      }
     }
     differences
   }

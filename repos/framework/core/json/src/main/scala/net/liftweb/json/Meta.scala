@@ -87,11 +87,11 @@ private[json] object Meta {
           choices.tail.foldLeft((choices.head, score(choices.head.args))) {
             (best, c) =>
               val newScore = score(c.args)
-              if (newScore == best._2) {
+              if (newScore == best._2)
                 if (countOptionals(c.args) < countOptionals(best._1.args))
                   (c, newScore)
                 else best
-              } else if (newScore > best._2) (c, newScore)
+              else if (newScore > best._2) (c, newScore)
               else best
           }
         Some(best._1)
@@ -221,17 +221,17 @@ private[json] object Meta {
       Arg(name, mapping, optional)
     }
 
-    if (primitive_?(clazz)) {
+    if (primitive_?(clazz))
       Value(rawClassOf(clazz))
-    } else {
+    else
       mappings.memoize(
         (clazz, typeArgs), {
           case (t, _) =>
             val c = rawClassOf(t)
             val (pt, typeInfo) =
-              if (typeArgs.isEmpty) {
+              if (typeArgs.isEmpty)
                 (t, TypeInfo(c, None))
-              } else {
+              else {
                 val t = mkParameterizedType(c, typeArgs)
                 (t, TypeInfo(c, Some(t)))
               }
@@ -239,7 +239,6 @@ private[json] object Meta {
             Constructor(typeInfo, constructors(pt, Set(), None))
         }
       )
-    }
   }
 
   private[json] def rawClassOf(t: Type): Class[_] = t match {
@@ -474,9 +473,8 @@ private[json] object Meta {
     }
 
     def findField(clazz: Class[_], name: String): Field =
-      try {
-        clazz.getDeclaredField(name)
-      } catch {
+      try clazz.getDeclaredField(name)
+      catch {
         case e: NoSuchFieldException =>
           if (clazz.getSuperclass == null) throw e
           else findField(clazz.getSuperclass, name)

@@ -67,15 +67,13 @@ object Sorting {
       }
     }
     def med3(a: Int, b: Int, c: Int) =
-      if (order(x(a)) < order(x(b))) {
+      if (order(x(a)) < order(x(b)))
         if (order(x(b)) < order(x(c))) b
         else if (order(x(a)) < order(x(c))) c
         else a
-      } else {
-        if (order(x(b)) > order(x(c))) b
-        else if (order(x(a)) > order(x(c))) c
-        else a
-      }
+      else if (order(x(b)) > order(x(c))) b
+      else if (order(x(a)) > order(x(c))) c
+      else a
     def sort2(off: Int, len: Int) {
       // Insertion sort on smallest arrays
       if (len < 7) {
@@ -125,9 +123,9 @@ object Sorting {
             }
             c -= 1
           }
-          if (b > c) {
+          if (b > c)
             done = true
-          } else {
+          else {
             swap(b, c)
             c -= 1
             b += 1

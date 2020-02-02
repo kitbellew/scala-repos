@@ -84,11 +84,10 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
   }
 
   def assertKnown(parameters: Parameters) {
-    for ((key, value) <- parameters) {
+    for ((key, value) <- parameters)
       Assert.assertTrue(
         "Unknown parameter: " + key + "\nAllowed: " + Parameters.mkString(", "),
         Parameters.contains(key))
-    }
   }
 
   def parseParameters(s: String): Parameters =
@@ -112,7 +111,7 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
             doEachTest(it._1.asInstanceOf[ScReferenceElement], it._2)
           case ref: PsiMultiReference =>
             val hostReferences = ref.getReferences
-            if (hostReferences.length == 2) {
+            if (hostReferences.length == 2)
               hostReferences.find(_.isInstanceOf[ScReferenceElement]) match {
                 case Some(r: ScReferenceElement) =>
                   doEachTest(r, it._2)
@@ -121,11 +120,10 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
                     assertion = false,
                     message = "Multihost references are not supported")
               }
-            } else {
+            else
               assert(
                 assertion = false,
                 message = "Multihost references are not supported")
-            }
         }
       }
   }
@@ -145,51 +143,49 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
         Assert.fail(message(name + " - expected: " + v1 + ", actual: " + v2))
     }
 
-    if (options.contains(Resolved) && options(Resolved) == "false") {
+    if (options.contains(Resolved) && options(Resolved) == "false")
       Assert.assertNull(
         message(referenceName + " must NOT be resolved!"),
         target)
-    } else {
+    else {
       Assert.assertNotNull(
         message(referenceName + " must BE resolved!"),
         target)
 
-      if (options.contains(Accessible) && options(Accessible) == "false") {
+      if (options.contains(Accessible) && options(Accessible) == "false")
         Assert.assertFalse(
           message(referenceName + " must NOT be accessible!"),
           accessible)
-      } else {
+      else
         Assert.assertTrue(
           message(referenceName + " must BE accessible!"),
           accessible)
-      }
 
-      if (options.contains(Applicable) && options(Applicable) == "false") {
+      if (options.contains(Applicable) && options(Applicable) == "false")
         Assert.assertFalse(
           message(referenceName + " must NOT be applicable!"),
           applicable)
-      } else {
+      else
         Assert.assertTrue(
           message(
             referenceName + " must BE applicable! " +
               result.get.problems.mkString("(", ",", ")")),
           applicable)
-      }
 
-      if (options.contains(Path)) {
+      if (options.contains(Path))
         assertEquals(
           Path,
           options(Path),
           target.asInstanceOf[ScTypeDefinition].qualifiedName)
-      }
 
       if (options.contains(File) || options.contains(Offset) || options
             .contains(Line)) {
         val actual =
           target.getContainingFile.getVirtualFile.getNameWithoutExtension
-        val expected = if (!options.contains(File) || options(File) == "this") {
-          reference.getElement.getContainingFile.getVirtualFile.getNameWithoutExtension
-        } else options(File)
+        val expected =
+          if (!options.contains(File) || options(File) == "this")
+            reference.getElement.getContainingFile.getVirtualFile.getNameWithoutExtension
+          else options(File)
         assertEquals(File, expected, actual)
       }
 
@@ -197,17 +193,14 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
         if (options.contains(Name)) options(Name) else referenceName
       assertEquals(Name, expectedName, target.name)
 
-      if (options.contains(Line)) {
+      if (options.contains(Line))
         assertEquals(Line, options(Line).toInt, lineOf(target))
-      }
 
-      if (options.contains(Offset)) {
+      if (options.contains(Offset))
         assertEquals(Offset, options(Offset).toInt, target.getTextOffset)
-      }
 
-      if (options.contains(Length)) {
+      if (options.contains(Length))
         assertEquals(Length, options(Length).toInt, target.getTextLength)
-      }
 
       if (options.contains(Type)) {
         val expectedClass = Class.forName(options(Type))

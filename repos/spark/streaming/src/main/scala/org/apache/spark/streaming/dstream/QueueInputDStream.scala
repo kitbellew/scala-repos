@@ -47,24 +47,22 @@ private[streaming] class QueueInputDStream[T: ClassTag](
   override def compute(validTime: Time): Option[RDD[T]] = {
     val buffer = new ArrayBuffer[RDD[T]]()
     queue.synchronized {
-      if (oneAtATime && queue.nonEmpty) {
+      if (oneAtATime && queue.nonEmpty)
         buffer += queue.dequeue()
-      } else {
+      else {
         buffer ++= queue
         queue.clear()
       }
     }
-    if (buffer.nonEmpty) {
-      if (oneAtATime) {
+    if (buffer.nonEmpty)
+      if (oneAtATime)
         Some(buffer.head)
-      } else {
+      else
         Some(new UnionRDD(context.sc, buffer.toSeq))
-      }
-    } else if (defaultRDD != null) {
+    else if (defaultRDD != null)
       Some(defaultRDD)
-    } else {
+    else
       Some(ssc.sparkContext.emptyRDD)
-    }
   }
 
 }

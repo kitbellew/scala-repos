@@ -82,9 +82,8 @@ private[finagle] class PipelineFactory(
 
       if (header.contexts != null) {
         val iter = header.contexts.iterator()
-        while (iter.hasNext) {
+        while (iter.hasNext)
           contextBuf += contextStructToKVTuple(iter.next())
-        }
       }
 
       val requestBuf = ChannelBuffers.wrappedBuffer(request_)
@@ -213,11 +212,10 @@ private[finagle] class PipelineFactory(
         ctx: ChannelHandlerContext,
         e: MessageEvent): Unit = {
       super.writeRequested(ctx, e)
-      if (n.decrementAndGet() > 0) {
+      if (n.decrementAndGet() > 0)
         // Need to call q.take() Since incrementing n and enqueueing the
         // request are not atomic. n>0 guarantees q.take() does not block forever.
         super.messageReceived(ctx, q.take())
-      }
     }
   }
 
@@ -313,9 +311,8 @@ private[finagle] class PipelineFactory(
           downgradedConnectionCount.incrementAndGet()
           ctx.getChannel.getCloseFuture.addListener(new ChannelFutureListener {
             override def operationComplete(f: ChannelFuture): Unit =
-              if (!f.isCancelled) { // on success or failure
+              if (!f.isCancelled) // on success or failure
                 downgradedConnectionCount.decrementAndGet()
-              }
           })
 
           // Add a ChannelHandler to serialize the requests since we may
@@ -354,9 +351,8 @@ private[finagle] class PipelineFactory(
           thriftMuxConnectionCount.incrementAndGet()
           ctx.getChannel.getCloseFuture.addListener(new ChannelFutureListener {
             override def operationComplete(f: ChannelFuture): Unit =
-              if (!f.isCancelled) { // on success or failure
+              if (!f.isCancelled) // on success or failure
                 thriftMuxConnectionCount.decrementAndGet()
-              }
           })
 
           pipeline.remove(this)

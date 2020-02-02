@@ -106,7 +106,7 @@ object RejectionHandler {
     def apply(rejections: immutable.Seq[Rejection]): Option[Route] =
       if (rejections.nonEmpty) {
         @tailrec def rec(ix: Int): Option[Route] =
-          if (ix < cases.length) {
+          if (ix < cases.length)
             cases(ix) match {
               case CaseHandler(pf) ⇒
                 val route = rejections collectFirst pf
@@ -115,7 +115,7 @@ object RejectionHandler {
                 val rejs = rejections collect x
                 if (rejs.isEmpty) rec(ix + 1) else Some(f(rejs))
             }
-          } else None
+          else None
         rec(0)
       } else notFound
   }

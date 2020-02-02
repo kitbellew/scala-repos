@@ -22,14 +22,14 @@ object Setup extends LilaController with TheftPrevention {
   private val PostRateLimit = new lila.memo.RateLimit(5, 1 minute, "setup post")
 
   def aiForm = Open { implicit ctx =>
-    if (HTTPRequest isXhr ctx.req) {
+    if (HTTPRequest isXhr ctx.req)
       env.forms aiFilled get("fen") map { form =>
         html.setup.ai(
           form,
           Env.fishnet.aiPerfApi.intRatings,
           form("fen").value flatMap ValidFen(getBool("strict")))
       }
-    } else
+    else
       fuccess {
         Redirect(routes.Lobby.home + "#ai")
       }
@@ -40,7 +40,7 @@ object Setup extends LilaController with TheftPrevention {
   }
 
   def friendForm(userId: Option[String]) = Open { implicit ctx =>
-    if (HTTPRequest isXhr ctx.req) {
+    if (HTTPRequest isXhr ctx.req)
       env.forms friendFilled get("fen") flatMap { form =>
         val validFen = form("fen").value flatMap ValidFen(false)
         userId ?? UserRepo.named flatMap {
@@ -51,7 +51,7 @@ object Setup extends LilaController with TheftPrevention {
             }
         }
       }
-    } else
+    else
       fuccess {
         Redirect(routes.Lobby.home + "#friend")
       }

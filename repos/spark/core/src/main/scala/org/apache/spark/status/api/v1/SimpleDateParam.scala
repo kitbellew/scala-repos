@@ -26,15 +26,13 @@ private[v1] class SimpleDateParam(val originalValue: String) {
 
   val timestamp: Long = {
     val format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSz")
-    try {
-      format.parse(originalValue).getTime()
-    } catch {
+    try format.parse(originalValue).getTime()
+    catch {
       case _: ParseException =>
         val gmtDay = new SimpleDateFormat("yyyy-MM-dd")
         gmtDay.setTimeZone(TimeZone.getTimeZone("GMT"))
-        try {
-          gmtDay.parse(originalValue).getTime()
-        } catch {
+        try gmtDay.parse(originalValue).getTime()
+        catch {
           case _: ParseException =>
             throw new WebApplicationException(
               Response

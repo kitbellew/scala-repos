@@ -526,9 +526,9 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         val initHeight = stackHeights(insnIndex)
         stackHeights(insnIndex) = -1 // prevent i from being enqueued again
 
-        if (insn.getOpcode == -1) { // frames, labels, line numbers
+        if (insn.getOpcode == -1) // frames, labels, line numbers
           enqInsnIndex(insnIndex + 1, initHeight)
-        } else {
+        else {
           val stackGrowth = InstructionStackEffect.maxStackGrowth(insn)
           val heightAfter = initHeight + stackGrowth
           if (heightAfter > maxStack) maxStack = heightAfter

@@ -95,10 +95,9 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
       cb"C")
 
     // Lonely start characters, separated by spaces
-    if (!executingInJVM) {
+    if (!executingInJVM)
       testDecode(bb"${(0xc0 to 0xf4).flatMap(c => Seq(c, 32))}")(
         (0xc0 to 0xf4).flatMap(i => OutSeq(Malformed(1), cb" ")): _*)
-    }
 
     // Sequences with some continuation bytes missing
     testDecode(bb"c2")(Malformed(1))

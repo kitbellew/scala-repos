@@ -157,12 +157,12 @@ class ScalaIntroduceParameterHandler
 
       data.foreach { d =>
         val dialog = createDialog(project, d)
-        if (dialog.showAndGet) {
+        if (dialog.showAndGet)
           invokeLater {
             if (editor != null && !editor.isDisposed)
               editor.getSelectionModel.removeSelection()
           }
-        } else {
+        else {
           occurrenceHighlighters.foreach(_.dispose())
           occurrenceHighlighters = Seq.empty
         }
@@ -400,7 +400,7 @@ class ScalaIntroduceParameterHandler
   def afterMethodChoosing(elem: PsiElement, editor: Editor)(
       action: ScMethodLike => Unit): Unit = {
     val validEnclosingMethods: Seq[ScMethodLike] = getEnclosingMethods(elem)
-    if (validEnclosingMethods.size > 1 && !ApplicationManager.getApplication.isUnitTestMode) {
+    if (validEnclosingMethods.size > 1 && !ApplicationManager.getApplication.isUnitTestMode)
       ScalaRefactoringUtil.showChooser[ScMethodLike](
         editor,
         validEnclosingMethods.toArray,
@@ -408,15 +408,14 @@ class ScalaIntroduceParameterHandler
         s"Choose function for $REFACTORING_NAME",
         getTextForElement,
         toHighlight)
-    } else if (validEnclosingMethods.size == 1 || ApplicationManager.getApplication.isUnitTestMode) {
+    else if (validEnclosingMethods.size == 1 || ApplicationManager.getApplication.isUnitTestMode)
       action(validEnclosingMethods.head)
-    } else {
+    else
       showErrorHint(
         ScalaBundle.message("cannot.refactor.no.function"),
         elem.getProject,
         editor,
         REFACTORING_NAME)
-    }
   }
 
   private def isLibraryInterfaceMethod(method: PsiMethod): Boolean =
@@ -428,11 +427,9 @@ class ScalaIntroduceParameterHandler
     for {
       elem <- elems
       ret @ (r: ScReturnStmt) <- elem.depthFirst
-    } {
-      if (ret.returnFunction.isEmpty || !elem.isAncestorOf(
+    } if (ret.returnFunction.isEmpty || !elem.isAncestorOf(
             ret.returnFunction.get))
-        return true
-    }
+      return true
     false
   }
 }

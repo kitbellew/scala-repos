@@ -67,9 +67,8 @@ object InferUtil {
   def logInfo(searchLevel: Int, message: => String) {
     val indent = Seq.fill(searchLevel)("  ").mkString
     //    println(indent + message)
-    if (isDebugImplicitParameters) {
+    if (isDebugImplicitParameters)
       LOG.debug(indent + message)
-    }
   }
 
   /**
@@ -160,7 +159,7 @@ object InferUtil {
         implicitParameters = Some(resolveResultsBuffer.toSeq)
         val dependentSubst = new ScSubstitutor(() => {
           val level = element.scalaLanguageLevelOrDefault
-          if (level >= Scala_2_10) {
+          if (level >= Scala_2_10)
             paramsForInferBuffer
               .zip(exprsBuffer)
               .map {
@@ -175,7 +174,7 @@ object InferUtil {
                   (param, paramType)
               }
               .toMap
-          } else Map.empty
+          else Map.empty
         })
         resInner = dependentSubst.subst(resInner)
       case mt @ ScMethodType(retType, params, isImplicit) if !isImplicit =>
@@ -201,7 +200,7 @@ object InferUtil {
         resInner = retType
         val dependentSubst = new ScSubstitutor(() => {
           val level = element.scalaLanguageLevelOrDefault
-          if (level >= Scala_2_10) {
+          if (level >= Scala_2_10)
             paramsForInfer
               .zip(exprs)
               .map {
@@ -216,7 +215,7 @@ object InferUtil {
                   (param, paramType)
               }
               .toMap
-          } else Map.empty
+          else Map.empty
         })
         resInner = dependentSubst.subst(resInner)
       case _ =>
@@ -289,11 +288,11 @@ object InferUtil {
         }
         //check if it's ClassManifest parameter:
         checkManifest { r =>
-          if (r == null && param.isDefault && param.paramInCode.nonEmpty) {
+          if (r == null && param.isDefault && param.paramInCode.nonEmpty)
             //todo: should be added for infer to
             //todo: what if paramInCode is null?
             resolveResults += new ScalaResolveResult(param.paramInCode.get)
-          } else if (r == null && check) throw new SafeCheckException
+          else if (r == null && check) throw new SafeCheckException
           else if (r == null) {
             val parameter = ScalaPsiElementFactory.createParameterFromText(
               s"$notFoundParameterName: Int",
@@ -653,17 +652,15 @@ object InferUtil {
                   //todo: add only one of them according to variance
                   if (tp.lowerType() != Nothing) {
                     val substedLowerType = unSubst.subst(tp.lowerType())
-                    if (!hasRecursiveTypeParameters(substedLowerType)) {
+                    if (!hasRecursiveTypeParameters(substedLowerType))
                       un =
                         un.addLower(name, substedLowerType, additional = true)
-                    }
                   }
                   if (tp.upperType() != Any) {
                     val substedUpperType = unSubst.subst(tp.upperType())
-                    if (!hasRecursiveTypeParameters(substedUpperType)) {
+                    if (!hasRecursiveTypeParameters(substedUpperType))
                       un =
                         un.addUpper(name, substedUpperType, additional = true)
-                    }
                   }
                 }
             }

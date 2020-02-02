@@ -267,9 +267,8 @@ object StringTranslate {
     var i = 0
     while (i < matching.length()) {
       val rep = if (i < replace.length()) replace.charAt(i) else '\u0000'
-      if (null == dict.get(matching.charAt(i))) {
+      if (null == dict.get(matching.charAt(i)))
         dict.put(matching.charAt(i), rep)
-      }
       i += 1
     }
     dict
@@ -325,11 +324,11 @@ case class StringTranslate(
       ctx,
       ev,
       (src, matching, replace) => {
-        val check = if (matchingExpr.foldable && replaceExpr.foldable) {
-          s"$termDict == null"
-        } else {
-          s"!$matching.equals($termLastMatching) || !$replace.equals($termLastReplace)"
-        }
+        val check =
+          if (matchingExpr.foldable && replaceExpr.foldable)
+            s"$termDict == null"
+          else
+            s"!$matching.equals($termLastMatching) || !$replace.equals($termLastReplace)"
         s"""if ($check) {
         // Not all of them is literal or matching or replace value changed
         $termLastMatching = $matching.clone();
@@ -497,21 +496,20 @@ case class StringLocate(substr: Expression, str: Expression, start: Expression)
 
   override def eval(input: InternalRow): Any = {
     val s = start.eval(input)
-    if (s == null) {
+    if (s == null)
       // if the start position is null, we need to return 0, (conform to Hive)
       0
-    } else {
+    else {
       val r = substr.eval(input)
-      if (r == null) {
+      if (r == null)
         null
-      } else {
+      else {
         val l = str.eval(input)
-        if (l == null) {
+        if (l == null)
           null
-        } else {
+        else
           l.asInstanceOf[UTF8String]
             .indexOf(r.asInstanceOf[UTF8String], s.asInstanceOf[Int]) + 1
-        }
       }
     }
   }
@@ -608,9 +606,9 @@ case class FormatString(children: Expression*)
 
   override def eval(input: InternalRow): Any = {
     val pattern = children(0).eval(input)
-    if (pattern == null) {
+    if (pattern == null)
       null
-    } else {
+    else {
       val sb = new StringBuffer()
       val formatter = new java.util.Formatter(sb, Locale.US)
 
@@ -629,13 +627,12 @@ case class FormatString(children: Expression*)
 
     val argListString = argListGen.foldLeft("") { (s, v) =>
       val nullSafeString =
-        if (ctx.boxedType(v._1) != ctx.javaType(v._1)) {
+        if (ctx.boxedType(v._1) != ctx.javaType(v._1))
           // Java primitives get boxed in order to allow null values.
           s"(${v._2.isNull}) ? (${ctx.boxedType(v._1)}) null : " +
             s"new ${ctx.boxedType(v._1)}(${v._2.value})"
-        } else {
+        else
           s"(${v._2.isNull}) ? null : ${v._2.value}"
-        }
       s + "," + nullSafeString
     }
 
@@ -856,11 +853,10 @@ case class Ascii(child: Expression)
 
   protected override def nullSafeEval(string: Any): Any = {
     val bytes = string.asInstanceOf[UTF8String].getBytes
-    if (bytes.length > 0) {
+    if (bytes.length > 0)
       bytes(0).asInstanceOf[Int]
-    } else {
+    else
       0
-    }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
@@ -1027,9 +1023,8 @@ case class FormatNumber(x: Expression, d: Expression)
 
   override protected def nullSafeEval(xObject: Any, dObject: Any): Any = {
     val dValue = dObject.asInstanceOf[Int]
-    if (dValue < 0) {
+    if (dValue < 0)
       return null
-    }
 
     if (dValue != lastDValue) {
       // construct a new DecimalFormat only if a new dValue

@@ -40,52 +40,44 @@ class JsonLine(p: String, fields: Fields, failOnEmptyLines: Boolean)
       failOnEmptyLines = failOnEmptyLines)
 
 class JsonLineJob(args: Args) extends Job(args) {
-  try {
-    Tsv("input0", ('query, 'queryStats)).read.write(JsonLine("output0"))
-  } catch {
+  try Tsv("input0", ('query, 'queryStats)).read.write(JsonLine("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
 
 class JsonLineRestrictedFieldsJob(args: Args) extends Job(args) {
-  try {
-    Tsv("input0", ('query, 'queryStats)).read
-      .write(JsonLine("output0", Tuple1('query)))
-  } catch {
+  try Tsv("input0", ('query, 'queryStats)).read
+    .write(JsonLine("output0", Tuple1('query)))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
 
 class JsonLineInputJob(args: Args) extends Job(args) {
-  try {
-    JsonLine("input0", ('foo, 'bar)).read
-      .project('foo, 'bar)
-      .write(Tsv("output0"))
-
-  } catch {
+  try JsonLine("input0", ('foo, 'bar)).read
+    .project('foo, 'bar)
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace
   }
 }
 
 class JsonLineInputJobSkipEmptyLines(args: Args) extends Job(args) {
-  try {
-    JsonLine("input0", ('foo, 'bar), failOnEmptyLines = false).read
-      .project('foo, 'bar)
-      .write(Tsv("output0"))
-
-  } catch {
+  try JsonLine("input0", ('foo, 'bar), failOnEmptyLines = false).read
+    .project('foo, 'bar)
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace
   }
 }
 
 class JsonLineNestedInputJob(args: Args) extends Job(args) {
-  try {
-    JsonLine("input0", (Symbol("foo.too"), 'bar)).read
-      .rename((Symbol("foo.too") -> ('foo)))
-      .project('foo, 'bar)
-      .write(Tsv("output0"))
-
-  } catch {
+  try JsonLine("input0", (Symbol("foo.too"), 'bar)).read
+    .rename((Symbol("foo.too") -> ('foo)))
+    .project('foo, 'bar)
+    .write(Tsv("output0"))
+  catch {
     case e: Exception => e.printStackTrace
   }
 }

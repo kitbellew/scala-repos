@@ -335,22 +335,18 @@ object TestGraphs {
             .scanLeft(
               Option.empty[(Long, JoinedU)],
               Option.empty[(Long, U, Option[JoinedU])]) {
-              case ((None, result), (time, Left(u))) => {
+              case ((None, result), (time, Left(u))) =>
                 // The was no value previously
                 (None, Some((time, u, None)))
-              }
-              case ((prev @ Some((oldt, ju)), result), (time, Left(u))) => {
+              case ((prev @ Some((oldt, ju)), result), (time, Left(u))) =>
                 // gate the time for window join?
                 (prev, Some((time, u, Some(ju))))
-              }
-              case ((None, result), (time, Right(joined))) => {
+              case ((None, result), (time, Right(joined))) =>
                 (Some((time, joined)), None)
-              }
 
-              case ((Some((oldt, oldJ)), result), (time, Right(joined))) => {
+              case ((Some((oldt, oldJ)), result), (time, Right(joined))) =>
                 val nextJoined = Semigroup.plus(oldJ, joined)
                 (Some((time, nextJoined)), None)
-              }
             }
         }
         .toList
@@ -724,10 +720,9 @@ class TestGraphs[
       case (k, v) =>
         val lv = lookupFn(k).getOrElse(Monoid.zero)
         val eqv = Equiv[V].equiv(v, lv)
-        if (!eqv) {
+        if (!eqv)
           println(
             s"in diamondChecker: $k, $v is scala result, but platform gave $lv")
-        }
         eqv
     } && toSinkChecker(currentSink, items)
   }

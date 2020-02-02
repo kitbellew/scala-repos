@@ -82,9 +82,8 @@ private[sql] trait SQLTestUtils
 
   protected override def beforeAll(): Unit = {
     super.beforeAll()
-    if (loadTestDataBeforeTests) {
+    if (loadTestDataBeforeTests)
       loadTestData()
-    }
   }
 
   /**
@@ -105,11 +104,9 @@ private[sql] trait SQLTestUtils
       keys.map(key => Try(sqlContext.conf.getConfString(key)).toOption)
     (keys, values).zipped.foreach(sqlContext.conf.setConfString)
     try f
-    finally {
-      keys.zip(currentValues).foreach {
-        case (key, Some(value)) => sqlContext.conf.setConfString(key, value)
-        case (key, None)        => sqlContext.conf.unsetConf(key)
-      }
+    finally keys.zip(currentValues).foreach {
+      case (key, Some(value)) => sqlContext.conf.setConfString(key, value)
+      case (key, None)        => sqlContext.conf.unsetConf(key)
     }
   }
 
@@ -143,13 +140,12 @@ private[sql] trait SQLTestUtils
     */
   protected def withTempTable(tableNames: String*)(f: => Unit): Unit =
     try f
-    finally {
-      // If the test failed part way, we don't want to mask the failure by failing to remove
-      // temp tables that never got created.
-      try tableNames.foreach(sqlContext.dropTempTable)
-      catch {
-        case _: NoSuchTableException =>
-      }
+    finally
+    // If the test failed part way, we don't want to mask the failure by failing to remove
+    // temp tables that never got created.
+    try tableNames.foreach(sqlContext.dropTempTable)
+    catch {
+      case _: NoSuchTableException =>
     }
 
   /**
@@ -157,10 +153,8 @@ private[sql] trait SQLTestUtils
     */
   protected def withTable(tableNames: String*)(f: => Unit): Unit =
     try f
-    finally {
-      tableNames.foreach { name =>
-        sqlContext.sql(s"DROP TABLE IF EXISTS $name")
-      }
+    finally tableNames.foreach { name =>
+      sqlContext.sql(s"DROP TABLE IF EXISTS $name")
     }
 
   /**
@@ -168,8 +162,8 @@ private[sql] trait SQLTestUtils
     */
   protected def withView(viewNames: String*)(f: => Unit): Unit =
     try f
-    finally {
-      viewNames.foreach { name => sqlContext.sql(s"DROP VIEW IF EXISTS $name") }
+    finally viewNames.foreach { name =>
+      sqlContext.sql(s"DROP VIEW IF EXISTS $name")
     }
 
   /**
@@ -181,9 +175,8 @@ private[sql] trait SQLTestUtils
   protected def withTempDatabase(f: String => Unit): Unit = {
     val dbName = s"db_${UUID.randomUUID().toString.replace('-', '_')}"
 
-    try {
-      sqlContext.sql(s"CREATE DATABASE $dbName")
-    } catch {
+    try sqlContext.sql(s"CREATE DATABASE $dbName")
+    catch {
       case cause: Throwable =>
         fail("Failed to create temporary database", cause)
     }
@@ -257,11 +250,10 @@ private[sql] object SQLTestUtils {
           case o                       => o
         })
       }
-      if (sort) {
+      if (sort)
         converted.sortBy(_.toString())
-      } else {
+      else
         converted
-      }
     }
     if (prepareAnswer(expectedAnswer) != prepareAnswer(sparkAnswer)) {
       val errorMessage =
@@ -275,8 +267,7 @@ private[sql] object SQLTestUtils {
            ).mkString("\n")}
       """.stripMargin
       Some(errorMessage)
-    } else {
+    } else
       None
-    }
   }
 }

@@ -22,16 +22,15 @@ object TypeParam {
     val paramMarker = builder.mark
     val annotationMarker = builder.mark
     var exist = false
-    while (Annotation.parse(builder)) { exist = true }
+    while (Annotation.parse(builder)) exist = true
     if (exist) annotationMarker.done(ScalaElementTypes.ANNOTATIONS)
     else annotationMarker.drop()
 
-    if (mayHaveVariance) {
+    if (mayHaveVariance)
       builder.getTokenText match {
         case "+" | "-" => builder.advanceLexer()
         case _         =>
       }
-    }
     builder.getTokenType match {
       case ScalaTokenTypes.tIDENTIFIER | ScalaTokenTypes.tUNDER =>
         builder.advanceLexer //Ate identifier

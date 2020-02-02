@@ -608,11 +608,10 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
       def messageListId = "Hello"
 
       def collapseUnless[A](isEmptyCond: Boolean)(f: => A): Box[A] =
-        if (!isEmptyCond) {
+        if (!isEmptyCond)
           Empty
-        } else {
+        else
           Full(f)
-        }
 
       ".noMail" #> collapseUnless(cachedMessageList.map(_.isEmpty).openOr(true)) {
         "tbody [id]" #> messageListId &

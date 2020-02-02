@@ -57,11 +57,10 @@ trait CValueGenerators {
       maxDepth: Int = maxArrayDepth,
       depth: Int = 0): Gen[CValueType[_]] =
     if (depth >= maxDepth) genNonArrayCValueType
-    else {
+    else
       frequency(
         0 -> (genCValueType(maxDepth, depth + 1) map (CArrayType(_))),
         6 -> genNonArrayCValueType)
-    }
 
   def genCType: Gen[CType] =
     frequency(

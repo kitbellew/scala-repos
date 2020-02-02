@@ -527,12 +527,10 @@ class StreamingContextSuite
     // Call ssc.stop after a body of code
     def testGetOrCreate(body: => Unit): Unit = {
       newContextCreated = false
-      try {
-        body
-      } finally {
-        if (ssc != null) {
+      try body
+      finally {
+        if (ssc != null)
           ssc.stop()
-        }
         ssc = null
       }
     }
@@ -613,13 +611,11 @@ class StreamingContextSuite
 
     def testGetActiveOrCreate(body: => Unit): Unit = {
       newContextCreated = false
-      try {
-        body
-      } finally {
+      try body
+      finally {
 
-        if (ssc != null) {
+        if (ssc != null)
           ssc.stop(stopSparkContext = false)
-        }
         ssc = null
       }
     }
@@ -677,12 +673,10 @@ class StreamingContextSuite
     def testGetActiveOrCreate(body: => Unit): Unit = {
       require(StreamingContext.getActive().isEmpty) // no active context
       newContextCreated = false
-      try {
-        body
-      } finally {
-        if (ssc != null) {
+      try body
+      finally {
+        if (ssc != null)
           ssc.stop()
-        }
         ssc = null
       }
     }
@@ -908,9 +902,8 @@ class TestReceiver
     val thread = new Thread() {
       override def run() {
         logInfo("Receiving started")
-        while (!isStopped) {
+        while (!isStopped)
           store(TestReceiver.counter.getAndIncrement)
-        }
         logInfo(
           "Receiving stopped at count value of " + TestReceiver.counter.get())
       }
@@ -954,9 +947,8 @@ class SlowTestReceiver(totalRecords: Int, recordsPerSecond: Int)
 
   def onStop() {
     // Simulate slow receiver by waiting for all records to be produced
-    while (!SlowTestReceiver.receivedAllRecords) {
+    while (!SlowTestReceiver.receivedAllRecords)
       Thread.sleep(100)
-    }
     // no clean to be done, the receiving thread should stop on it own
   }
 }
@@ -1004,9 +996,7 @@ package object testPackage extends Assertions {
           rddGenerated && foreachCallSiteCorrect,
           "Call site in foreachRDD was not correct")
       }
-    } finally {
-      ssc.stop()
-    }
+    } finally ssc.stop()
   }
 }
 

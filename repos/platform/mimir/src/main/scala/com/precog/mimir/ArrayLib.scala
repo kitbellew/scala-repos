@@ -55,9 +55,9 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             case ColumnRef(CPath(CPathIndex(i), _ @_*), _) => i
           }
 
-          if (indices.isEmpty) {
+          if (indices.isEmpty)
             Slice.empty
-          } else {
+          else {
             val maxLength = indices.max + 1
 
             val columnTables =
@@ -66,7 +66,7 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                     acc,
                     (
                       ColumnRef(CPath(CPathIndex(idx), ptail @ _*), tpe),
-                      col)) => {
+                      col)) =>
                   // remap around the mod ring w.r.t. max length
                   // s.t. f(i) = f'(i * max + arrayI)
 
@@ -77,7 +77,6 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   colTable(idx) = col
 
                   acc.updated(finalRef, colTable)
-                }
 
                 case (acc, _) => acc
               }
@@ -86,81 +85,71 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               case (ref @ ColumnRef(_, CUndefined), _) =>
                 ref -> UndefinedColumn.raw
 
-              case (ref @ ColumnRef(_, CBoolean), colTable) => {
+              case (ref @ ColumnRef(_, CBoolean), colTable) =>
                 val col = new ModUnionColumn(colTable) with BoolColumn {
                   def apply(i: Int) = col(i).asInstanceOf[BoolColumn](row(i))
                 }
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CString), colTable) => {
+              case (ref @ ColumnRef(_, CString), colTable) =>
                 val col = new ModUnionColumn(colTable) with StrColumn {
                   def apply(i: Int) = col(i).asInstanceOf[StrColumn](row(i))
                 }
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CLong), colTable) => {
+              case (ref @ ColumnRef(_, CLong), colTable) =>
                 val col = new ModUnionColumn(colTable) with LongColumn {
                   def apply(i: Int) = col(i).asInstanceOf[LongColumn](row(i))
                 }
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CDouble), colTable) => {
+              case (ref @ ColumnRef(_, CDouble), colTable) =>
                 val col = new ModUnionColumn(colTable) with DoubleColumn {
                   def apply(i: Int) = col(i).asInstanceOf[DoubleColumn](row(i))
                 }
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CNum), colTable) => {
+              case (ref @ ColumnRef(_, CNum), colTable) =>
                 val col = new ModUnionColumn(colTable) with NumColumn {
                   def apply(i: Int) = col(i).asInstanceOf[NumColumn](row(i))
                 }
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CEmptyObject), colTable) => {
+              case (ref @ ColumnRef(_, CEmptyObject), colTable) =>
                 val col = new ModUnionColumn(colTable) with EmptyObjectColumn
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CEmptyArray), colTable) => {
+              case (ref @ ColumnRef(_, CEmptyArray), colTable) =>
                 val col = new ModUnionColumn(colTable) with EmptyArrayColumn
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CNull), colTable) => {
+              case (ref @ ColumnRef(_, CNull), colTable) =>
                 val col = new ModUnionColumn(colTable) with NullColumn
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CDate), colTable) => {
+              case (ref @ ColumnRef(_, CDate), colTable) =>
                 val col = new ModUnionColumn(colTable) with DateColumn {
                   def apply(i: Int) = col(i).asInstanceOf[DateColumn](row(i))
                 }
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, CPeriod), colTable) => {
+              case (ref @ ColumnRef(_, CPeriod), colTable) =>
                 val col = new ModUnionColumn(colTable) with PeriodColumn {
                   def apply(i: Int) = col(i).asInstanceOf[PeriodColumn](row(i))
                 }
 
                 ref -> col
-              }
 
-              case (ref @ ColumnRef(_, arrTpe: CArrayType[a]), colTable) => {
+              case (ref @ ColumnRef(_, arrTpe: CArrayType[a]), colTable) =>
                 val col =
                   new ModUnionColumn(colTable) with HomogeneousArrayColumn[a] {
                     val tpe = arrTpe
@@ -171,7 +160,6 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   }
 
                 ref -> col
-              }
             }
 
             val remap = cf.util.Remap(_ / maxLength)

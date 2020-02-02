@@ -84,9 +84,8 @@ class OfferTest extends WordSpec with MockitoSugar {
 
         offer.prepare()
         val tx = mock[Tx[Int]]
-        for (i <- Seq(0, 2)) {
+        for (i <- Seq(0, 2))
           pendingTxs(i).setValue(tx)
-        }
         verify(tx, times(2)).nack()
         verify(tx, never()).ack()
       }
@@ -137,10 +136,9 @@ class OfferTest extends WordSpec with MockitoSugar {
         val shuffledOffer =
           Offer.choose(Some(new Random(Time.now.inNanoseconds)), offers)
         val histo = new Array[Int](3)
-        for (_ <- 0 until 1000) {
+        for (_ <- 0 until 1000)
           for (tx <- shuffledOffer.prepare())
             histo(txs.indexOf(tx)) += 1
-        }
 
         assert(histo(0) == 311)
         assert(histo(1) == 346)
@@ -399,7 +397,7 @@ class OfferTest extends WordSpec with MockitoSugar {
       val b1 = new Broker[String]
 
       val o = Offer.choose(
-        b0.send(123) const { "put!" },
+        b0.send(123) const "put!",
         b1.recv
       )
 

@@ -72,9 +72,9 @@ class InputStreamReader(
     if (off < 0 || len < 0 || len > cbuf.length - off)
       throw new IndexOutOfBoundsException
 
-    if (len == 0) {
+    if (len == 0)
       0
-    } else if (outBuf.hasRemaining) {
+    else if (outBuf.hasRemaining) {
       // Reuse chars decoded last time
       val available = Math.min(outBuf.remaining, len)
       outBuf.get(cbuf, off, available)
@@ -83,9 +83,9 @@ class InputStreamReader(
       // Try and decode directly into the destination array
       val directOut = CharBuffer.wrap(cbuf, off, len)
       val result = readImpl(directOut)
-      if (result != InputStreamReader.Overflow) {
+      if (result != InputStreamReader.Overflow)
         result
-      } else {
+      else
         /* There's not enough space in the destination array to receive even
          * a tiny bit of output from the decoder. We need to decode to the
          * outBuf instead.
@@ -93,10 +93,8 @@ class InputStreamReader(
          * supplementary character, and the given `len` is 1.
          */
         readMoreThroughOutBuf(cbuf, off, len)
-      }
-    } else {
+    } else
       -1
-    }
   }
 
   // In a separate method because this is (hopefully) not a common case
@@ -136,7 +134,7 @@ class InputStreamReader(
     val initPos = out.position
     val result = decoder.decode(inBuf, out, endOfInput)
 
-    if (out.position != initPos) {
+    if (out.position != initPos)
       /* Good, we made progress, so we can return.
        * Note that the `result` does not matter. Whether it's an underflow,
        * an overflow, or even an error, if we read *something*, we can return
@@ -146,7 +144,7 @@ class InputStreamReader(
        * at all), which will cause one of the following cases to be handled.
        */
       out.position - initPos
-    } else if (result.isUnderflow) {
+    else if (result.isUnderflow)
       if (endOfInput) {
         assert(
           !inBuf.hasRemaining,
@@ -155,24 +153,22 @@ class InputStreamReader(
             "returned a MalformedInput error instead."
         )
         // Flush
-        if (decoder.flush(out).isOverflow) {
+        if (decoder.flush(out).isOverflow)
           InputStreamReader.Overflow
-        } else {
-          // Done
-          if (out.position == initPos) -1
-          else out.position - initPos
-        }
+        else
+        // Done
+        if (out.position == initPos) -1
+        else out.position - initPos
       } else {
         // We need to read more from the underlying input stream
         if (inBuf.limit == inBuf.capacity) {
           inBuf.compact()
-          if (!inBuf.hasRemaining) {
+          if (!inBuf.hasRemaining)
             throw new AssertionError(
               "Scala.js implementation restriction: " +
                 inBuf.capacity + " bytes do not seem to be enough for " +
                 getEncoding + " to decode a single code point. " +
                 "Please report this as a bug.")
-          }
           inBuf.limit(inBuf.position)
           inBuf.position(0)
         }
@@ -191,9 +187,9 @@ class InputStreamReader(
 
         readImpl(out)
       }
-    } else if (result.isOverflow) {
+    else if (result.isOverflow)
       InputStreamReader.Overflow
-    } else {
+    else {
       result.throwException()
       throw new AssertionError("should not get here")
     }

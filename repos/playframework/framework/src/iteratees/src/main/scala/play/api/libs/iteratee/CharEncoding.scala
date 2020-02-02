@@ -81,23 +81,22 @@ object CharEncoding {
         def process(charBuffer: CharBuffer): CoderResult = {
           val result = decoder.decode(byteBuffer, charBuffer, true)
           out.write(charBuffer.array, 0, charBuffer.position)
-          if (result.isOverflow) {
-            if (charBuffer.position == 0) {
+          if (result.isOverflow)
+            if (charBuffer.position == 0)
               // shouldn't happen for most encodings
               process(CharBuffer.allocate(2 * charBuffer.capacity))
-            } else {
+            else {
               charBuffer.clear()
               process(charBuffer)
             }
-          } else {
+          else
             result
-          }
         }
         val result = process(charBuffer)
 
-        if (result.isUnmappable || last && result.isMalformed) {
+        if (result.isUnmappable || last && result.isMalformed)
           Left(result)
-        } else {
+        else {
           val remaining =
             if (result.isError) bytes.drop(byteBuffer.position) else empty
           Right((out.toString, remaining))
@@ -130,33 +129,31 @@ object CharEncoding {
         def process(byteBuffer: ByteBuffer): CoderResult = {
           val result = encoder.encode(charBuffer, byteBuffer, true)
           out.write(byteBuffer.array, 0, byteBuffer.position)
-          if (result.isOverflow) {
-            if (byteBuffer.position == 0) {
+          if (result.isOverflow)
+            if (byteBuffer.position == 0)
               // shouldn't happen for most encodings
               process(ByteBuffer.allocate(2 * byteBuffer.capacity))
-            } else {
+            else {
               byteBuffer.clear()
               process(byteBuffer)
             }
-          } else {
+          else
             result
-          }
         }
         val result = process(byteBuffer)
-        if (result.isUnmappable || last && result.isMalformed) {
+        if (result.isUnmappable || last && result.isMalformed)
           Left(result)
-        } else {
+        else {
           val remaining =
             if (result.isError) chars.drop(charBuffer.position) else ""
           val bytes = out.toByteArray
           val bytesWithoutBom =
             if (charset.name
                   .startsWith("UTF-") && bytes.length >= 2 && bytes(0) == 0xfe.toByte && bytes(
-                  1) == 0xff.toByte) {
+                  1) == 0xff.toByte)
               bytes.drop(2)
-            } else {
+            else
               bytes
-            }
           Right((bytesWithoutBom, remaining))
         }
       }

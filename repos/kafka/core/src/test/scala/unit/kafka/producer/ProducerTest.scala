@@ -134,9 +134,7 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     } catch {
       case e: FailedToSendMessageException => // this is expected
       case oe: Throwable                   => fail("fails with exception", oe)
-    } finally {
-      producer1.close()
-    }
+    } finally producer1.close()
 
     val producer2 = TestUtils.createProducer[String, String](
       brokerList =
@@ -145,13 +143,10 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       keyEncoder = classOf[StringEncoder].getName
     )
 
-    try {
-      producer2.send(new KeyedMessage[String, String](topic, "test", "test1"))
-    } catch {
+    try producer2.send(new KeyedMessage[String, String](topic, "test", "test1"))
+    catch {
       case e: Throwable => fail("Should succeed sending the message", e)
-    } finally {
-      producer2.close()
-    }
+    } finally producer2.close()
 
     val producer3 = TestUtils.createProducer[String, String](
       brokerList = TestUtils.getBrokerListStrFromServers(Seq(server1, server2)),
@@ -159,13 +154,10 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       keyEncoder = classOf[StringEncoder].getName
     )
 
-    try {
-      producer3.send(new KeyedMessage[String, String](topic, "test", "test1"))
-    } catch {
+    try producer3.send(new KeyedMessage[String, String](topic, "test", "test1"))
+    catch {
       case e: Throwable => fail("Should succeed sending the message", e)
-    } finally {
-      producer3.close()
-    }
+    } finally producer3.close()
   }
 
   @Test
@@ -279,11 +271,11 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       producerProps = props
     )
     val startTime = System.currentTimeMillis()
-    try {
-      // Available partition ids should be 0, 1, 2 and 3, all lead and hosted only
-      // on broker 0
-      producer.send(new KeyedMessage[String, String](topic, "test", "test1"))
-    } catch {
+    try
+    // Available partition ids should be 0, 1, 2 and 3, all lead and hosted only
+    // on broker 0
+    producer.send(new KeyedMessage[String, String](topic, "test", "test1"))
+    catch {
       case e: Throwable => fail("Unexpected exception: " + e)
     }
     val endTime = System.currentTimeMillis()
@@ -374,16 +366,14 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
     server1.requestHandlerPool.shutdown()
 
     val t1 = SystemTime.milliseconds
-    try {
-      // this message should be assigned to partition 0 whose leader is on broker 0, but
-      // broker 0 will not response within timeoutMs millis.
-      producer.send(new KeyedMessage[String, String](topic, "test", "test"))
-    } catch {
+    try
+    // this message should be assigned to partition 0 whose leader is on broker 0, but
+    // broker 0 will not response within timeoutMs millis.
+    producer.send(new KeyedMessage[String, String](topic, "test", "test"))
+    catch {
       case e: FailedToSendMessageException => /* success */
       case e: Exception                    => fail("Not expected", e)
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
     val t2 = SystemTime.milliseconds
 
     // make sure we don't wait fewer than timeoutMs
@@ -414,8 +404,6 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, "new-topic", 0)
 
       producer.send(new KeyedMessage[String, String]("new-topic", "key", null))
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 }

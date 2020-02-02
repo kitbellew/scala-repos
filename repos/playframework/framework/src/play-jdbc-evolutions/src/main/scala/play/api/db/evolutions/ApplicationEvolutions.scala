@@ -46,7 +46,7 @@ class ApplicationEvolutions @Inject() (
   private def runEvolutions(database: Database): Unit = {
     val db = database.name
     val dbConfig = config.forDatasource(db)
-    if (dbConfig.enabled) {
+    if (dbConfig.enabled)
       withLock(database, dbConfig) {
         val schema = dbConfig.schema
         val autocommit = dbConfig.autocommit
@@ -88,7 +88,6 @@ class ApplicationEvolutions @Inject() (
           }
         }
       }
-    }
   }
 
   private def withLock(db: Database, dbConfig: EvolutionsDatasourceConfig)(
@@ -101,14 +100,10 @@ class ApplicationEvolutions @Inject() (
       val s = c.createStatement()
       createLockTableIfNecessary(url, c, s, dbConfig)
       lock(url, c, s, dbConfig)
-      try {
-        block
-      } finally {
-        unlock(c, s)
-      }
-    } else {
+      try block
+      finally unlock(c, s)
+    } else
       block
-    }
 
   private def createLockTableIfNecessary(
       url: String,
@@ -155,10 +150,9 @@ class ApplicationEvolutions @Inject() (
       case MysqlJdbcUrl(_) => lockPlayEvolutionsLockMysqlSqls
       case _               => lockPlayEvolutionsLockSqls
     }
-    try {
-      for (script <- lockScripts)
-        s.executeQuery(applySchema(script, dbConfig.schema))
-    } catch {
+    try for (script <- lockScripts)
+      s.executeQuery(applySchema(script, dbConfig.schema))
+    catch {
       case e: SQLException =>
         if (attempts == 0) throw e
         else {
@@ -316,17 +310,15 @@ class DefaultEvolutionsConfigParser @Inject() (configuration: Configuration)
       if (rootConfig.underlying.hasPath(deprecated)) {
         rootConfig.reportDeprecation(s"$baseKey.$path", deprecated)
         rootConfig.get[A](deprecated)
-      } else {
+      } else
         config.get[A](path)
-      }
 
     // Find all the defined datasources, both using the old format, and the new format
     def loadDatasources(path: String) =
-      if (rootConfig.underlying.hasPath(path)) {
+      if (rootConfig.underlying.hasPath(path))
         rootConfig.get[PlayConfig](path).subKeys
-      } else {
+      else
         Set.empty[String]
-      }
     val datasources = config.get[PlayConfig]("db").subKeys ++
       loadDatasources("applyEvolutions") ++
       loadDatasources("applyDownEvolutions")
@@ -433,7 +425,7 @@ class EvolutionsWebCommands @Inject() (
     request.path
       .replaceFirst("^((?!/@evolutions).)*(/@evolutions.*$)", "$2") match {
 
-      case applyEvolutions(db) => {
+      case applyEvolutions(db) =>
         Some {
           val scripts =
             evolutions.scripts(db, reader, config.forDatasource(db).schema)
@@ -445,15 +437,13 @@ class EvolutionsWebCommands @Inject() (
           buildLink.forceReload()
           play.api.mvc.Results.Redirect(redirectUrl)
         }
-      }
 
-      case resolveEvolutions(db, rev) => {
+      case resolveEvolutions(db, rev) =>
         Some {
           evolutions.resolve(db, rev.toInt, config.forDatasource(db).schema)
           buildLink.forceReload()
           play.api.mvc.Results.Redirect(redirectUrl)
         }
-      }
 
       case _ => None
 
@@ -480,13 +470,10 @@ case class InvalidDatabaseRevision(db: String, script: String)
         window.location = window.location.href.replace(/\/@evolutions.*$|\/$/, '') + '/@evolutions/apply/%s?redirect=' + encodeURIComponent(location)
     """.format(db).trim
 
-  def htmlDescription = {
-
+  def htmlDescription =
     <span>An SQL script will be run on your database -</span>
     <input name="evolution-button" type="button" value="Apply this script now!" onclick={
       javascript
-    }/>
-
-  }.mkString
+    }/>.mkString
 
 }

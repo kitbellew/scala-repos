@@ -26,24 +26,20 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
       @volatile var file: Option[File] = None
 
-      try {
-        Post("/", simpleMultipartUpload) ~> {
-          uploadedFile("fieldName") {
-            case (info, tmpFile) ⇒
-              file = Some(tmpFile)
-              complete(info.toString)
-          }
-        } ~> check {
-          file.isDefined === true
-          responseAs[String] === FileInfo(
-            "fieldName",
-            "age.xml",
-            ContentTypes.`text/xml(UTF-8)`).toString
-          read(file.get) === xml
+      try Post("/", simpleMultipartUpload) ~> {
+        uploadedFile("fieldName") {
+          case (info, tmpFile) ⇒
+            file = Some(tmpFile)
+            complete(info.toString)
         }
-      } finally {
-        file.foreach(_.delete())
-      }
+      } ~> check {
+        file.isDefined === true
+        responseAs[String] === FileInfo(
+          "fieldName",
+          "age.xml",
+          ContentTypes.`text/xml(UTF-8)`).toString
+        read(file.get) === xml
+      } finally file.foreach(_.delete())
     }
   }
 
@@ -152,9 +148,7 @@ class FileUploadDirectivesSpec extends RoutingSpec {
       val buffer = new Array[Byte](1024)
       in.read(buffer)
       new String(buffer, "UTF-8")
-    } finally {
-      in.close()
-    }
+    } finally in.close()
   }
 
 }

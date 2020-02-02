@@ -125,11 +125,8 @@ case class FilesystemIngestFailureLog(
     val logFile =
       new File(persistDir, FilePrefix + System.currentTimeMillis + ".tmp")
     val out = new PrintWriter(new FileWriter(logFile))
-    try {
-      for (rec <- failureLog.values) out.println(rec.serialize.renderCompact)
-    } finally {
-      out.close()
-    }
+    try for (rec <- failureLog.values) out.println(rec.serialize.renderCompact)
+    finally out.close()
 
     this
   }
@@ -141,10 +138,9 @@ object FilesystemIngestFailureLog {
       persistDir: File,
       initialCheckpoint: YggCheckpoint): FilesystemIngestFailureLog = {
     persistDir.mkdirs()
-    if (!persistDir.isDirectory) {
+    if (!persistDir.isDirectory)
       throw new IllegalArgumentException(
         persistDir + " is not a directory usable for failure logs!")
-    }
 
     def readAll(
         reader: BufferedReader,
@@ -177,9 +173,7 @@ object FilesystemIngestFailureLog {
           if (failureLog.isEmpty) initialCheckpoint
           else failureLog.values.minBy(_.lastKnownGood).lastKnownGood,
           persistDir)
-      } finally {
-        reader.close()
-      }
+      } finally reader.close()
     }
   }
 
@@ -326,10 +320,9 @@ abstract class KafkaShardIngestActor(
         logger.error(
           "Ingest will continue, but query results may be inconsistent until the problem is resolved.")
         for (messages <- ingestCache.get(checkpoint).toSeq;
-             (offset, ingestMessage) <- messages) {
+             (offset, ingestMessage) <- messages)
           failureLog =
             failureLog.logFailed(offset, ingestMessage, lastCheckpoint)
-        }
 
         runningBatches.getAndDecrement
 
@@ -424,16 +417,16 @@ abstract class KafkaShardIngestActor(
           (batch, checkpoint)
 
         case (offset, event @ IngestMessage(_, _, _, records, _, _, _)) :: tail =>
-          val newCheckpoint = if (records.isEmpty) {
-            checkpoint.skipTo(offset)
-          } else {
-            records.foldLeft(checkpoint) {
-              // TODO: This nested pattern match indicates that checkpoints are too closely
-              // coupled to the representation of event IDs.
-              case (acc, IngestRecord(EventId(pid, sid), _)) =>
-                acc.update(offset, pid, sid)
-            }
-          }
+          val newCheckpoint =
+            if (records.isEmpty)
+              checkpoint.skipTo(offset)
+            else
+              records.foldLeft(checkpoint) {
+                // TODO: This nested pattern match indicates that checkpoints are too closely
+                // coupled to the representation of event IDs.
+                case (acc, IngestRecord(EventId(pid, sid), _)) =>
+                  acc.update(offset, pid, sid)
+              }
 
           buildBatch(tail, batch :+ (offset, event), newCheckpoint)
 
@@ -456,15 +449,14 @@ abstract class KafkaShardIngestActor(
           logger.debug(
             "Singleton batch of ArchiveMessage at offset/id %d/%d"
               .format(offset, ar.eventId.uid))
-          if (failureLog.checkFailed(ar)) {
+          if (failureLog.checkFailed(ar))
             // skip the message and continue without deletion.
             // FIXME: This is very dangerous; once we see these errors, we'll have to do a full reingest
             // from before the start of the error range.
             buildBatch(tail, batch, checkpoint.update(offset, pid, sid))
-          } else {
+          else
             // return the archive as a standalone message
             (Vector(offset -> ar), checkpoint.update(offset, pid, sid))
-          }
       }
 
     val read = M.point {

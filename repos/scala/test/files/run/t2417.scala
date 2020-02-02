@@ -6,9 +6,8 @@ object Test {
     val threads = Array.tabulate(numThreads)(i =>
       new Thread {
         override def run {
-          try {
-            block
-          } catch {
+          try block
+          catch {
             case x: Throwable => failure = x
           }
         }
@@ -26,10 +25,9 @@ object Test {
         for (e <- (initialSize to 1 by -1)) {
           s -= e
           val obs = s.size
-          if (obs != e - 1) {
+          if (obs != e - 1)
             throw new Exception(
               "removed e=" + e + ", size was " + obs + ", s=" + s)
-          }
         }
       }
     }
@@ -43,10 +41,9 @@ object Test {
         for (e <- (initialSize to 1 by -1)) {
           m -= e
           val obs = m.size
-          if (obs != e - 1) {
+          if (obs != e - 1)
             throw new Exception(
               "removed e=" + e + ", size was " + obs + ", m=" + m)
-          }
         }
       }
     }

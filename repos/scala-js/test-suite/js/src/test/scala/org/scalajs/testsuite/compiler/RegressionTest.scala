@@ -179,9 +179,8 @@ class RegressionTest {
     val a = scala.collection.mutable.Buffer.empty[Int]
     a.insert(0, 0)
     a.remove(0)
-    for (i <- 0 to 10) {
+    for (i <- 0 to 10)
       a.insert(a.length / 2, i)
-    }
     assertEquals("1, 3, 5, 7, 9, 10, 8, 6, 4, 2, 0", a.mkString(", "))
   }
 

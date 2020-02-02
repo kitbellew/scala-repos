@@ -19,11 +19,8 @@ class ScalaClassNameCompletionTest extends ScalaCodeInsightTestBase {
       ScalaCodeStyleSettings.getInstance(getProjectAdapter)
     val oldValue = settings.isAddFullQualifiedImports
     settings.setAddFullQualifiedImports(false)
-    try {
-      body
-    } finally {
-      settings.setAddFullQualifiedImports(oldValue)
-    }
+    try body
+    finally settings.setAddFullQualifiedImports(oldValue)
   }
 
   def testClassNameRenamed() {

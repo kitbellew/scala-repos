@@ -26,7 +26,7 @@ class MetricValuesSpec
     1,
     collector.sample.metrics)
 
-  val nodes: Seq[NodeMetrics] = {
+  val nodes: Seq[NodeMetrics] =
     (1 to 100).foldLeft(List(node1, node2)) { (nodes, _) ⇒
       nodes map { n ⇒
         n.copy(metrics = collector.sample.metrics.flatMap(latest ⇒
@@ -35,7 +35,6 @@ class MetricValuesSpec
           }))
       }
     }
-  }
 
   "NodeMetrics.MetricValues" must {
     "extract expected metrics for load balancing" in {

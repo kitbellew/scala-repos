@@ -51,10 +51,9 @@ private[ml] trait PredictorParams
       featuresDataType: DataType): StructType = {
     // TODO: Support casting Array[Double] and Array[Float] to Vector when FeaturesType = Vector
     SchemaUtils.checkColumnType(schema, $(featuresCol), featuresDataType)
-    if (fitting) {
+    if (fitting)
       // TODO: Allow other numeric types
       SchemaUtils.checkColumnType(schema, $(labelCol), DoubleType)
-    }
     SchemaUtils.appendColumn(schema, $(predictionCol), DoubleType)
   }
 }
@@ -181,9 +180,9 @@ abstract class PredictionModel[
     */
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
-    if ($(predictionCol).nonEmpty) {
+    if ($(predictionCol).nonEmpty)
       transformImpl(dataset)
-    } else {
+    else {
       this.logWarning(
         s"$uid: Predictor.transform() was called as NOOP" +
           " since no output columns were set.")

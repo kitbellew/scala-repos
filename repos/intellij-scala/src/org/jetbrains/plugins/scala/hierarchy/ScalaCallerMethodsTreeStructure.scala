@@ -32,9 +32,8 @@ final class ScalaCallerMethodsTreeStructure(
       descriptor: HierarchyNodeDescriptor): Array[AnyRef] = {
     val enclosingElement: PsiMember =
       descriptor.asInstanceOf[CallHierarchyNodeDescriptor].getEnclosingElement
-    if (!enclosingElement.isInstanceOf[PsiMethod]) {
+    if (!enclosingElement.isInstanceOf[PsiMethod])
       return ArrayUtil.EMPTY_OBJECT_ARRAY
-    }
     val method: PsiMethod = enclosingElement.asInstanceOf[PsiMethod]
     val baseMethod: PsiMethod = getBaseDescriptor
       .asInstanceOf[CallHierarchyNodeDescriptor]
@@ -57,7 +56,7 @@ final class ScalaCallerMethodsTreeStructure(
     }
     val methodToDescriptorMap =
       new mutable.HashMap[PsiMember, CallHierarchyNodeDescriptor]
-    for (methodToFind <- methodsToFind) {
+    for (methodToFind <- methodsToFind)
       MethodReferencesSearch
         .search(methodToFind, searchScope, true)
         .forEach(new Processor[PsiReference] {
@@ -71,9 +70,8 @@ final class ScalaCallerMethodsTreeStructure(
               var d: CallHierarchyNodeDescriptor =
                 methodToDescriptorMap.get(key) match {
                   case Some(call) =>
-                    if (!call.hasReference(reference)) {
+                    if (!call.hasReference(reference))
                       call.incrementUsageCount()
-                    }
                     call
                   case _ =>
                     val newD = new CallHierarchyNodeDescriptor(
@@ -90,7 +88,6 @@ final class ScalaCallerMethodsTreeStructure(
             true
           }
         })
-    }
     methodToDescriptorMap.values.toArray
   }
 

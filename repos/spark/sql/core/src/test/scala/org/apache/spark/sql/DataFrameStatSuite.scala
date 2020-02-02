@@ -239,11 +239,10 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     // if anything like SPARK-9614 is observed once again
     val df = rows
       .mapPartitionsWithIndex { (idx, iter) =>
-        if (idx == 3) { // must come from one of the later merges, therefore higher partition index
+        if (idx == 3) // must come from one of the later merges, therefore higher partition index
           Iterator("3", "3", "3", "3", "3")
-        } else {
+        else
           Iterator("0", "1", "2", "3", "4")
-        }
       }
       .toDF("a")
     val results = df.stat.freqItems(Array("a"), 0.25)

@@ -217,12 +217,11 @@ case class ScMethodType(
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     val newVisited = visited + this
     update(this) match {
       case (true, res) => res
@@ -292,10 +291,9 @@ case class ScTypePolymorphicType(
     internalType: ScType,
     typeParameters: Seq[TypeParameter])
     extends NonValueType {
-  if (internalType.isInstanceOf[ScTypePolymorphicType]) {
+  if (internalType.isInstanceOf[ScTypePolymorphicType])
     throw new IllegalArgumentException(
       "Polymorphic type can't have wrong internal type")
-  }
 
   def polymorphicTypeSubstitutor: ScSubstitutor =
     polymorphicTypeSubstitutor(inferValueType = false)
@@ -319,10 +317,9 @@ case class ScTypePolymorphicType(
             if (pair != null) {
               val (tpName, id) = pair
               if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
-                    tp.ptp)) {
+                    tp.ptp))
                 if (i == -1) contraVariant += 1
                 else coOrInVariant += 1
-              }
             }
             (false, typez)
         }
@@ -441,12 +438,11 @@ case class ScTypePolymorphicType(
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     val newVisited = visited + this
     update(this) match {
       case (true, res) => res

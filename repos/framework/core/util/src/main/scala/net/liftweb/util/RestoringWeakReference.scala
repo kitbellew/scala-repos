@@ -65,9 +65,8 @@ class RestoringWeakReference[T <: AnyRef](
     if (!existing.isDefined) {
       restoreReference
       apply()
-    } else {
+    } else
       existing.get
-    }
   }
 
   private def restoreReference =

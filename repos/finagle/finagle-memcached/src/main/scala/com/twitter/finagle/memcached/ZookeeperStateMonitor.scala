@@ -108,9 +108,8 @@ trait ZookeeperStateMonitor {
 
     // get one work item off the broker and schedule it into the future pool
     zookeeperWorkQueue.recv.sync() onSuccess {
-      case op: (() => Unit) => {
+      case op: (() => Unit) =>
         scheduleReadCachePoolConfig(op)
-      }
     }
   }
 

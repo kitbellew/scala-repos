@@ -78,7 +78,7 @@ class HeapBalancerTest
     assert(b.status == Status.Closed)
   }
 
-  for (status <- Seq(Status.Closed, Status.Busy, Status.Open)) {
+  for (status <- Seq(Status.Closed, Status.Busy, Status.Open))
     test(s"balancer with entirely $status cluster has $status status") {
       val node = new LoadedFactory("1")
       node._status = status
@@ -93,7 +93,6 @@ class HeapBalancerTest
       )
       assert(b.status == status)
     }
-  }
 
   test("least-loaded balancing") {
     val ctx = new Ctx

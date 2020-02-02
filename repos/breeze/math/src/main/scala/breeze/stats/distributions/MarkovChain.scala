@@ -237,7 +237,7 @@ object MarkovChain {
         implicit rand: RandBasis = Rand) = {
       val WINDOW = 2;
       val M = 10;
-      (last: Double) => {
+      (last: Double) =>
         new Rand[Double] {
           def draw() = {
             // How bad are we willing to tolerate?
@@ -268,18 +268,16 @@ object MarkovChain {
             var next = Double.NaN;
             while (!happy) {
               next = left + rand.uniform.draw * (right - left);
-              if (prop <= logMeasure(next)) {
+              if (prop <= logMeasure(next))
                 happy = true;
-              } else if (next < last) { //close the window
+              else if (next < last) //close the window
                 left = next;
-              } else {
+              else
                 right = next;
-              }
             }
             next;
           }
         }
-      }
     }
   }
 

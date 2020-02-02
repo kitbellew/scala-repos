@@ -228,11 +228,9 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
   test("spilling with compression") {
     // Keep track of which compression codec we're using to report in test failure messages
     var lastCompressionCodec: Option[String] = None
-    try {
-      allCompressionCodecs.foreach { c =>
-        lastCompressionCodec = Some(c)
-        testSimpleSpilling(Some(c))
-      }
+    try allCompressionCodecs.foreach { c =>
+      lastCompressionCodec = Some(c)
+      testSimpleSpilling(Some(c))
     } catch {
       // Include compression codec used in test failure message
       // We need to catch Throwable here because assertion failures are not covered by Exceptions
@@ -388,11 +386,9 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
 
     // Insert 10 copies each of lots of objects whose hash codes are either 0 or 1. This causes
     // problems if the map fails to group together the objects with the same code (SPARK-2043).
-    for (i <- 1 to 10) {
-      for (j <- 1 to size) {
+    for (i <- 1 to 10)
+      for (j <- 1 to size)
         map.insert(FixedHashObject(j, j % 2), 1)
-      }
-    }
     assert(map.numSpills > 0, "map did not spill")
 
     val it = map.iterator
@@ -420,10 +416,9 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     assert(map.numSpills > 0, "map did not spill")
 
     val it = map.iterator
-    while (it.hasNext) {
+    while (it.hasNext)
       // Should not throw NoSuchElementException
       it.next()
-    }
     sc.stop()
   }
 
@@ -443,10 +438,9 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     assert(map.numSpills > 0, "map did not spill")
 
     val it = map.iterator
-    while (it.hasNext) {
+    while (it.hasNext)
       // Should not throw NullPointerException
       it.next()
-    }
     sc.stop()
   }
 

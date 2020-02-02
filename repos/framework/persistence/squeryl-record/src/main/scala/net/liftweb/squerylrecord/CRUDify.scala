@@ -67,15 +67,14 @@ trait CRUDify[K, T <: Record[T] with KeyedEntity[K]] extends Crudify {
     }
 
     def save = {
-      if (in.isPersisted) {
+      if (in.isPersisted)
         inTransaction {
           table.update(in)
         }
-      } else {
+      else
         inTransaction {
           table.insert(in)
         }
-      }
       true
     }
 

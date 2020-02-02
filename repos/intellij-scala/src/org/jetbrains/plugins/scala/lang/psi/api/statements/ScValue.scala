@@ -59,23 +59,21 @@ trait ScValue
       m: ScMember,
       isStrict: Boolean): Boolean = m match {
     case other: ScValue =>
-      for (elem <- self.declaredElements) {
+      for (elem <- self.declaredElements)
         if (other.declaredElements.exists(_.name == elem.name))
           return true
-      }
       false
     case _ => false
   }
 
   override def getIcon(flags: Int): Icon = {
     var parent = getParent
-    while (parent != null) {
+    while (parent != null)
       parent match {
         case _: ScExtendsBlock => return Icons.FIELD_VAL
         case _: ScBlock        => return Icons.VAL
         case _                 => parent = parent.getParent
       }
-    }
     null
   }
 

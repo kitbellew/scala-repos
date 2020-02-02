@@ -167,11 +167,10 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
       if (s.endsWith("##")) {
         val (str, bool) = decode(s.substring(0, s.length - 2))
         (str + "#", bool)
-      } else if (s.endsWith("#")) {
+      } else if (s.endsWith("#"))
         (s.substring(0, s.length - 1), true)
-      } else {
+      else
         (s, false)
-      }
 
     /** Fuse adjacent string literals */
     def fuse(l: List[Tree]): List[Tree] = l match {

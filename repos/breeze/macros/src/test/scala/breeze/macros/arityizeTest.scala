@@ -76,9 +76,8 @@ class arityizeTest extends FunSuite {
         def foreach[X](
             tup: Tuple[V @arityize.repeat] @arityize.relative(tuple),
             fn: ((Int, V) => X)) =
-          for ((v, i) <- tup.productIterator.zipWithIndex) {
+          for ((v, i) <- tup.productIterator.zipWithIndex)
             fn(i, v.asInstanceOf[V])
-          }
 
         def length(tup: Tuple[V @arityize.repeat] @arityize.relative(tuple)) =
           __order__

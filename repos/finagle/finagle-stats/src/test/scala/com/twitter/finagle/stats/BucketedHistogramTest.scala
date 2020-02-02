@@ -38,11 +38,10 @@ class BucketedHistogramTest
 
   private def assertWithinError(ideal: Long, actual: Long): Unit = {
     val epsilon = Math.round(ideal * BucketedHistogram.DefaultErrorPercent)
-    if (epsilon == 0) {
+    if (epsilon == 0)
       assert(actual == ideal)
-    } else {
+    else
       actual should be(ideal +- epsilon)
-    }
   }
 
   test("percentile 1 to 100000") {

@@ -290,12 +290,11 @@ abstract class ExternalJdbcTestDB(confName: String)
           DBIO.seq((drop ++ create).map(s => sqlu"#$s"): _*).withPinnedSession
         ))
     }
-    if (!postCreate.isEmpty) {
+    if (!postCreate.isEmpty)
       await(
         createDB().run(
           DBIO.seq(postCreate.map(s => sqlu"#$s"): _*).withPinnedSession
         ))
-    }
   }
 
   override def cleanUpAfter() {

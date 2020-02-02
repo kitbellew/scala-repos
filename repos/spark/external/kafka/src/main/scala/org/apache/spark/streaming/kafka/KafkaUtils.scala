@@ -215,17 +215,14 @@ object KafkaUtils {
     val result = for {
       low <- kc.getEarliestLeaderOffsets(topics).right
       high <- kc.getLatestLeaderOffsets(topics).right
-    } yield {
-      offsetRanges.filterNot { o =>
-        low(o.topicAndPartition).offset <= o.fromOffset &&
-        o.untilOffset <= high(o.topicAndPartition).offset
-      }
+    } yield offsetRanges.filterNot { o =>
+      low(o.topicAndPartition).offset <= o.fromOffset &&
+      o.untilOffset <= high(o.topicAndPartition).offset
     }
     val badRanges = KafkaCluster.checkErrors(result)
-    if (!badRanges.isEmpty) {
+    if (!badRanges.isEmpty)
       throw new SparkException(
         "Offsets not available on leader: " + badRanges.mkString(","))
-    }
   }
 
   private[kafka] def getFromOffsets(
@@ -236,16 +233,13 @@ object KafkaUtils {
     val reset = kafkaParams.get("auto.offset.reset").map(_.toLowerCase)
     val result = for {
       topicPartitions <- kc.getPartitions(topics).right
-      leaderOffsets <- (if (reset == Some("smallest")) {
+      leaderOffsets <- (if (reset == Some("smallest"))
                           kc.getEarliestLeaderOffsets(topicPartitions)
-                        } else {
-                          kc.getLatestLeaderOffsets(topicPartitions)
-                        }).right
-    } yield {
-      leaderOffsets.map {
-        case (tp, lo) =>
-          (tp, lo.offset)
-      }
+                        else
+                          kc.getLatestLeaderOffsets(topicPartitions)).right
+    } yield leaderOffsets.map {
+      case (tp, lo) =>
+        (tp, lo.offset)
     }
     KafkaCluster.checkErrors(result)
   }
@@ -323,14 +317,14 @@ object KafkaUtils {
       messageHandler: MessageAndMetadata[K, V] => R
   ): RDD[R] = sc.withScope {
     val kc = new KafkaCluster(kafkaParams)
-    val leaderMap = if (leaders.isEmpty) {
-      leadersForRanges(kc, offsetRanges)
-    } else {
-      // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
-      leaders.map {
-        case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
-      }
-    }
+    val leaderMap =
+      if (leaders.isEmpty)
+        leadersForRanges(kc, offsetRanges)
+      else
+        // This could be avoided by refactoring KafkaRDD.leaders and KafkaCluster to use Broker
+        leaders.map {
+          case (tp: TopicAndPartition, Broker(host, port)) => (tp, (host, port))
+        }
     val cleanedHandler = sc.clean(messageHandler)
     checkOffsets(kc, offsetRanges)
     new KafkaRDD[K, V, KD, VD, R](
@@ -786,11 +780,10 @@ private[kafka] class KafkaUtilsPythonHelper {
 
     val currentFromOffsets = if (!fromOffsets.isEmpty) {
       val topicsFromOffsets = fromOffsets.keySet().asScala.map(_.topic)
-      if (topicsFromOffsets != topics.asScala.toSet) {
+      if (topicsFromOffsets != topics.asScala.toSet)
         throw new IllegalStateException(
           s"The specified topics: ${topics.asScala.toSet.mkString(" ")} " +
             s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
-      }
       Map(fromOffsets.asScala.mapValues { _.longValue() }.toSeq: _*)
     } else {
       val kc = new KafkaCluster(Map(kafkaParams.asScala.toSeq: _*))

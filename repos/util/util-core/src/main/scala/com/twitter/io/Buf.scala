@@ -147,9 +147,9 @@ private[io] case class ConcatBuf(chain: Vector[Buf]) extends Buf {
       cur += 1
     }
     if (start == -1) Buf.Empty
-    else if (start == finish || (start == (cur - 1) && finish == -1)) {
+    else if (start == finish || (start == (cur - 1) && finish == -1))
       chain(start).slice(startBegin, startEnd)
-    } else if (finish == -1) {
+    else if (finish == -1) {
       val untrimmedFirst = chain(start)
       val first: Buf =
         if (startBegin == 0 && startEnd >= untrimmedFirst.length) null
@@ -246,9 +246,8 @@ object Buf {
     private[this] def equalsBytes(other: Array[Byte], offset: Int): Boolean = {
       var i = 0
       while (i < length) {
-        if (bytes(begin + i) != other(offset + i)) {
+        if (bytes(begin + i) != other(offset + i))
           return false
-        }
         i += 1
       }
       true

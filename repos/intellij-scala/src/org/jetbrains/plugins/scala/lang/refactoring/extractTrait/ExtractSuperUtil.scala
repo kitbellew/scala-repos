@@ -135,15 +135,12 @@ object ExtractSuperUtil {
       val fileIndex: ProjectFileIndex =
         ProjectRootManager.getInstance(clazz.getProject).getFileIndex
       val sourceRoot: VirtualFile = fileIndex.getSourceRootForFile(sourceFile)
-      if (sourceRoot != null) {
-        for (dir <- directories) {
+      if (sourceRoot != null)
+        for (dir <- directories)
           if (Comparing.equal(
                 fileIndex.getSourceRootForFile(dir.getVirtualFile),
-                sourceRoot)) {
+                sourceRoot))
             return dir
-          }
-        }
-      }
     }
     directories(0)
   }

@@ -144,11 +144,9 @@ case class Window(
             Cast(Literal.create(boundOffset, IntegerType), expr.dataType))
           val bound = newMutableProjection(boundExpr :: Nil, child.output)()
           (sortExpr :: Nil, current, bound)
-        } else {
-          sys.error(
-            "Non-Zero range offsets are not supported for windows " +
-              "with multiple order expressions.")
-        }
+        } else
+          sys.error("Non-Zero range offsets are not supported for windows " +
+            "with multiple order expressions.")
         // Construct the ordering. This is used to compare the result of current value projection
         // to the result of bound value projection. This is done manually because we want to use
         // Code Generation (if it is enabled).
@@ -243,37 +241,33 @@ case class Window(
 
           // Growing Frame.
           case ("AGGREGATE", frameType, None, Some(high)) =>
-            target: MutableRow => {
+            target: MutableRow =>
               new UnboundedPrecedingWindowFunctionFrame(
                 target,
                 processor,
                 createBoundOrdering(frameType, high))
-            }
 
           // Shrinking Frame.
           case ("AGGREGATE", frameType, Some(low), None) =>
-            target: MutableRow => {
+            target: MutableRow =>
               new UnboundedFollowingWindowFunctionFrame(
                 target,
                 processor,
                 createBoundOrdering(frameType, low))
-            }
 
           // Moving Frame.
           case ("AGGREGATE", frameType, Some(low), Some(high)) =>
-            target: MutableRow => {
+            target: MutableRow =>
               new SlidingWindowFunctionFrame(
                 target,
                 processor,
                 createBoundOrdering(frameType, low),
                 createBoundOrdering(frameType, high))
-            }
 
           // Entire Partition Frame.
           case ("AGGREGATE", frameType, None, None) =>
-            target: MutableRow => {
+            target: MutableRow =>
               new UnboundedWindowFunctionFrame(target, processor)
-            }
         }
 
         // Keep track of the number of expressions. This is a side-effect in a map...
@@ -355,9 +349,8 @@ case class Window(
             // the last sorter of this task will be cleaned up via task completion listener
             sorter.cleanupResources()
             sorter = null
-          } else {
+          } else
             rows.clear()
-          }
 
           while (nextRowAvailable && nextGroup == currentGroup) {
             if (sorter == null) {
@@ -382,20 +375,18 @@ case class Window(
                 }
                 rows.clear()
               }
-            } else {
+            } else
               sorter.insertRecord(
                 nextRow.getBaseObject,
                 nextRow.getBaseOffset,
                 nextRow.getSizeInBytes,
                 0)
-            }
             fetchNextRow()
           }
-          if (sorter != null) {
+          if (sorter != null)
             rowBuffer = new ExternalRowBuffer(sorter, inputFields)
-          } else {
+          else
             rowBuffer = new ArrayRowBuffer(rows)
-          }
 
           // Setup the frames.
           var i = 0
@@ -419,9 +410,8 @@ case class Window(
         val join = new JoinedRow
         override final def next(): InternalRow = {
           // Load the next partition if we need to.
-          if (rowIndex >= rowsSize && nextRowAvailable) {
+          if (rowIndex >= rowsSize && nextRowAvailable)
             fetchNextPartition()
-          }
 
           if (rowIndex < rowsSize) {
             // Get the results for the window frames.
@@ -517,11 +507,10 @@ private[execution] class ArrayRowBuffer(buffer: ArrayBuffer[UnsafeRow])
   /** Return next row in the buffer, null if no more left. */
   def next(): InternalRow = {
     cursor += 1
-    if (cursor < buffer.length) {
+    if (cursor < buffer.length)
       buffer(cursor)
-    } else {
+    else
       null
-    }
   }
 
   /** Skip the next `n` rows. */
@@ -557,9 +546,8 @@ private[execution] class ExternalRowBuffer(
         iter.getBaseOffset,
         iter.getRecordLength)
       currentRow
-    } else {
+    } else
       null
-    }
 
   /** Skip the next `n` rows. */
   def skip(n: Int): Unit = {
@@ -636,10 +624,10 @@ private[execution] final class OffsetWindowFunctionFrame(
       case e: OffsetWindowFunction =>
         val input = BindReferences.bindReference(e.input, inputAttrs)
         if (e.default == null || e.default.foldable && e.default
-              .eval() == null) {
+              .eval() == null)
           // Without default value.
           input
-        } else {
+        else {
           // With default value.
           val default =
             BindReferences.bindReference(e.default, inputAttrs).transform {
@@ -673,9 +661,8 @@ private[execution] final class OffsetWindowFunctionFrame(
     if (inputIndex >= 0 && inputIndex < input.size) {
       val r = input.next()
       join(r, current)
-    } else {
+    } else
       join(emptyRow, current)
-    }
     projection(join)
     inputIndex += 1
   }
@@ -756,9 +743,8 @@ private[execution] final class SlidingWindowFunctionFrame(
     if (bufferUpdated) {
       processor.initialize(input.size)
       val iter = buffer.iterator()
-      while (iter.hasNext) {
+      while (iter.hasNext)
         processor.update(iter.next())
-      }
       processor.evaluate(target)
     }
   }
@@ -854,9 +840,8 @@ private[execution] final class UnboundedPrecedingWindowFunctionFrame(
     }
 
     // Only recalculate and update when the buffer changes.
-    if (bufferUpdated) {
+    if (bufferUpdated)
       processor.evaluate(target)
-    }
   }
 }
 
@@ -1035,9 +1020,8 @@ private[execution] final class AggregateProcessor(
     // Some initialization expressions are dependent on the partition size so we have to
     // initialize the size before initializing all other fields, and we have to pass the buffer to
     // the initialization projection.
-    if (trackPartitionSize) {
+    if (trackPartitionSize)
       buffer.setInt(0, size)
-    }
     initialProjection(buffer)
     var i = 0
     while (i < numImperatives) {

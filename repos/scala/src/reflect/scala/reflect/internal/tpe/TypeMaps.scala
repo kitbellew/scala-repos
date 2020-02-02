@@ -347,9 +347,7 @@ private[internal] trait TypeMaps {
             existentialAbstraction(
               eparams,
               typeRef(apply(pre), sym, eparams map (_.tpe)))
-          } finally {
-            expanded -= sym
-          }
+          } finally expanded -= sym
       case _ =>
         mapOver(tp)
     }
@@ -920,13 +918,11 @@ private[internal] trait TypeMaps {
 
   class SubstWildcardMap(from: List[Symbol]) extends TypeMap {
     def apply(tp: Type): Type =
-      try {
-        tp match {
-          case TypeRef(_, sym, _) if from contains sym =>
-            BoundedWildcardType(sym.info.bounds)
-          case _ =>
-            mapOver(tp)
-        }
+      try tp match {
+        case TypeRef(_, sym, _) if from contains sym =>
+          BoundedWildcardType(sym.info.bounds)
+        case _ =>
+          mapOver(tp)
       } catch {
         case ex: MalformedType =>
           WildcardType
@@ -1079,7 +1075,7 @@ private[internal] trait TypeMaps {
   /** A map to implement the `contains` method. */
   class ContainsCollector(sym: Symbol) extends TypeCollector(false) {
     def traverse(tp: Type) {
-      if (!result) {
+      if (!result)
         tp match {
           case _: ExistentialType =>
             // ExistentialType#normalize internally calls contains, which leads to exponential performance
@@ -1095,7 +1091,6 @@ private[internal] trait TypeMaps {
               case _                                    => mapOver(tp)
             }
         }
-      }
     }
 
     override def mapOver(arg: Tree) = {
@@ -1243,15 +1238,14 @@ private[internal] trait TypeMaps {
           val args1 = args mapConserve (this)
           try {
             val sym1 = adaptToNewRun(pre1, sym)
-            if ((pre1 eq pre) && (sym1 eq sym) && (args1 eq args) /* && sym.isExternal*/ ) {
+            if ((pre1 eq pre) && (sym1 eq sym) && (args1 eq args) /* && sym.isExternal*/ )
               tp
-            } else if (sym1 == NoSymbol) {
+            else if (sym1 == NoSymbol) {
               devWarning(
                 s"adapt to new run failed: pre=$pre pre1=$pre1 sym=$sym")
               tp
-            } else {
+            } else
               copyTypeRef(tp, pre1, sym1, args1)
-            }
           } catch {
             case ex: MissingAliasControl =>
               apply(tp.dealias)

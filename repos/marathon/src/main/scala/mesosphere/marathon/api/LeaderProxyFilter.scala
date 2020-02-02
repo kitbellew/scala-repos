@@ -110,11 +110,10 @@ class LeaderProxyFilter @Inject() (
           log.info(
             s"Waiting for consistent leadership state. Are we leader?: $weAreLeader, leader: $currentLeaderData")
           sleep()
-        } else {
+        } else
           log.error(
             s"inconsistent leadership state, refusing request for ourselves at $myHostPort. " +
               s"Are we leader?: $weAreLeader, leader: $currentLeaderData")
-        }
 
         retries -= 1
       } while (retries >= 0)
@@ -135,14 +134,13 @@ class LeaderProxyFilter @Inject() (
           log.info(
             s"Do not proxy to myself. Waiting for consistent leadership state. " +
               s"Are we leader?: false, leader: $leaderDataOpt")
-          if (waitForConsistentLeadership(response)) {
+          if (waitForConsistentLeadership(response))
             doFilter(rawRequest, rawResponse, chain)
-          } else {
+          else
             response.sendError(
               HttpStatus.SC_SERVICE_UNAVAILABLE,
               ERROR_STATUS_NO_CURRENT_LEADER)
-          }
-        } else {
+        } else
           try {
             val url: URL = buildUrl(leaderDataOpt.get, request)
             forwarder.forward(url, request, response)
@@ -150,7 +148,6 @@ class LeaderProxyFilter @Inject() (
             case NonFatal(e) =>
               throw new RuntimeException("while proxying", e)
           }
-        }
       case _ =>
         throw new IllegalArgumentException(
           s"expected http request/response but got $rawRequest/$rawResponse")
@@ -290,22 +287,16 @@ class JavaUrlConnectionRequestForwarder @Inject() (
 
       val fields = leaderConnection.getHeaderFields
       // getHeaderNames() and getHeaders() are known to return null
-      if (fields != null) {
-        for ((name, values) <- fields.asScala) {
-          if (name != null && values != null) {
-            for (value <- values.asScala) {
+      if (fields != null)
+        for ((name, values) <- fields.asScala)
+          if (name != null && values != null)
+            for (value <- values.asScala)
               response.addHeader(name, value)
-            }
-          }
-        }
-      }
       response.addHeader(HEADER_VIA, viaValue)
 
       IO.using(response.getOutputStream) { output =>
-        try {
-          IO.using(leaderConnection.getInputStream) { connectionInput =>
-            copy(connectionInput, output)
-          }
+        try IO.using(leaderConnection.getInputStream) { connectionInput =>
+          copy(connectionInput, output)
         } catch {
           case e: IOException =>
             log.debug("got exception response, this is maybe an error code", e)
@@ -318,25 +309,23 @@ class JavaUrlConnectionRequestForwarder @Inject() (
 
     log.info(s"Proxying request to ${request.getMethod} $url from $myHostPort")
 
-    try {
-      if (hasProxyLoop) {
-        log.error("Prevent proxy cycle, rejecting request")
-        response.sendError(HttpStatus.SC_BAD_GATEWAY, ERROR_STATUS_LOOP)
-      } else {
-        val leaderConnection: HttpURLConnection = createAndConfigureConnection(
-          url)
-        try {
-          copyRequestToConnection(leaderConnection, request)
-          copyConnectionResponse(leaderConnection, response)
-        } catch {
-          case connException: ConnectException =>
-            response.sendError(
-              HttpStatus.SC_BAD_GATEWAY,
-              ERROR_STATUS_CONNECTION_REFUSED)
-        } finally {
-          Try(leaderConnection.getInputStream.close())
-          Try(leaderConnection.getErrorStream.close())
-        }
+    try if (hasProxyLoop) {
+      log.error("Prevent proxy cycle, rejecting request")
+      response.sendError(HttpStatus.SC_BAD_GATEWAY, ERROR_STATUS_LOOP)
+    } else {
+      val leaderConnection: HttpURLConnection = createAndConfigureConnection(
+        url)
+      try {
+        copyRequestToConnection(leaderConnection, request)
+        copyConnectionResponse(leaderConnection, response)
+      } catch {
+        case connException: ConnectException =>
+          response.sendError(
+            HttpStatus.SC_BAD_GATEWAY,
+            ERROR_STATUS_CONNECTION_REFUSED)
+      } finally {
+        Try(leaderConnection.getInputStream.close())
+        Try(leaderConnection.getErrorStream.close())
       }
     } finally {
       Try(request.getInputStream.close())
@@ -346,12 +335,11 @@ class JavaUrlConnectionRequestForwarder @Inject() (
   }
 
   def copy(nullableIn: InputStream, nullableOut: OutputStream): Unit =
-    try {
-      for {
-        in <- Option(nullableIn)
-        out <- Option(nullableOut)
-      } IO.transfer(in, out, close = false)
-    } catch {
+    try for {
+      in <- Option(nullableIn)
+      out <- Option(nullableOut)
+    } IO.transfer(in, out, close = false)
+    catch {
       case e: UnknownServiceException =>
         log.warn("unexpected unknown service exception", e)
     }

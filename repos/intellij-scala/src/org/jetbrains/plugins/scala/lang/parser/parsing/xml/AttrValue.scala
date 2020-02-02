@@ -34,9 +34,8 @@ object AttrValue {
         var patched = false
         while (VALID_ATTRIBUTE_TOKENS.contains(builder.getTokenType) || {
                  patched = patcher parse builder; patched
-               }) {
+               })
           if (!patched) builder.advanceLexer() else patched = false
-        }
         builder.getTokenType match {
           case ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER =>
             builder.advanceLexer()

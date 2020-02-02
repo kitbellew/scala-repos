@@ -662,13 +662,12 @@ trait Infer extends Checkable {
 
         // Note that isCompatible side-effects: subtype checks involving typevars
         // are recorded in the typevar's bounds (see TypeConstraint)
-        if (!isCompatible(tp1, pt1)) {
+        if (!isCompatible(tp1, pt1))
           throw new DeferredNoInstance(
             () =>
               "argument expression's type is not compatible with formal parameter type" + foundReqMsg(
                 tp1,
                 pt1))
-        }
       }
       val targs = solvedTypes(
         tvars,
@@ -695,7 +694,7 @@ trait Infer extends Checkable {
           }
         case _ => context.tree.pos
       }
-      if (settings.warnInferAny && context.reportErrors && canWarnAboutAny) {
+      if (settings.warnInferAny && context.reportErrors && canWarnAboutAny)
         foreachWithIndex(targs)((targ, idx) =>
           targ.typeSymbol match {
             case sym @ (AnyClass | AnyValClass) =>
@@ -704,7 +703,6 @@ trait Infer extends Checkable {
                 s"a type was inferred to be `${sym.name}`; this may indicate a programming error.")
             case _ =>
           })
-      }
       adjustTypeArgs(tparams, tvars, targs, restpe)
     }
 
@@ -798,15 +796,15 @@ trait Infer extends Checkable {
           val pos =
             params.indexWhere(p => paramMatchesName(p, name) && !p.isSynthetic)
 
-          if (pos == -1) {
+          if (pos == -1)
             if (positionalAllowed) { // treat assignment as positional argument
               argPos(index) = index
               res = UnitTpe // TODO: this is a bit optimistic, the name may not refer to a mutable variable...
             } else // unknown parameter name
               namesOK = false
-          } else if (argPos.contains(pos)) { // parameter specified twice
+          else if (argPos.contains(pos)) // parameter specified twice
             namesOK = false
-          } else {
+          else {
             if (index != pos)
               positionalAllowed = false
             argPos(index) = pos
@@ -1324,7 +1322,7 @@ trait Infer extends Checkable {
         val tvars = undetparams map freshVar
         val resTpV = resTp.instantiateTypeParams(undetparams, tvars)
 
-        if (resTpV <:< pt) {
+        if (resTpV <:< pt)
           try {
             // debuglog("TVARS "+ (tvars map (_.constr)))
             // look at the argument types of the primary constructor corresponding to the pattern
@@ -1350,14 +1348,14 @@ trait Infer extends Checkable {
             NoConstructorInstanceError(tree, resTp, pt, msg)
             None
           }
-        } else {
+        else {
           debuglog("not a subtype: " + resTpV + " </:< " + pt)
           None
         }
       }
 
       def inferForApproxPt =
-        if (isFullyDefined(pt)) {
+        if (isFullyDefined(pt))
           inferFor(
             pt.instantiateTypeParams(
               ptparams,
@@ -1383,7 +1381,7 @@ trait Infer extends Checkable {
               Some(targs)
             } else None
           }
-        } else None
+        else None
 
       inferFor(pt) orElse inferForApproxPt match {
         case Some(targs) =>
@@ -1440,7 +1438,7 @@ trait Infer extends Checkable {
              |     tparam  ${tparam.shortSymbolClass} ${tparam.defString}
              |}""")
 
-      if (lo1 <:< hi1) {
+      if (lo1 <:< hi1)
         if (lo1 <:< lo0 && hi0 <:< hi1) // bounds unimproved
           log(
             s"redundant bounds: discarding TypeBounds($lo1, $hi1) for $tparam, no improvement on TypeBounds($lo0, $hi0)")
@@ -1452,7 +1450,7 @@ trait Infer extends Checkable {
           tparam setInfo logResult(
             s"updated bounds: $tparam from ${tparam.info} to")(tb)
         }
-      } else log(s"inconsistent bounds: discarding TypeBounds($lo1, $hi1)")
+      else log(s"inconsistent bounds: discarding TypeBounds($lo1, $hi1)")
     }
 
     /** Type intersection of simple type tp1 with general type tp2.

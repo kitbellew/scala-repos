@@ -80,14 +80,13 @@ class DuplicatePattern(
     val seen = mutable.Set[PsiElement]()
     val visitor = new ScalaRecursiveElementVisitor {
       override def visitElement(element: ScalaPsiElement) =
-        if (isSignificant(element)) {
+        if (isSignificant(element))
           isDuplicateStart(element) match {
             case Some(mtch) if !seen(mtch.candidates(0)) =>
               result += mtch
               seen += mtch.candidates(0)
             case _ => super.visitElement(element)
           }
-        }
     }
     scope.acceptChildren(visitor)
     result.toSeq

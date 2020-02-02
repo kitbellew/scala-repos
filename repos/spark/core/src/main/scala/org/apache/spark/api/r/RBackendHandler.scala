@@ -59,7 +59,7 @@ private[r] class RBackendHandler(server: RBackend)
     val methodName = readString(dis)
     val numArgs = readInt(dis)
 
-    if (objId == "SparkRHandler") {
+    if (objId == "SparkRHandler")
       methodName match {
         // This function is for test-purpose only
         case "echo" =>
@@ -90,9 +90,8 @@ private[r] class RBackendHandler(server: RBackend)
           dos.writeInt(-1)
           writeString(dos, s"Error: unknown method $methodName")
       }
-    } else {
+    else
       handleMethodCall(isStatic, objId, methodName, numArgs, dis, dos)
-    }
 
     val reply = bos.toByteArray
     ctx.write(reply)
@@ -118,17 +117,17 @@ private[r] class RBackendHandler(server: RBackend)
       dos: DataOutputStream): Unit = {
     var obj: Object = null
     try {
-      val cls = if (isStatic) {
-        Utils.classForName(objId)
-      } else {
-        JVMObjectTracker.get(objId) match {
-          case None =>
-            throw new IllegalArgumentException("Object not found " + objId)
-          case Some(o) =>
-            obj = o
-            o.getClass
-        }
-      }
+      val cls =
+        if (isStatic)
+          Utils.classForName(objId)
+        else
+          JVMObjectTracker.get(objId) match {
+            case None =>
+              throw new IllegalArgumentException("Object not found " + objId)
+            case Some(o) =>
+              obj = o
+              o.getClass
+          }
 
       val args = readArgs(numArgs, dis)
 
@@ -173,10 +172,9 @@ private[r] class RBackendHandler(server: RBackend)
 
         writeInt(dos, 0)
         writeObject(dos, obj.asInstanceOf[AnyRef])
-      } else {
+      } else
         throw new IllegalArgumentException(
           "invalid method " + methodName + " for object " + objId)
-      }
     } catch {
       case e: Exception =>
         logError(s"$methodName on $objId failed")
@@ -223,7 +221,7 @@ private[r] class RBackendHandler(server: RBackend)
             var parameterWrapperType = parameterType
 
             // Convert native parameters to Object types as args is Array[Object] here
-            if (parameterType.isPrimitive) {
+            if (parameterType.isPrimitive)
               parameterWrapperType = parameterType match {
                 case java.lang.Integer.TYPE => classOf[java.lang.Integer]
                 case java.lang.Long.TYPE    => classOf[java.lang.Integer]
@@ -231,11 +229,9 @@ private[r] class RBackendHandler(server: RBackend)
                 case java.lang.Boolean.TYPE => classOf[java.lang.Boolean]
                 case _                      => parameterType
               }
-            }
             if ((parameterType.isPrimitive || args(i) != null) &&
-                !parameterWrapperType.isInstance(args(i))) {
+                !parameterWrapperType.isInstance(args(i)))
               argMatched = false
-            }
           }
 
           i = i + 1
@@ -249,10 +245,9 @@ private[r] class RBackendHandler(server: RBackend)
           val parameterTypes = parameterTypesOfMethods(index)
 
           (0 until numArgs).map { i =>
-            if (parameterTypes(i) == classOf[Seq[Any]] && args(i).getClass.isArray) {
+            if (parameterTypes(i) == classOf[Seq[Any]] && args(i).getClass.isArray)
               // Convert a Java array to scala Seq
               args(i) = args(i).asInstanceOf[Array[_]].toSeq
-            }
           }
 
           return Some(index)

@@ -106,7 +106,7 @@ class MapInnerProductSpace[K, V: Field]
 class MapEq[K, V](implicit V: Eq[V]) extends Eq[Map[K, V]] with Serializable {
   def eqv(x: Map[K, V], y: Map[K, V]): Boolean =
     if (x.size != y.size) false
-    else {
+    else
       x forall {
         case (k, v) =>
           (y get k) match {
@@ -114,7 +114,6 @@ class MapEq[K, V](implicit V: Eq[V]) extends Eq[Map[K, V]] with Serializable {
             case _                      => false
           }
       }
-    }
 }
 
 @SerialVersionUID(0L)
@@ -134,9 +133,8 @@ class MapVectorEq[K, V](implicit V: Eq[V], scalar: AdditiveMonoid[V])
           case _ =>
             false
         }
-      } else {
+      } else
         acc forall { case (_, v) => V.eqv(v, scalar.zero) }
-      }
 
     loop(x, y.toIterator)
   }

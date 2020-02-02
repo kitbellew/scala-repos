@@ -81,9 +81,8 @@ class PlatformSpec extends FlatSpec with Matchers with RunOnApplicationThread {
 
   it should "support isSupported(ConditionalFeature)" in {
     // Check values for each ConditionalFeature
-    for (cf <- jfxa.ConditionalFeature.values()) {
+    for (cf <- jfxa.ConditionalFeature.values())
       Platform.isSupported(cf) should equal(jfxa.Platform.isSupported(cf))
-    }
   }
 
   it should "support runLater(Runnable)" in {

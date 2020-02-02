@@ -73,9 +73,8 @@ object ActorSystemSpec {
     }
 
     override def preRestart(cause: Throwable, msg: Option[Any]) {
-      if (master ne null) {
+      if (master ne null)
         master ! "failed with " + cause + " while processing " + msg
-      }
       context stop self
     }
   }
@@ -237,13 +236,12 @@ class ActorSystemSpec
       val count = 10
       val latch = TestLatch(count)
 
-      for (i ← 1 to count) {
+      for (i ← 1 to count)
         system2.registerOnTermination {
           Thread.sleep((i % 3).millis.dilated.toMillis)
           result add i
           latch.countDown()
         }
-      }
 
       system2.terminate()
       Await.ready(latch, 5 seconds)
@@ -416,9 +414,7 @@ class ActorSystemSpec
 
         ecProbe.expectMsg(1.second, "called")
         probe.expectMsg(1.second, "pong")
-      } finally {
-        shutdown(system2)
-      }
+      } finally shutdown(system2)
     }
 
     "not use passed in ExecutionContext if executor is configured" in {
@@ -447,9 +443,7 @@ class ActorSystemSpec
 
         ecProbe.expectNoMsg()
         probe.expectMsg(1.second, "pong")
-      } finally {
-        shutdown(system2)
-      }
+      } finally shutdown(system2)
     }
 
     "not allow top-level actor creation with custom guardian" in {

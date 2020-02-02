@@ -38,7 +38,7 @@ class ApplicationMasterArguments(val args: Array[String]) {
 
     var args = inputArgs
 
-    while (!args.isEmpty) {
+    while (!args.isEmpty)
       // --num-workers, --worker-memory, and --worker-cores are deprecated since 1.0,
       // the properties with executor in their names are preferred.
       args match {
@@ -79,7 +79,6 @@ class ApplicationMasterArguments(val args: Array[String]) {
         case _ =>
           printUsageAndExit(1, args)
       }
-    }
 
     if (primaryPyFile != null && primaryRFile != null) {
       // scalastyle:off println
@@ -94,9 +93,8 @@ class ApplicationMasterArguments(val args: Array[String]) {
 
   def printUsageAndExit(exitCode: Int, unknownParam: Any = null) {
     // scalastyle:off println
-    if (unknownParam != null) {
+    if (unknownParam != null)
       System.err.println("Unknown/unsupported param " + unknownParam)
-    }
     System.err.println(
       """
       |Usage: org.apache.spark.deploy.yarn.ApplicationMaster [options]

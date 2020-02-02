@@ -28,13 +28,12 @@ case class MediaType(
             if (MediaRangeParser
                   .token(new CharSequenceReader(value))
                   .next
-                  .atEnd) {
+                  .atEnd)
               "=" + value
-            } else {
+            else
               "=\"" + value
                 .replaceAll("\\\\", "\\\\\\\\")
                 .replaceAll("\"", "\\\\\"") + "\""
-            }
           }
           .getOrElse("")
       }
@@ -90,17 +89,14 @@ object MediaType {
 
     def apply(mediaType: String): Option[MediaType] =
       MediaRangeParser.mediaType(new CharSequenceReader(mediaType)) match {
-        case MediaRangeParser.Success(mt: MediaType, next) => {
-          if (!next.atEnd) {
+        case MediaRangeParser.Success(mt: MediaType, next) =>
+          if (!next.atEnd)
             logger.debug(
               "Unable to parse part of media type '" + next.source + "'")
-          }
           Some(mt)
-        }
-        case MediaRangeParser.NoSuccess(err, next) => {
+        case MediaRangeParser.NoSuccess(err, next) =>
           logger.debug("Unable to parse media type '" + next.source + "'")
           None
-        }
       }
   }
 }
@@ -117,10 +113,9 @@ object MediaRange {
     def apply(mediaRanges: String): Seq[MediaRange] =
       MediaRangeParser(new CharSequenceReader(mediaRanges)) match {
         case MediaRangeParser.Success(mrs: List[MediaRange], next) =>
-          if (next.atEnd) {
+          if (next.atEnd)
             logger.debug(
               "Unable to parse part of media range header '" + next.source + "'")
-          }
           mrs.sorted
         case MediaRangeParser.NoSuccess(err, _) =>
           logger.debug(
@@ -155,13 +150,13 @@ object MediaRange {
       val qCompare = compareQValues(a.qValue, b.qValue)
 
       if (qCompare != 0) -qCompare
-      else if (a.mediaType == b.mediaType) {
+      else if (a.mediaType == b.mediaType)
         if (a.mediaSubType == b.mediaSubType)
           b.parameters.size - a.parameters.size
         else if (a.mediaSubType == "*") 1
         else if (b.mediaSubType == "*") -1
         else 0
-      } else if (a.mediaType == "*") 1
+      else if (a.mediaType == "*") 1
       else if (b.mediaType == "*") -1
       else 0
     }
@@ -195,10 +190,9 @@ object MediaRange {
       "Expected a control character")
     val char = acceptIf(_ < 0x80)(_ => "Expected an ascii character")
     val text = not(ctl) ~> any
-    val separators = {
+    val separators =
       acceptIf(c => separatorBitSet(c))(_ =>
         "Expected one of " + separatorChars)
-    }
 
     val token = rep1(not(separators | ctl) ~> any) ^^ charSeqToString
 
@@ -259,9 +253,8 @@ object MediaRange {
           if (qbd > 1) {
             logger.debug("Invalid q value: " + q)
             None
-          } else {
+          } else
             Some(BigDecimal(q))
-          }
         } catch {
           case _: NumberFormatException =>
             logger.debug("Invalid q value: " + q)

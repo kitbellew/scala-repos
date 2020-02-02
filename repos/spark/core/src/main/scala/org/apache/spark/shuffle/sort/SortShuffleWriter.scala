@@ -64,7 +64,7 @@ private[spark] class SortShuffleWriter[K, V, C](
         Some(dep.partitioner),
         dep.keyOrdering,
         dep.serializer)
-    } else {
+    } else
       // In this case we pass neither an aggregator nor an ordering to the sorter, because we don't
       // care whether the keys get sorted in each partition; that will be done on the reduce side
       // if the operation being run is sortByKey.
@@ -74,7 +74,6 @@ private[spark] class SortShuffleWriter[K, V, C](
         Some(dep.partitioner),
         ordering = None,
         dep.serializer)
-    }
     sorter.insertAll(records)
 
     // Don't bother including the time to open the merged output file in the shuffle write time,
@@ -98,25 +97,23 @@ private[spark] class SortShuffleWriter[K, V, C](
   /** Close this writer, passing along whether the map completed */
   override def stop(success: Boolean): Option[MapStatus] =
     try {
-      if (stopping) {
+      if (stopping)
         return None
-      }
       stopping = true
-      if (success) {
+      if (success)
         return Option(mapStatus)
-      } else {
+      else {
         // The map task failed, so delete our output data.
         shuffleBlockResolver.removeDataByMap(dep.shuffleId, mapId)
         return None
       }
-    } finally {
-      // Clean up our sorter, which may have its own intermediate files
-      if (sorter != null) {
-        val startTime = System.nanoTime()
-        sorter.stop()
-        writeMetrics.incWriteTime(System.nanoTime - startTime)
-        sorter = null
-      }
+    } finally
+    // Clean up our sorter, which may have its own intermediate files
+    if (sorter != null) {
+      val startTime = System.nanoTime()
+      sorter.stop()
+      writeMetrics.incWriteTime(System.nanoTime - startTime)
+      sorter = null
     }
 }
 

@@ -25,12 +25,10 @@ class ScalaWithParenthesisSurrounder extends ScalaExpressionSurrounder {
     element match {
       case _: ScBlockExpr => true
       case _: ScBlock     => false
-      case _: ScExpression | _: PsiWhiteSpace => {
+      case _: ScExpression | _: PsiWhiteSpace =>
         true
-      }
-      case e => {
+      case e =>
         ScalaPsiUtil.isLineTerminator(e)
-      }
     }
 
   override def getTemplateAsString(elements: Array[PsiElement]): String =

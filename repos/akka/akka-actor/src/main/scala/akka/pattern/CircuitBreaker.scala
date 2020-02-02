@@ -332,9 +332,9 @@ class CircuitBreaker(
         try value
         catch { case NonFatal(t) ⇒ Future.failed(t) }
 
-      if (callTimeout == Duration.Zero) {
+      if (callTimeout == Duration.Zero)
         materialize(body)
-      } else {
+      else {
         val p = Promise[T]()
 
         implicit val ec = sameThreadExecutionContext

@@ -78,14 +78,13 @@ object LambdaDeserializer {
 
       // Lookup the implementation method
       val implMethod: MethodHandle =
-        try {
-          findMember(
-            lookup,
-            getImplMethodKind,
-            implClass,
-            getImplMethodName,
-            implMethodSig)
-        } catch {
+        try findMember(
+          lookup,
+          getImplMethodKind,
+          implClass,
+          getImplMethodName,
+          implMethodSig)
+        catch {
           case e: ReflectiveOperationException =>
             throw new IllegalArgumentException(
               "Illegal lambda deserialization",
@@ -115,17 +114,18 @@ object LambdaDeserializer {
 
     val key =
       serialized.getImplMethodName + " : " + serialized.getImplMethodSignature
-    val factory: MethodHandle = if (cache == null) {
-      makeCallSite.getTarget
-    } else
-      cache.get(key) match {
-        case null =>
-          val callSite = makeCallSite
-          val temp = callSite.getTarget
-          cache.put(key, temp)
-          temp
-        case target => target
-      }
+    val factory: MethodHandle =
+      if (cache == null)
+        makeCallSite.getTarget
+      else
+        cache.get(key) match {
+          case null =>
+            val callSite = makeCallSite
+            val temp = callSite.getTarget
+            cache.put(key, temp)
+            temp
+          case target => target
+        }
 
     val captures = Array.tabulate(serialized.getCapturedArgCount)(n =>
       serialized.getCapturedArg(n))
@@ -134,12 +134,11 @@ object LambdaDeserializer {
 
   private val ScalaSerializable = "scala.Serializable"
 
-  private val JavaIOSerializable = {
+  private val JavaIOSerializable =
     // We could actually omit this marker interface as LambdaMetaFactory will add it if
     // the FLAG_SERIALIZABLE is set and of the provided markers extend it. But the code
     // is cleaner if we uniformly add a single marker, so I'm leaving it in place.
     "java.io.Serializable"
-  }
 
   private def findMember(
       lookup: MethodHandles.Lookup,

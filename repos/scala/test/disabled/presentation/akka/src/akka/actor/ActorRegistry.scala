@@ -273,9 +273,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
         else actorRef.stop()
       }
     } else foreach(_.stop())
-    if (Remote.isEnabled) {
+    if (Remote.isEnabled)
       Actor.remote.clear //TODO: REVISIT: Should this be here?
-    }
     actorsByUUID.clear
     actorsById.clear
   }
@@ -305,7 +304,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
       var added = false
       val set = container get k
 
-      if (set ne null) {
+      if (set ne null)
         set.synchronized {
           if (set.isEmpty)
             retry = true //IF the set is empty then it has been removed, so signal retry
@@ -314,13 +313,13 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
             retry = false
           }
         }
-      } else {
+      else {
         val newSet = new ConcurrentSkipListSet[V]
         newSet add v
 
         // Parry for two simultaneous putIfAbsent(id,newSet)
         val oldSet = container.putIfAbsent(k, newSet)
-        if (oldSet ne null) {
+        if (oldSet ne null)
           oldSet.synchronized {
             if (oldSet.isEmpty)
               retry = true //IF the set is empty then it has been removed, so signal retry
@@ -329,7 +328,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
               retry = false
             }
           }
-        } else added = true
+        else added = true
       }
 
       if (retry) spinPut(k, v)
@@ -374,7 +373,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
   def remove(key: K, value: V): Boolean = {
     val set = container get key
 
-    if (set ne null) {
+    if (set ne null)
       set.synchronized {
         if (set.remove(value)) { //If we can remove the value
           if (set.isEmpty) //and the set becomes empty
@@ -386,7 +385,7 @@ class Index[K <: AnyRef, V <: AnyRef: ArrayTag] {
           true //Remove succeeded
         } else false //Remove failed
       }
-    } else false //Remove failed
+    else false //Remove failed
   }
 
   /**

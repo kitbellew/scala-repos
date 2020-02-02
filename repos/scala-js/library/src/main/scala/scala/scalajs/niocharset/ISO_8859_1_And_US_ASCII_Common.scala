@@ -39,9 +39,9 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
       // scalastyle:off return
       val maxValue = ISO_8859_1_And_US_ASCII_Common.this.maxValue
       val inRemaining = in.remaining
-      if (inRemaining == 0) {
+      if (inRemaining == 0)
         CoderResult.UNDERFLOW
-      } else {
+      else {
         val outRemaining = out.remaining
         val overflow = outRemaining < inRemaining
         val rem = if (overflow) outRemaining else inRemaining
@@ -105,106 +105,98 @@ private[niocharset] abstract class ISO_8859_1_And_US_ASCII_Common protected ( //
 
       val maxValue = ISO_8859_1_And_US_ASCII_Common.this.maxValue
       val inRemaining = in.remaining
-      if (inRemaining == 0) {
+      if (inRemaining == 0)
         CoderResult.UNDERFLOW
-      } else {
-        if (in.hasArray && out.hasArray) {
-          val outRemaining = out.remaining
-          val overflow = outRemaining < inRemaining
-          val rem = if (overflow) outRemaining else inRemaining
+      else if (in.hasArray && out.hasArray) {
+        val outRemaining = out.remaining
+        val overflow = outRemaining < inRemaining
+        val rem = if (overflow) outRemaining else inRemaining
 
-          val inArr = in.array
-          val inOffset = in.arrayOffset
-          val inStart = in.position + inOffset
-          val inEnd = inStart + rem
+        val inArr = in.array
+        val inOffset = in.arrayOffset
+        val inStart = in.position + inOffset
+        val inEnd = inStart + rem
 
-          val outArr = out.array
-          val outOffset = out.arrayOffset
-          val outStart = out.position + outOffset
+        val outArr = out.array
+        val outOffset = out.arrayOffset
+        val outStart = out.position + outOffset
 
+        @inline
+        @tailrec
+        def loop(inPos: Int, outPos: Int): CoderResult = {
           @inline
-          @tailrec
-          def loop(inPos: Int, outPos: Int): CoderResult = {
-            @inline
-            def finalize(result: CoderResult): CoderResult = {
-              in.position(inPos - inOffset)
-              out.position(outPos - outOffset)
-              result
-            }
+          def finalize(result: CoderResult): CoderResult = {
+            in.position(inPos - inOffset)
+            out.position(outPos - outOffset)
+            result
+          }
 
-            if (inPos == inEnd) {
+          if (inPos == inEnd)
+            finalize {
+              if (overflow) CoderResult.OVERFLOW
+              else CoderResult.UNDERFLOW
+            }
+          else {
+            val c = inArr(inPos)
+            if (c <= maxValue) {
+              outArr(outPos) = c.toByte
+              loop(inPos + 1, outPos + 1)
+            } else
               finalize {
-                if (overflow) CoderResult.OVERFLOW
-                else CoderResult.UNDERFLOW
+                if (Character.isLowSurrogate(c))
+                  CoderResult.malformedForLength(1)
+                else if (Character.isHighSurrogate(c))
+                  if (inPos + 1 < in.limit) {
+                    val c2 = inArr(inPos + 1)
+                    if (Character.isLowSurrogate(c2))
+                      CoderResult.unmappableForLength(2)
+                    else
+                      CoderResult.malformedForLength(1)
+                  } else
+                    CoderResult.UNDERFLOW
+                else
+                  CoderResult.unmappableForLength(1)
               }
-            } else {
-              val c = inArr(inPos)
-              if (c <= maxValue) {
-                outArr(outPos) = c.toByte
-                loop(inPos + 1, outPos + 1)
+          }
+        }
+
+        loop(inStart, outStart)
+      } else {
+        // Not both have arrays
+        @inline
+        @tailrec
+        def loop(): CoderResult =
+          if (!in.hasRemaining)
+            CoderResult.UNDERFLOW
+          else if (!out.hasRemaining)
+            CoderResult.OVERFLOW
+          else {
+            val c = in.get()
+            if (c <= maxValue) {
+              out.put(c.toByte)
+              loop()
+            } else if (Character.isLowSurrogate(c)) {
+              in.position(in.position - 1)
+              CoderResult.malformedForLength(1)
+            } else if (Character.isHighSurrogate(c))
+              if (in.hasRemaining) {
+                val c2 = in.get()
+                in.position(in.position - 2)
+                if (Character.isLowSurrogate(c2))
+                  CoderResult.unmappableForLength(2)
+                else
+                  CoderResult.malformedForLength(1)
               } else {
-                finalize {
-                  if (Character.isLowSurrogate(c)) {
-                    CoderResult.malformedForLength(1)
-                  } else if (Character.isHighSurrogate(c)) {
-                    if (inPos + 1 < in.limit) {
-                      val c2 = inArr(inPos + 1)
-                      if (Character.isLowSurrogate(c2))
-                        CoderResult.unmappableForLength(2)
-                      else
-                        CoderResult.malformedForLength(1)
-                    } else {
-                      CoderResult.UNDERFLOW
-                    }
-                  } else {
-                    CoderResult.unmappableForLength(1)
-                  }
-                }
+                in.position(in.position - 1)
+                CoderResult.UNDERFLOW
               }
+            else {
+              in.position(in.position - 1)
+              CoderResult.unmappableForLength(1)
             }
           }
 
-          loop(inStart, outStart)
-        } else {
-          // Not both have arrays
-          @inline
-          @tailrec
-          def loop(): CoderResult =
-            if (!in.hasRemaining) {
-              CoderResult.UNDERFLOW
-            } else if (!out.hasRemaining) {
-              CoderResult.OVERFLOW
-            } else {
-              val c = in.get()
-              if (c <= maxValue) {
-                out.put(c.toByte)
-                loop()
-              } else {
-                if (Character.isLowSurrogate(c)) {
-                  in.position(in.position - 1)
-                  CoderResult.malformedForLength(1)
-                } else if (Character.isHighSurrogate(c)) {
-                  if (in.hasRemaining) {
-                    val c2 = in.get()
-                    in.position(in.position - 2)
-                    if (Character.isLowSurrogate(c2)) {
-                      CoderResult.unmappableForLength(2)
-                    } else {
-                      CoderResult.malformedForLength(1)
-                    }
-                  } else {
-                    in.position(in.position - 1)
-                    CoderResult.UNDERFLOW
-                  }
-                } else {
-                  in.position(in.position - 1)
-                  CoderResult.unmappableForLength(1)
-                }
-              }
-            }
-
-          loop()
-        }
+        loop()
       }
     }
   }

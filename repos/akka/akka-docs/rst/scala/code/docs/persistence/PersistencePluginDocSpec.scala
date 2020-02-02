@@ -86,11 +86,8 @@ class PersistencePluginDocSpec extends WordSpec {
         .parseString(providerConfig)
         .withFallback(
           ConfigFactory.parseString(PersistencePluginDocSpec.config)))
-    try {
-      Persistence(system)
-    } finally {
-      TestKit.shutdownActorSystem(system, 10.seconds, false)
-    }
+    try Persistence(system)
+    finally TestKit.shutdownActorSystem(system, 10.seconds, false)
   }
 }
 

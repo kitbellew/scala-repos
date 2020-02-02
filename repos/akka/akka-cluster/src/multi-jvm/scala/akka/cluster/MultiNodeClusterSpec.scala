@@ -176,9 +176,9 @@ trait MultiNodeClusterSpec
   // fail fast of steps after the first failure.
   private var failed = false
   override protected def withFixture(test: NoArgTest): Outcome =
-    if (failed) {
+    if (failed)
       Canceled(new TestCanceledException("Previous step failed", 0))
-    } else {
+    else {
       val out = super.withFixture(test)
       if (!out.isSucceeded)
         failed = true
@@ -215,12 +215,10 @@ trait MultiNodeClusterSpec
       startClusterNode()
     }
     enterBarrier(roles.head.name + "-started")
-    if (roles.tail.contains(myself)) {
+    if (roles.tail.contains(myself))
       cluster.join(roles.head)
-    }
-    if (roles.contains(myself)) {
+    if (roles.contains(myself))
       awaitMembersUp(numberOfMembers = roles.length)
-    }
     enterBarrier(roles.map(_.name).mkString("-") + "-joined")
   }
 

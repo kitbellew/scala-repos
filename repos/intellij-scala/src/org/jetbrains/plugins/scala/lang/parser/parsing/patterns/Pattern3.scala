@@ -35,7 +35,7 @@ object Pattern3 {
       val s = builder.getTokenText
 
       var exit = false
-      while (!exit) {
+      while (!exit)
         if (opStack.isEmpty) {
           opStack push s
           val newMarker = backupMarker.precede
@@ -52,31 +52,25 @@ object Pattern3 {
           markerStack push newMarker
           exit = true
         }
-      }
       val idMarker = builder.mark
       builder.advanceLexer() //Ate id
       idMarker.done(ScalaElementTypes.REFERENCE)
-      if (builder.twoNewlinesBeforeCurrentToken) {
+      if (builder.twoNewlinesBeforeCurrentToken)
         builder.error(ScalaBundle.message("simple.pattern.expected"))
-      }
       backupMarker.drop()
       backupMarker = builder.mark
-      if (!SimplePattern.parse(builder)) {
+      if (!SimplePattern.parse(builder))
         builder error ScalaBundle.message("simple.pattern.expected")
-      }
     }
     backupMarker.drop()
-    if (count > 0) {
-      while (markerStack.nonEmpty) {
+    if (count > 0)
+      while (markerStack.nonEmpty)
         markerStack.pop().done(ScalaElementTypes.INFIX_PATTERN)
-      }
-      //infixMarker.done(ScalaElementTypes.INFIX_PATTERN)
-    } else {
-      while (markerStack.nonEmpty) {
+    //infixMarker.done(ScalaElementTypes.INFIX_PATTERN)
+    else
+      while (markerStack.nonEmpty)
         markerStack.pop().drop()
-      }
-      //infixMarker.drop
-    }
+    //infixMarker.drop
     true
   }
 

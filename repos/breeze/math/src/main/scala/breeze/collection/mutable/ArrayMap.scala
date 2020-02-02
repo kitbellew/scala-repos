@@ -41,9 +41,9 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
     this(defValue, new ArrayBuffer[V]())
   override def default(i: Int): V = defValue
   override def apply(i: Int) =
-    if (i < arr.length) {
+    if (i < arr.length)
       arr(i)
-    } else {
+    else {
       update(i, default(i))
       arr(i)
     }
@@ -52,16 +52,14 @@ class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
   override def clear = arr.clear()
 
   override def getOrElseUpdate(i: Int, v: => V) = {
-    if (i >= arr.length) {
+    if (i >= arr.length)
       update(i, v)
-    }
     arr(i)
   }
 
   override def update(i: Int, v: V) {
-    while (i > arr.length) {
+    while (i > arr.length)
       arr += default(arr.length)
-    }
 
     if (i == arr.length)
       arr += v

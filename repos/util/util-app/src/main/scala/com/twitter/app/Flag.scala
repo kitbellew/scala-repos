@@ -333,9 +333,8 @@ class Flag[T: Flaggable] private[app] (
   }
 
   protected def getValue: Option[T] = {
-    if (registered.compareAndSet(false, true)) {
+    if (registered.compareAndSet(false, true))
       register()
-    }
     localValue match {
       case lv @ Some(_) => lv
       case None         => value
@@ -348,9 +347,8 @@ class Flag[T: Flaggable] private[app] (
   private lazy val default: Option[T] = defaultOrUsage match {
     case Right(_) => None
     case Left(d) =>
-      try {
-        Some(d())
-      } catch {
+      try Some(d())
+      catch {
         case e: Throwable =>
           throw new RuntimeException(
             s"Could not run default function for flag $name",
@@ -374,9 +372,7 @@ class Flag[T: Flaggable] private[app] (
     val prev = localValue
     setLocalValue(Some(t))
     try f
-    finally {
-      setLocalValue(prev)
-    }
+    finally setLocalValue(prev)
   }
 
   /**
@@ -384,12 +380,11 @@ class Flag[T: Flaggable] private[app] (
     * when the flag has not otherwise been set.
     */
   def apply(): T = {
-    if (!parsingDone) {
+    if (!parsingDone)
       if (failFastUntilParsed)
         throw new IllegalStateException(s"Flag $name read before parse.")
       else
         log.log(Level.SEVERE, s"Flag $name read before parse.")
-    }
     valueOrDefault match {
       case Some(v) => v
       case None    => throw flagNotFound
@@ -430,9 +425,8 @@ class Flag[T: Flaggable] private[app] (
 
   /** String representation of this flag's default value */
   def defaultString(): String =
-    try {
-      flaggable.show(default getOrElse { throw flagNotFound })
-    } catch {
+    try flaggable.show(default getOrElse { throw flagNotFound })
+    catch {
       case e: Throwable =>
         log.log(Level.SEVERE, s"Flag $name default cannot be read", e)
         throw e
@@ -447,9 +441,8 @@ class Flag[T: Flaggable] private[app] (
   }
 
   private[this] def runDefaultString =
-    try {
-      defaultString
-    } catch {
+    try defaultString
+    catch {
       case e: Throwable =>
         s"Error in reading default value for flag=$name.  See logs for exception"
     }
@@ -596,7 +589,7 @@ class Flags(
       if (a == "--") {
         remaining ++= args.slice(i, args.size)
         i = args.size
-      } else if (a startsWith "-") {
+      } else if (a startsWith "-")
         a drop 1 split ("=", 2) match {
           // There seems to be a bug Scala's pattern matching
           // optimizer that leaves `v' dangling in the last case if
@@ -654,9 +647,8 @@ class Flags(
                 )
             }
         }
-      } else {
+      else
         remaining += a
-      }
     }
     finishParsing()
 
@@ -800,12 +792,11 @@ class Flags(
         yield flags(k).usageString
     val globalLines =
       if (!includeGlobal) Seq.empty
-      else {
+      else
         GlobalFlag
           .getAllOrEmptyArray(getClass.getClassLoader)
           .map(_.usageString)
           .sorted
-      }
 
     val cmd = if (cmdUsage.nonEmpty) cmdUsage + "\n" else "usage: "
 
@@ -813,10 +804,9 @@ class Flags(
       "flags:\n" +
       (lines mkString "\n") + (
       if (globalLines.isEmpty) ""
-      else {
+      else
         "\nglobal flags:\n" +
           (globalLines mkString "\n")
-      }
     )
   }
 
@@ -838,9 +828,8 @@ class Flags(
     var flags =
       TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
 
-    if (includeGlobal) {
+    if (includeGlobal)
       flags ++= GlobalFlag.getAll(classLoader).iterator
-    }
 
     flags
   }
@@ -971,9 +960,8 @@ private object GlobalFlag {
   private[this] val log = java.util.logging.Logger.getLogger("")
 
   def getAllOrEmptyArray(loader: ClassLoader): Seq[Flag[_]] =
-    try {
-      getAll(loader)
-    } catch {
+    try getAll(loader)
+    catch {
       //NOTE: We catch Throwable as ExceptionInInitializerError and any errors really so that
       //we don't hide the real issue that a developer just added an unparseable arg.
       case e: Throwable =>
@@ -990,12 +978,11 @@ private object GlobalFlag {
     // before attempting to load the class.
     for (info <- ClassPath.browse(loader) if (info.name endsWith "$")) try {
       val cls = info.load()
-      if (cls.isAnnotationPresent(markerClass)) {
+      if (cls.isAnnotationPresent(markerClass))
         get(info.name.dropRight(1)) match {
           case Some(f) => flags += f
           case None    => println("failed for " + info.name)
         }
-      }
     } catch {
       case _: IllegalStateException | _: NoClassDefFoundError |
           _: ClassNotFoundException =>

@@ -60,7 +60,7 @@ private[round] final class Finisher(
           winnerId = winner flatMap (g.player(_).userId),
           status = prog.game.status) >>
         UserRepo.pair(g.whitePlayer.userId, g.blackPlayer.userId).flatMap {
-          case (whiteO, blackO) => {
+          case (whiteO, blackO) =>
             val finish = FinishGame(g, whiteO, blackO)
             updateCountAndPerfs(finish) inject {
               message foreach { messenger.system(g, _) }
@@ -69,7 +69,6 @@ private[round] final class Finisher(
               }
               prog.events
             }
-          }
         }
     }
   }

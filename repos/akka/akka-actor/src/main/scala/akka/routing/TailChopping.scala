@@ -78,7 +78,7 @@ private[akka] final case class TailChoppingRoutees(
 
     val tryWithNext = scheduler.schedule(0.millis, interval) {
       val idx = aIdx.getAndIncrement
-      if (idx < size) {
+      if (idx < size)
         shuffled(idx) match {
           case ActorRefRoutee(ref) ⇒
             promise.tryCompleteWith(ref.ask(message))
@@ -86,7 +86,6 @@ private[akka] final case class TailChoppingRoutees(
             promise.tryCompleteWith(sel.ask(message))
           case _ ⇒
         }
-      }
     }
 
     val sendTimeout = scheduler.scheduleOnce(within)(

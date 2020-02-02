@@ -182,9 +182,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
       val text =
         scala.io.Source.fromFile(file, "UTF-8").mkString.replace("\r", "")
       md.digest(text.getBytes("UTF8"))
-    } else {
+    } else
       md.digest(FileUtil.loadBytes(new FileInputStream(file)))
-    }
   }
 
   private def computeChecksums(): mutable.HashMap[String, Array[Byte]] = {
@@ -192,10 +191,9 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     def computeForDir(dir: File) {
       if (dir.exists) dir.listFiles().foreach { f =>
         if (f.isDirectory) computeForDir(f)
-        else {
+        else
           result += (testDataBasePath.toURI.relativize(f.toURI).toString -> md5(
             f))
-        }
       }
     }
     computeForDir(srcDir)
@@ -212,18 +210,14 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
     val file = new File(testDataBasePath, checksumsFileName)
     FileUtil.createIfDoesntExist(file)
     val oos = new ObjectOutputStream(new FileOutputStream(file))
-    try {
-      oos.writeObject(checksums)
-    } finally {
-      oos.close()
-    }
+    try oos.writeObject(checksums)
+    finally oos.close()
   }
 
   private def loadChecksums(): Boolean = {
     val file = new File(testDataBasePath, checksumsFileName)
-    if (!file.exists) {
+    if (!file.exists)
       return false
-    }
     val ois = new ObjectInputStream(new FileInputStream(file))
     val result =
       try {

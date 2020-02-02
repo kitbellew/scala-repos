@@ -46,8 +46,7 @@ class BinomialTest extends FunSuite with Checkers with MomentsTestBase[Int] {
     assert(b1.probabilityOf(0) === 0.0)
     assert(b0.probabilityOf(1) === 0.0)
     assert(b0.probabilityOf(0) === 1.0)
-    for (i <- 1 until 10) {
+    for (i <- 1 until 10)
       assert(b1.probabilityOf(i) === 0.0)
-    }
   }
 }

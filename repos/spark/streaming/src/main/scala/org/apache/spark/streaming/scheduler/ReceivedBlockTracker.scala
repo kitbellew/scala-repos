@@ -82,9 +82,8 @@ private[streaming] class ReceivedBlockTracker(
   private var lastAllocatedBatchTime: Time = null
 
   // Recover block information from write ahead logs
-  if (recoverFromWriteAheadLog) {
+  if (recoverFromWriteAheadLog)
     recoverPastEvents()
-  }
 
   /** Add received block. This event will get written to the write ahead log (if enabled). */
   def addBlock(receivedBlockInfo: ReceivedBlockInfo): Boolean =
@@ -97,11 +96,10 @@ private[streaming] class ReceivedBlockTracker(
         logDebug(
           s"Stream ${receivedBlockInfo.streamId} received " +
             s"block ${receivedBlockInfo.blockStoreResult.blockId}")
-      } else {
+      } else
         logDebug(
           s"Failed to acknowledge stream ${receivedBlockInfo.streamId} receiving " +
             s"block ${receivedBlockInfo.blockStoreResult.blockId} in the Write Ahead Log.")
-      }
       writeResult
     } catch {
       case NonFatal(e) =>
@@ -122,11 +120,10 @@ private[streaming] class ReceivedBlockTracker(
       if (writeToLog(BatchAllocationEvent(batchTime, allocatedBlocks))) {
         timeToAllocatedBlocks.put(batchTime, allocatedBlocks)
         lastAllocatedBatchTime = batchTime
-      } else {
+      } else
         logInfo(
           s"Possibly processed batch $batchTime need to be processed again in WAL recovery")
-      }
-    } else {
+    } else
       // This situation occurs when:
       // 1. WAL is ended with BatchAllocationEvent, but without BatchCleanupEvent,
       // possibly processed batch job or half-processed batch job need to be processed again,
@@ -136,7 +133,6 @@ private[streaming] class ReceivedBlockTracker(
       // This situation will only occurs in recovery time.
       logInfo(
         s"Possibly processed batch $batchTime need to be processed again in WAL recovery")
-    }
   }
 
   /** Get the blocks allocated to the given batch. */
@@ -191,9 +187,8 @@ private[streaming] class ReceivedBlockTracker(
       timeToAllocatedBlocks --= timesToCleanup
       writeAheadLogOption.foreach(
         _.clean(cleanupThreshTime.milliseconds, waitForCompletion))
-    } else {
+    } else
       logWarning("Failed to acknowledge batch clean up in the Write Ahead Log.")
-    }
   }
 
   /** Stop the block tracker. */
@@ -266,9 +261,8 @@ private[streaming] class ReceivedBlockTracker(
             e)
           false
       }
-    } else {
+    } else
       true
-    }
 
   /** Get the queue of received blocks belonging to a particular stream */
   private def getReceivedBlockQueue(streamId: Int): ReceivedBlockQueue =

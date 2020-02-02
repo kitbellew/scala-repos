@@ -332,9 +332,8 @@ object QueryStringBindable {
 
     def bind(key: String, params: Map[String, Seq[String]]) =
       params.get(key).flatMap(_.headOption).map { p =>
-        try {
-          Right(parse(p))
-        } catch {
+        try Right(parse(p))
+        catch {
           case e: Exception => Left(error(key, e))
         }
       }
@@ -596,9 +595,8 @@ object QueryStringBindable {
   private def unbindSeq[T: QueryStringBindable](
       key: String,
       values: Iterable[T]): String =
-    (for (value <- values) yield {
-      implicitly[QueryStringBindable[T]].unbind(key, value)
-    }).mkString("&")
+    (for (value <- values)
+      yield implicitly[QueryStringBindable[T]].unbind(key, value)).mkString("&")
 
   private def javascriptUnbindSeq(jsUnbindT: String) =
     "function(k,vs){var l=vs&&vs.length,r=[],i=0;for(;i<l;i++){r[i]=(" + jsUnbindT + ")(k,vs[i])}return r.join('&')}"
@@ -613,11 +611,10 @@ object QueryStringBindable {
         val o = ct.runtimeClass.newInstance
           .asInstanceOf[T]
           .bind(key, params.mapValues(_.toArray).asJava)
-        if (o.isPresent) {
+        if (o.isPresent)
           Some(Right(o.get))
-        } else {
+        else
           None
-        }
       } catch {
         case e: Exception => Some(Left(e.getMessage))
       }
@@ -642,9 +639,8 @@ object PathBindable {
       extends PathBindable[A] {
 
     def bind(key: String, value: String): Either[String, A] =
-      try {
-        Right(parse(value))
-      } catch {
+      try Right(parse(value))
+      catch {
         case e: Exception => Left(error(key, e))
       }
     def unbind(key: String, value: A): String = serialize(value)
@@ -786,9 +782,8 @@ object PathBindable {
   implicit def javaPathBindable[T <: play.mvc.PathBindable[T]](
       implicit ct: ClassTag[T]): PathBindable[T] = new PathBindable[T] {
     def bind(key: String, value: String) =
-      try {
-        Right(ct.runtimeClass.newInstance.asInstanceOf[T].bind(key, value))
-      } catch {
+      try Right(ct.runtimeClass.newInstance.asInstanceOf[T].bind(key, value))
+      catch {
         case e: Exception => Left(e.getMessage)
       }
     def unbind(key: String, value: T) =

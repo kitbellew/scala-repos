@@ -41,11 +41,8 @@ class CreateTableAsSelectSuite
   }
 
   override def afterAll(): Unit =
-    try {
-      caseInsensitiveContext.dropTempTable("jt")
-    } finally {
-      super.afterAll()
-    }
+    try caseInsensitiveContext.dropTempTable("jt")
+    finally super.afterAll()
 
   after {
     Utils.deleteRecursively(path)

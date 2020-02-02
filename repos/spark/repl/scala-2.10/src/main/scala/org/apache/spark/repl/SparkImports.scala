@@ -182,7 +182,7 @@ private[repl] trait SparkImports {
     addWrapper()
 
     // loop through previous requests, adding imports for each one
-    for (ReqAndHandler(req, handler) <- reqsToUse) {
+    for (ReqAndHandler(req, handler) <- reqsToUse)
       handler match {
         // If the user entered an import, then just use it; add an import wrapping
         // level if the import might conflict with some other import
@@ -231,7 +231,6 @@ private[repl] trait SparkImports {
             currentImps += imv
           }
       }
-    }
     // add one extra wrapper, to prevent warnings in the common case of
     // redefining the value bound in the last interpreter request.
     addWrapper()

@@ -76,13 +76,12 @@ case class HttpBasicAuthentication(realmName: String)(
   override def realm = realmName
 
   def verified_? = {
-    case (req) => {
+    case (req) =>
       credentials(req) match {
         case Full((user, pwd)) if (func.isDefinedAt(user, pwd, req)) =>
           func(user, pwd, req)
         case _ => false
       }
-    }
   }
 
 }
@@ -104,18 +103,16 @@ case class HttpDigestAuthentication(realmName: String)(
         if (keepPinging) doPing()
         nonceMap.foreach { (entry) =>
           val ts = System.currentTimeMillis
-          if ((ts - entry._2) > nonceValidityPeriod) {
+          if ((ts - entry._2) > nonceValidityPeriod)
             nonceMap -= entry._1
-          }
         }
 
       case ShutDown => keepPinging = false
     }
 
     private[auth] def doPing() {
-      try {
-        Schedule.schedule(this, CheckAndPurge, 5.seconds)
-      } catch {
+      try Schedule.schedule(this, CheckAndPurge, 5.seconds)
+      catch {
         case e: Exception => logger.error("Couldn't start NonceWatcher ping", e)
       }
     }
@@ -163,7 +160,7 @@ case class HttpDigestAuthentication(realmName: String)(
   }
 
   def verified_? = {
-    case (req) => {
+    case (req) =>
       getInfo(req) match {
         case Full(auth)
             if (func.isDefinedAt((auth.userName, req, validate(auth) _))) =>
@@ -180,7 +177,6 @@ case class HttpDigestAuthentication(realmName: String)(
           }
         case _ => false
       }
-    }
   }
 
   private def validate(clientAuth: DigestAuthentication)(

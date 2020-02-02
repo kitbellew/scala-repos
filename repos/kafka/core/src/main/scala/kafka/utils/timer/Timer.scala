@@ -46,19 +46,15 @@ class Timer(
 
   def add(timerTask: TimerTask): Unit = {
     readLock.lock()
-    try {
-      addTimerTaskEntry(new TimerTaskEntry(timerTask))
-    } finally {
-      readLock.unlock()
-    }
+    try addTimerTaskEntry(new TimerTaskEntry(timerTask))
+    finally readLock.unlock()
   }
 
   private def addTimerTaskEntry(timerTaskEntry: TimerTaskEntry): Unit =
-    if (!timingWheel.add(timerTaskEntry)) {
+    if (!timingWheel.add(timerTaskEntry))
       // Already expired or cancelled
       if (!timerTaskEntry.cancelled)
         taskExecutor.submit(timerTaskEntry.timerTask)
-    }
 
   private[this] val reinsert = (timerTaskEntry: TimerTaskEntry) =>
     addTimerTaskEntry(timerTaskEntry)
@@ -71,19 +67,14 @@ class Timer(
     var bucket = delayQueue.poll(timeoutMs, TimeUnit.MILLISECONDS)
     if (bucket != null) {
       writeLock.lock()
-      try {
-        while (bucket != null) {
-          timingWheel.advanceClock(bucket.getExpiration())
-          bucket.flush(reinsert)
-          bucket = delayQueue.poll()
-        }
-      } finally {
-        writeLock.unlock()
-      }
+      try while (bucket != null) {
+        timingWheel.advanceClock(bucket.getExpiration())
+        bucket.flush(reinsert)
+        bucket = delayQueue.poll()
+      } finally writeLock.unlock()
       true
-    } else {
+    } else
       false
-    }
   }
 
   def size(): Int = taskCounter.get

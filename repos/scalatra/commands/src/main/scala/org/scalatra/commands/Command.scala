@@ -85,13 +85,13 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
       implicit mf: Manifest[T],
       conv: TypeConverterFactory[T]): FieldDescriptor[T] = {
     val f: FieldDescriptor[T] =
-      if (mf.runtimeClass.isAssignableFrom(classOf[Option[_]])) {
+      if (mf.runtimeClass.isAssignableFrom(classOf[Option[_]]))
         // Yay! not one but 2 casts in the same line
         field
           .asInstanceOf[FieldDescriptor[Option[_]]]
           .withDefaultValue(None)
           .asInstanceOf[FieldDescriptor[T]]
-      } else field
+      else field
     val b = Binding(f)
     bindings += b.name -> b
     f

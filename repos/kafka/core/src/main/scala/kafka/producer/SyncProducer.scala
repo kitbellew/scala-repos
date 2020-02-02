@@ -167,27 +167,24 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
   }
 
   private def connect(): BlockingChannel = {
-    if (!blockingChannel.isConnected && !shutdown) {
+    if (!blockingChannel.isConnected && !shutdown)
       try {
         blockingChannel.connect()
         info(
           "Connected to " + formatAddress(config.host, config.port) + " for producing")
       } catch {
-        case e: Exception => {
+        case e: Exception =>
           disconnect()
           error(
             "Producer connection to " + formatAddress(config.host, config.port) + " unsuccessful",
             e)
           throw e
-        }
       }
-    }
     blockingChannel
   }
 
   private def getOrMakeConnection() {
-    if (!blockingChannel.isConnected) {
+    if (!blockingChannel.isConnected)
       connect()
-    }
   }
 }

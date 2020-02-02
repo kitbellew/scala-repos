@@ -45,9 +45,8 @@ class ScPrimaryConstructorWrapper(
     isJavaVarargs,
     forDefault)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try elementFactory.createMethodFromText(methodText, containingClass)
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",
@@ -116,12 +115,11 @@ class ScFunctionWrapper(
     if (cClass.isDefined) cClass.get
     else {
       var res: PsiClass = function.containingClass
-      if (isStatic) {
+      if (isStatic)
         res match {
           case o: ScObject => res = o.fakeCompanionClassOrCompanionClass
           case _           =>
         }
-      }
       assert(
         res != null,
         "Method: " + function.getText + "\nhas null containing class. isStatic: " + isStatic +
@@ -138,9 +136,8 @@ class ScFunctionWrapper(
     isJavaVarargs,
     forDefault)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try elementFactory.createMethodFromText(methodText, containingClass)
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",
@@ -286,9 +283,8 @@ object ScFunctionWrapper {
                       }
                     case _ =>
                   }
-                  if (classes.nonEmpty) {
+                  if (classes.nonEmpty)
                     res += classes.mkString(" extends ", " & ", "")
-                  }
                 case _ =>
               }
               res
@@ -388,11 +384,10 @@ object ScFunctionWrapper {
       case _ =>
     }
 
-    if (!isInterface) {
+    if (!isInterface)
       builder.append(" {}")
-    } else {
+    else
       builder.append(";")
-    }
 
     builder.toString()
   }

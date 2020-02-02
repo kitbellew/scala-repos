@@ -14,9 +14,8 @@ class TargetTimestamps(context: CompileContext) {
     Some(timestampFile(target)).filter(_.exists).flatMap { file =>
       using(new DataInputStream(
         new BufferedInputStream(new FileInputStream(file)))) { in =>
-        try {
-          Some(in.readLong())
-        } catch {
+        try Some(in.readLong())
+        catch {
           case _: IOException => None
         }
       }

@@ -59,22 +59,23 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     val firstLine = findFirstLine(csvOptions, rdd)
     val firstRow = new LineCsvReader(csvOptions).parseLine(firstLine)
 
-    val header = if (csvOptions.headerFlag) {
-      firstRow
-    } else {
-      firstRow.zipWithIndex.map { case (value, index) => s"C$index" }
-    }
+    val header =
+      if (csvOptions.headerFlag)
+        firstRow
+      else
+        firstRow.zipWithIndex.map { case (value, index) => s"C$index" }
 
     val parsedRdd = tokenRdd(sqlContext, csvOptions, header, paths)
-    val schema = if (csvOptions.inferSchemaFlag) {
-      CSVInferSchema.infer(parsedRdd, header, csvOptions.nullValue)
-    } else {
-      // By default fields are assumed to be StringType
-      val schemaFields = header.map { fieldName =>
-        StructField(fieldName.toString, StringType, nullable = true)
+    val schema =
+      if (csvOptions.inferSchemaFlag)
+        CSVInferSchema.infer(parsedRdd, header, csvOptions.nullValue)
+      else {
+        // By default fields are assumed to be StringType
+        val schemaFields = header.map { fieldName =>
+          StructField(fieldName.toString, StringType, nullable = true)
+        }
+        StructType(schemaFields)
       }
-      StructType(schemaFields)
-    }
     Some(schema)
   }
 
@@ -157,19 +158,18 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       rdd
         .filter { line => line.trim.nonEmpty && !line.startsWith(comment) }
         .first()
-    } else {
+    } else
       rdd
         .filter { line => line.trim.nonEmpty }
         .first()
-    }
 
   private def readText(
       sqlContext: SQLContext,
       options: CSVOptions,
       location: String): RDD[String] =
-    if (Charset.forName(options.charset) == StandardCharsets.UTF_8) {
+    if (Charset.forName(options.charset) == StandardCharsets.UTF_8)
       sqlContext.sparkContext.textFile(location)
-    } else {
+    else {
       val charset = options.charset
       sqlContext.sparkContext
         .hadoopFile[LongWritable, Text, TextInputFormat](location)

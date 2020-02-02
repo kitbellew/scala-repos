@@ -40,11 +40,11 @@ trait ScToplevelElement extends ScalaPsiElement {
       case st: ScPackagingImpl => st.getStub
       case _                   => null
     }
-    if (stub != null) {
+    if (stub != null)
       stub.getChildrenByType[ScTypeDefinition](
         TokenSets.TMPL_DEF_BIT_SET,
         JavaArrayFactoryUtil.ScTypeDefinitionFactory)
-    } else findChildrenByClassScala(classOf[ScTypeDefinition]).toSeq
+    else findChildrenByClassScala(classOf[ScTypeDefinition]).toSeq
   }
 
   def packagings: Seq[ScPackaging] = {
@@ -53,11 +53,11 @@ trait ScToplevelElement extends ScalaPsiElement {
       case st: ScPackagingImpl => st.getStub
       case _                   => null
     }
-    if (stub != null) {
+    if (stub != null)
       stub.getChildrenByType[ScPackaging](
         ScalaElementTypes.PACKAGING,
         JavaArrayFactoryUtil.ScPackagingFactory)
-    } else {
+    else {
       val buffer = new ArrayBuffer[ScPackaging]
       var curr = getFirstChild
       while (curr != null) {

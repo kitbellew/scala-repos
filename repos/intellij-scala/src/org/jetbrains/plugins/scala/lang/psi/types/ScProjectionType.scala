@@ -81,7 +81,7 @@ class ScProjectionType private (
     new ScProjectionType(projected, element, superReference)
 
   override protected def isAliasTypeInner: Option[AliasType] =
-    if (actualElement.isInstanceOf[ScTypeAlias]) {
+    if (actualElement.isInstanceOf[ScTypeAlias])
       actualElement match {
         case ta: ScTypeAlias if ta.typeParameters.length == 0 =>
           val subst: ScSubstitutor = actualSubst
@@ -145,15 +145,14 @@ class ScProjectionType private (
             ))
         case _ => None
       }
-    } else None
+    else None
 
   private var hash: Int = -1
 
   override def hashCode: Int = {
-    if (hash == -1) {
+    if (hash == -1)
       hash = projected
         .hashCode() + element.hashCode() * 31 + (if (superReference) 239 else 0)
-    }
     hash
   }
 
@@ -163,12 +162,11 @@ class ScProjectionType private (
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     update(this) match {
       case (true, res) => res
       case _ =>
@@ -234,7 +232,7 @@ class ScProjectionType private (
       if (candidates.length == 1 && candidates(0).element
             .isInstanceOf[PsiNamedElement]) {
         val defaultSubstitutor = emptySubst followed candidates(0).substitutor
-        if (superReference) {
+        if (superReference)
           ScalaPsiUtil
             .superTypeMembersAndSubstitutors(candidates(0).element)
             .find {
@@ -244,7 +242,7 @@ class ScProjectionType private (
               Some(element, defaultSubstitutor followed node.substitutor)
             case _ => Some(element, defaultSubstitutor)
           }
-        } else Some(candidates(0).element, defaultSubstitutor)
+        else Some(candidates(0).element, defaultSubstitutor)
       } else None
     }
     element match {
@@ -257,12 +255,12 @@ class ScProjectionType private (
         proc.processType(projected, resolvePlace, ResolveState.initial)
         val candidates = proc.candidates
         if (candidates.length == 1 && candidates(0).element
-              .isInstanceOf[PsiNamedElement]) {
+              .isInstanceOf[PsiNamedElement])
           //todo: superMemberSubstitutor? However I don't know working example for this case
           Some(
             candidates(0).element,
             emptySubst followed candidates(0).substitutor)
-        } else None
+        else None
       case d: ScTypeDefinition => processType(d.name)
       case d: PsiClass         => processType(d.getName)
       case _                   => None

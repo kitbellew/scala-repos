@@ -75,11 +75,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
   def definePriority(p: Int)(body: => Unit) {
     val oldPriority = knownPriority
     knownPriority = Some(p)
-    try {
-      body
-    } finally {
-      knownPriority = oldPriority
-    }
+    try body
+    finally knownPriority = oldPriority
   }
 
   def isPredefPriority = knownPriority == Some(PrecedenceTypes.SCALA_PREDEF)
@@ -186,7 +183,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
     t match {
       case ScThisType(clazz) =>
         val thisSubst = new ScSubstitutor(ScThisType(clazz))
-        if (clazz.selfType.isEmpty) {
+        if (clazz.selfType.isEmpty)
           processElement(
             clazz,
             thisSubst,
@@ -194,12 +191,12 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
             state,
             visitedAliases = visitedAliases,
             visitedTypeParameter = visitedTypeParameter)
-        } else {
+        else {
           val selfType = clazz.selfType.get
           val clazzType: ScType = clazz
             .getTypeWithProjections(TypingContext.empty)
             .getOrElse(return true)
-          if (selfType == ScThisType(clazz)) {
+          if (selfType == ScThisType(clazz))
             //to prevent SOE, let's process Element
             processElement(
               clazz,
@@ -208,7 +205,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               state,
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter)
-          } else if (selfType.conforms(clazzType)) {
+          else if (selfType.conforms(clazzType))
             processType(
               selfType,
               place,
@@ -218,7 +215,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter
             )
-          } else if (clazzType.conforms(selfType)) {
+          else if (clazzType.conforms(selfType))
             processElement(
               clazz,
               thisSubst,
@@ -226,7 +223,7 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               state,
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter)
-          } else {
+          else
             processType(
               clazz.selfType.map(Bounds.glb(_, clazzType)).get,
               place,
@@ -234,24 +231,20 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
               visitedAliases = visitedAliases,
               visitedTypeParameter = visitedTypeParameter
             )
-          }
         }
       case d @ ScDesignatorType(e: PsiClass)
           if d.isStatic && !e.isInstanceOf[ScTemplateDefinition] =>
         //not scala from scala
         var break = true
         for (method <- e.getMethods
-             if break && method.hasModifierProperty("static")) {
+             if break && method.hasModifierProperty("static"))
           if (!execute(method, state)) break = false
-        }
         for (cl <- e.getInnerClasses
-             if break && cl.hasModifierProperty("static")) {
+             if break && cl.hasModifierProperty("static"))
           if (!execute(cl, state)) break = false
-        }
         for (field <- e.getFields
-             if break && field.hasModifierProperty("static")) {
+             if break && field.hasModifierProperty("static"))
           if (!execute(field, state)) break = false
-        }
         if (!break) return false
         TypeDefinitionMembers.processEnum(e, execute(_, state))
       case ScDesignatorType(o: ScObject) =>
@@ -377,9 +370,8 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           val methods = obj.getMethods.iterator
           while (methods.hasNext) {
             val method = methods.next()
-            if (name == "AnyRef" || namesSet.contains(method.name)) {
+            if (name == "AnyRef" || namesSet.contains(method.name))
               if (!execute(method, state)) return false
-            }
           }
         }
         true

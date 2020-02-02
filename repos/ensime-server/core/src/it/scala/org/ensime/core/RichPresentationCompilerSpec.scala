@@ -743,11 +743,10 @@ class RichPresentationCompilerSpec
 
       val scalaVersion = scala.util.Properties.versionNumberString
       val parts = scalaVersion.split("\\.").map { _.toInt }
-      if (parts(0) > 2 || (parts(0) == 2 && parts(1) > 10)) {
+      if (parts(0) > 2 || (parts(0) == 2 && parts(1) > 10))
         /* in Scala 2.10, the declaration position of "pacakge object" is
        different so we just skip this test */
         test("5.0", cc)
-      }
 
       List(
         "1",
@@ -851,8 +850,7 @@ object ReallyRichPresentationCompilerFixture
     cc.askReloadFile(file)
     cc.askLoadedTyped(file)
     assert(points.nonEmpty)
-    for (pt <- points) {
+    for (pt <- points)
       testCode(new OffsetPosition(file, pt._1), pt._2, cc)
-    }
   }
 }

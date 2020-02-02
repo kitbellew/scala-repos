@@ -70,9 +70,8 @@ class ScalaInlineHandler extends InlineHandler {
         children += psiElement
         psiElement = psiElement.getNextSibling
       }
-      for (child <- children) {
+      for (child <- children)
         child.getParent.getNode.removeChild(child.getNode)
-      }
       value.getParent.getNode.removeChild(value.getNode)
     }
 

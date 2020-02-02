@@ -36,12 +36,12 @@ object DriverRegistry extends Logging {
 
   def register(className: String): Unit = {
     val cls = Utils.getContextOrSparkClassLoader.loadClass(className)
-    if (cls.getClassLoader == null) {
+    if (cls.getClassLoader == null)
       logTrace(
         s"$className has been loaded with bootstrap ClassLoader, wrapper is not required")
-    } else if (wrapperMap.get(className).isDefined) {
+    else if (wrapperMap.get(className).isDefined)
       logTrace(s"Wrapper for $className already exists")
-    } else {
+    else
       synchronized {
         if (wrapperMap.get(className).isEmpty) {
           val wrapper =
@@ -51,6 +51,5 @@ object DriverRegistry extends Logging {
           logTrace(s"Wrapper for $className registered")
         }
       }
-    }
   }
 }

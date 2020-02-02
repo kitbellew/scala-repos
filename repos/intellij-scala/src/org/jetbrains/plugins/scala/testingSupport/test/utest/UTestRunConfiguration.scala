@@ -30,13 +30,12 @@ class UTestRunConfiguration(
       acc: String = ""): String = {
     val parentTypeDef =
       PsiTreeUtil.getParentOfType(currentClass, classOf[ScTypeDefinition], true)
-    if (parentTypeDef == null) {
+    if (parentTypeDef == null)
       currentClass.qualifiedName + acc
-    } else {
+    else
       getClassPath(
         parentTypeDef,
         acc + (if (parentTypeDef.isObject) "$" else ".") + currentClass.getName)
-    }
   }
 
   override protected def getClassFileNames(

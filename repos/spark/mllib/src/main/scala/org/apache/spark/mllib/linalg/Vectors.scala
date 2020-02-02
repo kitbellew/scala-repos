@@ -95,9 +95,8 @@ sealed trait Vector extends Serializable {
           result = 31 * result + (bits ^ (bits >>> 32)).toInt
           nnz += 1
         }
-      } else {
+      } else
         return result
-      }
     }
     result
   }
@@ -164,11 +163,10 @@ sealed trait Vector extends Serializable {
   def compressed: Vector = {
     val nnz = numNonzeros
     // A dense vector needs 8 * size + 8 bytes, while a sparse vector needs 12 * nnz + 20 bytes.
-    if (1.5 * (nnz + 1.0) < size) {
+    if (1.5 * (nnz + 1.0) < size)
       toSparse
-    } else {
+    else
       toDense
-    }
   }
 
   /**
@@ -397,22 +395,20 @@ object Vectors {
   private[spark] def fromBreeze(breezeVector: BV[Double]): Vector =
     breezeVector match {
       case v: BDV[Double] =>
-        if (v.offset == 0 && v.stride == 1 && v.length == v.data.length) {
+        if (v.offset == 0 && v.stride == 1 && v.length == v.data.length)
           new DenseVector(v.data)
-        } else {
+        else
           new DenseVector(
             v.toArray
           ) // Can't use underlying array directly, so make a new one
-        }
       case v: BSV[Double] =>
-        if (v.index.length == v.used) {
+        if (v.index.length == v.used)
           new SparseVector(v.length, v.index, v.data)
-        } else {
+        else
           new SparseVector(
             v.length,
             v.index.slice(0, v.used),
             v.data.slice(0, v.used))
-        }
       case v: BV[_] =>
         sys.error("Unsupported Breeze vector type: " + v.getClass.getName)
     }
@@ -552,9 +548,9 @@ object Vectors {
 
     while (kv2 < nnzv2) {
       var score = 0.0
-      if (kv2 != iv1) {
+      if (kv2 != iv1)
         score = v2(kv2)
-      } else {
+      else {
         score = v1.values(kv1) - v2(kv2)
         if (kv1 < nnzv1 - 1) {
           kv1 += 1
@@ -584,9 +580,8 @@ object Vectors {
       while (k1 < v1Size && v1Values(k1) == 0) k1 += 1
       while (k2 < v2Size && v2Values(k2) == 0) k2 += 1
 
-      if (k1 >= v1Size || k2 >= v2Size) {
+      if (k1 >= v1Size || k2 >= v2Size)
         return k1 >= v1Size && k2 >= v2Size // check end alignment
-      }
       allEqual = v1Indices(k1) == v2Indices(k2) && v1Values(k1) == v2Values(k2)
       k1 += 1
       k2 += 1
@@ -661,9 +656,8 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
     // same as values.count(_ != 0.0) but faster
     var nnz = 0
     values.foreach { v =>
-      if (v != 0.0) {
+      if (v != 0.0)
         nnz += 1
-      }
     }
     nnz
   }
@@ -686,9 +680,9 @@ class DenseVector @Since("1.0.0") (@Since("1.0.0") val values: Array[Double])
 
   @Since("1.5.0")
   override def argmax: Int =
-    if (size == 0) {
+    if (size == 0)
       -1
-    } else {
+    else {
       var maxIdx = 0
       var maxValue = values(0)
       var i = 1
@@ -804,9 +798,8 @@ class SparseVector @Since("1.0.0") (
   override def numNonzeros: Int = {
     var nnz = 0
     values.foreach { v =>
-      if (v != 0.0) {
+      if (v != 0.0)
         nnz += 1
-      }
     }
     nnz
   }
@@ -814,9 +807,9 @@ class SparseVector @Since("1.0.0") (
   @Since("1.4.0")
   override def toSparse: SparseVector = {
     val nnz = numNonzeros
-    if (nnz == numActives) {
+    if (nnz == numActives)
       this
-    } else {
+    else {
       val ii = new Array[Int](nnz)
       val vv = new Array[Double](nnz)
       var k = 0
@@ -833,9 +826,9 @@ class SparseVector @Since("1.0.0") (
 
   @Since("1.5.0")
   override def argmax: Int =
-    if (size == 0) {
+    if (size == 0)
       -1
-    } else {
+    else {
       // Find the max active entry.
       var maxIdx = indices(0)
       var maxValue = values(0)
@@ -853,25 +846,22 @@ class SparseVector @Since("1.0.0") (
       }
 
       // If the max active entry is nonpositive and there exists inactive ones, find the first zero.
-      if (maxValue <= 0.0 && na < size) {
+      if (maxValue <= 0.0 && na < size)
         if (maxValue == 0.0) {
           // If there exists an inactive entry before maxIdx, find it and return its index.
           if (maxJ < maxIdx) {
             var k = 0
-            while (k < maxJ && indices(k) == k) {
+            while (k < maxJ && indices(k) == k)
               k += 1
-            }
             maxIdx = k
           }
         } else {
           // If the max active value is negative, find and return the first inactive index.
           var k = 0
-          while (k < na && indices(k) == k) {
+          while (k < na && indices(k) == k)
             k += 1
-          }
           maxIdx = k
         }
-      }
 
       maxIdx
     }
@@ -889,11 +879,11 @@ class SparseVector @Since("1.0.0") (
     var currentIdx = 0
     val (sliceInds, sliceVals) = selectedIndices.flatMap { origIdx =>
       val iIdx = java.util.Arrays.binarySearch(this.indices, origIdx)
-      val i_v = if (iIdx >= 0) {
-        Iterator((currentIdx, this.values(iIdx)))
-      } else {
-        Iterator()
-      }
+      val i_v =
+        if (iIdx >= 0)
+          Iterator((currentIdx, this.values(iIdx)))
+        else
+          Iterator()
       currentIdx += 1
       i_v
     }.unzip

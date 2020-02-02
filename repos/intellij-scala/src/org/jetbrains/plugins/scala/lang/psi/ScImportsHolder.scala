@@ -48,13 +48,12 @@ trait ScImportsHolder extends ScalaPsiElement {
     this match {
       case s: ScalaStubBasedElementImpl[_] =>
         val stub: StubElement[_] = s.getStub
-        if (stub != null) {
+        if (stub != null)
           return stub
             .getChildrenByType(
               ScalaElementTypes.IMPORT_STMT,
               JavaArrayFactoryUtil.ScImportStmtFactory)
             .toSeq
-        }
       case _ =>
     }
     findChildrenByClassScala(classOf[ScImportStmt]).toSeq
@@ -98,20 +97,17 @@ trait ScImportsHolder extends ScalaPsiElement {
   def getAllImportUsed: mutable.Set[ImportUsed] = {
     val res: mutable.Set[ImportUsed] = new mutable.HashSet[ImportUsed]
     def processChild(element: PsiElement) {
-      for (child <- element.getChildren) {
+      for (child <- element.getChildren)
         child match {
           case imp: ScImportExpr =>
-            if (/*!imp.singleWildcard && */ imp.selectorSet.isEmpty) {
+            if (/*!imp.singleWildcard && */ imp.selectorSet.isEmpty)
               res += ImportExprUsed(imp)
-            } else if (imp.singleWildcard) {
+            else if (imp.singleWildcard)
               res += ImportWildcardSelectorUsed(imp)
-            }
-            for (selector <- imp.selectors) {
+            for (selector <- imp.selectors)
               res += ImportSelectorUsed(selector)
-            }
           case _ => processChild(child)
         }
-      }
     }
     processChild(this)
     res
@@ -119,7 +115,7 @@ trait ScImportsHolder extends ScalaPsiElement {
 
   def importStatementsInHeader: Seq[ScImportStmt] = {
     val buf = new ArrayBuffer[ScImportStmt]
-    for (child <- getChildren) {
+    for (child <- getChildren)
       child match {
         case x: ScImportStmt => buf += x
         case p: ScPackaging if !p.isExplicit && buf.isEmpty =>
@@ -127,7 +123,6 @@ trait ScImportsHolder extends ScalaPsiElement {
         case _: ScTypeDefinition | _: ScPackaging => return buf.toSeq
         case _                                    =>
       }
-    }
     buf.toSeq
   }
 
@@ -138,12 +133,11 @@ trait ScImportsHolder extends ScalaPsiElement {
         ref.bind() match {
           case Some(ScalaResolveResult(t: ScTypeAliasDefinition, subst))
               if t.typeParameters.isEmpty =>
-            for (tp <- t.aliasedType(TypingContext.empty)) {
+            for (tp <- t.aliasedType(TypingContext.empty))
               tp match {
                 case ScDesignatorType(c: PsiClass) if c == clazz => return
                 case _                                           =>
               }
-            }
           case _ =>
         }
       case _ =>
@@ -286,13 +280,12 @@ trait ScImportsHolder extends ScalaPsiElement {
   private def hasCodeBeforeImports: Boolean = {
     val firstChild = childBeforeFirstImport.getOrElse(getFirstChild)
     var nextChild = firstChild
-    while (nextChild != null) {
+    while (nextChild != null)
       nextChild match {
         case _: ScImportStmt     => return false
         case _: ScBlockStatement => return true
         case _                   => nextChild = nextChild.getNextSibling
       }
-    }
     true
   }
 
@@ -347,10 +340,9 @@ trait ScImportsHolder extends ScalaPsiElement {
     }
     def removeWhitespace(node: ASTNode) {
       if (node == null) return
-      if (node.getPsi.isInstanceOf[PsiWhiteSpace]) {
+      if (node.getPsi.isInstanceOf[PsiWhiteSpace])
         if (node.getText.count(_ == '\n') < 2) remove(node)
         else shortenWhitespace(node)
-      }
     }
     def removeSemicolonAndWhitespace(node: ASTNode) {
       if (node == null) return

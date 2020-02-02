@@ -81,14 +81,12 @@ object LocalKMeans {
     var kPoints = new HashMap[Int, Vector[Double]]
     var tempDist = 1.0
 
-    while (points.size < K) {
+    while (points.size < K)
       points.add(data(rand.nextInt(N)))
-    }
 
     val iter = points.iterator
-    for (i <- 1 to points.size) {
+    for (i <- 1 to points.size)
       kPoints.put(i, iter.next())
-    }
 
     println("Initial centers: " + kPoints)
 
@@ -108,13 +106,11 @@ object LocalKMeans {
       }
 
       tempDist = 0.0
-      for (mapping <- newPoints) {
+      for (mapping <- newPoints)
         tempDist += squaredDistance(kPoints.get(mapping._1).get, mapping._2)
-      }
 
-      for (newP <- newPoints) {
+      for (newP <- newPoints)
         kPoints.put(newP._1, newP._2)
-      }
     }
 
     println("Final centers: " + kPoints)

@@ -40,7 +40,7 @@ class ScSuperReferenceImpl(node: ASTNode)
   def isHardCoded: Boolean = {
     val id = findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER)
     if (id == null) false
-    else {
+    else
       ScalaPsiUtil.fileContext(id) match {
         case file: ScalaFile if file.isCompiled =>
           val next = id.getNode.getTreeNext
@@ -53,10 +53,10 @@ class ScSuperReferenceImpl(node: ASTNode)
                 val classes = ScalaPsiManager
                   .instance(getProject)
                   .getCachedClasses(getResolveScope, path)
-                if (classes.length == 1) {
+                if (classes.length == 1)
                   drvTemplate.exists(td =>
                     !ScalaPsiUtil.cachedDeepIsInheritor(td, classes(0)))
-                } else {
+                else {
                   val clazz: Option[PsiClass] =
                     classes.find(!_.isInstanceOf[ScObject])
                   clazz match {
@@ -70,7 +70,6 @@ class ScSuperReferenceImpl(node: ASTNode)
             }
         case _ => false
       }
-    }
   }
 
   def drvTemplate: Option[ScTemplateDefinition] = reference match {
@@ -159,7 +158,7 @@ class ScSuperReferenceImpl(node: ASTNode)
 
         def getVariants: Array[Object] = superTypes match {
           case None => Array[Object]()
-          case Some(supers) => {
+          case Some(supers) =>
             val buff = new ArrayBuffer[Object]
             supers.foreach { t =>
               ScType.extractClass(t) match {
@@ -168,23 +167,20 @@ class ScSuperReferenceImpl(node: ASTNode)
               }
             }
             buff.toArray
-          }
         }
       }
   }
 
   def findSuper(id: PsiElement): Option[ScType] = superTypes match {
     case None => None
-    case Some(types) => {
+    case Some(types) =>
       val name = id.getText
-      for (t <- types) {
+      for (t <- types)
         ScType.extractClass(t) match {
           case Some(c) if name == c.name => return Some(t)
           case _                         =>
         }
-      }
       None
-    }
   }
 
   private def superTypes: Option[Seq[ScType]] = reference match {
@@ -196,12 +192,11 @@ class ScSuperReferenceImpl(node: ASTNode)
           })
         case _ => None
       }
-    case None => {
+    case None =>
       PsiTreeUtil.getContextOfType(this, false, classOf[ScExtendsBlock]) match {
         case null               => None
         case eb: ScExtendsBlock => Some(eb.superTypes)
       }
-    }
   }
 
   protected override def innerType(ctx: TypingContext) =

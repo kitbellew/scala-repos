@@ -58,11 +58,10 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
         def discard(): Unit = ()
         def read(n: Int): Future[Option[Buf]] = {
           reads += 1
-          if (reads == 2) {
+          if (reads == 2)
             // now take 10 seconds to read 1 more byte,
             // which would put us at 0.2 bps, and thus below the threshold.
             tc.advance(10.seconds)
-          }
           Future.value(Some(buf))
         }
       }
@@ -178,11 +177,10 @@ class MinimumThroughputTest extends FunSuite with MockitoSugar {
         def fail(cause: Throwable): Unit = ()
         def write(buf: Buf): Future[Unit] = {
           writes += 1
-          if (writes == 2) {
+          if (writes == 2)
             // now take 10 seconds to write 1 more byte,
             // which would put us at 0.2 bps, and thus below the threshold.
             tc.advance(10.seconds)
-          }
           Future.Done
         }
       }

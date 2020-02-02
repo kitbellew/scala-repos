@@ -40,7 +40,7 @@ private[akka] class ActorRefBackpressureSinkStage[In](
 
       private def receive(evt: (ActorRef, Any)): Unit =
         evt._2 match {
-          case `ackMessage` ⇒ {
+          case `ackMessage` ⇒
             if (buffer.isEmpty) acknowledgementReceived = true
             else {
               // onPush might have filled the buffer up and
@@ -48,7 +48,6 @@ private[akka] class ActorRefBackpressureSinkStage[In](
               if (buffer.size() == maxBuffer) tryPull(in)
               dequeueAndSend()
             }
-          }
           case Terminated(`ref`) ⇒ completeStage()
           case _ ⇒ //ignore all other messages
         }

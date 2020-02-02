@@ -120,9 +120,9 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
     }
 
     private[this] val (ring, unitWidth, maxAperture) =
-      if (up.isEmpty) {
+      if (up.isEmpty)
         (ZeroRing, RingWidth, RingWidth)
-      } else {
+      else {
         val numNodes = up.size
         val ring = Ring(numNodes, RingWidth)
         val unit = RingWidth / numNodes

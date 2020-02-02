@@ -117,52 +117,51 @@ object OrmToSlick extends App {
         )
       //#criteriaComposition
     };
-    {
-      //#slickQuery
-      val q = people.filter(p => p.age < 5 || p.age > 65)
-      //#slickQuery
-    };
-    {
-      //#slickQueryWithTypes
-      val q = (people: Query[People, Person, Seq]).filter((p: People) =>
-        (
-          ((p.age: Rep[Int]) < 5 || p.age > 65): Rep[Boolean]
-        ))
-      //#slickQueryWithTypes
-    };
+
+    //#slickQuery
+    val q = people.filter(p => p.age < 5 || p.age > 65)
+    //#slickQuery
+    ;
+
+    //#slickQueryWithTypes
+    val q = (people: Query[People, Person, Seq]).filter((p: People) =>
+      (
+        ((p.age: Rep[Int]) < 5 || p.age > 65): Rep[Boolean]
+      ))
+    //#slickQueryWithTypes
+    ;
     {
       //#slickForComprehension
       for (p <- people if p.age < 5 || p.age > 65) yield p
       //#slickForComprehension
     };
-    {
-      //#slickOrderBy
-      (for (p <- people if p.age < 5 || p.age > 65) yield p).sortBy(_.name)
-      //#slickOrderBy
-    };
-    {
-      //#slickMap
-      people.map(p => (p.name, p.age))
-      //#slickMap
-    };
-    {
-      //#ormGetById
-      PeopleFinder.getById(5)
-      //#ormGetById
-    };
-    {
-      Await.result(
-        //#slickRun
-        db.run(people.filter(_.id === 5).result)
-        //#slickRun
-        ,
-        Duration.Inf)
-    };
-    {
-      //#ormWriteCaching
-      val person = PeopleFinder.getById(5)
-      //#ormWriteCaching
-    };
+
+    //#slickOrderBy
+    (for (p <- people if p.age < 5 || p.age > 65) yield p).sortBy(_.name)
+    //#slickOrderBy
+    ;
+
+    //#slickMap
+    people.map(p => (p.name, p.age))
+    //#slickMap
+    ;
+
+    //#ormGetById
+    PeopleFinder.getById(5)
+    //#ormGetById
+    ;
+
+    Await.result(
+      //#slickRun
+      db.run(people.filter(_.id === 5).result)
+      //#slickRun
+      ,
+      Duration.Inf);
+
+    //#ormWriteCaching
+    val person = PeopleFinder.getById(5)
+    //#ormWriteCaching
+    ;
     {
       import scala.language.reflectiveCalls
       val person = new {

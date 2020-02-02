@@ -45,9 +45,8 @@ class XORShiftRandomSuite extends SparkFunSuite with Matchers {
     val bins = Array.ofDim[Long](numRows, numBins)
 
     // populate bins based on modulus of the random number for each row
-    for (r <- 0 to numRows - 1) {
+    for (r <- 0 to numRows - 1)
       times(f.hundMil) { bins(r)(math.abs(f.xorRand.nextInt) % numBins) += 1 }
-    }
 
     /*
      * Perform the chi square test on the 5 rows of randomly generated numbers evenly divided into

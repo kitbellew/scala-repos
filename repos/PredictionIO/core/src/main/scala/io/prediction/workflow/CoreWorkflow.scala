@@ -48,11 +48,11 @@ object CoreWorkflow {
     val mode = "training"
     WorkflowUtils.checkUpgrade(mode, engineInstance.engineFactory)
 
-    val batch = if (params.batch.nonEmpty) {
-      s"{engineInstance.engineFactory} (${params.batch}})"
-    } else {
-      engineInstance.engineFactory
-    }
+    val batch =
+      if (params.batch.nonEmpty)
+        s"{engineInstance.engineFactory} (${params.batch}})"
+      else
+        engineInstance.engineFactory
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
 
     try {
@@ -83,9 +83,8 @@ object CoreWorkflow {
       logger.info("Training completed successfully.")
     } catch {
       case e @ (_: StopAfterReadInterruption |
-          _: StopAfterPrepareInterruption) => {
+          _: StopAfterPrepareInterruption) =>
         logger.info(s"Training interrupted by $e.")
-      }
     } finally {
       logger.debug("Stopping SparkContext")
       sc.stop()
@@ -107,11 +106,11 @@ object CoreWorkflow {
 
     WorkflowUtils.checkUpgrade(mode, engine.getClass.getName)
 
-    val batch = if (params.batch.nonEmpty) {
-      s"{evaluation.getClass.getName} (${params.batch}})"
-    } else {
-      evaluation.getClass.getName
-    }
+    val batch =
+      if (params.batch.nonEmpty)
+        s"{evaluation.getClass.getName} (${params.batch}})"
+      else
+        evaluation.getClass.getName
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
     val evaluationInstanceId = evaluationInstances.insert(evaluationInstance)
 
@@ -125,10 +124,10 @@ object CoreWorkflow {
       evaluator,
       params)
 
-    if (evaluatorResult.noSave) {
+    if (evaluatorResult.noSave)
       logger.info(
         s"This evaluation result is not inserted into database: $evaluatorResult")
-    } else {
+    else {
       val evaluatedEvaluationInstance = evaluationInstance.copy(
         status = "EVALCOMPLETED",
         id = evaluationInstanceId,

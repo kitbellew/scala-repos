@@ -27,16 +27,14 @@ object ImportSelector {
       case ScalaTokenTypes.tFUNTYPE =>
         builder.advanceLexer //Ate =>
         builder.getTokenType match {
-          case ScalaTokenTypes.tUNDER | ScalaTokenTypes.tIDENTIFIER => {
+          case ScalaTokenTypes.tUNDER | ScalaTokenTypes.tIDENTIFIER =>
             builder.advanceLexer //Ate _ | identifier
             importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTOR)
             return true
-          }
-          case _ => {
+          case _ =>
             builder error ErrMsg("identifier.or.wild.sign.expected")
             importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTOR)
             return true
-          }
         }
       case _ =>
         importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTOR)

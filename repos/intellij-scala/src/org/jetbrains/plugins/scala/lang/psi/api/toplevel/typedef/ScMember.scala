@@ -82,9 +82,9 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
       case st: ScalaStubBasedElementImpl[_] => st.getStub
       case _                                => null
     }
-    if (stub != null) {
+    if (stub != null)
       stub.getParentStubOfType(classOf[ScTemplateDefinition])
-    } else {
+    else {
       child match {
         // TODO is all of this mess still necessary?!
         case c: ScClass if c.isCase =>

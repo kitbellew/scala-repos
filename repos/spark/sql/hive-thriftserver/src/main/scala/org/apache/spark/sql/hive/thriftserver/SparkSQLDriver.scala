@@ -43,11 +43,11 @@ private[hive] class SparkSQLDriver(
   private def getResultSetSchema(query: context.QueryExecution): Schema = {
     val analyzed = query.analyzed
     logDebug(s"Result Schema: ${analyzed.output}")
-    if (analyzed.output.isEmpty) {
+    if (analyzed.output.isEmpty)
       new Schema(
         Arrays.asList(new FieldSchema("Response code", "string", "")),
         null)
-    } else {
+    else {
       val fieldSchemas = analyzed.output.map { attr =>
         new FieldSchema(
           attr.name,
@@ -91,9 +91,9 @@ private[hive] class SparkSQLDriver(
   }
 
   override def getResults(res: JList[_]): Boolean =
-    if (hiveResponse == null) {
+    if (hiveResponse == null)
       false
-    } else {
+    else {
       res.asInstanceOf[JArrayList[String]].addAll(hiveResponse.asJava)
       hiveResponse = null
       true

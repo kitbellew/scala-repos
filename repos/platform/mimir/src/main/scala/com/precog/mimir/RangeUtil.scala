@@ -45,21 +45,19 @@ object RangeUtil {
     */
   def loopDefined(r: Range, col: Column)(f: Int => Unit): Boolean = {
     @tailrec def unseen(i: Int, limit: Int): Boolean =
-      if (i < limit) {
+      if (i < limit)
         if (col.isDefinedAt(i)) {
           f(i); seen(i + 1, limit)
         } else unseen(i + 1, limit)
-      } else {
+      else
         false
-      }
 
     @tailrec def seen(i: Int, limit: Int): Boolean =
       if (i < limit) {
         if (col.isDefinedAt(i)) f(i)
         seen(i + 1, limit)
-      } else {
+      } else
         true
-      }
 
     unseen(r.start, r.end)
   }

@@ -25,10 +25,9 @@ private[akka] final class Unfold[S, E](s: S, f: S ⇒ Option[(S, E)])
       setHandler(out, new OutHandler {
         override def onPull(): Unit = f(state) match {
           case None ⇒ complete(out)
-          case Some((newState, v)) ⇒ {
+          case Some((newState, v)) ⇒
             push(out, v)
             state = newState
-          }
         }
       })
     }

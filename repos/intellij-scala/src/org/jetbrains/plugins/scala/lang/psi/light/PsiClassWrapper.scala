@@ -102,21 +102,17 @@ class PsiClassWrapper(
             declaredElements: Seq[ScTypedDefinition]): Unit = {
           val beanProperty = ScalaPsiUtil.isBeanProperty(holder)
           val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(holder)
-          if (beanProperty || booleanBeanProperty) {
-            for (t <- declaredElements) {
+          if (beanProperty || booleanBeanProperty)
+            for (t <- declaredElements)
               if (beanProperty) {
                 res += t.getStaticTypedDefinitionWrapper(GETTER, this)
-                if (t.isVar) {
+                if (t.isVar)
                   res += t.getStaticTypedDefinitionWrapper(SETTER, this)
-                }
               } else if (booleanBeanProperty) {
                 res += t.getStaticTypedDefinitionWrapper(IS_GETTER, this)
-                if (t.isVar) {
+                if (t.isVar)
                   res += t.getStaticTypedDefinitionWrapper(SETTER, this)
-                }
               }
-            }
-          }
         }
         val members = t.members
         members foreach {

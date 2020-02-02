@@ -69,17 +69,15 @@ class ApiUtilsTest extends JUnitSuite {
       ApiUtils.shortStringLength(s2)
       fail
     } catch {
-      case e: KafkaException => {
-        // ok
-      }
+      case e: KafkaException =>
+      // ok
     }
     try {
       ApiUtils.writeShortString(bb, s2)
       fail
     } catch {
-      case e: KafkaException => {
-        // ok
-      }
+      case e: KafkaException =>
+      // ok
     }
   }
 }

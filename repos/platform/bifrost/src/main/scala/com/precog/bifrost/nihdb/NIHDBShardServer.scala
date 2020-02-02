@@ -78,11 +78,11 @@ object NIHDBShardServer
         })
 
       val (asyncQueries, jobManager) = {
-        if (config[Boolean]("jobs.service.in_memory", false)) {
+        if (config[Boolean]("jobs.service.in_memory", false))
           (
             ShardStateOptions.DisableAsyncQueries,
             ExpiringJobManager[Future](config.detach("jobs")))
-        } else {
+        else
           WebJobManager(config.detach("jobs")) map { webJobManager =>
             (ShardStateOptions.NoOptions, webJobManager.withM[Future])
           } valueOr { errs =>
@@ -90,7 +90,6 @@ object NIHDBShardServer
               "Unable to build new WebJobManager: " + errs.list
                 .mkString("\n", "\n", ""))
           }
-        }
       }
 
       val platform =

@@ -87,13 +87,11 @@ object SparkKMeans {
         .collectAsMap()
 
       tempDist = 0.0
-      for (i <- 0 until K) {
+      for (i <- 0 until K)
         tempDist += squaredDistance(kPoints(i), newPoints(i))
-      }
 
-      for (newP <- newPoints) {
+      for (newP <- newPoints)
         kPoints(newP._1) = newP._2
-      }
       println("Finished iteration (delta = " + tempDist + ")")
     }
 

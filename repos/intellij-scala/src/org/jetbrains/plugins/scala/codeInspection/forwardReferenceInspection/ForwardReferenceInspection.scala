@@ -18,7 +18,7 @@ class ForwardReferenceInspection extends AbstractInspection {
   def actionFor(holder: ProblemsHolder) = {
     case ref: ScReferenceExpression =>
       val member: ScMember = PsiTreeUtil.getParentOfType(ref, classOf[ScMember])
-      if (member != null) {
+      if (member != null)
         member.getContext match {
           case tb: ScTemplateBody
               if member.isInstanceOf[ScValue] || member
@@ -34,18 +34,16 @@ class ForwardReferenceInspection extends AbstractInspection {
                         !resolved
                           .asInstanceOf[ScMember]
                           .hasModifierProperty("lazy") &&
-                        resolved.getTextOffset > member.getTextOffset) {
+                        resolved.getTextOffset > member.getTextOffset)
                       holder.registerProblem(
                         ref,
                         ScalaBundle.message(
                           "suspicicious.forward.reference.template.body"))
-                    }
                   case _ =>
                 }
               case _ =>
             }
           case _ =>
         }
-      }
   }
 }

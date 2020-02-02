@@ -45,7 +45,7 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
       if (Set(
             tINTERPOLATED_STRING,
             tINTERPOLATED_STRING_ESCAPE,
-            tINTERPOLATED_STRING_END).contains(a.getNode.getElementType)) {
+            tINTERPOLATED_STRING_END).contains(a.getNode.getElementType))
         a.getParent.getFirstChild.getNode match {
           case b: ASTNode
               if b.getElementType == tINTERPOLATED_STRING_ID ||
@@ -59,16 +59,13 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
                 a.getNode.getElementType)
               lexer.start(a.getText, 0, a.getTextLength)
 
-              do {
-                if (lexer.getTokenStart + a.getTextOffset < caretOffset.get && caretOffset
-                      .get() < lexer.getTokenEnd + a.getTextOffset) {
-                  if (StringEscapesTokenTypes.STRING_LITERAL_ESCAPES.contains(
-                        lexer.getTokenType)) {
-                    modifyOffset(
-                      lexer.getTokenEnd + a.getTextOffset - caretOffset.get())
-                  }
-                }
-              } while (caretOffset
+              do if (lexer.getTokenStart + a.getTextOffset < caretOffset.get && caretOffset
+                       .get() < lexer.getTokenEnd + a.getTextOffset)
+                if (StringEscapesTokenTypes.STRING_LITERAL_ESCAPES.contains(
+                      lexer.getTokenType))
+                  modifyOffset(
+                    lexer.getTokenEnd + a.getTextOffset - caretOffset
+                      .get()) while (caretOffset
                 .get() > lexer.getTokenEnd + a.getTextOffset && (
                 lexer.advance(),
                 lexer.getTokenType != null)._2)
@@ -83,8 +80,7 @@ class InterpolatedStringEnterHandler extends EnterHandlerDelegateAdapter {
             }
             return Result.Continue
           case _ =>
-        }
-      })
+        })
 
     Result.Continue
   }

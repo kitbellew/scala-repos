@@ -796,10 +796,10 @@ final class BigDecimal(val bigDecimal: BigDec, val mc: MathContext)
     *  can be done losslessly, returning Some(BigInt) or None.
     */
   def toBigIntExact(): Option[BigInt] =
-    if (isWhole()) {
+    if (isWhole())
       try Some(new BigInt(this.bigDecimal.toBigIntegerExact()))
       catch { case _: ArithmeticException => None }
-    } else None
+    else None
 
   /** Returns the decimal String representation of this BigDecimal.
     */

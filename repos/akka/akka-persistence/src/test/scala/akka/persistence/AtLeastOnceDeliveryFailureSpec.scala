@@ -82,7 +82,7 @@ object AtLeastOnceDeliveryFailureSpec {
         if (contains(i)) {
           log.debug(debugMessage(s"ignored duplicate $i"))
           sender() ! Ack(i)
-        } else {
+        } else
           persist(MsgSent(i)) { evt ⇒
             updateState(evt)
             sender() ! Ack(i)
@@ -91,8 +91,6 @@ object AtLeastOnceDeliveryFailureSpec {
             else
               log.debug(debugMessage(s"processed payload $i"))
           }
-
-        }
 
       case Confirm(deliveryId, i) ⇒
         persist(MsgConfirmed(deliveryId, i))(updateState)
@@ -143,9 +141,9 @@ object AtLeastOnceDeliveryFailureSpec {
 
     def receive = {
       case m @ Msg(deliveryId, i) ⇒
-        if (shouldFail(confirmFailureRate)) {
+        if (shouldFail(confirmFailureRate))
           log.debug(debugMessage("confirm message failed", m))
-        } else if (contains(i)) {
+        else if (contains(i)) {
           log.debug(debugMessage("ignored duplicate", m))
           sender() ! Confirm(deliveryId, i)
         } else {

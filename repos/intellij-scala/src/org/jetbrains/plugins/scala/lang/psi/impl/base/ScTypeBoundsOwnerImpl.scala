@@ -30,22 +30,22 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
 
   override def upperTypeElement: Option[ScTypeElement] = {
     val tUpper = findLastChildByType[PsiElement](ScalaTokenTypes.tUPPER_BOUND)
-    if (tUpper != null) {
+    if (tUpper != null)
       ScalaPsiUtil.getNextSiblingOfType(tUpper, classOf[ScTypeElement]) match {
         case null => None
         case te   => Some(te)
       }
-    } else None
+    else None
   }
 
   override def lowerTypeElement: Option[ScTypeElement] = {
     val tLower = findLastChildByType[PsiElement](ScalaTokenTypes.tLOWER_BOUND)
-    if (tLower != null) {
+    if (tLower != null)
       ScalaPsiUtil.getNextSiblingOfType(tLower, classOf[ScTypeElement]) match {
         case null => None
         case te   => Some(te)
       }
-    } else None
+    else None
   }
 
   override def viewTypeElement: Seq[ScTypeElement] =
@@ -64,9 +64,8 @@ trait ScTypeBoundsOwnerImpl extends ScTypeBoundsOwner {
   override def removeImplicitBounds() {
     var node = getNode.getFirstChildNode
     while (node != null && !Set(ScalaTokenTypes.tCOLON, ScalaTokenTypes.tVIEW)(
-             node.getElementType)) {
+             node.getElementType))
       node = node.getTreeNext
-    }
     if (node == null) return
     node.getPsi.getPrevSibling match {
       case ws: PsiWhiteSpace => ws.delete()

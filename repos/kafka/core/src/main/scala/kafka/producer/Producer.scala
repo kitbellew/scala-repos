@@ -109,17 +109,15 @@ class Producer[K, V](
         case 0 =>
           queue.offer(message)
         case _ =>
-          try {
-            config.queueEnqueueTimeoutMs < 0 match {
-              case true =>
-                queue.put(message)
-                true
-              case _ =>
-                queue.offer(
-                  message,
-                  config.queueEnqueueTimeoutMs,
-                  TimeUnit.MILLISECONDS)
-            }
+          try config.queueEnqueueTimeoutMs < 0 match {
+            case true =>
+              queue.put(message)
+              true
+            case _ =>
+              queue.offer(
+                message,
+                config.queueEnqueueTimeoutMs,
+                TimeUnit.MILLISECONDS)
           } catch {
             case e: InterruptedException =>
               false

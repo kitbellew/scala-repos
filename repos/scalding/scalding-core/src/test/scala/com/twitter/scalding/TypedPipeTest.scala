@@ -28,9 +28,8 @@ import typed.MultiJoin
 
 object TUtil {
   def printStack(fn: => Unit) {
-    try {
-      fn
-    } catch { case e: Throwable => e.printStackTrace; throw e }
+    try fn
+    catch { case e: Throwable => e.printStackTrace; throw e }
   }
 }
 
@@ -1091,7 +1090,7 @@ class TypedFilterTest extends WordSpec with Matchers {
     "filter and filterNot elements" in {
       val input = -1 to 100
       val isEven = (i: Int) => i % 2 == 0
-      val expectedOutput = input filter { _ > 50 } filterNot isEven
+      val expectedOutput = input filter _ > 50 filterNot isEven
 
       TUtil.printStack {
         JobTest(new com.twitter.scalding.TypedFilterJob(_))
@@ -1119,7 +1118,7 @@ class TypedPartitionTest extends WordSpec with Matchers {
   "A TypedPipe" should {
     "partition elements" in {
       val input = -1 to 100
-      val (expected1, expected2) = input partition { _ > 50 }
+      val (expected1, expected2) = input partition _ > 50
 
       TUtil.printStack {
         JobTest(new com.twitter.scalding.TypedPartitionJob(_))

@@ -56,7 +56,6 @@ trait IntegrationClient {
         .withCredentials(username, password)
         .withDatabase(db)
         .newRichClient("localhost:3306"))
-  } else {
+  } else
     None
-  }
 }

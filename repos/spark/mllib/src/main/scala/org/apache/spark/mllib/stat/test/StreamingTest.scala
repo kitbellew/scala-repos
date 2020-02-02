@@ -132,11 +132,10 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
   private[stat] def dropPeacePeriod(
       data: DStream[BinarySample]): DStream[BinarySample] =
     data.transform { (rdd, time) =>
-      if (time.milliseconds > data.slideDuration.milliseconds * peacePeriod) {
+      if (time.milliseconds > data.slideDuration.milliseconds * peacePeriod)
         rdd
-      } else {
+      else
         data.context.sparkContext.parallelize(Seq())
-      }
     }
 
   /** Compute summary statistics over each key and the specified test window size. */
@@ -144,14 +143,14 @@ class StreamingTest @Since("1.6.0") () extends Logging with Serializable {
       data: DStream[BinarySample]): DStream[(Boolean, StatCounter)] = {
     val categoryValuePair =
       data.map(sample => (sample.isExperiment, sample.value))
-    if (this.windowSize == 0) {
+    if (this.windowSize == 0)
       categoryValuePair.updateStateByKey[StatCounter] {
         (newValues: Seq[Double], oldSummary: Option[StatCounter]) =>
           val newSummary = oldSummary.getOrElse(new StatCounter())
           newSummary.merge(newValues)
           Some(newSummary)
       }
-    } else {
+    else {
       val windowDuration = data.slideDuration * this.windowSize
       categoryValuePair
         .groupByKeyAndWindow(windowDuration)

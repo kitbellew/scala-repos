@@ -61,9 +61,8 @@ object max
             offset: Int,
             length: Int,
             stride: Int): Unit = {
-          if (length >= 0) {
+          if (length >= 0)
             visitedOne = true
-          }
 
           if (stride == 1) {
             var m = max

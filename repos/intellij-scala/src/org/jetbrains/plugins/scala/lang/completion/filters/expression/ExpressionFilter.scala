@@ -27,9 +27,8 @@ class ExpressionFilter extends ElementFilter {
           (parent.getPrevSibling == null ||
           parent.getPrevSibling.getPrevSibling == null ||
           (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT || !parent.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[PsiErrorElement]))) {
+            .isInstanceOf[PsiErrorElement])))
         return true
-      }
     }
     false
   }

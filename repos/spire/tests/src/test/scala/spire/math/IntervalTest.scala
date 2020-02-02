@@ -339,9 +339,8 @@ class IntervalCheck
 
   property("(x -- Ø) = x") {
     forAll { (x: Interval[Rational]) =>
-      if (x.nonEmpty) {
+      if (x.nonEmpty)
         (x -- Interval.empty[Rational]) shouldBe List(x)
-      }
     }
   }
 
@@ -356,9 +355,9 @@ class IntervalCheck
   }
 
   def sample(int: Interval[Rational], n: Int): Array[Rational] =
-    if (int.isEmpty) {
+    if (int.isEmpty)
       Array.empty[Rational]
-    } else {
+    else {
       import spire.math.interval.ValueBound
       val underlyingf: () => Rational = (int.lowerBound, int.upperBound) match {
         case (ValueBound(x), ValueBound(y)) =>
@@ -549,11 +548,11 @@ class IntervalIteratorCheck
 
       val step = (y - x) / num
 
-      if (step.isZero) {
+      if (step.isZero)
         List(cc, oo, oc, co).foreach { xs =>
           Try(xs.iterator(0)).isFailure shouldBe true
         }
-      } else {
+      else {
         val triples = List(
           (cc, true, true),
           (oo, false, false),
@@ -577,11 +576,11 @@ class IntervalIteratorCheck
       val uc = Interval.atOrBelow(n) // (-∞, n]
       val uo = Interval.below(n) // (-∞, n)
 
-      if (step0.isZero) {
+      if (step0.isZero)
         List(cu, ou, uc, uo).foreach { xs =>
           Try(xs.iterator(0)).isFailure shouldBe true
         }
-      } else {
+      else {
         val triples =
           List((cu, true, 1), (ou, false, 1), (uc, true, -1), (uo, false, -1))
         triples.foreach {

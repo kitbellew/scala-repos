@@ -14,7 +14,7 @@ object Macros {
     import c.universe._
     if (!(c.weakTypeOf[Int] =:= c.weakTypeOf[T]))
       c.abort(c.enclosingPosition, s"${c.weakTypeOf[T]} is not supported")
-    else {
+    else
       q"""
         new {
           def isEmpty = false
@@ -22,6 +22,5 @@ object Macros {
           def unapply(x: Int) = this
         }.unapply($x)
       """
-    }
   }
 }

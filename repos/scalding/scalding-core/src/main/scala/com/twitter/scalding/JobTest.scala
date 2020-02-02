@@ -116,10 +116,9 @@ class JobTest(cons: (Args) => Job) {
   @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
   def sink[A](s: Source)(op: Buffer[A] => Unit)(
       implicit conv: TupleConverter[A]) = {
-    if (sourceMap(s).isEmpty) {
+    if (sourceMap(s).isEmpty)
       // if s is also used as a source, we shouldn't reset its buffer
       source(s, new ListBuffer[Tuple])
-    }
     val buffer = sourceMap(s).get
     /* NOTE: `HadoopTest.finalize` depends on `sinkSet` matching the set of
      * "keys" in the `sourceMap`.  Do not change the following line unless
@@ -201,9 +200,8 @@ class JobTest(cons: (Args) => Job) {
           "mapred.local.dir",
           "/tmp/hadoop/%s/mapred/local".format(java.util.UUID.randomUUID))
         HadoopTest(conf, sourceMap)
-      } else {
+      } else
         Test(sourceMap)
-      }
     testMode.registerTestFiles(fileSet)
     val args = new Args(argsMap)
 
@@ -229,36 +227,33 @@ class JobTest(cons: (Args) => Job) {
         "target/test/cascading/traceplan/" + job.name + "/stats")
     }
 
-    if (validateJob) {
+    if (validateJob)
       job.validate
-    }
     job.run
     // Make sure to clean the state:
     job.clear
 
-    val next: Option[Job] = if (runNext) {
-      job.next
-    } else {
-      None
-    }
+    val next: Option[Job] =
+      if (runNext)
+        job.next
+      else
+        None
     next match {
       case Some(nextjob) => runJob(nextjob, runNext)
-      case None => {
+      case None =>
         job.mode match {
-          case hadoopTest @ HadoopTest(_, _) => {
+          case hadoopTest @ HadoopTest(_, _) =>
             /* NOTE: `HadoopTest.finalize` depends on `sinkSet` matching the set of
              * "keys" in the `sourceMap`.  Do not change the following line unless
              * you also modify the `finalize` function accordingly.
              */
             // The sinks are written to disk, we need to clean them up:
             sinkSet.foreach { hadoopTest.finalize(_) }
-          }
           case _ => ()
         }
         // Now it is time to check the test conditions:
         callbacks.foreach { cb => cb() }
         statsCallbacks.foreach { cb => cb(job.scaldingCascadingStats.get) }
-      }
     }
   }
 }

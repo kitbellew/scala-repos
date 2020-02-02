@@ -258,11 +258,10 @@ class RoutingSpec
         ConfigFactory
           .parseString("akka.actor.deployment./routed.router=round-robin-pool")
           .withFallback(system.settings.config))
-      try {
-        sys.actorOf(FromConfig.props(routeeProps = Props[TestActor]), "routed")
-      } finally {
-        shutdown(sys)
-      }
+      try sys.actorOf(
+        FromConfig.props(routeeProps = Props[TestActor]),
+        "routed")
+      finally shutdown(sys)
     }
 
   }

@@ -81,23 +81,21 @@ object RunConfig {
 
     case "--baseline" :: file :: args =>
       val f = new File(file)
-      if (f.isFile && f.canRead) {
+      if (f.isFile && f.canRead)
         fromCommandLine(args, config map (_.copy(baseline = Some(f))))
-      } else {
+      else
         fromCommandLine(
           args,
           config *> "The baseline file must be regular and readable.".failureNel)
-      }
 
     case "--output" :: file :: args =>
       val f = new File(file)
-      if (f.canWrite || !f.exists) {
+      if (f.canWrite || !f.exists)
         fromCommandLine(args, config map (_.copy(output = Some(f))))
-      } else {
+      else
         fromCommandLine(
           args,
           config *> "The output file must be regular and writable.".failureNel)
-      }
 
     case "--json" :: args =>
       fromCommandLine(args, config map (_.copy(format = OutputFormat.Json)))

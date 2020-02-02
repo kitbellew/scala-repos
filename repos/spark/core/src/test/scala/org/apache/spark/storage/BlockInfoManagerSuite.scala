@@ -38,17 +38,13 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     blockInfoManager = new BlockInfoManager()
-    for (t <- 0 to 4) {
+    for (t <- 0 to 4)
       blockInfoManager.registerTask(t)
-    }
   }
 
   override protected def afterEach(): Unit =
-    try {
-      blockInfoManager = null
-    } finally {
-      super.afterEach()
-    }
+    try blockInfoManager = null
+    finally super.afterEach()
 
   private implicit def stringToBlockId(str: String): BlockId =
     TestBlockId(str)
@@ -61,9 +57,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
       TaskContext.setTaskContext(
         new TaskContextImpl(0, 0, taskAttemptId, 0, null, null))
       block
-    } finally {
-      TaskContext.unset()
-    }
+    } finally TaskContext.unset()
 
   test("initial memory usage") {
     assert(blockInfoManager.size === 0)

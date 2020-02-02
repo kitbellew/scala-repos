@@ -91,11 +91,10 @@ class MultilabelMetrics @Since("1.2.0") (
   @Since("1.2.0")
   lazy val precision: Double = predictionAndLabels.map {
     case (predictions, labels) =>
-      if (predictions.length > 0) {
+      if (predictions.length > 0)
         predictions.intersect(labels).length.toDouble / predictions.length
-      } else {
+      else
         0
-      }
   }.sum / numDocs
 
   /**

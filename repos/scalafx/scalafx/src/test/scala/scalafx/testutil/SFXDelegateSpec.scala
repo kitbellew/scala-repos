@@ -130,9 +130,8 @@ abstract class SFXDelegateSpec[J <: Object, S <: SFXDelegate[J]] protected (
       val jfxObject: J = sfxObject
 
       jfxObject should be(sfxObject.delegate)
-    } else {
+    } else
       info("JavaFX to ScalaFX conversion skipped: " + skipJfxToSfxCause)
-    }
   }
 
   it should "allow `null` as an argument to implicit conversion from ScalaFX to JavaFX" in {
@@ -141,12 +140,11 @@ abstract class SFXDelegateSpec[J <: Object, S <: SFXDelegate[J]] protected (
       sfx2jfx != null,
       "There is no implicit conversion from ScalaFX to JavaFX")
 
-    try {
-      assert(
-        expectedNullSFXToJFXValue === sfx2jfx(null.asInstanceOf[S]),
-        ". Implicit conversion of ScalaFX `null` to JavaFX should be `" + expectedNullSFXToJFXValue + "`."
-      )
-    } catch {
+    try assert(
+      expectedNullSFXToJFXValue === sfx2jfx(null.asInstanceOf[S]),
+      ". Implicit conversion of ScalaFX `null` to JavaFX should be `" + expectedNullSFXToJFXValue + "`."
+    )
+    catch {
       case ex: NullPointerException =>
         fail("sfx2jfx implicit conversion should accept `null` argument.")
     }
@@ -164,9 +162,8 @@ abstract class SFXDelegateSpec[J <: Object, S <: SFXDelegate[J]] protected (
       val sfxObject: S = jfxObject
 
       sfxObject.delegate should be(jfxObject)
-    } else {
+    } else
       info("ScalaFX to JavaFX conversion skipped: " + skipSfxToJfxCause)
-    }
   }
 
   it should "allow `null` as an argument to implicit conversion from JavaFX to ScalaFX" in {
@@ -176,12 +173,11 @@ abstract class SFXDelegateSpec[J <: Object, S <: SFXDelegate[J]] protected (
       "There is no implicit conversion from JavaFX to ScalaFX")
 
     // Check for `null` guard
-    try {
-      assert(
-        expectedNullJFXToSFXValue === jfx2sfx(null.asInstanceOf[J]),
-        ". Implicit conversion of JavaFX `null` to ScalaFX should be `" + expectedNullJFXToSFXValue + "`."
-      )
-    } catch {
+    try assert(
+      expectedNullJFXToSFXValue === jfx2sfx(null.asInstanceOf[J]),
+      ". Implicit conversion of JavaFX `null` to ScalaFX should be `" + expectedNullJFXToSFXValue + "`."
+    )
+    catch {
       case ex: NullPointerException =>
         fail("jfx2sfx implicit conversion should accept `null` argument.")
     }

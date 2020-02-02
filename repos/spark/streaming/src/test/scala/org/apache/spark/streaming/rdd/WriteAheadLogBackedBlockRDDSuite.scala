@@ -57,11 +57,8 @@ class WriteAheadLogBackedBlockRDDSuite
   }
 
   override def afterEach(): Unit =
-    try {
-      Utils.deleteRecursively(dir)
-    } finally {
-      super.afterEach()
-    }
+    try Utils.deleteRecursively(dir)
+    finally super.afterEach()
 
   override def beforeAll(): Unit = {
     super.beforeAll()
@@ -74,9 +71,7 @@ class WriteAheadLogBackedBlockRDDSuite
     try {
       sparkContext.stop()
       System.clearProperty("spark.driver.port")
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   test("Read data available in both block manager and write ahead log") {
     testRDD(numPartitions = 5, numPartitionsInBM = 5, numPartitionsInWAL = 5)

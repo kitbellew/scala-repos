@@ -40,7 +40,7 @@ object InfixExpr {
       val s = builder.getTokenText
 
       var exit = false
-      while (!exit) {
+      while (!exit)
         if (opStack.isEmpty) {
           opStack push s
           val newMarker = backupMarker.precede
@@ -57,7 +57,6 @@ object InfixExpr {
           markerStack push newMarker
           exit = true
         }
-      }
       val setMarker = builder.mark
       val opMarker = builder.mark
       builder.advanceLexer() //Ate id
@@ -82,17 +81,15 @@ object InfixExpr {
       }
     }
     if (exitOf) backupMarker.drop()
-    if (count > 0) {
+    if (count > 0)
       while (count > 0 && markerStack.nonEmpty) {
         markerStack.pop().done(ScalaElementTypes.INFIX_EXPR)
         count -= 1
       }
 
-    }
     infixMarker.drop()
-    while (markerStack.nonEmpty) {
+    while (markerStack.nonEmpty)
       markerStack.pop().drop()
-    }
     true
   }
   //private var assoc: Int = 0  //this mark associativity: left - 1, right - -1

@@ -98,7 +98,7 @@ object IntentionUtils {
   def analyzeMethodCallArgs(
       methodCallArgs: ScArgumentExprList,
       argsBuilder: scala.StringBuilder) {
-    if (methodCallArgs.exprs.length == 1) {
+    if (methodCallArgs.exprs.length == 1)
       methodCallArgs.exprs.head match {
         case _: ScLiteral =>
           argsBuilder
@@ -129,7 +129,6 @@ object IntentionUtils {
           argsBuilder.insert(0, "(").append(")")
         case _ =>
       }
-    }
   }
 
   def negateAndValidateExpression(

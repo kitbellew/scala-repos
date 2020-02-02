@@ -57,7 +57,7 @@ trait BuildFileModifier {
               if (!needPreviewChanges) {
                 applyChanges(changes, project, vfsFileToCopy)
                 res = true
-              } else {
+              } else
                 previewChanges(module.getProject, changes, vfsFileToCopy) match {
                   case Some(acceptedChanges) if acceptedChanges.nonEmpty =>
                     applyChanges(acceptedChanges, project, vfsFileToCopy)
@@ -65,7 +65,6 @@ trait BuildFileModifier {
                   case _ =>
                     res = false
                 }
-              }
             case None =>
               res = false
           }
@@ -126,7 +125,7 @@ trait BuildFileModifier {
       project: IJProject,
       vfsFileToCopy: mutable.Map[VirtualFile, LightVirtualFile]): Unit = {
     val manager = FileDocumentManager.getInstance()
-    for ((originalFile, changedFile) <- vfsFileToCopy) {
+    for ((originalFile, changedFile) <- vfsFileToCopy)
       if (changes.contains(changedFile)) {
         //we only want to rewrite files that actually changed
         val changedDocument = manager.getDocument(changedFile)
@@ -134,6 +133,5 @@ trait BuildFileModifier {
 //        originalDocument.setText(changedDocument.getText)
         VfsUtil.saveText(originalFile, changedDocument.getText)
       }
-    }
   }
 }

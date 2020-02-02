@@ -277,7 +277,7 @@ trait ActorSubscriber extends Actor {
     * until a subscription arrives, cancel it and then stop itself.
     */
   protected def cancel(): Unit =
-    if (!_canceled) {
+    if (!_canceled)
       subscription match {
         case Some(s) ⇒
           context.stop(self)
@@ -285,7 +285,6 @@ trait ActorSubscriber extends Actor {
         case _ ⇒
           _canceled = true // cancel will be signaled once a subscription arrives
       }
-    }
 
   /**
     * The number of stream elements that have already been requested from upstream

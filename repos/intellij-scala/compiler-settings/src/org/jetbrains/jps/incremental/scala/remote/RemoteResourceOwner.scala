@@ -27,12 +27,11 @@ trait RemoteResourceOwner {
         new BufferedOutputStream(socket.getOutputStream))) { output =>
         createChunks(command, encodedArgs).foreach(_.writeTo(output))
         output.flush()
-        if (client != null) {
+        if (client != null)
           using(new DataInputStream(
             new BufferedInputStream(socket.getInputStream))) { input =>
             handle(input, client)
           }
-        }
       }
     }
   }
@@ -40,7 +39,7 @@ trait RemoteResourceOwner {
   protected def handle(input: DataInputStream, client: Client) {
     val processor = new ClientEventProcessor(client)
 
-    while (!client.isCanceled) {
+    while (!client.isCanceled)
       Chunk.readFrom(input) match {
         case Chunk(NGConstants.CHUNKTYPE_EXIT, code) =>
           return
@@ -68,7 +67,6 @@ trait RemoteResourceOwner {
         case Chunk(kind, data) =>
           client.message(Kind.ERROR, "Unexpected server output: " + data)
       }
-    }
   }
 
   protected def createChunks(command: String, args: Seq[String]): Seq[Chunk] =

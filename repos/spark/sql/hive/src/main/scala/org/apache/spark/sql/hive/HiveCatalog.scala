@@ -64,9 +64,8 @@ private[spark] class HiveCatalog(client: HiveClient)
     * exceptions thrown in the process in [[AnalysisException]].
     */
   private def withClient[T](body: => T): T = synchronized {
-    try {
-      body
-    } catch {
+    try body
+    catch {
       case e: NoSuchItemException =>
         throw new AnalysisException(e.getMessage)
       case NonFatal(e) if isClientException(e) =>
@@ -76,11 +75,10 @@ private[spark] class HiveCatalog(client: HiveClient)
   }
 
   private def requireDbMatches(db: String, table: CatalogTable): Unit =
-    if (table.name.database != Some(db)) {
+    if (table.name.database != Some(db))
       throw new AnalysisException(
         s"Provided database $db does not much the one specified in the " +
           s"table definition (${table.name.database.getOrElse("n/a")})")
-    }
 
   private def requireTableExists(db: String, table: String): Unit =
     withClient { getTable(db, table) }
@@ -110,12 +108,11 @@ private[spark] class HiveCatalog(client: HiveClient)
     */
   override def alterDatabase(dbDefinition: CatalogDatabase): Unit = withClient {
     val existingDb = getDatabase(dbDefinition.name)
-    if (existingDb.properties == dbDefinition.properties) {
+    if (existingDb.properties == dbDefinition.properties)
       logWarning(
         s"Request to alter database ${dbDefinition.name} is a no-op because " +
           s"the provided database properties are the same as the old ones. Hive does not " +
           s"currently support altering other database fields.")
-    }
     client.alterDatabase(dbDefinition)
   }
 
@@ -220,7 +217,7 @@ private[spark] class HiveCatalog(client: HiveClient)
     // need to implement it here ourselves. This is currently somewhat expensive because
     // we make multiple synchronous calls to Hive for each partition we want to drop.
     val partsToDrop =
-      if (ignoreIfNotExists) {
+      if (ignoreIfNotExists)
         parts.filter { spec =>
           try {
             getPartition(db, table, spec)
@@ -230,12 +227,10 @@ private[spark] class HiveCatalog(client: HiveClient)
             case _: AnalysisException => false
           }
         }
-      } else {
+      else
         parts
-      }
-    if (partsToDrop.nonEmpty) {
+    if (partsToDrop.nonEmpty)
       client.dropPartitions(db, table, partsToDrop)
-    }
   }
 
   override def renamePartitions(

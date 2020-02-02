@@ -166,9 +166,8 @@ object LDAExample {
       .setDocConcentration(params.docConcentration)
       .setTopicConcentration(params.topicConcentration)
       .setCheckpointInterval(params.checkpointInterval)
-    if (params.checkpointDir.nonEmpty) {
+    if (params.checkpointDir.nonEmpty)
       sc.setCheckpointDir(params.checkpointDir.get)
-    }
     val startTime = System.nanoTime()
     val ldaModel = lda.run(corpus)
     val elapsed = (System.nanoTime() - startTime) / 1e9
@@ -223,12 +222,13 @@ object LDAExample {
     // this can result in a large number of small partitions, which can degrade performance.
     // In this case, consider using coalesce() to create fewer, larger partitions.
     val df = sc.textFile(paths.mkString(",")).toDF("docs")
-    val customizedStopWords: Array[String] = if (stopwordFile.isEmpty) {
-      Array.empty[String]
-    } else {
-      val stopWordText = sc.textFile(stopwordFile).collect()
-      stopWordText.flatMap(_.stripMargin.split("\\s+"))
-    }
+    val customizedStopWords: Array[String] =
+      if (stopwordFile.isEmpty)
+        Array.empty[String]
+      else {
+        val stopWordText = sc.textFile(stopwordFile).collect()
+        stopWordText.flatMap(_.stripMargin.split("\\s+"))
+      }
     val tokenizer = new RegexTokenizer()
       .setInputCol("docs")
       .setOutputCol("rawTokens")

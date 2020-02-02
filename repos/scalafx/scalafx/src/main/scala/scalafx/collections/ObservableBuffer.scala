@@ -538,15 +538,14 @@ class ObservableBuffer[T](
     * @param typeTag information about if this type is a `Comparable` subclass or not.
     */
   def sort()(implicit typeTag: WeakTypeTag[T]) {
-    if (typeTag.tpe <:< typeOf[Comparable[_]]) {
+    if (typeTag.tpe <:< typeOf[Comparable[_]])
       jfxc.FXCollections.sort(delegate, new ju.Comparator[T] {
         def compare(p1: T, p2: T) = p1.asInstanceOf[Comparable[T]].compareTo(p2)
       })
-    } else {
+    else
       throw new IllegalStateException(
         "Type of this Observable List does not implement " +
           "java.util.Comparable. Please use a Comparator function.")
-    }
   }
 
   /**
@@ -577,20 +576,17 @@ class ObservableBuffer[T](
     val listener = new jfxc.ListChangeListener[T1] {
       def onChanged(c: jfxc.ListChangeListener.Change[_ <: T1]) {
         var changes = ArrayBuffer.empty[Change[T1]]
-        while (c.next()) {
-          if (c.wasPermutated()) {
+        while (c.next())
+          if (c.wasPermutated())
             changes += Reorder(c.getFrom, c.getTo, { x => c.getPermutation(x) })
-          } else if (c.wasUpdated()) {
+          else if (c.wasUpdated())
             changes += Update(c.getFrom, c.getTo)
-          } else {
-            if (c.wasRemoved()) {
+          else {
+            if (c.wasRemoved())
               changes += Remove(c.getFrom, c.getRemoved)
-            }
-            if (c.wasAdded()) {
+            if (c.wasAdded())
               changes += Add(c.getFrom, c.getAddedSubList)
-            }
           }
-        }
         op(ObservableBuffer.this, changes)
       }
     }

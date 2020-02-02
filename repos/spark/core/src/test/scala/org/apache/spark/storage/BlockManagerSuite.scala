@@ -149,9 +149,7 @@ class BlockManagerSuite
       rpcEnv.awaitTermination()
       rpcEnv = null
       master = null
-    } finally {
-      super.afterEach()
-    }
+    } finally super.afterEach()
 
   test("StorageLevel object caching") {
     val level1 = StorageLevel(false, false, false, 3)
@@ -751,19 +749,17 @@ class BlockManagerSuite
     assert(accessMethod("a3").isDefined, "a3 was not in store")
     assert(accessMethod("a1").isDefined, "a1 was not in store")
     val dataShouldHaveBeenCachedBackIntoMemory = {
-      if (storageLevel.deserialized) {
+      if (storageLevel.deserialized)
         !getAsBytes
-      } else {
+      else
         // If the block's storage level is serialized, then always cache the bytes in memory, even
         // if the caller requested values.
         true
-      }
     }
-    if (dataShouldHaveBeenCachedBackIntoMemory) {
+    if (dataShouldHaveBeenCachedBackIntoMemory)
       assert(store.memoryStore.contains("a1"), "a1 was not in memory store")
-    } else {
+    else
       assert(!store.memoryStore.contains("a1"), "a1 was in memory store")
-    }
   }
 
   test("LRU with mixed storage levels") {
@@ -1048,9 +1044,7 @@ class BlockManagerSuite
       try {
         TaskContext.setTaskContext(context)
         task
-      } finally {
-        TaskContext.unset()
-      }
+      } finally TaskContext.unset()
       context.taskMetrics.updatedBlockStatuses
     }
 
@@ -1669,10 +1663,9 @@ class BlockManagerSuite
         execId: String,
         blockId: String): ManagedBuffer = {
       numCalls += 1
-      if (numCalls <= maxFailures) {
+      if (numCalls <= maxFailures)
         throw new RuntimeException(
           "Failing block fetch in the mock block transfer service")
-      }
       super.fetchBlockSync(host, port, execId, blockId)
     }
   }
@@ -1687,23 +1680,21 @@ private object BlockManagerSuite {
         data: () => Either[Array[Any], ChunkedByteBuffer]): Unit =
       store.blockInfoManager.lockForWriting(blockId).foreach { info =>
         val newEffectiveStorageLevel = store.dropFromMemory(blockId, data)
-        if (newEffectiveStorageLevel.isValid) {
+        if (newEffectiveStorageLevel.isValid)
           // The block is still present in at least one store, so release the lock
           // but don't delete the block info
           store.releaseLock(blockId)
-        } else {
+        else
           // The block isn't present in any store, so delete the block info so that the
           // block can be stored again
           store.blockInfoManager.removeBlock(blockId)
-        }
       }
 
     private def wrapGet[T](f: BlockId => Option[T]): BlockId => Option[T] =
       (blockId: BlockId) => {
         val result = f(blockId)
-        if (result.isDefined) {
+        if (result.isDefined)
           store.releaseLock(blockId)
-        }
         result
       }
 
@@ -1715,9 +1706,8 @@ private object BlockManagerSuite {
     val getAndReleaseLock: (BlockId) => Option[BlockResult] = wrapGet(store.get)
     val getSingleAndReleaseLock: (BlockId) => Option[Any] = wrapGet(
       store.getSingle)
-    val getLocalBytesAndReleaseLock: (BlockId) => Option[ChunkedByteBuffer] = {
+    val getLocalBytesAndReleaseLock: (BlockId) => Option[ChunkedByteBuffer] =
       wrapGet(store.getLocalBytes)
-    }
   }
 
 }

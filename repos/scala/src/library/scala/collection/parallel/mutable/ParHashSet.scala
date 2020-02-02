@@ -129,10 +129,9 @@ private[mutable] abstract class ParHashSetCombiner[T](
     sz += 1
     val hc = improve(entry.hashCode, seedvalue)
     val pos = hc >>> nonmasklen
-    if (buckets(pos) eq null) {
+    if (buckets(pos) eq null)
       // initialize bucket
       buckets(pos) = new UnrolledBuffer[AnyRef]
-    }
     // add to bucket
     buckets(pos) += entry
     this

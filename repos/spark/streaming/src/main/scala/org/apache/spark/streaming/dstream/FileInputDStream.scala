@@ -94,12 +94,11 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     * Files with mod times older than this "window" of remembering will be ignored. So if new
     * files are visible within this window, then the file will get selected in the next batch.
     */
-  private val minRememberDurationS = {
+  private val minRememberDurationS =
     Seconds(
       ssc.conf.getTimeAsSeconds(
         "spark.streaming.fileStream.minRememberDuration",
         ssc.conf.get("spark.streaming.minRememberDuration", "60s")))
-  }
 
   // This is a def so that it works during checkpoint recovery:
   private def clock = ssc.scheduler.clock
@@ -218,13 +217,12 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
       val timeTaken = clock.getTimeMillis() - lastNewFileFindingTime
       logInfo("Finding new files took " + timeTaken + " ms")
       logDebug("# cached file times = " + fileToModTime.size)
-      if (timeTaken > slideDuration.milliseconds) {
+      if (timeTaken > slideDuration.milliseconds)
         logWarning(
           "Time taken to find new files exceeds the batch size. " +
             "Consider increasing the batch size or reducing the number of " +
             "files in the monitored directory."
         )
-      }
       newFiles
     } catch {
       case e: Exception =>
@@ -297,12 +295,11 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
             config)
         case None => context.sparkContext.newAPIHadoopFile[K, V, F](file)
       }
-      if (rdd.partitions.isEmpty) {
+      if (rdd.partitions.isEmpty)
         logError(
           "File " + file + " has no data in it. Spark Streaming can only ingest " +
             "files that have been \"moved\" to the directory assigned to the file stream. " +
             "Refer to the streaming programming guide for more details.")
-      }
       rdd
     }
     new UnionRDD(context.sparkContext, fileRDDs)
@@ -361,7 +358,7 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
 
     override def restore() {
       hadoopFiles.toSeq.sortBy(_._1)(Time.ordering).foreach {
-        case (t, f) => {
+        case (t, f) =>
           // Restore the metadata in both files and generatedRDDs
           logInfo(
             "Restoring files for time " + t + " - " +
@@ -371,7 +368,6 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
           }
           recentlySelectedFiles ++= f
           generatedRDDs += ((t, filesToRDD(f)))
-        }
       }
     }
 

@@ -82,14 +82,13 @@ abstract class RDD[T: ClassTag](
 ) extends Serializable
     with Logging {
 
-  if (classOf[RDD[_]].isAssignableFrom(elementClassTag.runtimeClass)) {
+  if (classOf[RDD[_]].isAssignableFrom(elementClassTag.runtimeClass))
     // This is a warning instead of an exception in order to avoid breaking user programs that
     // might have defined nested RDDs without running jobs with them.
     logWarning("Spark does not support nested RDDs (see SPARK-5063)")
-  }
 
   private def sc: SparkContext = {
-    if (_sc == null) {
+    if (_sc == null)
       throw new SparkException(
         "This RDD lacks a SparkContext. It could happen in the following cases: \n(1) RDD " +
           "transformations and actions are NOT invoked by the driver, but inside of other " +
@@ -99,7 +98,6 @@ abstract class RDD[T: ClassTag](
           "Streaming job recovers from checkpoint, this exception will be hit if a reference to " +
           "an RDD not defined by the streaming job is used in DStream operations. For more " +
           "information, See SPARK-13758.")
-    }
     _sc
   }
 
@@ -171,10 +169,9 @@ abstract class RDD[T: ClassTag](
       newLevel: StorageLevel,
       allowOverride: Boolean): this.type = {
     // TODO: Handle changes of StorageLevel
-    if (storageLevel != StorageLevel.NONE && newLevel != storageLevel && !allowOverride) {
+    if (storageLevel != StorageLevel.NONE && newLevel != storageLevel && !allowOverride)
       throw new UnsupportedOperationException(
         "Cannot change storage level of an RDD after it was already assigned a level")
-    }
     // If this is the first time this RDD is marked for persisting, register it
     // with the SparkContext for cleanups and accounting. Do this only once.
     if (storageLevel == StorageLevel.NONE) {
@@ -191,16 +188,15 @@ abstract class RDD[T: ClassTag](
     * have a storage level set yet. Local checkpointing is an exception.
     */
   def persist(newLevel: StorageLevel): this.type =
-    if (isLocallyCheckpointed) {
+    if (isLocallyCheckpointed)
       // This means the user previously called localCheckpoint(), which should have already
       // marked this RDD for persisting. Here we should override the old storage level with
       // one that is explicitly requested by the user (after adapting it to use disk).
       persist(
         LocalRDDCheckpointData.transformStorageLevel(newLevel),
         allowOverride = true)
-    } else {
+    else
       persist(newLevel, allowOverride = false)
-    }
 
   /** Persist this RDD with the default storage level (`MEMORY_ONLY`). */
   def persist(): this.type = persist(StorageLevel.MEMORY_ONLY)
@@ -239,9 +235,8 @@ abstract class RDD[T: ClassTag](
     */
   final def dependencies: Seq[Dependency[_]] =
     checkpointRDD.map(r => List(new OneToOneDependency(r))).getOrElse {
-      if (dependencies_ == null) {
+      if (dependencies_ == null)
         dependencies_ = getDependencies
-      }
       dependencies_
     }
 
@@ -284,11 +279,10 @@ abstract class RDD[T: ClassTag](
     * subclasses of RDD.
     */
   final def iterator(split: Partition, context: TaskContext): Iterator[T] =
-    if (storageLevel != StorageLevel.NONE) {
+    if (storageLevel != StorageLevel.NONE)
       getOrCompute(split, context)
-    } else {
+    else
       computeOrReadCheckpoint(split, context)
-    }
 
   /**
     * Return the ancestors of the given RDD that are related to it only through a sequence of
@@ -321,11 +315,10 @@ abstract class RDD[T: ClassTag](
   private[spark] def computeOrReadCheckpoint(
       split: Partition,
       context: TaskContext): Iterator[T] =
-    if (isCheckpointedAndMaterialized) {
+    if (isCheckpointedAndMaterialized)
       firstParent[T].iterator(split, context)
-    } else {
+    else
       compute(split, context)
-    }
 
   /**
     * Gets or computes an RDD partition. Used by RDD.iterator() when an RDD is cached.
@@ -353,11 +346,10 @@ abstract class RDD[T: ClassTag](
               delegate.next()
             }
           }
-        } else {
+        } else
           new InterruptibleIterator(
             context,
             blockResult.data.asInstanceOf[Iterator[T]])
-        }
       case Right(iter) =>
         new InterruptibleIterator(context, iter.asInstanceOf[Iterator[T]])
     }
@@ -475,9 +467,8 @@ abstract class RDD[T: ClassTag](
           mapPartitionsWithIndex(distributePartition),
           new HashPartitioner(numPartitions)),
         numPartitions).values
-    } else {
+    } else
       new CoalescedRDD(this, numPartitions)
-    }
   }
 
   /**
@@ -494,19 +485,18 @@ abstract class RDD[T: ClassTag](
       fraction: Double,
       seed: Long = Utils.random.nextLong): RDD[T] = withScope {
     require(fraction >= 0.0, "Negative fraction value: " + fraction)
-    if (withReplacement) {
+    if (withReplacement)
       new PartitionwiseSampledRDD[T, T](
         this,
         new PoissonSampler[T](fraction),
         true,
         seed)
-    } else {
+    else
       new PartitionwiseSampledRDD[T, T](
         this,
         new BernoulliSampler[T](fraction),
         true,
         seed)
-    }
   }
 
   /**
@@ -569,17 +559,17 @@ abstract class RDD[T: ClassTag](
       "Cannot support a sample size > Int.MaxValue - " +
         s"$numStDev * math.sqrt(Int.MaxValue)")
 
-    if (num == 0) {
+    if (num == 0)
       new Array[T](0)
-    } else {
+    else {
       val initialCount = this.count()
-      if (initialCount == 0) {
+      if (initialCount == 0)
         new Array[T](0)
-      } else {
+      else {
         val rand = new Random(seed)
-        if (!withReplacement && num >= initialCount) {
+        if (!withReplacement && num >= initialCount)
           Utils.randomizeInPlace(this.collect(), rand)
-        } else {
+        else {
           val fraction = SamplingUtils
             .computeFractionForSampleSize(num, initialCount, withReplacement)
           var samples =
@@ -606,11 +596,10 @@ abstract class RDD[T: ClassTag](
     * times (use `.distinct()` to eliminate them).
     */
   def union(other: RDD[T]): RDD[T] = withScope {
-    if (partitioner.isDefined && other.partitioner == partitioner) {
+    if (partitioner.isDefined && other.partitioner == partitioner)
       new PartitionerAwareUnionRDD(sc, Array(this, other))
-    } else {
+    else
       new UnionRDD(sc, Array(this, other))
-    }
   }
 
   /**
@@ -1025,9 +1014,8 @@ abstract class RDD[T: ClassTag](
       // the SubtractedRDD will, thanks to p2's de-tupled partitioning, already be
       // partitioned by the right/real keys (e.g. p).
       this.map(x => (x, null)).subtractByKey(other.map((_, null)), p2).keys
-    } else {
+    } else
       this.map(x => (x, null)).subtractByKey(other.map((_, null)), p).keys
-    }
   }
 
   /**
@@ -1037,20 +1025,18 @@ abstract class RDD[T: ClassTag](
   def reduce(f: (T, T) => T): T = withScope {
     val cleanF = sc.clean(f)
     val reducePartition: Iterator[T] => Option[T] = iter => {
-      if (iter.hasNext) {
+      if (iter.hasNext)
         Some(iter.reduceLeft(cleanF))
-      } else {
+      else
         None
-      }
     }
     var jobResult: Option[T] = None
     val mergeResult = (index: Int, taskResult: Option[T]) => {
-      if (taskResult.isDefined) {
+      if (taskResult.isDefined)
         jobResult = jobResult match {
           case Some(value) => Some(f(value, taskResult.get))
           case None        => taskResult
         }
-      }
     }
     sc.runJob(this, reducePartition, mergeResult)
     // Get the final result out of our Option, or throw an exception if the RDD was empty
@@ -1070,23 +1056,21 @@ abstract class RDD[T: ClassTag](
       s"Depth must be greater than or equal to 1 but got $depth.")
     val cleanF = context.clean(f)
     val reducePartition: Iterator[T] => Option[T] = iter => {
-      if (iter.hasNext) {
+      if (iter.hasNext)
         Some(iter.reduceLeft(cleanF))
-      } else {
+      else
         None
-      }
     }
     val partiallyReduced = mapPartitions(it => Iterator(reducePartition(it)))
     val op: (Option[T], Option[T]) => Option[T] = (c, x) => {
-      if (c.isDefined && x.isDefined) {
+      if (c.isDefined && x.isDefined)
         Some(cleanF(c.get, x.get))
-      } else if (c.isDefined) {
+      else if (c.isDefined)
         c
-      } else if (x.isDefined) {
+      else if (x.isDefined)
         x
-      } else {
+      else
         None
-      }
     }
     partiallyReduced
       .treeAggregate(Option.empty[T])(op, op, depth)
@@ -1167,9 +1151,9 @@ abstract class RDD[T: ClassTag](
     require(
       depth >= 1,
       s"Depth must be greater than or equal to 1 but got $depth.")
-    if (partitions.length == 0) {
+    if (partitions.length == 0)
       Utils.clone(zeroValue, context.env.closureSerializer.newInstance())
-    } else {
+    else {
       val cleanSeqOp = context.clean(seqOp)
       val cleanCombOp = context.clean(combOp)
       val aggregatePartition =
@@ -1241,9 +1225,8 @@ abstract class RDD[T: ClassTag](
   def countByValueApprox(timeout: Long, confidence: Double = 0.95)(
       implicit ord: Ordering[T] = null): PartialResult[Map[T, BoundedDouble]] =
     withScope {
-      if (elementClassTag.runtimeClass.isArray) {
+      if (elementClassTag.runtimeClass.isArray)
         throw new SparkException("countByValueApprox() does not support arrays")
-      }
       val countPartition: (TaskContext, Iterator[T]) => OpenHashMap[T, Long] = {
         (ctx, iter) =>
           val map = new OpenHashMap[T, Long]
@@ -1353,9 +1336,9 @@ abstract class RDD[T: ClassTag](
     * an exception if called on an RDD of `Nothing` or `Null`.
     */
   def take(num: Int): Array[T] = withScope {
-    if (num == 0) {
+    if (num == 0)
       new Array[T](0)
-    } else {
+    else {
       val buf = new ArrayBuffer[T]
       val totalParts = this.partitions.length
       var partsScanned = 0
@@ -1363,20 +1346,19 @@ abstract class RDD[T: ClassTag](
         // The number of partitions to try in this iteration. It is ok for this number to be
         // greater than totalParts because we actually cap it at totalParts in runJob.
         var numPartsToTry = 1L
-        if (partsScanned > 0) {
+        if (partsScanned > 0)
           // If we didn't find any rows after the previous iteration, quadruple and retry.
           // Otherwise, interpolate the number of partitions we need to try, but overestimate
           // it by 50%. We also cap the estimation in the end.
-          if (buf.size == 0) {
+          if (buf.size == 0)
             numPartsToTry = partsScanned * 4
-          } else {
+          else {
             // the left side of max is >=1 whenever partsScanned >= 2
             numPartsToTry = Math.max(
               (1.5 * num * partsScanned / buf.size).toInt - partsScanned,
               1)
             numPartsToTry = Math.min(numPartsToTry, partsScanned * 4)
           }
-        }
 
         val left = num - buf.size
         val p = partsScanned.until(
@@ -1444,18 +1426,18 @@ abstract class RDD[T: ClassTag](
     * @return an array of top elements
     */
   def takeOrdered(num: Int)(implicit ord: Ordering[T]): Array[T] = withScope {
-    if (num == 0) {
+    if (num == 0)
       Array.empty
-    } else {
+    else {
       val mapRDDs = mapPartitions { items =>
         // Priority keeps the largest elements, so let's reverse the ordering.
         val queue = new BoundedPriorityQueue[T](num)(ord.reverse)
         queue ++= util.collection.Utils.takeOrdered(items, num)(ord)
         Iterator.single(queue)
       }
-      if (mapRDDs.partitions.length == 0) {
+      if (mapRDDs.partitions.length == 0)
         Array.empty
-      } else {
+      else
         mapRDDs
           .reduce { (queue1, queue2) =>
             queue1 ++= queue2
@@ -1463,7 +1445,6 @@ abstract class RDD[T: ClassTag](
           }
           .toArray
           .sorted(ord)
-      }
     }
   }
 
@@ -1577,12 +1558,11 @@ abstract class RDD[T: ClassTag](
     // NOTE: we use a global lock here due to complexities downstream with ensuring
     // children RDD partitions point to the correct parent partitions. In the future
     // we should revisit this consideration.
-    if (context.checkpointDir.isEmpty) {
+    if (context.checkpointDir.isEmpty)
       throw new SparkException(
         "Checkpoint directory has not been set in the SparkContext")
-    } else if (checkpointData.isEmpty) {
+    else if (checkpointData.isEmpty)
       checkpointData = Some(new ReliableRDDCheckpointData(this))
-    }
   }
 
   /**
@@ -1605,14 +1585,13 @@ abstract class RDD[T: ClassTag](
     */
   def localCheckpoint(): this.type = RDDCheckpointData.synchronized {
     if (conf.getBoolean("spark.dynamicAllocation.enabled", false) &&
-        conf.contains("spark.dynamicAllocation.cachedExecutorIdleTimeout")) {
+        conf.contains("spark.dynamicAllocation.cachedExecutorIdleTimeout"))
       logWarning(
         "Local checkpointing is NOT safe to use with dynamic allocation, " +
           "which removes executors along with their cached blocks. If you must use both " +
           "features, you are advised to set `spark.dynamicAllocation.cachedExecutorIdleTimeout` " +
           "to a high value. E.g. If you plan to use the RDD for 1 hour, set the timeout to " +
           "at least 1 hour.")
-    }
 
     // Note: At this point we do not actually know whether the user will call persist() on
     // this RDD later, so we must explicitly call it here ourselves to ensure the cached
@@ -1622,23 +1601,22 @@ abstract class RDD[T: ClassTag](
     // the storage level he/she specified to one that is appropriate for local checkpointing
     // (i.e. uses disk) to guarantee correctness.
 
-    if (storageLevel == StorageLevel.NONE) {
+    if (storageLevel == StorageLevel.NONE)
       persist(LocalRDDCheckpointData.DEFAULT_STORAGE_LEVEL)
-    } else {
+    else
       persist(
         LocalRDDCheckpointData.transformStorageLevel(storageLevel),
         allowOverride = true)
-    }
 
     // If this RDD is already checkpointed and materialized, its lineage is already truncated.
     // We must not override our `checkpointData` in this case because it is needed to recover
     // the checkpointed data. If it is overridden, next time materializing on this RDD will
     // cause error.
-    if (isCheckpointedAndMaterialized) {
+    if (isCheckpointedAndMaterialized)
       logWarning(
         "Not marking RDD for local checkpoint because it was already " +
           "checkpointed and materialized")
-    } else {
+    else {
       // Lineage is not truncated yet, so just override any existing checkpoint data with ours
       checkpointData match {
         case Some(_: ReliableRDDCheckpointData[_]) =>
@@ -1700,10 +1678,9 @@ abstract class RDD[T: ClassTag](
     * detail, see the documentation of {{RDDOperationScope}}. This scope is not defined if the
     * user instantiates this RDD himself without using any Spark operations.
     */
-  @transient private[spark] val scope: Option[RDDOperationScope] = {
+  @transient private[spark] val scope: Option[RDDOperationScope] =
     Option(sc.getLocalProperty(SparkContext.RDD_SCOPE_KEY))
       .map(RDDOperationScope.fromJson)
-  }
 
   private[spark] def getCreationSite: String =
     Option(creationSite).map(_.shortForm).getOrElse("")
@@ -1766,17 +1743,15 @@ abstract class RDD[T: ClassTag](
       if (!doCheckpointCalled) {
         doCheckpointCalled = true
         if (checkpointData.isDefined) {
-          if (checkpointAllMarkedAncestors) {
+          if (checkpointAllMarkedAncestors)
             // TODO We can collect all the RDDs that needs to be checkpointed, and then checkpoint
             // them in parallel.
             // Checkpoint parents first because our lineage will be truncated after we
             // checkpoint ourselves
             dependencies.foreach(_.rdd.doCheckpoint())
-          }
           checkpointData.get.checkpoint()
-        } else {
+        } else
           dependencies.foreach(_.rdd.doCheckpoint())
-        }
       }
     }
 
@@ -1885,11 +1860,10 @@ abstract class RDD[T: ClassTag](
         prefix: String = "",
         isShuffle: Boolean = true,
         isLastChild: Boolean = false): Seq[String] =
-      if (isShuffle) {
+      if (isShuffle)
         shuffleDebugString(rdd, prefix, isLastChild)
-      } else {
+      else
         debugSelf(rdd).map(prefix + _) ++ debugChildren(rdd, prefix)
-      }
     firstDebugString(this).mkString("\n")
   }
 

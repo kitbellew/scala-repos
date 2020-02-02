@@ -33,9 +33,7 @@ class AssertThrowsTest {
 
   @Test
   def errorIfNoThrow: Unit = {
-    try {
-      assertThrows[Foo] { () }
-    } catch {
+    try assertThrows[Foo] { () } catch {
       case e: AssertionError => return
     }
     fail(

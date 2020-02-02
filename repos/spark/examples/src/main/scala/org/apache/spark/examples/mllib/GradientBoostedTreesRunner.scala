@@ -82,12 +82,11 @@ object GradientBoostedTreesRunner {
         .required()
         .action((x, c) => c.copy(input = x))
       checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest > 1) {
+        if (params.fracTest < 0 || params.fracTest > 1)
           failure(
             s"fracTest ${params.fracTest} value incorrect; should be in [0,1].")
-        } else {
+        else
           success
-        }
       }
     }
 
@@ -127,11 +126,10 @@ object GradientBoostedTreesRunner {
       val model = GradientBoostedTrees.train(training, boostingStrategy)
       val elapsedTime = (System.nanoTime() - startTime) / 1e9
       println(s"Training time: $elapsedTime seconds")
-      if (model.totalNumNodes < 30) {
+      if (model.totalNumNodes < 30)
         println(model.toDebugString) // Print full model.
-      } else {
+      else
         println(model) // Print model summary.
-      }
       val trainAccuracy =
         new MulticlassMetrics(
           training.map(lp => (model.predict(lp.features), lp.label))).precision
@@ -145,11 +143,10 @@ object GradientBoostedTreesRunner {
       val model = GradientBoostedTrees.train(training, boostingStrategy)
       val elapsedTime = (System.nanoTime() - startTime) / 1e9
       println(s"Training time: $elapsedTime seconds")
-      if (model.totalNumNodes < 30) {
+      if (model.totalNumNodes < 30)
         println(model.toDebugString) // Print full model.
-      } else {
+      else
         println(model) // Print model summary.
-      }
       val trainMSE = DecisionTreeRunner.meanSquaredError(model, training)
       println(s"Train mean squared error = $trainMSE")
       val testMSE = DecisionTreeRunner.meanSquaredError(model, test)

@@ -93,12 +93,9 @@ object PythonRunner {
         .start()
 
       val exitCode = process.waitFor()
-      if (exitCode != 0) {
+      if (exitCode != 0)
         throw new SparkUserAppException(exitCode)
-      }
-    } finally {
-      gatewayServer.shutdown()
-    }
+    } finally gatewayServer.shutdown()
   }
 
   /**
@@ -109,11 +106,10 @@ object PythonRunner {
     * currently only support local python files.
     */
   def formatPath(path: String, testWindows: Boolean = false): String = {
-    if (Utils.nonLocalPaths(path, testWindows).nonEmpty) {
+    if (Utils.nonLocalPaths(path, testWindows).nonEmpty)
       throw new IllegalArgumentException(
         "Launching Python applications through " +
           s"spark-submit is currently only supported for local files: $path")
-    }
     // get path when scheme is file.
     val uri = Try(new URI(path)).getOrElse(new File(path).toURI)
     var formattedPath = uri.getScheme match {
@@ -123,16 +119,14 @@ object PythonRunner {
     }
 
     // Guard against malformed paths potentially throwing NPE
-    if (formattedPath == null) {
+    if (formattedPath == null)
       throw new IllegalArgumentException(
         s"Python file path is malformed: $path")
-    }
 
     // In Windows, the drive should not be prefixed with "/"
     // For instance, python does not understand "/C:/path/to/sheep.py"
-    if (Utils.isWindows && formattedPath.matches("/[a-zA-Z]:/.*")) {
+    if (Utils.isWindows && formattedPath.matches("/[a-zA-Z]:/.*"))
       formattedPath = formattedPath.stripPrefix("/")
-    }
     formattedPath
   }
 

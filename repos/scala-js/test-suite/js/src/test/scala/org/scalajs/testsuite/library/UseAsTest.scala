@@ -278,9 +278,8 @@ class UseAsScalaTypesTest {
       .as[JSBasic]
 
   @Test def should_allow_Nothing(): Unit =
-    if (false) {
+    if (false)
       js.use(???).as[JSBasic]
-    }
 
   @Test def should_allow_Null(): Unit =
     js.use(null).as[JSBasic]

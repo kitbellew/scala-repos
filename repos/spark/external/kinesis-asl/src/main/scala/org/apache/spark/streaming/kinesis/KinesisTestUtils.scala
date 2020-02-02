@@ -69,12 +69,11 @@ private[kinesis] class KinesisTestUtils extends Logging {
   }
 
   protected def getProducer(aggregate: Boolean): KinesisDataGenerator =
-    if (!aggregate) {
+    if (!aggregate)
       new SimpleDataGenerator(kinesisClient)
-    } else {
+    else
       throw new UnsupportedOperationException(
         "Aggregation is not supported through this code path")
-    }
 
   def streamName: String = {
     require(
@@ -123,11 +122,9 @@ private[kinesis] class KinesisTestUtils extends Logging {
     pushData(testData.asScala, aggregate = false)
 
   def deleteStream(): Unit =
-    try {
-      if (streamCreated) {
-        kinesisClient.deleteStream(streamName)
-      }
-    } catch {
+    try if (streamCreated)
+      kinesisClient.deleteStream(streamName)
+    catch {
       case e: Exception =>
         logWarning(s"Could not delete stream $streamName")
     }
@@ -174,9 +171,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
       describeStream(streamNameToWaitFor).foreach { description =>
         val streamStatus = description.getStreamStatus()
         logDebug(s"\t- current state: $streamStatus\n")
-        if ("ACTIVE".equals(streamStatus)) {
+        if ("ACTIVE".equals(streamStatus))
           return
-        }
       }
     }
     require(false, s"Stream $streamName never became active")
@@ -191,7 +187,7 @@ private[kinesis] object KinesisTestUtils {
 
   lazy val shouldRunTests = {
     val isEnvSet = sys.env.get(envVarNameForEnablingTests) == Some("1")
-    if (isEnvSet) {
+    if (isEnvSet)
       // scalastyle:off println
       // Print this so that they are easily visible on the console and not hidden in the log4j logs.
       println(s"""
@@ -203,8 +199,7 @@ private[kinesis] object KinesisTestUtils {
           |$endVarNameForEndpoint to the desired endpoint URL
           |(e.g. $endVarNameForEndpoint="https://kinesis.us-west-2.amazonaws.com").
         """.stripMargin)
-      // scalastyle:on println
-    }
+    // scalastyle:on println
     isEnvSet
   }
 

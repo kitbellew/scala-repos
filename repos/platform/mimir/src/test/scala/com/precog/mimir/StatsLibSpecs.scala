@@ -702,13 +702,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 0.6862906545903664
           val bool2 = yint.toDouble ~= 67.54013997529848
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true))
@@ -736,13 +735,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 38.8678597674246945
           val bool2 = yint.toDouble ~= -46.97865418113420686
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true))
@@ -1158,13 +1156,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 0.6862906545903664
           val bool2 = yint.toDouble ~= 67.54013997529848
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true)).only
@@ -1192,13 +1189,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 38.8678597674246945
           val bool2 = yint.toDouble ~= -46.97865418113420686
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true))
@@ -1285,13 +1281,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 0.6862906545903664
           val bool2 = yint.toDouble ~= 67.54013997529848
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true))
@@ -1319,13 +1314,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 38.8678597674246945
           val bool2 = yint.toDouble ~= -46.97865418113420686
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true))
@@ -1411,13 +1405,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 1
           val bool2 = yint.toDouble ~= 0
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true)).only
@@ -1445,13 +1438,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 56.591540847739639
           val bool2 = yint.toDouble ~= -166.690263558904667
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true))
@@ -1539,13 +1531,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 0
           val bool2 = yint.toDouble ~= 5
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true)).only
@@ -1570,13 +1561,12 @@ trait StatsLibSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SObject(fields)) if ids.length == 0 => {
+          case (ids, SObject(fields)) if ids.length == 0 =>
             val SDecimal(slope) = fields("slope")
             val SDecimal(yint) = fields("intercept")
             val bool1 = slope.toDouble ~= 0
             val bool2 = yint.toDouble ~= 5
             Vector(bool1, bool2)
-          }
         }
 
         result2 must contain(Vector(true, true))
@@ -1631,13 +1621,12 @@ trait StatsLibSpecs[M[+_]]
         result must haveSize(1)
 
         val result2 = result collect {
-          case (ids, SObject(fields)) if ids.length == 0 => {
+          case (ids, SObject(fields)) if ids.length == 0 =>
             val SDecimal(slope) = fields("slope")
             val SDecimal(yint) = fields("intercept")
             val bool1 = slope.toDouble ~= 38.8678597674246945
             val bool2 = yint.toDouble ~= -46.97865418113420686
             Vector(bool1, bool2)
-          }
         }
 
         result2 must contain(Vector(true, true))
@@ -2012,13 +2001,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 0.551488261704282626112
           val bool2 = yint.toDouble ~= 96.337568593067376154
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true)).only
@@ -2048,13 +2036,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 35.885416368041469881
           val bool2 = yint.toDouble ~= -14.930463966129221
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true)).only
@@ -2538,13 +2525,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 1.454654738762821849
           val bool2 = yint.toDouble ~= 27.0157291837095112508
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true)).only
@@ -2574,13 +2560,12 @@ trait StatsLibSpecs[M[+_]]
       result must haveSize(1)
 
       val result2 = result collect {
-        case (ids, SObject(fields)) if ids.length == 0 => {
+        case (ids, SObject(fields)) if ids.length == 0 =>
           val SDecimal(slope) = fields("slope")
           val SDecimal(yint) = fields("intercept")
           val bool1 = slope.toDouble ~= 84.092713766496588959
           val bool2 = yint.toDouble ~= -220.42413606579986360
           Vector(bool1, bool2)
-        }
       }
 
       result2 must contain(Vector(true, true)).only

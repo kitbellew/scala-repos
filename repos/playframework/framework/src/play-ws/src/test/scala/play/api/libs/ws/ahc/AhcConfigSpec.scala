@@ -76,19 +76,19 @@ object AhcConfigSpec extends Specification with Mockito {
       }
 
       "throw exception on play.ws.ning.allowPoolingConnection" in new WithApplication {
-        {
-          parseThis("""
+
+        parseThis("""
                       |play.ws.ning.allowPoolingConnection = false
                     """.stripMargin)
-        }.must(throwAn[play.api.PlayException])
+          .must(throwAn[play.api.PlayException])
       }
 
       "throw exception on play.ws.ning.allowSslConnectionPool" in new WithApplication {
-        {
-          parseThis("""
+
+        parseThis("""
                       |play.ws.ning.allowSslConnectionPool = false
                     """.stripMargin)
-        }.must(throwAn[play.api.PlayException])
+          .must(throwAn[play.api.PlayException])
       }
     }
 
@@ -159,10 +159,9 @@ object AhcConfigSpec extends Specification with Mockito {
           proxyServerSelector must not(beNull)
 
           proxyServerSelector must not be_== ProxyServerSelector.NO_PROXY_SELECTOR
-        } finally {
-          // Unset http.proxyHost
-          System.clearProperty(ProxyUtils.PROXY_HOST)
-        }
+        } finally
+        // Unset http.proxyHost
+        System.clearProperty(ProxyUtils.PROXY_HOST)
       }
     }
 

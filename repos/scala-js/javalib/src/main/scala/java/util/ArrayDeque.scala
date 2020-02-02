@@ -33,18 +33,18 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
     offerLast(e)
 
   def offerFirst(e: E): Boolean =
-    if (e == null) {
+    if (e == null)
       throw new NullPointerException()
-    } else {
+    else {
       inner = e +: inner
       status += 1
       true
     }
 
   def offerLast(e: E): Boolean =
-    if (e == null) {
+    if (e == null)
       throw new NullPointerException()
-    } else {
+    else {
       inner += e
       status += 1
       true
@@ -159,11 +159,10 @@ class ArrayDeque[E] private (private var inner: js.Array[E])
 
       def remove(): Unit = {
         checkStatus()
-        if (index < 0 || index >= inner.size) {
+        if (index < 0 || index >= inner.size)
           throw new IllegalStateException()
-        } else {
+        else
           inner.remove(index)
-        }
       }
     }
 

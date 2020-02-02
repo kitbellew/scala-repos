@@ -91,14 +91,14 @@ class OutputStreamWriter(
     def loopEncode(): Unit = {
       val cbuf = CharBuffer.wrap(inBuf)
       val result = enc.encode(cbuf, outBuf, true)
-      if (result.isUnderflow) {
+      if (result.isUnderflow)
         assert(
           !cbuf.hasRemaining,
           "CharsetEncoder.encode() should not have returned UNDERFLOW when " +
             "both endOfInput and inBuf.hasRemaining are true. It should have " +
             "returned a MalformedInput error instead."
         )
-      } else if (result.isOverflow) {
+      else if (result.isOverflow) {
         makeRoomInOutBuf()
         loopEncode()
       } else {
@@ -137,9 +137,9 @@ class OutputStreamWriter(
       throw new IOException("Closed writer.")
 
   private def makeRoomInOutBuf(): Unit =
-    if (outBuf.position != 0) {
+    if (outBuf.position != 0)
       flushBuffer()
-    } else {
+    else {
       // Very unlikely (outBuf.capacity is not enough to encode a single code point)
       outBuf.flip()
       val newBuf = ByteBuffer.allocate(outBuf.capacity * 2)

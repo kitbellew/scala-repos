@@ -42,7 +42,7 @@ object VCardParserSpec extends Specification with XmlMatchers {
 
       val list = VCardParser.parse(vcard)
       list must beLike {
-        case Left(l) => {
+        case Left(l) =>
           import VCardParser._
           l must_==
             List(
@@ -62,7 +62,6 @@ object VCardParserSpec extends Specification with XmlMatchers {
                 List("(404) 555-1212")),
               VCardEntry(VCardKey("END", List()), List("VCARD"))
             )
-        }
       }
 
     }

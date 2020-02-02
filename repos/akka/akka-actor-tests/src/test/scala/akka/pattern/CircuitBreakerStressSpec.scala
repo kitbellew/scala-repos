@@ -76,9 +76,8 @@ class CircuitBreakerStressSpec extends AkkaSpec with ImplicitSender {
     val stressActors = Vector.fill(3) {
       system.actorOf(Props(classOf[StressActor], breaker))
     }
-    for (_ ← 0 to 1000; a ← stressActors) {
+    for (_ ← 0 to 1000; a ← stressActors)
       a ! JobDone
-    }
     // let them work for a while
     Thread.sleep(3000)
     stressActors.foreach { a ⇒

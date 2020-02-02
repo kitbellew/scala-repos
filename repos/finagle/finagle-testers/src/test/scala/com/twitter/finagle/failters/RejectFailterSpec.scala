@@ -45,13 +45,12 @@ case class RejectFailterSpec() extends FlatSpec with MustMatchers {
     var fail = 0
     var pass = 0
 
-    try {
-      Await.result(Future.collect(1 to repeatFor map { _ =>
-        stack("hello") onSuccess { _ =>
-          pass += 1
-        } onFailure { _ => fail += 1 }
-      }))
-    } catch {
+    try Await.result(Future.collect(1 to repeatFor map { _ =>
+      stack("hello") onSuccess { _ =>
+        pass += 1
+      } onFailure { _ => fail += 1 }
+    }))
+    catch {
       case r: RejectedExecutionException => // Ignore
     }
 
@@ -71,11 +70,10 @@ case class RejectFailterSpec() extends FlatSpec with MustMatchers {
     var pass = 0
 
     1 to repeatFor foreach { _ =>
-      try {
-        Await.result(stack("hello") onSuccess { _ =>
-          pass += 1
-        } onFailure { _ => fail += 1 })
-      } catch {
+      try Await.result(stack("hello") onSuccess { _ =>
+        pass += 1
+      } onFailure { _ => fail += 1 })
+      catch {
         case t: RejectedExecutionException => // Ignore
       }
     }

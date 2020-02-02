@@ -51,9 +51,8 @@ trait ScType {
   private var aliasType: Option[AliasType] = null
 
   final def isAliasType: Option[AliasType] = {
-    if (aliasType == null) {
+    if (aliasType == null)
       aliasType = isAliasTypeInner
-    }
     aliasType
   }
 
@@ -93,9 +92,9 @@ trait ScType {
         (true, ScTypeVariable(s.name))
       case t => (false, t)
     })
-    if (wildcards.nonEmpty) {
+    if (wildcards.nonEmpty)
       ScExistentialType(quantified, wildcards.toList).simplify()
-    } else quantified
+    else quantified
   }
 
   /**
@@ -213,15 +212,15 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
       case typeParam =>
         val boundsDepth =
           typeParam.lowerType().typeDepth.max(typeParam.upperType().typeDepth)
-        if (typeParam.typeParams.nonEmpty) {
+        if (typeParam.typeParams.nonEmpty)
           (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
-        } else boundsDepth
+        else boundsDepth
     }.max
 
   def typeParametersOwnerDepth(f: ScTypeParametersOwner, typeDepth: Int): Int =
-    if (f.typeParameters.nonEmpty) {
+    if (f.typeParameters.nonEmpty)
       (f.typeParameters.map(elemTypeDepth(_)).max + 1).max(typeDepth)
-    } else typeDepth
+    else typeDepth
 
   def elemTypeDepth(elem: ScNamedElement): Int =
     elem match {

@@ -38,10 +38,10 @@ class DAGSchedulerEventProcessLoopTester(dagScheduler: DAGScheduler)
     extends DAGSchedulerEventProcessLoop(dagScheduler) {
 
   override def post(event: DAGSchedulerEvent): Unit =
-    try {
-      // Forward event to `onReceive` directly to avoid processing event asynchronously.
-      onReceive(event)
-    } catch {
+    try
+    // Forward event to `onReceive` directly to avoid processing event asynchronously.
+    onReceive(event)
+    catch {
       case NonFatal(e) => onError(e)
     }
 
@@ -85,16 +85,15 @@ class MyRDD(
       .toArray
 
   override def getPreferredLocations(partition: Partition): Seq[String] =
-    if (locations.isDefinedAt(partition.index)) {
+    if (locations.isDefinedAt(partition.index))
       locations(partition.index)
-    } else if (tracker != null && dependencies.size == 1 &&
-               dependencies(0).isInstanceOf[ShuffleDependency[_, _, _]]) {
+    else if (tracker != null && dependencies.size == 1 &&
+             dependencies(0).isInstanceOf[ShuffleDependency[_, _, _]]) {
       // If we have only one shuffle dependency, use the same code path as ShuffledRDD for locality
       val dep = dependencies(0).asInstanceOf[ShuffleDependency[_, _, _]]
       tracker.getPreferredLocationsForShuffle(dep, partition.index)
-    } else {
+    } else
       Nil
-    }
 
   override def toString: String = "DAGSchedulerSuiteRDD " + id
 }
@@ -155,11 +154,10 @@ class DAGSchedulerSuite
     override def onStageCompleted(stageCompleted: SparkListenerStageCompleted) {
       val stageInfo = stageCompleted.stageInfo
       stageByOrderOfExecution += stageInfo.stageId
-      if (stageInfo.failureReason.isEmpty) {
+      if (stageInfo.failureReason.isEmpty)
         successfulStages += stageInfo.stageId
-      } else {
+      else
         failedStages += stageInfo.stageId
-      }
     }
 
     override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit =
@@ -235,11 +233,8 @@ class DAGSchedulerSuite
   }
 
   override def afterEach(): Unit =
-    try {
-      scheduler.stop()
-    } finally {
-      super.afterEach()
-    }
+    try scheduler.stop()
+    finally super.afterEach()
 
   override def afterAll() {
     super.afterAll()
@@ -273,11 +268,9 @@ class DAGSchedulerSuite
   /** Send the given CompletionEvent messages for the tasks in the TaskSet. */
   private def complete(taskSet: TaskSet, results: Seq[(TaskEndReason, Any)]) {
     assert(taskSet.tasks.size >= results.size)
-    for ((result, i) <- results.zipWithIndex) {
-      if (i < taskSet.tasks.size) {
+    for ((result, i) <- results.zipWithIndex)
+      if (i < taskSet.tasks.size)
         runEvent(makeCompletionEvent(taskSet.tasks(i), result._1, result._2))
-      }
-    }
   }
 
   private def completeWithAccumulator(
@@ -285,8 +278,8 @@ class DAGSchedulerSuite
       taskSet: TaskSet,
       results: Seq[(TaskEndReason, Any)]) {
     assert(taskSet.tasks.size >= results.size)
-    for ((result, i) <- results.zipWithIndex) {
-      if (i < taskSet.tasks.size) {
+    for ((result, i) <- results.zipWithIndex)
+      if (i < taskSet.tasks.size)
         runEvent(
           makeCompletionEvent(
             taskSet.tasks(i),
@@ -300,8 +293,6 @@ class DAGSchedulerSuite
                 None,
                 internal = false,
                 countFailedValues = false))))
-      }
-    }
   }
 
   /** Submits a job to the scheduler and returns the job id. */
@@ -840,11 +831,11 @@ class DAGSchedulerSuite
       // Complete all the tasks for the current attempt of stage 0 successfully
       completeShuffleMapStageSuccessfully(0, attempt, numShufflePartitions = 2)
 
-      if (attempt < Stage.MAX_CONSECUTIVE_FETCH_FAILURES / 2) {
+      if (attempt < Stage.MAX_CONSECUTIVE_FETCH_FAILURES / 2)
         // Now we should have a new taskSet, for a new attempt of stage 1.
         // Fail all these tasks with FetchFailure
         completeNextStageWithFetchFailure(1, attempt, shuffleDepOne)
-      } else {
+      else {
         completeShuffleMapStageSuccessfully(
           1,
           attempt,
@@ -2313,9 +2304,8 @@ class DAGSchedulerSuite
     assert(hosts.size === taskSet.tasks.size)
     for ((taskLocs, expectedLocs) <- taskSet.tasks
            .map(_.preferredLocations)
-           .zip(hosts)) {
+           .zip(hosts))
       assert(taskLocs.map(_.host).toSet === expectedLocs.toSet)
-    }
   }
 
   private def makeMapStatus(

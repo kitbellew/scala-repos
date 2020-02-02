@@ -128,10 +128,8 @@ private[memcached] object ExternalMemcached { self =>
     } catch {
       case ex: BindException =>
         result = (ex.getMessage != "Address already in use")
-    } finally {
-      if (ss != null)
-        ss.close()
-    }
+    } finally if (ss != null)
+      ss.close()
 
     result
   }

@@ -109,17 +109,17 @@ trait Collections {
         unchanged: List[A],
         pending0: List[A],
         pending1: List[B]): List[A] =
-      if (pending0.isEmpty || pending1.isEmpty) {
+      if (pending0.isEmpty || pending1.isEmpty)
         if (mapped eq null) unchanged
         else mapped.prependToList(unchanged)
-      } else {
+      else {
         val head00 = pending0.head
         val head01 = pending1.head
         val head1 = f(head00, head01)
 
-        if ((head1 eq head00.asInstanceOf[AnyRef])) {
+        if ((head1 eq head00.asInstanceOf[AnyRef]))
           loop(mapped, unchanged, pending0.tail, pending1.tail)
-        } else {
+        else {
           val b = if (mapped eq null) new ListBuffer[A] else mapped
           var xc = unchanged
           while ((xc ne pending0) && (xc ne pending1)) {
@@ -304,9 +304,8 @@ trait Collections {
     else Some(as.flatten)
 
   final def transposeSafe[A](ass: List[List[A]]): Option[List[List[A]]] =
-    try {
-      Some(ass.transpose)
-    } catch {
+    try Some(ass.transpose)
+    catch {
       case _: IllegalArgumentException => None
     }
 }

@@ -298,9 +298,8 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       def isTraversableAgain(from: Vector[V]): Boolean = true
 
       def traverse(from: Vector[V], fn: ValuesVisitor[V]): Unit =
-        for (v <- from.valuesIterator) {
+        for (v <- from.valuesIterator)
           fn.visit(v)
-        }
 
     }
 
@@ -340,9 +339,8 @@ trait VectorOps { this: Vector.type =>
       override def bindingMissing(a: Vector[T], b: Vector[T]): Vector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           result(k) = op(a(k), v)
-        }
         result
       }
     }
@@ -354,9 +352,8 @@ trait VectorOps { this: Vector.type =>
       def apply(a: Vector[T], b: Vector[T]): Vector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           result(k) = r.-(a(k), v)
-        }
         result
       }
     }
@@ -368,9 +365,8 @@ trait VectorOps { this: Vector.type =>
       def apply(a: Vector[T], b: Vector[T]): Vector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
         val result = a.copy
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           result(k) = r.+(a(k), v)
-        }
         result
       }
     }
@@ -494,11 +490,15 @@ trait VectorOps { this: Vector.type =>
   @expand
   implicit def v_sField_Op[
       @expand.args(OpAdd, OpSub, OpMulScalar, OpMulMatrix, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
-    f.-(_, _)
-  }, { f.*(_, _) }, { f.*(_, _) }, {
-    f./(_, _)
-  }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: ClassTag](
+      implicit @expand.sequence[Op](
+        f.+(_, _),
+        f.-(_, _),
+        f.*(_, _),
+        f.*(_, _),
+        f./(_, _),
+        f.%(_, _),
+        f.pow(_, _)) op: Op.Impl2[T, T, T])
       : BinaryRegistry[Vector[T], T, Op.type, Vector[T]] =
     new BinaryRegistry[Vector[T], T, Op.type, Vector[T]] {
       val f = implicitly[Field[T]]
@@ -545,9 +545,8 @@ trait VectorOps { this: Vector.type =>
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = op(a(k), v)
-        }
       }
     }
 
@@ -621,11 +620,14 @@ trait VectorOps { this: Vector.type =>
         OpMod,
         OpPow) Op <: OpType,
       T: Field: ClassTag](
-      implicit @expand.sequence[Op]({ f.+(_, _) }, {
-        f.-(_, _)
-      }, { f.*(_, _) }, { f.*(_, _) }, { f./(_, _) }, { (a, b) => b }, {
-        f.%(_, _)
-      }, { f.pow(_, _) })
+      implicit @expand.sequence[Op](
+        f.+(_, _),
+        f.-(_, _),
+        f.*(_, _),
+        f.*(_, _),
+        f./(_, _), { (a, b) => b },
+        f.%(_, _),
+        f.pow(_, _))
       op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], T, Op.type] =
     new BinaryUpdateRegistry[Vector[T], T, Op.type] {
       val f = implicitly[Field[T]]
@@ -652,13 +654,12 @@ trait VectorOps { this: Vector.type =>
       T] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
-        if (a.activeSize > b.activeSize) {
+        if (a.activeSize > b.activeSize)
           bindingMissing(b, a)
-        } else {
+        else {
           var result: T = zero
-          for ((k, v) <- a.activeIterator) {
+          for ((k, v) <- a.activeIterator)
             result += v * b(k)
-          }
           result
         }
       }
@@ -677,13 +678,12 @@ trait VectorOps { this: Vector.type =>
       val s = implicitly[Semiring[T]]
       override def bindingMissing(a: Vector[T], b: Vector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
-        if (a.activeSize > b.activeSize) {
+        if (a.activeSize > b.activeSize)
           bindingMissing(b, a)
-        } else {
+        else {
           var result: T = s.zero
-          for ((k, v) <- a.activeIterator) {
+          for ((k, v) <- a.activeIterator)
             result = s.+(result, s.*(v, b(k)))
-          }
           result
         }
       }
@@ -881,9 +881,8 @@ trait VectorOps { this: Vector.type =>
     new OpMulInner.Impl2[Vector[T], Vector[T], T] {
       override def apply(v: Vector[T], v2: Vector[T]): T = {
         var acc = field.zero
-        for (i <- 0 until v.length) {
+        for (i <- 0 until v.length)
           acc = field.+(acc, field.*(v(i), v2(i)))
-        }
         acc
       }
     }
@@ -906,9 +905,8 @@ trait VectorOps { this: Vector.type =>
       def apply(a: Vector[V], b: Vector[V]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
 
-        for (i <- 0 until a.length) {
+        for (i <- 0 until a.length)
           a(i) = b(i)
-        }
 
       }
     }
@@ -916,9 +914,8 @@ trait VectorOps { this: Vector.type =>
   implicit def implOpSet_V_S_InPlace[V]: OpSet.InPlaceImpl2[Vector[V], V] =
     new OpSet.InPlaceImpl2[Vector[V], V] {
       def apply(a: Vector[V], b: V): Unit =
-        for (i <- 0 until a.length) {
+        for (i <- 0 until a.length)
           a(i) = b
-        }
 
     }
 
@@ -928,9 +925,8 @@ trait VectorOps { this: Vector.type =>
       val ring = implicitly[Semiring[V]]
       def apply(a: Vector[V], s: V, b: Vector[V]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
-        for (i <- 0 until a.length) {
+        for (i <- 0 until a.length)
           a(i) = ring.+(a(i), ring.*(s, b(i)))
-        }
 
       }
     }

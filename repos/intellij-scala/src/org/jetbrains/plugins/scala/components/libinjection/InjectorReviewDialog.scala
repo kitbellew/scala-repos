@@ -35,10 +35,10 @@ class InjectorReviewDialog(
             val file = VirtualFileManager
               .getInstance()
               .findFileByUrl(s"jar://$containingJar!/$source")
-            if (file.isValid) {
+            if (file.isValid)
               if (file.isDirectory) file.getChildren
               else Seq(file)
-            } else {
+            else {
               LOG.warn(
                 s"Source root '$source' is broken, check your library - $containingJar")
               Seq.empty

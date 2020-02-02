@@ -190,9 +190,7 @@ class TraceTest
           }
         }
       }
-    } finally {
-      Trace.enable()
-    }
+    } finally Trace.enable()
   }
 
   /* TODO temporarily disabled until we can mock stopwatches

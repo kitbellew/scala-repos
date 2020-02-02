@@ -39,21 +39,16 @@ object ScalaDirectoryService {
     properties.setProperty(FileTemplate.ATTRIBUTE_NAME, name)
     val fileName: String = name
     val element: PsiElement =
-      try {
-        if (askToDefineVariables)
-          new CreateFromTemplateDialog(
-            dir.getProject,
-            dir,
-            template,
-            null,
-            properties).create
-        else
-          FileTemplateUtil.createFromTemplate(
-            template,
-            fileName,
-            properties,
-            dir)
-      } catch {
+      try if (askToDefineVariables)
+        new CreateFromTemplateDialog(
+          dir.getProject,
+          dir,
+          template,
+          null,
+          properties).create
+      else
+        FileTemplateUtil.createFromTemplate(template, fileName, properties, dir)
+      catch {
         case e: IncorrectOperationException => throw e
         case e: Exception =>
           LOG.error(e)

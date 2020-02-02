@@ -129,12 +129,12 @@ object Combinators {
     private[this] lazy val pCached = p()
 
     def parseRec(cfg: ParseCtx, index: Int) =
-      if (cfg.instrument == null) {
+      if (cfg.instrument == null)
         pCached.parseRec(cfg, index) match {
           case f: Mutable.Failure    => failMore(f, index, cfg.logDepth)
           case s: Mutable.Success[T] => s
         }
-      } else {
+      else {
         lazy val res = pCached.parseRec(cfg, index) match {
           case f: Mutable.Failure    => failMore(f, index, cfg.logDepth)
           case s: Mutable.Success[T] => s
@@ -274,9 +274,9 @@ object Combinators {
       override def opPred = Precedence.OtherOp
       override def toString = {
 
-        val rhs = for (c <- ps) yield {
-          " ~" + (if (c.cut) "!" else "") + " " + opWrap(c.p)
-        }
+        val rhs =
+          for (c <- ps)
+            yield " ~" + (if (c.cut) "!" else "") + " " + opWrap(c.p)
         s"${opWrap(p0)}${rhs.mkString}"
       }
     }
@@ -426,16 +426,15 @@ object Combinators {
         } else failMore(lastFailure, index, cfg.logDepth, cut = cut)
 
       // don't call the parseRec at all, if max is "0", as our parser corresponds to `Pass` in that case.
-      if (max == 0) {
+      if (max == 0)
         success(
           cfg.success,
           ev.result(ev.initial),
           index,
           Set.empty[Parser[_]],
           false)
-      } else {
+      else
         rec(index, Pass, null, ev.initial, false, 0)
-      }
     }
     override def toString = {
       val things = Seq(

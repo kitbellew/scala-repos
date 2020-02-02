@@ -160,11 +160,11 @@ private[impl] object EdgeWithLocalIds {
       override def compare(
           a: EdgeWithLocalIds[ED],
           b: EdgeWithLocalIds[ED]): Int =
-        if (a.srcId == b.srcId) {
+        if (a.srcId == b.srcId)
           if (a.dstId == b.dstId) 0
           else if (a.dstId < b.dstId) -1
           else 1
-        } else if (a.srcId < b.srcId) -1
+        else if (a.srcId < b.srcId) -1
         else 1
     }
 

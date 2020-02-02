@@ -78,9 +78,8 @@ class JsonExporter(registry: Metrics, timer: Timer)
 
   lazy val statsFilterRegex: Option[Regex] = {
     val regexesFromFile = statsFilterFile().flatMap { file =>
-      try {
-        Source.fromFile(file)(Codec.UTF8).getLines()
-      } catch {
+      try Source.fromFile(file)(Codec.UTF8).getLines()
+      catch {
         case e: IOException =>
           log.error(e, "Unable to read statsFilterFile: %s", file)
           throw e
@@ -97,11 +96,10 @@ class JsonExporter(registry: Metrics, timer: Timer)
   private[this] var deltas: Option[CounterDeltas] = None
 
   def apply(request: Request): Future[Response] = {
-    if (registryLoaded.compareAndSet(false, true)) {
+    if (registryLoaded.compareAndSet(false, true))
       GlobalRegistry.get.put(
         Seq("stats", "commons_metrics", "counters_latched"),
         useCounterDeltas().toString)
-    }
 
     val response = Response()
     response.contentType = MediaType.Json
@@ -111,16 +109,14 @@ class JsonExporter(registry: Metrics, timer: Timer)
     val filtered = readBooleanParam(params, name = "filtered", default = false)
     val counterDeltasOn = {
       val vals = params.getAll("period")
-      if (vals.isEmpty) {
+      if (vals.isEmpty)
         false
-      } else {
-        if (vals.exists(_ == "60")) true
-        else {
-          log.warning(
-            s"${getClass.getName} request ignored due to unsupported period: '${vals
-              .mkString(",")}'")
-          false
-        }
+      else if (vals.exists(_ == "60")) true
+      else {
+        log.warning(
+          s"${getClass.getName} request ignored due to unsupported period: '${vals
+            .mkString(",")}'")
+        false
       }
     }
 
@@ -172,11 +168,11 @@ class JsonExporter(registry: Metrics, timer: Timer)
           Map.empty[String, Number]
       }
     val histos = registry.sampleHistograms().asScala
-    val counters = if (counterDeltasOn && useCounterDeltas()) {
-      getOrRegisterLatchedStats().deltas
-    } else {
-      registry.sampleCounters().asScala
-    }
+    val counters =
+      if (counterDeltasOn && useCounterDeltas())
+        getOrRegisterLatchedStats().deltas
+      else
+        registry.sampleCounters().asScala
     val values = SampledValues(gauges, counters, histos)
 
     val formatted = StatsFormatter.default(values)
@@ -187,17 +183,15 @@ class JsonExporter(registry: Metrics, timer: Timer)
       // Create a TreeMap for sorting the keys
       val samples = immutable.TreeMap.empty[String, Number] ++ sampleFiltered
       prettyWriter.writeValueAsString(samples)
-    } else {
+    } else
       writer.writeValueAsString(sampleFiltered)
-    }
   }
 
   private[this] def mkRegex(regexes: Seq[String]): Option[Regex] =
-    if (regexes.isEmpty) {
+    if (regexes.isEmpty)
       None
-    } else {
+    else
       Some(regexes.mkString("(", ")|(", ")").r)
-    }
 
   def mkRegex(regexesString: String): Option[Regex] =
     regexesString.split(",") match {

@@ -34,12 +34,11 @@ class GCDTest extends FunSuite with Checkers {
       val den = spire.math.gcd(x, y)
       val x0 = x /~ den
       val y0 = y /~ den
-      if (NumberTag[A].isFinite(x0) && NumberTag[A].isFinite(y0)) {
+      if (NumberTag[A].isFinite(x0) && NumberTag[A].isFinite(y0))
         x0.isWhole && y0.isWhole && (spire.math.gcd(x0, y0) == Ring[A].one)
-      } else {
+      else
         // Ideally we'd filter this out at the ScalaCheck level.
         true
-      }
     }
 
   test("GCD of floats with 0 exponent in result is correct") {

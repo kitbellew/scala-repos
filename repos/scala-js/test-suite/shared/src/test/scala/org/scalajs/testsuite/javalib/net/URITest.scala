@@ -349,11 +349,10 @@ class URITest {
   }
 
   @Test def should_provide_hashCode(): Unit =
-    if (!executingInJVM) { // Fails on JDK6 and JDK7
+    if (!executingInJVM) // Fails on JDK6 and JDK7
       assertEquals(
         new URI("http://example.com/asdf%6a").hashCode,
         new URI("http://example.com/asdf%6A").hashCode)
-    }
 
   @Test def should_allow_non_ASCII_characters(): Unit =
     expectURI(new URI("http://cs.dbpedia.org/resource/Víno"), true, false)(
@@ -424,7 +423,7 @@ class URITest {
       rawPath = "/%E3%81a",
       rawSchemeSpecificPart = "//booh/%E3%81a")
 
-    if (!executingInJVM) { // Fails on JDK6 and JDK7
+    if (!executingInJVM) // Fails on JDK6 and JDK7
       // %E3%E3 is considered as 2 malformed
       expectURI(new URI("http://booh/%E3%E3a"), true, false)(
         scheme = "http",
@@ -434,7 +433,6 @@ class URITest {
         schemeSpecificPart = "//booh/��a")(
         rawPath = "/%E3%E3a",
         rawSchemeSpecificPart = "//booh/%E3%E3a")
-    }
   }
 
   @Test def should_throw_on_bad_escape_sequences(): Unit = {

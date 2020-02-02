@@ -67,26 +67,21 @@ class ScPackageImpl private (val pack: PsiPackage)
           */
         def alreadyContains(className: String) = namesSet.contains(className)
 
-        for (synth <- SyntheticClasses.get(getProject).getAll) {
+        for (synth <- SyntheticClasses.get(getProject).getAll)
           if (!alreadyContains(synth.name))
             processor.execute(synth, ResolveState.initial)
-        }
-        for (synthObj <- SyntheticClasses.get(getProject).syntheticObjects) {
-
+        for (synthObj <- SyntheticClasses.get(getProject).syntheticObjects)
           // Assume that is the scala package contained a class with the same names as the synthetic object,
           // then it must also contain the object.
           if (!alreadyContains(synthObj.name))
             processor.execute(synthObj, ResolveState.initial)
-        }
       }
-    } else {
-      if (!ResolveUtils.packageProcessDeclarations(
-            pack,
-            processor,
-            state,
-            lastParent,
-            place)) return false
-    }
+    } else if (!ResolveUtils.packageProcessDeclarations(
+                 pack,
+                 processor,
+                 state,
+                 lastParent,
+                 place)) return false
 
     //for Scala
     if (place.getLanguage == ScalaFileType.SCALA_LANGUAGE) {
@@ -94,7 +89,7 @@ class ScPackageImpl private (val pack: PsiPackage)
         case r: ResolveProcessor => r.getResolveScope
         case _                   => place.getResolveScope
       }
-      if (getQualifiedName == "scala") {
+      if (getQualifiedName == "scala")
         ScPackageImpl.implicitlyImportedObject(place.getManager, scope, "scala") match {
           case Some(obj: ScObject) =>
             var newState = state
@@ -109,7 +104,7 @@ class ScPackageImpl private (val pack: PsiPackage)
                   place)) return false
           case _ =>
         }
-      } else {
+      else
         findPackageObject(scope) match {
           case Some(obj: ScObject) =>
             var newState = state
@@ -124,7 +119,6 @@ class ScPackageImpl private (val pack: PsiPackage)
                   place)) return false
           case _ =>
         }
-      }
     }
     true
   }
@@ -146,13 +140,12 @@ class ScPackageImpl private (val pack: PsiPackage)
     val myQualifiedName = getQualifiedName
     if (myQualifiedName.length == 0) return null
     val lastDot: Int = myQualifiedName.lastIndexOf('.')
-    if (lastDot < 0) {
+    if (lastDot < 0)
       ScPackageImpl.findPackage(getProject, "")
-    } else {
+    else
       ScPackageImpl.findPackage(
         getProject,
         myQualifiedName.substring(0, lastDot))
-    }
   }
 
   override def getSubPackages: Array[PsiPackage] =

@@ -23,7 +23,7 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     val limit = System.currentTimeMillis() + randomDelayMillis
     val res = new Response[U]
     op(arg, res)
-    while (!res.isComplete && !res.isCancelled) {
+    while (!res.isComplete && !res.isCancelled)
       if (System.currentTimeMillis() > limit) {
         print("c"); res.cancel()
       } else
@@ -36,7 +36,6 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
             println(ex)
           case None =>
         }
-    }
   }
 
   def askReload(sfs: SourceFile*) =
@@ -97,18 +96,14 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
 
     def deleteAll() {
       print("/" + nchars)
-      for (i <- 0 until nchars) {
+      for (i <- 0 until nchars)
         if (toLeft) {
           if (pos > 0 && pos <= inputs(sfidx).length) {
             pos -= 1
             deleteOne()
           }
-        } else {
-          if (pos < inputs(sfidx).length) {
-            deleteOne()
-          }
-        }
-      }
+        } else if (pos < inputs(sfidx).length)
+          deleteOne()
     }
 
     def insertAll() {

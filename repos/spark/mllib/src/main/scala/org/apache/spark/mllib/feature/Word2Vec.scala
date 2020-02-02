@@ -235,7 +235,7 @@ class Word2Vec extends Serializable with Logging {
 
     a = 0
     while (a < vocabSize - 1) {
-      if (pos1 >= 0) {
+      if (pos1 >= 0)
         if (count(pos1) < count(pos2)) {
           min1i = pos1
           pos1 -= 1
@@ -243,11 +243,11 @@ class Word2Vec extends Serializable with Logging {
           min1i = pos2
           pos2 += 1
         }
-      } else {
+      else {
         min1i = pos2
         pos2 += 1
       }
-      if (pos1 >= 0) {
+      if (pos1 >= 0)
         if (count(pos1) < count(pos2)) {
           min2i = pos1
           pos1 -= 1
@@ -255,7 +255,7 @@ class Word2Vec extends Serializable with Logging {
           min2i = pos2
           pos2 += 1
         }
-      } else {
+      else {
         min2i = pos2
         pos2 += 1
       }
@@ -322,12 +322,11 @@ class Word2Vec extends Serializable with Logging {
     val newSentences = sentences.repartition(numPartitions).cache()
     val initRandom = new XORShiftRandom(seed)
 
-    if (vocabSize.toLong * vectorSize >= Int.MaxValue) {
+    if (vocabSize.toLong * vectorSize >= Int.MaxValue)
       throw new RuntimeException(
         "Please increase minCount or decrease vectorSize in Word2Vec" +
           " to avoid an OOM. You are highly recommended to make your vocabSize*vectorSize, " +
           "which is " + vocabSize + "*" + vectorSize + " for now, less than `Int.MaxValue`.")
-    }
 
     val syn0Global =
       Array.fill[Float](vocabSize * vectorSize)(
@@ -408,27 +407,25 @@ class Word2Vec extends Serializable with Logging {
           // Only output modified vectors.
           Iterator
             .tabulate(vocabSize) { index =>
-              if (syn0Modify(index) > 0) {
+              if (syn0Modify(index) > 0)
                 Some(
                   (
                     index,
                     syn0Local
                       .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
+              else
                 None
-              }
             }
             .flatten ++ Iterator
             .tabulate(vocabSize) { index =>
-              if (syn1Modify(index) > 0) {
+              if (syn1Modify(index) > 0)
                 Some(
                   (
                     index + vocabSize,
                     syn1Local
                       .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
+              else
                 None
-              }
             }
             .flatten
       }
@@ -442,21 +439,20 @@ class Word2Vec extends Serializable with Logging {
       var i = 0
       while (i < synAgg.length) {
         val index = synAgg(i)._1
-        if (index < vocabSize) {
+        if (index < vocabSize)
           Array.copy(
             synAgg(i)._2,
             0,
             syn0Global,
             index * vectorSize,
             vectorSize)
-        } else {
+        else
           Array.copy(
             synAgg(i)._2,
             0,
             syn1Global,
             (index - vocabSize) * vectorSize,
             vectorSize)
-        }
         i += 1
       }
       bcSyn0Global.unpersist(false)
@@ -591,11 +587,10 @@ class Word2VecModel private[spark] (
     val vecNorm = blas.snrm2(vectorSize, fVector, 1)
     while (ind < numWords) {
       val norm = wordVecNorms(ind)
-      if (norm == 0.0) {
+      if (norm == 0.0)
         cosVec(ind) = 0.0
-      } else {
+      else
         cosVec(ind) /= norm
-      }
       ind += 1
     }
     var topResults = wordList
@@ -604,12 +599,11 @@ class Word2VecModel private[spark] (
       .sortBy(-_._2)
       .take(num + 1)
       .tail
-    if (vecNorm != 0.0f) {
+    if (vecNorm != 0.0f)
       topResults = topResults.map {
         case (word, cosVal) =>
           (word, cosVal / vecNorm)
       }
-    }
     topResults.toArray
   }
 

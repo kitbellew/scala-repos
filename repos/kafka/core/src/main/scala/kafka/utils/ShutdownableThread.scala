@@ -59,11 +59,9 @@ abstract class ShutdownableThread(
 
   override def run(): Unit = {
     info("Starting ")
-    try {
-      while (isRunning.get()) {
-        doWork()
-      }
-    } catch {
+    try while (isRunning.get())
+      doWork()
+    catch {
       case e: Throwable =>
         if (isRunning.get())
           error("Error due to ", e)

@@ -102,16 +102,15 @@ abstract class AbstractList[E] protected ()
   }
 
   override def equals(o: Any): Boolean =
-    if (o.asInstanceOf[AnyRef] eq this) {
+    if (o.asInstanceOf[AnyRef] eq this)
       true
-    } else {
+    else
       o match {
         case o: List[_] =>
           val oIter = o.listIterator
           this.forall(oIter.hasNext && _ === oIter.next()) && !oIter.hasNext
         case _ => false
       }
-    }
 
   override def hashCode(): Int =
     this.foldLeft(1) { (prev, elem) =>

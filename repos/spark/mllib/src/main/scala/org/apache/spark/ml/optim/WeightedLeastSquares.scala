@@ -71,10 +71,9 @@ private[ml] class WeightedLeastSquares(
   import WeightedLeastSquares._
 
   require(regParam >= 0.0, s"regParam cannot be negative: $regParam")
-  if (regParam == 0.0) {
+  if (regParam == 0.0)
     logWarning(
       "regParam is zero, which might cause numerical instability and overfitting.")
-  }
 
   /**
     * Creates a [[WeightedLeastSquaresModel]] from an RDD of [[Instance]]s.
@@ -94,7 +93,7 @@ private[ml] class WeightedLeastSquares(
     val aaBar = summary.aaBar
     val aaValues = aaBar.values
 
-    if (bStd == 0) {
+    if (bStd == 0)
       if (fitIntercept) {
         logWarning(s"The standard deviation of the label is zero, so the coefficients will be " +
           s"zeros and the intercept will be the mean of the label; as a result, " +
@@ -115,34 +114,31 @@ private[ml] class WeightedLeastSquares(
           s"The standard deviation of the label is zero. " +
             "Consider setting fitIntercept=true.")
       }
-    }
 
     // add regularization to diagonals
     var i = 0
     var j = 2
     while (i < triK) {
       var lambda = regParam
-      if (standardizeFeatures) {
+      if (standardizeFeatures)
         lambda *= aVar(j - 2)
-      }
-      if (standardizeLabel && bStd != 0) {
+      if (standardizeLabel && bStd != 0)
         lambda /= bStd
-      }
       aaValues(i) += lambda
       i += j
       j += 1
     }
 
-    val aa = if (fitIntercept) {
-      Array.concat(aaBar.values, aBar.values, Array(1.0))
-    } else {
-      aaBar.values
-    }
-    val ab = if (fitIntercept) {
-      Array.concat(abBar.values, Array(bBar))
-    } else {
-      abBar.values
-    }
+    val aa =
+      if (fitIntercept)
+        Array.concat(aaBar.values, aBar.values, Array(1.0))
+      else
+        aaBar.values
+    val ab =
+      if (fitIntercept)
+        Array.concat(abBar.values, Array(bBar))
+      else
+        abBar.values
 
     val x = CholeskyDecomposition.solve(aa, ab)
 
@@ -153,11 +149,11 @@ private[ml] class WeightedLeastSquares(
       aaInv(i + (i - 1) * i / 2 - 1) / wSum
     }.toArray)
 
-    val (coefficients, intercept) = if (fitIntercept) {
-      (new DenseVector(x.slice(0, x.length - 1)), x.last)
-    } else {
-      (new DenseVector(x), 0.0)
-    }
+    val (coefficients, intercept) =
+      if (fitIntercept)
+        (new DenseVector(x.slice(0, x.length - 1)), x.last)
+      else
+        (new DenseVector(x), 0.0)
 
     new WeightedLeastSquaresModel(coefficients, intercept, diagInvAtWA)
   }
@@ -213,9 +209,8 @@ private[ml] object WeightedLeastSquares {
     def add(instance: Instance): this.type = {
       val Instance(l, w, f) = instance
       val ak = f.size
-      if (!initialized) {
+      if (!initialized)
         init(ak)
-      }
       assert(
         ak == k,
         s"Dimension mismatch. Expect vectors of size $k but got $ak.")
@@ -234,12 +229,11 @@ private[ml] object WeightedLeastSquares {
       * Merges another [[Aggregator]].
       */
     def merge(other: Aggregator): this.type =
-      if (!other.initialized) {
+      if (!other.initialized)
         this
-      } else {
-        if (!initialized) {
+      else {
+        if (!initialized)
           init(other.k)
-        }
         assert(
           k == other.k,
           s"dimension mismatch: this.k = $k but other.k = ${other.k}")

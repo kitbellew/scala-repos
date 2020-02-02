@@ -224,9 +224,8 @@ trait ListenerManager {
 
     case RemoveAListener(who) =>
       listeners = listeners.filter(_._1 ne who)
-      if (listeners.isEmpty) {
+      if (listeners.isEmpty)
         onListenersListEmptied()
-      }
   }
 
   /**
@@ -540,17 +539,15 @@ trait BaseCometActor
           render
       theSession.updateFunctionMap(S.functionMap, uniqueId, lastRenderTime)
       ret
-    } else {
+    } else
       _realLastRendering
-    }
 
   /**
     * set the last rendering... ignore if we're not caching
     */
   private def lastRendering_=(last: RenderOut) {
-    if (!dontCacheRendering) {
+    if (!dontCacheRendering)
       _realLastRendering = last
-    }
   }
 
   private var receivedDelta = false
@@ -624,9 +621,8 @@ trait BaseCometActor
     * use localSetup()
     */
   protected def initCometActor(creationInfo: CometCreationInfo) {
-    if (!dontCacheRendering) {
+    if (!dontCacheRendering)
       lastRendering = RenderOut(Full(defaultHtml), Empty, Empty, Empty, false)
-    }
 
     _theType = Full(creationInfo.cometType)
     _name = creationInfo.cometName
@@ -730,9 +726,8 @@ trait BaseCometActor
           S.initIfUninitted(theSession) {
             RenderVersion.doWith(uniqueId) {
               S.functionLifespan(true) {
-                try {
-                  what.apply(in)
-                } catch {
+                try what.apply(in)
+                catch {
                   case e if exceptionHandler.isDefinedAt(e) =>
                     exceptionHandler(e)
                   case e: Exception =>
@@ -740,9 +735,8 @@ trait BaseCometActor
                 }
 
                 val updatedJs = S.jsToAppend(clearAfterReading = true)
-                if (updatedJs.nonEmpty) {
+                if (updatedJs.nonEmpty)
                   partialUpdate(updatedJs)
-                }
 
                 if (S.functionMap.size > 0) {
                   theSession.updateFunctionMap(
@@ -761,9 +755,8 @@ trait BaseCometActor
           S.initIfUninitted(theSession) {
             RenderVersion.doWith(uniqueId) {
               S.functionLifespan(true) {
-                try {
-                  what.isDefinedAt(in)
-                } catch {
+                try what.isDefinedAt(in)
+                catch {
                   case e if exceptionHandler.isDefinedAt(e) =>
                     exceptionHandler(e); false
                   case e: Exception =>
@@ -793,9 +786,8 @@ trait BaseCometActor
     fixedRender.map(ns =>
       theSession.postPageJavaScript() match {
         case Nil => ns
-        case xs => {
+        case xs =>
           ns ++ Script(xs)
-        }
       })
 
   /**
@@ -803,11 +795,10 @@ trait BaseCometActor
     * the template changes or we get a reRender(true)
     */
   private def internalFixedRender: Box[NodeSeq] =
-    if (!cacheFixedRender) {
+    if (!cacheFixedRender)
       calcFixedRender
-    } else {
+    else
       cachedFixedRender.get
-    }
 
   private val cachedFixedRender: FatLazy[Box[NodeSeq]] = FatLazy(
     calcFixedRender)
@@ -858,16 +849,15 @@ trait BaseCometActor
   }
 
   private lazy val _mediumPriority: PartialFunction[Any, Unit] = {
-    case l @ Unlisten(seq) => {
+    case l @ Unlisten(seq) =>
       _lastListenerTime = millis
       askingWho match {
         case Full(who) => forwardMessageTo(l, who) // forward l
         case _         => listeners = listeners.filter(_._1 != seq)
       }
       listenerTransition()
-    }
 
-    case l @ Listen(when, seqId, toDo) => {
+    case l @ Listen(when, seqId, toDo) =>
       _lastListenerTime = millis
       askingWho match {
         case Full(who) => forwardMessageTo(l, who) // who forward l
@@ -889,7 +879,7 @@ trait BaseCometActor
             deltas.filter(_.when > when) match {
               case Nil => listeners = (seqId, toDo) :: listeners
 
-              case all @ (hd :: xs) => {
+              case all @ (hd :: xs) =>
                 toDo(
                   AnswerRender(
                     new XmlOrJsCmd(
@@ -905,54 +895,45 @@ trait BaseCometActor
                     hd.when,
                     false))
                 clearNotices
-              }
             }
             deltas = _deltaPruner(this, deltas)
           }
       }
       listenerTransition()
-    }
 
-    case PerformSetupComet2(initialReq) => {
+    case PerformSetupComet2(initialReq) =>
       localSetup()
       captureInitialReq(initialReq)
       performReRender(true)
-    }
 
     /**
       * Update the defaultHtml... sent in dev mode
       */
-    case UpdateDefaultHtml(html) => {
+    case UpdateDefaultHtml(html) =>
       val redo = html != _defaultHtml
 
       _defaultHtml = html
 
-      if (redo) {
+      if (redo)
         performReRender(false)
-      }
-    }
 
     case AskRender =>
       askingWho match {
         case Full(who) => forwardMessageTo(AskRender, who) //  forward AskRender
-        case _ => {
+        case _ =>
           val out =
-            if (receivedDelta || alwaysReRenderOnPageLoad) {
-              try {
-                Full(performReRender(false))
-              } catch {
-                case e if exceptionHandler.isDefinedAt(e) => {
+            if (receivedDelta || alwaysReRenderOnPageLoad)
+              try Full(performReRender(false))
+              catch {
+                case e if exceptionHandler.isDefinedAt(e) =>
                   exceptionHandler(e)
                   Empty
-                }
-                case e: Exception => {
+                case e: Exception =>
                   reportError("Failed performReRender", e)
                   Empty
-                }
               }
-            } else {
+            else
               Empty
-            }
 
           reply(
             AnswerRender(
@@ -965,16 +946,14 @@ trait BaseCometActor
               lastRenderTime,
               true))
           clearNotices
-        }
       }
 
     case ActionMessageSet(msgs, req) =>
       S.doCometParams(req.params) {
         val computed: List[Any] =
           msgs.flatMap { f =>
-            try {
-              List(f())
-            } catch {
+            try List(f())
+            catch {
               case e if exceptionHandler.isDefinedAt(e) =>
                 exceptionHandler(e); Nil
               case e: Exception => reportError("Ajax function dispatch", e); Nil
@@ -984,14 +963,13 @@ trait BaseCometActor
         reply(computed ::: List(S.noticesToJsCmd))
       }
 
-    case AskQuestion(what, who, otherlisteners) => {
+    case AskQuestion(what, who, otherlisteners) =>
       this.spanId = who.uniqueId
       this.listeners = otherlisteners ::: this.listeners
       startQuestion(what)
       whosAsking = Full(who)
       this.reRender(true)
       listenerTransition()
-    }
 
     case AnswerQuestion(what, otherListeners) =>
       askingWho.foreach { ah =>
@@ -1012,9 +990,7 @@ trait BaseCometActor
       for {
         ls <- lifespan
         if listeners.isEmpty && (lastListenerTime + ls.millis + 1000L) < millis
-      } {
-        this ! ShutDown
-      }
+      } this ! ShutDown
 
     case ReRender(all) => performReRender(all)
 
@@ -1036,7 +1012,7 @@ trait BaseCometActor
       theSession.removeCometActor(this)
       _localShutdown()
 
-    case PartialUpdateMsg(cmdF) => {
+    case PartialUpdateMsg(cmdF) =>
       val cmd: JsCmd = cmdF.apply
       val time = Helpers.nextNum
       val delta = JsDelta(time, cmd)
@@ -1065,7 +1041,6 @@ trait BaseCometActor
         listeners = Nil
         listenerTransition()
       }
-    }
   }
 
   /**
@@ -1147,27 +1122,22 @@ trait BaseCometActor
   protected def manualWiringDependencyManagement = false
 
   private def performReRender(sendAll: Boolean): RenderOut = {
-    if (!partialUpdateStream_?) {
+    if (!partialUpdateStream_?)
       _lastRenderTime = Helpers.nextNum
-    }
 
-    if (sendAll) {
+    if (sendAll)
       cachedFixedRender.reset
-    }
 
-    if (sendAll || !cacheFixedRender) {
+    if (sendAll || !cacheFixedRender)
       clearWiringDependencies()
-    }
 
     wasLastFullRender = sendAll & hasOuter
-    if (!partialUpdateStream_?) {
+    if (!partialUpdateStream_?)
       deltas = Nil
-    }
     receivedDelta = false
 
-    if (!dontCacheRendering) {
+    if (!dontCacheRendering)
       lastRendering = render
-    }
 
     theSession.updateFunctionMap(S.functionMap, uniqueId, lastRenderTime)
 
@@ -1197,9 +1167,8 @@ trait BaseCometActor
     * just the Actor's message handler thread.
     */
   override def poke(): Unit =
-    if (running) {
+    if (running)
       partialUpdate(Noop)
-    }
 
   /**
     * Perform a partial update of the comet component based
@@ -1302,11 +1271,10 @@ trait BaseCometActor
     */
   protected implicit def nsToNsFuncToRenderOut(f: NodeSeq => NodeSeq) = {
     val additionalJs =
-      if (autoIncludeJsonCode) {
+      if (autoIncludeJsonCode)
         Full(jsonToIncludeInCode)
-      } else {
+      else
         Empty
-      }
 
     new RenderOut(
       (Box !! defaultHtml).map(f),
@@ -1325,11 +1293,10 @@ trait BaseCometActor
     */
   protected implicit def arrayToRenderOut(in: Seq[Node]): RenderOut = {
     val additionalJs =
-      if (autoIncludeJsonCode) {
+      if (autoIncludeJsonCode)
         Full(jsonToIncludeInCode)
-      } else {
+      else
         Empty
-      }
 
     new RenderOut(
       Full(in: NodeSeq),
@@ -1341,11 +1308,10 @@ trait BaseCometActor
 
   protected implicit def jsToXmlOrJsCmd(in: JsCmd): RenderOut = {
     val additionalJs =
-      if (autoIncludeJsonCode) {
+      if (autoIncludeJsonCode)
         Full(in & jsonToIncludeInCode)
-      } else {
+      else
         Full(in)
-      }
 
     new RenderOut(Empty, internalFixedRender, additionalJs, Empty, false)
   }

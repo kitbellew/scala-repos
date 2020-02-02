@@ -240,10 +240,10 @@ object UserRepo {
   def removeAllToints = $update($select.all, $unset("toints"), multi = true)
 
   def authenticateById(id: ID, password: String): Fu[Option[User]] =
-    checkPasswordById(id, password) flatMap { _ ?? ($find byId id) }
+    checkPasswordById(id, password) flatMap _ ?? ($find byId id)
 
   def authenticateByEmail(email: String, password: String): Fu[Option[User]] =
-    checkPasswordByEmail(email, password) flatMap { _ ?? byEmail(email) }
+    checkPasswordByEmail(email, password) flatMap _ ?? byEmail(email)
 
   private case class AuthData(
       password: String,

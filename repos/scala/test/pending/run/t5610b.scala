@@ -4,11 +4,10 @@ object Bug {
     val result = bar(foo(test))
     test = "bar"
 
-    if (result.str == null) {
+    if (result.str == null)
       println("Destroy ALL THE THINGS!!!")
-    } else {
+    else
       println("Stroke a kitten")
-    }
   }
 
   class Result(_str: => String) {

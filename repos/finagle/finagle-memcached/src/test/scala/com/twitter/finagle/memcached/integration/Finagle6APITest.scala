@@ -92,7 +92,7 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
       cancel()
     }
 
-  if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
+  if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("with unmanaged regular zk serverset") {
       val client = Memcached.client
         .newTwemcacheClient(
@@ -113,7 +113,6 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
         assert(res == "bar" + n)
       }
     }
-  }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("with managed cache pool") {

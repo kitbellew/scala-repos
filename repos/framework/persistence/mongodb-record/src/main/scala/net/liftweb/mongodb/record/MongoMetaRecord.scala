@@ -375,7 +375,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
       if (fieldsToSet.length > 0 || fieldsToUnset.length > 0) {
         val dbo = BasicDBObjectBuilder.start
 
-        if (fieldsToSet.length > 0) {
+        if (fieldsToSet.length > 0)
           dbo.add(
             "$set",
             fieldsToSet
@@ -384,9 +384,8 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
               }
               .get
           )
-        }
 
-        if (fieldsToUnset.length > 0) {
+        if (fieldsToUnset.length > 0)
           dbo.add(
             "$unset",
             fieldsToUnset
@@ -395,7 +394,6 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
               }
               .get
           )
-        }
 
         update(inst, dbo.get)
       }

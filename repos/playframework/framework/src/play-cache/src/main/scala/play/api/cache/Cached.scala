@@ -242,11 +242,10 @@ final class CachedBuilder(
   private val cachingWithEternity = caching.andThen { duration =>
     // FIXME: Surely Duration.Inf is a better marker for eternity than 0?
     val zeroDuration: Boolean = duration.neg().equals(duration)
-    if (zeroDuration) {
+    if (zeroDuration)
       Duration(60 * 60 * 24 * 365, SECONDS)
-    } else {
+    else
       duration
-    }
   }
 
   private def handleResult(
@@ -302,9 +301,8 @@ final class CachedBuilder(
     * @param duration how long should we cache the result for
     */
   def includeStatus(status: Int, duration: Duration): CachedBuilder = compose {
-    case e if e.status == status => {
+    case e if e.status == status =>
       duration
-    }
   }
 
   /**
@@ -396,9 +394,8 @@ class UnboundCachedBuilder(
     */
   def includeStatus(status: Int, duration: Duration): UnboundCachedBuilder =
     compose {
-      case e if e.status == status => {
+      case e if e.status == status =>
         duration
-      }
     }
 
   /**

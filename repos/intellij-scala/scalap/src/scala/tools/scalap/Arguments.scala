@@ -74,7 +74,7 @@ object Arguments {
           } else if (options contains args(i)) {
             res.addOption(args(i))
             i += 1
-          } else if (optionalArgs contains args(i)) {
+          } else if (optionalArgs contains args(i))
             if ((i + 1) == args.length) {
               error("missing argument for '" + args(i) + "'")
               i += 1
@@ -82,7 +82,7 @@ object Arguments {
               res.addArgument(args(i), args(i + 1))
               i += 2
             }
-          } else if (optionalBindings contains args(i)) {
+          else if (optionalBindings contains args(i))
             if ((i + 1) == args.length) {
               error("missing argument for '" + args(i) + "'")
               i += 1
@@ -92,7 +92,7 @@ object Arguments {
                 parseBinding(args(i + 1), optionalBindings(args(i))));
               i += 2
             }
-          } else {
+          else {
             var iter = prefixes.iterator
             val j = i
             while ((i == j) && iter.hasNext) {
@@ -157,14 +157,13 @@ class Arguments {
     }
 
   def addBinding(tag: String, key: String, value: String): Unit =
-    if (key.length() > 0) {
+    if (key.length() > 0)
       if (bindings isDefinedAt tag)
         bindings(tag)(key) = value
       else {
         bindings(tag) = new HashMap
         bindings(tag)(key) = value
       }
-    }
 
   def addBinding(tag: String, binding: (String, String)) {
     addBinding(tag, binding._1, binding._2)

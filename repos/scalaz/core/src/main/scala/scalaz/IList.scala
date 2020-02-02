@@ -77,11 +77,10 @@ sealed abstract class IList[A] extends Product with Serializable {
     @tailrec def loop(src: IList[A], seen: ISet[A], acc: IList[A]): IList[A] =
       src match {
         case ICons(h, t) =>
-          if (seen.notMember(h)) {
+          if (seen.notMember(h))
             loop(t, seen.insert(h), h :: acc)
-          } else {
+          else
             loop(t, seen, acc)
-          }
         case INil() =>
           acc.reverse
       }

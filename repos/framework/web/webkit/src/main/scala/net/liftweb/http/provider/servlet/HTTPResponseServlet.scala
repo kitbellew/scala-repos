@@ -58,21 +58,19 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
     * Encode the JSESSIONID in the URL if specified by LiftRules
     */
   def encodeUrl(url: String): String =
-    if (shouldEncodeUrl) {
+    if (shouldEncodeUrl)
       resp encodeURL url
-    } else {
+    else
       url
-    }
 
   def addHeaders(headers: List[HTTPParam]) {
     val appearOnce = Set(
       LiftRules.overwrittenReponseHeaders.vend.map(_.toLowerCase): _*)
     for (h <- headers;
-         value <- h.values) {
+         value <- h.values)
       if (appearOnce.contains(h.name.toLowerCase)) resp.setHeader(h.name, value)
       else
         resp.addHeader(h.name, value)
-    }
   }
 
   def setStatus(status: Int) = {

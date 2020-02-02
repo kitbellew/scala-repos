@@ -43,9 +43,9 @@ class TruncatedNewtonMinimizerTest extends OptimizeTestBase {
 
       val empF = SecondOrderFunction.empirical(f)
       val result = lbfgs.minimize(empF, init)
-      if (norm(result - targetValue, 2) < 1e-7) {
+      if (norm(result - targetValue, 2) < 1e-7)
         true
-      } else {
+      else {
         println("Bad result " + result + " for " + init)
         false
       }

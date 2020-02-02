@@ -37,11 +37,9 @@ class ReplSuite extends SparkFunSuite {
     var paths = new ArrayBuffer[String]
     if (cl.isInstanceOf[URLClassLoader]) {
       val urlLoader = cl.asInstanceOf[URLClassLoader]
-      for (url <- urlLoader.getURLs) {
-        if (url.getProtocol == "file") {
+      for (url <- urlLoader.getURLs)
+        if (url.getProtocol == "file")
           paths += url.getFile
-        }
-      }
     }
     val classpath = paths.mkString(File.pathSeparator)
 
@@ -52,14 +50,12 @@ class ReplSuite extends SparkFunSuite {
     org.apache.spark.repl.Main.interp = interp
     interp.process(Array("-classpath", classpath))
     org.apache.spark.repl.Main.interp = null
-    if (interp.sparkContext != null) {
+    if (interp.sparkContext != null)
       interp.sparkContext.stop()
-    }
-    if (oldExecutorClasspath != null) {
+    if (oldExecutorClasspath != null)
       System.setProperty(CONF_EXECUTOR_CLASSPATH, oldExecutorClasspath)
-    } else {
+    else
       System.clearProperty(CONF_EXECUTOR_CLASSPATH)
-    }
     return out.toString
   }
 
@@ -345,7 +341,7 @@ class ReplSuite extends SparkFunSuite {
     assertDoesNotContain("Exception", output)
   }
 
-  if (System.getenv("MESOS_NATIVE_JAVA_LIBRARY") != null) {
+  if (System.getenv("MESOS_NATIVE_JAVA_LIBRARY") != null)
     test("running on Mesos") {
       val output = runInterpreter(
         "localquiet",
@@ -369,7 +365,6 @@ class ReplSuite extends SparkFunSuite {
       assertContains("res2: Array[Int] = Array(0, 0, 0, 0, 0)", output)
       assertContains("res4: Array[Int] = Array(0, 0, 0, 0, 0)", output)
     }
-  }
 
   test("Datasets agg type-inference") {
     val output = runInterpreter(

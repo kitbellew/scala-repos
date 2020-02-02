@@ -23,12 +23,11 @@ case class GradientPaintScaleFactory[T](
   override def apply(items: Traversable[T]): PaintScale[T] = {
     var min = items.head
     var max = items.head
-    for (item <- items) {
+    for (item <- items)
       if (!view(item).isNaN) {
         if (item < min) min = item
         if (item > max) max = item
       }
-    }
     GradientPaintScale(min, max, gradient)
   }
 }

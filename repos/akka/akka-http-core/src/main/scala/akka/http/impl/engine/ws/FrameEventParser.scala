@@ -109,12 +109,11 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
             Some(FrameData(reader.takeAll(), lastPart = false)),
             this,
             true)
-        } else {
+        } else
           ParseResult(
             Some(FrameData(reader.take(remaining.toInt), lastPart = true)),
             ReadFrameHeader,
             true)
-        }
     }
   }
 

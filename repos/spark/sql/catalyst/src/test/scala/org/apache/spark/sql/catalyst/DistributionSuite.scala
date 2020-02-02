@@ -28,7 +28,7 @@ class DistributionSuite extends SparkFunSuite {
       inputPartitioning: Partitioning,
       requiredDistribution: Distribution,
       satisfied: Boolean) {
-    if (inputPartitioning.satisfies(requiredDistribution) != satisfied) {
+    if (inputPartitioning.satisfies(requiredDistribution) != satisfied)
       fail(s"""
         |== Input Partitioning ==
         |$inputPartitioning
@@ -38,7 +38,6 @@ class DistributionSuite extends SparkFunSuite {
         |Expected $satisfied got ${inputPartitioning.satisfies(
                 requiredDistribution)}
         """.stripMargin)
-    }
   }
 
   test("HashPartitioning (with nullSafe = true) is the output partitioning") {

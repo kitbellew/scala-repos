@@ -90,15 +90,14 @@ abstract class ReadHandle {
       }
 
       Offer.select(
-        if (nwait < howmany && !closed) {
+        if (nwait < howmany && !closed)
           messages { m =>
             m.ack.sync()
             out ! m.copy(ack = ack.send(()))
             loop(nwait + 1, closed)
           }
-        } else {
-          Offer.never
-        },
+        else
+          Offer.never,
         ack.recv { _ => loop(nwait - 1, closed) },
         closeReq.recv { _ => loop(nwait, true) }
       )

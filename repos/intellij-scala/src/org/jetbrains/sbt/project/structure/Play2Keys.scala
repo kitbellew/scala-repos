@@ -38,15 +38,15 @@ object Play2Keys {
         elem.child.filterNot(_.text.forall(c => c == '\n' || c == ' '))
 
       if (children.forall(
-            _.child.forall { case _: Text => true; case _ => false })) {
+            _.child.forall { case _: Text => true; case _ => false }))
         Some(
           new StringXmlKey(
             keyName,
             children
               .map(projectKey => (projectKey.label, projectKey.text))
               .toMap))
-      } else if (children.forall(_.child.forall(node =>
-                   node.label == ENTRY_SEQ_NAME || node.isInstanceOf[Text]))) {
+      else if (children.forall(_.child.forall(node =>
+                 node.label == ENTRY_SEQ_NAME || node.isInstanceOf[Text]))) {
         val values = children.flatMap {
           case _: Text => None
           case projectKey =>

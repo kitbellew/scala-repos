@@ -414,16 +414,16 @@ class BehaviorSpec extends TypedSpec {
     private def behavior2(monitor: ActorRef[Event]): Behavior[Command] = {
       def first(self: ActorRef[Command]) =
         Tap.monitor(inbox.ref, Partial[Command] {
-          case AuxPing(id) ⇒ { self ! AuxPing(0); second(self) }
+          case AuxPing(id) ⇒ self ! AuxPing(0); second(self)
         })
       def second(self: ActorRef[Command]) = Partial[Command] {
-        case AuxPing(0) ⇒ { self ! AuxPing(1); Same }
-        case AuxPing(1) ⇒ { self ! AuxPing(2); third(self) }
+        case AuxPing(0) ⇒ self ! AuxPing(1); Same
+        case AuxPing(1) ⇒ self ! AuxPing(2); third(self)
       }
       def third(self: ActorRef[Command]) = Partial[Command] {
-        case AuxPing(2) ⇒ { self ! AuxPing(3); Unhandled }
-        case AuxPing(3) ⇒ { self ! Ping; Same }
-        case AuxPing(4) ⇒ { self ! Stop; Stopped }
+        case AuxPing(2) ⇒ self ! AuxPing(3); Unhandled
+        case AuxPing(3) ⇒ self ! Ping; Same
+        case AuxPing(4) ⇒ self ! Stop; Stopped
       }
       SynchronousSelf(self ⇒ Or(mkFull(monitor), first(self)))
     }

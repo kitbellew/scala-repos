@@ -8,12 +8,12 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
 
   def isDelimiter(ch: Char) = {
     var i = 0;
-    while (i < delimiters.length() && delimiters.charAt(i) != ch) { i = i + 1 }
+    while (i < delimiters.length() && delimiters.charAt(i) != ch) i = i + 1
     i < delimiters.length()
   }
 
   def hasNext: Boolean = {
-    while (i < s.length() && s.charAt(i) <= ' ') { i = i + 1 }
+    while (i < s.length() && s.charAt(i) <= ' ') i = i + 1
     i < s.length()
   }
 
@@ -25,7 +25,7 @@ class Tokenizer(s: String, delimiters: String) extends Iterator[String] {
       else {
         while (i < s.length() &&
                s.charAt(i) > ' ' &&
-               !isDelimiter(s.charAt(i))) { i = i + 1 }
+               !isDelimiter(s.charAt(i))) i = i + 1
         s.substring(start, i)
       }
     } else "";
@@ -122,7 +122,7 @@ object Programs {
       (lhs.tyvars ::: (rhs flatMap (t => t.tyvars))).distinct;
     def newInstance = {
       var s: Subst = List();
-      for (a <- tyvars) { s = Binding(a, newVar(a)) :: s }
+      for (a <- tyvars) s = Binding(a, newVar(a)) :: s
       Clause(lhs map s, rhs map (t => t map s))
     }
     override def toString() =
@@ -213,11 +213,10 @@ class Parser(s: String) {
       if (token equals "?") {
         token = it.next;
         Clause(NoTerm, rep(constructor));
-      } else {
+      } else
         Clause(constructor, if (token equals ":-") {
           token = it.next; rep(constructor)
         } else List())
-      }
     if (token equals ".") token = it.next else syntaxError("`.' expected");
     result
   }
@@ -241,9 +240,9 @@ object Prolog {
               solutions = solve(c.rhs, program);
               tvs = c.tyvars;
           }
-          if (solutions.isEmpty) {
+          if (solutions.isEmpty)
             Console.println("no")
-          } else {
+          else {
             val s: Subst = solutions.head
               .filter(b => tvs contains b.name)
               .map(b => Binding(b.name, b.term map solutions.head))
@@ -251,9 +250,8 @@ object Prolog {
             if (s.isEmpty) Console.println("yes")
             else Console.println(s);
           }
-        } else {
+        } else
           program = program ::: List(c);
-        }
       }
     }
   }

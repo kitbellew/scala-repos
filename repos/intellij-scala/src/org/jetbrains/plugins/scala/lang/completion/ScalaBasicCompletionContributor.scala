@@ -196,17 +196,15 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                                 .isInExcludedPackage(clazz, false)
                           })
 
-                      if (!isExcluded && !classNameCompletion && (!lookingForAnnotations || clazz.isAnnotationType)) {
+                      if (!isExcluded && !classNameCompletion && (!lookingForAnnotations || clazz.isAnnotationType))
                         if (isAfterNew) {
                           val lookupElement = getLookupElementFromClass(
                             expectedTypesAfterNew,
                             clazz,
                             renamedMap)
                           addElement(lookupElement)
-                        } else {
+                        } else
                           addElement(el)
-                        }
-                      }
                     case _ if lookingForAnnotations =>
                     case f: FakePsiMethod
                         if f.name
@@ -300,9 +298,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               case refImpl: ScTypeProjectionImpl =>
                 refImpl.doResolve(completionProcessor(refImpl))
               case _ =>
-                for (variant <- ref.asInstanceOf[PsiReference].getVariants) {
+                for (variant <- ref.asInstanceOf[PsiReference].getVariants)
                   applyVariant(variant)
-                }
             }
             if (!elementAdded && !classNameCompletion && ScalaCompletionUtil
                   .shouldRunClassNameCompletion(
@@ -310,10 +307,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                     parameters,
                     result.getPrefixMatcher,
                     checkInvocationCount = false,
-                    lookingForAnnotations = lookingForAnnotations)) {
+                    lookingForAnnotations = lookingForAnnotations))
               ScalaClassNameCompletionContributor
                 .completeClassName(dummyPosition, parameters, context, result)
-            }
 
             //adds runtime completions for evaluate expression in debugger
             val runtimeQualifierType: ScType =
@@ -431,7 +427,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
             context.getStartOffset,
             classOf[ScReferenceElement],
             false)
-        if (ref != null) {
+        if (ref != null)
           ref.qualifier match {
             case None =>
             case Some(qual) =>
@@ -445,7 +441,6 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               context.getEditor.getCaretModel
                 .moveToOffset(context.getTailOffset)
           }
-        }
         item.getDelegate.handleInsert(context)
       }
     }

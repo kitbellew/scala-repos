@@ -105,7 +105,7 @@ class OfferMatcherManagerModuleTest
         makeOneCPUTask("task2_1")))
   }
 
-  for (launchTokens <- Seq(0, 1, 5)) {
+  for (launchTokens <- Seq(0, 1, 5))
     test(s"launch as many tasks as there are launch tokens: $launchTokens") {
       val offer: Offer = MarathonTestHelper.makeBasicOffer(cpus = 1.3).build()
 
@@ -121,7 +121,6 @@ class OfferMatcherManagerModuleTest
         Await.result(matchedTasksFuture, 3.seconds)
       assert(matchedTasks.opsWithSource.size == launchTokens)
     }
-  }
 
   test("single offer is passed to multiple matchers repeatedly") {
     val offer: Offer = MarathonTestHelper.makeBasicOffer(cpus = 4.0).build()

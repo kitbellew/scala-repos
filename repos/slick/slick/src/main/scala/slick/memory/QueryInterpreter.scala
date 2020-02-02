@@ -313,12 +313,12 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
             case ProductType(elTypes) =>
               val p = whereV.asInstanceOf[ProductValue]
               0.until(elTypes.length).iterator.map { i =>
-                if (elTypes(i).isInstanceOf[OptionType]) {
+                if (elTypes(i).isInstanceOf[OptionType])
                   p(i).asInstanceOf[Option[Any]] match {
                     case Some(v) => whatBase == v
                     case None    => false
                   }
-                } else whatBase == p(i)
+                else whatBase == p(i)
               } contains true
             case ct: CollectionType =>
               val (els, singleType) =
@@ -388,7 +388,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       case Apply(sym, ch) =>
         val chV = ch.map(n => (n.nodeType, run(n)))
         logDebug("[chV: " + chV.mkString(", ") + "]")
-        if (n.nodeType.isInstanceOf[OptionType]) {
+        if (n.nodeType.isInstanceOf[OptionType])
           if (chV.exists {
                 case (t, v) => t.isInstanceOf[OptionType] && (v == None)
               }) None
@@ -405,7 +405,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 chPlainV.toSeq,
                 n.nodeType.asOptionType.elementType))
           }
-        } else evalFunction(sym, chV.toSeq, n.nodeType)
+        else evalFunction(sym, chV.toSeq, n.nodeType)
       //case Library.CountAll(ch) => run(ch).asInstanceOf[Coll].size
       case l: LiteralNode        => l.value
       case CollectionCast(ch, _) => run(ch)

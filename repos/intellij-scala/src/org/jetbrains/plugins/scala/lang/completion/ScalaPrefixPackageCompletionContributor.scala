@@ -50,13 +50,12 @@ class ScalaPrefixPackageCompletionContributor
         if (!shouldRunClassNameCompletion(
               positionFromParameters(parameters),
               parameters,
-              result.getPrefixMatcher)) {
+              result.getPrefixMatcher))
           ScalaPrefixPackageCompletionContributor.completePrefixPackageNames(
             positionFromParameters(parameters),
             parameters,
             context,
             result)
-        }
       }
     }
   )
@@ -114,9 +113,7 @@ object ScalaPrefixPackageCompletionContributor {
       fqn <- prefixPackages(project)
       name = fqn.substring(fqn.lastIndexOf('.'))
       if prefixMatcher.prefixMatches(name)
-    } {
-      addPackageForCompletion(fqn)
-    }
+    } addPackageForCompletion(fqn)
 
   }
 

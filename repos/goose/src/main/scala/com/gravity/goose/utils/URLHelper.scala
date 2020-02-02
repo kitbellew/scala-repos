@@ -48,11 +48,10 @@ object URLHelper extends Logging {
       val linkhash = HashUtils.md5(finalURL)
       Some(ParsingCandidate(finalURL, linkhash, url))
     } catch {
-      case e: MalformedURLException => {
+      case e: MalformedURLException =>
         warn("{0} - is a malformed URL and cannot be processed", urlToCrawl)
         None
-      }
-      case unknown: Exception => {
+      case unknown: Exception =>
         critical(
           "Unable to process URL: {0} due to an unexpected exception:\n\tException Type: {1}\n\tException Message: {2}\n\tException Stack:\n{3}",
           urlToCrawl,
@@ -62,34 +61,31 @@ object URLHelper extends Logging {
         )
 
         None
-      }
     }
   }
 
   def tryToURL(url: String): Option[URL] = {
-    val finalUrl = if (url.contains("#!")) {
-      ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
-    } else {
-      url
-    }
+    val finalUrl =
+      if (url.contains("#!"))
+        ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
+      else
+        url
 
-    try {
-      Some(new URL(finalUrl))
-    } catch {
+    try Some(new URL(finalUrl))
+    catch {
       case _: Exception => None
     }
   }
 
   def tryToURI(url: String): Option[URI] = {
-    val finalUrl = if (url.contains("#!")) {
-      ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
-    } else {
-      url
-    }
+    val finalUrl =
+      if (url.contains("#!"))
+        ESCAPED_FRAGMENT_REPLACEMENT.replaceAll(url)
+      else
+        url
 
-    try {
-      Some(URI.create(finalUrl))
-    } catch {
+    try Some(URI.create(finalUrl))
+    catch {
       case _: Exception => None
     }
   }

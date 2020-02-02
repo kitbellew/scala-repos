@@ -58,12 +58,12 @@ trait BoundedMessageQueueSemantics extends MessageQueue {
   def pushTimeOut: Duration
 
   final def enqueue(handle: MessageInvocation) {
-    if (pushTimeOut.length > 0) {
+    if (pushTimeOut.length > 0)
       this.offer(handle, pushTimeOut.length, pushTimeOut.unit) || {
         throw new MessageQueueAppendFailedException(
           "Couldn't enqueue message " + handle + " to " + toString)
       }
-    } else this put handle
+    else this put handle
   }
 
   @inline

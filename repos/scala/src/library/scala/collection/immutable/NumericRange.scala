@@ -119,16 +119,16 @@ abstract class NumericRange[T](
   import NumericRange.defaultOrdering
 
   override def min[T1 >: T](implicit ord: Ordering[T1]): T =
-    if (ord eq defaultOrdering(num)) {
+    if (ord eq defaultOrdering(num))
       if (num.signum(step) > 0) start
       else last
-    } else super.min(ord)
+    else super.min(ord)
 
   override def max[T1 >: T](implicit ord: Ordering[T1]): T =
-    if (ord eq defaultOrdering(num)) {
+    if (ord eq defaultOrdering(num))
       if (num.signum(step) > 0) last
       else start
-    } else super.max(ord)
+    else super.max(ord)
 
   // Motivated by the desire for Double ranges with BigDecimal precision,
   // we need some way to map a Range and get another Range.  This can't be
@@ -184,67 +184,65 @@ abstract class NumericRange[T](
   final override def sum[B >: T](implicit num: Numeric[B]): B =
     if (isEmpty) num.zero
     else if (numRangeElements == 1) head
-    else {
-      // If there is no overflow, use arithmetic series formula
-      //   a + ... (n terms total) ... + b = n*(a+b)/2
-      if ((num eq scala.math.Numeric.IntIsIntegral) ||
-          (num eq scala.math.Numeric.ShortIsIntegral) ||
-          (num eq scala.math.Numeric.ByteIsIntegral) ||
-          (num eq scala.math.Numeric.CharIsIntegral)) {
-        // We can do math with no overflow in a Long--easy
-        val exact =
-          (numRangeElements * ((num toLong head) + (num toInt last))) / 2
-        num fromInt exact.toInt
-      } else if (num eq scala.math.Numeric.LongIsIntegral) {
-        // Uh-oh, might be overflow, so we have to divide before we overflow.
-        // Either numRangeElements or (head + last) must be even, so divide the even one before multiplying
-        val a = head.toLong
-        val b = last.toLong
-        val ans =
-          if ((numRangeElements & 1) == 0) (numRangeElements / 2) * (a + b)
-          else
-            numRangeElements * {
-              // Sum is even, but we might overflow it, so divide in pieces and add back remainder
-              val ha = a / 2
-              val hb = b / 2
-              ha + hb + ((a - 2 * ha) + (b - 2 * hb)) / 2
-            }
-        ans.asInstanceOf[B]
-      } else if ((num eq scala.math.Numeric.FloatAsIfIntegral) ||
-                 (num eq scala.math.Numeric.DoubleAsIfIntegral)) {
-        // Try to compute sum with reasonable accuracy, avoiding over/underflow
-        val numAsIntegral = num.asInstanceOf[Integral[B]]
-        import numAsIntegral._
-        val a = math.abs(head.toDouble)
-        val b = math.abs(last.toDouble)
-        val two = num fromInt 2
-        val nre = num fromInt numRangeElements
-        if (a > 1e38 || b > 1e38)
-          nre * ((head / two) + (last / two)) // Compute in parts to avoid Infinity if possible
+    else
+    // If there is no overflow, use arithmetic series formula
+    //   a + ... (n terms total) ... + b = n*(a+b)/2
+    if ((num eq scala.math.Numeric.IntIsIntegral) ||
+        (num eq scala.math.Numeric.ShortIsIntegral) ||
+        (num eq scala.math.Numeric.ByteIsIntegral) ||
+        (num eq scala.math.Numeric.CharIsIntegral)) {
+      // We can do math with no overflow in a Long--easy
+      val exact =
+        (numRangeElements * ((num toLong head) + (num toInt last))) / 2
+      num fromInt exact.toInt
+    } else if (num eq scala.math.Numeric.LongIsIntegral) {
+      // Uh-oh, might be overflow, so we have to divide before we overflow.
+      // Either numRangeElements or (head + last) must be even, so divide the even one before multiplying
+      val a = head.toLong
+      val b = last.toLong
+      val ans =
+        if ((numRangeElements & 1) == 0) (numRangeElements / 2) * (a + b)
         else
-          (nre / two) * (head + last) // Don't need to worry about infinity; this will be more accurate and avoid underflow
-      } else if ((num eq scala.math.Numeric.BigIntIsIntegral) ||
-                 (num eq scala.math.Numeric.BigDecimalIsFractional)) {
-        // No overflow, so we can use arithmetic series formula directly
-        // (not going to worry about running out of memory)
-        val numAsIntegral = num.asInstanceOf[Integral[B]]
-        import numAsIntegral._
-        ((num fromInt numRangeElements) * (head + last)) / (num fromInt 2)
-      } else {
-        // User provided custom Numeric, so we cannot rely on arithmetic series formula (e.g. won't work on something like Z_6)
-        if (isEmpty) num.zero
-        else {
-          var acc = num.zero
-          var i = head
-          var idx = 0
-          while (idx < length) {
-            acc = num.plus(acc, i)
-            i = i + step
-            idx = idx + 1
+          numRangeElements * {
+            // Sum is even, but we might overflow it, so divide in pieces and add back remainder
+            val ha = a / 2
+            val hb = b / 2
+            ha + hb + ((a - 2 * ha) + (b - 2 * hb)) / 2
           }
-          acc
-        }
+      ans.asInstanceOf[B]
+    } else if ((num eq scala.math.Numeric.FloatAsIfIntegral) ||
+               (num eq scala.math.Numeric.DoubleAsIfIntegral)) {
+      // Try to compute sum with reasonable accuracy, avoiding over/underflow
+      val numAsIntegral = num.asInstanceOf[Integral[B]]
+      import numAsIntegral._
+      val a = math.abs(head.toDouble)
+      val b = math.abs(last.toDouble)
+      val two = num fromInt 2
+      val nre = num fromInt numRangeElements
+      if (a > 1e38 || b > 1e38)
+        nre * ((head / two) + (last / two)) // Compute in parts to avoid Infinity if possible
+      else
+        (nre / two) * (head + last) // Don't need to worry about infinity; this will be more accurate and avoid underflow
+    } else if ((num eq scala.math.Numeric.BigIntIsIntegral) ||
+               (num eq scala.math.Numeric.BigDecimalIsFractional)) {
+      // No overflow, so we can use arithmetic series formula directly
+      // (not going to worry about running out of memory)
+      val numAsIntegral = num.asInstanceOf[Integral[B]]
+      import numAsIntegral._
+      ((num fromInt numRangeElements) * (head + last)) / (num fromInt 2)
+    } else
+    // User provided custom Numeric, so we cannot rely on arithmetic series formula (e.g. won't work on something like Z_6)
+    if (isEmpty) num.zero
+    else {
+      var acc = num.zero
+      var i = head
+      var idx = 0
+      while (idx < length) {
+        acc = num.plus(acc, i)
+        i = i + step
+        idx = idx + 1
       }
+      acc
     }
 
   override lazy val hashCode = super.hashCode()
@@ -295,12 +293,10 @@ object NumericRange {
         val endint = num.toInt(end)
         if (end == num.fromInt(endint)) {
           val stepint = num.toInt(step)
-          if (step == num.fromInt(stepint)) {
-            return {
-              if (isInclusive) Range.inclusive(startint, endint, stepint).length
-              else Range(startint, endint, stepint).length
-            }
-          }
+          if (step == num.fromInt(stepint))
+            return
+          if (isInclusive) Range.inclusive(startint, endint, stepint).length
+          else Range(startint, endint, stepint).length
         }
       }
       // If we reach this point, deferring to Int failed.
@@ -338,12 +334,12 @@ object NumericRange {
             else num.plus(start, num.times(startq, step))
           val waypointB = num.plus(waypointA, step)
           check {
-            if (num.lt(waypointB, end) != upward) {
+            if (num.lt(waypointB, end) != upward)
               // No last piece
               if (isInclusive && waypointB == end)
                 num.plus(startq, num.fromInt(2))
               else num.plus(startq, one)
-            } else {
+            else {
               // There is a last piece
               val enddiff = num.minus(end, waypointB)
               val endq = check(num.quot(enddiff, step))

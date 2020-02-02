@@ -92,9 +92,8 @@ object Decompiler {
       // Print classes
       val printer = new ScalaSigPrinter(stream, false)
 
-      for (c <- syms) {
+      for (c <- syms)
         printer.printSymbol(c)
-      }
       val sourceBytes = baos.toByteArray
       new String(sourceBytes, UTF8)
     }

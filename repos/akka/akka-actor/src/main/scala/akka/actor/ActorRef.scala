@@ -679,7 +679,7 @@ private[akka] class VirtualPathContainer(
     */
   override def !(message: Any)(
       implicit sender: ActorRef = Actor.noSender): Unit = message match {
-    case sel @ ActorSelectionMessage(msg, elements, wildcardFanOut) ⇒ {
+    case sel @ ActorSelectionMessage(msg, elements, wildcardFanOut) ⇒
       require(elements.nonEmpty)
 
       def emptyRef =
@@ -695,17 +695,15 @@ private[akka] class VirtualPathContainer(
               if (!wildcardFanOut)
                 emptyRef.tell(msg, sender)
             case child ⇒
-              if (elements.tail.isEmpty) {
+              if (elements.tail.isEmpty)
                 child ! msg
-              } else if (!wildcardFanOut) {
+              else if (!wildcardFanOut)
                 emptyRef.tell(msg, sender)
-              }
           }
         case _ ⇒
           if (!wildcardFanOut)
             emptyRef.tell(msg, sender)
       }
-    }
     case _ ⇒ super.!(message)
   }
 
@@ -849,19 +847,18 @@ private[akka] final class FunctionRef(
           if (!watchedBy.contains(watcher))
             if (!_watchedBy.compareAndSet(watchedBy, watchedBy + watcher))
               addWatcher(watchee, watcher) // try again
-        } else if (!watcheeSelf && watcherSelf) {
+        } else if (!watcheeSelf && watcherSelf)
           publish(
             Logging.Warning(
               path.toString,
               classOf[FunctionRef],
               s"externally triggered watch from $watcher to $watchee is illegal on FunctionRef"))
-        } else {
+        else
           publish(
             Logging.Error(
               path.toString,
               classOf[FunctionRef],
               s"BUG: illegal Watch($watchee,$watcher) for $this"))
-        }
     }
 
   @tailrec private def remWatcher(watchee: ActorRef, watcher: ActorRef): Unit =
@@ -875,19 +872,18 @@ private[akka] final class FunctionRef(
           if (watchedBy.contains(watcher))
             if (!_watchedBy.compareAndSet(watchedBy, watchedBy - watcher))
               remWatcher(watchee, watcher) // try again
-        } else if (!watcheeSelf && watcherSelf) {
+        } else if (!watcheeSelf && watcherSelf)
           publish(
             Logging.Warning(
               path.toString,
               classOf[FunctionRef],
               s"externally triggered unwatch from $watcher to $watchee is illegal on FunctionRef"))
-        } else {
+        else
           publish(
             Logging.Error(
               path.toString,
               classOf[FunctionRef],
               s"BUG: illegal Unwatch($watchee,$watcher) for $this"))
-        }
     }
 
   private def publish(e: Logging.LogEvent): Unit =

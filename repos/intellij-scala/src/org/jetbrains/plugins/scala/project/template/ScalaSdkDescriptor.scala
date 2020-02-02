@@ -71,11 +71,10 @@ trait SdkDescriptor {
           .map(_.toLibraryRootURL)
           .foreach(editor.addRoot(_, JavadocOrderRootType.getInstance))
 
-        if (sourceFiles.isEmpty && docFiles.isEmpty) {
+        if (sourceFiles.isEmpty && docFiles.isEmpty)
           editor.addRoot(
             ScalaSdk.documentationUrlFor(version),
             JavadocOrderRootType.getInstance)
-        }
       }
     }
 }
@@ -162,8 +161,7 @@ trait SdkDescriptorCompanion {
         libraryDocs.map(_.file))
 
       Right(descriptor)
-    } else {
+    } else
       Left("Not found: " + missingBinaryArtifacts.map(_.title).mkString(", "))
-    }
   }
 }

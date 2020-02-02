@@ -175,13 +175,12 @@ private[serverset2] object Stabilizer {
         case State(limbo, active, last) =>
           val all =
             merge(limbo.getOrElse(Set.empty), active.getOrElse(Set.empty))
-          if (all.nonEmpty) {
+          if (all.nonEmpty)
             Addr.Bound(all)
-          } else if (limbo != None || active != None) {
+          else if (limbo != None || active != None)
             Addr.Neg
-          } else {
+          else
             last
-          }
       }
 
       // Trigger at most one change to state per batchEpoch

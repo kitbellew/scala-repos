@@ -164,11 +164,10 @@ object LaunchburyInterpreter extends App {
           _ <- modify((s: ReduceState) => s.copy(heap = s.heap + ((x, e3))))
           freshendE <- freshen(e3)
         } yield freshendE
-      case Let(bs, e2) => {
+      case Let(bs, e2) =>
         val heapAdd = ((binding: (String, Expr)) =>
           modify((s: ReduceState) => s.copy(heap = s.heap + binding)))
         bs.toList.traverseS(heapAdd) >> reduce(e2)
-      }
     }
 
   def evaluate(e: Expr): Expr = reduce(e).eval(initialState)

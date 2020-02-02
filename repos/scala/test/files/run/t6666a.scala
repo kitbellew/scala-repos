@@ -7,7 +7,7 @@ object Test {
     object InVal
         extends A({
           new {} // okay
-          val o = { new {} } // nesting triggers a VerifyError.
+          val o = new {} // nesting triggers a VerifyError.
           null
         });
     InVal;

@@ -125,7 +125,7 @@ final case class DeploymentPlan(
       case ResolveArtifacts(app, urls) => s"Resolve(${appString(app)}, $urls})"
     }
     val stepString =
-      if (steps.nonEmpty) {
+      if (steps.nonEmpty)
         steps
           .map { _.actions.map(actionString).mkString("  * ", "\n  * ", "") }
           .zipWithIndex
@@ -133,7 +133,7 @@ final case class DeploymentPlan(
             case (stepsString, index) => s"step ${index + 1}:\n$stepsString"
           }
           .mkString("\n", "\n", "")
-      } else " NO STEPS"
+      else " NO STEPS"
     s"DeploymentPlan $version$stepString\n"
   }
 

@@ -61,9 +61,8 @@ object ScopeSuggester {
         val pparent =
           PsiTreeUtil.getParentOfType(parent, classOf[ScTemplateDefinition])
         if (pparent != null && (!elementOwner.isAncestorOf(pparent) || !elementOwner
-              .isInstanceOf[ScTemplateDefinition])) {
+              .isInstanceOf[ScTemplateDefinition]))
           result = false
-        }
       }
       result
     }
@@ -107,9 +106,8 @@ object ScopeSuggester {
         case _ => false
       }
 
-      if (!isSuitableParent(owners, parent)) {
+      if (!isSuitableParent(owners, parent))
         noContinue = true
-      }
 
       val occurrences =
         ScalaRefactoringUtil.getTypeElementOccurrences(currentElement, parent)
@@ -141,7 +139,7 @@ object ScopeSuggester {
     if ((scPackage != null) && owners.isEmpty && !noContinue) {
       val allPackages =
         getAllAvailablePackages(scPackage.fullPackageName, currentElement)
-      for ((resultPackage, resultDirectory) <- allPackages) {
+      for ((resultPackage, resultDirectory) <- allPackages)
         result += PackageScopeItem(
           resultPackage.getQualifiedName,
           resultDirectory,
@@ -152,7 +150,6 @@ object ScopeSuggester {
               .apply(0)
               .capitalize)
         )
-      }
     }
 
     result.toArray
@@ -212,11 +209,10 @@ object ScopeSuggester {
             packageDirectories.intersect(dirContainingFile)
 
           val resultDirectory: PsiDirectory =
-            if (containingDirectory.length > 0) {
+            if (containingDirectory.length > 0)
               containingDirectory.apply(0)
-            } else {
+            else
               typeElement.getContainingFile.getContainingDirectory
-            }
 
           result += ((currentPackage, resultDirectory))
         }
@@ -225,9 +221,8 @@ object ScopeSuggester {
           module,
           result,
           dirContainingFile)
-      } else {
+      } else
         result
-      }
 
     val currentPackage = ScPackageImpl
       .findPackage(typeElement.getProject, packageName)
@@ -257,9 +252,9 @@ object ScopeSuggester {
       isReplaceAll: Boolean,
       inputName: String): PackageScopeItem = {
     def getFilesToSearchIn(currentDirectory: PsiDirectory): Array[ScalaFile] =
-      if (!isReplaceAll) {
+      if (!isReplaceAll)
         Array(typeElement.getContainingFile.asInstanceOf[ScalaFile])
-      } else {
+      else {
         def oneRound(
             word: String,
             bufResult: ArrayBuffer[ArrayBuffer[ScalaFile]]) = {
@@ -332,14 +327,13 @@ object ScopeSuggester {
             file
           case _ => PsiTreeUtil.findChildOfType(file, classOf[ScTemplateBody])
         }
-        if (parent != null) {
+        if (parent != null)
           allValidators += ScalaTypeValidator(
             conflictsReporter,
             project,
             typeElement,
             parent,
             occurrences.isEmpty)
-        }
       }
     }
 
@@ -363,9 +357,8 @@ object ScopeSuggester {
           parent,
           occurrences.isEmpty)
       }
-    } else {
+    } else
       collectedFiles.foreach(handleOneFile)
-    }
 
     val occurrences =
       allOcurrences.foldLeft(Array[ScTypeElement]())((a, b) => a ++ b)
@@ -419,9 +412,8 @@ case class SimpleScopeItem(
     (fileEncloser.getTextRange, fileEncloser.getContainingFile)
 
   def setInheretedOccurrences(occurrences: Array[ScTypeElement]) =
-    if (occurrences != null) {
+    if (occurrences != null)
       occurrencesFromInheretors = occurrences
-    }
 
   def revalidate(newName: String): ScopeItem = {
     val revalidatedOccurrences = usualOccurrencesRanges.map {
@@ -433,11 +425,11 @@ case class SimpleScopeItem(
           classOf[ScTypeElement])
     }
 
-    val newNames = if ((newName == "") || availableNames.contains(newName)) {
-      availableNames
-    } else {
-      newName +: availableNames
-    }
+    val newNames =
+      if ((newName == "") || availableNames.contains(newName))
+        availableNames
+      else
+        newName +: availableNames
 
     val updatedFileEncloser = fileEncloserRange match {
       case (range, containingFile) =>

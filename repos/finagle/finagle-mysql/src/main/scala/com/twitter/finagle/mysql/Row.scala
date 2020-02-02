@@ -135,32 +135,32 @@ class BinaryEncodedRow(
     * into an appropriate Value object.
     */
   lazy val values: IndexedSeq[Value] =
-    for ((field, idx) <- fields.zipWithIndex) yield {
-      if (isNull(idx)) NullValue
-      else
-        field.fieldType match {
-          case Type.Tiny     => ByteValue(buffer.readByte())
-          case Type.Short    => ShortValue(buffer.readShort())
-          case Type.Int24    => IntValue(buffer.readInt())
-          case Type.Long     => IntValue(buffer.readInt())
-          case Type.LongLong => LongValue(buffer.readLong())
-          case Type.Float    => FloatValue(buffer.readFloat())
-          case Type.Double   => DoubleValue(buffer.readDouble())
-          case Type.Year     => ShortValue(buffer.readShort())
-          // Nonbinary strings as stored in the CHAR, VARCHAR, and TEXT data types
-          case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob |
-              Type.Blob | Type.MediumBlob
-              if !Charset.isBinary(field.charset) && Charset.isCompatible(
-                field.charset) =>
-            StringValue(buffer.readLengthCodedString(Charset(field.charset)))
+    for ((field, idx) <- fields.zipWithIndex)
+      yield
+        if (isNull(idx)) NullValue
+        else
+          field.fieldType match {
+            case Type.Tiny     => ByteValue(buffer.readByte())
+            case Type.Short    => ShortValue(buffer.readShort())
+            case Type.Int24    => IntValue(buffer.readInt())
+            case Type.Long     => IntValue(buffer.readInt())
+            case Type.LongLong => LongValue(buffer.readLong())
+            case Type.Float    => FloatValue(buffer.readFloat())
+            case Type.Double   => DoubleValue(buffer.readDouble())
+            case Type.Year     => ShortValue(buffer.readShort())
+            // Nonbinary strings as stored in the CHAR, VARCHAR, and TEXT data types
+            case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob |
+                Type.Blob | Type.MediumBlob
+                if !Charset.isBinary(field.charset) && Charset.isCompatible(
+                  field.charset) =>
+              StringValue(buffer.readLengthCodedString(Charset(field.charset)))
 
-          case Type.LongBlob =>
-            throw new UnsupportedOperationException(
-              "LongBlob is not supported!")
-          case typ =>
-            RawValue(typ, field.charset, true, buffer.readLengthCodedBytes())
-        }
-    }
+            case Type.LongBlob =>
+              throw new UnsupportedOperationException(
+                "LongBlob is not supported!")
+            case typ =>
+              RawValue(typ, field.charset, true, buffer.readLengthCodedBytes())
+          }
 
   def indexOf(name: String) = indexMap.get(name)
 }

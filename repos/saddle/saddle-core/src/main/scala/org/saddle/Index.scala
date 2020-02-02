@@ -225,9 +225,9 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     val loc = getFirst(key)
     if (loc == -1)
       -1
-    else if (isContiguous) {
+    else if (isContiguous)
       loc + locator.count(key) - 1
-    } else {
+    else {
       var i = loc + 1
       var c = locator.count(key)
       while (c > 1 && i < length) {
@@ -247,11 +247,11 @@ trait Index[@spec(Boolean, Int, Long, Double) T] extends Serializable {
     var count = 0
     if (firstLoc == -1)
       Array[Int]()
-    else if (isUnique || { count = locator.count(key); 1 == count }) {
+    else if (isUnique || { count = locator.count(key); 1 == count })
       Array(locator.get(key))
-    } else if (isContiguous) {
+    else if (isContiguous)
       array.range(firstLoc, firstLoc + count)
-    } else {
+    else {
       val result = Array.ofDim[Int](count)
       var loc = firstLoc
       var i = 0

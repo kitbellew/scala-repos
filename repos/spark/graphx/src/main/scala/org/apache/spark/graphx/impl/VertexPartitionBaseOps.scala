@@ -80,9 +80,8 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
     // Iterate over the active bits in the old mask and evaluate the predicate
     var i = self.mask.nextSetBit(0)
     while (i >= 0) {
-      if (pred(self.index.getValue(i), self.values(i))) {
+      if (pred(self.index.getValue(i), self.values(i)))
         newMask.set(i)
-      }
       i = self.mask.nextSetBit(i + 1)
     }
     this.withMask(newMask)
@@ -94,9 +93,8 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       logWarning(
         "Minus operations on two VertexPartitions with different indexes is slow.")
       minus(createUsingIndex(other.iterator))
-    } else {
+    } else
       self.withMask(self.mask.andNot(other.mask))
-    }
 
   /** Hides the VertexId's that are the same between `this` and `other`. */
   def minus(other: Iterator[(VertexId, VD)]): Self[VD] =
@@ -114,9 +112,8 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       val newMask = self.mask & other.mask
       var i = newMask.nextSetBit(0)
       while (i >= 0) {
-        if (self.values(i) == other.values(i)) {
+        if (self.values(i) == other.values(i))
           newMask.unset(i)
-        }
         i = newMask.nextSetBit(i + 1)
       }
       this.withValues(other.values).withMask(newMask)
@@ -216,14 +213,13 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
       val vid = product._1
       val vdata = product._2
       val pos = self.index.getPos(vid)
-      if (pos >= 0) {
-        if (newMask.get(pos)) {
+      if (pos >= 0)
+        if (newMask.get(pos))
           newValues(pos) = reduceFunc(newValues(pos), vdata)
-        } else { // otherwise just store the new value
+        else { // otherwise just store the new value
           newMask.set(pos)
           newValues(pos) = vdata
         }
-      }
     }
     this.withValues(newValues).withMask(newMask)
   }
@@ -234,9 +230,8 @@ Self[X] <: VertexPartitionBase[X]: VertexPartitionBaseOpsConstructor](
   def reindex(): Self[VD] = {
     val hashMap = new GraphXPrimitiveKeyOpenHashMap[VertexId, VD]
     val arbitraryMerge = (a: VD, b: VD) => a
-    for ((k, v) <- self.iterator) {
+    for ((k, v) <- self.iterator)
       hashMap.setMerge(k, v, arbitraryMerge)
-    }
     this
       .withIndex(hashMap.keySet)
       .withValues(hashMap._values)

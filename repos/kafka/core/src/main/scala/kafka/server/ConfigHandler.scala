@@ -91,7 +91,7 @@ class ClientIdConfigHandler(
     extends ConfigHandler {
 
   def processConfigChanges(clientId: String, clientConfig: Properties) = {
-    if (clientConfig.containsKey(ClientConfigOverride.ProducerOverride)) {
+    if (clientConfig.containsKey(ClientConfigOverride.ProducerOverride))
       quotaManagers(ApiKeys.PRODUCE.id).updateQuota(
         clientId,
         new Quota(
@@ -99,9 +99,8 @@ class ClientIdConfigHandler(
             .getProperty(ClientConfigOverride.ProducerOverride)
             .toLong,
           true))
-    }
 
-    if (clientConfig.containsKey(ClientConfigOverride.ConsumerOverride)) {
+    if (clientConfig.containsKey(ClientConfigOverride.ConsumerOverride))
       quotaManagers(ApiKeys.FETCH.id).updateQuota(
         clientId,
         new Quota(
@@ -109,6 +108,5 @@ class ClientIdConfigHandler(
             .getProperty(ClientConfigOverride.ConsumerOverride)
             .toLong,
           true))
-    }
   }
 }

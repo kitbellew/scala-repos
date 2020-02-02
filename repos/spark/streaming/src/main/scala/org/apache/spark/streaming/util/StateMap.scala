@@ -124,15 +124,13 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   /** Get the session data if it exists */
   override def get(key: K): Option[S] = {
     val stateInfo = deltaMap(key)
-    if (stateInfo != null) {
-      if (!stateInfo.deleted) {
+    if (stateInfo != null)
+      if (!stateInfo.deleted)
         Some(stateInfo.data)
-      } else {
+      else
         None
-      }
-    } else {
+    else
       parentStateMap.get(key)
-    }
   }
 
   /** Get all the keys and states whose updated time is older than the give threshold time */
@@ -172,19 +170,18 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
   /** Add or update state */
   override def put(key: K, state: S, updateTime: Long): Unit = {
     val stateInfo = deltaMap(key)
-    if (stateInfo != null) {
+    if (stateInfo != null)
       stateInfo.update(state, updateTime)
-    } else {
+    else
       deltaMap.update(key, new StateInfo(state, updateTime))
-    }
   }
 
   /** Remove a state */
   override def remove(key: K): Unit = {
     val stateInfo = deltaMap(key)
-    if (stateInfo != null) {
+    if (stateInfo != null)
       stateInfo.markDeleted()
-    } else {
+    else {
       val newInfo = new StateInfo[S](deleted = true)
       deltaMap.update(key, newInfo)
     }
@@ -222,9 +219,10 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
 
   /** Get all the data of this map as string formatted as a tree based on the delta depth */
   override def toDebugString(): String = {
-    val tabs = if (deltaChainLength > 0) {
-      ("    " * (deltaChainLength - 1)) + "+--- "
-    } else ""
+    val tabs =
+      if (deltaChainLength > 0)
+        ("    " * (deltaChainLength - 1)) + "+--- "
+      else ""
     parentStateMap.toDebugString() + "\n" + deltaMap.iterator.mkString(
       tabs,
       "\n" + tabs,
@@ -259,9 +257,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       new OpenHashMapBasedStateMap[K, S](
         initialCapacity = initCapacity,
         deltaChainThreshold)
-    } else {
+    } else
       null
-    }
 
     val iterOfActiveSessions = parentStateMap.getAll()
 
@@ -279,29 +276,27 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       outputStream.writeObject(state)
       outputStream.writeLong(updateTime)
 
-      if (doCompaction) {
+      if (doCompaction)
         newParentSessionStore.deltaMap
           .update(key, StateInfo(state, updateTime, deleted = false))
-      }
     }
 
     // Write the final limit marking object with the correct count of records written.
     val limiterObj = new LimitMarker(parentSessionCount)
     outputStream.writeObject(limiterObj)
-    if (doCompaction) {
+    if (doCompaction)
       parentStateMap = newParentSessionStore
-    }
   }
 
   /** Deserialize the map data. */
   private def readObjectInternal(inputStream: ObjectInput): Unit = {
     // Read the data of the delta
     val deltaMapSize = inputStream.readInt()
-    deltaMap = if (deltaMapSize != 0) {
-      new OpenHashMap[K, StateInfo[S]](deltaMapSize)
-    } else {
-      new OpenHashMap[K, StateInfo[S]](initialCapacity)
-    }
+    deltaMap =
+      if (deltaMapSize != 0)
+        new OpenHashMap[K, StateInfo[S]](deltaMapSize)
+      else
+        new OpenHashMap[K, StateInfo[S]](initialCapacity)
     var deltaMapCount = 0
     while (deltaMapCount < deltaMapSize) {
       val key = inputStream.readObject().asInstanceOf[K]

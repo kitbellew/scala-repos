@@ -101,10 +101,10 @@ class KindProjectorSimplifyTypeProjectionInspection
                 case _ => ta.presentableText
               }
             }
-            if (!typeParamIt.hasNext && currentTypeParam.isEmpty) {
+            if (!typeParamIt.hasNext && currentTypeParam.isEmpty)
               Some(s"${paramType.designator}${newTypeArgs
                 .mkString(start = "[", sep = ",", end = "]")}")
-            } else None
+            else None
           } else None
         case _ => None
       }
@@ -114,7 +114,7 @@ class KindProjectorSimplifyTypeProjectionInspection
       case _: ScalaFile =>
         new ScalaElementVisitor {
           override def visitTypeProjection(projection: ScTypeProjection): Unit =
-            if (ScalaPsiUtil.kindProjectorPluginEnabled(projection)) {
+            if (ScalaPsiUtil.kindProjectorPluginEnabled(projection))
               projection.typeElement match {
                 case parenType: ScParenthesisedTypeElement =>
                   parenType.typeElement match {
@@ -140,26 +140,25 @@ class KindProjectorSimplifyTypeProjectionInspection
                                           val styleSettings =
                                             ScalaCodeStyleSettings.getInstance(
                                               projection.getProject)
-                                          if (styleSettings.REPLACE_LAMBDA_WITH_GREEK_LETTER) {
+                                          if (styleSettings.REPLACE_LAMBDA_WITH_GREEK_LETTER)
                                             builder.append("λ")
-                                          } else {
+                                          else
                                             builder.append("Lambda")
-                                          }
                                           builder.append("[")
                                           val parameters = aliasParam.map {
                                             param: ScTypeParam =>
                                               if (param.isCovariant || param.isContravariant || boundsDefined(
-                                                    param)) {
+                                                    param))
                                                 s"`${param.getText}`"
-                                              } else param.getText
+                                              else param.getText
                                           }
-                                          if (parameters.length > 1) {
+                                          if (parameters.length > 1)
                                             builder.append(
                                               parameters.mkString(
                                                 start = "(",
                                                 sep = ",",
                                                 end = ")"))
-                                          } else
+                                          else
                                             builder.append(
                                               parameters.mkString(
                                                 start = "",
@@ -190,7 +189,6 @@ class KindProjectorSimplifyTypeProjectionInspection
                   }
                 case _ =>
               }
-            }
         }
       case _ => new PsiElementVisitor {}
     }

@@ -32,8 +32,7 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
         if (!ScaladocSyntaxElementType.canClose(
               firstElementType,
               s.getLastChild.getNode.getElementType) &&
-            firstElementType != ScalaDocTokenType.DOC_HEADER && firstElementType != ScalaDocTokenType.VALID_DOC_HEADER) {
-
+            firstElementType != ScalaDocTokenType.DOC_HEADER && firstElementType != ScalaDocTokenType.VALID_DOC_HEADER)
           holder.registerProblem(
             holder.getManager.createProblemDescriptor(
               s.getFirstChild,
@@ -42,7 +41,6 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
               ProblemHighlightType.GENERIC_ERROR,
               isOnTheFly,
               new ScalaDocEscapeTagQuickFix(s)))
-        }
       }
     }
 }
@@ -57,15 +55,15 @@ class ScalaDocEscapeTagQuickFix(s: ScDocSyntaxElement)
     val syntElem = getElement
     if (!syntElem.isValid) return
 
-    val replaceText = if (syntElem.getFirstChild.getText.contains("=")) {
-      StringUtils.repeat(
-        MyScaladocParsing.escapeSequencesForWiki.get("=").get,
-        syntElem.getFirstChild.getText.length())
-    } else {
-      MyScaladocParsing.escapeSequencesForWiki
-        .get(syntElem.getFirstChild.getText)
-        .get
-    }
+    val replaceText =
+      if (syntElem.getFirstChild.getText.contains("="))
+        StringUtils.repeat(
+          MyScaladocParsing.escapeSequencesForWiki.get("=").get,
+          syntElem.getFirstChild.getText.length())
+      else
+        MyScaladocParsing.escapeSequencesForWiki
+          .get(syntElem.getFirstChild.getText)
+          .get
     val doc = FileDocumentManager
       .getInstance()
       .getDocument(syntElem.getContainingFile.getVirtualFile)

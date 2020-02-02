@@ -69,16 +69,14 @@ trait KafkaIngestActorProjectionSystemConfig extends ShardConfig {
     for {
       failureLogRoot <- config.get[File]("failure_log_root")
       if config[Boolean]("enabled", false)
-    } yield {
-      IngestConfig(
-        bufferSize = config[Int]("buffer_size", 1024 * 1024),
-        maxParallel = config[Int]("max_parallel", 5),
-        batchTimeout = config[Int]("timeout", 120) seconds,
-        maxConsecutiveFailures =
-          config[Int]("ingest.max_consecutive_failures", 3),
-        failureLogRoot = failureLogRoot
-      )
-    }
+    } yield IngestConfig(
+      bufferSize = config[Int]("buffer_size", 1024 * 1024),
+      maxParallel = config[Int]("max_parallel", 5),
+      batchTimeout = config[Int]("timeout", 120) seconds,
+      maxConsecutiveFailures =
+        config[Int]("ingest.max_consecutive_failures", 3),
+      failureLogRoot = failureLogRoot
+    )
   }
 
   def createYggCheckpointFlag =

@@ -230,9 +230,10 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
         s"Too many unconfirmed messages, maximum allowed is [$maxUnconfirmedMessages]")
 
     val deliveryId = nextDeliverySequenceNr()
-    val now = if (recoveryRunning) {
-      System.nanoTime() - redeliverInterval.toNanos
-    } else System.nanoTime()
+    val now =
+      if (recoveryRunning)
+        System.nanoTime() - redeliverInterval.toNanos
+      else System.nanoTime()
     val d =
       Delivery(destination, deliveryIdToMessage(deliveryId), now, attempt = 0)
 

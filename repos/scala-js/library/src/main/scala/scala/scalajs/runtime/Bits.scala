@@ -56,9 +56,8 @@ object Bits {
     if (areTypedArraysSupported) {
       int32Array(0) = 0x01020304
       (new typedarray.Int8Array(arrayBuffer, 0, 8))(0) == 0x01
-    } else {
+    } else
       true // as good a value as any
-    }
   }
 
   private val highOffset = if (areTypedArraysBigEndian) 0 else 1
@@ -87,35 +86,31 @@ object Bits {
     if (areTypedArraysSupported) {
       int32Array(0) = bits
       float32Array(0)
-    } else {
+    } else
       intBitsToFloatPolyfill(bits).toFloat
-    }
 
   def floatToIntBits(value: Float): Int =
     if (areTypedArraysSupported) {
       float32Array(0) = value
       int32Array(0)
-    } else {
+    } else
       floatToIntBitsPolyfill(value.toDouble)
-    }
 
   def longBitsToDouble(bits: Long): Double =
     if (areTypedArraysSupported) {
       int32Array(highOffset) = (bits >>> 32).toInt
       int32Array(lowOffset) = bits.toInt
       float64Array(0)
-    } else {
+    } else
       longBitsToDoublePolyfill(bits)
-    }
 
   def doubleToLongBits(value: Double): Long =
     if (areTypedArraysSupported) {
       float64Array(0) = value
       ((int32Array(highOffset).toLong << 32) |
         (int32Array(lowOffset).toLong & 0xFFFFFFFFL))
-    } else {
+    } else
       doubleToLongBitsPolyfill(value)
-    }
 
   /* --- Polyfills for floating point bit manipulations ---
    *
@@ -181,12 +176,12 @@ object Bits {
 
     val bias = (1 << (ebits - 1)) - 1 // constant
 
-    if (e == (1 << ebits) - 1) {
+    if (e == (1 << ebits) - 1)
       // Special
       if (f != 0.0) Double.NaN
       else if (s) Double.NegativeInfinity
       else Double.PositiveInfinity
-    } else if (e > 0) {
+    else if (e > 0) {
       // Normalized
       val x = pow(2, e - bias) * (1 + f / pow(2, fbits))
       if (s) -x else x
@@ -194,10 +189,10 @@ object Bits {
       // Subnormal
       val x = pow(2, -(bias - 1)) * (f / pow(2, fbits))
       if (s) -x else x
-    } else {
-      // Zero
-      if (s) -0.0 else 0.0
-    }
+    } else
+    // Zero
+    if (s) -0.0
+    else 0.0
   }
 
   @inline private def encodeIEEE754(
@@ -209,14 +204,14 @@ object Bits {
 
     val bias = (1 << (ebits - 1)) - 1 // constant
 
-    if (v.isNaN) {
+    if (v.isNaN)
       // http://dev.w3.org/2006/webapi/WebIDL/#es-type-mapping
       (false, (1 << ebits) - 1, pow(2, fbits - 1))
-    } else if (v.isInfinite) {
+    else if (v.isInfinite)
       (v < 0, (1 << ebits) - 1, 0.0)
-    } else if (v == 0.0) {
+    else if (v == 0.0)
       (1 / v == Double.NegativeInfinity, 0, 0.0)
-    } else {
+    else {
       val LN2 = 0.6931471805599453
 
       val s = v < 0
@@ -241,10 +236,9 @@ object Bits {
           f = f - twoPowFbits
         }
         (s, e, f)
-      } else {
+      } else
         // Subnormal
         (s, 0, roundToEven(av / pow(2, 1 - bias - fbits)))
-      }
     }
   }
 

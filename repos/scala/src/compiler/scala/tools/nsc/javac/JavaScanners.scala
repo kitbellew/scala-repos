@@ -251,9 +251,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 // Get next token ------------------------------------------------------------
 
     def nextToken() {
-      if (next.token == EMPTY) {
+      if (next.token == EMPTY)
         fetchToken()
-      } else {
+      else {
         this copyFrom next
         next.token = EMPTY
       }
@@ -297,9 +297,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                 if (in.ch == 'x' || in.ch == 'X') {
                   in.next()
                   base = 16
-                } else {
+                } else
                   base = 8
-                }
                 getNumber()
                 return
 
@@ -310,16 +309,14 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
               case '\"' =>
                 in.next()
-                while (in.ch != '\"' && (in.isUnicode || in.ch != CR && in.ch != LF && in.ch != SU)) {
+                while (in.ch != '\"' && (in.isUnicode || in.ch != CR && in.ch != LF && in.ch != SU))
                   getlitch()
-                }
                 if (in.ch == '\"') {
                   token = STRINGLIT
                   setName()
                   in.next()
-                } else {
+                } else
                   syntaxError("unclosed string literal")
-                }
                 return
 
               case '\'' =>
@@ -329,9 +326,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
                   in.next()
                   token = CHARLIT
                   setName()
-                } else {
+                } else
                   syntaxError("unclosed character literal")
-                }
                 return
 
               case '=' =>
@@ -595,7 +591,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 // Identifiers ---------------------------------------------------------------
 
     private def getIdentRest() {
-      while (true) {
+      while (true)
         (in.ch: @switch) match {
           case 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' |
               'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' |
@@ -625,7 +621,6 @@ trait JavaScanners extends ast.parser.ScannersCommon {
               return
             }
         }
-      }
     }
 
 // Literals -----------------------------------------------------------------
@@ -681,9 +676,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       if (in.ch == 'e' || in.ch == 'E') {
         val lookahead = in.copy
         lookahead.next()
-        if (lookahead.ch == '+' || lookahead.ch == '-') {
+        if (lookahead.ch == '+' || lookahead.ch == '-')
           lookahead.next()
-        }
         if ('0' <= lookahead.ch && lookahead.ch <= '9') {
           putChar(in.ch)
           in.next()
@@ -713,9 +707,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
     /** convert name to long value
       */
     def intVal(negated: Boolean): Long =
-      if (token == CHARLIT && !negated) {
+      if (token == CHARLIT && !negated)
         if (name.length > 0) name.charAt(0).toLong else 0
-      } else {
+      else {
         var value: Long = 0
         val divider = if (base == 10) 1 else 2
         val limit: Long =
@@ -787,9 +781,8 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       if (base <= 10 &&
           (in.ch == 'e' || in.ch == 'E' ||
           in.ch == 'f' || in.ch == 'F' ||
-          in.ch == 'd' || in.ch == 'D')) {
+          in.ch == 'd' || in.ch == 'D'))
         return getFraction()
-      }
       setName()
       if (in.ch == 'l' || in.ch == 'L') {
         in.next()

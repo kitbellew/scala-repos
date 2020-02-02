@@ -98,9 +98,7 @@ class FileBasedKeyStoreBuilder(
       val store = KeyStore.getInstance(storeType)
       store.load(inputStream, password.orNull)
       store
-    } finally {
-      inputStream.close()
-    }
+    } finally inputStream.close()
   }
 
   def readCertificates(file: File): Iterable[Certificate] = {

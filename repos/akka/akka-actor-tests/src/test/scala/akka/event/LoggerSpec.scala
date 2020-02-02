@@ -102,10 +102,10 @@ object LoggerSpec {
         ref ! ("OK")
       case event: LogEvent if !event.mdc.isEmpty ⇒
         print(event)
-        target foreach { _ ! event }
+        target foreach _ ! event
       case event: LogEvent ⇒
         print(event)
-        target foreach { _ ! event.message }
+        target foreach _ ! event.message
     }
   }
 
@@ -163,17 +163,14 @@ class LoggerSpec extends WordSpec with Matchers {
         probe.expectMsg("OK")
         system.log.error("Danger! Danger!")
         // since logging is asynchronous ensure that it propagates
-        if (shouldLog) {
+        if (shouldLog)
           probe.fishForMessage(0.5.seconds.dilated) {
             case "Danger! Danger!" ⇒ true
             case _ ⇒ false
           }
-        } else {
+        else
           probe.expectNoMsg(0.5.seconds.dilated)
-        }
-      } finally {
-        TestKit.shutdownActorSystem(system)
-      }
+      } finally TestKit.shutdownActorSystem(system)
     }
     out
   }
@@ -229,9 +226,7 @@ class LoggerSpec extends WordSpec with Matchers {
           system.log.warning("log it")
           probe1.expectMsg("log it")
           probe2.expectMsg("log it")
-        } finally {
-          TestKit.shutdownActorSystem(system)
-        }
+        } finally TestKit.shutdownActorSystem(system)
       }
     }
   }
@@ -274,9 +269,7 @@ class LoggerSpec extends WordSpec with Matchers {
               if w.mdc.size == 1 && w.mdc("requestId") == 4 ⇒
         }
 
-      } finally {
-        TestKit.shutdownActorSystem(system)
-      }
+      } finally TestKit.shutdownActorSystem(system)
     }
 
   }
@@ -298,11 +291,8 @@ class LoggerSpec extends WordSpec with Matchers {
   "Ticket 3165 - serialize-messages and dual-entry serialization of LogEvent" must {
     "not cause StackOverflowError" in {
       implicit val s = ActorSystem("foo", ticket3165Config)
-      try {
-        SerializationExtension(s).serialize(Warning("foo", classOf[String]))
-      } finally {
-        TestKit.shutdownActorSystem(s)
-      }
+      try SerializationExtension(s).serialize(Warning("foo", classOf[String]))
+      finally TestKit.shutdownActorSystem(s)
     }
   }
 }

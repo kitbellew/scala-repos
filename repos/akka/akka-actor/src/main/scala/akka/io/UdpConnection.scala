@@ -37,16 +37,15 @@ private[io] class UdpConnection(
   context.watch(handler) // sign death pact
   var channel: DatagramChannel = null
 
-  if (remoteAddress.isUnresolved) {
+  if (remoteAddress.isUnresolved)
     Dns.resolve(remoteAddress.getHostName)(context.system, self) match {
       case Some(r) ⇒
         doConnect(new InetSocketAddress(r.addr, remoteAddress.getPort))
       case None ⇒
         context.become(resolving(), discardOld = true)
     }
-  } else {
+  else
     doConnect(remoteAddress)
-  }
 
   def resolving(): Receive = {
     case r: Dns.Resolved ⇒
@@ -153,9 +152,8 @@ private[io] class UdpConnection(
     }
 
   private def reportConnectFailure(thunk: ⇒ Unit): Unit =
-    try {
-      thunk
-    } catch {
+    try thunk
+    catch {
       case NonFatal(e) ⇒
         log.debug(
           "Failure while connecting UDP channel to remote address [{}] local address [{}]: {}",

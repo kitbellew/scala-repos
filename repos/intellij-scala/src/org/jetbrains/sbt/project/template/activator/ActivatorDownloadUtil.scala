@@ -24,9 +24,8 @@ object ActivatorDownloadUtil {
         "Parent dir of '" + outputFile.getAbsolutePath + "' can not be created!")
 
     val out = new BufferedOutputStream(new FileOutputStream(outputFile))
-    try {
-      download(progress, url, out)
-    } finally out.close()
+    try download(progress, url, out)
+    finally out.close()
   }
 
   def download(
@@ -37,31 +36,30 @@ object ActivatorDownloadUtil {
     substituteContentLength(progress, originalText, -1)
     if (progress != null) progress.setText2("Downloading " + location)
 
-    try {
-      HttpRequests
-        .request(location)
-        .productNameAsUserAgent
-        .connect(new HttpRequests.RequestProcessor[Object]() {
-          def process(request: HttpRequests.Request): AnyRef = {
-            try {
-              val contentLength: Int = request.getConnection.getContentLength
-              substituteContentLength(progress, originalText, contentLength)
-              NetUtils.copyStreamContent(
-                progress,
-                request.getInputStream,
-                output,
-                contentLength)
-            } catch {
-              case e: IOException =>
-                throw new IOException(
-                  HttpRequests.createErrorMessage(e, request, true),
-                  e)
-            }
-
-            null
+    try HttpRequests
+      .request(location)
+      .productNameAsUserAgent
+      .connect(new HttpRequests.RequestProcessor[Object]() {
+        def process(request: HttpRequests.Request): AnyRef = {
+          try {
+            val contentLength: Int = request.getConnection.getContentLength
+            substituteContentLength(progress, originalText, contentLength)
+            NetUtils.copyStreamContent(
+              progress,
+              request.getInputStream,
+              output,
+              contentLength)
+          } catch {
+            case e: IOException =>
+              throw new IOException(
+                HttpRequests.createErrorMessage(e, request, true),
+                e)
           }
-        })
-    } catch {
+
+          null
+        }
+      })
+    catch {
       case e: IOException =>
         throw new IOException("Cannot download " + location, e)
     }

@@ -45,9 +45,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(c(1) === "2")
       assert(c(2) === "3")
       assert(c(3) === "4")
-    } else {
+    } else
       assert(true)
-    }
   }
 
   test("failure in iterating over pipe input") {
@@ -102,9 +101,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
             bl.value.map(f(_)); f("\u0001")
           },
           (i: Tuple2[String, Iterable[String]], f: String => Unit) =>
-            for (e <- i._2) {
+            for (e <- i._2)
               f(e + "_")
-            }
         )
         .collect()
       assert(d.size === 8)
@@ -116,9 +114,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(d(5) === "\u0001")
       assert(d(6) === "a\t1_")
       assert(d(7) === "a\t3_")
-    } else {
+    } else
       assert(true)
-    }
   }
 
   test("pipe with env variable") {
@@ -131,9 +128,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(c.size === 2)
       assert(c(0) === "LALALA")
       assert(c(1) === "LALALA")
-    } else {
+    } else
       assert(true)
-    }
   }
 
   test("pipe with non-zero exit status") {
@@ -143,9 +139,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       intercept[SparkException] {
         piped.collect()
       }
-    } else {
+    } else
       assert(true)
-    }
   }
 
   test("basic pipe with separate working directory") {
@@ -166,9 +161,8 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
       assert(pipedLs.length > 0)
       // clean up top level tasks directory
       Utils.deleteRecursively(new File("tasks"))
-    } else {
+    } else
       assert(true)
-    }
   }
 
   test("test pipe exports map_input_file") {

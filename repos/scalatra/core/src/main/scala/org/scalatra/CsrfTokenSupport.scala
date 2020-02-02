@@ -141,9 +141,8 @@ trait XsrfTokenSupport { this: ScalatraBase =>
   protected def prepareXsrfToken(): Unit = {
     session.getOrElseUpdate(xsrfKey, GenerateId())
     val cookieOpt = cookies.get(CookieKey)
-    if (cookieOpt.isEmpty || cookieOpt != session.get(xsrfKey)) {
+    if (cookieOpt.isEmpty || cookieOpt != session.get(xsrfKey))
       cookies += CookieKey -> xsrfToken
-    }
   }
 }
 

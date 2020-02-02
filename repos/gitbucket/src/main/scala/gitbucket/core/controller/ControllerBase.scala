@@ -57,30 +57,26 @@ abstract class ControllerBase
           .getAttribute(Keys.Session.LoginAccount)
           .asInstanceOf[Account]
         val baseUrl = this.baseUrl(httpRequest)
-        if (account == null) {
+        if (account == null)
           // Redirect to login form
           httpResponse.sendRedirect(
             baseUrl + "/signin?redirect=" + StringUtil.urlEncode(path))
-        } else if (account.isAdmin) {
+        else if (account.isAdmin)
           // H2 Console (administrators only)
           chain.doFilter(request, response)
-        } else {
+        else
           // Redirect to dashboard
           httpResponse.sendRedirect(baseUrl + "/")
-        }
-      } else if (path.startsWith("/git/")) {
+      } else if (path.startsWith("/git/"))
         // Git repository
         chain.doFilter(request, response)
-      } else {
-        if (path.startsWith("/api/v3/")) {
+      else {
+        if (path.startsWith("/api/v3/"))
           httpRequest.setAttribute(Keys.Request.APIv3, true)
-        }
         // Scalatra actions
         super.doFilter(request, response, chain)
       }
-    } finally {
-      contextCache.remove();
-    }
+    } finally contextCache.remove();
 
   private val contextCache = new java.lang.ThreadLocal[Context]()
 
@@ -89,11 +85,10 @@ abstract class ControllerBase
     */
   implicit def context: Context =
     contextCache.get match {
-      case null => {
+      case null =>
         val context = Context(loadSystemSettings(), LoginAccount, request)
         contextCache.set(context)
         context
-      }
       case context => context
     }
 
@@ -129,42 +124,35 @@ abstract class ControllerBase
     }
 
   protected def NotFound() =
-    if (request.hasAttribute(Keys.Request.Ajax)) {
+    if (request.hasAttribute(Keys.Request.Ajax))
       org.scalatra.NotFound()
-    } else if (request.hasAttribute(Keys.Request.APIv3)) {
+    else if (request.hasAttribute(Keys.Request.APIv3)) {
       contentType = formats("json")
       org.scalatra.NotFound(ApiError("Not Found"))
-    } else {
+    } else
       org.scalatra.NotFound(gitbucket.core.html.error("Not Found"))
-    }
 
   protected def Unauthorized()(implicit context: Context) =
-    if (request.hasAttribute(Keys.Request.Ajax)) {
+    if (request.hasAttribute(Keys.Request.Ajax))
       org.scalatra.Unauthorized()
-    } else if (request.hasAttribute(Keys.Request.APIv3)) {
+    else if (request.hasAttribute(Keys.Request.APIv3)) {
       contentType = formats("json")
       org.scalatra.Unauthorized(ApiError("Requires authentication"))
-    } else {
-      if (context.loginAccount.isDefined) {
-        org.scalatra.Unauthorized(redirect("/"))
-      } else {
-        if (request.getMethod.toUpperCase == "POST") {
-          org.scalatra.Unauthorized(redirect("/signin"))
-        } else {
-          org.scalatra.Unauthorized(
-            redirect(
-              "/signin?redirect=" + StringUtil
-                .urlEncode(
-                  defining(request.getQueryString) { queryString =>
-                    request.getRequestURI.substring(
-                      request.getContextPath.length) + (if (queryString != null)
-                                                          "?" + queryString
-                                                        else "")
-                  }
-                )))
-        }
-      }
-    }
+    } else if (context.loginAccount.isDefined)
+      org.scalatra.Unauthorized(redirect("/"))
+    else if (request.getMethod.toUpperCase == "POST")
+      org.scalatra.Unauthorized(redirect("/signin"))
+    else
+      org.scalatra.Unauthorized(
+        redirect("/signin?redirect=" + StringUtil
+          .urlEncode(
+            defining(request.getQueryString) { queryString =>
+              request.getRequestURI
+                .substring(request.getContextPath.length) + (if (queryString != null)
+                                                               "?" + queryString
+                                                             else "")
+            }
+          )))
 
   // TODO Scala 2.11
   override def url(
@@ -183,11 +171,10 @@ abstract class ControllerBase
     * Use this method to response the raw data against XSS.
     */
   protected def RawData[T](contentType: String, rawData: T): T = {
-    if (contentType.split(";").head.trim.toLowerCase.startsWith("text/html")) {
+    if (contentType.split(";").head.trim.toLowerCase.startsWith("text/html"))
       this.contentType = "text/plain"
-    } else {
+    else
       this.contentType = contentType
-    }
     response.addHeader("X-Content-Type-Options", "nosniff")
     rawData
   }
@@ -251,12 +238,12 @@ trait AccountManagementControllerBase extends ControllerBase {
       userName: String,
       fileId: Option[String],
       clearImage: Boolean): Unit =
-    if (clearImage) {
+    if (clearImage)
       getAccountByUserName(userName).flatMap(_.image).map { image =>
         new java.io.File(getUserUploadDir(userName), image).delete()
         updateAvatarImage(userName, None)
       }
-    } else {
+    else
       fileId.map { fileId =>
         val filename = "avatar." + FileUtil.getExtension(
           session.getAndRemove(Keys.Session.Upload(fileId)).get)
@@ -266,7 +253,6 @@ trait AccountManagementControllerBase extends ControllerBase {
         )
         updateAvatarImage(userName, Some(filename))
       }
-    }
 
   protected def uniqueUserName: Constraint = new Constraint() {
     override def validate(

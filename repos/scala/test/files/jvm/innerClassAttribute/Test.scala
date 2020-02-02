@@ -83,9 +83,8 @@ object Test extends BytecodeTest {
     assertSame(enclosingMethod(className).outerClass, null)
 
   def printInnerClassNodes(className: String) =
-    for (n <- innerClassNodes(className)) {
+    for (n <- innerClassNodes(className))
       println(s"${n.name} / ${n.outerName} / ${n.innerName} / ${n.access}")
-    }
 
   def printEnclosingMethod(className: String) = {
     val e = enclosingMethod(className)
@@ -353,7 +352,7 @@ object Test extends BytecodeTest {
   }
 
   def testSI_9124() {
-    val classes: Map[String, String] = {
+    val classes: Map[String, String] =
       List(
         "SI_9124$$anon$10",
         "SI_9124$$anon$11",
@@ -368,7 +367,6 @@ object Test extends BytecodeTest {
           (fMethod, node.name)
         })
         .toMap
-    }
 
     // println(classes)
 

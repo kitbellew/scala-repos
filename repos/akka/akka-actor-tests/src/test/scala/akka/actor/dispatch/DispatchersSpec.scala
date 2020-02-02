@@ -74,9 +74,9 @@ object DispatchersSpec {
       with ProducesMessageQueue[DoublingMailbox] {
     val created = new AtomicBoolean(false)
     override def create(owner: Option[ActorRef], system: Option[ActorSystem]) =
-      if (created.compareAndSet(false, true)) {
+      if (created.compareAndSet(false, true))
         new DoublingMailbox(owner)
-      } else
+      else
         throw new IllegalStateException("I've already created the mailbox.")
   }
 
@@ -121,7 +121,7 @@ class DispatchersSpec
   val defaultDispatcherConfig =
     settings.config.getConfig("akka.actor.default-dispatcher")
 
-  lazy val allDispatchers: Map[String, MessageDispatcher] = {
+  lazy val allDispatchers: Map[String, MessageDispatcher] =
     validTypes
       .map(t ⇒
         (
@@ -131,7 +131,6 @@ class DispatchersSpec
               .parseMap(Map(tipe -> t, id -> t).asJava)
               .withFallback(defaultDispatcherConfig))))
       .toMap
-  }
 
   def assertMyDispatcherIsUsed(actor: ActorRef): Unit = {
     actor ! "what's the name?"

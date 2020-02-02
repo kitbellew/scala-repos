@@ -106,9 +106,9 @@ class PriorityQueue[E] protected (
       }
 
       def remove(): Unit =
-        if (last.isEmpty) {
+        if (last.isEmpty)
           throw new IllegalStateException()
-        } else {
+        else {
           last.foreach(self.remove(_))
           last = None
         }

@@ -166,10 +166,10 @@ trait WikiControllerBase extends ControllerBase {
             from,
             to,
             context.loginAccount.get,
-            Some(pageName))) {
+            Some(pageName)))
         redirect(
           s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}")
-      } else {
+      else {
         flash += "info" -> "This patch was not able to be reversed."
         redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
           .urlEncode(pageName)}/_compare/$from...$to")
@@ -186,9 +186,9 @@ trait WikiControllerBase extends ControllerBase {
             from,
             to,
             context.loginAccount.get,
-            None)) {
+            None))
         redirect(s"/${repository.owner}/${repository.name}/wiki/")
-      } else {
+      else {
         flash += "info" -> "This patch was not able to be reversed."
         redirect(
           s"/${repository.owner}/${repository.name}/wiki/_compare/$from...$to")
@@ -224,12 +224,11 @@ trait WikiControllerBase extends ControllerBase {
             form.pageName,
             commitId)
         }
-        if (notReservedPageName(form.pageName)) {
+        if (notReservedPageName(form.pageName))
           redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
             .urlEncode(form.pageName)}")
-        } else {
+        else
           redirect(s"/${repository.owner}/${repository.name}/wiki")
-        }
       }
   })
 
@@ -257,12 +256,11 @@ trait WikiControllerBase extends ControllerBase {
           loginAccount.userName,
           form.pageName)
 
-        if (notReservedPageName(form.pageName)) {
+        if (notReservedPageName(form.pageName))
           redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
             .urlEncode(form.pageName)}")
-        } else {
+        else
           redirect(s"/${repository.owner}/${repository.name}/wiki")
-        }
       }
   })
 
@@ -328,14 +326,13 @@ trait WikiControllerBase extends ControllerBase {
         name: String,
         value: String,
         messages: Messages): Option[String] =
-      if (value.exists("\\/:*?\"<>|".contains(_))) {
+      if (value.exists("\\/:*?\"<>|".contains(_)))
         Some(s"$name contains invalid character.")
-      } else if (notReservedPageName(value) && (value.startsWith("_") || value
-                   .startsWith("-"))) {
+      else if (notReservedPageName(value) && (value.startsWith("_") || value
+                 .startsWith("-")))
         Some(s"$name starts with invalid character.")
-      } else {
+      else
         None
-      }
   }
 
   private def notReservedPageName(value: String) =

@@ -181,9 +181,9 @@ class Message(
     // Only put timestamp when "magic" value is greater than 0
     if (magic > MagicValue_V0)
       buffer.putLong(timestamp)
-    if (key == null) {
+    if (key == null)
       buffer.putInt(-1)
-    } else {
+    else {
       buffer.putInt(key.length)
       buffer.put(key, 0, key.length)
     }
@@ -440,9 +440,9 @@ class Message(
     */
   private def sliceDelimited(start: Int): ByteBuffer = {
     val size = buffer.getInt(start)
-    if (size < 0) {
+    if (size < 0)
       null
-    } else {
+    else {
       var b = buffer.duplicate()
       b.position(start + 4)
       b = b.slice()

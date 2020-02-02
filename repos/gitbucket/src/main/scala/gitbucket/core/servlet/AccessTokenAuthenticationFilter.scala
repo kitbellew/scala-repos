@@ -45,13 +45,12 @@ class AccessTokenAuthenticationFilter extends Filter with AccessTokenService {
         request.setAttribute(Keys.Session.LoginAccount, account);
         chain.doFilter(req, res)
       case None => chain.doFilter(req, res)
-      case Some(Left(_)) => {
+      case Some(Left(_)) =>
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)
         response.setContentType("application/json; charset=utf-8")
         val w = response.getWriter()
         w.print("""{ "message": "Bad credentials" }""")
         w.close()
-      }
     }
   }
 }

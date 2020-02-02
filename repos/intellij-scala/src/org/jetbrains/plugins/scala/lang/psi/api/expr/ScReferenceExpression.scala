@@ -75,13 +75,12 @@ trait ScReferenceExpression
   override def createReplacingElementWithClassName(
       useFullQualifiedName: Boolean,
       clazz: TypeToImport) =
-    if (useFullQualifiedName) {
+    if (useFullQualifiedName)
       super.createReplacingElementWithClassName(useFullQualifiedName, clazz)
-    } else {
+    else
       ScalaPsiElementFactory
         .createExpressionFromText(clazz.name, clazz.element.getManager)
         .asInstanceOf[ScReferenceExpression]
-    }
 
   def bindToElement(
       element: PsiElement,

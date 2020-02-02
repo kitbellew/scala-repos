@@ -161,9 +161,9 @@ private class MyConsumer(
       renderingDecorator,
       new MyInsertHandler(name, typed))
 
-    if (typed) {
+    if (typed)
       resultSet.consume(insertionDecorator)
-    } else if (!consumed.contains(name)) {
+    else if (!consumed.contains(name)) {
       resultSet.consume(insertionDecorator)
       consumed += name
     }

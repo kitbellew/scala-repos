@@ -217,11 +217,10 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
 
   /** Checkpoint the RDD either locally or reliably. */
   protected def checkpoint(rdd: RDD[_], reliableCheckpoint: Boolean): Unit =
-    if (reliableCheckpoint) {
+    if (reliableCheckpoint)
       rdd.checkpoint()
-    } else {
+    else
       rdd.localCheckpoint()
-    }
 
   /** Run a test twice, once for local checkpointing and once for reliable checkpointing. */
   protected def runTest(
@@ -229,9 +228,8 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
       skipLocalCheckpoint: Boolean = false
   )(body: Boolean => Unit): Unit = {
     test(name + " [reliable checkpoint]")(body(true))
-    if (!skipLocalCheckpoint) {
+    if (!skipLocalCheckpoint)
       test(name + " [local checkpoint]")(body(false))
-    }
   }
 
   /**
@@ -268,11 +266,8 @@ class CheckpointSuite
   }
 
   override def afterEach(): Unit =
-    try {
-      Utils.deleteRecursively(checkpointDir)
-    } finally {
-      super.afterEach()
-    }
+    try Utils.deleteRecursively(checkpointDir)
+    finally super.afterEach()
 
   override def sparkContext: SparkContext = sc
 
@@ -327,11 +322,10 @@ class CheckpointSuite
           assert(
             newRDD.partitioner === rddWithPartitioner.partitioner,
             "recovered partitioner does not match")
-        } else {
+        } else
           assert(
             newRDD.partitioner == None,
             "partitioner unexpectedly recovered")
-        }
       }
 
       testPartitionerCheckpointing(partitioner)
@@ -362,11 +356,10 @@ class CheckpointSuite
     checkpoint(parCollection, reliableCheckpoint)
     assert(parCollection.dependencies === Nil)
     val result = parCollection.collect()
-    if (reliableCheckpoint) {
+    if (reliableCheckpoint)
       assert(
         sc.checkpointFile[Int](parCollection.getCheckpointFile.get)
           .collect() === result)
-    }
     assert(parCollection.dependencies != Nil)
     assert(parCollection.partitions.length === numPartitions)
     assert(
@@ -383,11 +376,10 @@ class CheckpointSuite
     val numPartitions = blockRDD.partitions.size
     checkpoint(blockRDD, reliableCheckpoint)
     val result = blockRDD.collect()
-    if (reliableCheckpoint) {
+    if (reliableCheckpoint)
       assert(
         sc.checkpointFile[String](blockRDD.getCheckpointFile.get)
           .collect() === result)
-    }
     assert(blockRDD.dependencies != Nil)
     assert(blockRDD.partitions.length === numPartitions)
     assert(
@@ -589,9 +581,7 @@ class CheckpointSuite
       rdd2.count()
       assert(rdd1.isCheckpointed === checkpointAllMarkedAncestors)
       assert(rdd2.isCheckpointed === true)
-    } finally {
-      sc.setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, null)
-    }
+    } finally sc.setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, null)
   }
 }
 

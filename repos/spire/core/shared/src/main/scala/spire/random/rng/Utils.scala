@@ -102,9 +102,8 @@ object Utils {
         i = 1
       }
 
-      if (j >= seed.length) {
+      if (j >= seed.length)
         j = 0
-      }
       k -= 1
     }
 
@@ -145,9 +144,8 @@ object Utils {
         i = 1
       }
 
-      if (j >= seed.length) {
+      if (j >= seed.length)
         j = 0
-      }
       k -= 1
     }
 

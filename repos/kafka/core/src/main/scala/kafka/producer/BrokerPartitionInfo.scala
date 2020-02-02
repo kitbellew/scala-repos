@@ -62,15 +62,13 @@ class BrokerPartitionInfo(
           }
       }
     val partitionMetadata = metadata.partitionsMetadata
-    if (partitionMetadata.size == 0) {
-      if (metadata.errorCode != Errors.NONE.code) {
+    if (partitionMetadata.size == 0)
+      if (metadata.errorCode != Errors.NONE.code)
         throw new KafkaException(Errors.forCode(metadata.errorCode).exception)
-      } else {
+      else
         throw new KafkaException(
           "Topic metadata %s has empty partition metadata and no error code"
             .format(metadata))
-      }
-    }
     partitionMetadata
       .map { m =>
         m.leader match {
@@ -104,16 +102,16 @@ class BrokerPartitionInfo(
     // throw partition specific exception
     topicsMetadata.foreach { tmd =>
       trace("Metadata for topic %s is %s".format(tmd.topic, tmd))
-      if (tmd.errorCode == Errors.NONE.code) {
+      if (tmd.errorCode == Errors.NONE.code)
         topicPartitionInfo.put(tmd.topic, tmd)
-      } else
+      else
         warn(
           "Error while fetching metadata [%s] for topic [%s]: %s ".format(
             tmd,
             tmd.topic,
             Errors.forCode(tmd.errorCode).exception.getClass))
       tmd.partitionsMetadata.foreach { pmd =>
-        if (pmd.errorCode != Errors.NONE.code && pmd.errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
+        if (pmd.errorCode != Errors.NONE.code && pmd.errorCode == Errors.LEADER_NOT_AVAILABLE.code)
           warn(
             "Error while fetching metadata %s for topic partition [%s,%d]: [%s]"
               .format(
@@ -121,7 +119,7 @@ class BrokerPartitionInfo(
                 tmd.topic,
                 pmd.partitionId,
                 Errors.forCode(pmd.errorCode).exception.getClass))
-        } // any other error code (e.g. ReplicaNotAvailable) can be ignored since the producer does not need to access the replica and isr metadata
+      // any other error code (e.g. ReplicaNotAvailable) can be ignored since the producer does not need to access the replica and isr metadata
       }
     }
     producerPool.updateProducer(topicsMetadata)

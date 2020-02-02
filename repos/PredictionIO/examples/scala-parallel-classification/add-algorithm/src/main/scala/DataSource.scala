@@ -38,22 +38,20 @@ class DataSource(val dsp: DataSourceParams)
       // entity ID and its aggregated properties
       .map {
         case (entityId, properties) =>
-          try {
-            LabeledPoint(
-              properties.get[Double]("plan"),
-              Vectors.dense(
-                Array(
-                  properties.get[Double]("attr0"),
-                  properties.get[Double]("attr1"),
-                  properties.get[Double]("attr2")
-                )))
-          } catch {
-            case e: Exception => {
+          try LabeledPoint(
+            properties.get[Double]("plan"),
+            Vectors.dense(
+              Array(
+                properties.get[Double]("attr0"),
+                properties.get[Double]("attr1"),
+                properties.get[Double]("attr2")
+              )))
+          catch {
+            case e: Exception =>
               logger.error(
                 s"Failed to get properties $properties of" +
                   s" $entityId. Exception: $e.")
               throw e
-            }
           }
       }
 

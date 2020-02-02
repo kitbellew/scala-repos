@@ -102,9 +102,8 @@ class CompositeX509TrustManager(
       block: (X509TrustManager => Unit)): Seq[Throwable] = {
     val exceptionList = ArrayBuffer[Throwable]()
     trustManagers.foreach { trustManager =>
-      try {
-        block(trustManager)
-      } catch {
+      try block(trustManager)
+      catch {
         case e: CertPathBuilderException =>
           logger.debug(
             "No path found to certificate: this usually means the CA is not in the trust store",

@@ -51,9 +51,7 @@ private[sql] class CacheManager extends Logging {
     val lock = cacheLock.readLock()
     lock.lock()
     try f
-    finally {
-      lock.unlock()
-    }
+    finally lock.unlock()
   }
 
   /** Acquires a write lock on the cache for the duration of `f`. */
@@ -61,9 +59,7 @@ private[sql] class CacheManager extends Logging {
     val lock = cacheLock.writeLock()
     lock.lock()
     try f
-    finally {
-      lock.unlock()
-    }
+    finally lock.unlock()
   }
 
   /** Clears all cached tables. */
@@ -87,9 +83,9 @@ private[sql] class CacheManager extends Logging {
       tableName: Option[String] = None,
       storageLevel: StorageLevel = MEMORY_AND_DISK): Unit = writeLock {
     val planToCache = query.queryExecution.analyzed
-    if (lookupCachedData(planToCache).nonEmpty) {
+    if (lookupCachedData(planToCache).nonEmpty)
       logWarning("Asked to cache already cached data.")
-    } else {
+    else {
       val sqlContext = query.sqlContext
       cachedData +=
         CachedData(

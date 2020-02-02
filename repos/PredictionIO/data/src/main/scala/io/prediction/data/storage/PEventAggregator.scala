@@ -117,9 +117,9 @@ private[prediction] case class EventOp(
 
       val combinedFields = deleteEntity
         .map { delete =>
-          if (delete.t >= set.t) {
+          if (delete.t >= set.t)
             None
-          } else {
+          else {
             val deleteKeys: Set[String] = set.fields.filter {
               case (k, PropTime(kv, t)) =>
                 (delete.t >= t)
@@ -156,7 +156,7 @@ private[prediction] object EventOp {
   def apply(e: Event): EventOp = {
     val t = e.eventTime.getMillis
     e.event match {
-      case "$set" => {
+      case "$set" =>
         val fields =
           e.properties.fields.mapValues(jv => PropTime(jv, t)).map(identity)
 
@@ -165,25 +165,21 @@ private[prediction] object EventOp {
           firstUpdated = Some(e.eventTime),
           lastUpdated = Some(e.eventTime)
         )
-      }
-      case "$unset" => {
+      case "$unset" =>
         val fields = e.properties.fields.mapValues(jv => t).map(identity)
         EventOp(
           unsetProp = Some(UnsetProp(fields = fields)),
           firstUpdated = Some(e.eventTime),
           lastUpdated = Some(e.eventTime)
         )
-      }
-      case "$delete" => {
+      case "$delete" =>
         EventOp(
           deleteEntity = Some(DeleteEntity(t)),
           firstUpdated = Some(e.eventTime),
           lastUpdated = Some(e.eventTime)
         )
-      }
-      case _ => {
+      case _ =>
         EventOp()
-      }
     }
   }
 }

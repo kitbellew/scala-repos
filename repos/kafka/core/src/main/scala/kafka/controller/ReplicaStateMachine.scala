@@ -370,14 +370,13 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                       controllerContext.partitionReplicaAssignment(
                         topicAndPartition)
                     if (!controller.deleteTopicManager.isPartitionToBeDeleted(
-                          topicAndPartition)) {
+                          topicAndPartition))
                       brokerRequestBatch.addLeaderAndIsrRequestForBrokers(
                         currentAssignedReplicas.filterNot(_ == replicaId),
                         topic,
                         partition,
                         updatedLeaderIsrAndControllerEpoch,
                         replicaAssignment)
-                    }
                     replicaState.put(partitionAndReplica, OfflineReplica)
                     stateChangeLogger.trace(
                       "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
@@ -518,7 +517,7 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
         "Broker change listener fired for path %s with children %s"
           .format(parentPath, currentBrokerList.sorted.mkString(",")))
       inLock(controllerContext.controllerLock) {
-        if (hasStarted.get) {
+        if (hasStarted.get)
           ControllerStats.leaderElectionTimer.time {
             try {
               val curBrokers = currentBrokerList
@@ -555,7 +554,6 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                 error("Error while handling broker changes", e)
             }
           }
-        }
       }
     }
   }

@@ -120,11 +120,10 @@ case class In(value: Expression, list: Seq[Expression])
     value.dataType +: list.map(_.dataType)
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (list.exists(l => l.dataType != value.dataType)) {
+    if (list.exists(l => l.dataType != value.dataType))
       TypeCheckResult.TypeCheckFailure("Arguments must be same type")
-    } else {
+    else
       TypeCheckResult.TypeCheckSuccess
-    }
 
   override def children: Seq[Expression] = value +: list
 
@@ -135,23 +134,21 @@ case class In(value: Expression, list: Seq[Expression])
 
   override def eval(input: InternalRow): Any = {
     val evaluatedValue = value.eval(input)
-    if (evaluatedValue == null) {
+    if (evaluatedValue == null)
       null
-    } else {
+    else {
       var hasNull = false
       list.foreach { e =>
         val v = e.eval(input)
-        if (v == evaluatedValue) {
+        if (v == evaluatedValue)
           return true
-        } else if (v == null) {
+        else if (v == null)
           hasNull = true
-        }
       }
-      if (hasNull) {
+      if (hasNull)
         null
-      } else {
+      else
         false
-      }
     }
   }
 
@@ -205,13 +202,12 @@ case class InSet(child: Expression, hset: Set[Any])
   override def nullable: Boolean = child.nullable || hasNull
 
   protected override def nullSafeEval(value: Any): Any =
-    if (hset.contains(value)) {
+    if (hset.contains(value))
       true
-    } else if (hasNull) {
+    else if (hasNull)
       null
-    } else {
+    else
       false
-    }
 
   def getHSet(): Set[Any] = hset
 
@@ -262,19 +258,16 @@ case class And(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
-    if (input1 == false) {
+    if (input1 == false)
       false
-    } else {
+    else {
       val input2 = right.eval(input)
-      if (input2 == false) {
+      if (input2 == false)
         false
-      } else {
-        if (input1 != null && input2 != null) {
-          true
-        } else {
-          null
-        }
-      }
+      else if (input1 != null && input2 != null)
+        true
+      else
+        null
     }
   }
 
@@ -314,19 +307,16 @@ case class Or(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
-    if (input1 == true) {
+    if (input1 == true)
       true
-    } else {
+    else {
       val input2 = right.eval(input)
-      if (input2 == true) {
+      if (input2 == true)
         true
-      } else {
-        if (input1 != null && input2 != null) {
-          false
-        } else {
-          null
-        }
-      }
+      else if (input1 != null && input2 != null)
+        false
+      else
+        null
     }
   }
 
@@ -360,15 +350,14 @@ abstract class BinaryComparison extends BinaryOperator with Predicate {
     if (ctx.isPrimitiveType(left.dataType)
         && left.dataType != BooleanType // java boolean doesn't support > or < operator
         && left.dataType != FloatType
-        && left.dataType != DoubleType) {
+        && left.dataType != DoubleType)
       // faster version
       defineCodeGen(ctx, ev, (c1, c2) => s"$c1 $symbol $c2")
-    } else {
+    else
       defineCodeGen(
         ctx,
         ev,
         (c1, c2) => s"${ctx.genComp(left.dataType, c1, c2)} $symbol 0")
-    }
 }
 
 private[sql] object BinaryComparison {
@@ -393,21 +382,20 @@ case class EqualTo(left: Expression, right: Expression)
   override def symbol: String = "="
 
   protected override def nullSafeEval(input1: Any, input2: Any): Any =
-    if (left.dataType == FloatType) {
+    if (left.dataType == FloatType)
       Utils.nanSafeCompareFloats(
         input1.asInstanceOf[Float],
         input2.asInstanceOf[Float]) == 0
-    } else if (left.dataType == DoubleType) {
+    else if (left.dataType == DoubleType)
       Utils.nanSafeCompareDoubles(
         input1.asInstanceOf[Double],
         input2.asInstanceOf[Double]) == 0
-    } else if (left.dataType != BinaryType) {
+    else if (left.dataType != BinaryType)
       input1 == input2
-    } else {
+    else
       java.util.Arrays.equals(
         input1.asInstanceOf[Array[Byte]],
         input2.asInstanceOf[Array[Byte]])
-    }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
     defineCodeGen(ctx, ev, (c1, c2) => ctx.genEqual(left.dataType, c1, c2))
@@ -425,27 +413,24 @@ case class EqualNullSafe(left: Expression, right: Expression)
   override def eval(input: InternalRow): Any = {
     val input1 = left.eval(input)
     val input2 = right.eval(input)
-    if (input1 == null && input2 == null) {
+    if (input1 == null && input2 == null)
       true
-    } else if (input1 == null || input2 == null) {
+    else if (input1 == null || input2 == null)
       false
-    } else {
-      if (left.dataType == FloatType) {
-        Utils.nanSafeCompareFloats(
-          input1.asInstanceOf[Float],
-          input2.asInstanceOf[Float]) == 0
-      } else if (left.dataType == DoubleType) {
-        Utils.nanSafeCompareDoubles(
-          input1.asInstanceOf[Double],
-          input2.asInstanceOf[Double]) == 0
-      } else if (left.dataType != BinaryType) {
-        input1 == input2
-      } else {
-        java.util.Arrays.equals(
-          input1.asInstanceOf[Array[Byte]],
-          input2.asInstanceOf[Array[Byte]])
-      }
-    }
+    else if (left.dataType == FloatType)
+      Utils.nanSafeCompareFloats(
+        input1.asInstanceOf[Float],
+        input2.asInstanceOf[Float]) == 0
+    else if (left.dataType == DoubleType)
+      Utils.nanSafeCompareDoubles(
+        input1.asInstanceOf[Double],
+        input2.asInstanceOf[Double]) == 0
+    else if (left.dataType != BinaryType)
+      input1 == input2
+    else
+      java.util.Arrays.equals(
+        input1.asInstanceOf[Array[Byte]],
+        input2.asInstanceOf[Array[Byte]])
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

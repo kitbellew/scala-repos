@@ -36,11 +36,10 @@ private[spark] class FIFOSchedulingAlgorithm extends SchedulingAlgorithm {
       val stageId2 = s2.stageId
       res = math.signum(stageId1 - stageId2)
     }
-    if (res < 0) {
+    if (res < 0)
       true
-    } else {
+    else
       false
-    }
   }
 }
 
@@ -62,22 +61,20 @@ private[spark] class FairSchedulingAlgorithm extends SchedulingAlgorithm {
     val taskToWeightRatio2 = runningTasks2.toDouble / s2.weight.toDouble
     var compare: Int = 0
 
-    if (s1Needy && !s2Needy) {
+    if (s1Needy && !s2Needy)
       return true
-    } else if (!s1Needy && s2Needy) {
+    else if (!s1Needy && s2Needy)
       return false
-    } else if (s1Needy && s2Needy) {
+    else if (s1Needy && s2Needy)
       compare = minShareRatio1.compareTo(minShareRatio2)
-    } else {
+    else
       compare = taskToWeightRatio1.compareTo(taskToWeightRatio2)
-    }
 
-    if (compare < 0) {
+    if (compare < 0)
       true
-    } else if (compare > 0) {
+    else if (compare > 0)
       false
-    } else {
+    else
       s1.name < s2.name
-    }
   }
 }

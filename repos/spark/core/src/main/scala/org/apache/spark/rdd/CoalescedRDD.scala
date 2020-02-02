@@ -207,9 +207,9 @@ private class PartitionCoalescer(
 
     // return the next preferredLocation of some partition of the RDD
     override def next(): (String, Partition) =
-      if (it.hasNext) {
+      if (it.hasNext)
         it.next()
-      } else {
+      else {
         it = resetIterator() // ran out of preferred locations, reset and rotate to the beginning
         it.next()
       }
@@ -229,9 +229,8 @@ private class PartitionCoalescer(
       pgroup.arr += part // already assign this element
       initialHash += part // needed to avoid assigning partitions to multiple buckets
       true
-    } else {
+    } else
       false
-    }
 
   /**
     * Initializes targetLen partition groups and assigns a preferredLocation
@@ -304,27 +303,24 @@ private class PartitionCoalescer(
     val r2 = rnd.nextInt(groupArr.size)
     val minPowerOfTwo =
       if (groupArr(r1).size < groupArr(r2).size) groupArr(r1) else groupArr(r2)
-    if (prefPart.isEmpty) {
+    if (prefPart.isEmpty)
       // if no preferred locations, just use basic power of two
       return minPowerOfTwo
-    }
 
     val prefPartActual = prefPart.get
 
-    if (minPowerOfTwo.size + slack <= prefPartActual.size) { // more imbalance than the slack allows
+    if (minPowerOfTwo.size + slack <= prefPartActual.size) // more imbalance than the slack allows
       minPowerOfTwo // prefer balance over locality
-    } else {
+    else
       prefPartActual // prefer locality over balance
-    }
   }
 
   def throwBalls() {
-    if (noLocality) { // no preferredLocations in parent RDD, no randomization needed
-      if (maxPartitions > groupArr.size) { // just return prev.partitions
-        for ((p, i) <- prev.partitions.zipWithIndex) {
+    if (noLocality) // no preferredLocations in parent RDD, no randomization needed
+      if (maxPartitions > groupArr.size) // just return prev.partitions
+        for ((p, i) <- prev.partitions.zipWithIndex)
           groupArr(i).arr += p
-        }
-      } else { // no locality available, then simply split partitions based on positions in array
+      else // no locality available, then simply split partitions based on positions in array
         for (i <- 0 until maxPartitions) {
           val rangeStart =
             ((i.toLong * prev.partitions.length) / maxPartitions).toInt
@@ -334,13 +330,10 @@ private class PartitionCoalescer(
             groupArr(i).arr += prev.partitions(j)
           }
         }
-      }
-    } else {
+    else
       for (p <- prev.partitions
-           if (!initialHash.contains(p))) { // throw every partition into group
+           if (!initialHash.contains(p))) // throw every partition into group
         pickBin(p).arr += p
-      }
-    }
   }
 
   def getPartitions: Array[PartitionGroup] =

@@ -38,9 +38,8 @@ class OpenAddressHashArrayTest extends FunSuite with Checkers {
           val mdata = data.map(i => math.abs(i) % size).filter(_ >= 0).toSet
           val arr = new OpenAddressHashArray[Int](size)
           assert(arr.size > 0, size)
-          for (i <- mdata) {
+          for (i <- mdata)
             arr(i) = i
-          }
           mdata.forall(i => arr(i) == i) && !(0 until size)
             .filterNot(mdata)
             .exists(arr(_) != 0)

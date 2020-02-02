@@ -114,16 +114,15 @@ class ScalaIntroduceFieldFromExpressionHandler
 
     def runWithDialog() {
       val settings = new IntroduceFieldSettings(ifc)
-      if (!settings.canBeInitInDeclaration && !settings.canBeInitLocally) {
+      if (!settings.canBeInitInDeclaration && !settings.canBeInitLocally)
         showErrorMessage(
           "Cannot create field from this expression",
           ifc.project,
           ifc.editor)
-      } else {
+      else {
         val dialog = getDialog(ifc, settings)
-        if (dialog.isOK) {
+        if (dialog.isOK)
           runRefactoring(ifc, settings)
-        }
       }
     }
 
@@ -159,7 +158,7 @@ class ScalaIntroduceFieldFromExpressionHandler
     val anchor = anchorForNewDeclaration(expression, replacedOccurences, aClass)
     val initInDecl = settings.initInDeclaration
     var createdDeclaration: PsiElement = null
-    if (initInDecl) {
+    if (initInDecl)
       createdDeclaration = ScalaPsiElementFactory
         .createDeclaration(
           name,
@@ -167,7 +166,7 @@ class ScalaIntroduceFieldFromExpressionHandler
           settings.defineVar,
           expression,
           manager)
-    } else {
+    else {
       val underscore =
         ScalaPsiElementFactory.createExpressionFromText("_", manager)
       createdDeclaration = ScalaPsiElementFactory
@@ -258,12 +257,11 @@ class ScalaIntroduceFieldFromExpressionHandler
 
     val dialog = new ScalaIntroduceFieldDialog(ifc, settings)
     dialog.show()
-    if (!dialog.isOK) {
+    if (!dialog.isOK)
       if (occCount > 1) {
         occurrenceHighlighters.foreach(_.dispose())
         occurrenceHighlighters = Seq.empty
       }
-    }
     dialog
   }
 

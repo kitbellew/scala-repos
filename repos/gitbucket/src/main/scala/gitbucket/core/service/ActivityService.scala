@@ -19,11 +19,10 @@ trait ActivityService {
       .on((t1, t2) => t1.byRepository(t2.userName, t2.repositoryName))
       .filter {
         case (t1, t2) =>
-          if (isPublic) {
+          if (isPublic)
             (t1.activityUserName === activityUserName.bind) && (t2.isPrivate === false.bind)
-          } else {
+          else
             (t1.activityUserName === activityUserName.bind)
-          }
       }
       .sortBy { case (t1, t2) => t1.activityId desc }
       .map { case (t1, t2) => t1 }

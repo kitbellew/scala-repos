@@ -56,11 +56,10 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
   ) // We only mark when we're ready to write to a new raw log
 
   def close = {
-    if (pendingCookIds0.size > 0) {
+    if (pendingCookIds0.size > 0)
       logger.warn(
         "Closing txLog with pending cooks: " + pendingCookIds0.keys
           .mkString("[", ", ", "]"))
-    }
     txLog.close()
     workLock.release
   }

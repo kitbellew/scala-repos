@@ -149,10 +149,9 @@ private[mesos] class MesosSubmitRequestServlet(
         s.serverSparkVersion = sparkVersion
         val unknownFields =
           findUnknownFields(requestMessageJson, requestMessage)
-        if (unknownFields.nonEmpty) {
+        if (unknownFields.nonEmpty)
           // If there are fields that the server does not know about, warn the client
           s.unknownFields = unknownFields
-        }
         s
       case unexpected =>
         responseServlet.setStatus(HttpServletResponse.SC_BAD_REQUEST)

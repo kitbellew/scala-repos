@@ -54,9 +54,8 @@ object ForkRun {
       forkRun ! Close
       try system.awaitTermination(30.seconds)
       catch { case _: TimeoutException => System.exit(1) }
-    } else {
+    } else
       log.info("Play fork run already stopped ...")
-    }
 
   def registerShutdownHook(
       log: Logger,

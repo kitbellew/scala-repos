@@ -92,11 +92,10 @@ class CommandClient(
             } getOrElse {
               GeneralResponse(0, s"Unable to create new access key.")
             }
-          } else {
+          } else
             GeneralResponse(
               0,
               s"Unable to initialize Event Store for this app ID: $id.")
-          }
           r
         } getOrElse {
           GeneralResponse(0, s"Unable to create new app.")
@@ -118,23 +117,23 @@ class CommandClient(
   def futureAppDataDelete(appName: String)(
       implicit ec: ExecutionContext): Future[GeneralResponse] = Future {
     val response = appClient.getByName(appName) map { app =>
-      val data = if (eventClient.remove(app.id)) {
-        GeneralResponse(1, s"Removed Event Store for this app ID: ${app.id}")
-      } else {
-        GeneralResponse(0, s"Error removing Event Store for this app.")
-      }
+      val data =
+        if (eventClient.remove(app.id))
+          GeneralResponse(1, s"Removed Event Store for this app ID: ${app.id}")
+        else
+          GeneralResponse(0, s"Error removing Event Store for this app.")
 
       val dbInit = eventClient.init(app.id)
-      val data2 = if (dbInit) {
-        GeneralResponse(
-          1,
-          s"Initialized Event Store for this app ID: ${app.id}.")
-      } else {
-        GeneralResponse(
-          0,
-          s"Unable to initialize Event Store for this appId:" +
-            s" ${app.id}.")
-      }
+      val data2 =
+        if (dbInit)
+          GeneralResponse(
+            1,
+            s"Initialized Event Store for this app ID: ${app.id}.")
+        else
+          GeneralResponse(
+            0,
+            s"Unable to initialize Event Store for this appId:" +
+              s" ${app.id}.")
       GeneralResponse(data.status * data2.status, data.message + data2.message)
     } getOrElse {
       GeneralResponse(0, s"App $appName does not exist.")
@@ -149,9 +148,8 @@ class CommandClient(
       val data = if (eventClient.remove(app.id)) {
         Storage.getMetaDataApps.delete(app.id)
         GeneralResponse(1, s"App successfully deleted")
-      } else {
+      } else
         GeneralResponse(0, s"Error removing Event Store for app ${app.name}.");
-      }
       data
     } getOrElse {
       GeneralResponse(0, s"App $appName does not exist.")

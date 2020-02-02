@@ -288,9 +288,9 @@ private[akka] class RemoteWatcher(
   def sendHeartbeat(): Unit =
     watchingNodes foreach { a ⇒
       if (!unreachable(a)) {
-        if (failureDetector.isMonitoring(a)) {
+        if (failureDetector.isMonitoring(a))
           log.debug("Sending Heartbeat to [{}]", a)
-        } else {
+        else {
           log.debug("Sending first Heartbeat to [{}]", a)
           // schedule the expected first heartbeat for later, which will give the
           // other side a chance to reply, and also trigger some resends if needed

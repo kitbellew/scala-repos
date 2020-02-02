@@ -109,18 +109,16 @@ private[spark] class ImpurityStats(
       s"right impurity = $rightImpurity"
 
   def leftImpurity: Double =
-    if (leftImpurityCalculator != null) {
+    if (leftImpurityCalculator != null)
       leftImpurityCalculator.calculate()
-    } else {
+    else
       -1.0
-    }
 
   def rightImpurity: Double =
-    if (rightImpurityCalculator != null) {
+    if (rightImpurityCalculator != null)
       rightImpurityCalculator.calculate()
-    } else {
+    else
       -1.0
-    }
 }
 
 private[spark] object ImpurityStats {

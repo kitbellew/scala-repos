@@ -75,14 +75,14 @@ private[niflheim] object RawLoader {
     val events = mutable.ArrayBuffer.empty[(Long, Int)]
     var line = reader.readLine()
     var ok = true
-    while (ok && line != null) {
-      if (line.startsWith("##start ")) {
+    while (ok && line != null)
+      if (line.startsWith("##start "))
         try {
           val eventid = line.substring(8).toLong
           val count = loadEvents1(reader, eventid, rows)
-          if (count < 0) {
+          if (count < 0)
             ok = false
-          } else {
+          else {
             events.append((eventid, count))
             line = reader.readLine()
           }
@@ -90,10 +90,8 @@ private[niflheim] object RawLoader {
           case _: Exception =>
             ok = false
         }
-      } else {
+      else
         ok = false
-      }
-    }
     if (!ok) recover1(id, f, rows, events)
     (rows, events.map(_._1), ok)
   }
@@ -143,9 +141,8 @@ private[niflheim] object RawLoader {
   }
 
   def isValidEnd1(line: String, eventid: Long): Boolean =
-    try {
-      line.substring(6).toLong == eventid
-    } catch {
+    try line.substring(6).toLong == eventid
+    catch {
       case _: Exception => false
     }
 
@@ -160,11 +157,11 @@ private[niflheim] object RawLoader {
     var ok = false
     var count = 0
 
-    while (going && line != null) {
+    while (going && line != null)
       if (line.startsWith("##end ")) {
         going = false
         ok = isValidEnd1(line, eventid)
-      } else {
+      } else
         try {
           sofar.append(JParser.parseUnsafe(line))
           count += 1
@@ -173,14 +170,11 @@ private[niflheim] object RawLoader {
           case _: Exception =>
             going = false
         }
-      }
-    }
     if (ok) {
       rows ++= sofar
       count
-    } else {
+    } else
       -1
-    }
   }
 
   def load(id: Long, f: File): (Seq[JValue], Seq[Long], Boolean) = {
@@ -194,8 +188,6 @@ private[niflheim] object RawLoader {
         load1(id, f, reader)
       else
         sys.error("unsupported header: %s" format header)
-    } finally {
-      reader.close()
-    }
+    } finally reader.close()
   }
 }

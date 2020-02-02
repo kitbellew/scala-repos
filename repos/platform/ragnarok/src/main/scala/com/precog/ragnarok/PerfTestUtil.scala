@@ -48,11 +48,8 @@ class PerfTestUtil(rootDir: File, runs: Int = 30) {
           testTimeout = timeout)
 
         runner.startup()
-        try {
-          f(runner)
-        } finally {
-          runner.shutdown()
-        }
+        try f(runner)
+        finally runner.shutdown()
       }
 
     result

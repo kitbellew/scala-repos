@@ -35,11 +35,8 @@ class DiskBlockObjectWriterSuite extends SparkFunSuite with BeforeAndAfterEach {
   }
 
   override def afterEach(): Unit =
-    try {
-      Utils.deleteRecursively(tempDir)
-    } finally {
-      super.afterEach()
-    }
+    try Utils.deleteRecursively(tempDir)
+    finally super.afterEach()
 
   test("verify write metrics") {
     val file = new File(tempDir, "somefile")
@@ -125,9 +122,8 @@ class DiskBlockObjectWriterSuite extends SparkFunSuite with BeforeAndAfterEach {
       os => os,
       true,
       writeMetrics)
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       writer.write(i, i)
-    }
     writer.commitAndClose()
     val bytesWritten = writeMetrics.bytesWritten
     assert(writeMetrics.recordsWritten === 1000)
@@ -146,9 +142,8 @@ class DiskBlockObjectWriterSuite extends SparkFunSuite with BeforeAndAfterEach {
       os => os,
       true,
       writeMetrics)
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       writer.write(i, i)
-    }
     writer.commitAndClose()
     val bytesWritten = writeMetrics.bytesWritten
     val writeTime = writeMetrics.writeTime
@@ -169,9 +164,8 @@ class DiskBlockObjectWriterSuite extends SparkFunSuite with BeforeAndAfterEach {
       os => os,
       true,
       writeMetrics)
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       writer.write(i, i)
-    }
     writer.revertPartialWritesAndClose()
     val bytesWritten = writeMetrics.bytesWritten
     val writeTime = writeMetrics.writeTime
@@ -193,9 +187,8 @@ class DiskBlockObjectWriterSuite extends SparkFunSuite with BeforeAndAfterEach {
       os => os,
       true,
       writeMetrics)
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       writer.write(i, i)
-    }
     intercept[IllegalStateException] {
       writer.fileSegment()
     }

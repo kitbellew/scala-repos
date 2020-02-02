@@ -118,19 +118,19 @@ trait ScTypedDefinition extends ScNamedElement with TypingContextOwner {
         v: ScAnnotationsHolder with ScModifierListOwner): Seq[PsiMethod] = {
       val beanProperty = ScalaPsiUtil.isBeanProperty(v)
       val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(v)
-      if (beanProperty || booleanBeanProperty) {
+      if (beanProperty || booleanBeanProperty)
         Seq(if (beanProperty) getGetBeanMethod else getIsBeanMethod)
-      } else Seq.empty
+      else Seq.empty
     }
     def variableSeq(
         v: ScAnnotationsHolder with ScModifierListOwner): Seq[PsiMethod] = {
       val beanProperty = ScalaPsiUtil.isBeanProperty(v)
       val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(v)
-      if (beanProperty || booleanBeanProperty) {
+      if (beanProperty || booleanBeanProperty)
         Seq(
           if (beanProperty) getGetBeanMethod else getIsBeanMethod,
           getSetBeanMethod)
-      } else Seq.empty
+      else Seq.empty
     }
     ScalaPsiUtil.nameContext(this) match {
       case v: ScValue =>

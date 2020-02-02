@@ -98,9 +98,7 @@ class ClientQuotaManagerTest {
       assertTrue(
         s"throttleTimeMs should be > 0. was $throttleTimeMs",
         throttleTimeMs > 0)
-    } finally {
-      clientMetrics.shutdown()
-    }
+    } finally clientMetrics.shutdown()
   }
 
   @Test
@@ -151,9 +149,7 @@ class ClientQuotaManagerTest {
         "Should be unthrottled since bursty sample has rolled over",
         0,
         clientMetrics.recordAndMaybeThrottle("unknown", 0, callback))
-    } finally {
-      clientMetrics.shutdown()
-    }
+    } finally clientMetrics.shutdown()
   }
 
   @Test
@@ -174,9 +170,7 @@ class ClientQuotaManagerTest {
       assertTrue(
         "Throttle time sensor should exist",
         throttleTimeSensor != null)
-    } finally {
-      clientMetrics.shutdown()
-    }
+    } finally clientMetrics.shutdown()
   }
 
   @Test
@@ -202,9 +196,7 @@ class ClientQuotaManagerTest {
 
       val byteRateSensor = metrics.getSensor("producer-client1")
       assertTrue("Byte rate sensor should exist", byteRateSensor != null)
-    } finally {
-      clientMetrics.shutdown()
-    }
+    } finally clientMetrics.shutdown()
   }
 
   def newMetrics: Metrics =

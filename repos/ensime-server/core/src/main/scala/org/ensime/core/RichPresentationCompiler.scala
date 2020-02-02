@@ -73,9 +73,8 @@ trait RichCompilerControl
   def charset: Charset = Charset.forName(settings.encoding.value)
 
   def askOption[A](op: => A): Option[A] =
-    try {
-      Some(ask(() => op))
-    } catch {
+    try Some(ask(() => op))
+    catch {
       case fi: FailedInterrupt =>
         fi.getCause match {
           case e: InterruptedException =>
@@ -326,17 +325,15 @@ class RichPresentationCompiler(
   def removeAllDeleted(): Unit = {
     allSources = allSources.filter { _.file.exists }
     val deleted = symsByFile.keys.filter { !_.exists }
-    for (f <- deleted) {
+    for (f <- deleted)
       removeDeleted(f)
-    }
   }
 
   /** Remove symbols defined by file that no longer exist. */
   def removeDeleted(f: AbstractFile): Unit = {
     val syms = symsByFile(f)
-    for (s <- syms) {
+    for (s <- syms)
       s.owner.info.decls unlink s
-    }
     symsByFile.remove(f)
     unitOfFile.remove(f)
   }
@@ -361,23 +358,20 @@ class RichPresentationCompiler(
         case e: Throwable =>
           logger.error("Error: Omitting member " + sym + ": " + e)
       }
-    for (sym <- tpe.decls) {
+    for (sym <- tpe.decls)
       addTypeMember(sym, tpe, inherited = false, NoSymbol)
-    }
-    for (sym <- tpe.members) {
+    for (sym <- tpe.members)
       addTypeMember(sym, tpe, inherited = true, NoSymbol)
-    }
     members.values
   }
 
   protected def getMembersForTypeAt(tpe: Type, p: Position): Iterable[Member] =
-    if (isNoParamArrowType(tpe)) {
+    if (isNoParamArrowType(tpe))
       typePublicMembers(typeOrArrowTypeResult(tpe))
-    } else {
+    else {
       val members: Iterable[Member] =
-        try {
-          wrapTypeMembers(p)
-        } catch {
+        try wrapTypeMembers(p)
+        catch {
           case e: Throwable =>
             logger.error("Error retrieving type members:", e)
             List.empty
@@ -385,11 +379,9 @@ class RichPresentationCompiler(
       // Remove duplicates
       // Filter out synthetic things
       val bySym = new mutable.LinkedHashMap[Symbol, Member]
-      for (m <- members ++ typePublicMembers(tpe)) {
-        if (!m.sym.nameString.contains("$")) {
+      for (m <- members ++ typePublicMembers(tpe))
+        if (!m.sym.nameString.contains("$"))
           bySym(m.sym) = m
-        }
-      }
       bySym.values
     }
 
@@ -509,7 +501,7 @@ class RichPresentationCompiler(
               case tree => tree.symbol
             }
             List(locate(pos, expr))
-          } else {
+          } else
             selectors
               .filter(_.namePos <= pos.point)
               .sortBy(_.namePos)
@@ -517,7 +509,6 @@ class RichPresentationCompiler(
               val tpe = stabilizedType(expr)
               List(tpe.member(sel.name), tpe.member(sel.name.toTypeName))
             } getOrElse Nil
-          }
         case Annotated(atp, _) =>
           List(atp.symbol)
         case ap @ Select(qualifier, nme.apply) =>

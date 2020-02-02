@@ -262,9 +262,8 @@ object FSMTimingSpec {
         if (remaining == 0) {
           cancelTimer("tester")
           goto(Initial)
-        } else {
+        } else
           stay using (remaining - 1)
-        }
     }
     when(TestCancelStateTimerInNamedTimerMessage) {
       // FSM is suspended after processing this message and resumed 500ms later

@@ -389,7 +389,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   private[this] def decomposeMultiElemDecoding(
       reply: List[AnyRef]): (String, String) =
     reply match {
-      case fooR :: booR :: Nil => {
+      case fooR :: booR :: Nil =>
         val fooMsg = fooR match {
           case BulkReply(msg) => CBToString(msg)
           case _              => "Expected Bulk Reply"
@@ -399,7 +399,6 @@ final class ResponseDecodingSuite extends RedisResponseTest {
           case _              => "Expected Bulk Reply"
         }
         (fooMsg, barMsg)
-      }
       case _ => fail("Expected two element in list")
     }
 }

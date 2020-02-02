@@ -41,7 +41,7 @@ class NamingParamsSearcher
           def execute(element: PsiElement, offsetInElement: Int): Boolean = {
             val references = inReadAction(element.getReferences)
             for (ref <- references if ref.getRangeInElement.contains(
-                   offsetInElement) && !collectedReferences.contains(ref)) {
+                   offsetInElement) && !collectedReferences.contains(ref))
               ref match {
                 case refElement: ScReferenceElement =>
                   inReadAction {
@@ -66,7 +66,6 @@ class NamingParamsSearcher
                   }
                 case _ =>
               }
-            }
             true
           }
         }

@@ -115,7 +115,7 @@ case class ShuffleExchange(
   protected override def doExecute(): RDD[InternalRow] =
     attachTree(this, "execute") {
       // Returns the same ShuffleRowRDD if this plan is used by multiple plans.
-      if (cachedShuffleRDD == null) {
+      if (cachedShuffleRDD == null)
         cachedShuffleRDD = coordinator match {
           case Some(exchangeCoordinator) =>
             val shuffleRDD = exchangeCoordinator.postShuffleRDD(this)
@@ -126,7 +126,6 @@ case class ShuffleExchange(
             val shuffleDependency = prepareShuffleDependency()
             preparePostShuffleRDD(shuffleDependency)
         }
-      }
       cachedShuffleRDD
     }
 }
@@ -171,13 +170,13 @@ object ShuffleExchange {
     if (sortBasedShuffleOn) {
       val bypassIsSupported =
         SparkEnv.get.shuffleManager.isInstanceOf[SortShuffleManager]
-      if (bypassIsSupported && partitioner.numPartitions <= bypassMergeThreshold) {
+      if (bypassIsSupported && partitioner.numPartitions <= bypassMergeThreshold)
         // If we're using the original SortShuffleManager and the number of output partitions is
         // sufficiently small, then Spark will fall back to the hash-based shuffle write path, which
         // doesn't buffer deserialized records.
         // Note that we'll have to remove this case if we fix SPARK-6026 and remove this bypass.
         false
-      } else if (serializer.supportsRelocationOfSerializedObjects) {
+      else if (serializer.supportsRelocationOfSerializedObjects)
         // SPARK-4550 and  SPARK-7081 extended sort-based shuffle to serialize individual records
         // prior to sorting them. This optimization is only applied in cases where shuffle
         // dependency does not specify an aggregator or ordering and the record serializer has
@@ -186,18 +185,16 @@ object ShuffleExchange {
         // Exchange never configures its ShuffledRDDs with aggregators or key orderings, so we only
         // need to check whether the optimization is enabled and supported by our serializer.
         false
-      } else {
+      else
         // Spark's SortShuffleManager uses `ExternalSorter` to buffer records in memory, so we must
         // copy.
         true
-      }
-    } else if (shuffleManager.isInstanceOf[HashShuffleManager]) {
+    } else if (shuffleManager.isInstanceOf[HashShuffleManager])
       // We're using hash-based shuffle, so we don't need to copy.
       false
-    } else {
+    else
       // Catch-all case to safely handle any future ShuffleManager implementations.
       true
-    }
   }
 
   /**
@@ -257,14 +254,14 @@ object ShuffleExchange {
       case _                                         => sys.error(s"Exchange not implemented for $newPartitioning")
     }
     val rddWithPartitionIds: RDD[Product2[Int, InternalRow]] = {
-      if (needToCopyObjectsBeforeShuffle(part, serializer)) {
+      if (needToCopyObjectsBeforeShuffle(part, serializer))
         rdd.mapPartitionsInternal { iter =>
           val getPartitionKey = getPartitionKeyExtractor()
           iter.map { row =>
             (part.getPartition(getPartitionKey(row)), row.copy())
           }
         }
-      } else {
+      else
         rdd.mapPartitionsInternal { iter =>
           val getPartitionKey = getPartitionKeyExtractor()
           val mutablePair = new MutablePair[Int, InternalRow]()
@@ -272,7 +269,6 @@ object ShuffleExchange {
             mutablePair.update(part.getPartition(getPartitionKey(row)), row)
           }
         }
-      }
     }
 
     // Now, we manually create a ShuffleDependency. Because pairs in rddWithPartitionIds

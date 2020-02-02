@@ -28,13 +28,13 @@ object StructureViewUtil {
       short: Boolean,
       subst: ScSubstitutor): String = {
     val res = new StringBuffer("")
-    for (param <- x.parameters) {
-      if (short) {
+    for (param <- x.parameters)
+      if (short)
         param.paramType match {
           case Some(pt) => res.append(pt.getText).append(", ")
           case None     => res.append("AnyRef").append(", ")
         }
-      } else {
+      else {
         res.append(param.name + ": ")
         val typez = subst.subst(param.getType(TypingContext.empty).getOrNothing)
         res.append(
@@ -42,7 +42,6 @@ object StructureViewUtil {
                                            else ""))
         res.append(", ")
       }
-    }
     if (res.length >= 2)
       res.delete(res.length - 2, res.length)
     res.toString

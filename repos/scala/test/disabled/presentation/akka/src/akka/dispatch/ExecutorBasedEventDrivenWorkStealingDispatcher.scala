@@ -144,9 +144,7 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     try {
       donationInProgress.value = true
       while (donateFrom(mbox)) {} //When we reregister, first donate messages to another actor
-    } finally {
-      donationInProgress.value = false
-    }
+    } finally donationInProgress.value = false
 
     if (!mbox.isEmpty) //If we still have messages left to process, reschedule for execution
       super.reRegisterForExecution(mbox)
@@ -187,9 +185,7 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
         case null      => false
         case recipient => donate(message, recipient)
       }
-    } finally {
-      donationInProgress.value = false
-    }
+    } finally donationInProgress.value = false
 
   /**
     * Rewrites the message and adds that message to the recipients mailbox
@@ -224,9 +220,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
       val actor = potentialRecipients((i + startIndex) % prSz) //Wrap-around, one full lap
       val mbox = getMailbox(actor)
 
-      if ((mbox ne donorMbox) && mbox.isEmpty) { //Don't donate to yourself
+      if ((mbox ne donorMbox) && mbox.isEmpty) //Don't donate to yourself
         recipient = actor //Found!
-      }
 
       i += 1
     }

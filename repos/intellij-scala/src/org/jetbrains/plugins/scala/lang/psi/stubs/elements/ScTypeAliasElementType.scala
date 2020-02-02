@@ -33,9 +33,8 @@ abstract class ScTypeAliasElementType[Func <: ScTypeAlias](debugName: String)
     val isDeclaration = psi.isInstanceOf[ScTypeAliasDeclaration]
     val typeElementText = {
       if (isDeclaration) ""
-      else {
+      else
         psi.asInstanceOf[ScTypeAliasDefinition].aliasedTypeElement.getText
-      }
     }
     val lower = {
       if (!isDeclaration) ""
@@ -107,9 +106,8 @@ abstract class ScTypeAliasElementType[Func <: ScTypeAlias](debugName: String)
     val name = stub.getName
     if (name != null) {
       sink.occurrence(ScalaIndexKeys.TYPE_ALIAS_NAME_KEY, name)
-      if (stub.isStableQualifier) {
+      if (stub.isStableQualifier)
         sink.occurrence(ScalaIndexKeys.STABLE_ALIAS_NAME_KEY, name)
-      }
     }
   }
 }

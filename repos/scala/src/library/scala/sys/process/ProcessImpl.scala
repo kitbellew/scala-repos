@@ -190,11 +190,9 @@ private[process] trait ProcessImpl {
     protected[this] val pipe = new PipedOutputStream
     protected[this] val source = new LinkedBlockingQueue[Option[InputStream]]
     override def run(): Unit =
-      try {
-        source.take match {
-          case Some(in) => runloop(in, pipe)
-          case None     =>
-        }
+      try source.take match {
+        case Some(in) => runloop(in, pipe)
+        case None     =>
       } catch onInterrupt(())
       finally BasicIO close pipe
     def connectIn(in: InputStream): Unit = source add Some(in)
@@ -210,11 +208,9 @@ private[process] trait ProcessImpl {
     protected[this] val pipe = new PipedInputStream
     protected[this] val sink = new LinkedBlockingQueue[Option[OutputStream]]
     override def run(): Unit =
-      try {
-        sink.take match {
-          case Some(out) => runloop(pipe, out)
-          case None      =>
-        }
+      try sink.take match {
+        case Some(out) => runloop(pipe, out)
+        case None      =>
       } catch onInterrupt(())
       finally BasicIO close pipe
     def connectOut(out: OutputStream): Unit = sink add Some(out)

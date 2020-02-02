@@ -507,17 +507,15 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
 
         case ti: TypeInsnNode =>
           if (ti.getOpcode == INSTANCEOF)
-            for (frame <- frameAt(ti) if frame.peekStack(0) == NullValue) {
+            for (frame <- frameAt(ti) if frame.peekStack(0) == NullValue)
               toReplace(ti) = List(getPop(1), new InsnNode(ICONST_0))
-            }
 
         case mi: MethodInsnNode =>
           if (isScalaUnbox(mi))
-            for (frame <- frameAt(mi) if frame.peekStack(0) == NullValue) {
+            for (frame <- frameAt(mi) if frame.peekStack(0) == NullValue)
               toReplace(mi) = List(
                 getPop(1),
                 loadZeroForTypeSort(Type.getReturnType(mi.desc).getSort))
-            }
 
         case _ =>
       }
@@ -626,9 +624,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
           val valueTp = frame.getValue(frame.stackTop)
           if (valueTp.isReference && isSubType(
                 valueTp.getType.getDescriptor,
-                ti.desc)) {
+                ti.desc))
             toRemove += ti
-          }
 
         case _ =>
       }
@@ -704,10 +701,9 @@ object LocalOptImpls {
       val local = localsIter.next()
       val index = local.index
       // parameters and `this` (the lowest indices, starting at 0) are never removed or renumbered
-      if (index >= firstLocalIndex) {
+      if (index >= firstLocalIndex)
         if (!variableIsUsed(local.start, local.end, index)) localsIter.remove()
         else if (renumber(index) != index) local.index = renumber(index)
-      }
     }
     method.localVariables.size != initialNumVars
   }
@@ -799,7 +795,7 @@ object LocalOptImpls {
     val initialSize = method.instructions.size
     val iterator = method.instructions.iterator()
     var previousLabel: LabelNode = null
-    while (iterator.hasNext) {
+    while (iterator.hasNext)
       iterator.next match {
         case label: LabelNode => previousLabel = label
         case line: LineNumberNode if isEmpty(line) =>
@@ -807,7 +803,6 @@ object LocalOptImpls {
           iterator.remove()
         case _ =>
       }
-    }
     method.instructions.size != initialSize
   }
 
@@ -823,7 +818,7 @@ object LocalOptImpls {
     val initialSize = method.instructions.size
     val iterator = method.instructions.iterator()
     var prev: LabelNode = null
-    while (iterator.hasNext) {
+    while (iterator.hasNext)
       iterator.next match {
         case label: LabelNode =>
           if (!references.contains(label)) iterator.remove()
@@ -835,7 +830,6 @@ object LocalOptImpls {
         case instruction =>
           if (instruction.getOpcode >= 0) prev = null
       }
-    }
     method.instructions.size != initialSize
   }
 
@@ -865,9 +859,8 @@ object LocalOptImpls {
 
     var _jumpTargets: Set[AbstractInsnNode] = null
     def jumpTargets = {
-      if (_jumpTargets == null) {
+      if (_jumpTargets == null)
         _jumpTargets = jumpInsns.keysIterator.map(_.label).toSet
-      }
       _jumpTargets
     }
 

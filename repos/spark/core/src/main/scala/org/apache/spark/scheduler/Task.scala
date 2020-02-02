@@ -80,12 +80,10 @@ private[spark] abstract class Task[T](
       initialAccumulators)
     TaskContext.setTaskContext(context)
     taskThread = Thread.currentThread()
-    if (_killed) {
+    if (_killed)
       kill(interruptThread = false)
-    }
-    try {
-      runTask(context)
-    } catch {
+    try runTask(context)
+    catch {
       case e: Throwable =>
         // Catch all errors; run task failure callbacks, and rethrow the exception.
         context.markTaskFailed(e)
@@ -93,20 +91,16 @@ private[spark] abstract class Task[T](
     } finally {
       // Call the task completion callbacks.
       context.markTaskCompleted()
-      try {
-        Utils.tryLogNonFatalError {
-          // Release memory used by this thread for unrolling blocks
-          SparkEnv.get.blockManager.memoryStore.releaseUnrollMemoryForThisTask()
-          // Notify any tasks waiting for execution memory to be freed to wake up and try to
-          // acquire memory again. This makes impossible the scenario where a task sleeps forever
-          // because there are no other tasks left to notify it. Since this is safe to do but may
-          // not be strictly necessary, we should revisit whether we can remove this in the future.
-          val memoryManager = SparkEnv.get.memoryManager
-          memoryManager.synchronized { memoryManager.notifyAll() }
-        }
-      } finally {
-        TaskContext.unset()
-      }
+      try Utils.tryLogNonFatalError {
+        // Release memory used by this thread for unrolling blocks
+        SparkEnv.get.blockManager.memoryStore.releaseUnrollMemoryForThisTask()
+        // Notify any tasks waiting for execution memory to be freed to wake up and try to
+        // acquire memory again. This makes impossible the scenario where a task sleeps forever
+        // because there are no other tasks left to notify it. Since this is safe to do but may
+        // not be strictly necessary, we should revisit whether we can remove this in the future.
+        val memoryManager = SparkEnv.get.memoryManager
+        memoryManager.synchronized { memoryManager.notifyAll() }
+      } finally TaskContext.unset()
     }
   }
 
@@ -152,13 +146,12 @@ private[spark] abstract class Task[T](
     */
   def collectAccumulatorUpdates(
       taskFailed: Boolean = false): Seq[AccumulableInfo] =
-    if (context != null) {
+    if (context != null)
       context.taskMetrics.accumulatorUpdates().filter { a =>
         !taskFailed || a.countFailedValues
       }
-    } else {
+    else
       Seq.empty[AccumulableInfo]
-    }
 
   /**
     * Kills a task by setting the interrupted flag to true. This relies on the upper level Spark
@@ -168,12 +161,10 @@ private[spark] abstract class Task[T](
     */
   def kill(interruptThread: Boolean) {
     _killed = true
-    if (context != null) {
+    if (context != null)
       context.markInterrupted()
-    }
-    if (interruptThread && taskThread != null) {
+    if (interruptThread && taskThread != null)
       taskThread.interrupt()
-    }
   }
 }
 
@@ -235,16 +226,14 @@ private[spark] object Task {
     // Read task's files
     val taskFiles = new HashMap[String, Long]()
     val numFiles = dataIn.readInt()
-    for (i <- 0 until numFiles) {
+    for (i <- 0 until numFiles)
       taskFiles(dataIn.readUTF()) = dataIn.readLong()
-    }
 
     // Read task's JARs
     val taskJars = new HashMap[String, Long]()
     val numJars = dataIn.readInt()
-    for (i <- 0 until numJars) {
+    for (i <- 0 until numJars)
       taskJars(dataIn.readUTF()) = dataIn.readLong()
-    }
 
     // Create a sub-buffer for the rest of the data, which is the serialized Task object
     val subBuffer = serializedTask.slice() // ByteBufferInputStream will have read just up to task

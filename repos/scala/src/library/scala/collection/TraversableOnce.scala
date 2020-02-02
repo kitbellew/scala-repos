@@ -184,12 +184,11 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     var first = true
     var acc: B = 0.asInstanceOf[B]
 
-    for (x <- self) {
+    for (x <- self)
       if (first) {
         acc = x
         first = false
       } else acc = op(acc, x)
-    }
     acc
   }
 
@@ -363,7 +362,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     var first = true
 
     b append start
-    for (x <- self) {
+    for (x <- self)
       if (first) {
         b append x
         first = false
@@ -371,7 +370,6 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
         b append sep
         b append x
       }
-    }
     b append end
 
     b

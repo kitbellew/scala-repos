@@ -811,14 +811,14 @@ object ISet extends ISetInstances {
           case Tip() =>
             Bin(x, Tip(), r)
           case Bin(lx, ll, lr) =>
-            if (l.size > delta * r.size) {
+            if (l.size > delta * r.size)
               (ll, lr) match {
                 case (Bin(_, _, _), Bin(lrx, lrl, lrr)) =>
                   if (lr.size < ratio * ll.size) Bin(lx, ll, Bin(x, lr, r))
                   else Bin(lrx, Bin(lx, ll, lrl), Bin(x, lrr, r))
                 case _ => sys.error("Failure in ISet.balanceL")
               }
-            } else Bin(x, l, r)
+            else Bin(x, l, r)
         }
     }
 
@@ -843,14 +843,14 @@ object ISet extends ISetInstances {
           case Tip() =>
             Bin(x, l, Tip())
           case Bin(rx, rl, rr) =>
-            if (r.size > delta * l.size) {
+            if (r.size > delta * l.size)
               (rl, rr) match {
                 case (Bin(rlx, rll, rlr), Bin(_, _, _)) =>
                   if (rl.size < ratio * rr.size) Bin(rx, Bin(x, l, rl), rr)
                   else Bin(rlx, Bin(x, l, rll), Bin(rx, rlr, rr))
                 case _ => sys.error("Failure in ISet.balanceR")
               }
-            } else Bin(x, l, r)
+            else Bin(x, l, r)
         }
     }
 

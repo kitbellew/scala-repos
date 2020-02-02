@@ -42,11 +42,10 @@ trait ObjectOperator extends SparkPlan {
 
   def generateToRow(serializer: Seq[Expression]): Any => InternalRow = {
     val outputProjection =
-      if (serializer.head.dataType.isInstanceOf[ObjectType]) {
+      if (serializer.head.dataType.isInstanceOf[ObjectType])
         GenerateSafeProjection.generate(serializer)
-      } else {
+      else
         GenerateUnsafeProjection.generate(serializer)
-      }
     val inputType = serializer.head.collect {
       case b: BoundReference => b.dataType
     }.head

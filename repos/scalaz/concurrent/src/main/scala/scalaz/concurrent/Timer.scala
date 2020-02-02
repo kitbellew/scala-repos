@@ -29,14 +29,13 @@ case class Timer(
         lastNow = alignTimeResolution(System.currentTimeMillis)
         // Deal with stuff to expire.
         futures.headOption match {
-          case Some((time, _)) if (time <= lastNow) => {
+          case Some((time, _)) if (time <= lastNow) =>
             val expiredFutures: SortedMap[Long, List[() => Unit]] = withWrite {
               val (past, future) = futures.span(pair => pair._1 < lastNow)
               futures = future
               past
             }
             expireFutures(expiredFutures)
-          }
           case _ => ()
         }
         // Should we keep running?
@@ -67,20 +66,14 @@ case class Timer(
 
   private[this] def withWrite[T](expression: => T): T = {
     lock.writeLock().lock()
-    try {
-      expression
-    } finally {
-      lock.writeLock().unlock()
-    }
+    try expression
+    finally lock.writeLock().unlock()
   }
 
   private[this] def withRead[T](expression: => T): T = {
     lock.readLock().lock()
-    try {
-      expression
-    } finally {
-      lock.readLock().unlock()
-    }
+    try expression
+    finally lock.readLock().unlock()
   }
 
   private[this] def alignTimeResolution(time: Long): Long =
@@ -101,9 +94,8 @@ case class Timer(
               .getOrElse((waitTime, List(timedCallback)))
           }
         Future.async(listen)
-      } else {
+      } else
         Future.now(value)
-      }
     }
 
   def withTimeout[T](future: Future[T], timeout: Long): Future[Timeout \/ T] = {

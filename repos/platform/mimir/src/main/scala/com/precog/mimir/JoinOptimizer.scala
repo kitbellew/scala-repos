@@ -91,8 +91,7 @@ trait JoinOptimizerModule[M[+_]]
 
           case j @ Join(op, Cross(_), lhs, rhs)
               if (compareAncestor(lhs, eqA) && compareAncestor(rhs, eqB)) ||
-                (compareAncestor(lhs, eqB) && compareAncestor(rhs, eqA)) => {
-
+                (compareAncestor(lhs, eqB) && compareAncestor(rhs, eqA)) =>
             val (eqLHS, eqRHS) = {
               if (compareAncestor(lhs, eqA))
                 (eqA, eqB)
@@ -111,7 +110,6 @@ trait JoinOptimizerModule[M[+_]]
               ValueSort(sortId),
               liftRewrite(lhs, ancestorLHS, liftedLHS),
               liftRewrite(rhs, ancestorRHS, liftedRHS))(j.loc)
-          }
 
           case other => other
         }

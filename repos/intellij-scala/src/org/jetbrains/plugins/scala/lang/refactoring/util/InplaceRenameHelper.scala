@@ -93,9 +93,8 @@ class InplaceRenameHelper(parent: PsiElement) {
     val stopAtVariables = templateVariables.asScala.filter(_.isAlwaysStopAt)
     val primarySortedVariables =
       primaries.flatMap(p => stopAtVariables.find(_.getName == primaryNames(p)))
-    for ((v, idx) <- primarySortedVariables.zipWithIndex) {
+    for ((v, idx) <- primarySortedVariables.zipWithIndex)
       templateVariables.set(idx, v)
-    }
     val myHighlighters = mutable.ArrayBuffer[RangeHighlighter]()
     val rangesToHighlight = mutable.HashMap[RangeMarker, TextAttributes]()
 

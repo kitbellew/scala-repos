@@ -234,11 +234,10 @@ class Column(protected[sql] val expr: Expression) extends Logging {
     */
   def ===(other: Any): Column = withExpr {
     val right = lit(other).expr
-    if (this.expr == right) {
+    if (this.expr == right)
       logWarning(
         s"Constructing trivially true equals predicate, '${this.expr} = $right'. " +
           "Perhaps you need to use aliases.")
-    }
     EqualTo(expr, right)
   }
 
@@ -1032,11 +1031,10 @@ class Column(protected[sql] val expr: Expression) extends Logging {
     */
   def explain(extended: Boolean): Unit =
     // scalastyle:off println
-    if (extended) {
+    if (extended)
       println(expr)
-    } else {
+    else
       println(expr.sql)
-    }
   // scalastyle:on println
 
   /**

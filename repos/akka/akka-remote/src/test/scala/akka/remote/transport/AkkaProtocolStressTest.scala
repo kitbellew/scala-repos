@@ -76,9 +76,8 @@ object AkkaProtocolStressTest {
               ResendFinal)
             context.become(done)
           }
-        } else {
+        } else
           controller ! s"Received out of order message. Previous: $maxSeq Received: $seq"
-        }
     }
 
     // Make sure the other side eventually "gets the message"

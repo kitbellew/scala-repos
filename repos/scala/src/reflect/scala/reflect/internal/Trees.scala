@@ -194,11 +194,9 @@ trait Trees extends api.Trees {
         if (sym != null && isFree(sym)) s += sym.asInstanceOf[S]
       for (t <- this) {
         addIfFree(t.symbol)
-        if (t.tpe != null) {
-          for (tp <- t.tpe) {
+        if (t.tpe != null)
+          for (tp <- t.tpe)
             addIfFree(symOfType(tp))
-          }
-        }
       }
       s.toList
     }
@@ -1504,7 +1502,7 @@ trait Trees extends api.Trees {
         xtraverse(traverser, tree)
     }
 
-    if (tree.canHaveAttrs) {
+    if (tree.canHaveAttrs)
       tree match {
         case PackageDef(pid, stats) =>
           traverse(pid); traverseStats(stats, mclass(tree.symbol))
@@ -1514,7 +1512,6 @@ trait Trees extends api.Trees {
           atOwner(tree.symbol) { traverseParams(vparams); traverse(body) }
         case _ => traverseComponents()
       }
-    }
   }
 
   //OPT ordered according to frequency to speed it up.
@@ -1714,7 +1711,7 @@ trait Trees extends api.Trees {
     override def traverse(tree: Tree) {
       tree match {
         case _: Return =>
-          if (tree.symbol == oldowner) {
+          if (tree.symbol == oldowner)
             // SI-5612
             if (newowner hasTransOwner oldowner)
               log(
@@ -1726,7 +1723,6 @@ trait Trees extends api.Trees {
                   .format(tree, oldowner, newowner))
               tree.symbol = newowner
             }
-          }
         case _: DefTree | _: Function =>
           change(tree.symbol)
         case _ =>

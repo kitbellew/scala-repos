@@ -48,17 +48,15 @@ class ScTypeParamImpl private (
 
   def getOffsetInFile: Int = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTypeParamStub].getPositionInFile
-    }
     getTextRange.getStartOffset
   }
 
   def getContainingFileName: String = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTypeParamStub].getContainingFileName
-    }
     val containingFile = getContainingFile
     if (containingFile == null) return "NoFile"
     containingFile.name
@@ -74,9 +72,8 @@ class ScTypeParamImpl private (
 
   def isCovariant: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTypeParamStub].isCovariant
-    }
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
       case null => false
       case x    => x.getText == "+"
@@ -85,9 +82,8 @@ class ScTypeParamImpl private (
 
   def isContravariant: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTypeParamStub].isContravariant
-    }
     findChildByType[PsiElement](ScalaTokenTypes.tIDENTIFIER) match {
       case null => false
       case x    => x.getText == "-"
@@ -96,9 +92,8 @@ class ScTypeParamImpl private (
 
   def typeParameterText: String = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTypeParamStub].typeParameterText
-    }
     getText
   }
 
@@ -114,30 +109,30 @@ class ScTypeParamImpl private (
 
   override def viewTypeElement: Seq[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.asInstanceOf[ScTypeParamStub].getViewTypeElement
-    } else super.viewTypeElement
+    else super.viewTypeElement
   }
 
   override def contextBoundTypeElement: Seq[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.asInstanceOf[ScTypeParamStub].getContextBoundTypeElement
-    } else super.contextBoundTypeElement
+    else super.contextBoundTypeElement
   }
 
   override def lowerTypeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.asInstanceOf[ScTypeParamStub].getLowerTypeElement
-    } else super.lowerTypeElement
+    else super.lowerTypeElement
   }
 
   override def upperTypeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.asInstanceOf[ScTypeParamStub].getUpperTypeElement
-    } else super.upperTypeElement
+    else super.upperTypeElement
   }
 
   override def getIcon(flags: Int) =
@@ -147,15 +142,15 @@ class ScTypeParamImpl private (
     // For Java
     upperBound match {
       case Success(t, _) =>
-        val psiType = if (hasTypeParameters) {
-          t match {
-            case ScParameterizedType(des, _) =>
-              ScType.toPsi(des, getProject, getResolveScope)
-            case _ => ScType.toPsi(t, getProject, getResolveScope)
-          }
-        } else {
-          ScType.toPsi(t, getProject, getResolveScope)
-        }
+        val psiType =
+          if (hasTypeParameters)
+            t match {
+              case ScParameterizedType(des, _) =>
+                ScType.toPsi(des, getProject, getResolveScope)
+              case _ => ScType.toPsi(t, getProject, getResolveScope)
+            }
+          else
+            ScType.toPsi(t, getProject, getResolveScope)
         psiType match {
           case x: PsiClassType => Array(x)
           case _               => Array() // TODO

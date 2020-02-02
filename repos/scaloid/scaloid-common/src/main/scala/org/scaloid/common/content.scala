@@ -391,9 +391,8 @@ trait UnregisterReceiver extends ContextWrapper with Destroyable {
       filter: IntentFilter): android.content.Intent = {
     onDestroy {
       Log.i("ScalaUtils", "Unregister BroadcastReceiver: " + receiver)
-      try {
-        unregisterReceiver(receiver)
-      } catch {
+      try unregisterReceiver(receiver)
+      catch {
         // Suppress "Receiver not registered" exception
         // Refer to http://stackoverflow.com/questions/2682043/how-to-check-if-receiver-is-registered-in-android
         case e: IllegalArgumentException => e.printStackTrace()

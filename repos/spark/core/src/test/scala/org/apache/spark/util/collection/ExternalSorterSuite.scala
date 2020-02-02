@@ -268,10 +268,9 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         (Int.MaxValue, Int.MaxValue)))
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
-    while (it.hasNext) {
+    while (it.hasNext)
       // Should not throw NoSuchElementException
       it.next()
-    }
   }
 
   test("spilling with null keys and values") {
@@ -311,10 +310,9 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       ))
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
-    while (it.hasNext) {
+    while (it.hasNext)
       // Should not throw NullPointerException
       it.next()
-    }
   }
 
   /* ============================= *
@@ -325,9 +323,9 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       loadDefaults: Boolean,
       kryo: Boolean): SparkConf = {
     val conf = new SparkConf(loadDefaults)
-    if (kryo) {
+    if (kryo)
       conf.set("spark.serializer", classOf[KryoSerializer].getName)
-    } else {
+    else {
       // Make the Java serializer write a reset instruction (TC_RESET) after each object to test
       // for a bug we had with bytes written past the last object in a batch (SPARK-2792)
       conf.set("spark.serializer.objectStreamReset", "1")
@@ -600,18 +598,16 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       None,
       Some(new HashPartitioner(3)),
       Some(ord))
-    if (withFailures) {
+    if (withFailures)
       intercept[SparkException] {
         sorter.insertAll((0 until size).iterator.map { i =>
-          if (i == size - 1) {
+          if (i == size - 1)
             throw new SparkException("intentional failure")
-          }
           (i, i)
         })
       }
-    } else {
+    else
       sorter.insertAll((0 until size).iterator.map(i => (i, i)))
-    }
     assert(
       sorter.iterator.toSet === (0 until expectedSize).map(i => (i, i)).toSet)
     assert(sorter.numSpills > 0, "sorter did not spill")
@@ -632,9 +628,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local", "test", conf)
     val diskBlockManager = sc.env.blockManager.diskBlockManager
     val data = sc.parallelize(0 until size, 2).map { i =>
-      if (withFailures && i == size - 1) {
+      if (withFailures && i == size - 1)
         throw new SparkException("intentional failure")
-      }
       (i, i)
     }
 
@@ -662,23 +657,21 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       withOrdering: Boolean,
       withSpilling: Boolean) {
     val size = 1000
-    if (withSpilling) {
+    if (withSpilling)
       conf.set(
         "spark.shuffle.spill.numElementsForceSpillThreshold",
         (size / 2).toString)
-    }
     conf.set("spark.shuffle.manager", "sort")
     sc = new SparkContext("local", "test", conf)
     val agg =
-      if (withPartialAgg) {
+      if (withPartialAgg)
         Some(
           new Aggregator[Int, Int, Int](
             i => i,
             (i, j) => i + j,
             (i, j) => i + j))
-      } else {
+      else
         None
-      }
     val ord = if (withOrdering) Some(implicitly[Ordering[Int]]) else None
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
     val sorter =
@@ -688,11 +681,10 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         Some(new HashPartitioner(3)),
         ord)
     sorter.insertAll((0 until size).iterator.map { i => (i / 4, i) })
-    if (withSpilling) {
+    if (withSpilling)
       assert(sorter.numSpills > 0, "sorter did not spill")
-    } else {
+    else
       assert(sorter.numSpills === 0, "sorter spilled")
-    }
     val results = sorter.partitionedIterator.map {
       case (p, vs) => (p, vs.toSet)
     }.toSet
@@ -701,12 +693,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         .map { i => (i / 4, i) }
         .filter { case (k, _) => k % 3 == p }
         .toSet
-      if (withPartialAgg) {
+      if (withPartialAgg)
         v = v
           .groupBy(_._1)
           .mapValues { s => s.map(_._2).sum }
           .toSet
-      }
       (p, v.toSet)
     }.toSet
     assert(results === expected)

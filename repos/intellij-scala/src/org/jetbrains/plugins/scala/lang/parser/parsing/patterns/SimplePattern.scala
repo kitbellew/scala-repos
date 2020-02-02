@@ -57,7 +57,7 @@ object SimplePattern extends ParserNode {
             return true
           case _ =>
         }
-        if (Patterns parse builder) {
+        if (Patterns parse builder)
           builder.getTokenType match {
             case ScalaTokenTypes.tRPARENTHESIS =>
               builder.advanceLexer() //Ate )
@@ -70,7 +70,6 @@ object SimplePattern extends ParserNode {
               simplePatternMarker.done(ScalaElementTypes.TUPLE_PATTERN)
               return true
           }
-        }
         if (Pattern parse builder) {
           builder.getTokenType match {
             case ScalaTokenTypes.tRPARENTHESIS =>
@@ -148,9 +147,8 @@ object SimplePattern extends ParserNode {
                 wild.rollbackTo()
                 false
               }
-            } else {
+            } else
               false
-            }
 
           def parseSeqWildcardBinding(withComma: Boolean): Boolean = {
             if (if (withComma)
@@ -182,9 +180,9 @@ object SimplePattern extends ParserNode {
               val wild = builder.mark
               if (withComma) builder.advanceLexer() // ,
               builder.getTokenType
-              if (isVarId) {
+              if (isVarId)
                 builder.advanceLexer() // id
-              } else {
+              else {
                 wild.rollbackTo()
                 return false
               }
@@ -203,13 +201,12 @@ object SimplePattern extends ParserNode {
           }
 
           if (!parseSeqWildcard(withComma = false) && !parseSeqWildcardBinding(
-                withComma = false) && Pattern.parse(builder)) {
+                withComma = false) && Pattern.parse(builder))
             while (builder.getTokenType == ScalaTokenTypes.tCOMMA) {
               builder.advanceLexer() // eat comma
               if (!parseSeqWildcard(withComma = false) && !parseSeqWildcardBinding(
                     withComma = false)) Pattern.parse(builder)
             }
-          }
           builder.getTokenType match {
             case ScalaTokenTypes.tRPARENTHESIS =>
               builder.advanceLexer() //Ate )

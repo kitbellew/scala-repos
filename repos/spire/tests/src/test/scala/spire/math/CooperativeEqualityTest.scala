@@ -8,9 +8,9 @@ import spire.implicits._
 class CooperativeEqualityTest extends FunSuite {
 
   def testEquals[A, B](a: A, aname: String, b: B, bname: String) =
-    if (aname == bname) {
+    if (aname == bname)
       test(s"$aname == $aname") { assert(a == b) }
-    } else {
+    else {
       test(s"$aname == $bname") { assert(a == b) }
       test(s"$bname == $aname") { assert(b == a) }
     }

@@ -87,9 +87,8 @@ trait Erasure {
     if (valueClassIsParametric(clazz)) {
       val underlying = tref.memberType(clazz.derivedValueClassUnbox).resultType
       boxingErasure(underlying)
-    } else {
+    } else
       scalaErasure(underlyingOfValueClass(clazz))
-    }
   }
 
   /** Does this value class have an underlying type that's a type parameter of
@@ -330,12 +329,12 @@ trait Erasure {
     if (parents.isEmpty) ObjectTpe
     else {
       val psyms = parents map (_.typeSymbol)
-      if (psyms contains ArrayClass) {
+      if (psyms contains ArrayClass)
         // treat arrays specially
         arrayType(
           intersectionDominator(
             parents filter (_.typeSymbol == ArrayClass) map (_.typeArgs.head)))
-      } else {
+      else {
         // implement new spec for erasure of refined types.
         def isUnshadowed(psym: Symbol) =
           !(psyms exists (qsym =>
@@ -365,7 +364,7 @@ trait Erasure {
       PolyType(sym.info.typeParams, specialErasure(sym)(sym.info.resultType))
     else if (sym.isAbstractType)
       TypeBounds(WildcardType, WildcardType)
-    else if (sym.isTerm && sym.owner == ArrayClass) {
+    else if (sym.isTerm && sym.owner == ArrayClass)
       if (sym.isClassConstructor)
         tp match {
           case MethodType(params, TypeRef(pre, sym1, args)) =>
@@ -385,14 +384,13 @@ trait Erasure {
               UnitTpe)
         }
       else specialErasure(sym)(tp)
-    } else if (sym.owner != NoSymbol &&
-               sym.owner.owner == ArrayClass &&
-               sym == Array_update.paramss.head(1)) {
+    else if (sym.owner != NoSymbol &&
+             sym.owner.owner == ArrayClass &&
+             sym == Array_update.paramss.head(1))
       // special case for Array.update: the non-erased type remains, i.e. (Int,A)Unit
       // since the erasure type map gets applied to every symbol, we have to catch the
       // symbol here
       tp
-    } else {
+    else
       specialErasure(sym)(tp)
-    }
 }

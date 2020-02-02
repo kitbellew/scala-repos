@@ -112,14 +112,12 @@ class SparkEnv(
       // We only need to delete the tmp dir create by driver, because sparkFilesDir is point to the
       // current working dir in executor which we do not need to delete.
       driverTmpDirToDelete match {
-        case Some(path) => {
-          try {
-            Utils.deleteRecursively(new File(path))
-          } catch {
+        case Some(path) =>
+          try Utils.deleteRecursively(new File(path))
+          catch {
             case e: Exception =>
               logWarning(s"Exception while deleting Spark temp dir: $path", e)
           }
-        }
         case None => // We just need to delete tmp dir created by driver, so do nothing on executor
       }
     }
@@ -250,11 +248,10 @@ object SparkEnv extends Logging {
       : SparkEnv = {
 
     // Listener bus is only used on the driver
-    if (isDriver) {
+    if (isDriver)
       assert(
         listenerBus != null,
         "Attempted to create driver SparkEnv with null listener bus!")
-    }
 
     val securityManager = new SecurityManager(conf)
 
@@ -270,30 +267,27 @@ object SparkEnv extends Logging {
     // Figure out which port RpcEnv actually bound to in case the original port is 0 or occupied.
     // In the non-driver case, the RPC env's address may be null since it may not be listening
     // for incoming connections.
-    if (isDriver) {
+    if (isDriver)
       conf.set("spark.driver.port", rpcEnv.address.port.toString)
-    } else if (rpcEnv.address != null) {
+    else if (rpcEnv.address != null)
       conf.set("spark.executor.port", rpcEnv.address.port.toString)
-    }
 
     // Create an instance of the class with the given name, possibly initializing it with our conf
     def instantiateClass[T](className: String): T = {
       val cls = Utils.classForName(className)
       // Look for a constructor taking a SparkConf and a boolean isDriver, then one taking just
       // SparkConf, then one taking no arguments
-      try {
-        cls
-          .getConstructor(classOf[SparkConf], java.lang.Boolean.TYPE)
-          .newInstance(conf, new java.lang.Boolean(isDriver))
-          .asInstanceOf[T]
-      } catch {
+      try cls
+        .getConstructor(classOf[SparkConf], java.lang.Boolean.TYPE)
+        .newInstance(conf, new java.lang.Boolean(isDriver))
+        .asInstanceOf[T]
+      catch {
         case _: NoSuchMethodException =>
-          try {
-            cls
-              .getConstructor(classOf[SparkConf])
-              .newInstance(conf)
-              .asInstanceOf[T]
-          } catch {
+          try cls
+            .getConstructor(classOf[SparkConf])
+            .newInstance(conf)
+            .asInstanceOf[T]
+          catch {
             case _: NoSuchMethodException =>
               cls.getConstructor().newInstance().asInstanceOf[T]
           }
@@ -322,15 +316,14 @@ object SparkEnv extends Logging {
       if (isDriver) {
         logInfo("Registering " + name)
         rpcEnv.setupEndpoint(name, endpointCreator)
-      } else {
+      } else
         RpcUtils.makeDriverRef(name, conf, rpcEnv)
-      }
 
-    val mapOutputTracker = if (isDriver) {
-      new MapOutputTrackerMaster(conf)
-    } else {
-      new MapOutputTrackerWorker(conf)
-    }
+    val mapOutputTracker =
+      if (isDriver)
+        new MapOutputTrackerMaster(conf)
+      else
+        new MapOutputTrackerWorker(conf)
 
     // Have to assign trackerEndpoint after initialization as MapOutputTrackerEndpoint
     // requires the MapOutputTracker itself
@@ -355,11 +348,10 @@ object SparkEnv extends Logging {
     val useLegacyMemoryManager =
       conf.getBoolean("spark.memory.useLegacyMode", false)
     val memoryManager: MemoryManager =
-      if (useLegacyMemoryManager) {
+      if (useLegacyMemoryManager)
         new StaticMemoryManager(conf, numUsableCores)
-      } else {
+      else
         UnifiedMemoryManager(conf, numUsableCores)
-      }
 
     val blockTransferService =
       new NettyBlockTransferService(conf, securityManager, numUsableCores)
@@ -387,30 +379,33 @@ object SparkEnv extends Logging {
 
     val broadcastManager = new BroadcastManager(isDriver, conf, securityManager)
 
-    val metricsSystem = if (isDriver) {
-      // Don't start metrics system right now for Driver.
-      // We need to wait for the task scheduler to give us an app ID.
-      // Then we can start the metrics system.
-      MetricsSystem.createMetricsSystem("driver", conf, securityManager)
-    } else {
-      // We need to set the executor ID before the MetricsSystem is created because sources and
-      // sinks specified in the metrics configuration file will want to incorporate this executor's
-      // ID into the metrics they report.
-      conf.set("spark.executor.id", executorId)
-      val ms =
-        MetricsSystem.createMetricsSystem("executor", conf, securityManager)
-      ms.start()
-      ms
-    }
+    val metricsSystem =
+      if (isDriver)
+        // Don't start metrics system right now for Driver.
+        // We need to wait for the task scheduler to give us an app ID.
+        // Then we can start the metrics system.
+        MetricsSystem.createMetricsSystem("driver", conf, securityManager)
+      else {
+        // We need to set the executor ID before the MetricsSystem is created because sources and
+        // sinks specified in the metrics configuration file will want to incorporate this executor's
+        // ID into the metrics they report.
+        conf.set("spark.executor.id", executorId)
+        val ms =
+          MetricsSystem.createMetricsSystem("executor", conf, securityManager)
+        ms.start()
+        ms
+      }
 
     // Set the sparkFiles directory, used when downloading dependencies.  In local mode,
     // this is a temporary directory; in distributed mode, this is the executor's current working
     // directory.
-    val sparkFilesDir: String = if (isDriver) {
-      Utils.createTempDir(Utils.getLocalDir(conf), "userFiles").getAbsolutePath
-    } else {
-      "."
-    }
+    val sparkFilesDir: String =
+      if (isDriver)
+        Utils
+          .createTempDir(Utils.getLocalDir(conf), "userFiles")
+          .getAbsolutePath
+      else
+        "."
 
     val outputCommitCoordinator = mockOutputCommitCoordinator.getOrElse {
       new OutputCommitCoordinator(conf, isDriver)
@@ -441,9 +436,8 @@ object SparkEnv extends Logging {
     // Add a reference to tmp dir created by driver, we will delete this tmp dir when stop() is
     // called, and we only need to do it for driver. Because driver may run as a service, and if we
     // don't delete this tmp dir when sc is stopped, then will create too many tmp dirs.
-    if (isDriver) {
+    if (isDriver)
       envInstance.driverTmpDirToDelete = Some(sparkFilesDir)
-    }
 
     envInstance
   }
@@ -469,11 +463,10 @@ object SparkEnv extends Logging {
     // Spark properties
     // This includes the scheduling mode whether or not it is configured (used by SparkUI)
     val schedulerMode =
-      if (!conf.contains("spark.scheduler.mode")) {
+      if (!conf.contains("spark.scheduler.mode"))
         Seq(("spark.scheduler.mode", schedulingMode))
-      } else {
+      else
         Seq[(String, String)]()
-      }
     val sparkProperties = (conf.getAll ++ schedulerMode).sorted
 
     // System properties that are not java classpaths

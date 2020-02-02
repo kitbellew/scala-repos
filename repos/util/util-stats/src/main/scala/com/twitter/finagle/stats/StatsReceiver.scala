@@ -146,12 +146,11 @@ trait StatsReceiver { self =>
     */
   def scope(namespace: String): StatsReceiver =
     if (namespace == "") this
-    else {
+    else
       new NameTranslatingStatsReceiver(this, namespace) {
         protected[this] def translate(name: Seq[String]): Seq[String] =
           namespace +: name
       }
-    }
 
   /**
     * Prepend `namespace` and `namespaces` to the names of the returned [[StatsReceiver]].
@@ -178,7 +177,7 @@ trait StatsReceiver { self =>
     */
   def scopeSuffix(suffix: String): StatsReceiver =
     if (suffix == "") this
-    else {
+    else
       new StatsReceiver {
         val repr = self.repr
 
@@ -194,7 +193,6 @@ trait StatsReceiver { self =>
         override def scope(namespace: String): StatsReceiver =
           self.scope(namespace).scope(suffix)
       }
-    }
 }
 
 /**

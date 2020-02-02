@@ -160,10 +160,10 @@ class BinaryClassificationMetrics @Since("1.3.0") (
 
     val binnedCounts =
       // Only down-sample if bins is > 0
-      if (numBins == 0) {
+      if (numBins == 0)
         // Use original directly
         counts
-      } else {
+      else {
         val countsSize = counts.count()
         // Group the iterator into chunks of about countsSize / numBins points,
         // so that the resulting number of bins is about numBins

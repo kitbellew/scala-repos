@@ -57,7 +57,7 @@ object ReliableProxyDocSpec {
         proxy ! "world!"
         client = Some(sender())
       case Terminated(`proxy`) ⇒
-        client foreach { _ ! "terminated" }
+        client foreach _ ! "terminated"
     }
   }
 }

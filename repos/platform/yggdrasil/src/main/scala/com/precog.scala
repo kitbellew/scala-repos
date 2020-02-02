@@ -99,9 +99,9 @@ package object yggdrasil {
       type IA = (Identities, A)
       def order(x: IA, y: IA): Ordering = {
         val idComp = idOrder.order(x._1, y._1)
-        if (idComp == EQ) {
+        if (idComp == EQ)
           ord.order(x._2, y._2)
-        } else idComp
+        else idComp
       }
     }
 

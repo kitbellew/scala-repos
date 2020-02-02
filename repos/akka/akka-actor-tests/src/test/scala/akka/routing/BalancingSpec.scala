@@ -67,9 +67,8 @@ class BalancingSpec extends AkkaSpec("""
   def test(pool: ActorRef, latch: TestLatch): Unit = {
     val iterationCount = 100
 
-    for (i ← 1 to iterationCount) {
+    for (i ← 1 to iterationCount)
       pool ! i
-    }
 
     // all but one worker are blocked
     val replies1 = receiveN(iterationCount - poolSize + 1)

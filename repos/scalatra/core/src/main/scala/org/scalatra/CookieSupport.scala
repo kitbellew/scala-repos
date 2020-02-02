@@ -55,12 +55,10 @@ case class Cookie(name: String, value: String)(
         }.toLowerCase(Locale.ENGLISH))
 
     val pth = cookieOptions.path
-    if (pth.nonBlank) {
+    if (pth.nonBlank)
       sb append "; Path=" append (if (!pth.startsWith("/")) "/" + pth else pth)
-    }
-    if (cookieOptions.comment.nonBlank) {
+    if (cookieOptions.comment.nonBlank)
       sb append ("; Comment=") append cookieOptions.comment
-    }
 
     appendMaxAge(sb, cookieOptions.maxAge, cookieOptions.version)
 

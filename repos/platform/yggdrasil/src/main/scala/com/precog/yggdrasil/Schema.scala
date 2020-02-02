@@ -96,7 +96,7 @@ object Schema {
             buildPath(CPathIndex(idx) :: nodes, refs0, tpe)
         }
 
-      case JObjectFixedT(fields) => {
+      case JObjectFixedT(fields) =>
         fields.toList.flatMap {
           case (field, tpe) =>
             val refs0 = refs collect {
@@ -105,7 +105,6 @@ object Schema {
             }
             buildPath(CPathField(field) :: nodes, refs0, tpe)
         }
-      }
 
       case JArrayUnfixedT =>
         refs collect {
@@ -202,7 +201,7 @@ object Schema {
       }
       val bits = filteredCols.values map {
         _.definedAt(0, size)
-      } reduceOption { _ | _ } getOrElse new BitSet
+      } reduceOption _ | _ getOrElse new BitSet
 
       (row: Int) => bits(row)
     }
@@ -221,16 +220,15 @@ object Schema {
               val pathToCompare = path.nodes.take(seenPathLength)
               pathToCompare == seenPath.nodes && checkNode(
                 path.nodes(seenPathLength))
-            } else {
+            } else
               false
-            }
           }
 
           emptyCrit || nonemptyCrit
       }
       val objBits = objCols.values map {
         _.definedAt(0, size)
-      } reduceOption { _ | _ } getOrElse new BitSet
+      } reduceOption _ | _ getOrElse new BitSet
 
       (row: Int) => objBits(row)
     }
@@ -242,7 +240,7 @@ object Schema {
       }
       val emptyBits = emptyCols.values map {
         _.definedAt(0, size)
-      } reduceOption { _ | _ } getOrElse new BitSet
+      } reduceOption _ | _ getOrElse new BitSet
 
       (row: Int) => emptyBits(row)
     }
@@ -267,9 +265,9 @@ object Schema {
         handleUnfixed(CEmptyArray, _.isInstanceOf[CPathIndex], cols)
 
       case JObjectFixedT(fields) =>
-        if (fields.isEmpty) {
+        if (fields.isEmpty)
           handleEmpty(CEmptyObject, cols)
-        } else {
+        else {
           val results: Seq[Int => Boolean] = fields.toSeq map {
             case (field, tpe) =>
               val seenPath0 = CPath(seenPath.nodes :+ CPathField(field))
@@ -280,9 +278,9 @@ object Schema {
         }
 
       case JArrayFixedT(elements) =>
-        if (elements.isEmpty) {
+        if (elements.isEmpty)
           handleEmpty(CEmptyArray, cols)
-        } else {
+        else {
           val results: Seq[Int => Boolean] = elements.toSeq map {
             case (idx, tpe) =>
               val seenPath0 = CPath(seenPath.nodes :+ CPathIndex(idx))
@@ -390,12 +388,11 @@ object Schema {
 
       case (
           JObjectFixedT(fields),
-          (CPath(CPathField(head), tail @ _*), ctpe)) => {
+          (CPath(CPathField(head), tail @ _*), ctpe)) =>
         fields
           .get(head)
           .map(includes(_, CPath(tail: _*), ctpe))
           .getOrElse(false)
-      }
 
       case (JArrayUnfixedT, (CPath.Identity, CEmptyArray))          => true
       case (JArrayUnfixedT, (CPath(CPathArray, _*), CArrayType(_))) => true
@@ -453,7 +450,7 @@ object Schema {
       }
     case JObjectFixedT(fields) if fields.isEmpty =>
       ctpes.contains(CPath.Identity, CEmptyObject)
-    case JObjectFixedT(fields) => {
+    case JObjectFixedT(fields) =>
       val keys = fields.keySet
       keys.forall { key =>
         subsumes(ctpes.collect {
@@ -461,7 +458,6 @@ object Schema {
             (CPath(tail: _*), ctpe)
         }, fields(key))
       }
-    }
 
     case JArrayUnfixedT if ctpes.contains(CPath.Identity, CEmptyArray) => true
     case JArrayUnfixedT =>
@@ -472,7 +468,7 @@ object Schema {
       }
     case JArrayFixedT(elements) if elements.isEmpty =>
       ctpes.contains(CPath.Identity, CEmptyArray)
-    case JArrayFixedT(elements) => {
+    case JArrayFixedT(elements) =>
       val indices = elements.keySet
       indices.forall { i =>
         subsumes(
@@ -485,7 +481,6 @@ object Schema {
           elements(i)
         )
       }
-    }
     case JArrayHomogeneousT(jElemType) =>
       ctpes.exists {
         case (CPath(CPathArray, _*), CArrayType(cElemType)) =>

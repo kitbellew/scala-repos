@@ -31,10 +31,10 @@ import org.apache.spark.mllib.linalg.Vectors
   */
 object DenseGaussianMixture {
   def main(args: Array[String]): Unit =
-    if (args.length < 3) {
+    if (args.length < 3)
       println(
         "usage: DenseGmmEM <input file> <k> <convergenceTol> [maxIterations]")
-    } else {
+    else {
       val maxIterations = if (args.length > 3) args(3).toInt else 100
       run(args(0), args(1).toInt, args(2).toDouble, maxIterations)
     }
@@ -58,12 +58,11 @@ object DenseGaussianMixture {
       .setMaxIterations(maxIterations)
       .run(data)
 
-    for (i <- 0 until clusters.k) {
+    for (i <- 0 until clusters.k)
       println(
         "weight=%f\nmu=%s\nsigma=\n%s\n" format
           (clusters
             .weights(i), clusters.gaussians(i).mu, clusters.gaussians(i).sigma))
-    }
 
     println(
       "The membership value of each vector to all mixture components (first <= 100):")

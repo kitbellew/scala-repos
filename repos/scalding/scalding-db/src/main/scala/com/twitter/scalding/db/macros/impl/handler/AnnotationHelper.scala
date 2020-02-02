@@ -69,9 +69,9 @@ private[handler] abstract class AnnotationHelper {
   }
 
   def validateFinished: scala.util.Try[Unit] =
-    if (cannotationInfo.isEmpty) {
+    if (cannotationInfo.isEmpty)
       Success(())
-    } else {
+    else {
       val msg = s"""
         Finished consuming annotations for field ${cfieldName.toStr}, but have remaining annotations:
         ${cannotationInfo.map(_._1).mkString("\n")}

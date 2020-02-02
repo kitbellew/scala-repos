@@ -71,9 +71,8 @@ private[akka] final class FilePublisher(
   private var chan: FileChannel = _
 
   override def preStart() = {
-    try {
-      chan = FileChannel.open(f.toPath, FilePublisher.Read)
-    } catch {
+    try chan = FileChannel.open(f.toPath, FilePublisher.Read)
+    catch {
       case ex: Exception ⇒
         onErrorThenStop(ex)
     }
@@ -109,7 +108,7 @@ private[akka] final class FilePublisher(
   @tailrec def readAhead(
       maxChunks: Int,
       chunks: Vector[ByteString]): Vector[ByteString] =
-    if (chunks.size <= maxChunks && isActive && !eofEncountered) {
+    if (chunks.size <= maxChunks && isActive && !eofEncountered)
       (try chan.read(buf)
       catch { case NonFatal(ex) ⇒ onErrorThenStop(ex); Int.MinValue }) match {
         case -1 ⇒ // EOF
@@ -127,16 +126,15 @@ private[akka] final class FilePublisher(
           buf.clear()
           readAhead(maxChunks, newChunks)
       }
-    } else chunks
+    else chunks
 
   private def eofEncountered: Boolean = eofReachedAtOffset != Long.MinValue
 
   override def postStop(): Unit = {
     super.postStop()
 
-    try {
-      if (chan ne null) chan.close()
-    } catch {
+    try if (chan ne null) chan.close()
+    catch {
       case ex: Exception ⇒
         completionPromise.success(IOResult(readBytesTotal, Failure(ex)))
     }

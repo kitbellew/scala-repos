@@ -144,12 +144,11 @@ object LogisticRegressionSuite {
       val p = rnd.nextDouble()
       var y = 0
       breakable {
-        for (i <- 0 until nClasses) {
+        for (i <- 0 until nClasses)
           if (p < probs(i)) {
             y = i
             break
           }
-        }
       }
       y
     }
@@ -628,9 +627,7 @@ class LogisticRegressionSuite
       model.save(sc, path)
       val sameModel = LogisticRegressionModel.load(sc, path)
       LogisticRegressionSuite.checkModelsEqual(model, sameModel)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
 
     // Save model with threshold.
     try {
@@ -638,9 +635,7 @@ class LogisticRegressionSuite
       model.save(sc, path)
       val sameModel = LogisticRegressionModel.load(sc, path)
       LogisticRegressionSuite.checkModelsEqual(model, sameModel)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 
   test("model save/load: multiclass classification") {
@@ -655,9 +650,7 @@ class LogisticRegressionSuite
       model.save(sc, path)
       val sameModel = LogisticRegressionModel.load(sc, path)
       LogisticRegressionSuite.checkModelsEqual(model, sameModel)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 
   /**

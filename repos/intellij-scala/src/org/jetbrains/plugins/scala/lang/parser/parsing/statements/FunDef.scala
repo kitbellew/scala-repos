@@ -37,7 +37,7 @@ object FunDef {
         builder.getTokenType match {
           case ScalaTokenTypes.tCOLON =>
             builder.advanceLexer() //Ate :
-            if (Type.parse(builder)) {
+            if (Type.parse(builder))
               builder.getTokenType match {
                 case ScalaTokenTypes.tASSIGN =>
                   builder.advanceLexer() //Ate =
@@ -53,7 +53,7 @@ object FunDef {
                   faultMarker.rollbackTo()
                   false
               }
-            } else {
+            else {
               faultMarker.rollbackTo()
               false
             }
@@ -86,9 +86,8 @@ object FunDef {
         builder.getTokenType match {
           case ScalaTokenTypes.tASSIGN =>
             builder.advanceLexer() //Ate =
-            if (!ConstrExpr.parse(builder)) {
+            if (!ConstrExpr.parse(builder))
               builder error ScalaBundle.message("wrong.constr.expression")
-            }
             faultMarker.drop()
             true
           case _ =>
@@ -97,9 +96,8 @@ object FunDef {
               faultMarker.drop()
               return true
             }
-            if (!ConstrBlock.parse(builder)) {
+            if (!ConstrBlock.parse(builder))
               builder error ScalaBundle.message("constr.block.expected")
-            }
             faultMarker.drop()
             true
         }

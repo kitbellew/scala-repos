@@ -56,9 +56,8 @@ object ZipperTest extends SpecLite {
         nextZipper.focus must_=== (r(0))
         nextZipper.lefts must_=== (f +: l)
         nextZipper.rights must_=== (r.tail)
-      } else {
+      } else
         zipper(l, f, r).next.isEmpty must_== (true)
-      }
   }
 
   "Zipper next returns Some when rights is nonempty, none otherwise." ! forAll {
@@ -70,11 +69,10 @@ object ZipperTest extends SpecLite {
   "Zipper nextOr returns a new zipper when used on empty rights or Some of next" ! forAll {
     (l: Stream[Int], f: Int, r: Stream[Int], alt: Zipper[Int]) =>
       val z = zipper(l, f, r)
-      if (r.length > 0) {
+      if (r.length > 0)
         z.next must_=== (Some(z.nextOr(alt)))
-      } else {
+      else
         z.nextOr(alt) must_=== (alt)
-      }
   }
 
   "Previous Affects Lengths" ! forAll { (xs: Stream[Int]) =>
@@ -99,29 +97,26 @@ object ZipperTest extends SpecLite {
         prevZipper.focus must_=== (l(0))
         prevZipper.lefts must_=== (l.tail)
         prevZipper.rights must_=== (f +: r)
-      } else {
+      } else
         zipper(l, f, r).previous.isDefined must_== (false)
-      }
   }
 
   "Zipper previousOr returns a new zipper when used on empty rights or Some of next" ! forAll {
     (l: Stream[Int], f: Int, r: Stream[Int], alt: Zipper[Int]) =>
       val z = zipper(l, f, r)
-      if (l.length > 0) {
+      if (l.length > 0)
         z.previous must_=== (Some(z.previousOr(alt)))
-      } else {
+      else
         z.previousOr(alt) must_=== (alt)
-      }
   }
 
   "Zipper tryPrevious returns Some of next or throws" ! forAll {
     (l: Stream[Int], f: Int, r: Stream[Int]) =>
       val z = zipper(l, f, r)
-      if (l.length > 0) {
+      if (l.length > 0)
         z.previous must_=== (Some(z.tryPrevious))
-      } else {
+      else
         z.tryPrevious.mustThrowA[RuntimeException]
-      }
   }
 
   def insertionTest(
@@ -135,7 +130,7 @@ object ZipperTest extends SpecLite {
 
   val leftAndFocusChanged: (Zipper[Int], Zipper[Int], Int) => Prop = {
     (zNew, zOld, newFocus) =>
-      { zNew.focus must_=== (newFocus) } and {
+      zNew.focus must_=== (newFocus) and {
         zNew.lefts.head must_=== (zOld.focus)
       } and { zNew.lefts.tail must_=== (zOld.lefts) } and {
         zNew.rights must_=== (zOld.rights)
@@ -144,7 +139,7 @@ object ZipperTest extends SpecLite {
 
   val rightAndFocusChanged: (Zipper[Int], Zipper[Int], Int) => Prop = {
     (zNew, zOld, newFocus) =>
-      { zNew.focus must_=== (newFocus) } and {
+      zNew.focus must_=== (newFocus) and {
         zNew.lefts must_=== (zOld.lefts)
       } and { zNew.rights.head must_=== (zOld.focus) } and {
         zNew.rights.tail must_=== (zOld.rights)
@@ -183,10 +178,9 @@ object ZipperTest extends SpecLite {
       (
         for {
           zd <- z.deleteRightC
-        } yield {
+        } yield
           if (z.rights.length > 0) zd.focus must_=== (z.rights(0))
           else zd.focus must_=== (z.lefts.last)
-        }
       ) getOrElse {
         (z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true))
       }
@@ -212,10 +206,9 @@ object ZipperTest extends SpecLite {
       (
         for {
           zd <- z.deleteRight
-        } yield {
+        } yield
           if (z.rights.length > 0) zd.focus must_=== (z.rights(0))
           else zd.focus must_=== (z.lefts(0))
-        }
       ) getOrElse {
         (z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true))
       }
@@ -244,10 +237,9 @@ object ZipperTest extends SpecLite {
       (
         for {
           zd <- z.deleteLeft
-        } yield {
+        } yield
           if (z.lefts.length > 0) zd.focus must_=== (z.lefts(0))
           else zd.focus must_=== (z.rights(0))
-        }
       ) getOrElse ((z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true)))
   }
 
@@ -263,10 +255,9 @@ object ZipperTest extends SpecLite {
       (
         for {
           zd <- z.deleteLeftC
-        } yield {
+        } yield
           if (z.lefts.length > 0) zd.focus must_=== (z.lefts(0))
           else zd.focus must_=== (z.rights.last)
-        }
       ) getOrElse ((z.lefts.isEmpty must_== (true)) and (z.rights.isEmpty must_== (true)))
   }
 
@@ -433,11 +424,10 @@ object ZipperTest extends SpecLite {
 
       if (z.lefts.find(p).isDefined || p(z.focus) || z.rights
             .find(p)
-            .isDefined) {
+            .isDefined)
         p(z.findZor(p, alt).focus) must_== (true)
-      } else {
+      else
         z.findZor(p, alt) must_=== (alt)
-      }
   }
 
   "findZ should not cause a stackoverflow error" in {

@@ -128,9 +128,8 @@ object Load {
       log)
   }
   private def bootIvyHome(app: xsbti.AppConfiguration): Option[File] =
-    try {
-      Option(app.provider.scalaProvider.launcher.ivyHome)
-    } catch { case _: NoSuchMethodError => None }
+    try Option(app.provider.scalaProvider.launcher.ivyHome)
+    catch { case _: NoSuchMethodError => None }
   def injectGlobal(state: State): Seq[Setting[_]] =
     (appConfiguration in GlobalScope :== state.configuration) +:
       LogManager.settingsLogger(state) +:
@@ -456,9 +455,8 @@ object Load {
       import Path._
       val existing = (baseTarget.allPaths.get).filterNot(_.isDirectory)
       val toDelete = existing.filterNot(keepFile)
-      if (toDelete.nonEmpty) {
+      if (toDelete.nonEmpty)
         IO.delete(toDelete)
-      }
     }
   }
 
@@ -1272,10 +1270,9 @@ object Load {
     val pluginLoader =
       if (defcp.isEmpty)
         parentLoader
-      else {
+      else
         // ... the build definition classes get their own loader so that they don't conflict with other build definitions (#511)
         ClasspathUtilities.toLoader(data(defcp), parentLoader)
-      }
     (definitionClasspath, pluginLoader)
   }
   def buildPluginDefinition(

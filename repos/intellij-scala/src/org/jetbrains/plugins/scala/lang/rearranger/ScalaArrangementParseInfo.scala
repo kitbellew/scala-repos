@@ -53,18 +53,16 @@ class ScalaArrangementParseInfo {
 
   def registerDependency(caller: ScFunction, callee: ScFunction) {
     currentMethodDependencyRoots -= callee
-    if (!currentDependentMethods.contains(caller)) {
+    if (!currentDependentMethods.contains(caller))
       currentMethodDependencyRoots += caller
-    }
     currentDependentMethods += callee
-    var callerDependent = if (!methodDependencies.contains(caller)) {
-      immutable.HashSet[ScFunction]()
-    } else {
-      methodDependencies(caller)
-    }
-    if (!callerDependent.contains(callee)) {
+    var callerDependent =
+      if (!methodDependencies.contains(caller))
+        immutable.HashSet[ScFunction]()
+      else
+        methodDependencies(caller)
+    if (!callerDependent.contains(callee))
       callerDependent = callerDependent + callee
-    }
     methodDependencies += ((caller, callerDependent))
     rebuildMethodDependencies = true
   }
@@ -100,19 +98,17 @@ class ScalaArrangementParseInfo {
         case Some(dependencies) =>
           usedMethods += depenenceSource
           for (dependentMethod <- dependencies.toList) {
-            if (usedMethods.contains(dependentMethod)) {
+            if (usedMethods.contains(dependentMethod))
               return None
-            }
             methodToEntry
               .get(dependentMethod)
               .foreach(dependentEntry =>
                 if (dependentEntry != null) {
                   val dependentMethodInfo =
-                    if (cache.contains(dependentMethod)) {
+                    if (cache.contains(dependentMethod))
                       cache(dependentMethod)
-                    } else {
+                    else
                       new ScalaArrangementDependency(dependentEntry)
-                    }
                   cache.put(dependentMethod, dependentMethodInfo)
                   dependency.addDependentMethodInfo(dependentMethodInfo)
                   toProcess =

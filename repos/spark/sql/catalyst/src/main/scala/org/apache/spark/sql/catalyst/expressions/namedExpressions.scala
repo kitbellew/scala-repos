@@ -89,14 +89,13 @@ trait NamedExpression extends Expression {
   def newInstance(): NamedExpression
 
   protected def typeSuffix =
-    if (resolved) {
+    if (resolved)
       dataType match {
         case LongType => "L"
         case _        => ""
       }
-    } else {
+    else
       ""
-    }
 }
 
 abstract class Attribute extends LeafExpression with NamedExpression {
@@ -166,14 +165,13 @@ case class Alias(child: Expression, name: String)(
       isGenerated = isGenerated)
 
   override def toAttribute: Attribute =
-    if (resolved) {
+    if (resolved)
       AttributeReference(name, child.dataType, child.nullable, metadata)(
         exprId,
         qualifiers,
         isGenerated)
-    } else {
+    else
       UnresolvedAttribute(name)
-    }
 
   override def toString: String = s"$child AS $name#${exprId.id}$typeSuffix"
 
@@ -259,47 +257,43 @@ case class AttributeReference(
     * Returns a copy of this [[AttributeReference]] with changed nullability.
     */
   override def withNullability(newNullability: Boolean): AttributeReference =
-    if (nullable == newNullability) {
+    if (nullable == newNullability)
       this
-    } else {
+    else
       AttributeReference(name, dataType, newNullability, metadata)(
         exprId,
         qualifiers,
         isGenerated)
-    }
 
   override def withName(newName: String): AttributeReference =
-    if (name == newName) {
+    if (name == newName)
       this
-    } else {
+    else
       AttributeReference(newName, dataType, nullable, metadata)(
         exprId,
         qualifiers,
         isGenerated)
-    }
 
   /**
     * Returns a copy of this [[AttributeReference]] with new qualifiers.
     */
   override def withQualifiers(newQualifiers: Seq[String]): AttributeReference =
-    if (newQualifiers.toSet == qualifiers.toSet) {
+    if (newQualifiers.toSet == qualifiers.toSet)
       this
-    } else {
+    else
       AttributeReference(name, dataType, nullable, metadata)(
         exprId,
         newQualifiers,
         isGenerated)
-    }
 
   def withExprId(newExprId: ExprId): AttributeReference =
-    if (exprId == newExprId) {
+    if (exprId == newExprId)
       this
-    } else {
+    else
       AttributeReference(name, dataType, nullable, metadata)(
         newExprId,
         qualifiers,
         isGenerated)
-    }
 
   override protected final def otherCopyArgs: Seq[AnyRef] =
     exprId :: qualifiers :: isGenerated :: Nil

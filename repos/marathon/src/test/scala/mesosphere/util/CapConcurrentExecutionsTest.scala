@@ -38,9 +38,7 @@ class CapConcurrentExecutionsTest
       result2 should be(2)
       val result3 = serialize(Future.successful(3)).futureValue
       result3 should be(3)
-    } finally {
-      serialize.close()
-    }
+    } finally serialize.close()
   }
 
   test("submit successful futures after a failure") {
@@ -57,9 +55,7 @@ class CapConcurrentExecutionsTest
       result2 should be(2)
       val result3 = serialize(Future.successful(3)).futureValue
       result3 should be(3)
-    } finally {
-      serialize.close()
-    }
+    } finally serialize.close()
   }
 
   test("submit successful futures after a failure to return future") {
@@ -77,9 +73,7 @@ class CapConcurrentExecutionsTest
       result2 should be(2)
       val result3 = serialize(Future.successful(3)).futureValue
       result3 should be(3)
-    } finally {
-      serialize.close()
-    }
+    } finally serialize.close()
   }
 
   test("concurrent executions are serialized if maxParallel has been reached") {
@@ -138,9 +132,7 @@ class CapConcurrentExecutionsTest
 
       And("all futures have been timed")
       metrics.processingTimer.invocationCount should be(3)
-    } finally {
-      serialize.close()
-    }
+    } finally serialize.close()
   }
 
   test(
@@ -190,8 +182,6 @@ class CapConcurrentExecutionsTest
 
       result1.futureValue should be(())
       result2.futureValue should be(())
-    } finally {
-      serialize.close()
-    }
+    } finally serialize.close()
   }
 }

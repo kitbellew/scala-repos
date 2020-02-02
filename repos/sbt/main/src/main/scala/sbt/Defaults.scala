@@ -869,9 +869,8 @@ object Defaults extends BuildCommon {
               opts,
               s.log) tag Tags.ForkedTestGroup
           case Tests.InProcess =>
-            if (javaOptions.nonEmpty) {
+            if (javaOptions.nonEmpty)
               s.log.warn("javaOptions will be ignored, fork is set to false")
-            }
             Tests(frameworks, loader, runners, tests, config, s.log)
         }
     }
@@ -894,15 +893,14 @@ object Defaults extends BuildCommon {
     val includeFilters = includeArgs map GlobFilter.apply
     val excludeFilters = excludeArgs.map(_.substring(1)).map(GlobFilter.apply)
 
-    if (includeFilters.isEmpty && excludeArgs.isEmpty) {
+    if (includeFilters.isEmpty && excludeArgs.isEmpty)
       Seq(const(true))
-    } else if (includeFilters.isEmpty) {
+    else if (includeFilters.isEmpty)
       Seq({ (s: String) => !matches(excludeFilters, s) })
-    } else {
+    else
       includeFilters.map { f => (s: String) =>
         (f.accept(s) && !matches(excludeFilters, s))
       }
-    }
   }
   def detectTests: Initialize[Task[Seq[TestDefinition]]] =
     (loadedTestFrameworks, compile, streams) map {
@@ -1037,7 +1035,7 @@ object Defaults extends BuildCommon {
 
   @deprecated("Use the cacheDirectory val on streams.", "0.13.0")
   def perTaskCache(key: TaskKey[_]): Setting[File] =
-    cacheDirectory ~= { _ / ("for_" + key.key.label) }
+    cacheDirectory ~= _ / ("for_" + key.key.label)
 
   @deprecated("Use `packageTaskSettings` instead", "0.12.0")
   def packageTasks(
@@ -2018,10 +2016,9 @@ object Classpaths {
 
   def warnResolversConflict(ress: Seq[Resolver], log: Logger): Unit = {
     val resset = ress.toSet
-    for ((name, r) <- resset groupBy (_.name) if r.size > 1) {
+    for ((name, r) <- resset groupBy (_.name) if r.size > 1)
       log.warn(
         "Multiple resolvers having different access mechanism configured with same name '" + name + "'. To avoid conflict, Remove duplicate project resolvers (`resolvers`) or rename publishing resolver (`publishTo`).")
-    }
   }
 
   private[sbt] def defaultProjectID: Initialize[ModuleID] = Def.setting {
@@ -2240,7 +2237,7 @@ object Classpaths {
       case _                                 => uc0
     }
     val ewo =
-      if (executionRoots.value exists { _.key == evicted.key })
+      if (executionRoots.value exists _.key == evicted.key)
         EvictionWarningOptions.empty
       else (evictionWarningOptions in update).value
     cachedUpdate(
@@ -2357,9 +2354,8 @@ object Classpaths {
             case (_, Some(out)) if uptodate(inChanged, out) => out
             case _                                          => work(in)
           }
-          try {
-            outCache(in)
-          } catch {
+          try outCache(in)
+          catch {
             case e: NullPointerException =>
               val r = work(in)
               log.warn(
@@ -2400,7 +2396,7 @@ object Classpaths {
         }
         Map(settings flatMap {
           case s: Setting[Seq[ModuleID]] @unchecked =>
-            s.init.evaluate(empty) map { _ -> s.pos }
+            s.init.evaluate(empty) map _ -> s.pos
         }: _*)
       } catch {
         case _: Throwable => Map()
@@ -2595,11 +2591,10 @@ object Classpaths {
           "compile",
           "*->compile")
         // map master configuration 'c' and all extended configurations to the appropriate dependency configuration
-        for (ac <- applicableConfigs; depConfName <- mapping(ac.name)) {
+        for (ac <- applicableConfigs; depConfName <- mapping(ac.name))
           for (depConf <- confOpt(configurations, depConfName))
             if (!visited((dep, depConfName)))
               visit(dep, depConf)
-        }
       }
     }
     visit(projectRef, conf)
@@ -2855,14 +2850,12 @@ object Classpaths {
 
   // try/catch for supporting earlier launchers
   def bootIvyHome(app: xsbti.AppConfiguration): Option[File] =
-    try {
-      Option(app.provider.scalaProvider.launcher.ivyHome)
-    } catch { case _: NoSuchMethodError => None }
+    try Option(app.provider.scalaProvider.launcher.ivyHome)
+    catch { case _: NoSuchMethodError => None }
 
   def bootChecksums(app: xsbti.AppConfiguration): Seq[String] =
-    try {
-      app.provider.scalaProvider.launcher.checksums.toSeq
-    } catch { case _: NoSuchMethodError => IvySbt.DefaultChecksums }
+    try app.provider.scalaProvider.launcher.checksums.toSeq
+    catch { case _: NoSuchMethodError => IvySbt.DefaultChecksums }
 
   def isOverrideRepositories(app: xsbti.AppConfiguration): Boolean =
     try app.provider.scalaProvider.launcher.isOverrideRepositories
@@ -2870,32 +2863,27 @@ object Classpaths {
 
   /** Loads the `appRepositories` configured for this launcher, if supported. */
   def appRepositories(app: xsbti.AppConfiguration): Option[Seq[Resolver]] =
-    try {
-      Some(
-        app.provider.scalaProvider.launcher.appRepositories.toSeq map bootRepository)
-    } catch { case _: NoSuchMethodError => None }
+    try Some(
+      app.provider.scalaProvider.launcher.appRepositories.toSeq map bootRepository)
+    catch { case _: NoSuchMethodError => None }
 
   def bootRepositories(app: xsbti.AppConfiguration): Option[Seq[Resolver]] =
-    try {
-      Some(
-        app.provider.scalaProvider.launcher.ivyRepositories.toSeq map bootRepository)
-    } catch { case _: NoSuchMethodError => None }
+    try Some(
+      app.provider.scalaProvider.launcher.ivyRepositories.toSeq map bootRepository)
+    catch { case _: NoSuchMethodError => None }
 
   private[this] def mavenCompatible(ivyRepo: xsbti.IvyRepository): Boolean =
-    try {
-      ivyRepo.mavenCompatible
-    } catch { case _: NoSuchMethodError => false }
+    try ivyRepo.mavenCompatible
+    catch { case _: NoSuchMethodError => false }
 
   private[this] def skipConsistencyCheck(
       ivyRepo: xsbti.IvyRepository): Boolean =
-    try {
-      ivyRepo.skipConsistencyCheck
-    } catch { case _: NoSuchMethodError => false }
+    try ivyRepo.skipConsistencyCheck
+    catch { case _: NoSuchMethodError => false }
 
   private[this] def descriptorOptional(ivyRepo: xsbti.IvyRepository): Boolean =
-    try {
-      ivyRepo.descriptorOptional
-    } catch { case _: NoSuchMethodError => false }
+    try ivyRepo.descriptorOptional
+    catch { case _: NoSuchMethodError => false }
 
   private[this] def bootRepository(repo: xsbti.Repository): Resolver = {
     import xsbti.Predefined
@@ -2912,9 +2900,8 @@ object Classpaths {
           case "file" =>
             // This hackery is to deal suitably with UNC paths on Windows. Once we can assume Java7, Paths should save us from this.
             val file =
-              try {
-                new File(i.url.toURI)
-              } catch {
+              try new File(i.url.toURI)
+              catch {
                 case e: java.net.URISyntaxException => new File(i.url.getPath)
               }
             Resolver.file(i.id, file)(patterns)

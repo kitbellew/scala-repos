@@ -112,10 +112,9 @@ class AdminServerActor(val commandClient: CommandClient) extends Actor {
   implicit val system = context.system
 
   def receive: PartialFunction[Any, Unit] = {
-    case StartServer(host, portNum) => {
+    case StartServer(host, portNum) =>
       IO(Http) ! Http.Bind(child, interface = host, port = portNum)
 
-    }
     case m: Http.Bound         => log.info("Bound received. AdminServer is ready.")
     case m: Http.CommandFailed => log.error("Command failed.")
     case _                     => log.error("Unknown message.")

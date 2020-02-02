@@ -15,9 +15,8 @@ object Test extends DirectTest {
     val class2: Array[Byte] = GroovyInterface$1Dump.dump()
     def writeFile(contents: Array[Byte], f: java.io.File): Unit = {
       val out = new BufferedOutputStream(new FileOutputStream(f))
-      try {
-        out.write(contents)
-      } finally out.close()
+      try out.write(contents)
+      finally out.close()
     }
 
     val outdir = testOutput.jfile

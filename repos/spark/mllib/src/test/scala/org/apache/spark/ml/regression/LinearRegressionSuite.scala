@@ -321,12 +321,12 @@ class LinearRegressionSuite
         .setStandardization(false)
 
       // Normal optimizer is not supported with only L1 regularization case.
-      if (solver == "normal") {
+      if (solver == "normal")
         intercept[IllegalArgumentException] {
           trainer1.fit(datasetWithDenseFeature)
           trainer2.fit(datasetWithDenseFeature)
         }
-      } else {
+      else {
         val model1 = trainer1.fit(datasetWithDenseFeature)
         val model2 = trainer2.fit(datasetWithDenseFeature)
 
@@ -392,12 +392,12 @@ class LinearRegressionSuite
         .setSolver(solver)
 
       // Normal optimizer is not supported with only L1 regularization case.
-      if (solver == "normal") {
+      if (solver == "normal")
         intercept[IllegalArgumentException] {
           trainer1.fit(datasetWithDenseFeature)
           trainer2.fit(datasetWithDenseFeature)
         }
-      } else {
+      else {
         val model1 = trainer1.fit(datasetWithDenseFeature)
         val model2 = trainer2.fit(datasetWithDenseFeature)
 
@@ -585,12 +585,12 @@ class LinearRegressionSuite
         .setSolver(solver)
 
       // Normal optimizer is not supported with non-zero elasticnet parameter.
-      if (solver == "normal") {
+      if (solver == "normal")
         intercept[IllegalArgumentException] {
           trainer1.fit(datasetWithDenseFeature)
           trainer2.fit(datasetWithDenseFeature)
         }
-      } else {
+      else {
         val model1 = trainer1.fit(datasetWithDenseFeature)
         val model2 = trainer2.fit(datasetWithDenseFeature)
 
@@ -657,12 +657,12 @@ class LinearRegressionSuite
         .setSolver(solver)
 
       // Normal optimizer is not supported with non-zero elasticnet parameter.
-      if (solver == "normal") {
+      if (solver == "normal")
         intercept[IllegalArgumentException] {
           trainer1.fit(datasetWithDenseFeature)
           trainer2.fit(datasetWithDenseFeature)
         }
-      } else {
+      else {
         val model1 = trainer1.fit(datasetWithDenseFeature)
         val model2 = trainer2.fit(datasetWithDenseFeature)
 
@@ -781,7 +781,7 @@ class LinearRegressionSuite
     // and fitIntercept is true, then the model return yMean as intercept without training.
     // If label is all zeros, then all coefficients are zero regardless of fitIntercept, so
     // no training is needed.
-    for (fitIntercept <- Seq(false, true)) {
+    for (fitIntercept <- Seq(false, true))
       for (standardization <- Seq(false, true)) {
         val model1 = new LinearRegression()
           .setFitIntercept(fitIntercept)
@@ -789,9 +789,8 @@ class LinearRegressionSuite
           .setWeightCol("weight")
           .setSolver("l-bfgs")
           .fit(datasetWithWeightConstantLabel)
-        if (fitIntercept) {
+        if (fitIntercept)
           assert(model1.summary.objectiveHistory(0) ~== 0.0 absTol 1e-4)
-        }
         val model2 = new LinearRegression()
           .setFitIntercept(fitIntercept)
           .setWeightCol("weight")
@@ -799,7 +798,6 @@ class LinearRegressionSuite
           .fit(datasetWithWeightZeroLabel)
         assert(model2.summary.objectiveHistory(0) ~== 0.0 absTol 1e-4)
       }
-    }
   }
 
   test("linear regression model training summary") {
@@ -891,13 +889,13 @@ class LinearRegressionSuite
 
       // Normal solver uses "WeightedLeastSquares". This algorithm does not generate
       // objective history because it does not run through iterations.
-      if (solver == "l-bfgs") {
+      if (solver == "l-bfgs")
         // Objective function should be monotonically decreasing for linear regression
         assert(
           model.summary.objectiveHistory
             .sliding(2)
             .forall(x => x(0) >= x(1)))
-      } else {
+      else {
         // To clalify that the normal solver is used here.
         assert(model.summary.objectiveHistory.length == 1)
         assert(model.summary.objectiveHistory(0) == 0.0)

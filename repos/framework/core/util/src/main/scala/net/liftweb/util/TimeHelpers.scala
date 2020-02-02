@@ -549,20 +549,18 @@ trait TimeHelpers { self: ControlHelpers =>
 
   /** @return a Full(date) or a failure if the input couldn't be translated to date (or Empty if the input is null)*/
   def toDate(in: Any): Box[Date] =
-    try {
-      in match {
-        case null                                  => Empty
-        case d: Date                               => Full(d)
-        case lng: Long                             => Full(new Date(lng))
-        case lng: Number                           => Full(new Date(lng.longValue))
-        case Nil | Empty | None | Failure(_, _, _) => Empty
-        case Full(v)                               => toDate(v)
-        case Some(v)                               => toDate(v)
-        case v :: vs                               => toDate(v)
-        case s: String =>
-          tryo(internetDateFormatter.parse(s)) or tryo(dateFormatter.parse(s))
-        case o => toDate(o.toString)
-      }
+    try in match {
+      case null                                  => Empty
+      case d: Date                               => Full(d)
+      case lng: Long                             => Full(new Date(lng))
+      case lng: Number                           => Full(new Date(lng.longValue))
+      case Nil | Empty | None | Failure(_, _, _) => Empty
+      case Full(v)                               => toDate(v)
+      case Some(v)                               => toDate(v)
+      case v :: vs                               => toDate(v)
+      case s: String =>
+        tryo(internetDateFormatter.parse(s)) or tryo(dateFormatter.parse(s))
+      case o => toDate(o.toString)
     } catch {
       case e: Exception =>
         logger.debug("Error parsing date " + in, e);

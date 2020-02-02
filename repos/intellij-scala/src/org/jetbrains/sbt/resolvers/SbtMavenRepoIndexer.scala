@@ -76,20 +76,18 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   }
 
   def close(): Unit =
-    try {
-      indexer.closeIndexingContext(context, false)
-    } finally {
+    try indexer.closeIndexingContext(context, false)
+    finally {
       container.dispose()
       Thread.currentThread().setContextClassLoader(origClassLoader)
     }
 
   def update(progressIndicator: Option[ProgressIndicator]): Unit =
-    try {
-      if (context.getRepositoryUrl == null)
-        updateLocal(progressIndicator)
-      else
-        updateRemote(progressIndicator)
-    } catch {
+    try if (context.getRepositoryUrl == null)
+      updateLocal(progressIndicator)
+    else
+      updateRemote(progressIndicator)
+    catch {
       case exc: IOException =>
         throw new RepositoryIndexingException(root, exc)
     }
@@ -187,9 +185,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
         progressIndicator foreach (_.setFraction(
           0.5 + 0.5 * (i.toFloat / maxDoc)))
       }
-    } finally {
-      context.releaseIndexSearcher(searcher)
-    }
+    } finally context.releaseIndexSearcher(searcher)
   }
 }
 

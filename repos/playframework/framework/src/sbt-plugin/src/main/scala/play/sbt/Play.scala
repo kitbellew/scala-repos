@@ -71,12 +71,11 @@ object PlayNettyServer extends AutoPlugin {
 
   override def projectSettings = Seq(
     libraryDependencies ++= {
-      if (PlayKeys.playPlugin.value) {
+      if (PlayKeys.playPlugin.value)
         Nil
-      } else {
+      else
         Seq(
           "com.typesafe.play" %% "play-netty-server" % play.core.PlayVersion.current)
-      }
     }
   )
 }

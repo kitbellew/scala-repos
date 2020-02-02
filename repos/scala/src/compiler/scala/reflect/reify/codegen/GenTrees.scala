@@ -100,13 +100,13 @@ trait GenTrees {
           sub.hasSymbolField && sub.symbol != NoSymbol && sub.symbol.metalevel > 0)
         val isRuntimeEval =
           splicee exists (sub => sub.hasSymbolField && sub.symbol == ExprSplice)
-        if (isMetalevelBreach || isRuntimeEval) {
+        if (isMetalevelBreach || isRuntimeEval)
           // we used to convert dynamic splices into runtime evals transparently, but we no longer do that
           // why? see comments in `Metalevels`
           // if (reifyDebug) println("splicing has failed: cannot splice when facing a metalevel breach")
           // EmptyTree
           CannotReifyRuntimeSplice(tree)
-        } else {
+        else {
           if (reifyDebug) println("splicing has succeeded")
           splicee match {
             // we intentionally don't care about the prefix (the first underscore in the `RefiedTree` pattern match)
@@ -152,12 +152,12 @@ trait GenTrees {
         }
 
       case Ident(name) =>
-        if (sym == NoSymbol) {
+        if (sym == NoSymbol)
           // this sometimes happens, e.g. for binds that don't have a body
           // or for untyped code generated during previous phases
           // (see a comment in Reifiers about the latter, starting with "why do we reset attrs?")
           mirrorCall(nme.Ident, reify(name))
-        } else if (!sym.isLocalToReifee) {
+        else if (!sym.isLocalToReifee)
           if (sym.isVariable && sym.owner.isTerm) {
             captureVariable(
               sym
@@ -167,12 +167,12 @@ trait GenTrees {
               mirrorBuildCall(nme.mkIdent, reify(sym)),
               reify(nme.elem))
           } else mirrorBuildCall(nme.mkIdent, reify(sym))
-        } else mirrorCall(nme.Ident, reify(name))
+        else mirrorCall(nme.Ident, reify(name))
 
       case Select(qual, name) =>
-        if (qual.symbol != null && qual.symbol.hasPackageFlag) {
+        if (qual.symbol != null && qual.symbol.hasPackageFlag)
           mirrorBuildCall(nme.mkIdent, reify(sym))
-        } else {
+        else {
           val effectiveName =
             if (sym != null && sym != NoSymbol) sym.name else name
           reifyProduct(Select(qual, effectiveName))

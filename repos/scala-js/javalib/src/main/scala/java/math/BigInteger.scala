@@ -97,19 +97,18 @@ object BigInteger {
     new BigInteger(bitLength, 100, rnd)
 
   def valueOf(lVal: Long): BigInteger =
-    if (lVal < 0) {
+    if (lVal < 0)
       if (lVal != -1) new BigInteger(-1, -lVal)
       else MINUS_ONE
-    } else if (lVal <= 10) {
+    else if (lVal <= 10)
       SMALL_VALUES(lVal.toInt)
-    } else {
+    else
       new BigInteger(1, lVal)
-    }
 
   private[math] def getPowerOfTwo(exp: Int): BigInteger =
-    if (exp < TWO_POWS.length) {
+    if (exp < TWO_POWS.length)
       TWO_POWS(exp)
-    } else {
+    else {
       val intCount = exp >> 5
       val bitN = exp & 31
       val resDigits = new Array[Int](intCount + 1)
@@ -224,9 +223,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
       sign = 1
       numberLength = (numBits + 31) >> 5
       digits = new Array[Int](numberLength)
-      for (i <- 0 until numberLength) {
+      for (i <- 0 until numberLength)
         digits(i) = rnd.nextInt()
-      }
       digits(numberLength - 1) >>>= (-numBits) & 31
       this.cutOffLeadingZeroes()
     }
@@ -346,10 +344,10 @@ class BigInteger extends Number with Comparable[BigInteger] {
       throw new ArithmeticException("BigInteger divide by zero")
 
     val divisorSign = divisor.sign
-    if (divisor.isOne) {
+    if (divisor.isOne)
       if (divisor.sign > 0) this
       else this.negate()
-    } else {
+    else {
       val thisSign = sign
       val thisLen = numberLength
       val divisorLen = divisor.numberLength
@@ -360,30 +358,29 @@ class BigInteger extends Number with Comparable[BigInteger] {
         valueOf(bi)
       } else {
         val cmp = {
-          if (thisLen != divisorLen) {
+          if (thisLen != divisorLen)
             if (thisLen > divisorLen) 1
             else -1
-          } else {
+          else
             Elementary.compareArrays(digits, divisor.digits, thisLen)
-          }
         }
 
-        if (cmp == EQUALS) {
+        if (cmp == EQUALS)
           if (thisSign == divisorSign) ONE
           else MINUS_ONE
-        } else if (cmp == LESS) {
+        else if (cmp == LESS)
           ZERO
-        } else {
+        else {
           val resLength = thisLen - divisorLen + 1
           val resDigits = new Array[Int](resLength)
           val resSign = if (thisSign == divisorSign) 1 else -1
-          if (divisorLen == 1) {
+          if (divisorLen == 1)
             Division.divideArrayByInt(
               resDigits,
               digits,
               thisLen,
               divisor.digits(0))
-          } else {
+          else
             Division.divide(
               resDigits,
               resLength,
@@ -391,7 +388,6 @@ class BigInteger extends Number with Comparable[BigInteger] {
               thisLen,
               divisor.digits,
               divisorLen)
-          }
           val result = new BigInteger(resSign, resLength, resDigits)
           result.cutOffLeadingZeroes()
           result
@@ -410,24 +406,23 @@ class BigInteger extends Number with Comparable[BigInteger] {
 
     val divisorLen = divisor.numberLength
     val divisorDigits = divisor.digits
-    if (divisorLen == 1) {
+    if (divisorLen == 1)
       Division.divideAndRemainderByInteger(this, divisorDigits(0), divisorSign)
-    } else {
+    else {
       // res[0] is a quotient and res[1] is a remainder:
       val thisDigits = digits
       val thisLen = numberLength
       val cmp = {
-        if (thisLen != divisorLen) {
+        if (thisLen != divisorLen)
           if (thisLen > divisorLen) 1
           else -1
-        } else {
+        else
           Elementary.compareArrays(thisDigits, divisorDigits, thisLen)
-        }
       }
 
-      if (cmp < 0) {
+      if (cmp < 0)
         new QuotAndRem(ZERO, this)
-      } else {
+      else {
         val thisSign = sign
         val quotientLength = thisLen - divisorLen + 1
         val remainderLength = divisorLen
@@ -475,36 +470,34 @@ class BigInteger extends Number with Comparable[BigInteger] {
     val val1 = this.abs()
     val val2 = bi.abs()
     // To avoid a possible division by zero
-    if (val1.signum() == 0) {
+    if (val1.signum() == 0)
       val2
-    } else if (val2.signum() == 0) {
+    else if (val2.signum() == 0)
       val1
-    } else if (((val1.numberLength == 1) && (val1.digits(0) > 0)) &&
-               ((val2.numberLength == 1) && (val2.digits(0) > 0))) {
+    else if (((val1.numberLength == 1) && (val1.digits(0) > 0)) &&
+             ((val2.numberLength == 1) && (val2.digits(0) > 0)))
       // Optimization for small operands
       // (op2.bitLength() < 32) and (op1.bitLength() < 32)
       BigInteger.valueOf(Division.gcdBinary(val1.intValue(), val2.intValue()))
-    } else {
+    else
       Division.gcdBinary(val1.copy(), val2.copy())
-    }
   }
 
   def getLowestSetBit(): Int =
-    if (sign == 0) {
+    if (sign == 0)
       -1
-    } else {
+    else {
       // (sign != 0) implies that exists some non zero digit
       val i = getFirstNonzeroDigit
       (i << 5) + java.lang.Integer.numberOfTrailingZeros(digits(i))
     }
 
   override def hashCode(): Int =
-    if (_hashCode != 0) {
+    if (_hashCode != 0)
       _hashCode
-    } else {
-      for (i <- 0 until numberLength) {
+    else {
+      for (i <- 0 until numberLength)
         _hashCode = _hashCode * 33 + digits(i)
-      }
       _hashCode = _hashCode * sign
       _hashCode
     }
@@ -539,14 +532,14 @@ class BigInteger extends Number with Comparable[BigInteger] {
   }
 
   def modInverse(m: BigInteger): BigInteger =
-    if (m.sign <= 0) {
+    if (m.sign <= 0)
       throw new ArithmeticException("BigInteger: modulus not positive")
-    } else if (!(testBit(0) || m.testBit(0))) {
+    else if (!(testBit(0) || m.testBit(0)))
       // If both are even, no inverse exists
       throw new ArithmeticException("BigInteger not invertible.")
-    } else if (m.isOne) {
+    else if (m.isOne)
       ZERO
-    } else {
+    else {
       // From now on: (m > 1)
       val res = Division.modInverseMontgomery(abs().mod(m), m)
       if (res.sign == 0)
@@ -562,11 +555,11 @@ class BigInteger extends Number with Comparable[BigInteger] {
       throw new ArithmeticException("BigInteger: modulus not positive")
 
     var base = this
-    if (m.isOne || (_exponent.sign > 0 && base.sign == 0)) {
+    if (m.isOne || (_exponent.sign > 0 && base.sign == 0))
       BigInteger.ZERO
-    } else if (base.sign == 0 && _exponent.sign == 0) {
+    else if (base.sign == 0 && _exponent.sign == 0)
       BigInteger.ONE
-    } else {
+    else {
       if (_exponent.sign < 0) {
         base = modInverse(m)
         _exponent = _exponent.negate()
@@ -602,22 +595,20 @@ class BigInteger extends Number with Comparable[BigInteger] {
   def or(bi: BigInteger): BigInteger = Logical.or(this, bi)
 
   def pow(exp: Int): BigInteger =
-    if (exp < 0) {
+    if (exp < 0)
       throw new ArithmeticException("Negative exponent")
-    } else if (exp == 0) {
+    else if (exp == 0)
       ONE
-    } else if (exp == 1 || equals(ONE) || equals(ZERO)) {
+    else if (exp == 1 || equals(ONE) || equals(ZERO))
       this
-    } else if (!testBit(0)) {
+    else if (!testBit(0)) {
       var x = 1
-      while (!testBit(x)) {
+      while (!testBit(x))
         x += 1
-      }
       getPowerOfTwo(x * exp).multiply(this.shiftRight(x).pow(exp))
-    } else {
+    } else
       // if even take out 2^x factor which we can calculate by shifting.
       Multiplication.pow(this, exp)
-    }
 
   def remainder(divisor: BigInteger): BigInteger = {
     if (divisor.sign == 0)
@@ -626,23 +617,22 @@ class BigInteger extends Number with Comparable[BigInteger] {
     val thisLen = numberLength
     val divisorLen = divisor.numberLength
     val cmp = {
-      if (thisLen != divisorLen) {
+      if (thisLen != divisorLen)
         if (thisLen > divisorLen) 1
         else -1
-      } else {
+      else
         Elementary.compareArrays(digits, divisor.digits, thisLen)
-      }
     }
 
-    if (cmp == LESS) {
+    if (cmp == LESS)
       this
-    } else {
+    else {
       val resLength = divisorLen
       var resDigits = new Array[Int](resLength)
-      if (resLength == 1) {
+      if (resLength == 1)
         resDigits(0) =
           Division.remainderArrayByInt(digits, thisLen, divisor.digits(0))
-      } else {
+      else {
         val qLen = thisLen - divisorLen + 1
         resDigits = Division.divide(
           null,
@@ -679,15 +669,15 @@ class BigInteger extends Number with Comparable[BigInteger] {
   def testBit(n: Int): Boolean = {
     val intCount = n >> 5
 
-    if (n == 0) {
+    if (n == 0)
       (digits(0) & 1) != 0
-    } else if (n < 0) {
+    else if (n < 0)
       throw new ArithmeticException("Negative bit address")
-    } else if (intCount >= numberLength) {
+    else if (intCount >= numberLength)
       sign < 0
-    } else if (sign < 0 && intCount < getFirstNonzeroDigit) {
+    else if (sign < 0 && intCount < getFirstNonzeroDigit)
       false
-    } else {
+    else {
       var digit = digits(intCount)
       if (sign < 0)
         digit = if (getFirstNonzeroDigit == intCount) -digit else ~digit
@@ -752,9 +742,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
     if (sign < 0) {
       setBytesForDigit(-temp.digits(digitIndex))
       loopBytes(i => setBytesForDigit(~temp.digits(i)))
-    } else {
+    } else
       loopBytes(i => setBytesForDigit(temp.digits(i)))
-    }
     bytes
   }
 
@@ -783,9 +772,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
       }
 
     loop()
-    if (digits(numberLength) == 0) {
+    if (digits(numberLength) == 0)
       sign = 0
-    }
     numberLength += 1
   }
 
@@ -793,19 +781,16 @@ class BigInteger extends Number with Comparable[BigInteger] {
     (0 until numberLength).forall(i => digits(i) == b(i))
 
   private[math] def getFirstNonzeroDigit(): Int = {
-    if (firstNonzeroDigit == firstNonzeroDigitNotSet) {
-      firstNonzeroDigit = {
-        if (this.sign == 0) {
+    if (firstNonzeroDigit == firstNonzeroDigitNotSet)
+      firstNonzeroDigit =
+        if (this.sign == 0)
           -1
-        } else {
+        else {
           var i = 0
-          while (digits(i) == 0) {
+          while (digits(i) == 0)
             i += 1
-          }
           i
         }
-      }
-    }
     firstNonzeroDigit
   }
 
@@ -861,20 +846,17 @@ class BigInteger extends Number with Comparable[BigInteger] {
     }
 
     loop()
-    if (highBytes != 0) {
+    if (highBytes != 0)
       // Put the first bytes in the highest element of the int array
       if (firstNonzeroDigit != firstNonzeroDigitNotSet) {
-        for (j <- 0 until bytesLen) {
+        for (j <- 0 until bytesLen)
           digits(i) = (digits(i) << 8) | (byteValues(j) & 0xFF)
-        }
         digits(i) = ~digits(i)
       } else {
-        for (j <- 0 until bytesLen) {
+        for (j <- 0 until bytesLen)
           digits(i) = (digits(i) << 8) | (byteValues(j) & 0xFF)
-        }
         digits(i) = -digits(i)
       }
-    }
   }
 
   /** Puts a big-endian byte array into a little-endian int array. */
@@ -896,9 +878,8 @@ class BigInteger extends Number with Comparable[BigInteger] {
       i += 1
     }
     // Put the first bytes in the highest element of the int array
-    for (j <- 0 until bytesLen) {
+    for (j <- 0 until bytesLen)
       digits(i) = (digits(i) << 8) | (byteValues(j) & 0xFF)
-    }
   }
 
   /** @see BigInteger#BigInteger(String, int). */

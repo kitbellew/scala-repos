@@ -85,7 +85,7 @@ object JobStats {
 
   def toJsonValue(a: Any): String =
     if (a == null) "null"
-    else {
+    else
       Try(a.toString.toInt)
         .recoverWith { case t: Throwable => Try(a.toString.toDouble) }
         .recover {
@@ -95,7 +95,6 @@ object JobStats {
         }
         .get
         .toString
-    }
 }
 
 // Simple wrapper for a Map that contains the useful info from the job flow's stats

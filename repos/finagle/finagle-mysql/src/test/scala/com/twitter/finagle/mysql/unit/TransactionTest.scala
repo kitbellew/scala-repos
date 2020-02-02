@@ -46,17 +46,15 @@ class TransactionTest extends FunSuite with MockitoSugar with MustMatchers {
     val factory = spy(new MockServiceFactory(service))
     val client = Client(factory)
 
-    try {
-      client.transaction[String] { c =>
-        c.query(sqlQuery)
-          .map { r1 =>
-            throw new RuntimeException("Fake exception to trigger ROLLBACK")
-            "first response object"
-          }
-          .flatMap { r2 =>
-            c.query(sqlQuery).map { r3 => "final response object" }
-          }
-      }
+    try client.transaction[String] { c =>
+      c.query(sqlQuery)
+        .map { r1 =>
+          throw new RuntimeException("Fake exception to trigger ROLLBACK")
+          "first response object"
+        }
+        .flatMap { r2 =>
+          c.query(sqlQuery).map { r3 => "final response object" }
+        }
     } catch {
       case e: Exception =>
     }

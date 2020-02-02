@@ -70,11 +70,10 @@ object ScalaXmlSupport extends ScalaXmlSupport {
       true)
     factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
     val parser = factory.newSAXParser()
-    try {
-      parser.setProperty(
-        "http://apache.org/xml/properties/locale",
-        java.util.Locale.ROOT)
-    } catch {
+    try parser.setProperty(
+      "http://apache.org/xml/properties/locale",
+      java.util.Locale.ROOT)
+    catch {
       case e: org.xml.sax.SAXNotRecognizedException ⇒ // property is not needed
     }
     parser

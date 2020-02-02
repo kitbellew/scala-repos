@@ -48,9 +48,9 @@ object UriEncoding {
     val out = new ByteArrayOutputStream()
     for (b <- in) {
       val allowed = segmentChars.get(b & 0xFF)
-      if (allowed) {
+      if (allowed)
         out.write(b)
-      } else {
+      else {
         out.write('%')
         out.write(upperHex((b >> 4) & 0xF))
         out.write(upperHex(b & 0xF))
@@ -117,13 +117,12 @@ object UriEncoding {
             s"Cannot decode $s: expected hex digit at position $inPos.")
         // Write decoded byte
         out.write((high << 4) + low)
-      } else if (segmentChars.get(b)) {
+      } else if (segmentChars.get(b))
         // This character is allowed
         out.write(b)
-      } else {
+      else
         throw new InvalidUriEncodingException(
           s"Cannot decode $s: illegal character at position $inPos.")
-      }
     }
     out.toString(outputCharset)
   }
@@ -179,7 +178,7 @@ object UriEncoding {
   /** Create a BitSet to act as a membership lookup table for the given characters. */
   private def membershipTable(chars: Seq[Char]): BitSet = {
     val bits = new BitSet(256)
-    for (c <- chars) { bits.set(c.toInt) }
+    for (c <- chars) bits.set(c.toInt)
     bits
   }
 
@@ -196,15 +195,14 @@ object UriEncoding {
     * If the character isn't a valid hex digit, return -1 instead.
     */
   private def fromHex(b: Int): Int =
-    if (b >= '0' && b <= '9') {
+    if (b >= '0' && b <= '9')
       b - '0'
-    } else if (b >= 'A' && b <= 'Z') {
+    else if (b >= 'A' && b <= 'Z')
       10 + b - 'A'
-    } else if (b >= 'a' && b <= 'z') {
+    else if (b >= 'a' && b <= 'z')
       10 + b - 'a'
-    } else {
+    else
       -1
-    }
 
   /**
     * Split a string on a character. Similar to `String.split` except, for this method,
@@ -223,15 +221,14 @@ object UriEncoding {
     def splitLoop(start: Int): Unit =
       if (start < s.length) {
         var end = s.indexOf(c, start)
-        if (end == -1) {
+        if (end == -1)
           result += s.substring(start)
-        } else {
+        else {
           result += s.substring(start, end)
           splitLoop(end + 1)
         }
-      } else if (start == s.length) {
+      } else if (start == s.length)
         result += ""
-      }
     splitLoop(0)
     result
   }

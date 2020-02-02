@@ -176,10 +176,10 @@ trait TypeDiagnostics {
     def defaultMessage = moduleMessage + preResultString + tree.tpe
     def applyMessage = defaultMessage + tree.symbol.locationString
 
-    if (!tree.hasExistingSymbol) {
+    if (!tree.hasExistingSymbol)
       if (isTyperInPattern) patternMessage
       else exprMessage
-    } else if (sym.isOverloaded) overloadedMessage
+    else if (sym.isOverloaded) overloadedMessage
     else if (sym.isModule) moduleMessage
     else if (sym.name == nme.apply) applyMessage
     else defaultMessage
@@ -415,13 +415,12 @@ trait TypeDiagnostics {
         strings("" + t) += diag
         names(sym.name) += diag
       }
-    for (tpe <- types; t <- tpe) {
+    for (tpe <- types; t <- tpe)
       t match {
         case ConstantType(_)    => record(t, t.underlying.typeSymbol)
         case TypeRef(_, sym, _) => record(t, sym)
         case _                  => ()
       }
-    }
 
     val collisions = strings.values ++ names.values filter (_.size > 1)
     collisions.flatten.toList
@@ -460,12 +459,11 @@ trait TypeDiagnostics {
         // If they still print identically:
         //   a) If they are type parameters with different owners, append (in <owner>)
         //   b) Failing that, the best we can do is append "(some other)" to the latter.
-        if (td1 string_== td2) {
+        if (td1 string_== td2)
           if (td1 owner_== td2)
             td2.modifyName("(some other)" + _)
           else
             tds foreach (_.typeQualify())
-        }
       }
       // performing the actual operation
       op
@@ -523,7 +521,7 @@ trait TypeDiagnostics {
           // definition of the class being referenced.
           if (t.tpe ne null) {
             for (tp <- t.tpe; if !treeTypes(tp) && !currentOwner.ownerChain
-                   .contains(tp.typeSymbol)) {
+                   .contains(tp.typeSymbol))
               tp match {
                 case NoType | NoPrefix    =>
                 case NullaryMethodType(_) =>
@@ -532,7 +530,6 @@ trait TypeDiagnostics {
                   log(s"$tp referenced from $currentOwner")
                   treeTypes += tp
               }
-            }
             // e.g. val a = new Foo ; new a.Bar ; don't let a be reported as unused.
             t.tpe.prefix foreach {
               case SingleType(_, sym) => targets += sym
@@ -707,10 +704,10 @@ trait TypeDiagnostics {
 
       ex match {
         case CyclicReference(sym, info: TypeCompleter) =>
-          if (context0.owner.isTermMacro) {
+          if (context0.owner.isTermMacro)
             // see comments to TypeSigError for an explanation of this special case
             throw ex
-          } else {
+          else {
             val pos = info.tree match {
               case Import(expr, _) => expr.pos
               case _               => ex.pos

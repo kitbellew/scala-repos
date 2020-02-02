@@ -24,8 +24,8 @@ import org.scalatest.prop._
 trait OptimizeTestBaseTrait {
   import org.scalacheck.Arbitrary._
   implicit val arbVector: Arbitrary[DenseVector[Double]] = Arbitrary(for {
-    n <- arbitrary[Int] suchThat { _ > 0 }
-    d <- arbitrary[Double] map { _ % 10 }
+    n <- arbitrary[Int] suchThat _ > 0
+    d <- arbitrary[Double] map _ % 10
   } yield (DenseVector.tabulate(n % 3 + 1)(i => scala.math.random * d)))
 
   implicit def arbSV: Arbitrary[SparseVector[Double]] = {
@@ -34,9 +34,7 @@ trait OptimizeTestBaseTrait {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 10 }
         xl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*)
-      }
+      } yield SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*)
     }
   }
 
@@ -45,9 +43,8 @@ trait OptimizeTestBaseTrait {
       v <- arbitrary[DenseVector[Double]]
     } yield {
       val c = Counter[String, Double]()
-      for (i <- 0 until v.size) {
+      for (i <- 0 until v.size)
         c(i + "") = v(i)
-      }
       c
     })
 

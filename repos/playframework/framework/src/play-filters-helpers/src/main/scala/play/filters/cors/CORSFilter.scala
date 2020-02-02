@@ -57,11 +57,10 @@ class CORSFilter(
 
   override def apply(f: RequestHeader => Future[Result])(
       request: RequestHeader): Future[Result] =
-    if (pathPrefixes.exists(request.path.startsWith)) {
+    if (pathPrefixes.exists(request.path.startsWith))
       filterRequest(f, request)
-    } else {
+    else
       f(request)
-    }
 }
 
 object CORSFilter {

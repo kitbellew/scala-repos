@@ -46,9 +46,8 @@ class StorageClient(val config: StorageClientConfig)
     conf.set("zookeeper.recovery.retry", "1")
   }
 
-  try {
-    HBaseAdmin.checkHBaseAvailable(conf)
-  } catch {
+  try HBaseAdmin.checkHBaseAvailable(conf)
+  catch {
     case e: MasterNotRunningException =>
       error("HBase master is not running (ZooKeeper ensemble: " +
         conf.get("hbase.zookeeper.quorum") + "). Please make sure that HBase " +
@@ -64,12 +63,11 @@ class StorageClient(val config: StorageClientConfig)
           "configured HBase to use an external ZooKeeper, that means your " +
           "HBase is not started or configured properly.")
       throw e
-    case e: Exception => {
+    case e: Exception =>
       error(
         "Failed to connect to HBase." +
           " Please check if HBase is running properly.")
       throw e
-    }
   }
 
   val connection = HConnectionManager.createConnection(conf)

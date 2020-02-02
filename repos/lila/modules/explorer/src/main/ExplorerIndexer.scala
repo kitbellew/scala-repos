@@ -56,7 +56,7 @@ private final class ExplorerIndexer(
         .enumerate(maxGames, stopOnError = true) &>
         Enumeratee.mapM[Game].apply[Option[GamePGN]] { game =>
           makeFastPgn(game) map {
-            _ map { game -> _ }
+            _ map game -> _
           }
         } &>
         Enumeratee.collect { case Some(el) => el } &>

@@ -113,7 +113,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
           throw new IncorrectOperationException(
             "class does not match expected name")
         val qualName = c.qualifiedName
-        if (qualName != null) {
+        if (qualName != null)
           return tail(qualName) {
             ScalaImportTypeFix
               .getImportHolder(ref = this, project = getProject)
@@ -127,7 +127,6 @@ class ScReferenceExpressionImpl(node: ASTNode)
                   .asInstanceOf[ScReferenceExpression])
             //todo: conflicts with other classes with same name?
           }
-        }
         this
       case t: ScTypeAlias =>
         throw new IncorrectOperationException(
@@ -200,12 +199,12 @@ class ScReferenceExpressionImpl(node: ASTNode)
       this,
       new CompletionProcessor(getKinds(incomplete = true), this, implicits))
       .filter { r =>
-        if (filterNotNamedVariants) {
+        if (filterNotNamedVariants)
           r match {
             case res: ScalaResolveResult => res.isNamedParameter
             case _                       => false
           }
-        } else true
+        else true
       }
 
   def getSameNameVariants: Array[ResolveResult] =
@@ -289,7 +288,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
                               val visitor = new ScalaRecursiveElementVisitor {
                                 override def visitSimpleTypeElement(
                                     simple: ScSimpleTypeElement): Unit = {
-                                  if (simple.singleton) {
+                                  if (simple.singleton)
                                     simple.reference match {
                                       case Some(ref)
                                           if ref.refName == p.name && ref
@@ -297,7 +296,6 @@ class ScReferenceExpressionImpl(node: ASTNode)
                                         found = true
                                       case _ =>
                                     }
-                                  }
                                   super.visitSimpleTypeElement(simple)
                                 }
                               }
@@ -352,13 +350,13 @@ class ScReferenceExpressionImpl(node: ASTNode)
               case None    => return Failure("No declared type found", Some(this))
             }
           case _ =>
-            if (stableTypeRequired && refPatt.isStable) {
+            if (stableTypeRequired && refPatt.isStable)
               r.fromType match {
                 case Some(fT) =>
                   ScProjectionType(fT, refPatt, superReference = false)
                 case None => ScType.designator(refPatt)
               }
-            } else {
+            else {
               val result = refPatt.getType(TypingContext.empty)
               result match {
                 case Success(tp, _) => s.subst(tp)
@@ -427,9 +425,9 @@ class ScReferenceExpressionImpl(node: ASTNode)
           case Success(tp, _) => tp
           case _              => return result
         })
-        if (seqClass != null) {
+        if (seqClass != null)
           ScParameterizedType(ScType.designator(seqClass), Seq(computeType))
-        } else computeType
+        else computeType
       case Some(ScalaResolveResult(obj: ScObject, s)) =>
         def tail =
           fromType match {
@@ -437,7 +435,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
             case _        => ScType.designator(obj)
           }
         //hack to add Eta expansion for case classes
-        if (obj.isSyntheticObject) {
+        if (obj.isSyntheticObject)
           ScalaPsiUtil.getCompanionModule(obj) match {
             case Some(clazz) if clazz.isCase && !clazz.hasTypeParameters =>
               expectedType() match {
@@ -455,14 +453,14 @@ class ScReferenceExpressionImpl(node: ASTNode)
               }
             case _ => tail
           }
-        } else tail
+        else tail
       case Some(r @ ScalaResolveResult(f: ScFieldId, s)) =>
-        if (stableTypeRequired && f.isStable) {
+        if (stableTypeRequired && f.isStable)
           r.fromType match {
             case Some(fT) => ScProjectionType(fT, f, superReference = false)
             case None     => ScType.designator(f)
           }
-        } else {
+        else {
           val result = f.getType(TypingContext.empty)
           result match {
             case Success(tp, _) => s.subst(tp)
@@ -502,7 +500,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
               getResolveScope,
               ScalaPsiManager.ClassCategory.TYPE)
           def convertQualifier(typeResult: TypeResult[ScType]): Option[ScType] =
-            if (jlClass != null) {
+            if (jlClass != null)
               typeResult match {
                 case Success(tp, _) =>
                   val actualType = tp match {
@@ -524,7 +522,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
                       ScExistentialArgument("_$1", Nil, Nothing, actualType))))
                 case _ => None
               }
-            } else None
+            else None
           val returnType: Option[ScType] = qualifier match {
             case Some(qual) =>
               convertQualifier(qual.getType(TypingContext.empty))
@@ -547,9 +545,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
             s,
             getResolveScope,
             returnType)
-        } else {
+        } else
           ResolveUtils.javaPolymorphicType(method, s, getResolveScope)
-        }
       case _ => return Failure("Cannot resolve expression", Some(this))
     }
     qualifier match {

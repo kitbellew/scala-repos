@@ -27,11 +27,10 @@ import breeze.util.Isomorphism
   */
 trait DiffFunction[T] extends StochasticDiffFunction[T] { outer =>
   def cached(implicit copy: CanCopy[T]) =
-    if (this.isInstanceOf[CachedDiffFunction[_]]) {
+    if (this.isInstanceOf[CachedDiffFunction[_]])
       this
-    } else {
+    else
       new CachedDiffFunction(this)
-    }
 
   override def throughLens[U](implicit l: Isomorphism[T, U]): DiffFunction[U] =
     new DiffFunction[U] {

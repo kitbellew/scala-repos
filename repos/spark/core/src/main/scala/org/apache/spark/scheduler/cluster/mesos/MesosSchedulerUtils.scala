@@ -89,22 +89,20 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     conf.getOption("spark.mesos.secret").foreach { secret =>
       credBuilder.setSecret(ByteString.copyFromUtf8(secret))
     }
-    if (credBuilder.hasSecret && !fwInfoBuilder.hasPrincipal) {
+    if (credBuilder.hasSecret && !fwInfoBuilder.hasPrincipal)
       throw new SparkException(
         "spark.mesos.principal must be configured when spark.mesos.secret is set")
-    }
     conf.getOption("spark.mesos.role").foreach { role =>
       fwInfoBuilder.setRole(role)
     }
-    if (credBuilder.hasPrincipal) {
+    if (credBuilder.hasPrincipal)
       new MesosSchedulerDriver(
         scheduler,
         fwInfoBuilder.build(),
         masterUrl,
         credBuilder.build())
-    } else {
+    else
       new MesosSchedulerDriver(scheduler, fwInfoBuilder.build(), masterUrl)
-    }
   }
 
   /**
@@ -136,11 +134,10 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
               markErr()
             }
           } catch {
-            case e: Exception => {
+            case e: Exception =>
               logError("driver.run() failed", e)
               error = Some(e)
               markErr()
-            }
           }
         }
       }.start()
@@ -196,7 +193,7 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     var remain = amountToUse
     var requestedResources = new ArrayBuffer[Resource]
     val remainingResources = resources.asScala.map {
-      case r => {
+      case r =>
         if (remain > 0 &&
             r.getType == Value.Type.SCALAR &&
             r.getScalar.getValue > 0.0 &&
@@ -211,10 +208,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
             resourceName,
             r.getScalar.getValue - usage,
             Some(r.getRole))
-        } else {
+        } else
           r
-        }
-      }
     }
 
     // Filter any resource that has depleted.
@@ -328,27 +323,24 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
      */
     val splitter = Splitter.on(';').trimResults().withKeyValueSeparator(':')
     // kv splitter
-    if (constraintsVal.isEmpty) {
+    if (constraintsVal.isEmpty)
       Map()
-    } else {
-      try {
-        splitter
-          .split(constraintsVal)
-          .asScala
-          .toMap
-          .mapValues(v =>
-            if (v == null || v.isEmpty) {
-              Set[String]()
-            } else {
-              v.split(',').toSet
-            })
-      } catch {
+    else
+      try splitter
+        .split(constraintsVal)
+        .asScala
+        .toMap
+        .mapValues(v =>
+          if (v == null || v.isEmpty)
+            Set[String]()
+          else
+            v.split(',').toSet)
+      catch {
         case NonFatal(e) =>
           throw new IllegalArgumentException(
             s"Bad constraint string: $constraintsVal",
             e)
       }
-    }
   }
 
   // These defaults copied from YARN

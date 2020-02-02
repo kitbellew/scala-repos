@@ -13,12 +13,9 @@ private[reflect] trait Gil {
 
   @inline final def gilSynchronized[T](body: => T): T =
     if (isCompilerUniverse) body
-    else {
+    else
       try {
         gil.lock()
         body
-      } finally {
-        gil.unlock()
-      }
-    }
+      } finally gil.unlock()
 }

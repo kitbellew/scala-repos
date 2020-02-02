@@ -68,12 +68,12 @@ object ScalaNamesUtil {
       case memb: PsiMember =>
         val containingClass = memb.containingClass
         if (containingClass != null && containingClass.qualifiedName != null && memb
-              .hasModifierProperty(PsiModifier.STATIC)) {
+              .hasModifierProperty(PsiModifier.STATIC))
           Some(
             Seq(containingClass.qualifiedName, named.name)
               .filter(_ != "")
               .mkString("."))
-        } else None
+        else None
       case _ => None
     }
 

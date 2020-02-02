@@ -178,11 +178,10 @@ class FileMessageSet private[kafka] (
       size: Int): Int = {
     // Ensure that the underlying size has not changed.
     val newSize = math.min(channel.size().toInt, end) - start
-    if (newSize < _size.get()) {
+    if (newSize < _size.get())
       throw new KafkaException(
         "Size of FileMessageSet %s has been truncated during write: old size %d, new size %d"
           .format(file.getAbsolutePath, _size.get(), newSize))
-    }
     val position = start + writePosition
     val count = math.min(size, sizeInBytes)
     val bytesTransferred = (destChannel match {
@@ -407,18 +406,16 @@ object FileMessageSet {
       fileAlreadyExists: Boolean = false,
       initFileSize: Int = 0,
       preallocate: Boolean = false): FileChannel =
-    if (mutable) {
+    if (mutable)
       if (fileAlreadyExists)
         new RandomAccessFile(file, "rw").getChannel()
-      else {
-        if (preallocate) {
-          val randomAccessFile = new RandomAccessFile(file, "rw")
-          randomAccessFile.setLength(initFileSize)
-          randomAccessFile.getChannel()
-        } else
-          new RandomAccessFile(file, "rw").getChannel()
-      }
-    } else
+      else if (preallocate) {
+        val randomAccessFile = new RandomAccessFile(file, "rw")
+        randomAccessFile.setLength(initFileSize)
+        randomAccessFile.getChannel()
+      } else
+        new RandomAccessFile(file, "rw").getChannel()
+    else
       new FileInputStream(file).getChannel()
 }
 

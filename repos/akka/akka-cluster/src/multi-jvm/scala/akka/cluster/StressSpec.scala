@@ -326,7 +326,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           if (infolog)
             log.info(
               s"[$title] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n$formatMetrics\n\n$formatPhi\n\n$formatStats")
-          reportTo foreach { _ ! aggregated }
+          reportTo foreach _ ! aggregated
           context stop self
         }
       case _: CurrentClusterState ⇒
@@ -479,7 +479,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           }
         }
         val phiSet = immutable.SortedSet.empty[PhiValue] ++ phiByNode.values
-        reportTo foreach { _ ! PhiResult(cluster.selfAddress, phiSet) }
+        reportTo foreach _ ! PhiResult(cluster.selfAddress, phiSet)
       case state: CurrentClusterState ⇒ nodes = state.members.map(_.address)
       case memberEvent: MemberEvent ⇒ nodes += memberEvent.member.address
       case ReportTo(ref) ⇒
@@ -512,13 +512,13 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     def receive = {
       case CurrentInternalStats(gossipStats, vclockStats) ⇒
         val diff = startStats match {
-          case None ⇒ { startStats = Some(gossipStats); gossipStats }
+          case None ⇒ startStats = Some(gossipStats); gossipStats
           case Some(start) ⇒ gossipStats :- start
         }
         val res = StatsResult(
           cluster.selfAddress,
           CurrentInternalStats(diff, vclockStats))
-        reportTo foreach { _ ! res }
+        reportTo foreach _ ! res
       case ReportTo(ref) ⇒
         reportTo foreach context.unwatch
         reportTo = ref
@@ -714,7 +714,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     def receive = {
       case props: Props ⇒ context.actorOf(props)
-      case e: Exception ⇒ context.children foreach { _ ! e }
+      case e: Exception ⇒ context.children foreach _ ! e
       case GetChildrenCount ⇒
         sender() ! ChildrenCount(context.children.size, restartCount)
       case Reset ⇒
@@ -1394,7 +1394,7 @@ abstract class StressSpec
 
     "end routers that are running while nodes are joining" taggedAs LongRunningTest in within(
       30.seconds) {
-      if (exerciseActors) {
+      if (exerciseActors)
         runOn(roles.take(3): _*) {
           master match {
             case Some(m) ⇒
@@ -1406,55 +1406,50 @@ abstract class StressSpec
             case None ⇒ fail("master not running")
           }
         }
-      }
       enterBarrier("after-" + step)
     }
 
     "use routers with normal throughput" taggedAs LongRunningTest in {
-      if (exerciseActors) {
+      if (exerciseActors)
         exerciseRouters(
           "use routers with normal throughput",
           normalThroughputDuration,
           batchInterval = workBatchInterval,
           expectDroppedMessages = false,
           tree = false)
-      }
       enterBarrier("after-" + step)
     }
 
     "use routers with high throughput" taggedAs LongRunningTest in {
-      if (exerciseActors) {
+      if (exerciseActors)
         exerciseRouters(
           "use routers with high throughput",
           highThroughputDuration,
           batchInterval = Duration.Zero,
           expectDroppedMessages = false,
           tree = false)
-      }
       enterBarrier("after-" + step)
     }
 
     "use many actors with normal throughput" taggedAs LongRunningTest in {
-      if (exerciseActors) {
+      if (exerciseActors)
         exerciseRouters(
           "use many actors with normal throughput",
           normalThroughputDuration,
           batchInterval = workBatchInterval,
           expectDroppedMessages = false,
           tree = true)
-      }
       enterBarrier("after-" + step)
     }
 
     "use many actors with high throughput" taggedAs LongRunningTest in {
-      if (exerciseActors) {
+      if (exerciseActors)
         exerciseRouters(
           "use many actors with high throughput",
           highThroughputDuration,
           batchInterval = Duration.Zero,
           expectDroppedMessages = false,
           tree = true)
-      }
       enterBarrier("after-" + step)
     }
 
@@ -1464,12 +1459,11 @@ abstract class StressSpec
     }
 
     "exercise supervision" taggedAs LongRunningTest in {
-      if (exerciseActors) {
+      if (exerciseActors)
         exerciseSupervision(
           "exercise supervision",
           supervisionDuration,
           supervisionOneIteration)
-      }
       enterBarrier("after-" + step)
     }
 
@@ -1479,14 +1473,13 @@ abstract class StressSpec
     }
 
     "start routers that are running while nodes are removed" taggedAs LongRunningTest in {
-      if (exerciseActors) {
+      if (exerciseActors)
         runOn(roles.take(3): _*) {
           system.actorOf(
             Props(classOf[Master], settings, settings.workBatchInterval, false)
               .withDeploy(Deploy.local),
             name = masterName) ! Begin
         }
-      }
       enterBarrier("after-" + step)
     }
 
@@ -1524,7 +1517,7 @@ abstract class StressSpec
 
     "end routers that are running while nodes are removed" taggedAs LongRunningTest in within(
       30.seconds) {
-      if (exerciseActors) {
+      if (exerciseActors)
         runOn(roles.take(3): _*) {
           master match {
             case Some(m) ⇒
@@ -1535,14 +1528,12 @@ abstract class StressSpec
             case None ⇒ fail("master not running")
           }
         }
-      }
       enterBarrier("after-" + step)
     }
 
     "log jvm info" taggedAs LongRunningTest in {
-      if (infolog) {
+      if (infolog)
         log.info("StressSpec JVM:\n{}", jvmInfo)
-      }
       enterBarrier("after-" + step)
     }
   }

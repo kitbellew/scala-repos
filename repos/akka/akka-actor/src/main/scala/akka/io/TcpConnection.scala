@@ -198,10 +198,10 @@ private[io] abstract class TcpConnection(
        * multiple writers. But we fail as gracefully as we can.
        */
       writingSuspended = false
-      if (writePending) {
+      if (writePending)
         if (interestedInResume.isEmpty) interestedInResume = Some(sender())
         else sender() ! CommandFailed(ResumeWriting)
-      } else sender() ! WritingResumed
+      else sender() ! WritingResumed
 
     case UpdatePendingWriteAndThen(remaining, work) ⇒
       pendingWrite = remaining
@@ -362,12 +362,11 @@ private[io] abstract class TcpConnection(
 
   @tailrec private[this] def extractMsg(t: Throwable): String =
     if (t == null) "unknown"
-    else {
+    else
       t.getMessage match {
         case null | "" ⇒ extractMsg(t.getCause)
         case msg ⇒ msg
       }
-    }
 
   def abort(): Unit = {
     try channel.socket
@@ -456,7 +455,7 @@ private[io] abstract class TcpConnection(
       @tailrec def writeToChannel(data: ByteString): PendingWrite = {
         val writtenBytes = channel.write(buffer) // at first we try to drain the remaining bytes from the buffer
         if (TraceLogging) log.debug("Wrote [{}] bytes to channel", writtenBytes)
-        if (buffer.hasRemaining) {
+        if (buffer.hasRemaining)
           // we weren't able to write all bytes from the buffer, so we need to try again later
           if (data eq remainingData) this
           else
@@ -467,8 +466,7 @@ private[io] abstract class TcpConnection(
               buffer,
               tail
             ) // copy with updated remainingData
-
-        } else if (data.nonEmpty) {
+        else if (data.nonEmpty) {
           buffer.clear()
           val copied = data.copyToBuffer(buffer)
           buffer.flip()

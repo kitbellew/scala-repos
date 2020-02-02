@@ -52,13 +52,12 @@ object Test extends App {
     val faulty = new collection.mutable.ListBuffer[(String, Throwable)]
 
     def tryGetClass(name: String) =
-      try {
-        Some[Class[_]](classLoader.loadClass(name))
-      } catch {
+      try Some[Class[_]](classLoader.loadClass(name))
+      catch {
         case AllowedMissingClass(_) => None
       }
 
-    for (name <- classFullNames; cls <- tryGetClass(name)) {
+    for (name <- classFullNames; cls <- tryGetClass(name))
       try {
         cls.getEnclosingMethod
         cls.getEnclosingClass
@@ -68,7 +67,6 @@ object Test extends App {
         case AllowedMissingClass(_) =>
         case t: Throwable           => faulty += ((name, t))
       }
-    }
 
     if (faulty.nonEmpty)
       println(faulty.toList mkString "\n")

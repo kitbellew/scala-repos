@@ -7,9 +7,9 @@ import com.intellij.psi.{PsiFile, PsiMember}
   */
 object ContainingFile {
   def unapply(e: PsiMember): Option[PsiFile] =
-    if (e == null) {
+    if (e == null)
       None
-    } else {
+    else {
       val file = e.getContainingFile
       Option(file)
     }

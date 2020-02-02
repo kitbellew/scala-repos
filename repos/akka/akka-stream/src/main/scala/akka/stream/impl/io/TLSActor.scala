@@ -115,11 +115,9 @@ private[akka] class TLSActor(
         if (tracing)
           log.debug(
             s"chopping from new chunk of ${buffer.size} into $name (${b.position})")
-      } else {
-        if (tracing)
-          log.debug(
-            s"chopping from old chunk of ${buffer.size} into $name (${b.position})")
-      }
+      } else if (tracing)
+        log.debug(
+          s"chopping from old chunk of ${buffer.size} into $name (${b.position})")
       val copied = buffer.copyToBuffer(b)
       buffer = buffer.drop(copied)
       b.flip()

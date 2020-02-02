@@ -108,7 +108,7 @@ class AccountServiceHandlers(
       case Some(account) =>
         accountManager.hasAncestor(account, auth) flatMap {
           case true => f(account)
-          case false => {
+          case false =>
             logger.warn(
               "Unauthorized access attempt to account %s from account %s (%s)"
                 .format(accountId, auth.accountId, remoteIpFrom(request)))
@@ -117,7 +117,6 @@ class AccountServiceHandlers(
                 HttpStatus(Unauthorized),
                 content = Some(
                   JString("You do not have access to account " + accountId))))
-          }
         }
 
       case None =>
@@ -188,12 +187,12 @@ class AccountServiceHandlers(
       Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
-          val keyToFind = if (auth.accountId == rootAccountId) {
-            // Root can send an apiKey query param for the lookup
-            request.parameters.get('apiKey).getOrElse(auth.apiKey)
-          } else {
-            auth.apiKey
-          }
+          val keyToFind =
+            if (auth.accountId == rootAccountId)
+              // Root can send an apiKey query param for the lookup
+              request.parameters.get('apiKey).getOrElse(auth.apiKey)
+            else
+              auth.apiKey
 
           logger.debug(
             "Looking up account ids with account: " + auth.accountId + " for API key: " + keyToFind)
@@ -441,7 +440,7 @@ class AccountServiceHandlers(
                     case Success(requestEmail) =>
                       accountManager.findAccountById(accountId).flatMap {
                         case Some(account) =>
-                          if (account.email == requestEmail) {
+                          if (account.email == requestEmail)
                             accountManager.generateResetToken(account).map {
                               resetToken =>
                                 try {
@@ -475,7 +474,7 @@ class AccountServiceHandlers(
                                         "Provided email does not match account for " + accountId)))
                                 }
                             }
-                          } else {
+                          else {
                             logger.warn(
                               "Password reset request for account %s did not match email on file (%s provided)"
                                 .format(accountId, requestEmail))

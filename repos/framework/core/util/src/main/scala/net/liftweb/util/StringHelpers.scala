@@ -75,9 +75,8 @@ trait StringHelpers {
     val pattern = Pattern.compile("\\<\\%\\=([^\\%]*)\\%\\>")
     val m = pattern.matcher(msg)
     val ret = new StringBuffer
-    while (m.find) {
+    while (m.find)
       m.appendReplacement(ret, subst(m.group(1).trim))
-    }
     m.appendTail(ret)
     ret.toString
   }
@@ -166,7 +165,7 @@ trait StringHelpers {
       lastSymbol: Boolean,
       out: GoodSB): Unit =
     if (pos >= max || pos >= in.length) return
-    else {
+    else
       in.charAt(pos) match {
         case c if Character.isDigit(c) =>
           out.append(c); capify(in, pos + 1, max, false, false, out)
@@ -177,7 +176,6 @@ trait StringHelpers {
           out.append(c); capify(in, pos + 1, max, false, true, out)
         case _ => capify(in, pos + 1, max, false, true, out)
       }
-    }
 
   /**
     * Remove all the characters from a string exception a-z, A-Z, 0-9, and '_'
@@ -195,11 +193,11 @@ trait StringHelpers {
     def addChar(pos: Int, lastRand: Int, sb: GoodSB): GoodSB =
       if (pos >= size) sb
       else {
-        val randNum = if ((pos % 6) == 0) {
-          _random.synchronized(_random.nextInt)
-        } else {
-          lastRand
-        }
+        val randNum =
+          if ((pos % 6) == 0)
+            _random.synchronized(_random.nextInt)
+          else
+            lastRand
 
         sb.append((randNum & 0x1f) match {
           case n if n < 26 => ('A' + n).toChar
@@ -256,13 +254,12 @@ trait StringHelpers {
       in.takeWhile(isDigit).foldLeft(0L)((acc, c) => (acc * 10L) + cToL(c))
 
     if (tin eq null) 0L
-    else {
+    else
       tin.trim.toList match {
         case '-' :: xs => -p(xs)
         case '+' :: xs => p(xs)
         case xs        => p(xs)
       }
-    }
   }
 
   /**
@@ -294,7 +291,7 @@ trait StringHelpers {
   def charSplit(what: String, sep: Char): List[String] =
     what match {
       case null => Nil
-      case str => {
+      case str =>
         val ret = new scala.collection.mutable.ListBuffer[String]
 
         val len = str.length
@@ -313,12 +310,10 @@ trait StringHelpers {
           pos += 1
         }
 
-        if (pos > lastPos) {
+        if (pos > lastPos)
           ret += str.substring(lastPos, pos)
-        }
 
         ret.toList
-      }
     }
 
   /**

@@ -50,11 +50,10 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
     IndexedReaderWriterStateT.create[F, RR, W, S1, S3, B]((G: Monad[F]) =>
       (r: RR, s1: S1) =>
         F.bind(self.run(r, s1)(G)) {
-          case (w1, a, s2) => {
+          case (w1, a, s2) =>
             F.map(f(a).run(r, s2)(G)) {
               case (w2, b, s3) => (W.append(w1, w2), b, s3)
             }
-          }
         })
 }
 

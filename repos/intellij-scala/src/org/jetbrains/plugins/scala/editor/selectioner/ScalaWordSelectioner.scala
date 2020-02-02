@@ -63,7 +63,7 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
         //clear result if method call
         if (x.getParent.isInstanceOf[ScMethodCall]) result.clear()
         x.qualifier match {
-          case Some(qual) => {
+          case Some(qual) =>
             //get ranges for previos qualifier
             val ranges = select(qual, editorText, cursorOffset, editor).toArray(
               new Array[TextRange](0))
@@ -77,12 +77,11 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
                   //if we have dummy range we must find td letter to concatenate ranges
                   var end = fRange.getEndOffset
                   var flag = true
-                  while (flag) {
+                  while (flag)
                     editorText.charAt(end) match {
                       case ' ' | '.' | '\n' => end += 1
                       case _                => flag = false
                     }
-                  }
                   end
                 },
                 offset)
@@ -90,7 +89,6 @@ class ScalaWordSelectioner extends ExtendWordSelectionHandlerBase {
             }
             //adding dummy range for recursion
             result.add(new TextRange(offset, offset))
-          }
           case None =>
             result.add(
               new TextRange(offset, offset)

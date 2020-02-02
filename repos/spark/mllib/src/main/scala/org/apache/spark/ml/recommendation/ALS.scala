@@ -255,11 +255,10 @@ class ALSModel private[ml] (
     // Register a UDF for DataFrame, and then
     // create a new column named map(predictionCol) by running the predict UDF.
     val predict = udf { (userFeatures: Seq[Float], itemFeatures: Seq[Float]) =>
-      if (userFeatures != null && itemFeatures != null) {
+      if (userFeatures != null && itemFeatures != null)
         blas.sdot(rank, userFeatures.toArray, 1, itemFeatures.toArray, 1)
-      } else {
+      else
         Float.NaN
-      }
     }
     dataset
       .join(userFactors, dataset($(userCol)) === userFactors("id"), "left")
@@ -557,9 +556,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         workspace = NNLS.createWorkspace(rank)
         ata = new Array[Double](rank * rank)
         initialized = true
-      } else {
+      } else
         require(this.rank == rank)
-      }
 
     /**
       * Solves a nonnegative least squares problem with L2 regularization:
@@ -637,9 +635,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       require(a.length == k)
       copyToDouble(a)
       blas.dspr(upper, k, c, da, 1, ata)
-      if (b != 0.0) {
+      if (b != 0.0)
         blas.daxpy(k, c * b, da, 1, atb, 1)
-      }
       this
     }
 
@@ -712,14 +709,13 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       sc.checkpointDir.isDefined && checkpointInterval != -1 && (iter % checkpointInterval == 0)
     val deletePreviousCheckpointFile: () => Unit = () =>
       previousCheckpointFile.foreach { file =>
-        try {
-          FileSystem.get(sc.hadoopConfiguration).delete(new Path(file), true)
-        } catch {
+        try FileSystem.get(sc.hadoopConfiguration).delete(new Path(file), true)
+        catch {
           case e: IOException =>
             logWarning(s"Cannot delete checkpoint file $file:", e)
         }
       }
-    if (implicitPrefs) {
+    if (implicitPrefs)
       for (iter <- 1 to maxIter) {
         userFactors
           .setName(s"userFactors-$iter")
@@ -740,10 +736,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           .setName(s"itemFactors-$iter")
           .persist(intermediateRDDStorageLevel)
         // TODO: Generalize PeriodicGraphCheckpointer and use it here.
-        if (shouldCheckpoint(iter)) {
+        if (shouldCheckpoint(iter))
           itemFactors
             .checkpoint() // itemFactors gets materialized in computeFactors.
-        }
         val previousUserFactors = userFactors
         userFactors = computeFactors(
           itemFactors,
@@ -761,7 +756,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         }
         previousUserFactors.unpersist()
       }
-    } else {
+    else
       for (iter <- 0 until maxIter) {
         itemFactors = computeFactors(
           userFactors,
@@ -786,7 +781,6 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           itemLocalIndexEncoder,
           solver = solver)
       }
-    }
     val userIdAndFactors = userInBlocks
       .mapValues(_.srcIds)
       .join(userFactors)
@@ -990,9 +984,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           if (builder.size >= 2048) { // 2048 * (3 * 4) = 24k
             builders(idx) = new RatingBlockBuilder
             Iterator.single(((srcBlockId, dstBlockId), builder.build()))
-          } else {
+          } else
             Iterator.empty
-          }
         } ++ {
           builders.view.zipWithIndex.filter(_._1.size > 0).map {
             case (block, idx) =>
@@ -1159,11 +1152,10 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         data: UncompressedInBlock[ID],
         pos: Int,
         reuse: KeyWrapper[ID]): KeyWrapper[ID] =
-      if (reuse == null) {
+      if (reuse == null)
         new KeyWrapper().setKey(data.srcIds(pos))
-      } else {
+      else
         reuse.setKey(data.srcIds(pos))
-      }
 
     override def getKey(
         data: UncompressedInBlock[ID],
@@ -1357,9 +1349,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
         val ls = new NormalEquation(rank)
         while (j < dstIds.length) {
           ls.reset()
-          if (implicitPrefs) {
+          if (implicitPrefs)
             ls.merge(YtY.get)
-          }
           var i = srcPtrs(j)
           var numExplicits = 0
           while (i < srcPtrs(j + 1)) {

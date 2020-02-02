@@ -64,15 +64,13 @@ private[spark] class ChildFirstURLClassLoader(
     if (lock == null) {
       val newLock = new Object()
       lock = locks.putIfAbsent(name, newLock)
-      if (lock == null) {
+      if (lock == null)
         lock = newLock
-      }
     }
 
     lock.synchronized {
-      try {
-        super.loadClass(name, resolve)
-      } catch {
+      try super.loadClass(name, resolve)
+      catch {
         case e: ClassNotFoundException =>
           parentClassLoader.loadClass(name, resolve)
       }

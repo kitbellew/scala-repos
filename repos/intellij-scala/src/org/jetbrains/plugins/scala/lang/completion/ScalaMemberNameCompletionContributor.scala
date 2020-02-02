@@ -48,18 +48,15 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
           case _              => false
         }
         if (shouldCompleteFileName && !classesNames
-              .contains(fileName) && !objectNames.contains(fileName)) {
+              .contains(fileName) && !objectNames.contains(fileName))
           result.addElement(LookupElementBuilder.create(fileName))
-        }
         position.getContext match {
           case _: ScClass | _: ScTrait =>
-            for (o <- objectNames if !classesNames.contains(o)) {
+            for (o <- objectNames if !classesNames.contains(o))
               result.addElement(LookupElementBuilder.create(o))
-            }
           case o: ScObject =>
-            for (o <- classesNames if !objectNames.contains(o)) {
+            for (o <- classesNames if !objectNames.contains(o))
               result.addElement(LookupElementBuilder.create(o))
-            }
           case _ =>
         }
       }

@@ -211,12 +211,11 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     val outputCounts = outputBatches.flatten.map(_._2.count)
 
     // number of batches seen so far does not exceed testWindow, expect counts to continue growing
-    for (i <- 0 until testWindow) {
+    for (i <- 0 until testWindow)
       assert(
         outputCounts
           .slice(2 * i, 2 * i + 2)
           .forall(_ == (i + 1) * pointsPerBatch / 2))
-    }
 
     // number of batches seen exceeds testWindow, expect counts to be constant
     assert(

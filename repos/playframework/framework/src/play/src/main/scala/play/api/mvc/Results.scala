@@ -121,12 +121,11 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     */
   def withCookies(cookies: Cookie*): Result =
     if (cookies.isEmpty) this
-    else {
+    else
       withHeaders(
         SET_COOKIE -> Cookies.mergeSetCookieHeader(
           header.headers.getOrElse(SET_COOKIE, ""),
           cookies))
-    }
 
   /**
     * Discards cookies along this result.
@@ -198,9 +197,8 @@ case class Result(header: ResponseHeader, body: HttpEntity) {
     * @return the new result
     */
   def flashing(flash: Flash): Result = {
-    if (shouldWarnIfNotRedirect(flash)) {
+    if (shouldWarnIfNotRedirect(flash))
       logRedirectWarning("flashing")
-    }
     withCookies(Flash.encodeAsCookie(flash))
   }
 

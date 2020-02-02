@@ -24,9 +24,9 @@ class HighlightingPerformanceTest extends ScalaFixtureTestCase {
       TIMEOUT,
       new Runnable {
         def run() {
-          try {
-            myFixture.testHighlighting(false, false, false, file.getVirtualFile)
-          } catch {
+          try myFixture
+            .testHighlighting(false, false, false, file.getVirtualFile)
+          catch {
             case e: RuntimeException =>
           }
         }

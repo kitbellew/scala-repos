@@ -61,9 +61,9 @@ abstract class BinaryMerge {
     if (a0 == a1) {
       if (b0 != b1)
         fromB(a0, b0, b1)
-    } else if (b0 == b1) {
+    } else if (b0 == b1)
       fromA(a0, a1, b0)
-    } else {
+    else {
       val am = (a0 + a1) / 2
       val res = binarySearchB(am, b0, b1)
       if (res >= 0) {

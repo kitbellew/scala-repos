@@ -201,7 +201,7 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
     evalDataSet should have size en
 
     forAll(evalDataSet.zipWithIndex) {
-      case (evalData, ex) => {
+      case (evalData, ex) =>
         val (evalInfo, qpaRDD) = evalData
         evalInfo shouldBe EvalInfo(0)
 
@@ -219,17 +219,15 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
             qQx shouldBe aQx
 
             inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
+              case Prediction(pId, pQ, pModels, pPs) =>
                 pId shouldBe 3
                 pQ shouldBe q
                 pModels shouldBe None
                 pPs should have size algoCount
                 pPs shouldBe Seq(
                   Prediction(id = 2, q = q, models = Some(model0)))
-              }
             }
         }
-      }
     }
   }
 
@@ -433,7 +431,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val model0 = PAlgo0.Model(3, pd)
 
     forAll(evalDataSet.zipWithIndex) {
-      case (evalData, ex) => {
+      case (evalData, ex) =>
         val (evalInfo, qpaRDD) = evalData
         evalInfo shouldBe EvalInfo(1)
 
@@ -448,18 +446,16 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
             qQx shouldBe aQx
 
             inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
+              case Prediction(pId, pQ, pModels, pPs) =>
                 pId shouldBe 10
                 pQ shouldBe q
                 pModels shouldBe None
                 pPs should have size 1
                 pPs shouldBe Seq(
                   Prediction(id = 3, q = q, models = Some(model0)))
-              }
             }
         }
 
-      }
     }
 
   }
@@ -482,7 +478,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val model2 = NAlgo1.Model(5, pd)
 
     forAll(evalDataSet.zipWithIndex) {
-      case (evalData, ex) => {
+      case (evalData, ex) =>
         val (evalInfo, qpaRDD) = evalData
         evalInfo shouldBe EvalInfo(1)
 
@@ -497,7 +493,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
             qQx shouldBe aQx
 
             inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
+              case Prediction(pId, pQ, pModels, pPs) =>
                 pId shouldBe 10
                 pQ shouldBe q
                 pModels shouldBe None
@@ -507,10 +503,8 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
                   Prediction(id = 4, q = q, models = Some(model1)),
                   Prediction(id = 5, q = q, models = Some(model2))
                 )
-              }
             }
         }
-      }
     }
   }
 
@@ -532,7 +526,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val model2 = NAlgo1.Model(5, pd)
 
     forAll(evalDataSet.zipWithIndex) {
-      case (evalData, ex) => {
+      case (evalData, ex) =>
         val (evalInfo, qpaRDD) = evalData
         evalInfo shouldBe EvalInfo(1)
 
@@ -548,7 +542,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
             qSupp shouldBe false
 
             inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
+              case Prediction(pId, pQ, pModels, pPs) =>
                 pId shouldBe 10
                 pQ shouldBe q
                 pModels shouldBe None
@@ -561,10 +555,8 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
                   Prediction(id = 4, q = qSupp, models = Some(model1)),
                   Prediction(id = 5, q = qSupp, models = Some(model2))
                 )
-              }
             }
         }
-      }
     }
   }
 
@@ -586,7 +578,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val model2 = LAlgo1.Model(5, pd)
 
     forAll(evalDataSet.zipWithIndex) {
-      case (evalData, ex) => {
+      case (evalData, ex) =>
         val (evalInfo, qpaRDD) = evalData
         evalInfo shouldBe EvalInfo(1)
 
@@ -601,7 +593,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
             qQx shouldBe aQx
 
             inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
+              case Prediction(pId, pQ, pModels, pPs) =>
                 pId shouldBe 10
                 pQ shouldBe q
                 pModels shouldBe None
@@ -611,11 +603,9 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
                   Prediction(id = 4, q = q, models = Some(model1)),
                   Prediction(id = 5, q = q, models = Some(model2))
                 )
-              }
             }
         }
 
-      }
     }
 
   }

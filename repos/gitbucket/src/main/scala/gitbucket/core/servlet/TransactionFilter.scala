@@ -27,10 +27,10 @@ class TransactionFilter extends Filter {
     if (req
           .asInstanceOf[HttpServletRequest]
           .getServletPath()
-          .startsWith("/assets/")) {
+          .startsWith("/assets/"))
       // assets don't need transaction
       chain.doFilter(req, res)
-    } else {
+    else
       Database() withTransaction { session =>
         // Register Scalatra error callback to rollback transaction
         ScalatraBase.onFailure { _ =>
@@ -43,7 +43,6 @@ class TransactionFilter extends Filter {
         chain.doFilter(req, res)
         logger.debug("end transaction")
       }
-    }
 
 }
 
@@ -61,9 +60,8 @@ object Database {
     ds
   }
 
-  private val db: SlickDatabase = {
+  private val db: SlickDatabase =
     SlickDatabase.forDataSource(dataSource)
-  }
 
   def apply(): SlickDatabase = db
 

@@ -105,12 +105,9 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
    */
   def apply(key: Key, conn: ClientConnection): Future[Service[Req, Rep]] = {
     readLock.lock()
-    try {
-      if (cache contains key)
-        return cache(key).apply(conn)
-    } finally {
-      readLock.unlock()
-    }
+    try if (cache contains key)
+      return cache(key).apply(conn)
+    finally readLock.unlock()
 
     miss(key, conn)
   }
@@ -123,11 +120,8 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
     if (cache contains key) {
       readLock.lock()
       writeLock.unlock()
-      try {
-        return cache(key).apply(conn)
-      } finally {
-        readLock.unlock()
-      }
+      try return cache(key).apply(conn)
+      finally readLock.unlock()
     }
 
     val svc =
@@ -139,7 +133,7 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
         if (cache.size < maxCacheSize) {
           cache += (key -> factory)
           cache(key).apply(conn)
-        } else {
+        } else
           findEvictee() match {
             case Some(evicted) =>
               nevict.incr()
@@ -150,10 +144,7 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
               noneshot.incr()
               oneshot(factory, conn)
           }
-        }
-      } finally {
-        writeLock.unlock()
-      }
+      } finally writeLock.unlock()
 
     svc
   }
@@ -185,12 +176,9 @@ private[finagle] class ServiceFactoryCache[Key, Req, Rep](
 
   def status(key: Key): Status = {
     readLock.lock()
-    try {
-      if (cache.contains(key))
-        return cache(key).status
-    } finally {
-      readLock.unlock()
-    }
+    try if (cache.contains(key))
+      return cache(key).status
+    finally readLock.unlock()
 
     // This is somewhat dubious, as the status is outdated
     // pretty much right after we query it.

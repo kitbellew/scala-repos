@@ -31,9 +31,8 @@ abstract class TailCalls extends Transform {
   /** The phase defined by this transform */
   class Phase(prev: scala.tools.nsc.Phase) extends StdPhase(prev) {
     def apply(unit: global.CompilationUnit) {
-      if (!(settings.debuginfo.value == "notailcalls")) {
+      if (!(settings.debuginfo.value == "notailcalls"))
         newTransformer(unit).transformUnit(unit)
-      }
     }
   }
 
@@ -207,9 +206,8 @@ abstract class TailCalls extends Transform {
     private var ctx: TailContext = EmptyTailContext
 
     override def transformUnit(unit: CompilationUnit): Unit =
-      try {
-        super.transformUnit(unit)
-      } finally {
+      try super.transformUnit(unit)
+      finally {
         // OPT clear these after each compilation unit
         failPositions.clear()
         failReasons.clear()
@@ -279,11 +277,11 @@ abstract class TailCalls extends Transform {
 
         if (!ctx.isEligible)
           fail("it is neither private nor final so can be overridden")
-        else if (!isRecursiveCall) {
+        else if (!isRecursiveCall)
           if (ctx.isMandatory && receiverIsSuper) // OPT expensive check, avoid unless we will actually report the error
             failHere("it contains a recursive call targeting a supertype")
           else failHere(defaultReason)
-        } else if (!matchesTypeArgs)
+        else if (!matchesTypeArgs)
           failHere("it is called recursively with different type arguments")
         else if (receiver == EmptyTree) rewriteTailCall(This(currentClass))
         else if (!receiverIsSame)
@@ -323,13 +321,12 @@ abstract class TailCalls extends Transform {
               /* We have rewritten the tree, but there may be nested recursive calls remaining.
                * If @tailrec is given we need to fail those now.
                */
-              if (newCtx.isMandatory) {
+              if (newCtx.isMandatory)
                 for (t @ Apply(fn, _) <- newRHS;
                      if fn.symbol == newCtx.method) {
                   failPositions(newCtx) = t.pos
                   tailrecFailure(newCtx)
                 }
-              }
               val newThis = newCtx.newThis(tree.pos)
               val vpSyms = vparamss0.flatten map (_.symbol)
 

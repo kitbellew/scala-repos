@@ -32,17 +32,15 @@ object InteriorPoint {
     val n = A.cols
     val x = DenseVector.zeros[Double](n)
     x += x0
-    if ((A * x0 - b).values.exists(_ > 0)) {
+    if ((A * x0 - b).values.exists(_ > 0))
       x := phase1(A, b, c, x0)
-    }
-//    assert((A * x0 - b).valuesIterator.forall(_ <= 0))
+    //    assert((A * x0 - b).valuesIterator.forall(_ <= 0))
     val s = DenseVector.ones[Double](m)
     val z = DenseVector.ones[Double](m)
 //    assert((A.t * z + s - c).valuesIterator.forall(_.abs <= 1E-4))
     var converged = false
     var lastGap = Double.PositiveInfinity
-    while (!converged) {
-
+    while (!converged)
       try {
 
         val (zAff, xAff, sAff) = computeAffineScalingDir(A, b, c, x, s, z)
@@ -66,15 +64,13 @@ object InteriorPoint {
 
         val gap = (c dot x) + (b dot z)
         converged = gap.abs < tol
-        if (gap > lastGap) {
+        if (gap > lastGap)
           axpy(-(.99 * scaleXF), dx, x)
-        }
         lastGap = gap
       } catch {
         case m: MatrixSingularException => converged = true
       }
 //      assert(gap > -1E-3,gap)
-    }
 
     x
   }
@@ -96,9 +92,8 @@ object InteriorPoint {
     newC(c.size) = 1
     val newX =
       DenseVector.tabulate(x0.size + 1)(i => if (i < x0.size) x0(i) else s)
-    if (any((newA * newX - newB) :> 0.0)) {
+    if (any((newA * newX - newB) :> 0.0))
       throw new RuntimeException("Problem seems to be infeasible!")
-    }
     val r = minimize(newA, newB, newC, newX)
     if (r(x0.size) > 1e-8)
       println("Problem appears to be infeasible: " + r(x0.size))

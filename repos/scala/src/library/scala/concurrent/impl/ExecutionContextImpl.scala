@@ -89,7 +89,7 @@ private[concurrent] object ExecutionContextImpl {
       else null
 
     def newThread(fjp: ForkJoinPool): ForkJoinWorkerThread =
-      if (reserveThread()) {
+      if (reserveThread())
         wire(new ForkJoinWorkerThread(fjp) with BlockContext {
           // We have to decrement the current thread count when the thread exits
           final override def onTermination(exception: Throwable): Unit =
@@ -101,13 +101,11 @@ private[concurrent] object ExecutionContextImpl {
               @volatile var isdone = false
               override def block(): Boolean = {
                 result =
-                  try {
-                    // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
-                    BlockContext.withBlockContext(
-                      BlockContext.defaultBlockContext) { thunk }
-                  } finally {
-                    isdone = true
-                  }
+                  try
+                  // When we block, switch out the BlockContext temporarily so that nested blocking does not created N new Threads
+                  BlockContext.withBlockContext(
+                    BlockContext.defaultBlockContext) { thunk } finally isdone =
+                    true
 
                 true
               }
@@ -116,7 +114,7 @@ private[concurrent] object ExecutionContextImpl {
             result
           }
         })
-      } else null
+      else null
   }
 
   def createDefaultExecutorService(

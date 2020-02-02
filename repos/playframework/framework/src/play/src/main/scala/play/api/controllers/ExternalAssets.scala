@@ -41,21 +41,18 @@ class ExternalAssets @Inject() (environment: Environment) extends Controller {
     request =>
       environment.mode match {
         case Mode.Prod => NotFound
-        case _ => {
-
+        case _ =>
           val fileToServe = rootPath match {
             case AbsolutePath(_) => new File(rootPath, file)
             case _               => new File(environment.getFile(rootPath), file)
           }
 
-          if (fileToServe.exists) {
+          if (fileToServe.exists)
             Ok.sendFile(fileToServe, inline = true)
               .withHeaders(CACHE_CONTROL -> "max-age=3600")
-          } else {
+          else
             NotFound
-          }
 
-        }
       }
   }
 

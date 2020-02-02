@@ -108,9 +108,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
 
     val completionChar: Char = context.getCompletionChar
     def disableParenthesesCompletionChar() {
-      if (completionChar == '(' || completionChar == '{') {
+      if (completionChar == '(' || completionChar == '{')
         context.setAddCompletionChar(false)
-      }
     }
 
     val some = item.someSmartCompletion
@@ -119,7 +118,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
     val file =
       PsiDocumentManager.getInstance(context.getProject).getPsiFile(document)
     val element =
-      if (completionChar == '\t') {
+      if (completionChar == '\t')
         file.findElementAt(startOffset) match {
           case elem
               if elem.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER && elem.getParent
@@ -135,7 +134,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
             ref.getParent.replace(newRef).getFirstChild
           case elem => elem
         }
-      } else file.findElementAt(startOffset)
+      else file.findElementAt(startOffset)
     if (some) {
       var elem = element
       var parent = elem.getParent
@@ -166,9 +165,8 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
     }
 
     def moveCaretIfNeeded() {
-      if (some) {
+      if (some)
         editor.getCaretModel.moveToOffset(endOffset + 1)
-      }
     }
 
     /**
@@ -195,31 +193,29 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       val nextChar: Char =
         if (endOffset < document.getTextLength) documentText.charAt(endOffset)
         else 0.toChar
-      if (!withSpace && nextChar != openChar) {
+      if (!withSpace && nextChar != openChar)
         if (CodeInsightSettings.getInstance().AUTOINSERT_PAIR_BRACKET) {
           document.insertString(endOffset, s"$openChar$closeChar")
-          if (placeInto) {
+          if (placeInto)
             shiftEndOffset(1)
-          } else {
+          else
             shiftEndOffset(2)
-          }
         } else {
           document.insertString(endOffset, s"$openChar")
           shiftEndOffset(1)
         }
-      } else if (!withSpace && nextChar == openChar) {
-        if (placeInto) {
+      else if (!withSpace && nextChar == openChar)
+        if (placeInto)
           shiftEndOffset(1)
-        } else {
+        else {
           val nextNextChar = documentText.charAt(endOffset + 1)
-          if (nextNextChar == closeChar) {
+          if (nextNextChar == closeChar)
             shiftEndOffset(2)
-          } else {
+          else
             shiftEndOffset(1)
-          }
         }
-      } else if (withSpace && (nextChar != ' ' || documentText.charAt(
-                   endOffset + 1) != openChar)) {
+      else if (withSpace && (nextChar != ' ' || documentText.charAt(
+                 endOffset + 1) != openChar)) {
         document.insertString(endOffset, " ")
         shiftEndOffset(1, withSomeNum = false)
         insertIfNeeded(
@@ -290,14 +286,13 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
               document.insertString(endOffset, " _")
               endOffset += 2
               editor.getCaretModel.moveToOffset(endOffset)
-            } else {
+            } else
               insertIfNeeded(
                 placeInto = context.getCompletionChar == '(',
                 openChar = '(',
                 closeChar = ')',
                 withSpace = false,
                 withSomeNum = false)
-            }
           } else if (count > 0) {
             import org.jetbrains.plugins.scala.extensions._
             element.getParent match {
@@ -322,19 +317,17 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                     endOffset += 2
                     editor.getCaretModel.moveToOffset(endOffset)
                   }
-                } else {
-                  if (context.getCompletionChar == '{') {
-                    insertIfNeeded(
-                      placeInto = true,
-                      openChar = '{',
-                      closeChar = '}',
-                      withSpace = true,
-                      withSomeNum = false)
-                  } else {
-                    document.insertString(endOffset, " ")
-                    endOffset += 1
-                    editor.getCaretModel.moveToOffset(endOffset)
-                  }
+                } else if (context.getCompletionChar == '{')
+                  insertIfNeeded(
+                    placeInto = true,
+                    openChar = '{',
+                    closeChar = '}',
+                    withSpace = true,
+                    withSomeNum = false)
+                else {
+                  document.insertString(endOffset, " ")
+                  endOffset += 1
+                  editor.getCaretModel.moveToOffset(endOffset)
                 }
               // for reference invocations
               case _ =>
@@ -346,34 +339,32 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                 } else if (endOffset == document.getTextLength || document.getCharsSequence
                              .charAt(endOffset) != '(') {
                   disableParenthesesCompletionChar()
-                  if (!item.etaExpanded) {
-                    if (context.getCompletionChar == '{') {
+                  if (!item.etaExpanded)
+                    if (context.getCompletionChar == '{')
                       if (ScalaPsiUtil
                             .getSettings(context.getProject)
-                            .SPACE_BEFORE_BRACE_METHOD_CALL) {
+                            .SPACE_BEFORE_BRACE_METHOD_CALL)
                         insertIfNeeded(
                           placeInto = true,
                           openChar = '{',
                           closeChar = '}',
                           withSpace = true,
                           withSomeNum = false)
-                      } else {
+                      else
                         insertIfNeeded(
                           placeInto = true,
                           openChar = '{',
                           closeChar = '}',
                           withSpace = false,
                           withSomeNum = false)
-                      }
-                    } else {
+                    else
                       insertIfNeeded(
                         placeInto = true,
                         openChar = '(',
                         closeChar = ')',
                         withSpace = false,
                         withSomeNum = false)
-                    }
-                  } else {
+                  else {
                     document.insertString(endOffset, " _")
                     endOffset += 2
                     editor.getCaretModel.moveToOffset(endOffset)
@@ -381,9 +372,9 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                   AutoPopupController
                     .getInstance(element.getProject)
                     .autoPopupParameterInfo(editor, element)
-                } else if (completionChar != ',') {
+                } else if (completionChar != ',')
                   editor.getCaretModel.moveToOffset(endOffset + 1 + someNum)
-                } else moveCaretIfNeeded()
+                else moveCaretIfNeeded()
             }
           } else moveCaretIfNeeded()
         } else {

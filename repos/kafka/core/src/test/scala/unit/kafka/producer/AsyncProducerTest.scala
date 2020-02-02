@@ -81,9 +81,7 @@ class AsyncProducerTest {
       fail("Queue should be full")
     } catch {
       case e: QueueFullException => //expected
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   @Test
@@ -344,9 +342,8 @@ class AsyncProducerTest {
       keyEncoder = null.asInstanceOf[Encoder[String]],
       producerPool = producerPool,
       topicPartitionInfos = topicPartitionInfos)
-    try {
-      handler.partitionAndCollate(producerDataList)
-    } catch {
+    try handler.partitionAndCollate(producerDataList)
+    catch {
       // should not throw any exception
       case e: Throwable => fail("Should not throw any exception")
 
@@ -401,9 +398,7 @@ class AsyncProducerTest {
       fail("Should fail with ClassCastException due to incompatible Encoder")
     } catch {
       case e: ClassCastException =>
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   @Test
@@ -440,10 +435,9 @@ class AsyncProducerTest {
     val partitionedDataOpt = handler.partitionAndCollate(producerDataList)
     partitionedDataOpt match {
       case Some(partitionedData) =>
-        for ((brokerId, dataPerBroker) <- partitionedData) {
+        for ((brokerId, dataPerBroker) <- partitionedData)
           for ((TopicAndPartition(topic, partitionId), dataPerTopic) <- dataPerBroker)
             assertTrue(partitionId == 0)
-        }
       case None =>
         fail("Failed to collate requests by topic, partition")
     }

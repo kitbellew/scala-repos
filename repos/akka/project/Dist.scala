@@ -144,14 +144,13 @@ object Dist {
       overwrite: Boolean,
       preserveLastModified: Boolean,
       setExecutable: Boolean)(source: File, target: File): File = {
-    if (overwrite || !target.exists || source.lastModified > target.lastModified) {
+    if (overwrite || !target.exists || source.lastModified > target.lastModified)
       if (source.isDirectory) IO.createDirectory(target)
       else {
         IO.createDirectory(target.getParentFile)
         IO.copyFile(source, target, preserveLastModified)
         if (setExecutable) target.setExecutable(source.canExecute, false)
       }
-    }
     target
   }
 

@@ -125,9 +125,8 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
             if (!hasDequeuedSpeculatedTask) {
               hasDequeuedSpeculatedTask = true
               Some(0, TaskLocality.PROCESS_LOCAL)
-            } else {
+            } else
               None
-            }
         }
       }
     }).when(mockTaskScheduler)

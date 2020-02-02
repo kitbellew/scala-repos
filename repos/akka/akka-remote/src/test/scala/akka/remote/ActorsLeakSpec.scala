@@ -103,9 +103,7 @@ class ActorsLeakSpec
           remoteSystem.actorSelection(echoPath).tell(Identify(1), probe.ref)
           probe.expectMsgType[ActorIdentity].ref.nonEmpty should be(true)
 
-        } finally {
-          remoteSystem.terminate()
-        }
+        } finally remoteSystem.terminate()
 
         Await.ready(remoteSystem.whenTerminated, 10.seconds)
       }
@@ -132,9 +130,7 @@ class ActorsLeakSpec
               .managementCommand(ForceDisassociate(remoteAddress)),
             3.seconds)
 
-        } finally {
-          remoteSystem.terminate()
-        }
+        } finally remoteSystem.terminate()
 
         EventFilter
           .warning(pattern = "Association with remote system", occurrences = 1)
@@ -174,9 +170,7 @@ class ActorsLeakSpec
             .managementCommand(ForceDisassociate(remoteAddress)),
           3.seconds)
 
-      } finally {
-        remoteSystem.terminate()
-      }
+      } finally remoteSystem.terminate()
 
       EventFilter
         .warning(pattern = "Association with remote system", occurrences = 1)

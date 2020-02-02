@@ -43,9 +43,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
   private def fixClassParamedType(tpe: ScalaType) =
     tpe.copy(params = tpe.params.map { t =>
-      if (t.isVar && t.bounds.head.name == "Any") {
+      if (t.isVar && t.bounds.head.name == "Any")
         t.copy(bounds = List(ScalaType("AnyRef")))
-      } else t
+      else t
     })
 
   private def toAndroidClass(cls: Class[_]) = {

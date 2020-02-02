@@ -55,15 +55,13 @@ private[spark] class FixedLengthBinaryInputFormat
     * Override of isSplitable to ensure initial computation of the record length
     */
   override def isSplitable(context: JobContext, filename: Path): Boolean = {
-    if (recordLength == -1) {
+    if (recordLength == -1)
       recordLength = FixedLengthBinaryInputFormat.getRecordLength(context)
-    }
     if (recordLength <= 0) {
       logDebug("record length is less than 0, file cannot be split")
       false
-    } else {
+    } else
       true
-    }
   }
 
   /**
@@ -80,11 +78,10 @@ private[spark] class FixedLengthBinaryInputFormat
     // Otherwise, make sure the split size is as close to possible as the default size,
     // but still contains a complete set of records, with the first record
     // starting at the first byte in the split and the last record ending with the last byte
-    if (defaultSize < recordLength) {
+    if (defaultSize < recordLength)
       recordLength.toLong
-    } else {
+    else
       (Math.floor(defaultSize / recordLength) * recordLength).toLong
-    }
   }
 
   /**

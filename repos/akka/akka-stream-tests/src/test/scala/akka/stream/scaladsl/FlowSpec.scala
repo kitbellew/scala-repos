@@ -128,7 +128,7 @@ class FlowSpec
   "A Flow" must {
 
     for ((name, op) ← List("identity" -> identity, "identity2" -> identity2);
-         n ← List(1, 2, 4)) {
+         n ← List(1, 2, 4))
       s"request initial elements from upstream ($name, $n)" in {
         new ChainSetup(
           op,
@@ -139,7 +139,6 @@ class FlowSpec
             settings.maxInputBufferSize)
         }
       }
-    }
 
     "request more elements from upstream when downstream requests more elements" in {
       new ChainSetup(identity, settings, toPublisher) {
@@ -677,9 +676,7 @@ class FlowSpec
           downstream3.expectSubscription()
           // IllegalStateException terminated abruptly
           checkError(downstream3)
-        } finally {
-          system.eventStream.publish(UnMute(filters))
-        }
+        } finally system.eventStream.publish(UnMute(filters))
       }
     }
 

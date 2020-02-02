@@ -60,9 +60,8 @@ case class InlineInfoAttribute(inlineInfo: InlineInfo)
     if (inlineInfo.sam.isDefined) finalSelfSam |= 4
     result.putByte(finalSelfSam)
 
-    for (selfInternalName <- inlineInfo.traitImplClassSelfType) {
+    for (selfInternalName <- inlineInfo.traitImplClassSelfType)
       result.putShort(cw.newUTF8(selfInternalName))
-    }
 
     for (samNameDesc <- inlineInfo.sam) {
       val (name, desc) = samNameDesc.span(_ != '(')

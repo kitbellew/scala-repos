@@ -109,7 +109,7 @@ object DuplicatesUtil {
       editor: Editor) {
     var replaceAll = false
     var cancelled = false
-    for ((d, idx) <- duplicates.zipWithIndex) {
+    for ((d, idx) <- duplicates.zipWithIndex)
       if (!replaceAll) {
         previewDuplicate(project, editor, d) {
           val dialog = showPromptDialog(
@@ -130,7 +130,6 @@ object DuplicatesUtil {
 
         if (cancelled) return
       } else replaceDuplicate(project, settings, d)
-    }
   }
 
   private def replaceDuplicate(
@@ -188,9 +187,8 @@ object DuplicatesUtil {
       return
     }
 
-    if (showDuplicatesDialog() == Messages.YES) {
+    if (showDuplicatesDialog() == Messages.YES)
       invokeDuplicateProcessing(duplicates, settings, project, editor)
-    }
   }
 
   private def expandAllRegionsCoveringRange(
@@ -201,12 +199,11 @@ object DuplicatesUtil {
       .getInstance(project)
       .getFoldRegionsAtOffset(editor, textRange.getStartOffset)
     val anyCollapsed: Boolean = foldRegions.exists(!_.isExpanded)
-    if (anyCollapsed) {
+    if (anyCollapsed)
       editor.getFoldingModel.runBatchFoldingOperation(new Runnable {
         def run() =
           foldRegions.filterNot(_.isExpanded).foreach(_.setExpanded(true))
       })
-    }
   }
 
   def highlightDuplicate(

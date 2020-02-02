@@ -89,7 +89,7 @@ trait LibraryModule extends Binder {
 
       object roundTo extends Op2(Namespace, "roundTo") {
         override def pf = {
-          case (JNum(nBD), JNum(digitsBD)) => {
+          case (JNum(nBD), JNum(digitsBD)) =>
             val n = nBD.toDouble
             val digits = digitsBD.toDouble
 
@@ -98,7 +98,6 @@ trait LibraryModule extends Binder {
               if (scala.math.abs(n) >= 4503599627370496.0) adjusted
               else scala.math.round(adjusted)
             JNum(rounded * scala.math.pow(10, -digits))
-          }
         }
       }
     }

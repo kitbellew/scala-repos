@@ -19,9 +19,8 @@ package scalaguide.akka {
 
     def withActorSystem[T](block: ActorSystem => T) = {
       val system = ActorSystem()
-      try {
-        block(system)
-      } finally {
+      try block(system)
+      finally {
         system.terminate()
         Await.result(system.whenTerminated, Duration.Inf)
       }

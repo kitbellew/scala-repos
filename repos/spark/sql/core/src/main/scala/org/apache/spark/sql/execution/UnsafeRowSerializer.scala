@@ -113,9 +113,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
         new Iterator[(Int, UnsafeRow)] {
 
           private[this] def readSize(): Int =
-            try {
-              dIn.readInt()
-            } catch {
+            try dIn.readInt()
+            catch {
               case e: EOFException =>
                 dIn.close()
                 EOF
@@ -125,9 +124,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
           override def hasNext: Boolean = rowSize != EOF
 
           override def next(): (Int, UnsafeRow) = {
-            if (rowBuffer.length < rowSize) {
+            if (rowBuffer.length < rowSize)
               rowBuffer = new Array[Byte](rowSize)
-            }
             ByteStreams.readFully(dIn, rowBuffer, 0, rowSize)
             row.pointTo(rowBuffer, Platform.BYTE_ARRAY_OFFSET, rowSize)
             rowSize = readSize()
@@ -140,9 +138,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
               rowBuffer = null
               rowTuple = null
               _rowTuple
-            } else {
+            } else
               rowTuple
-            }
           }
         }
 
@@ -157,9 +154,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
 
       override def readValue[T: ClassTag](): T = {
         val rowSize = dIn.readInt()
-        if (rowBuffer.length < rowSize) {
+        if (rowBuffer.length < rowSize)
           rowBuffer = new Array[Byte](rowSize)
-        }
         ByteStreams.readFully(dIn, rowBuffer, 0, rowSize)
         row.pointTo(rowBuffer, Platform.BYTE_ARRAY_OFFSET, rowSize)
         row.asInstanceOf[T]

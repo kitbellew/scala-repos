@@ -86,13 +86,11 @@ class LocalCluster(mutex: Boolean = true) {
     * @param inConf  override default configuration
     */
   def initialize(inConf: Config = Config.empty): this.type = {
-    if (mutex) {
+    if (mutex)
       acquireMutex()
-    }
 
-    if (Option(System.getProperty("hadoop.log.dir")).isEmpty) {
+    if (Option(System.getProperty("hadoop.log.dir")).isEmpty)
       System.setProperty("hadoop.log.dir", "build/test/logs")
-    }
     new File(System.getProperty("hadoop.log.dir")).mkdirs()
 
     val conf = new Configuration
@@ -209,8 +207,7 @@ class LocalCluster(mutex: Boolean = true) {
         mr.shutdown()
     }
     hadoop = None
-    if (mutex) {
+    if (mutex)
       releaseMutex()
-    }
   }
 }

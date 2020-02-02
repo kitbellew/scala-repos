@@ -169,11 +169,10 @@ class RFormula(override val uid: String)
     encoderStages += new ColumnPruner(tempColumns.toSet)
 
     if (dataset.schema.fieldNames.contains(resolvedFormula.label) &&
-        dataset.schema(resolvedFormula.label).dataType == StringType) {
+        dataset.schema(resolvedFormula.label).dataType == StringType)
       encoderStages += new StringIndexer()
         .setInputCol(resolvedFormula.label)
         .setOutputCol($(labelCol))
-    }
 
     val pipelineModel =
       new Pipeline(uid).setStages(encoderStages.toArray).fit(dataset)
@@ -183,14 +182,13 @@ class RFormula(override val uid: String)
 
   // optimistic schema; does not contain any ML attributes
   override def transformSchema(schema: StructType): StructType =
-    if (hasLabelCol(schema)) {
+    if (hasLabelCol(schema))
       StructType(
         schema.fields :+ StructField($(featuresCol), new VectorUDT, true))
-    } else {
+    else
       StructType(
         schema.fields :+ StructField($(featuresCol), new VectorUDT, true) :+
           StructField($(labelCol), DoubleType, true))
-    }
 
   override def copy(extra: ParamMap): RFormula = defaultCopy(extra)
 
@@ -227,20 +225,19 @@ class RFormulaModel private[feature] (
   override def transformSchema(schema: StructType): StructType = {
     checkCanTransform(schema)
     val withFeatures = pipelineModel.transformSchema(schema)
-    if (hasLabelCol(withFeatures)) {
+    if (hasLabelCol(withFeatures))
       withFeatures
-    } else if (schema.exists(_.name == resolvedFormula.label)) {
+    else if (schema.exists(_.name == resolvedFormula.label)) {
       val nullable = schema(resolvedFormula.label).dataType match {
         case _: NumericType | BooleanType => false
         case _                            => true
       }
       StructType(
         withFeatures.fields :+ StructField($(labelCol), DoubleType, nullable))
-    } else {
+    } else
       // Ignore the label field. This is a hack so that this transformer can also work on test
       // datasets in a Pipeline.
       withFeatures
-    }
   }
 
   override def copy(extra: ParamMap): RFormulaModel =
@@ -251,9 +248,9 @@ class RFormulaModel private[feature] (
 
   private def transformLabel(dataset: DataFrame): DataFrame = {
     val labelName = resolvedFormula.label
-    if (hasLabelCol(dataset.schema)) {
+    if (hasLabelCol(dataset.schema))
       dataset
-    } else if (dataset.schema.exists(_.name == labelName)) {
+    else if (dataset.schema.exists(_.name == labelName))
       dataset.schema(labelName).dataType match {
         case _: NumericType | BooleanType =>
           dataset.withColumn($(labelCol), dataset(labelName).cast(DoubleType))
@@ -261,11 +258,10 @@ class RFormulaModel private[feature] (
           throw new IllegalArgumentException(
             "Unsupported type for label: " + other)
       }
-    } else {
+    else
       // Ignore the label field. This is a hack so that this transformer can also work on test
       // datasets in a Pipeline.
       dataset
-    }
   }
 
   private def checkCanTransform(schema: StructType) {
@@ -449,12 +445,10 @@ private class VectorAttributeRewriter(
           if (replacement.nonEmpty) {
             val (k, v) = replacement.headOption.get
             attr.withName(v + name.stripPrefix(k))
-          } else {
+          } else
             attr
-          }
-        } else {
+        } else
           attr
-        }
       }
       new AttributeGroup(vectorCol, attrs).toMetadata()
     }

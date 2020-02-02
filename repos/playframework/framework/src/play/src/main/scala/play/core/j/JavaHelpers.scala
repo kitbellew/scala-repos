@@ -70,21 +70,16 @@ trait JavaHelpers {
       .withHeaders(javaContext.response.getHeaders.asScala.toSeq: _*)
       .withCookies(cookiesToScalaCookies(javaContext.response.cookies): _*)
 
-    if (javaContext.session.isDirty && javaContext.flash.isDirty) {
+    if (javaContext.session.isDirty && javaContext.flash.isDirty)
       wResult
         .withSession(Session(javaContext.session.asScala.toMap))
         .flashing(Flash(javaContext.flash.asScala.toMap))
-    } else {
-      if (javaContext.session.isDirty) {
-        wResult.withSession(Session(javaContext.session.asScala.toMap))
-      } else {
-        if (javaContext.flash.isDirty) {
-          wResult.flashing(Flash(javaContext.flash.asScala.toMap))
-        } else {
-          wResult
-        }
-      }
-    }
+    else if (javaContext.session.isDirty)
+      wResult.withSession(Session(javaContext.session.asScala.toMap))
+    else if (javaContext.flash.isDirty)
+      wResult.flashing(Flash(javaContext.flash.asScala.toMap))
+    else
+      wResult
   }
 
   /**
@@ -137,9 +132,7 @@ trait JavaHelpers {
         FutureConverters
           .toScala(cs)
           .map(createResult(javaContext, _))(trampoline))
-    } finally {
-      JContext.current.remove()
-    }
+    } finally JContext.current.remove()
   }
 
   /**
@@ -170,9 +163,7 @@ trait JavaHelpers {
     try {
       JContext.current.set(javaContext)
       block(javaContext)
-    } finally {
-      JContext.current.remove()
-    }
+    } finally JContext.current.remove()
 
   }
 

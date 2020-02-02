@@ -100,10 +100,8 @@ private[streaming] class RawNetworkReceiver(
 
   /** Read a buffer fully from a given Channel */
   private def readFully(channel: ReadableByteChannel, dest: ByteBuffer) {
-    while (dest.position < dest.limit) {
-      if (channel.read(dest) == -1) {
+    while (dest.position < dest.limit)
+      if (channel.read(dest) == -1)
         throw new EOFException("End of channel")
-      }
-    }
   }
 }

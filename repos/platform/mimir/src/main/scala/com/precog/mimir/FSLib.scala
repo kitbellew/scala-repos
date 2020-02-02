@@ -55,23 +55,22 @@ trait FSLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           pathString: String,
           pathRoot: Path): M[Stream[Path]] = {
         def walk(m: Matcher, prefixes: Stream[Path]): M[Stream[Path]] =
-          if (m.find) {
+          if (m.find)
             m.group(1).trim match {
               case "*" =>
                 prefixes traverse { prefix =>
                   vfs
                     .findDirectChildren(apiKey, prefix)
                     .fold(_ => Set(), a => a) map { child =>
-                    child map { prefix / _.path }
+                    child map prefix / _.path
                   }
                 } flatMap { paths => walk(m, paths.flatten) }
 
               case token =>
                 walk(m, prefixes.map(_ / Path(token)))
             }
-          } else {
+          else
             M.point(prefixes)
-          }
 
         walk(pattern.matcher(pathString), Stream(pathRoot))
       }

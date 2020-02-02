@@ -121,21 +121,19 @@ object FormattedStringParser extends StringParser {
           } getOrElse {
             UnboundPositionalSpecifier(specifier, position)
           }
-        } else {
-          if (it.toString().equals("%n"))
-            Injection(
-              ScalaPsiElementFactory
-                .createExpressionFromText("\"\\n\"", literal.getManager),
-              None)
-          else if (it.toString == "%%")
-            Injection(
-              ScalaPsiElementFactory
-                .createExpressionFromText("\"%\"", literal.getManager),
-              None)
-          else if (remainingArguments.hasNext)
-            Injection(remainingArguments.next(), Some(specifier))
-          else UnboundSpecifier(specifier)
-        }
+        } else if (it.toString().equals("%n"))
+          Injection(
+            ScalaPsiElementFactory
+              .createExpressionFromText("\"\\n\"", literal.getManager),
+            None)
+        else if (it.toString == "%%")
+          Injection(
+            ScalaPsiElementFactory
+              .createExpressionFromText("\"%\"", literal.getManager),
+            None)
+        else if (remainingArguments.hasNext)
+          Injection(remainingArguments.next(), Some(specifier))
+        else UnboundSpecifier(specifier)
     }
 
     val texts = FormatSpecifierPattern.split(formatString).map { s =>

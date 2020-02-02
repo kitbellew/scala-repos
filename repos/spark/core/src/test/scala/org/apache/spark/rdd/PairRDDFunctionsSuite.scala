@@ -143,13 +143,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     }
 
     // vary sampling rate
-    for (samplingRate <- List(0.01, 0.05, 0.1, 0.5)) {
+    for (samplingRate <- List(0.01, 0.05, 0.1, 0.5))
       StratifiedAuxiliary.testSample(
         stratifiedData,
         samplingRate,
         defaultSeed,
         n)
-    }
   }
 
   test("sampleByKeyExact") {
@@ -197,13 +196,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     }
 
     // vary sampling rate
-    for (samplingRate <- List(0.01, 0.05, 0.1, 0.5)) {
+    for (samplingRate <- List(0.01, 0.05, 0.1, 0.5))
       StratifiedAuxiliary.testSampleExact(
         stratifiedData,
         samplingRate,
         defaultSeed,
         n)
-    }
   }
 
   test("reduceByKey") {
@@ -472,9 +470,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       // Test that a shuffle on the file works, because this used to be a bug
       assert(
         file.map(line => (line, 1)).reduceByKey(_ + _).collect().toList === Nil)
-    } finally {
-      Utils.deleteRecursively(emptyDir)
-    }
+    } finally Utils.deleteRecursively(emptyDir)
   }
 
   test("keys and values") {
@@ -698,9 +694,9 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         actual: Int,
         trials: Int,
         p: Double): Unit =
-      if (exact) {
+      if (exact)
         assert(actual == math.ceil(p * trials).toInt)
-      } else {
+      else {
         val dist = new BinomialDistribution(trials, p)
         val q = dist.cumulativeProbability(actual)
         withClue(s"p = $p: trials = $trials") {
@@ -713,9 +709,9 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         actual: Int,
         trials: Int,
         p: Double): Unit =
-      if (exact) {
+      if (exact)
         assert(actual == math.ceil(p * trials).toInt)
-      } else {
+      else {
         val dist = new PoissonDistribution(p * trials)
         val q = dist.cumulativeProbability(actual)
         withClue(s"p = $p: trials = $trials") {
@@ -750,11 +746,11 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         n: Long): Unit = {
       val trials = stratifiedData.countByKey()
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
-      val sample = if (exact) {
-        stratifiedData.sampleByKeyExact(false, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(false, fractions, seed)
-      }
+      val sample =
+        if (exact)
+          stratifiedData.sampleByKeyExact(false, fractions, seed)
+        else
+          stratifiedData.sampleByKey(false, fractions, seed)
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {
@@ -783,11 +779,11 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
         .countByKey()
         .mapValues(count => math.ceil(count * samplingRate).toInt)
       val fractions = Map("1" -> samplingRate, "0" -> samplingRate)
-      val sample = if (exact) {
-        stratifiedData.sampleByKeyExact(true, fractions, seed)
-      } else {
-        stratifiedData.sampleByKey(true, fractions, seed)
-      }
+      val sample =
+        if (exact)
+          stratifiedData.sampleByKeyExact(true, fractions, seed)
+        else
+          stratifiedData.sampleByKey(true, fractions, seed)
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
       sampleCounts.foreach {
@@ -799,22 +795,18 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
             p = samplingRate)
       }
       val groupedByKey = takeSample.groupBy(_._1)
-      for ((key, v) <- groupedByKey) {
-        if (expectedSampleSize(key) >= 100 && samplingRate >= 0.1) {
+      for ((key, v) <- groupedByKey)
+        if (expectedSampleSize(key) >= 100 && samplingRate >= 0.1)
           // sample large enough for there to be repeats with high likelihood
           assert(v.toSet.size < expectedSampleSize(key))
-        } else {
-          if (exact) {
-            assert(v.toSet.size <= expectedSampleSize(key))
-          } else {
-            assertPoissonSample(
-              false,
-              actual = v.toSet.size,
-              trials(key).toInt,
-              p = samplingRate)
-          }
-        }
-      }
+        else if (exact)
+          assert(v.toSet.size <= expectedSampleSize(key))
+        else
+          assertPoissonSample(
+            false,
+            actual = v.toSet.size,
+            trials(key).toInt,
+            p = samplingRate)
       takeSample.foreach(x =>
         assert(1 <= x._2 && x._2 <= n, s"elements not in [1, $n]"))
     }

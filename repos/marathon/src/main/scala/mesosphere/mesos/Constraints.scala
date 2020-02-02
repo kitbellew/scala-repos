@@ -34,15 +34,14 @@ object Constraints {
     lazy val attr = offer.getAttributesList.asScala.find(_.getName == field)
 
     def isMatch: Boolean =
-      if (field == "hostname") {
+      if (field == "hostname")
         checkHostName
-      } else if (attr.nonEmpty) {
+      else if (attr.nonEmpty)
         checkAttribute
-      } else {
+      else
         // This will be reached in case we want to schedule for an attribute
         // that's not supplied.
         checkMissingAttribute
-      }
 
     private def checkGroupBy(
         constraintValue: String,
@@ -101,16 +100,16 @@ object Constraints {
               .map(_.getText.getValue)
           checkGroupBy(attr.get.getText.getValue, groupFunc)
         case Operator.LIKE =>
-          if (value.nonEmpty) {
+          if (value.nonEmpty)
             attr.get.getText.getValue.matches(value)
-          } else {
+          else {
             log.warn("Error, value is required for LIKE operation")
             false
           }
         case Operator.UNLIKE =>
-          if (value.nonEmpty) {
+          if (value.nonEmpty)
             !attr.get.getText.getValue.matches(value)
-          } else {
+          else {
             log.warn("Error, value is required for UNLIKE operation")
             false
           }
@@ -245,11 +244,10 @@ object Constraints {
     def tasksToKillIterator(without: Map[Task.Id, Task]): Iterator[Task] = {
       val updated = distribution.map(_ -- without.keys).groupBy(_.size)
       if (updated.size == 1) /* even distributed */ Iterator.empty
-      else {
+      else
         updated.maxBy(_._1)._2.iterator.flatten.map {
           case (taskId, task) => task
         }
-      }
     }
 
     def distributionDifference(without: Map[Task.Id, Task] = Map.empty): Int = {

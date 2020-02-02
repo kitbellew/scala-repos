@@ -100,9 +100,8 @@ object MFDataGenerator {
       .map(x => (x % m, x / m, fullData.values(x)))
 
     // optionally add gaussian noise
-    if (noise) {
+    if (noise)
       trainData.map(x => (x._1, x._2, x._3 + rand.nextGaussian * sigma))
-    }
 
     trainData
       .map(x => x._1 + "," + x._2 + "," + x._3)

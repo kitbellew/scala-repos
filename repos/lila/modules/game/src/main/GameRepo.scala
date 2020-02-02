@@ -155,9 +155,8 @@ object GameRepo {
   def urgentGames(user: User): Fu[List[Pov]] =
     $find(Query nowPlaying user.id, 100) map { games =>
       val povs = games flatMap { Pov(_, user) }
-      try {
-        povs sortWith Pov.priority
-      } catch {
+      try povs sortWith Pov.priority
+      catch {
         case e: IllegalArgumentException =>
           povs sortBy (-_.game.updatedAtOrCreatedAt.getSeconds)
       }
@@ -385,7 +384,7 @@ object GameRepo {
       )
       .map(_.documents.flatMap { obj =>
         obj.getAs[String]("_id") flatMap { id =>
-          obj.getAs[Int]("gs") map { id -> _ }
+          obj.getAs[Int]("gs") map id -> _
         }
       })
   }

@@ -50,12 +50,11 @@ class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
             parameters: CompletionParameters,
             context: ProcessingContext,
             result: CompletionResultSet) {
-          for (keyword <- keywords) {
+          for (keyword <- keywords)
             result.addElement(
               LookupElementManager.getKeywrodLookupElement(
                 keyword,
                 positionFromParameters(parameters)))
-          }
         }
       }
     )
@@ -74,12 +73,11 @@ class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
             parameters: CompletionParameters,
             context: ProcessingContext,
             result: CompletionResultSet) {
-          for (keyword <- keywords) {
+          for (keyword <- keywords)
             result.addElement(
               LookupElementManager.getKeywrodLookupElement(
                 keyword,
                 positionFromParameters(parameters)))
-          }
         }
       }
     )

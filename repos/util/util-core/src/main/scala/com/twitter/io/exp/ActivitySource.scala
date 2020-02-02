@@ -127,7 +127,7 @@ class FilePollingActivitySource private[exp] (
       val timerTask = timer.schedule(Time.now, period) {
         val file = new File(name)
 
-        if (file.exists()) {
+        if (file.exists())
           pool {
             val reader = new InputStreamReader(
               new FileInputStream(file),
@@ -143,9 +143,8 @@ class FilePollingActivitySource private[exp] (
               reader.close(Time.Undefined)
             }
           }
-        } else {
+        else
           value() = Activity.Failed(NotFound)
-        }
       }
 
       Closable.make { _ => Future { timerTask.cancel() } }
@@ -176,7 +175,7 @@ class ClassLoaderActivitySource private[exp] (
 
     // Defer loading until the first observation
     val v = Var.async[Activity.State[Buf]](Activity.Pending) { value =>
-      if (runOnce.compareAndSet(false, true)) {
+      if (runOnce.compareAndSet(false, true))
         pool {
           classLoader.getResourceAsStream(name) match {
             case null => p.setValue(Activity.Failed(NotFound))
@@ -197,7 +196,6 @@ class ClassLoaderActivitySource private[exp] (
               }
           }
         }
-      }
       p.onSuccess(value() = _)
       Closable.nop
     }

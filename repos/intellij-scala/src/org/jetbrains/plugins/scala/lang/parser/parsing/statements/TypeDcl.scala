@@ -38,17 +38,15 @@ object TypeDcl {
     builder.getTokenText match {
       case ">:" =>
         builder.advanceLexer()
-        if (!Type.parse(builder)) {
+        if (!Type.parse(builder))
           builder error ScalaBundle.message("wrong.type")
-        }
       case _ => //nothing
     }
     builder.getTokenText match {
       case "<:" =>
         builder.advanceLexer()
-        if (!Type.parse(builder)) {
+        if (!Type.parse(builder))
           builder error ScalaBundle.message("wrong.type")
-        }
       case _ => //nothing
     }
     returnMarker.drop()

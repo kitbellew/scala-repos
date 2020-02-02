@@ -78,7 +78,7 @@ class InboxSuite extends SparkFunSuite {
 
     val exitLatch = new CountDownLatch(10)
 
-    for (_ <- 0 until 10) {
+    for (_ <- 0 until 10)
       new Thread {
         override def run(): Unit = {
           for (_ <- 0 until 100) {
@@ -88,7 +88,6 @@ class InboxSuite extends SparkFunSuite {
           exitLatch.countDown()
         }
       }.start()
-    }
     // Try to process some messages
     inbox.process(dispatcher)
     inbox.stop()

@@ -88,13 +88,12 @@ class ScalaDocFormattingPanel(val settings: CodeStyleSettings)
   private def setEnabled(c: JComponent, enabled: Boolean) {
     c.setEnabled(enabled)
     val children = c.getComponents
-    for (child <- children) {
+    for (child <- children)
       child match {
         case c1: JComponent =>
           setEnabled(c1, enabled)
         case _ =>
       }
-    }
   }
 
   override def apply(settings: CodeStyleSettings) {
@@ -126,9 +125,8 @@ class ScalaDocFormattingPanel(val settings: CodeStyleSettings)
   protected override def customizeSettings() {
     val provider: LanguageCodeStyleSettingsProvider =
       LanguageCodeStyleSettingsProvider.forLanguage(ScalaLanguage.Instance)
-    if (provider != null) {
+    if (provider != null)
       provider.customizeSettings(this, getSettingsType)
-    }
   }
 
   protected override def getTabTitle: String = "ScalaDoc"

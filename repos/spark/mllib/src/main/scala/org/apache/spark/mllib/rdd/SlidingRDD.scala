@@ -79,11 +79,11 @@ private[mllib] class SlidingRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     val parentPartitions = parent.partitions
     val n = parentPartitions.length
-    if (n == 0) {
+    if (n == 0)
       Array.empty
-    } else if (n == 1) {
+    else if (n == 1)
       Array(new SlidingRDDPartition[T](0, parentPartitions(0), Seq.empty, 0))
-    } else {
+    else {
       val w1 = windowSize - 1
       // Get partition sizes and first w1 elements.
       val (sizes, heads) = parent

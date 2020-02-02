@@ -122,9 +122,9 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       val typeParams = prototype.typeParameters
       val parametersAndRetType =
         prototype.parameters ++ prototype.returnTypeElement
-      if (typeParams.exists(!typeParameterUsedIn(_, parametersAndRetType))) {
+      if (typeParams.exists(!typeParameterUsedIn(_, parametersAndRetType)))
         typeParams.map(_.nameId.getText).mkString("[", ", ", "]")
-      } else ""
+      else ""
     }
     val dText: String = delegateText(delegate)
     val methodName = prototype.name
@@ -243,9 +243,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       val selectedElements = chooser.getSelectedElements
       if (selectedElements != null && selectedElements.size > 0)
         return selectedElements.get(0)
-    } else {
+    } else
       return elements(0)
-    }
     null
   }
 
@@ -269,9 +268,7 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
     for {
       m <- ScalaOIUtil.allMembers(clazz, withSelfType = true)
       cm <- ScalaOIUtil.toClassMember(m, isImplement = false)
-    } {
-      if (canBeTargetInClass(cm, clazz)) return true
-    }
+    } if (canBeTargetInClass(cm, clazz)) return true
     false
   }
 

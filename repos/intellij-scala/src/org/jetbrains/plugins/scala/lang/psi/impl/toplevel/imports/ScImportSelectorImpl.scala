@@ -39,18 +39,16 @@ class ScImportSelectorImpl private (
 
   def importedName: String = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScImportSelectorStub].importedName
-    }
     val id = findChildByType[PsiElement](TokenSets.ID_SET)
     if (id == null) reference.refName else id.getText
   }
 
   def reference: ScStableCodeReferenceElement = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScImportSelectorStub].reference
-    }
     getFirstChild match {
       case s: ScStableCodeReferenceElement => s
       case _                               => null
@@ -60,9 +58,8 @@ class ScImportSelectorImpl private (
   def deleteSelector() {
     val expr: ScImportExpr =
       PsiTreeUtil.getParentOfType(this, classOf[ScImportExpr])
-    if (expr.selectors.length + expr.singleWildcard.toInt == 1) {
+    if (expr.selectors.length + expr.singleWildcard.toInt == 1)
       expr.deleteExpr()
-    }
     val forward: Boolean = expr.selectors.head == this
     var node = this.getNode
     var prev = if (forward) node.getTreeNext else node.getTreePrev

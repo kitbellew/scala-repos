@@ -56,9 +56,9 @@ class FlipComparisonInMethodCallExprIntention
       return false
 
     val notChanged = mutable.HashSet[String]("==", "!=", "equals", "eq", "ne")
-    if (notChanged.contains(oper)) {
+    if (notChanged.contains(oper))
       setText("Flip '" + oper + "'")
-    } else {
+    else {
       val replaceOper = Map(">" -> "<", "<" -> ">", ">=" -> "<=", "<=" -> ">=")
       setText("Flip '" + oper + "' to '" + replaceOper(oper) + "'")
     }
@@ -105,14 +105,12 @@ class FlipComparisonInMethodCallExprIntention
       .get
     qualBuilder.append(qual.getText)
     var newArgs = qual.getText
-    if (!(newArgs.startsWith("(") && newArgs.endsWith(")"))) {
+    if (!(newArgs.startsWith("(") && newArgs.endsWith(")")))
       newArgs = qualBuilder.insert(0, "(").append(")").toString()
-    }
 
     var newQual = argsBuilder.toString()
-    if (newQual.startsWith("(") && newQual.endsWith(")")) {
+    if (newQual.startsWith("(") && newQual.endsWith(")"))
       newQual = argsBuilder.toString().drop(1).dropRight(1)
-    }
 
     val newQualExpr: ScExpression = ScalaPsiElementFactory
       .createExpressionFromText(newQual, element.getManager)

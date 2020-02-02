@@ -80,18 +80,16 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       req: HttpServletRequest,
       res: HttpServletResponse): Unit = {
     val req2 =
-      try {
-        if (isMultipartRequest(req)) {
-          val bodyParams = extractMultipartParams(req)
-          val mergedFormParams = mergeFormParamsWithQueryString(req, bodyParams)
+      try if (isMultipartRequest(req)) {
+        val bodyParams = extractMultipartParams(req)
+        val mergedFormParams = mergeFormParamsWithQueryString(req, bodyParams)
 
-          wrapRequest(req, mergedFormParams)
-        } else req
-      } catch {
-        case e: Exception => {
+        wrapRequest(req, mergedFormParams)
+      } else req
+      catch {
+        case e: Exception =>
           req.setAttribute(ScalatraBase.PrehandleExceptionKey, e)
           req
-        }
       }
 
     super.handle(req2, res)
@@ -110,13 +108,13 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       case Some(bodyParams) =>
         bodyParams
 
-      case None => {
+      case None =>
         val bodyParams =
           getParts(req).foldRight(BodyParams(FileMultiParams(), Map.empty)) {
             (part, params) =>
               val item = FileItem(part)
 
-              if (!(item.isFormField)) {
+              if (!(item.isFormField))
                 BodyParams(
                   params.fileParams + (
                     (
@@ -125,20 +123,17 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
                         .getOrElse(item.getFieldName, List[FileItem]())
                     )),
                   params.formParams)
-              } else {
+              else
                 BodyParams(params.fileParams, params.formParams)
-              }
           }
 
         req.setAttribute(BodyParamsKey, bodyParams)
         bodyParams
-      }
     }
 
   private def getParts(req: HttpServletRequest): Iterable[Part] =
-    try {
-      if (isMultipartRequest(req)) req.getParts.asScala else Seq.empty[Part]
-    } catch {
+    try if (isMultipartRequest(req)) req.getParts.asScala else Seq.empty[Part]
+    catch {
       case e: Exception if isSizeConstraintException(e) =>
         throw new SizeConstraintExceededException(
           "Too large request or file",
@@ -286,7 +281,7 @@ object Util {
       attributeName: String,
       defaultValue: String = null): String =
     Option(part.getHeader(headerName)) match {
-      case Some(value) => {
+      case Some(value) =>
         value.split(";").find(_.trim().startsWith(attributeName)) match {
           case Some(attributeValue) =>
             attributeValue
@@ -295,7 +290,6 @@ object Util {
               .replace("\"", "")
           case _ => defaultValue
         }
-      }
       case _ => defaultValue
     }
 

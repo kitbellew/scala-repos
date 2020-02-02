@@ -483,9 +483,8 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
     composeAction(new Action[A] {
       def parser = composeParser(bodyParser)
       def apply(request: Request[A]) =
-        try {
-          invokeBlock(request, block)
-        } catch {
+        try invokeBlock(request, block)
+        catch {
           // NotImplementedError is not caught by NonFatal, wrap it
           case e: NotImplementedError => throw new RuntimeException(e)
           // LinkageError is similarly harmless in Play Framework, since automatic reloading could easily trigger it

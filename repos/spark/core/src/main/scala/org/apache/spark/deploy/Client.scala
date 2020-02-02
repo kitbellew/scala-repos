@@ -121,7 +121,7 @@ private class ClientEndpoint(
     * Send the message to master and forward the reply to self asynchronously.
     */
   private def ayncSendToMasterAndForwardReply[T: ClassTag](message: Any): Unit =
-    for (masterEndpoint <- masterEndpoints) {
+    for (masterEndpoint <- masterEndpoints)
       masterEndpoint
         .ask[T](message)
         .onComplete {
@@ -129,7 +129,6 @@ private class ClientEndpoint(
           case Failure(e) =>
             logWarning(s"Error sending messages to master $masterEndpoint", e)
         }(forwardMessageExecutionContext)
-    }
 
   /* Find out driver status then exit the JVM */
   def pollAndReportStatus(driverId: String) {
@@ -173,18 +172,16 @@ private class ClientEndpoint(
       if (success) {
         activeMasterEndpoint = master
         pollAndReportStatus(driverId.get)
-      } else if (!Utils.responseFromBackup(message)) {
+      } else if (!Utils.responseFromBackup(message))
         System.exit(-1)
-      }
 
     case KillDriverResponse(master, driverId, success, message) =>
       logInfo(message)
       if (success) {
         activeMasterEndpoint = master
         pollAndReportStatus(driverId)
-      } else if (!Utils.responseFromBackup(message)) {
+      } else if (!Utils.responseFromBackup(message))
         System.exit(-1)
-      }
   }
 
   override def onDisconnected(remoteAddress: RpcAddress): Unit =

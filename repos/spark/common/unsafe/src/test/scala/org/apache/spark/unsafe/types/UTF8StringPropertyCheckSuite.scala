@@ -46,9 +46,8 @@ class UTF8StringPropertyCheckSuite
     forAll { (s: String) =>
       val utf8 = toUTF8(s)
       assert(utf8.startsWith(utf8))
-      for (i <- 1 to s.length) {
+      for (i <- 1 to s.length)
         assert(utf8.startsWith(toUTF8(s.dropRight(i))))
-      }
     }
   }
 
@@ -56,9 +55,8 @@ class UTF8StringPropertyCheckSuite
     forAll { (s: String) =>
       val utf8 = toUTF8(s)
       assert(utf8.endsWith(utf8))
-      for (i <- 1 to s.length) {
+      for (i <- 1 to s.length)
         assert(utf8.endsWith(toUTF8(s.drop(i))))
-      }
     }
   }
 
@@ -84,10 +82,9 @@ class UTF8StringPropertyCheckSuite
 
   test("substring") {
     forAll { (s: String) =>
-      for (start <- 0 to s.length; end <- 0 to s.length; if start <= end) {
+      for (start <- 0 to s.length; end <- 0 to s.length; if start <= end)
         assert(
           toUTF8(s).substring(start, end).toString === s.substring(start, end))
-      }
     }
   }
 
@@ -109,17 +106,15 @@ class UTF8StringPropertyCheckSuite
     def lTrim(s: String): String = {
       var st = 0
       val array: Array[Char] = s.toCharArray
-      while ((st < s.length) && (array(st) <= ' ')) {
+      while ((st < s.length) && (array(st) <= ' '))
         st += 1
-      }
       if (st > 0) s.substring(st, s.length) else s
     }
     def rTrim(s: String): String = {
       var len = s.length
       val array: Array[Char] = s.toCharArray
-      while ((len > 0) && (array(len - 1) <= ' ')) {
+      while ((len > 0) && (array(len - 1) <= ' '))
         len -= 1
-      }
       if (len < s.length) s.substring(0, len) else s
     }
 
@@ -166,19 +161,18 @@ class UTF8StringPropertyCheckSuite
         length: Int,
         isLPad: Boolean): String = {
       if (length <= 0) return ""
-      if (length <= origin.length) {
+      if (length <= origin.length)
         if (length <= 0) "" else origin.substring(0, length)
-      } else {
+      else {
         if (pad.length == 0) return origin
         val toPad = length - origin.length
         val partPad =
           if (toPad % pad.length == 0) ""
           else pad.substring(0, toPad % pad.length)
-        if (isLPad) {
+        if (isLPad)
           pad * (toPad / pad.length) + partPad + origin
-        } else {
+        else
           origin + pad * (toPad / pad.length) + partPad
-        }
       }
     }
 

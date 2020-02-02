@@ -78,9 +78,8 @@ class LRUMap[K, V](
     val oldMaxSize = _maxSize
     _maxSize = newMaxSize
 
-    if (newMaxSize < oldMaxSize) {
+    if (newMaxSize < oldMaxSize)
       doRemoveIfTooMany()
-    }
   }
 
   _prev = this

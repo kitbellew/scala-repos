@@ -42,11 +42,10 @@ class DictionaryEncodingSuite extends SparkFunSuite {
         .toMap
 
     def stableDistinct(seq: Seq[Int]): Seq[Int] =
-      if (seq.isEmpty) {
+      if (seq.isEmpty)
         Seq.empty
-      } else {
+      else
         seq.head +: seq.tail.filterNot(_ == seq.head)
-      }
 
     def skeleton(uniqueValueCount: Int, inputSeq: Seq[Int]) {
       // -------------
@@ -63,13 +62,13 @@ class DictionaryEncodingSuite extends SparkFunSuite {
 
       inputSeq.foreach(i => builder.appendFrom(rows(i), 0))
 
-      if (dictValues.length > DictionaryEncoding.MAX_DICT_SIZE) {
+      if (dictValues.length > DictionaryEncoding.MAX_DICT_SIZE)
         withClue("Dictionary overflowed, compression should fail") {
           intercept[Throwable] {
             builder.build()
           }
         }
-      } else {
+      else {
         val buffer = builder.build()
         val headerSize = CompressionScheme.columnHeaderSize(buffer)
         // 4 extra bytes for dictionary size
@@ -108,7 +107,7 @@ class DictionaryEncodingSuite extends SparkFunSuite {
         val decoder = DictionaryEncoding.decoder(buffer, columnType)
         val mutableRow = new GenericMutableRow(1)
 
-        if (inputSeq.nonEmpty) {
+        if (inputSeq.nonEmpty)
           inputSeq.foreach { i =>
             assert(decoder.hasNext)
             assertResult(values(i), "Wrong decoded value") {
@@ -116,7 +115,6 @@ class DictionaryEncodingSuite extends SparkFunSuite {
               columnType.getField(mutableRow, 0)
             }
           }
-        }
 
         assert(!decoder.hasNext)
       }

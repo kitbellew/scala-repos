@@ -98,12 +98,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val indexScores = if (queryFeatures.isEmpty) {
       logger.info(s"No productFeatures found for query $query.")
       Array[(Int, Double)]()
-    } else {
+    } else
       model.productFeatures
         .mapValues { f ⇒ queryFeatures.map(cosine(_, f)).reduce(_ + _) }
         .filter(_._2 > 0) // keep items with score > 0
         .collect()
-    }
 
     // HOWTO: filter predicted results by query.
     val filteredScores = filterItems(indexScores, model.items, query)
@@ -127,16 +126,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     var result = List.empty[T]
 
-    for (x <- s) {
+    for (x <- s)
       if (result.size < n)
         result = x :: result
       else {
         val min = result.min
-        if (ord.compare(x, min) < 0) {
+        if (ord.compare(x, min) < 0)
           result = x :: result.filter(_ != min)
-        }
       }
-    }
 
     result.sorted.reverse
   }

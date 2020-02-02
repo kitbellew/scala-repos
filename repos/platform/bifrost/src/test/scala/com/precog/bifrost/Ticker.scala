@@ -119,9 +119,8 @@ trait SchedulableFuturesModule {
   def schedule[A](n: Long)(f: => A): Future[A] = {
     val promise = Promise[A]()
     val thunk: () => Any = { () =>
-      try {
-        promise.success(f)
-      } catch {
+      try promise.success(f)
+      catch {
         case ex => promise.failure(ex)
       }
     }

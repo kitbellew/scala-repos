@@ -36,12 +36,10 @@ class VectorBuilderTest extends FunSuite with Checkers {
         xl <- Arbitrary.arbitrary[List[Int]]
         y <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
         yl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          VectorBuilder(30)(xl.map(i => (i % 30).abs -> math.random * x): _*),
-          VectorBuilder(30)(yl.map(i => (i % 30).abs -> math.random * y): _*))
+      } yield (
+        VectorBuilder(30)(xl.map(i => (i % 30).abs -> math.random * x): _*),
+        VectorBuilder(30)(yl.map(i => (i % 30).abs -> math.random * y): _*))
 
-      }
     }
 
   test("Dot product is consistent") {
@@ -95,15 +93,13 @@ class VectorBuilderOpsTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Double].map { _ % 1e3 }
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          VectorBuilder(N)(
-            xl.take(4).map(i => (i % N).abs -> math.random * x): _*),
-          VectorBuilder(N)(
-            yl.take(4).map(i => (i % N).abs -> math.random * y): _*),
-          VectorBuilder(N)(
-            zl.take(4).map(i => (i % N).abs -> math.random * z): _*))
-      }
+      } yield (
+        VectorBuilder(N)(
+          xl.take(4).map(i => (i % N).abs -> math.random * x): _*),
+        VectorBuilder(N)(
+          yl.take(4).map(i => (i % N).abs -> math.random * y): _*),
+        VectorBuilder(N)(
+          zl.take(4).map(i => (i % N).abs -> math.random * z): _*))
     }
 
   def genScalar: Arbitrary[Double] =

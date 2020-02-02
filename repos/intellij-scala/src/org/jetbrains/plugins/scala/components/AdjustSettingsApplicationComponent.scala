@@ -34,10 +34,9 @@ class AdjustSettingsApplicationComponent extends ApplicationComponent {
       val xms = VMOptions.readOption(XMS_PATTERN).max(0)
       val preferredXms = preferredXmx
 
-      if (xmx < preferredXmx || xss < preferredXss || xms < preferredXms) {
+      if (xmx < preferredXmx || xss < preferredXss || xms < preferredXms)
         new AdjustSettingsDialog(preferredXmx, preferredXms, preferredXss)
           .show()
-      }
     }
   }
 

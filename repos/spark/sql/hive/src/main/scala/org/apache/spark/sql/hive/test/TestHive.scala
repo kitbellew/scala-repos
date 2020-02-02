@@ -124,7 +124,7 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
 
   @transient
   protected[sql] override lazy val sessionState = new HiveSessionState(this) {
-    override lazy val conf: SQLConf = {
+    override lazy val conf: SQLConf =
       new SQLConf {
         clear()
         override def caseSensitiveAnalysis: Boolean =
@@ -136,7 +136,6 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           }
         }
       }
-    }
 
     override lazy val functionRegistry = {
       new TestHiveFunctionRegistry(
@@ -163,9 +162,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           .map(_.getCanonicalPath)
           .getOrElse(inRepoTests.getCanonicalPath)
       cmd.replaceAll("\\.\\./\\.\\./", testDataLocation + "/")
-    } else {
+    } else
       cmd
-    }
 
   val hiveFilesTemp = File.createTempFile("catalystHiveFiles", "")
   hiveFilesTemp.delete()
@@ -175,14 +173,13 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
   val inRepoTests =
     if (System
           .getProperty("user.dir")
-          .endsWith("sql" + File.separator + "hive")) {
+          .endsWith("sql" + File.separator + "hive"))
       new File(
         "src" + File.separator + "test" + File.separator + "resources" + File.separator)
-    } else {
+    else
       new File(
         "sql" + File.separator + "hive" + File.separator + "src" + File.separator + "test" +
           File.separator + "resources")
-    }
 
   def getHiveFile(path: String): File = {
     val stripped =
@@ -257,12 +254,11 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       () => {
         runSqlHive(
           "CREATE TABLE srcpart (key INT, value STRING) PARTITIONED BY (ds STRING, hr STRING)")
-        for (ds <- Seq("2008-04-08", "2008-04-09"); hr <- Seq("11", "12")) {
+        for (ds <- Seq("2008-04-08", "2008-04-09"); hr <- Seq("11", "12"))
           runSqlHive(
             s"""LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}'
              |OVERWRITE INTO TABLE srcpart PARTITION (ds='$ds',hr='$hr')
            """.stripMargin)
-        }
       }
     ),
     TestTable(
@@ -270,12 +266,11 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       () => {
         runSqlHive(
           "CREATE TABLE srcpart1 (key INT, value STRING) PARTITIONED BY (ds STRING, hr INT)")
-        for (ds <- Seq("2008-04-08", "2008-04-09"); hr <- 11 to 12) {
+        for (ds <- Seq("2008-04-08", "2008-04-09"); hr <- 11 to 12)
           runSqlHive(
             s"""LOAD DATA LOCAL INPATH '${getHiveFile("data/files/kv1.txt")}'
              |OVERWRITE INTO TABLE srcpart1 PARTITION (ds='$ds',hr='$hr')
            """.stripMargin)
-        }
       }
     ),
     TestTable(
@@ -433,9 +428,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
           .getOrElse(sys.error(s"Unknown test table $name"))
       createCmds.foreach(_())
 
-      if (cacheTables) {
+      if (cacheTables)
         cacheTable(name)
-      }
     }
   }
 
@@ -455,9 +449,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       // HACK: Hive is too noisy by default.
       org.apache.log4j.LogManager.getCurrentLoggers.asScala.foreach { log =>
         val logger = log.asInstanceOf[org.apache.log4j.Logger]
-        if (!logger.getName.contains("org.apache.spark")) {
+        if (!logger.getName.contains("org.apache.spark"))
           logger.setLevel(org.apache.log4j.Level.WARN)
-        }
       }
 
       cacheManager.clearCache()

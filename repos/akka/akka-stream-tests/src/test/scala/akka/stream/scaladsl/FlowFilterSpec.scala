@@ -37,9 +37,8 @@ class FlowFilterSpec extends AkkaSpec with ScriptedTest {
         .runWith(Sink.fromSubscriber(probe))
 
       val subscription = probe.expectSubscription()
-      for (_ ← 1 to 10000) {
+      for (_ ← 1 to 10000)
         subscription.request(Int.MaxValue)
-      }
 
       probe.expectNext(1)
       probe.expectComplete()

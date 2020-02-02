@@ -29,7 +29,7 @@ class RemoteServerRunner(project: Project) extends RemoteResourceOwner {
 
       override def run() {
         try {
-          for (i <- 0 until (COUNT - 1)) {
+          for (i <- 0 until (COUNT - 1))
             try {
               Thread.sleep(i * 20)
               send(serverAlias, arguments, client)
@@ -37,7 +37,6 @@ class RemoteServerRunner(project: Project) extends RemoteResourceOwner {
             } catch {
               case _: ConnectException => Thread.sleep(100)
             }
-          }
 
           send(serverAlias, arguments, client)
         } catch {
@@ -54,9 +53,7 @@ class RemoteServerRunner(project: Project) extends RemoteResourceOwner {
             client.error(message)
             client.debug(
               s"$message\n${e.toString}\n${e.getStackTrace.mkString("\n")}")
-        } finally {
-          callbacks.foreach(a => a())
-        }
+        } finally callbacks.foreach(a => a())
       }
 
       override def stop() {

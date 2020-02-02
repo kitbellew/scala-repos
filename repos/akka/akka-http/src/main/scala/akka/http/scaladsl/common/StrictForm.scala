@@ -133,12 +133,10 @@ object StrictForm {
       : FromEntityUnmarshaller[StrictForm] =
     Unmarshaller.withMaterializer { implicit ec ⇒ implicit fm ⇒ entity ⇒
       def tryUnmarshalToQueryForm: Future[StrictForm] =
-        for (formData ← formDataUM(entity).fast) yield {
-          new StrictForm {
-            val fields = formData.fields.map {
-              case (name, value) ⇒ name -> Field.FromString(value)
-            }(collection.breakOut)
-          }
+        for (formData ← formDataUM(entity).fast) yield new StrictForm {
+          val fields = formData.fields.map {
+            case (name, value) ⇒ name -> Field.FromString(value)
+          }(collection.breakOut)
         }
 
       def tryUnmarshalToMultipartForm: Future[StrictForm] =
@@ -147,13 +145,11 @@ object StrictForm {
           strictMultiPartFD ← multiPartFD
             .toStrict(10.seconds)
             .fast // TODO: make timeout configurable
-        } yield {
-          new StrictForm {
-            val fields = strictMultiPartFD.strictParts.map {
-              case x: Multipart.FormData.BodyPart.Strict ⇒
-                x.name -> Field.FromPart(x)
-            }(collection.breakOut)
-          }
+        } yield new StrictForm {
+          val fields = strictMultiPartFD.strictParts.map {
+            case x: Multipart.FormData.BodyPart.Strict ⇒
+              x.name -> Field.FromPart(x)
+          }(collection.breakOut)
         }
 
       tryUnmarshalToQueryForm.fast.recoverWith {

@@ -410,14 +410,12 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
     // Alternate authorizer, Remove all acls that end in 0
     val concurrentFuctions = acls.map { acl => () =>
       val aclId = acl.principal.getName.toInt
-      if (aclId % 2 == 0) {
+      if (aclId % 2 == 0)
         simpleAclAuthorizer.addAcls(Set(acl), commonResource)
-      } else {
+      else
         simpleAclAuthorizer2.addAcls(Set(acl), commonResource)
-      }
-      if (aclId % 10 == 0) {
+      if (aclId % 10 == 0)
         simpleAclAuthorizer2.removeAcls(Set(acl), commonResource)
-      }
     }
 
     val expectedAcls = acls.filter { acl =>

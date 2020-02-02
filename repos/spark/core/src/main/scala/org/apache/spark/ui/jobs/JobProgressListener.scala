@@ -164,9 +164,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
           jobGroupToJobIds.get(jobGroupId).foreach { jobsInGroup =>
             jobsInGroup.remove(job.jobId)
             // If this was the last job in this job group, remove the map entry for the job group
-            if (jobsInGroup.isEmpty) {
+            if (jobsInGroup.isEmpty)
               jobGroupToJobIds.remove(jobGroupId)
-            }
           }
         }
       }
@@ -205,11 +204,10 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       }
       jobIdToData(jobStart.jobId) = jobData
       activeJobs(jobStart.jobId) = jobData
-      for (stageId <- jobStart.stageIds) {
+      for (stageId <- jobStart.stageIds)
         stageIdToActiveJobIds
           .getOrElseUpdate(stageId, new HashSet[StageId])
           .add(jobStart.jobId)
-      }
       // If there's no information for a stage, store the StageInfo received from the scheduler
       // so that we can display stage descriptions for pending stages:
       for (stageInfo <- jobStart.stageInfos) {
@@ -240,12 +238,11 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
         jobData.status = JobExecutionStatus.FAILED
         numFailedJobs += 1
     }
-    for (stageId <- jobData.stageIds) {
+    for (stageId <- jobData.stageIds)
       stageIdToActiveJobIds.get(stageId).foreach { jobsUsingStage =>
         jobsUsingStage.remove(jobEnd.jobId)
-        if (jobsUsingStage.isEmpty) {
+        if (jobsUsingStage.isEmpty)
           stageIdToActiveJobIds.remove(stageId)
-        }
         stageIdToInfo.get(stageId).foreach { stageInfo =>
           if (stageInfo.submissionTime.isEmpty) {
             // if this stage is pending, it won't complete, so mark it as "skipped":
@@ -256,7 +253,6 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
           }
         }
       }
-    }
   }
 
   override def onStageCompleted(
@@ -269,9 +265,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
         new StageUIData
       })
 
-    for ((id, info) <- stageCompleted.stageInfo.accumulables) {
+    for ((id, info) <- stageCompleted.stageInfo.accumulables)
       stageData.accumulables(id) = info
-    }
 
     poolToActiveStages.get(stageData.schedulingPool).foreach { hashMap =>
       hashMap.remove(stage.stageId)
@@ -292,12 +287,10 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
          jobData <- jobIdToData.get(jobId)) {
       jobData.numActiveStages -= 1
       if (stage.failureReason.isEmpty) {
-        if (!stage.submissionTime.isEmpty) {
+        if (!stage.submissionTime.isEmpty)
           jobData.completedStageIndices.add(stage.stageId)
-        }
-      } else {
+      } else
         jobData.numFailedStages += 1
-      }
     }
   }
 
@@ -353,9 +346,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(
              taskStart.stageId);
            jobId <- activeJobsDependentOnStage;
-           jobData <- jobIdToData.get(jobId)) {
+           jobData <- jobIdToData.get(jobId))
         jobData.numActiveTasks += 1
-      }
     }
 
   override def onTaskGettingResult(
@@ -376,9 +368,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
           new StageUIData
         })
 
-      for (accumulableInfo <- info.accumulables) {
+      for (accumulableInfo <- info.accumulables)
         stageData.accumulables(accumulableInfo.id) = accumulableInfo
-      }
 
       val execSummaryMap = stageData.executorSummary
       val execSummary =
@@ -408,11 +399,10 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
         }
 
       val taskMetrics =
-        if (accums.nonEmpty) {
+        if (accums.nonEmpty)
           Some(TaskMetrics.fromAccumulatorUpdates(accums))
-        } else {
+        else
           None
-        }
       taskMetrics.foreach { m =>
         val oldMetrics =
           stageData.taskData.get(info.taskId).flatMap(_.taskMetrics)
@@ -612,10 +602,9 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       val numBlockManagers = synchronized {
         blockManagerIds.size
       }
-      if (numBlockManagers >= numExecutors + 1) {
+      if (numBlockManagers >= numExecutors + 1)
         // Need to count the block manager in driver
         return
-      }
       // Sleep rather than using wait/notify, because this is used only for testing and wait/notify
       // add overhead in the general case.
       Thread.sleep(10)

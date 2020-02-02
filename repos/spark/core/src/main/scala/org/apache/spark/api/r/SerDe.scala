@@ -74,15 +74,14 @@ private[spark] object SerDe {
       case 't' => readTime(dis)
       case 'j' => JVMObjectTracker.getObject(readString(dis))
       case _ =>
-        if (sqlSerDe == null || sqlSerDe._1 == null) {
+        if (sqlSerDe == null || sqlSerDe._1 == null)
           throw new IllegalArgumentException(s"Invalid type $dataType")
-        } else {
+        else {
           val obj = (sqlSerDe._1)(dis, dataType)
-          if (obj == null) {
+          if (obj == null)
             throw new IllegalArgumentException(s"Invalid type $dataType")
-          } else {
+          else
             obj
-          }
         }
     }
 
@@ -170,17 +169,16 @@ private[spark] object SerDe {
         val len = readInt(dis)
         (0 until len).map(_ => readList(dis)).toArray
       case _ =>
-        if (sqlSerDe == null || sqlSerDe._1 == null) {
+        if (sqlSerDe == null || sqlSerDe._1 == null)
           throw new IllegalArgumentException(s"Invalid array type $arrType")
-        } else {
+        else {
           val len = readInt(dis)
           (0 until len).map { _ =>
             val obj = (sqlSerDe._1)(dis, arrType)
-            if (obj == null) {
+            if (obj == null)
               throw new IllegalArgumentException(s"Invalid array type $arrType")
-            } else {
+            else
               obj
-            }
           }.toArray
         }
     }
@@ -201,9 +199,8 @@ private[spark] object SerDe {
       val values = readList(in)
 
       keys.zip(values).toMap.asJava
-    } else {
+    } else
       new java.util.HashMap[Object, Object]()
-    }
   }
 
   // Methods to write out data from Java to R
@@ -248,30 +245,28 @@ private[spark] object SerDe {
       dos: DataOutputStream,
       key: Object,
       value: Object): Unit = {
-    if (key == null) {
+    if (key == null)
       throw new IllegalArgumentException("Key in map can't be null.")
-    } else if (!key.isInstanceOf[String]) {
+    else if (!key.isInstanceOf[String])
       throw new IllegalArgumentException(
         s"Invalid map key type: ${key.getClass.getName}")
-    }
 
     writeString(dos, key.asInstanceOf[String])
     writeObject(dos, value)
   }
 
   def writeObject(dos: DataOutputStream, obj: Object): Unit = {
-    if (obj == null) {
+    if (obj == null)
       writeType(dos, "void")
-    } else {
+    else {
       // Convert ArrayType collected from DataFrame to Java array
       // Collected data of ArrayType from a DataFrame is observed to be of
       // type "scala.collection.mutable.WrappedArray"
       val value =
-        if (obj.isInstanceOf[WrappedArray[_]]) {
+        if (obj.isInstanceOf[WrappedArray[_]])
           obj.asInstanceOf[WrappedArray[_]].toArray
-        } else {
+        else
           obj
-        }
 
       value match {
         case v: java.lang.Character =>

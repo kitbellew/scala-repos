@@ -28,9 +28,9 @@ trait CompilerUtils extends Specification with Compiler with Errors {
     val forest = compile(str)
     val validForest = forest filter { tree => tree.errors forall isWarning }
 
-    if (validForest.size == 1) {
+    if (validForest.size == 1)
       validForest.head
-    } else {
+    else {
       forest must haveSize(1)
       forest.head
     }

@@ -388,9 +388,8 @@ object AdminUtils extends Logging {
   }
 
   def deleteTopic(zkUtils: ZkUtils, topic: String) {
-    try {
-      zkUtils.createPersistentPath(getDeleteTopicPath(topic))
-    } catch {
+    try zkUtils.createPersistentPath(getDeleteTopicPath(topic))
+    catch {
       case e1: ZkNodeExistsException =>
         throw new TopicAlreadyMarkedForDeletionException(
           "topic %s is already marked for deletion".format(topic))
@@ -429,9 +428,9 @@ object AdminUtils extends Logging {
       group: String,
       topic: String) = {
     val topics = zkUtils.getTopicsByConsumerGroup(group)
-    if (topics == Seq(topic)) {
+    if (topics == Seq(topic))
       deleteConsumerGroupInZK(zkUtils, group)
-    } else if (!isConsumerGroupActive(zkUtils, group)) {
+    else if (!isConsumerGroupActive(zkUtils, group)) {
       val dir = new ZKGroupTopicDirs(group, topic)
       zkUtils.deletePathRecursive(dir.consumerOwnerDir)
       zkUtils.deletePathRecursive(dir.consumerOffsetDir)
@@ -463,11 +462,10 @@ object AdminUtils extends Logging {
       .map(brokerIds => allBrokers.filter(b => brokerIds.contains(b.id)))
       .getOrElse(allBrokers)
     val brokersWithRack = brokers.filter(_.rack.nonEmpty)
-    if (rackAwareMode == RackAwareMode.Enforced && brokersWithRack.nonEmpty && brokersWithRack.size < brokers.size) {
+    if (rackAwareMode == RackAwareMode.Enforced && brokersWithRack.nonEmpty && brokersWithRack.size < brokers.size)
       throw new AdminOperationException(
         "Not all brokers have rack information. Add --disable-rack-aware in command line" +
           " to make replica assignment without rack information.")
-    }
     val brokerMetadatas = rackAwareMode match {
       case RackAwareMode.Disabled =>
         brokers.map(broker => BrokerMetadata(broker.id, None))
@@ -511,7 +509,7 @@ object AdminUtils extends Logging {
 
     val topicPath = getTopicPath(topic)
 
-    if (!update) {
+    if (!update)
       if (zkUtils.zkClient.exists(topicPath))
         throw new TopicExistsException(
           "Topic \"%s\" already exists.".format(topic))
@@ -519,13 +517,11 @@ object AdminUtils extends Logging {
         val allTopics = zkUtils.getAllTopics()
         val collidingTopics =
           allTopics.filter(t => Topic.hasCollision(topic, t))
-        if (collidingTopics.nonEmpty) {
+        if (collidingTopics.nonEmpty)
           throw new InvalidTopicException(
             "Topic \"%s\" collides with existing topics: %s"
               .format(topic, collidingTopics.mkString(", ")))
-        }
       }
-    }
 
     partitionReplicaAssignment.values.foreach(reps =>
       require(
@@ -659,7 +655,7 @@ object AdminUtils extends Logging {
     val str: String =
       zkUtils.zkClient.readData(getEntityConfigPath(entityType, entity), true)
     val props = new Properties()
-    if (str != null) {
+    if (str != null)
       Json.parseFull(str) match {
         case None => // there are no config overrides
         case Some(mapAnon: Map[_, _]) =>
@@ -685,7 +681,6 @@ object AdminUtils extends Logging {
             "Unexpected value in config:(%s), entity_type: (%s), entity: (%s)"
               .format(str, entityType, entity))
       }
-    }
     props
   }
 
@@ -743,10 +738,9 @@ object AdminUtils extends Logging {
         try {
           leaderInfo = leader match {
             case Some(l) =>
-              try {
-                getBrokerInfoFromCache(zkUtils, cachedBrokerInfo, List(l)).head
-                  .getNode(protocol)
-              } catch {
+              try getBrokerInfoFromCache(zkUtils, cachedBrokerInfo, List(l)).head
+                .getNode(protocol)
+              catch {
                 case e: Throwable =>
                   throw new LeaderNotAvailableException(
                     "Leader not available for partition [%s,%d]"
@@ -803,13 +797,12 @@ object AdminUtils extends Logging {
         Errors.NONE,
         topic,
         partitionMetadata.toList.asJava)
-    } else {
+    } else
       // topic doesn't exist, send appropriate error code
       new MetadataResponse.TopicMetadata(
         Errors.UNKNOWN_TOPIC_OR_PARTITION,
         topic,
         java.util.Collections.emptyList())
-    }
 
   private def getBrokerInfoFromCache(
       zkUtils: ZkUtils,

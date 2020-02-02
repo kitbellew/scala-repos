@@ -274,9 +274,8 @@ private final class TrapExit(delegateManager: SecurityManager)
       if (g != null && g != creatorGroup && !isSystemGroup(g)) {
         val groupID = computeID(g)
         val old = groups.putIfAbsent(groupID, new WeakReference(g))
-        if (old.isEmpty) { // wasn't registered
+        if (old.isEmpty) // wasn't registered
           threadToApp.put(groupID, this)
-        }
       }
 
     /**
@@ -477,12 +476,11 @@ private final class TrapExit(delegateManager: SecurityManager)
     * This allows us to reliably track every ThreadGroup that is created and map it back to the constructing application.
     */
   override def checkAccess(tg: ThreadGroup): Unit = {
-    if (active && !isSystemGroup(tg)) {
+    if (active && !isSystemGroup(tg))
       noteAccess(tg) { app =>
         app.register(tg)
         app.register(currentThread)
       }
-    }
 
     if (delegateManager ne null)
       delegateManager.checkAccess(tg)

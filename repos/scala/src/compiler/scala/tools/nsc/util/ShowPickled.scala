@@ -208,9 +208,8 @@ object ShowPickled extends Names {
           if (tag == CLASSsym && (buf.readIndex < end)) printTypeRef()
         case EXTref | EXTMODCLASSref =>
           printNameRef()
-          if (buf.readIndex < end) {
+          if (buf.readIndex < end)
             printSymbolRef()
-          }
         case THIStpe =>
           printSymbolRef()
         case SINGLEtpe =>
@@ -269,14 +268,13 @@ object ShowPickled extends Names {
         case _ =>
       }
       out.println()
-      if (buf.readIndex != end) {
+      if (buf.readIndex != end)
         out.println(
           "BAD ENTRY END: computed = %d, actual = %d, bytes = %s".format(
             end,
             buf.readIndex,
             buf.bytes.slice(index(i), (end max buf.readIndex)).mkString(", ")
           ))
-      }
     }
 
     for (i <- 0 until index.length) printEntry(i)

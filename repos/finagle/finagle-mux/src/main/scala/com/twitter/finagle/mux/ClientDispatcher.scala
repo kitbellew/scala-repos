@@ -64,12 +64,11 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
     case exc: Throwable =>
       trans.close()
       val result = Throw(exc)
-      for (tag <- tags) {
+      for (tag <- tags)
         // unmap the `tag` here to prevent the associated promise from
         // being fetched from the tag map again, and setting a value twice.
         for (u <- messages.unmap(tag))
           u() = result
-      }
   }
 
   private[this] def process(msg: Message): Unit = msg match {
@@ -172,21 +171,21 @@ private class ReqRepFilter
     val couldDispatch = canDispatch
 
     val msg = couldDispatch match {
-      case CanDispatch.No => { tag: Int =>
-        Message.Treq(tag, Some(Trace.id), BufChannelBuffer(req.body))
-      }
+      case CanDispatch.No =>
+        tag: Int =>
+          Message.Treq(tag, Some(Trace.id), BufChannelBuffer(req.body))
 
-      case CanDispatch.Yes | CanDispatch.Unknown => { tag: Int =>
-        val contexts = Contexts.broadcast.marshal().map {
-          case (k, v) => (BufChannelBuffer(k), BufChannelBuffer(v))
-        }
-        Message.Tdispatch(
-          tag,
-          contexts.toSeq,
-          req.destination,
-          Dtab.local,
-          BufChannelBuffer(req.body))
-      }
+      case CanDispatch.Yes | CanDispatch.Unknown =>
+        tag: Int =>
+          val contexts = Contexts.broadcast.marshal().map {
+            case (k, v) => (BufChannelBuffer(k), BufChannelBuffer(v))
+          }
+          Message.Tdispatch(
+            tag,
+            contexts.toSeq,
+            req.destination,
+            Dtab.local,
+            BufChannelBuffer(req.body))
     }
 
     if (couldDispatch != CanDispatch.Unknown) svc(msg).transform(reply)

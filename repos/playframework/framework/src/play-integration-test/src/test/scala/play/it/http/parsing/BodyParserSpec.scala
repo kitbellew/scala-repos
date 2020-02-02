@@ -26,17 +26,13 @@ object BodyParserSpec
     import scala.concurrent.ExecutionContext.Implicits.global
     val system = ActorSystem()
     implicit val mat = ActorMaterializer()(system)
-    try {
-      await {
-        Future {
-          bodyParser(FakeRequest())
-        }.flatMap {
-          _.run(Source.empty)
-        }
+    try await {
+      Future {
+        bodyParser(FakeRequest())
+      }.flatMap {
+        _.run(Source.empty)
       }
-    } finally {
-      system.terminate()
-    }
+    } finally system.terminate()
   }
 
   def constant[A](a: A): BodyParser[A] =

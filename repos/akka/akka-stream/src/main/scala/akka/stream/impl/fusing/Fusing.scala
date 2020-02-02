@@ -303,7 +303,7 @@ private[stream] object Fusing {
       if (async) struct.newGroup(indent)
       else openGroup
 
-    if (m.isAtomic) {
+    if (m.isAtomic)
       m match {
         case gm: GraphModule if !async ⇒
           // need to dissolve previously fused GraphStages to allow further fusion
@@ -398,7 +398,7 @@ private[stream] object Fusing {
           List(
             m -> struct.addModule(m, localGroup, inheritedAttributes, indent))
       }
-    } else {
+    else {
       val attributes = inheritedAttributes and m.attributes
       m match {
         case CopiedModule(shape, _, copyOf) ⇒
@@ -598,9 +598,9 @@ private[stream] object Fusing {
     val newOuts: ju.Map[OutPort, List[OutPort]] = new ju.HashMap
 
     private def addMapping[T](orig: T, mapd: T, map: ju.Map[T, List[T]]): Unit =
-      if (map.containsKey(orig)) {
+      if (map.containsKey(orig))
         map.put(orig, mapd :: map.get(orig))
-      } else map.put(orig, mapd :: Nil)
+      else map.put(orig, mapd :: Nil)
 
     private def removeMapping[T](orig: T, map: ju.Map[T, List[T]]): T =
       map.remove(orig) match {

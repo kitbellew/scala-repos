@@ -426,11 +426,10 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       if (p == null) p = types.Null
       synchronized {
         val pp = syntheticPackages.get(fqn)
-        if (pp == null) {
+        if (pp == null)
           syntheticPackages.put(fqn, p)
-        } else {
+        else
           p = pp
-        }
       }
     }
 

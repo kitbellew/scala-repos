@@ -52,9 +52,8 @@ class MapWithStateSuite
 
   after {
     StreamingContext.getActive().foreach { _.stop(stopSparkContext = false) }
-    if (checkpointDir != null) {
+    if (checkpointDir != null)
       Utils.deleteRecursively(checkpointDir)
-    }
   }
 
   override def beforeAll(): Unit = {
@@ -66,13 +65,9 @@ class MapWithStateSuite
   }
 
   override def afterAll(): Unit =
-    try {
-      if (sc != null) {
-        sc.stop()
-      }
-    } finally {
-      super.afterAll()
-    }
+    try if (sc != null)
+      sc.stop()
+    finally super.afterAll()
 
   test("state - get, exists, update, remove, ") {
     var state: StateImpl[Int] = null
@@ -456,14 +451,12 @@ class MapWithStateSuite
 
     val mappingFunc =
       (time: Time, key: String, value: Option[Int], state: State[Int]) => {
-        if (value.isDefined) {
+        if (value.isDefined)
           state.update(1)
-        }
-        if (state.isTimingOut) {
+        if (state.isTimingOut)
           Some(key)
-        } else {
+        else
           None
-        }
       }
 
     val (collectedOutputs, collectedStateSnapshots) = getOperationOutput(
@@ -512,9 +505,7 @@ class MapWithStateSuite
         assert(mapWithStateStream.checkpointDuration === null)
         assert(
           internalmapWithStateStream.checkpointDuration === expectedCheckpointDuration)
-      } finally {
-        ssc.stop(stopSparkContext = false)
-      }
+      } finally ssc.stop(stopSparkContext = false)
     }
 
     testCheckpointDuration(Milliseconds(100), Seconds(1))

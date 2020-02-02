@@ -33,9 +33,8 @@ object ScalaWebSockets extends PlaySpecification {
           .fold[(List[Message], Int), Message]((Nil, expectOut)) {
             (state, out) =>
               val (result, remaining) = state
-              if (remaining == 1) {
+              if (remaining == 1)
                 promise.success(result :+ out)
-              }
               (result :+ out, remaining - 1)
           }
         import play.api.libs.iteratee.Execution.Implicits.trampoline

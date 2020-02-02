@@ -53,11 +53,10 @@ class ESEngineManifests(
         .prepareGet(index, estype, esid(id, version))
         .execute()
         .actionGet()
-      if (response.isExists) {
+      if (response.isExists)
         Some(read[EngineManifest](response.getSourceAsString))
-      } else {
+      else
         None
-      }
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
@@ -78,12 +77,11 @@ class ESEngineManifests(
     insert(engineManifest)
 
   def delete(id: String, version: String): Unit =
-    try {
-      client
-        .prepareDelete(index, estype, esid(id, version))
-        .execute()
-        .actionGet()
-    } catch {
+    try client
+      .prepareDelete(index, estype, esid(id, version))
+      .execute()
+      .actionGet()
+    catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
 }

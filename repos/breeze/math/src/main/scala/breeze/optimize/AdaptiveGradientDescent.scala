@@ -63,9 +63,8 @@ object AdaptiveGradientDescent {
       if (oldState.iter > maxAge) {
         newG *= 1 / maxAge
         axpy((maxAge - 1) / maxAge, oldHistory.sumOfSquaredGradients, newG)
-      } else {
+      } else
         newG += oldHistory.sumOfSquaredGradients
-      }
       new History(newG)
     }
 
@@ -136,9 +135,8 @@ object AdaptiveGradientDescent {
       if (oldState.iter > maxAge) {
         newG *= (1 / maxAge)
         axpy((maxAge - 1) / maxAge, oldHistory.sumOfSquaredGradients, newG)
-      } else {
+      } else
         newG += oldHistory.sumOfSquaredGradients
-      }
       new History(newG)
     }
 
@@ -150,11 +148,10 @@ object AdaptiveGradientDescent {
       val tlambda = lambda * stepSize
       space.zipMapValues.map(res, s, {
         case (x_half, s_i) =>
-          if (x_half.abs < tlambda / s_i) {
+          if (x_half.abs < tlambda / s_i)
             0.0
-          } else {
+          else
             (x_half - math.signum(x_half) * tlambda / s_i)
-          }
       })
     }
 

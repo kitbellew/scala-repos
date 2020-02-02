@@ -79,12 +79,10 @@ trait Inbox { this: ActorDSL.type ⇒
 
     def enqueueMessage(msg: Any) {
       if (messages.size < size) messages enqueue msg
-      else {
-        if (!printedWarning) {
-          log.warning(
-            "dropping message: either your program is buggy or you might want to increase akka.actor.dsl.inbox-size, current value is " + size)
-          printedWarning = true
-        }
+      else if (!printedWarning) {
+        log.warning(
+          "dropping message: either your program is buggy or you might want to increase akka.actor.dsl.inbox-size, current value is " + size)
+        printedWarning = true
       }
     }
 
@@ -133,7 +131,7 @@ trait Inbox { this: ActorDSL.type ⇒
           else {
             currentMsg = msg
             clients.dequeueFirst(clientPredicate) match {
-              case Some(q) ⇒ { clientsByTimeout -= q; q.client ! msg }
+              case Some(q) ⇒ clientsByTimeout -= q; q.client ! msg
               case None ⇒ enqueueMessage(msg)
             }
             currentMsg = null
@@ -147,11 +145,11 @@ trait Inbox { this: ActorDSL.type ⇒
         } else {
           val next = clientsByTimeout.head.deadline
           import context.dispatcher
-          if (currentDeadline.isEmpty) {
+          if (currentDeadline.isEmpty)
             currentDeadline = Some((
               next,
               context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
-          } else {
+          else {
             // must not rely on the Scheduler to not fire early (for robustness)
             currentDeadline.get._2.cancel()
             currentDeadline = Some((

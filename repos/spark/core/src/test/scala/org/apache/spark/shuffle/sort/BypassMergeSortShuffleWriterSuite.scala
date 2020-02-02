@@ -138,9 +138,7 @@ class BypassMergeSortShuffleWriterSuite
       Utils.deleteRecursively(tempDir)
       blockIdToFileMap.clear()
       temporaryFilesCreated.clear()
-    } finally {
-      super.afterEach()
-    }
+    } finally super.afterEach()
 
   test("write empty iterator") {
     val writer = new BypassMergeSortShuffleWriter[Int, Int](
@@ -199,11 +197,10 @@ class BypassMergeSortShuffleWriterSuite
     def records: Iterator[(Int, Int)] =
       Iterator((1, 1), (5, 5)) ++
         (0 until 100000).iterator.map { i =>
-          if (i == 99990) {
+          if (i == 99990)
             throw new SparkException("intentional failure")
-          } else {
+          else
             (2, 2)
-          }
         }
 
     val writer = new BypassMergeSortShuffleWriter[Int, Int](
@@ -240,9 +237,8 @@ class BypassMergeSortShuffleWriterSuite
     )
     intercept[SparkException] {
       writer.write((0 until 100000).iterator.map { i =>
-        if (i == 99990) {
+        if (i == 99990)
           throw new SparkException("Intentional failure")
-        }
         (i, i)
       })
     }

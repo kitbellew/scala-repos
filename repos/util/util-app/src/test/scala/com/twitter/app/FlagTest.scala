@@ -327,9 +327,7 @@ class FlagTest extends FunSuite {
     try {
       flag.parseArgs(Array("-com.twitter.app.MyGlobalFlag", "supplied"))
       assert(MyGlobalFlag.get == Some("supplied"))
-    } finally {
-      MyGlobalFlag.reset()
-    }
+    } finally MyGlobalFlag.reset()
   }
 
   test("GlobalFlag.getWithDefault") {
@@ -341,9 +339,7 @@ class FlagTest extends FunSuite {
     try {
       flag.parseArgs(Array("-com.twitter.app.MyGlobalFlag", "supplied"))
       assert(MyGlobalFlag.getWithDefault == Some("supplied"))
-    } finally {
-      MyGlobalFlag.reset()
-    }
+    } finally MyGlobalFlag.reset()
   }
 
   test("GlobalFlag: no default usage") {
@@ -418,7 +414,7 @@ class FlagTest extends FunSuite {
       )
 
       // make sure every line in localAndGlobal exists in the flagString
-      localAndGlobal map { flagString.contains } reduce { _ && _ }
+      localAndGlobal map { flagString.contains } reduce _ && _
     }
 
     assert(matchesGlobal(flagWithGlobal.formattedFlagValuesString(WithGlobal)))

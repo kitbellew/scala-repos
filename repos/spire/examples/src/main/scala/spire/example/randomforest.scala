@@ -177,9 +177,9 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
     // until we hit the minimum region size.
 
     def growTree(members: Array[Int]): DecisionTree[V, F, K] =
-      if (members.length < opts.minSplitSize) {
+      if (members.length < opts.minSplitSize)
         Leaf(region(members).value)
-      } else {
+      else {
         val region0 = region(members)
         val vars = predictors()
 
@@ -227,9 +227,8 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
 
         // We could do this in a single linear scan, but this is an example.
 
-        if (minVar != vars(vars.length - 1)) { // Try to avoid a sort if we can.
+        if (minVar != vars(vars.length - 1)) // Try to avoid a sort if we can.
           members.qsortBy(data(_).coord(minVar))
-        }
 
         // We split the region directly between the left's furthest right point
         // and the right's furthest left point.
@@ -244,14 +243,13 @@ trait RandomForest[V, @sp(Double) F, @sp(Double) K] {
     // Random forests are embarassingly parallel. Except for very small
     // datasets, there is no reason not to parallelize the algorithm.
 
-    if (opts.parallel) {
+    if (opts.parallel)
       Forest(
         (1 to opts.numTrees).toList.par
           .map({ _ => growTree(sample()) })
           .toList)
-    } else {
+    else
       Forest(List.fill(opts.numTrees)(growTree(sample())))
-    }
   }
 
   protected def fromForest(forest: Forest): V => K

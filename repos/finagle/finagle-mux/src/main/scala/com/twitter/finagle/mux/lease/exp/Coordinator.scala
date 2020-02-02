@@ -79,13 +79,12 @@ private[lease] class Coordinator(
           new PredicateAlarm(() => npending() == 0)
       }, { () =>
         // TODO MN: reenable
-        if (verbose) {
+        if (verbose)
           log.info(
             "DRAIN-LOOP: target=" +
               ((counter.info.remaining - space.minDiscount) / 100).inBytes + "; n=" + npending() +
               "; counter=" + counter + "; maxMs=" +
               ((maxWait - elapsed()) / 2).inMilliseconds.toInt)
-        }
       }
     )
   }

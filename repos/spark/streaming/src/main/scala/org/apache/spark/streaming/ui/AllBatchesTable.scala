@@ -134,11 +134,10 @@ private[ui] class ActiveBatchTable(
   override protected def columns: Seq[Node] = super.columns ++ {
     <th>Output Ops: Succeeded/Total</th>
       <th>Status</th> ++ {
-      if (firstFailureReason.nonEmpty) {
+      if (firstFailureReason.nonEmpty)
         <th>Error</th>
-      } else {
+      else
         Nil
-      }
     }
   }
 
@@ -150,21 +149,19 @@ private[ui] class ActiveBatchTable(
 
   private def runningBatchRow(batch: BatchUIData): Seq[Node] =
     baseRow(batch) ++ createOutputOperationProgressBar(batch) ++ <td>processing</td> ++ {
-      if (firstFailureReason.nonEmpty) {
+      if (firstFailureReason.nonEmpty)
         getFirstFailureTableCell(batch)
-      } else {
+      else
         Nil
-      }
     }
 
   private def waitingBatchRow(batch: BatchUIData): Seq[Node] =
     baseRow(batch) ++ createOutputOperationProgressBar(batch) ++ <td>queued</td> ++ {
-      if (firstFailureReason.nonEmpty) {
+      if (firstFailureReason.nonEmpty)
         // Waiting batches have not run yet, so must have no failure reasons.
         <td>-</td>
-      } else {
+      else
         Nil
-      }
     }
 }
 
@@ -180,11 +177,10 @@ private[ui] class CompletedBatchTable(
       SparkUIUtils.tooltip("Total time taken to handle a batch", "top")
     }</th>
       <th>Output Ops: Succeeded/Total</th> ++ {
-      if (firstFailureReason.nonEmpty) {
+      if (firstFailureReason.nonEmpty)
         <th>Error</th>
-      } else {
+      else
         Nil
-      }
     }
   }
 
@@ -201,11 +197,10 @@ private[ui] class CompletedBatchTable(
         {formattedTotalDelay}
       </td>
     } ++ createOutputOperationProgressBar(batch) ++ {
-      if (firstFailureReason.nonEmpty) {
+      if (firstFailureReason.nonEmpty)
         getFirstFailureTableCell(batch)
-      } else {
+      else
         Nil
-      }
     }
   }
 }

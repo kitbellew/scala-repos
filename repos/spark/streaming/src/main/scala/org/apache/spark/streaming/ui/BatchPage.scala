@@ -54,7 +54,7 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       numSparkJobRowsInOutputOp: Int,
       isFirstRow: Boolean,
       sparkJob: SparkJobIdWithUIData): Seq[Node] =
-    if (sparkJob.jobUIData.isDefined) {
+    if (sparkJob.jobUIData.isDefined)
       generateNormalJobRow(
         outputOpData,
         outputOpDescription,
@@ -62,7 +62,7 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         numSparkJobRowsInOutputOp,
         isFirstRow,
         sparkJob.jobUIData.get)
-    } else {
+    else
       generateDroppedJobRow(
         outputOpData,
         outputOpDescription,
@@ -70,7 +70,6 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         numSparkJobRowsInOutputOp,
         isFirstRow,
         sparkJob.sparkJobId)
-    }
 
   private def generateOutputOpRowWithoutSparkJobs(
       outputOpData: OutputOperationUIData,
@@ -104,12 +103,11 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       numSparkJobRowsInOutputOp: Int,
       isFirstRow: Boolean,
       sparkJob: JobUIData): Seq[Node] = {
-    val duration: Option[Long] = {
+    val duration: Option[Long] =
       sparkJob.submissionTime.map { start =>
         val end = sparkJob.completionTime.getOrElse(System.currentTimeMillis())
         end - start
       }
-    }
     val lastFailureReason =
       sparkJob.stageIds.sorted.reverse
         .flatMap(sparkListener.stageIdToInfo.get)
@@ -128,7 +126,7 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
     // cells will be taken up due to "rowspan".
     // scalastyle:off
     val prefixCells =
-      if (isFirstRow) {
+      if (isFirstRow)
         <td class="output-op-id-cell" rowspan={
           numSparkJobRowsInOutputOp.toString
         }>{outputOpData.id.toString}</td>
@@ -140,9 +138,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         }</td> ++ {
           outputOpStatusCell(outputOpData, numSparkJobRowsInOutputOp)
         }
-      } else {
+      else
         Nil
-      }
     // scalastyle:on
 
     <tr>
@@ -197,7 +194,7 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
     // cells will be taken up due to "rowspan".
     // scalastyle:off
     val prefixCells =
-      if (isFirstRow) {
+      if (isFirstRow)
         <td class="output-op-id-cell" rowspan={
           numSparkJobRowsInOutputOp.toString
         }>{outputOpData.id.toString}</td>
@@ -207,9 +204,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         }</td> ++ {
           outputOpStatusCell(outputOpData, numSparkJobRowsInOutputOp)
         }
-      } else {
+      else
         Nil
-      }
     // scalastyle:on
 
     <tr>
@@ -232,20 +228,19 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
       outputOpData: OutputOperationUIData,
       sparkJobs: Seq[SparkJobIdWithUIData]): Seq[Node] = {
     val formattedOutputOpDuration =
-      if (outputOpData.duration.isEmpty) {
+      if (outputOpData.duration.isEmpty)
         "-"
-      } else {
+      else
         SparkUIUtils.formatDuration(outputOpData.duration.get)
-      }
 
     val description = generateOutputOpDescription(outputOpData)
 
-    if (sparkJobs.isEmpty) {
+    if (sparkJobs.isEmpty)
       generateOutputOpRowWithoutSparkJobs(
         outputOpData,
         description,
         formattedOutputOpDuration)
-    } else {
+    else {
       val firstRow =
         generateJobRow(
           outputOpData,
@@ -290,13 +285,12 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
     }
 
   private def generateOutputOperationStatusForUI(failure: String): String =
-    if (failure.startsWith("org.apache.spark.SparkException")) {
+    if (failure.startsWith("org.apache.spark.SparkException"))
       "Failed due to Spark job error\n" + failure
-    } else {
+    else {
       var nextLineIndex = failure.indexOf("\n")
-      if (nextLineIndex < 0) {
+      if (nextLineIndex < 0)
         nextLineIndex = failure.length
-      }
       val firstLine = failure.substring(0, nextLineIndex)
       s"Failed due to error: $firstLine\n$failure"
     }
@@ -404,13 +398,12 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
             {formattedTotalDelay}
           </li>
           {
-          if (inputMetadatas.nonEmpty) {
+          if (inputMetadatas.nonEmpty)
             <li>
                 <strong>Input Metadata:</strong>{
               generateInputMetadataTable(inputMetadatas)
             }
               </li>
-          }
         }
         </ul>
       </div>
@@ -469,10 +462,9 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
           rowspan,
           includeFirstLineInExpandDetails = false)
       case None =>
-        if (outputOp.endTime.isEmpty) {
+        if (outputOp.endTime.isEmpty)
           <td rowspan={rowspan.toString}>-</td>
-        } else {
+        else
           <td rowspan={rowspan.toString}>Succeeded</td>
-        }
     }
 }

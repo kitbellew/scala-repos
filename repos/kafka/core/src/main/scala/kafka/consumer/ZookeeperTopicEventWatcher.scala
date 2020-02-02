@@ -50,12 +50,11 @@ class ZookeeperTopicEventWatcher(
   def shutdown() {
     lock.synchronized {
       info("Shutting down topic event watcher.")
-      if (zkUtils != null) {
+      if (zkUtils != null)
         stopWatchingTopicEvents()
-      } else {
+      else
         warn(
           "Cannot shutdown since the embedded zookeeper client has already closed.")
-      }
     }
   }
 
@@ -64,13 +63,11 @@ class ZookeeperTopicEventWatcher(
     @throws(classOf[Exception])
     def handleChildChange(parent: String, children: java.util.List[String]) {
       lock.synchronized {
-        try {
-          if (zkUtils != null) {
-            val latestTopics =
-              zkUtils.zkClient.getChildren(ZkUtils.BrokerTopicsPath).toList
-            debug("all topics: %s".format(latestTopics))
-            eventHandler.handleTopicEvent(latestTopics)
-          }
+        try if (zkUtils != null) {
+          val latestTopics =
+            zkUtils.zkClient.getChildren(ZkUtils.BrokerTopicsPath).toList
+          debug("all topics: %s".format(latestTopics))
+          eventHandler.handleTopicEvent(latestTopics)
         } catch {
           case e: Throwable =>
             error("error in handling child changes", e)

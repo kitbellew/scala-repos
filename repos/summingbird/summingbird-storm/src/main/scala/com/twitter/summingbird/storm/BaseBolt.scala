@@ -107,14 +107,14 @@ case class BaseBolt[I, O](
       val timeTillNextPeriod = (currentPeriod + 1) * PERIOD_LENGTH_MS - baseTime
 
       if (currentPeriod == lastPeriod) {
-        val maxPerPeriod = if (currentPeriod < endRampPeriod) {
-          ((currentPeriod - startPeriod) * deltaPerPeriod) + lowerBound
-        } else {
-          upperBound
-        }
-        if (executedThisPeriod > maxPerPeriod) {
+        val maxPerPeriod =
+          if (currentPeriod < endRampPeriod)
+            ((currentPeriod - startPeriod) * deltaPerPeriod) + lowerBound
+          else
+            upperBound
+        if (executedThisPeriod > maxPerPeriod)
           timeTillNextPeriod
-        } else {
+        else {
           executedThisPeriod = executedThisPeriod + 1
           0
         }
@@ -127,9 +127,8 @@ case class BaseBolt[I, O](
     if (sleepTime > 0) {
       Thread.sleep(sleepTime)
       rateLimit()
-    } else {
+    } else
       ()
-    }
   }
 
   // Should we ack immediately on reception instead of at the end
@@ -142,9 +141,8 @@ case class BaseBolt[I, O](
 
   private def fail(inputs: Seq[InputState[Tuple]], error: Throwable): Unit = {
     executor.notifyFailure(inputs, error)
-    if (!earlyAck) {
+    if (!earlyAck)
       inputs.foreach(_.fail(collector.fail(_)))
-    }
     logError("Storm DAG of: %d tuples failed".format(inputs.size), error)
   }
 
@@ -158,9 +156,8 @@ case class BaseBolt[I, O](
       val tsIn = executor.decoder.invert(tuple.getValues).get // Failing to decode here is an ERROR
       // Don't hold on to the input values
       clearValues(tuple)
-      if (earlyAck) {
+      if (earlyAck)
         collector.ack(tuple)
-      }
       executor.execute(InputState(tuple), tsIn)
     } else {
       collector.ack(tuple)
@@ -180,23 +177,20 @@ case class BaseBolt[I, O](
       inputs: Seq[InputState[Tuple]],
       results: TraversableOnce[O]) {
     var emitCount = 0
-    if (hasDependants) {
-      if (anchorTuples.anchor) {
+    if (hasDependants)
+      if (anchorTuples.anchor)
         results.foreach { result =>
           collector.emit(inputs.map(_.state).asJava, executor.encoder(result))
           emitCount += 1
         }
-      } else { // don't anchor
+      else // don't anchor
         results.foreach { result =>
           collector.emit(executor.encoder(result))
           emitCount += 1
         }
-      }
-    }
     // Always ack a tuple on completion:
-    if (!earlyAck) {
+    if (!earlyAck)
       inputs.foreach(_.ack(collector.ack(_)))
-    }
 
     logger.debug(
       "bolt finished processed {} linked tuples, emitted: {}",
@@ -219,9 +213,8 @@ case class BaseBolt[I, O](
   }
 
   override def declareOutputFields(declarer: OutputFieldsDeclarer) {
-    if (hasDependants) {
+    if (hasDependants)
       declarer.declare(outputFields)
-    }
   }
 
   override val getComponentConfiguration = null

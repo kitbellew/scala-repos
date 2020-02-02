@@ -165,9 +165,8 @@ abstract class Reifier extends States with Phases with Errors with Utils {
         if (reifyDebug) println("=============================")
         println(reifiedNodeToString(untyped))
         if (reifyDebug) println("=============================")
-      } else {
+      } else
         reifyTrace("reification = ")(untyped)
-      }
 
       untyped
     } catch {

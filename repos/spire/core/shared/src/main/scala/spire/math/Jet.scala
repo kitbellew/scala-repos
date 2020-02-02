@@ -350,14 +350,13 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       eq: Eq[T],
       r: IsReal[T],
       t: Trig[T]): T =
-    if (e === f.zero) {
+    if (e === f.zero)
       f.one
-    } else if (b === f.zero) {
+    else if (b === f.zero)
       if (e < f.zero) throw new Exception("raising 0 to a negative power")
       else f.zero
-    } else {
+    else
       spire.math.exp(e * spire.math.log(b))
-    }
 
   // pow -- base is a constant, exponent (this) is a differentiable function.
   // b^(p + du) ~= b^p + b^p * log(b) du
@@ -369,9 +368,9 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       m: Module[Array[T], T],
       r: IsReal[T],
       t: Trig[T]): Jet[T] =
-    if (isZero) {
+    if (isZero)
       Jet.one[T]
-    } else {
+    else {
       val tmp = powScalarToScalar(a, real)
       new Jet(tmp, (spire.math.log(a) * tmp) *: infinitesimal)
     }
@@ -411,9 +410,9 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
       m: Module[Array[T], T],
       r: IsReal[T],
       t: Trig[T]): Jet[T] =
-    if (b.isZero) {
+    if (b.isZero)
       Jet.one[T]
-    } else {
+    else {
       val tmp1 = powScalarToScalar(real, b.real)
       val tmp2 = b.real * powScalarToScalar(real, b.real - f.one)
       val tmp3 = tmp1 * spire.math.log(real)

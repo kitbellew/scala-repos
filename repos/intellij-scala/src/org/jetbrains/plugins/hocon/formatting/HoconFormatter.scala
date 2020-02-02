@@ -177,12 +177,12 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
       }
 
-    if (Comment.contains(rightChild.getElementType)) {
+    if (Comment.contains(rightChild.getElementType))
       if (isLineBreakBetween)
         beforeCommentOnNewLineSpacing(parent, rightChild)
       else
         null
-    } else if (Comment.contains(leftChild.getElementType))
+    else if (Comment.contains(leftChild.getElementType))
       Spacing.createSafeSpacing(true, maxBlankLines)
     else if (parent.getElementType == Concatenation)
       Spacing.getReadOnlySpacing

@@ -119,21 +119,18 @@ private[finagle] object ChannelBufferUtils {
 
   implicit def stringToChannelBuffer(string: String): ChannelBuffer =
     if (Strings.isNullOrEmpty(string)) null
-    else {
+    else
       ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
-    }
 
   implicit def seqOfStringToSeqOfChannelBuffer(
       strings: Seq[String]): Seq[ChannelBuffer] =
     if (strings == null) null
-    else {
+    else
       strings.map { string =>
         if (Strings.isNullOrEmpty(string)) null
-        else {
+        else
           ChannelBuffers.copiedBuffer(string, Charsets.Utf8)
-        }
       }
-    }
 
   implicit def stringToByteArray(string: String): Array[Byte] =
     string.getBytes

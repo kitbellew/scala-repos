@@ -85,9 +85,9 @@ case class Segments(
 
   def addNullType(row: Int, tree: CTree, ct: CNullType) {
     val n = tree.getType(ct)
-    if (n >= 0) {
+    if (n >= 0)
       a(n).defined.set(row)
-    } else {
+    else {
       tree.setType(ct, a.length)
       val d = new BitSet()
       d.set(row)
@@ -121,9 +121,9 @@ case class Segments(
 
   def addFalse(row: Int, tree: CTree) {
     val n = tree.getType(CBoolean)
-    if (n >= 0) {
+    if (n >= 0)
       a(n).defined.set(row)
-    } else {
+    else {
       tree.setType(CBoolean, a.length)
       val d = new BitSet()
       val v = new BitSet()
@@ -134,20 +134,18 @@ case class Segments(
 
   def detectDateTime(s: String): DateTime = {
     if (!DateTimeUtil.looksLikeIso8601(s)) return null
-    try {
-      DateTimeUtil.parseDateTime(s, true)
-    } catch {
+    try DateTimeUtil.parseDateTime(s, true)
+    catch {
       case e: IllegalArgumentException => null
     }
   }
 
   def addString(row: Int, tree: CTree, s: String) {
     val dateTime = detectDateTime(s)
-    if (dateTime == null) {
+    if (dateTime == null)
       addRealString(row, tree, s)
-    } else {
+    else
       addRealDateTime(row, tree, dateTime)
-    }
   }
 
   def addRealDateTime(row: Int, tree: CTree, s: DateTime) {
@@ -216,9 +214,9 @@ case class Segments(
 
   def addBigDecimal(row: Int, tree: CTree, x: BigDecimal) {
     val j = x.toLong
-    if (false && BigDecimal(j) == x) {
+    if (false && BigDecimal(j) == x)
       addLong(row, tree, j)
-    } else {
+    else {
       val n = tree.getType(CNum)
 
       if (n >= 0) {
@@ -273,19 +271,18 @@ case class Segments(
       case JNumStr(s)    => addNum(row, tree, s)
 
       case JObject(m) =>
-        if (m.isEmpty) {
+        if (m.isEmpty)
           addEmptyObject(row, tree)
-        } else {
+        else
           m.foreach {
             case (key, j) =>
               initializeSegments(row, j, tree.getField(key))
           }
-        }
 
       case JArray(js) =>
-        if (js.isEmpty) {
+        if (js.isEmpty)
           addEmptyArray(row, tree)
-        } else {
+        else {
           var i = 0
           js.foreach { j =>
             initializeSegments(row, j, tree.getIndex(i))

@@ -47,9 +47,8 @@ object MathContext {
 
     val precisionString = s.substring(precisionLength, spaceIndex)
     val precision = {
-      try {
-        java.lang.Integer.parseInt(precisionString)
-      } catch {
+      try java.lang.Integer.parseInt(precisionString)
+      catch {
         case _: NumberFormatException => invalidMathContext("Bad precision", s)
       }
     }

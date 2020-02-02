@@ -14,9 +14,8 @@ object CachedMacroUtil {
   val ANALYZE_CACHES: String = "analyze-caches"
 
   def println(a: Any): Unit =
-    if (debug) {
+    if (debug)
       Console.println(a)
-    }
 
   def cachesUtilFQN(implicit c: whitebox.Context): c.universe.Tree = {
     import c.universe.Quasiquote

@@ -296,12 +296,11 @@ class LogManagerTest {
       new File(logDir, logManager.RecoveryPointCheckpointFile)).read()
 
     topicAndPartitions.zip(logs).foreach {
-      case (tp, log) => {
+      case (tp, log) =>
         assertEquals(
           "Recovery point should equal checkpoint",
           checkpoints(tp),
           log.recoveryPoint)
-      }
     }
   }
 

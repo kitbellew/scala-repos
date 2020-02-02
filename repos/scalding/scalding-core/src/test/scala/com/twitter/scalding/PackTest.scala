@@ -179,9 +179,8 @@ class PackTest extends WordSpec with Matchers {
       .sink[TupleEntry](Tsv("output")) { buf: Buffer[TupleEntry] =>
         "correctly populate a fat container object" in {
           val te = buf.head
-          for (idx <- fatCorrect.indices) {
+          for (idx <- fatCorrect.indices)
             te.getInteger(idx) shouldBe fatCorrect(idx)
-          }
         }
       }
       .run
@@ -194,9 +193,8 @@ class PackTest extends WordSpec with Matchers {
       .sink[TupleEntry](Tsv("output")) { buf: Buffer[TupleEntry] =>
         "correctly populate a fat container object" in {
           val te = buf.head
-          for (idx <- fatCorrect.indices) {
+          for (idx <- fatCorrect.indices)
             te.getInteger(idx) shouldBe fatCorrect(idx)
-          }
         }
       }
       .run

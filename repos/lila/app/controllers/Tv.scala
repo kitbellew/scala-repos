@@ -39,7 +39,7 @@ object Tv extends LilaController {
       val pov = flip.fold(Pov second game, Pov first game)
       val onTv = lila.round.OnTv(channel.key, flip)
       negotiate(
-        html = {
+        html =
           Env.api.roundApi.watcher(
             pov,
             lila.api.Mobile.Api.currentVersion,
@@ -51,8 +51,7 @@ object Tv extends LilaController {
               NoCache {
                 Ok(html.tv.index(channel, champions, pov, data, cross, flip))
               }
-          }
-        },
+          },
         api = apiVersion =>
           Env.api.roundApi
             .watcher(pov, apiVersion, tv = onTv.some, withOpening = false) map {

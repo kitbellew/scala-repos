@@ -98,13 +98,11 @@ abstract class BaseScalaApplicationConfigurationProducer[
     }
 
     var element = _element
-    do {
-      element match {
-        case clazz: PsiClass if isConfigClassWithName(clazz) => return true
-        case f: ScalaFile if f.getClasses.exists(isConfigClassWithName) =>
-          return true
-        case _ => element = element.getParent
-      }
+    do element match {
+      case clazz: PsiClass if isConfigClassWithName(clazz) => return true
+      case f: ScalaFile if f.getClasses.exists(isConfigClassWithName) =>
+        return true
+      case _ => element = element.getParent
     } while (element != null)
     false
   }
@@ -188,9 +186,8 @@ object ScalaApplicationConfigurationProducer {
           else if (firstTemplateDefOnly) return null
         case file: ScalaFile if !firstTemplateDefOnly =>
           val classes: Array[PsiClass] = file.getClasses //this call is ok
-          for (aClass <- classes) {
+          for (aClass <- classes)
             if (PsiMethodUtil.findMainInClass(aClass) != null) return aClass
-          }
         case _ =>
       }
       element = element.getParent
@@ -231,12 +228,11 @@ object ScalaApplicationConfigurationProducer {
 
   private def getContainingMethod(_element: PsiElement): PsiMethod = {
     var element = _element
-    while (element != null) {
+    while (element != null)
       element match {
         case method: PsiMethod => return method
         case _                 => element = element.getParent
       }
-    }
     element.asInstanceOf[PsiMethod]
   }
 }

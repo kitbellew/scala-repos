@@ -57,10 +57,10 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
         val nextKey = keyFromBytes(nextEntry.getKey)
         if (nextKey.sequenceNr > toSequenceNr) {
           // end iteration here
-        } else if (isDeletionKey(nextKey)) {
+        } else if (isDeletionKey(nextKey))
           // this case is needed to discard old events with deletion marker
           go(iter, nextKey, ctr, replayCallback)
-        } else if (key.persistenceId == nextKey.persistenceId) {
+        else if (key.persistenceId == nextKey.persistenceId) {
           val msg = persistentFromBytes(nextEntry.getValue)
           val del = deletion(iter, nextKey)
           if (ctr < max) {
@@ -145,13 +145,9 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
 
   def readHighestSequenceNr(persistenceId: Int) = {
     val ro = leveldbSnapshot()
-    try {
-      leveldb.get(keyToBytes(counterKey(persistenceId)), ro) match {
-        case null ⇒ 0L
-        case bytes ⇒ counterFromBytes(bytes)
-      }
-    } finally {
-      ro.snapshot().close()
-    }
+    try leveldb.get(keyToBytes(counterKey(persistenceId)), ro) match {
+      case null ⇒ 0L
+      case bytes ⇒ counterFromBytes(bytes)
+    } finally ro.snapshot().close()
   }
 }

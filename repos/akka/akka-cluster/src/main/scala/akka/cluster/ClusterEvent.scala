@@ -313,15 +313,13 @@ object ClusterEvent {
       newGossip: Gossip,
       selfUniqueAddress: UniqueAddress): immutable.Seq[ReachableMember] =
     if (newGossip eq oldGossip) Nil
-    else {
+    else
       (oldGossip.overview.reachability.allUnreachable.collect {
         case node
             if newGossip.hasMember(node) && newGossip.overview.reachability
               .isReachable(node) && node != selfUniqueAddress ⇒
           ReachableMember(newGossip.member(node))
       })(collection.breakOut)
-
-    }
 
   /**
     * INTERNAL API.

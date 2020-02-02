@@ -518,11 +518,9 @@ class ParquetPartitionDiscoverySuite
       for {
         pi <- Seq(1, 2)
         ps <- Seq("foo", "bar")
-      } {
-        makeParquetFile(
-          (1 to 10).map(i => ParquetDataWithKey(i, pi, i.toString, ps)),
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
-      }
+      } makeParquetFile(
+        (1 to 10).map(i => ParquetDataWithKey(i, pi, i.toString, ps)),
+        makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
 
       sqlContext.read.parquet(base.getCanonicalPath).registerTempTable("t")
 
@@ -558,11 +556,9 @@ class ParquetPartitionDiscoverySuite
         // Must be `Integer` rather than `Int` here. `null.asInstanceOf[Int]` results in a zero...
         pi <- Seq(1, null.asInstanceOf[Integer])
         ps <- Seq("foo", null.asInstanceOf[String])
-      } {
-        makeParquetFile(
-          (1 to 10).map(i => ParquetData(i, i.toString)),
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
-      }
+      } makeParquetFile(
+        (1 to 10).map(i => ParquetData(i, i.toString)),
+        makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
 
       val parquetRelation =
         sqlContext.read.format("parquet").load(base.getCanonicalPath)
@@ -594,11 +590,9 @@ class ParquetPartitionDiscoverySuite
       for {
         pi <- Seq(1, 2)
         ps <- Seq("foo", null.asInstanceOf[String])
-      } {
-        makeParquetFile(
-          (1 to 10).map(i => ParquetDataWithKey(i, pi, i.toString, ps)),
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
-      }
+      } makeParquetFile(
+        (1 to 10).map(i => ParquetDataWithKey(i, pi, i.toString, ps)),
+        makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
 
       val parquetRelation =
         sqlContext.read.format("parquet").load(base.getCanonicalPath)

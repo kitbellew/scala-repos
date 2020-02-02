@@ -83,13 +83,13 @@ object Build extends sbt.Build {
     previousArtifact := {
       val scalaV = scalaVersion.value
       val scalaBinaryV = scalaBinaryVersion.value
-      if (!scalaVersionsUsedForPublishing.contains(scalaV)) {
+      if (!scalaVersionsUsedForPublishing.contains(scalaV))
         // This artifact will not be published. Binary compatibility is irrelevant.
         None
-      } else if (newScalaBinaryVersionsInThisRelease.contains(scalaBinaryV)) {
+      else if (newScalaBinaryVersionsInThisRelease.contains(scalaBinaryV))
         // New in this release, no binary compatibility to comply to
         None
-      } else {
+      else {
         val thisProjectID = projectID.value
         val previousCrossVersion = thisProjectID.crossVersion match {
           case ScalaJSCrossVersion.binary => previousBinaryCrossVersion
@@ -148,13 +148,12 @@ object Build extends sbt.Build {
     autoAPIMappings := true,
     // Add Java Scaladoc mapping
     apiMappings += {
-      val rtJar = {
+      val rtJar =
         System
           .getProperty("sun.boot.class.path")
           .split(java.io.File.pathSeparator)
           .find(_.endsWith(java.io.File.separator + "rt.jar"))
           .get
-      }
 
       file(rtJar) -> url(javaDocBaseURL)
     },
@@ -225,9 +224,8 @@ object Build extends sbt.Build {
               val content = IO.read(file)
               val patched = javadocAPIRe.replaceAllIn(content, fixJavaDocLink)
               IO.write(outFile, patched)
-            } else {
+            } else
               IO.copyFile(file, outFile)
-            }
 
             outFile
           }
@@ -362,9 +360,9 @@ object Build extends sbt.Build {
 
     /** Depends on library as if (exportJars in library) was set to false. */
     def dependsOnLibraryNoJar: Project =
-      if (isGeneratingEclipse) {
+      if (isGeneratingEclipse)
         project.dependsOn(library)
-      } else {
+      else
         project.settings(
           internalDependencyClasspath in Compile ++= {
             val prods = (products in (library, Compile)).value
@@ -372,18 +370,16 @@ object Build extends sbt.Build {
             prods.map(p => Classpaths.analyzed(p, analysis))
           }
         )
-      }
 
     /** Depends on the sources of another project. */
     def dependsOnSource(dependency: Project): Project =
-      if (isGeneratingEclipse) {
+      if (isGeneratingEclipse)
         project.dependsOn(dependency)
-      } else {
+      else
         project.settings(
           unmanagedSourceDirectories in Compile +=
             (scalaSource in (dependency, Compile)).value
         )
-      }
   }
 
   override lazy val settings = (
@@ -586,7 +582,7 @@ object Build extends sbt.Build {
             yield s""""${escapeJS(f.getAbsolutePath)}""""
         }
 
-        val code = {
+        val code =
           s"""
             var linker = scalajs.QuickLinker();
             var lib = linker.linkTestSuiteNode(${irPaths.mkString(", ")});
@@ -598,7 +594,6 @@ object Build extends sbt.Build {
               "scalajs.TestRunner().runTests();" +
             "}).call(this);");
             """
-        }
 
         val launcher = new MemVirtualJSFile("Generated launcher file")
           .withContent(code)
@@ -694,9 +689,7 @@ object Build extends sbt.Build {
       try {
         ir.InfoSerializers.serialize(stream, infoAndTree._1)
         ir.Serializers.serialize(stream, infoAndTree._2)
-      } finally {
-        stream.close()
-      }
+      } finally stream.close()
     }
     output
   }
@@ -844,12 +837,11 @@ object Build extends sbt.Build {
           val useless =
             path.contains("/scala/collection/parallel/") ||
               path.contains("/scala/util/parsing/")
-          if (!useless) {
+          if (!useless)
             if (paths.add(path))
               sources += src
             else
               streams.value.log.debug(s"not including $src")
-          }
         }
 
         sources.result()
@@ -1099,18 +1091,16 @@ object Build extends sbt.Build {
           case env: NodeJSEnv =>
             val baseArgs = Seq("nodejs", "typedarray")
             if (env.sourceMap) {
-              if (!env.hasSourceMapSupport) {
+              if (!env.hasSourceMapSupport)
                 sys.error(
                   "You must install Node.js source map support to " +
                     "run the full Scala.js test suite (npm install " +
                     "source-map-support). To deactivate source map " +
                     "tests, do: set jsEnv in " + thisProject.value.id +
                     " := NodeJSEnv().value.withSourceMap(false)")
-              }
               baseArgs :+ "source-maps"
-            } else {
+            } else
               baseArgs
-            }
 
           case _: PhantomJSEnv =>
             Seq("phantomjs")
@@ -1204,9 +1194,8 @@ object Build extends sbt.Build {
           scalacOptions.value.contains("-Xexperimental")) {
         val sourceDir = (sourceDirectory in Test).value / "require-sam"
         (sourceDir ** "*.scala").get
-      } else {
+      } else
         Nil
-      }
     }
   )
 
@@ -1273,9 +1262,9 @@ object Build extends sbt.Build {
         Seq(outFile)
       },
       scalacOptions in Test ++= {
-        if (isGeneratingEclipse) {
+        if (isGeneratingEclipse)
           Seq.empty
-        } else {
+        else {
           val jar = (packageBin in (jUnitPlugin, Compile)).value
           Seq(s"-Xplugin:$jar")
         }
@@ -1423,9 +1412,8 @@ object Build extends sbt.Build {
               Array()
             ))
         }
-        else {
+        else
           Def.task(Seq())
-        }
       }
     )
   ).dependsOn(partest % "test", library)

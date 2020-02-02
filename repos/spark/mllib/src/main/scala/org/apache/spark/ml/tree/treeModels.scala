@@ -45,9 +45,8 @@ private[ml] trait DecisionTreeModel {
     * Depth of the tree.
     * E.g.: Depth 0 means 1 leaf node.  Depth 1 means 1 internal node and 2 leaf nodes.
     */
-  lazy val depth: Int = {
+  lazy val depth: Int =
     rootNode.subtreeDepth
-  }
 
   /** Summary of the model */
   override def toString: String =
@@ -131,12 +130,12 @@ private[ml] object DecisionTreeModelReadWrite {
       numCategories: Int) {
 
     def getSplit: Split =
-      if (numCategories != -1) {
+      if (numCategories != -1)
         new CategoricalSplit(
           featureIndex,
           leftCategoriesOrThreshold,
           numCategories)
-      } else {
+      else {
         assert(
           leftCategoriesOrThreshold.length == 1,
           s"DecisionTree split data expected" +
@@ -261,9 +260,8 @@ private[ml] object DecisionTreeModelReadWrite {
             rightChild,
             n.split.getSplit,
             impurityStats)
-        } else {
+        } else
           new LeafNode(n.prediction, n.impurity, impurityStats)
-        }
         finalNodes(n.id) = node
     }
     // Return the root node

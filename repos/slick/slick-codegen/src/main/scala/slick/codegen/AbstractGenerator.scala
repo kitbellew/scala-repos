@@ -147,12 +147,11 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       /** Indicated whether a case class should be generated. Otherwise a type alias. */
       def classEnabled = mappingEnabled
       def doc =
-        if (classEnabled) {
+        if (classEnabled)
           s"Entity class storing rows of table ${TableValue.name}\n" +
             columns.map(c => "@param " + c.name + " " + c.doc).mkString("\n")
-        } else {
+        else
           s"Row type of table ${TableValue.name}\n"
-        }
       def rawName: String = entityName(model.name.table)
     }
 
@@ -496,9 +495,9 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Name (escaped if colliding with Scala keyword). */
       final def name: TermName = termName {
-        if (slickTableTermMembersNoArgs.contains(rawName)) {
+        if (slickTableTermMembersNoArgs.contains(rawName))
           disambiguateTerm(rawName)
-        } else rawName
+        else rawName
       }
 
       /** Adds one or more X to the end of the given string to avoid collisions with column names. */

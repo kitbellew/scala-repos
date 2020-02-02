@@ -222,9 +222,9 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
               sym.isParamAccessor && sym.isMethod)
             paramAccessors.foreach(_.makeNotPrivate(currentOwner))
             super.transform(tree)
-          } else if (currentOwner.isStaticOwner) {
+          } else if (currentOwner.isStaticOwner)
             super.transform(tree)
-          } else tree
+          else tree
         case DefDef(_, _, tparams, vparamss, _, rhs)
             if tree.symbol.isMethodWithExtension =>
           val origMeth = tree.symbol

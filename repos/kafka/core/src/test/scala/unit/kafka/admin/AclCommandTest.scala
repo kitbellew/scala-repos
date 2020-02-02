@@ -101,21 +101,19 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
     val args =
       Array("--authorizer-properties", "zookeeper.connect=" + zkConnect)
 
-    for ((resources, resourceCmd) <- ResourceToCommand) {
+    for ((resources, resourceCmd) <- ResourceToCommand)
       for (permissionType <- PermissionType.values) {
         val operationToCmd = ResourceToOperations(resources)
         val (acls, cmd) = getAclToCommand(permissionType, operationToCmd._1)
         AclCommand.main(
           args ++ cmd ++ resourceCmd ++ operationToCmd._2 :+ "--add")
-        for (resource <- resources) {
+        for (resource <- resources)
           withAuthorizer(brokerProps) { authorizer =>
             TestUtils.waitAndVerifyAcls(acls, authorizer, resource)
           }
-        }
 
         testRemove(resources, resourceCmd, args, brokerProps)
       }
-    }
   }
 
   @Test
@@ -133,13 +131,11 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
         .foldLeft(Array[String]())(_ ++ _)
       AclCommand.main(
         args ++ getCmd(Allow) ++ resourceCommand ++ cmd :+ "--add")
-      for ((resources, acls) <- resourcesToAcls) {
-        for (resource <- resources) {
+      for ((resources, acls) <- resourcesToAcls)
+        for (resource <- resources)
           withAuthorizer(brokerProps) { authorizer =>
             TestUtils.waitAndVerifyAcls(acls, authorizer, resource)
           }
-        }
-      }
       testRemove(
         resourcesToAcls.keys.flatten.toSet,
         resourceCommand,
@@ -160,7 +156,7 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
       resourceCmd: Array[String],
       args: Array[String],
       brokerProps: Properties) {
-    for (resource <- resources) {
+    for (resource <- resources)
       Console.withIn(
         new StringReader(s"y${AclCommand.Newline}" * resources.size)) {
         AclCommand.main(args ++ resourceCmd :+ "--remove")
@@ -168,7 +164,6 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
           TestUtils.waitAndVerifyAcls(Set.empty[Acl], authorizer, resource)
         }
       }
-    }
   }
 
   private def getAclToCommand(

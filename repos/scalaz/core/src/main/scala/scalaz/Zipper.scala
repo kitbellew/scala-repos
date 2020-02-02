@@ -174,11 +174,9 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     @tailrec
     def move0(z: Option[Zipper[A]], n: Int): Option[Zipper[A]] =
       if (n > 0 && rights.isEmpty || n < 0 && lefts.isEmpty) None
-      else {
-        if (n == 0) z
-        else if (n > 0) move0(z flatMap ((_: Zipper[A]).next), n - 1)
-        else move0(z flatMap ((_: Zipper[A]).previous), n + 1)
-      }
+      else if (n == 0) z
+      else if (n > 0) move0(z flatMap ((_: Zipper[A]).next), n - 1)
+      else move0(z flatMap ((_: Zipper[A]).previous), n + 1)
     move0(Some(this), n)
   }
 

@@ -19,37 +19,33 @@ import org.scalatest.{Matchers, WordSpec}
 import com.twitter.scalding.source.DailySuffixTypedTsv
 
 class TypedTsvJob(args: Args) extends Job(args) {
-  try {
-    TypedTsv[(String, Int)]("input0").read
-      .write(TypedTsv[(String, Int)]("output0"))
-  } catch {
+  try TypedTsv[(String, Int)]("input0").read
+    .write(TypedTsv[(String, Int)]("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
 
 class TypedCsvJob(args: Args) extends Job(args) {
-  try {
-    TypedCsv[(String, Int)]("input0").read
-      .write(TypedCsv[(String, Int)]("output0"))
-  } catch {
+  try TypedCsv[(String, Int)]("input0").read
+    .write(TypedCsv[(String, Int)]("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
 
 class TypedPsvJob(args: Args) extends Job(args) {
-  try {
-    TypedPsv[(String, Int)]("input0").read
-      .write(TypedPsv[(String, Int)]("output0"))
-  } catch {
+  try TypedPsv[(String, Int)]("input0").read
+    .write(TypedPsv[(String, Int)]("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
 
 class TypedOsvJob(args: Args) extends Job(args) {
-  try {
-    TypedOsv[(String, Int)]("input0").read
-      .write(TypedOsv[(String, Int)]("output0"))
-  } catch {
+  try TypedOsv[(String, Int)]("input0").read
+    .write(TypedOsv[(String, Int)]("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }
@@ -68,12 +64,11 @@ object DailySuffixTypedTsvJob {
 class DailySuffixTypedTsvJob(args: Args)
     extends Job(args)
     with UtcDateRangeJob {
-  try {
-    DailySuffixTypedTsvJob
-      .source("input0")
-      .read
-      .write(TypedTsv[(String, Int)]("output0"))
-  } catch {
+  try DailySuffixTypedTsvJob
+    .source("input0")
+    .read
+    .write(TypedTsv[(String, Int)]("output0"))
+  catch {
     case e: Exception => e.printStackTrace()
   }
 }

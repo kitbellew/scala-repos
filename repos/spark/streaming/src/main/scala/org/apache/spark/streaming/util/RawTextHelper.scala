@@ -35,17 +35,15 @@ private[streaming] object RawTextHelper {
       i = 0
       while (i < s.length) {
         j = i
-        while (j < s.length && s.charAt(j) != ' ') {
+        while (j < s.length && s.charAt(j) != ' ')
           j += 1
-        }
         if (j > i) {
           val w = s.substring(i, j)
           map.changeValue(w, 1L, _ + 1L)
         }
         i = j
-        while (i < s.length && s.charAt(i) == ' ') {
+        while (i < s.length && s.charAt(i) == ' ')
           i += 1
-        }
       }
       map.toIterator.map {
         case (k, v) => (k, v)
@@ -76,9 +74,8 @@ private[streaming] object RawTextHelper {
           taken(0) = value
           len = 1
         } else if (len < k || value._2 > taken(len - 1)._2) {
-          if (len < k) {
+          if (len < k)
             len += 1
-          }
           taken(len - 1) = value
           i = len - 1
           while (i > 0 && taken(i - 1)._2 < taken(i)._2) {
@@ -98,14 +95,13 @@ private[streaming] object RawTextHelper {
     * before real workload starts.
     */
   def warmUp(sc: SparkContext) {
-    for (i <- 0 to 1) {
+    for (i <- 0 to 1)
       sc.parallelize(1 to 200000, 1000)
         .map(_ % 1331)
         .map(_.toString)
         .mapPartitions(splitAndCountPartitions)
         .reduceByKey(_ + _, 10)
         .count()
-    }
   }
 
   def add(v1: Long, v2: Long): Long =

@@ -229,10 +229,9 @@ case class StructType(fields: Array[StructField])
     */
   def apply(names: Set[String]): StructType = {
     val nonExistFields = names -- fieldNamesSet
-    if (nonExistFields.nonEmpty) {
+    if (nonExistFields.nonEmpty)
       throw new IllegalArgumentException(
         s"Field ${nonExistFields.mkString(",")} does not exist.")
-    }
     // Preserve the original order of fields.
     StructType(fields.filter(f => names.contains(f.name)))
   }
@@ -303,13 +302,11 @@ case class StructType(fields: Array[StructField])
     }
     builder.append("struct<")
     builder.append(fieldTypes.mkString(", "))
-    if (fields.length > 2) {
-      if (fields.length - fieldTypes.length == 1) {
+    if (fields.length > 2)
+      if (fields.length - fieldTypes.length == 1)
         builder.append(" ... 1 more field")
-      } else {
+      else
         builder.append(" ... " + (fields.length - 2) + " more fields")
-      }
-    }
     builder.append(">").toString()
   }
 
@@ -440,21 +437,20 @@ object StructType extends AbstractDataType {
       case (
           DecimalType.Fixed(leftPrecision, leftScale),
           DecimalType.Fixed(rightPrecision, rightScale)) =>
-        if ((leftPrecision == rightPrecision) && (leftScale == rightScale)) {
+        if ((leftPrecision == rightPrecision) && (leftScale == rightScale))
           DecimalType(leftPrecision, leftScale)
-        } else if ((leftPrecision != rightPrecision) && (leftScale != rightScale)) {
+        else if ((leftPrecision != rightPrecision) && (leftScale != rightScale))
           throw new SparkException(
             "Failed to merge decimal types with incompatible " +
               s"precision $leftPrecision and $rightPrecision & scale $leftScale and $rightScale")
-        } else if (leftPrecision != rightPrecision) {
+        else if (leftPrecision != rightPrecision)
           throw new SparkException(
             "Failed to merge decimal types with incompatible " +
               s"precision $leftPrecision and $rightPrecision")
-        } else {
+        else
           throw new SparkException(
             "Failed to merge decimal types with incompatible " +
               s"scala $leftScale and $rightScale")
-        }
 
       case (leftUdt: UserDefinedType[_], rightUdt: UserDefinedType[_])
           if leftUdt.userClass == rightUdt.userClass =>

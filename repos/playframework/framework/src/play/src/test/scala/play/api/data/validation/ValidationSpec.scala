@@ -14,11 +14,11 @@ object ValidationSpec extends Specification {
 
   "text" should {
     "throw an IllegalArgumentException if maxLength is negative" in {
-      {
-        Form(
-          "value" -> Forms.text(maxLength = -1)
-        ).bind(Map("value" -> "hello"))
-      }.must(throwAn[IllegalArgumentException])
+
+      Form(
+        "value" -> Forms.text(maxLength = -1)
+      ).bind(Map("value" -> "hello"))
+        .must(throwAn[IllegalArgumentException])
     }
 
     "return a bound form with error if input is null, even if maxLength=0 " in {
@@ -33,11 +33,11 @@ object ValidationSpec extends Specification {
     }
 
     "throw an IllegalArgumentException if minLength is negative" in {
-      {
-        Form(
-          "value" -> Forms.text(minLength = -1)
-        ).bind(Map("value" -> "hello"))
-      }.must(throwAn[IllegalArgumentException])
+
+      Form(
+        "value" -> Forms.text(minLength = -1)
+      ).bind(Map("value" -> "hello"))
+        .must(throwAn[IllegalArgumentException])
     }
 
     "return a bound form with error if input is null, even if minLength=0" in {
@@ -67,29 +67,29 @@ object ValidationSpec extends Specification {
 
   "Constraints.pattern" should {
     "throw an IllegalArgumentException if regex is null" in {
-      {
-        Form(
-          "value" -> Forms.text.verifying(
-            Constraints.pattern(null, "nullRegex", "error"))
-        ).bind(Map("value" -> "hello"))
-      }.must(throwAn[IllegalArgumentException])
+
+      Form(
+        "value" -> Forms.text.verifying(
+          Constraints.pattern(null, "nullRegex", "error"))
+      ).bind(Map("value" -> "hello"))
+        .must(throwAn[IllegalArgumentException])
     }
 
     "throw an IllegalArgumentException if name is null" in {
-      {
-        Form(
-          "value" -> Forms.text.verifying(
-            Constraints.pattern(".*".r, null, "error"))
-        ).bind(Map("value" -> "hello"))
-      }.must(throwAn[IllegalArgumentException])
+
+      Form(
+        "value" -> Forms.text.verifying(
+          Constraints.pattern(".*".r, null, "error"))
+      ).bind(Map("value" -> "hello"))
+        .must(throwAn[IllegalArgumentException])
     }
 
     "throw an IllegalArgumentException if error is null" in {
-      {
-        Form(
-          "value" -> Forms.text.verifying(pattern(".*".r, "nullRegex", null))
-        ).bind(Map("value" -> "hello"))
-      }.must(throwAn[IllegalArgumentException])
+
+      Form(
+        "value" -> Forms.text.verifying(pattern(".*".r, "nullRegex", null))
+      ).bind(Map("value" -> "hello"))
+        .must(throwAn[IllegalArgumentException])
     }
 
   }

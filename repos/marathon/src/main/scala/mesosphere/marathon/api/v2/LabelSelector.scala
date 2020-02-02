@@ -73,11 +73,9 @@ class LabelSelectorParsers extends RegexParsers {
   def selectors: Parser[List[LabelSelector]] = repsep(selector, ",")
 
   def parseSelectors(in: String): Either[String, LabelSelectors] =
-    try {
-      parseAll(selectors, in) match {
-        case Success(selectors, _) => Right(LabelSelectors(selectors))
-        case NoSuccess(message, _) => Left(message)
-      }
+    try parseAll(selectors, in) match {
+      case Success(selectors, _) => Right(LabelSelectors(selectors))
+      case NoSuccess(message, _) => Left(message)
     } catch {
       case NonFatal(ex) =>
         log.warn(s"Could not parse $in", ex)

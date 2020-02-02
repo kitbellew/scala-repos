@@ -77,16 +77,14 @@ class ScalaDocNewlinedPreFormatProcessor
           var current = prevElement
           //do not insert newlines when there is no description
           while (current != null && (current.getNode.getElementType == ScalaDocTokenType.DOC_WHITESPACE ||
-                 current.getNode.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)) {
+                 current.getNode.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS))
             current = current.getPrevSibling
-          }
-          if (current != null && current.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_START) {
+          if (current != null && current.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_START)
             //process newlines between description and tags
             fixNewlinesBetweenElements(
               prevElement,
               if (scalaSettings.SD_BLANK_LINE_BEFORE_TAGS) 2 else 1,
               scalaSettings)
-          }
         case _ =>
       }
     fixAsterisk(element)
@@ -138,9 +136,9 @@ class ScalaDocNewlinedPreFormatProcessor
       settings: ScalaCodeStyleSettings): Unit =
     linesCountAndLastWsBeforeElement(wsAnchor) match {
       case Some((newlinesOld, lastWs)) =>
-        if (newlinesOld > newlinesNew && !settings.SD_KEEP_BLANK_LINES_BETWEEN_TAGS) {
+        if (newlinesOld > newlinesNew && !settings.SD_KEEP_BLANK_LINES_BETWEEN_TAGS)
           //remove unnecessary newlines along with leading asterisks
-          for (i <- 1 to newlinesOld - newlinesNew) {
+          for (i <- 1 to newlinesOld - newlinesNew)
             lastWs.getPrevSibling.getNode.getElementType match {
               case ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS =>
                 //delete newline and leading asterisk
@@ -151,8 +149,7 @@ class ScalaDocNewlinedPreFormatProcessor
                 lastWs.delete()
                 return
             }
-          }
-        } else if (newlinesOld < newlinesNew) {
+        else if (newlinesOld < newlinesNew) {
           //add more newlines along with leading asterisks
           val parent = lastWs.getParent
           val manager = PsiManager.getInstance(lastWs.getProject)
@@ -173,9 +170,8 @@ class ScalaDocNewlinedPreFormatProcessor
       element: PsiElement): Option[(Int, PsiElement)] = {
     import ScalaDocNewlinedPreFormatProcessor._
     var currentChild = element
-    while (currentChild != null && currentChild.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS) {
+    while (currentChild != null && currentChild.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)
       currentChild = currentChild.getPrevSibling
-    }
     if (currentChild == null) return None
     //last wthitespace before the asterisk in tag psi element
     val lastWhitespace = currentChild.getPrevSibling

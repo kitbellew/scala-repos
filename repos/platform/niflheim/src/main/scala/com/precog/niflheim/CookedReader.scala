@@ -63,11 +63,8 @@ final class CookedReader(
 
   private def read[A](file: File)(f: ReadableByteChannel => A): A = {
     val channel = new FileInputStream(file).getChannel()
-    try {
-      f(channel)
-    } finally {
-      channel.close()
-    }
+    try f(channel)
+    finally channel.close()
   }
 
   private def loadFromDisk(): Validation[IOException, CookedBlockMetadata] =
@@ -124,18 +121,16 @@ final class CookedReader(
 
   def metadata: Validation[IOException, CookedBlockMetadata] = {
     val segs = maybeBlock
-    if (segs != null) {
+    if (segs != null)
       Success(segs)
-    } else {
+    else
       lock.synchronized {
         val block = maybeBlock
-        if (block == null) {
+        if (block == null)
           loadFromDisk()
-        } else {
+        else
           Success(block)
-        }
       }
-    }
   }
 
   private def segmentsByRef

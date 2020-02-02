@@ -120,14 +120,13 @@ private[io] class TcpListener(
       registration: ChannelRegistration,
       limit: Int): Int = {
     val socketChannel =
-      if (limit > 0) {
+      if (limit > 0)
         try channel.accept()
         catch {
-          case NonFatal(e) ⇒ {
+          case NonFatal(e) ⇒
             log.error(e, "Accept error: could not accept new connection"); null
-          }
         }
-      } else null
+      else null
     if (socketChannel != null) {
       log.debug("New connection accepted")
       socketChannel.configureBlocking(false)
@@ -150,11 +149,9 @@ private[io] class TcpListener(
   }
 
   override def postStop() {
-    try {
-      if (channel.isOpen) {
-        log.debug("Closing serverSocketChannel after being stopped")
-        channel.close()
-      }
+    try if (channel.isOpen) {
+      log.debug("Closing serverSocketChannel after being stopped")
+      channel.close()
     } catch {
       case NonFatal(e) ⇒ log.debug("Error closing ServerSocketChannel: {}", e)
     }

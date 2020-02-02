@@ -159,9 +159,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
           ScalaPluginVersionVerifier.getPluginVersion.getOrElse(
             Version.Snapshot),
           new util.HashMap())
-    } finally {
-      if (stream != null) stream.close()
-    }
+    } finally if (stream != null) stream.close()
   }
 
   private def saveJarCache(c: InjectorPersistentCache, f: File) = {
@@ -173,9 +171,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     } catch {
       case e: Throwable =>
         Error.cacheSaveError(e)
-    } finally {
-      stream.close()
-    }
+    } finally stream.close()
   }
 
   private def verifyLibraryCache(
@@ -202,7 +198,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         if (!sourcesValid) {
           LOG.warn(s"Injector $injector has invalid source roots")
           None
-        } else {
+        } else
           try {
             myClassLoader.loadClass(injector.iface)
             Some(injector)
@@ -216,7 +212,6 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
                 s"Error while verifying injector interface - ${e.getMessage}, skipping")
               None
           }
-        }
       }
 
     def verifyDescriptor(
@@ -242,9 +237,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         s"Manifest has wrong JAR path(jar doesn't exist) - ${manifest.jarPath}")
     if (manifest.modTimeStamp > System.currentTimeMillis())
       LOG.warn(s"Manifest timestamp for ${manifest.jarPath} is in the future")
-    if (manifest.pluginDescriptors.isEmpty) {
+    if (manifest.pluginDescriptors.isEmpty)
       LOG.warn(s"Manifest for ${manifest.jarPath} has no plugin descriptors")
-    }
 
     val checkedDescriptor = findMatchingPluginDescriptor(manifest) match {
       case Some(descriptor) => verifyDescriptor(descriptor)
@@ -264,16 +258,14 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       .filter(cacheItem => allProjectJars.contains(s"${cacheItem._1}!/"))
       .values
     var numLoaded = 0
-    for (manifest <- cachedProjectJars if !manifest.isBlackListed) {
-      if (isJarCacheUpToDate(manifest)) {
+    for (manifest <- cachedProjectJars if !manifest.isBlackListed)
+      if (isJarCacheUpToDate(manifest))
         for (injector <- findMatchingInjectors(manifest)) {
           loadInjector(manifest, injector)
           numLoaded += 1
         }
-      } else {
+      else
         jarCache.cache.remove(manifest.jarPath)
-      }
-    }
     LOG.trace(
       s"Loaded injectors from $numLoaded jars (${cachedProjectJars.size - numLoaded} filtered)")
   }
@@ -327,11 +319,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     CompileServerLauncher.ensureServerRunning(project)
     val connector =
       new InjectorServerConnector(m, sources, outDir, platformJars)
-    try {
-      connector.compile() match {
-        case Left(output)  => output.map(_._1)
-        case Right(errors) => throw EvaluationException(errors.mkString("\n"))
-      }
+    try connector.compile() match {
+      case Left(output)  => output.map(_._1)
+      case Right(errors) => throw EvaluationException(errors.mkString("\n"))
     } catch {
       case e: Exception =>
         Error.compilationError("Could not compile:\n" + e.getMessage)
@@ -344,13 +334,12 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     myClassLoader.addUrl(
       getInjectorCacheDir(jarManifest)(injectorDescriptor).toURI.toURL)
     val injectors = findMatchingInjectors(jarManifest)
-    for (injector <- injectors) {
+    for (injector <- injectors)
       loadedInjectors
         .getOrElseUpdate(
           getClass.getClassLoader.loadClass(injector.iface),
           mutable.HashSet(injector.impl)
         ) += injector.impl
-    }
   }
 
   private def findMatchingPluginDescriptor(
@@ -379,15 +368,13 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         target.createNewFile()
         FileUtil.copy(virtualFile.getInputStream, targetStream)
         target
-      } finally {
-        targetStream.close()
-      }
+      } finally targetStream.close()
     }
     if (tmpDir.exists()) {
       val root = VirtualFileManager
         .getInstance()
         .findFileByUrl("jar://" + jar.getAbsolutePath + "!/")
-      if (root != null) {
+      if (root != null)
         injectorDescriptor.sources.flatMap { path =>
           Option(root.findFileByRelativePath(path))
             .map { f =>
@@ -398,12 +385,10 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
             }
             .getOrElse(Seq.empty)
         }
-      } else {
+      else
         Error.noJarFound(jar)
-      }
-    } else {
+    } else
       Error.extractFailed(injectorDescriptor.impl, tmpDir)
-    }
   }
 
   private def askUser(candidates: ManifestToDescriptors) =
@@ -413,10 +398,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   private def showReviewDialogAndFilter(
       candidates: ManifestToDescriptors): ManifestToDescriptors = {
     val (accepted, rejected) = ackProvider.showReviewDialogAndFilter(candidates)
-    for ((manifest, _) <- rejected) {
+    for ((manifest, _) <- rejected)
       jarCache.cache
         .put(manifest.jarPath, manifest.copy()(isBlackListed = true))
-    }
     accepted
   }
 
@@ -432,8 +416,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         .getInstance()
         .runProcess(
           toRunnable {
-            for ((manifest, injectors) <- data) {
-              for (injectorDescriptor <- injectors) {
+            for ((manifest, injectors) <- data)
+              for (injectorDescriptor <- injectors)
                 try {
                   compileInjectorFromLibrary(
                     extractInjectorSources(
@@ -450,8 +434,6 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
                     LOG.error("Failed to compile injector", e)
                     numFailed += 1
                 }
-              }
-            }
             val msg =
               if (numFailed == 0)
                 s"Compiled $numSuccessful injector(s) in ${(System
@@ -564,20 +546,16 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
     if (module != null) {
       model.disposeModule(module)
       model.commit()
-    } else {
+    } else
       LOG.warn(
         s"Failed to remove helper module - $INJECTOR_MODULE_NAME not found")
-    }
   }
 
   private def runWithHelperModule[T](f: Module => T) =
     inWriteAction {
       val module = createIdeaModule()
-      try {
-        f(module)
-      } finally {
-        removeIdeaModule()
-      }
+      try f(module)
+      finally removeIdeaModule()
     }
 
 }

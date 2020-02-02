@@ -128,10 +128,10 @@ case class DateRange(val start: RichDate, val end: RichDate) {
       val next_start = span.floorOf(nextDr.start) + span
       //the smallest grain of time we count is 1 millisecond
       val this_end = next_start - Millisecs(1)
-      if (nextDr.end <= this_end) {
+      if (nextDr.end <= this_end)
         //This is the last block, output and end:
         nextDr :: acc
-      } else {
+      else {
         //Put today's portion, and then start on tomorrow:
         val today = DateRange(nextDr.start, this_end)
         eachRec(today :: acc, DateRange(next_start, nextDr.end))

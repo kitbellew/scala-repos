@@ -119,23 +119,20 @@ private[hive] case class InsertIntoHiveTable(
     // Validate partition spec if there exist any dynamic partitions
     if (numDynamicPartitions > 0) {
       // Report error if dynamic partitioning is not enabled
-      if (!sc.hiveconf.getBoolVar(HiveConf.ConfVars.DYNAMICPARTITIONING)) {
+      if (!sc.hiveconf.getBoolVar(HiveConf.ConfVars.DYNAMICPARTITIONING))
         throw new SparkException(ErrorMsg.DYNAMIC_PARTITION_DISABLED.getMsg)
-      }
 
       // Report error if dynamic partition strict mode is on but no static partition is found
       if (numStaticPartitions == 0 &&
           sc.hiveconf
             .getVar(HiveConf.ConfVars.DYNAMICPARTITIONINGMODE)
-            .equalsIgnoreCase("strict")) {
+            .equalsIgnoreCase("strict"))
         throw new SparkException(ErrorMsg.DYNAMIC_PARTITION_STRICT_MODE.getMsg)
-      }
 
       // Report error if any static partition appears after a dynamic partition
       val isDynamic = partitionColumnNames.map(partitionSpec(_).isEmpty)
-      if (isDynamic.init.zip(isDynamic.tail).contains((true, false))) {
+      if (isDynamic.init.zip(isDynamic.tail).contains((true, false)))
         throw new SparkException(ErrorMsg.PARTITION_DYN_STA_ORDER.getMsg)
-      }
     }
 
     val jobConf = new JobConf(sc.hiveconf)
@@ -164,9 +161,8 @@ private[hive] case class InsertIntoHiveTable(
         dynamicPartColNames,
         child.output,
         table)
-    } else {
+    } else
       new SparkHiveWriterContainer(jobConf, fileSinkConf, child.output, table)
-    }
 
     @transient val outputClass =
       writerContainer.newSerializer(table.tableDesc).getSerializedClass
@@ -199,7 +195,7 @@ private[hive] case class InsertIntoHiveTable(
       val inheritTableSpecs = true
       // TODO: Correctly set isSkewedStoreAsSubdir.
       val isSkewedStoreAsSubdir = false
-      if (numDynamicPartitions > 0) {
+      if (numDynamicPartitions > 0)
         catalog.synchronized {
           catalog.client.loadDynamicPartitions(
             outputPath.toString,
@@ -210,7 +206,7 @@ private[hive] case class InsertIntoHiveTable(
             holdDDLTime,
             isSkewedStoreAsSubdir)
         }
-      } else {
+      else {
         // scalastyle:off
         // ifNotExists is only valid with static partition, refer to
         // https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DML#LanguageManualDML-InsertingdataintoHiveTablesfromqueries
@@ -220,7 +216,7 @@ private[hive] case class InsertIntoHiveTable(
             catalog.client.getTable(table.databaseName, table.tableName),
             partitionSpec)
 
-        if (oldPart.isEmpty || !ifNotExists) {
+        if (oldPart.isEmpty || !ifNotExists)
           catalog.client.loadPartition(
             outputPath.toString,
             qualifiedTableName,
@@ -229,15 +225,13 @@ private[hive] case class InsertIntoHiveTable(
             holdDDLTime,
             inheritTableSpecs,
             isSkewedStoreAsSubdir)
-        }
       }
-    } else {
+    } else
       catalog.client.loadTable(
         outputPath.toString, // TODO: URI
         qualifiedTableName,
         overwrite,
         holdDDLTime)
-    }
 
     // Invalidate the cache.
     sqlContext.cacheManager.invalidateCache(table)

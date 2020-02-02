@@ -22,9 +22,8 @@ case class StaticHistogramBins(splits: Array[Double]) extends HistogramBins {
   /** Returns the bin for the given value, between 0 and splits.length inclusive. */
   def bin(value: Double) = {
     var i = 0
-    while (i < splits.length && value > splits(i)) {
+    while (i < splits.length && value > splits(i))
       i += 1
-    }
     i
   }
 }

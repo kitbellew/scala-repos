@@ -74,9 +74,8 @@ private object ClassPath {
 
     loader match {
       case urlLoader: URLClassLoader =>
-        for (url <- urlLoader.getURLs()) {
+        for (url <- urlLoader.getURLs())
           ents += (url.toURI() -> loader)
-        }
       case _ =>
     }
 
@@ -132,12 +131,11 @@ private object ClassPath {
       }
 
     try {
-      for (uri <- jarClasspath(file, jarFile.getManifest)) {
+      for (uri <- jarClasspath(file, jarFile.getManifest))
         if (!seenUris.contains(uri)) {
           seenUris += uri
           browseUri(uri, loader, buf, seenUris)
         }
-      }
 
       for {
         e <- jarFile.entries.asScala
@@ -146,11 +144,9 @@ private object ClassPath {
         if !(ignoredPackages exists (n startsWith _))
         if isClass(n)
       } buf += Info(n, loader)
-    } finally {
-      try jarFile.close()
-      catch {
-        case _: IOException =>
-      }
+    } finally try jarFile.close()
+    catch {
+      case _: IOException =>
     }
   }
 

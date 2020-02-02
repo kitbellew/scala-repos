@@ -89,9 +89,8 @@ class ServerActor(
 
         case Success(ServerBinding(addr)) =>
           log.info(s"ENSIME HTTP on ${addr.getAddress}")
-          try {
-            PortUtil.writePort(config.cacheDir, addr.getPort, "http")
-          } catch {
+          try PortUtil.writePort(config.cacheDir, addr.getPort, "http")
+          catch {
             case ex: Throwable =>
               log.error(
                 s"Error initializing http endpoint ${ex.getMessage}",
@@ -106,9 +105,8 @@ class ServerActor(
   }
 
   override def preStart(): Unit =
-    try {
-      initialiseChildren()
-    } catch {
+    try initialiseChildren()
+    catch {
       case t: Throwable =>
         log.error(s"Error during startup - ${t.getMessage}", t)
         self ! ShutdownRequest(t.toString, isError = true)
@@ -139,9 +137,8 @@ object Server {
       throw new RuntimeException(s".ensime file ($ensimeFile) not found")
 
     implicit val config =
-      try {
-        EnsimeConfigProtocol.parse(Files.toString(ensimeFile, Charsets.UTF_8))
-      } catch {
+      try EnsimeConfigProtocol.parse(Files.toString(ensimeFile, Charsets.UTF_8))
+      catch {
         case e: Throwable =>
           log.error(s"There was a problem parsing $ensimeFile", e)
           throw e
@@ -175,12 +172,11 @@ object Server {
         Try(system.awaitTermination())
 
         log.info("Shutdown complete")
-        if (!propIsSet("ensime.server.test")) {
+        if (!propIsSet("ensime.server.test"))
           if (request.isError)
             System.exit(1)
           else
             System.exit(0)
-        }
       }
     })
     t.start()

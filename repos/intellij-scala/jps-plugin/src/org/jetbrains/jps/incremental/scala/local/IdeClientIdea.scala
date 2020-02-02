@@ -45,24 +45,20 @@ class IdeClientIdea(
         .findJavaRootDescriptor(context, source)
       if (rootDescriptor != null) {
         isTemp = rootDescriptor.isTemp
-        if (!isTemp) {
-          try {
-            if (isClassFile)
-              consumer.registerCompiledClass(
-                rootDescriptor.target,
-                compiledClass)
-            else
-              consumer.registerOutputFile(
-                rootDescriptor.target,
-                outputFile,
-                Collections.singleton[String](sourcePath))
-          } catch {
+        if (!isTemp)
+          try if (isClassFile)
+            consumer.registerCompiledClass(rootDescriptor.target, compiledClass)
+          else
+            consumer.registerOutputFile(
+              rootDescriptor.target,
+              outputFile,
+              Collections.singleton[String](sourcePath))
+          catch {
             case e: IOException =>
               context.processMessage(new CompilerMessage(compilerName, e))
           }
-        }
       }
-      if (!isTemp && isClassFile && !Utils.errorsDetected(context)) {
+      if (!isTemp && isClassFile && !Utils.errorsDetected(context))
         try {
           val reader: ClassReader = new ClassReader(
             content.getBuffer,
@@ -84,7 +80,6 @@ class IdeClientIdea(
                 message + "\n" + CompilerMessage.getTextFromThrowable(e),
                 sourcePath))
         }
-      }
     }
 
     if (isClassFile && !isTemp && source != null)
@@ -105,11 +100,10 @@ class IdeClientIdea(
       source: File,
       outputFile: File,
       reader: ClassReader): Any =
-    if (outputFile.getName == s"$packageObjectClassName.class") {
+    if (outputFile.getName == s"$packageObjectClassName.class")
       packageObjectsBaseClasses ++= collectPackageObjectBaseClasses(
         source,
         reader)
-    }
 
   private def collectPackageObjectBaseClasses(
       source: File,
@@ -130,9 +124,7 @@ class IdeClientIdea(
         packageName,
         typeName)
       if !packageObjectsBaseClasses.contains(packObjectBaseClass)
-    } yield {
-      packObjectBaseClass
-    }
+    } yield packObjectBaseClass
   }
 
   private def persistPackageObjectData(): Unit = {
@@ -141,10 +133,8 @@ class IdeClientIdea(
     for (item <- packageObjectsBaseClasses;
          cc <- Option(compiledClasses.get(item.baseClassName));
          className <- Option(cc.getClassName)
-         if className.startsWith(item.packageName)) {
-
+         if className.startsWith(item.packageName))
       packageObjectsData.add(cc.getSourceFile, item.packObjectSrc)
-    }
 
     packageObjectsData.save(context)
   }

@@ -64,9 +64,8 @@ private[sbt] object ForkTests {
 
         def run() {
           val socket =
-            try {
-              server.accept()
-            } catch {
+            try server.accept()
+            catch {
               case e: java.net.SocketException =>
                 log.error(
                   "Could not accept connection from test agent: " + e.getClass + ": " + e.getMessage)
@@ -135,9 +134,7 @@ private[sbt] object ForkTests {
 
         testListeners.foreach(_.doComplete(result.overall))
         result
-      } finally {
-        server.close()
-      }
+      } finally server.close()
     }
 
   private[this] def forkFingerprint(

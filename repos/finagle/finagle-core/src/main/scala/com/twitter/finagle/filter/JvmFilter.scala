@@ -16,7 +16,7 @@ class MkJvmFilter(jvm: Jvm) {
   def apply[Req, Rep](): SimpleFilter[Req, Rep] = new SimpleFilter[Req, Rep] {
     def apply(req: Req, service: Service[Req, Rep]): Future[Rep] = {
       val begin = Time.now
-      if (Trace.isActivelyTracing) {
+      if (Trace.isActivelyTracing)
         service(req) ensure {
           buffer(begin) foreach { gc =>
             Trace.record {
@@ -28,7 +28,7 @@ class MkJvmFilter(jvm: Jvm) {
             }
           }
         }
-      } else
+      else
         service(req)
     }
   }

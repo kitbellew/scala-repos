@@ -54,7 +54,7 @@ class ScalaFileNameInspection extends LocalInspectionTool {
       return Array.empty //with companion
 
     var hasProblems = true
-    for (clazz <- definitions) {
+    for (clazz <- definitions)
       clazz match {
         case o: ScObject if file.name == "package.scala" && o.isPackageObject =>
           hasProblems = false
@@ -62,12 +62,11 @@ class ScalaFileNameInspection extends LocalInspectionTool {
           hasProblems = false
         case _ =>
       }
-    }
 
     val res = new ArrayBuffer[ProblemDescriptor]
-    if (hasProblems) {
+    if (hasProblems)
       for (clazz <- definitions;
-           scalaClass: ScTypeDefinition = clazz) {
+           scalaClass: ScTypeDefinition = clazz)
         res += manager.createProblemDescriptor(
           scalaClass.nameId,
           "Class doesn't correspond to file name",
@@ -77,8 +76,6 @@ class ScalaFileNameInspection extends LocalInspectionTool {
             new ScalaRenameFileQuickFix(scalaFile, clazz.name + ".scala")),
           ProblemHighlightType.GENERIC_ERROR_OR_WARNING
         )
-      }
-    }
     res.toArray
   }
 }

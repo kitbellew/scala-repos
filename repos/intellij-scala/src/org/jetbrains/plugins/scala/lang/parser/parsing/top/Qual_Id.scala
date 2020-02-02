@@ -28,19 +28,17 @@ object Qual_Id {
         builder.advanceLexer //Ate identifier
         //Look for dot
         builder.getTokenType match {
-          case ScalaTokenTypes.tDOT => {
+          case ScalaTokenTypes.tDOT =>
             val newMarker = qualMarker.precede
             qualMarker.done(ScalaElementTypes.REFERENCE)
             builder.advanceLexer //Ate dot
             //recursively parse qualified identifier
             Qual_Id parse (builder, newMarker)
             return true
-          }
-          case _ => {
+          case _ =>
             //It's OK, let's close marker
             qualMarker.done(ScalaElementTypes.REFERENCE)
             return true
-          }
         }
       case _ =>
         builder error ScalaBundle.message("wrong.qual.identifier")

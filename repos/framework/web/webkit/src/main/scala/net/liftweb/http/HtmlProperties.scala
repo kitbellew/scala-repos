@@ -267,13 +267,12 @@ final case class OldHtmlProperties(userAgent: Box[String])
     * setDocType.
     */
   def docType: Box[String] =
-    if (S.skipDocType) {
+    if (S.skipDocType)
       Empty
-    } else if (S.getDocType._1) {
+    else if (S.getDocType._1)
       S.getDocType._2
-    } else {
+    else
       Full(DocType.xhtmlTransitional)
-    }
   def encoding: Box[String] =
     Full(LiftRules.calculateXmlHeader(null, <ignore/>, contentType))
 
@@ -281,11 +280,10 @@ final case class OldHtmlProperties(userAgent: Box[String])
     val req = S.request
     val accept = req.flatMap(_.accepts)
     val key = req -> accept
-    if (LiftRules.determineContentType.isDefinedAt(key)) {
+    if (LiftRules.determineContentType.isDefinedAt(key))
       Full(LiftRules.determineContentType(key))
-    } else {
+    else
       Empty
-    }
   }
 
   def htmlParser: InputStream => Box[NodeSeq] = PCDataXmlParser.apply _
@@ -307,11 +305,10 @@ final case class OldHtmlProperties(userAgent: Box[String])
   def htmlOutputHeader: Box[String] =
     (docType -> encoding) match {
       case (Full(dt), Full(enc)) if dt.length > 0 && enc.length > 0 =>
-        if (LiftRules.calcIE6ForResponse() && LiftRules.flipDocTypeForIE6) {
+        if (LiftRules.calcIE6ForResponse() && LiftRules.flipDocTypeForIE6)
           Full(dt.trim + "\n" + enc.trim + "\n")
-        } else {
+        else
           Full(enc.trim + "\n" + dt.trim + "\n")
-        }
 
       case (Full(dt), _) if dt.length > 0 => Full(dt.trim + "\n")
 

@@ -77,13 +77,11 @@ private[streaming] class ReceiverSchedulingPolicy {
       receivers: Seq[Receiver[_]],
       executors: Seq[ExecutorCacheTaskLocation])
       : Map[Int, Seq[TaskLocation]] = {
-    if (receivers.isEmpty) {
+    if (receivers.isEmpty)
       return Map.empty
-    }
 
-    if (executors.isEmpty) {
+    if (executors.isEmpty)
       return receivers.map(_.streamId -> Seq.empty).toMap
-    }
 
     val hostToExecutors = executors.groupBy(_.host)
     val scheduledLocations =
@@ -95,7 +93,7 @@ private[streaming] class ReceiverSchedulingPolicy {
 
     // Firstly, we need to respect "preferredLocation". So if a receiver has "preferredLocation",
     // we need to make sure the "preferredLocation" is in the candidate scheduled executor list.
-    for (i <- 0 until receivers.length) {
+    for (i <- 0 until receivers.length)
       // Note: preferredLocation is host but executors are host_executorId
       receivers(i).preferredLocation.foreach { host =>
         hostToExecutors.get(host) match {
@@ -120,7 +118,6 @@ private[streaming] class ReceiverSchedulingPolicy {
             scheduledLocations(i) += TaskLocation(host)
         }
       }
-    }
 
     // For those receivers that don't have preferredLocation, make sure we assign at least one
     // executor to them.
@@ -177,9 +174,8 @@ private[streaming] class ReceiverSchedulingPolicy {
       preferredLocation: Option[String],
       receiverTrackingInfoMap: Map[Int, ReceiverTrackingInfo],
       executors: Seq[ExecutorCacheTaskLocation]): Seq[TaskLocation] = {
-    if (executors.isEmpty) {
+    if (executors.isEmpty)
       return Seq.empty
-    }
 
     // Always try to schedule to the preferred locations
     val scheduledLocations = mutable.Set[TaskLocation]()
@@ -187,17 +183,16 @@ private[streaming] class ReceiverSchedulingPolicy {
     // handle this case
     scheduledLocations ++= preferredLocation.map(TaskLocation(_))
 
-    val executorWeights: Map[ExecutorCacheTaskLocation, Double] = {
+    val executorWeights: Map[ExecutorCacheTaskLocation, Double] =
       receiverTrackingInfoMap.values
         .flatMap(convertReceiverTrackingInfoToExecutorWeights)
         .groupBy(_._1)
         .mapValues(_.map(_._2).sum) // Sum weights for each executor
-    }
 
     val idleExecutors = executors.toSet -- executorWeights.keys
-    if (idleExecutors.nonEmpty) {
+    if (idleExecutors.nonEmpty)
       scheduledLocations ++= idleExecutors
-    } else {
+    else {
       // There is no idle executor. So select all executors that have the minimum weight.
       val sortedExecutors = executorWeights.toSeq.sortBy(_._2)
       if (sortedExecutors.nonEmpty) {

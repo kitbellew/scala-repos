@@ -52,10 +52,9 @@ class OfferProcessorImplTest
     And("a cooperative offerMatcher and taskTracker")
     offerMatcher.matchOffer(deadline, offer) returns Future.successful(
       MatchedTaskOps(offerId, tasksWithSource))
-    for (task <- tasks) {
+    for (task <- tasks)
       taskCreationHandler.created(MarathonTestHelper.makeTaskFromTaskInfo(task)) returns
         Future.successful(MarathonTestHelper.makeTaskFromTaskInfo(task))
-    }
 
     And("a working taskLauncher")
     val ops: Seq[TaskOp] = tasksWithSource.map(_.op)

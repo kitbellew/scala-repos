@@ -41,9 +41,8 @@ class WriteAheadLogUtilsSuite extends SparkFunSuite {
       assert(log.isInstanceOf[BatchedWriteAheadLog])
       val parentLog = log.asInstanceOf[BatchedWriteAheadLog].wrappedLog
       assert(parentLog.getClass === implicitly[ClassTag[T]].runtimeClass)
-    } else {
+    } else
       assert(log.getClass === implicitly[ClassTag[T]].runtimeClass)
-    }
     log
   }
 

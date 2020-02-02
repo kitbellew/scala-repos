@@ -70,24 +70,19 @@ object SampleData extends CValueGenerators {
       depth <- choose(0, 1)
       jschema <- schema(depth)
       (idCount, data) <- genEventColumns(jschema)
-    } yield {
-      try {
-
-        SampleData(
-          data.sorted.toStream flatMap {
-            // Sometimes the assembly process will generate overlapping values which will
-            // cause RuntimeExceptions in JValue.unsafeInsert. It's easier to filter these
-            // out here than prevent it from happening in the first place.
-            case (ids, jv) =>
-              try {
-                Some(toRecord(ids, assemble(jv)))
-              } catch { case _: RuntimeException => None }
-          },
-          Some((idCount, jschema))
-        )
-      } catch {
-        case ex => println("depth: " + depth); throw ex
-      }
+    } yield try SampleData(
+      data.sorted.toStream flatMap {
+        // Sometimes the assembly process will generate overlapping values which will
+        // cause RuntimeExceptions in JValue.unsafeInsert. It's easier to filter these
+        // out here than prevent it from happening in the first place.
+        case (ids, jv) =>
+          try Some(toRecord(ids, assemble(jv)))
+          catch { case _: RuntimeException => None }
+      },
+      Some((idCount, jschema))
+    )
+    catch {
+      case ex => println("depth: " + depth); throw ex
     }
   )
 
@@ -96,12 +91,11 @@ object SampleData extends CValueGenerators {
     val builder = cbf()
     val seen = mutable.HashSet[S]()
 
-    for (t <- c) {
+    for (t <- c)
       if (!seen(key(t))) {
         builder += t
         seen += key(t)
       }
-    }
 
     builder.result
   }
@@ -121,18 +115,14 @@ object SampleData extends CValueGenerators {
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
-      } yield {
-        SampleData(sampleData.data.sorted, sampleData.schema)
-      }
+      } yield SampleData(sampleData.data.sorted, sampleData.schema)
     )
 
   def shuffle(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
     val gen =
       for {
         sampleData <- arbitrary(sample)
-      } yield {
-        SampleData(Random.shuffle(sampleData.data), sampleData.schema)
-      }
+      } yield SampleData(Random.shuffle(sampleData.data), sampleData.schema)
 
     Arbitrary(gen)
   }
@@ -141,27 +131,25 @@ object SampleData extends CValueGenerators {
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
-      } yield {
-        SampleData(sampleData.data.distinct, sampleData.schema)
-      }
+      } yield SampleData(sampleData.data.distinct, sampleData.schema)
     )
 
   def distinctKeys(sample: Arbitrary[SampleData]): Arbitrary[SampleData] =
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
-      } yield {
-        SampleData(distinctBy(sampleData.data)(_ \ "keys"), sampleData.schema)
-      }
+      } yield SampleData(
+        distinctBy(sampleData.data)(_ \ "keys"),
+        sampleData.schema)
     )
 
   def distinctValues(sample: Arbitrary[SampleData]): Arbitrary[SampleData] =
     Arbitrary(
       for {
         sampleData <- arbitrary(sample)
-      } yield {
-        SampleData(distinctBy(sampleData.data)(_ \ "value"), sampleData.schema)
-      }
+      } yield SampleData(
+        distinctBy(sampleData.data)(_ \ "value"),
+        sampleData.schema)
     )
 
   def duplicateRows(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
@@ -197,15 +185,15 @@ object SampleData extends CValueGenerators {
     val gen = for {
       sampleData <- arbitrary(sample)
     } yield {
-      val rows = for (row <- sampleData.data) yield {
-        if (false && Random.nextDouble >= 0.25) {
-          row
-        } else if (row.get(path) != null && row.get(path) != JUndefined) {
-          row.set(path, JUndefined)
-        } else {
-          row
-        }
-      }
+      val rows =
+        for (row <- sampleData.data)
+          yield
+            if (false && Random.nextDouble >= 0.25)
+              row
+            else if (row.get(path) != null && row.get(path) != JUndefined)
+              row.set(path, JUndefined)
+            else
+              row
       SampleData(rows, sampleData.schema)
     }
 

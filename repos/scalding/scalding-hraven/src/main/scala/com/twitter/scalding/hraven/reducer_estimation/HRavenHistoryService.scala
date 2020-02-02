@@ -118,10 +118,9 @@ object HRavenHistoryService extends HistoryService {
 
           val successfulFlows =
             flows.asScala.filter(_.getHdfsBytesRead > 0).take(max)
-          if (successfulFlows.isEmpty) {
+          if (successfulFlows.isEmpty)
             LOG.warn(
               "Unable to find any successful flows in the last " + nFetch + " jobs.")
-          }
           successfulFlows
         }
       }
@@ -148,9 +147,10 @@ object HRavenHistoryService extends HistoryService {
 
     def findMatchingJobStep(pastFlow: Flow) =
       pastFlow.getJobs.asScala.find { step =>
-        try {
-          step.getConfiguration.get("cascading.flow.step.num").toInt == stepNum
-        } catch {
+        try step.getConfiguration
+          .get("cascading.flow.step.num")
+          .toInt == stepNum
+        catch {
           case _: NumberFormatException => false
         }
       } orElse {

@@ -38,11 +38,10 @@ object IntroduceImplicitParameterIntention {
         override def visitReferenceExpression(expr: ScReferenceExpression) {
           expr.resolve() match {
             case p: ScParameter if fun.parameters.contains(p) =>
-              if (!map.keySet.contains(expr.getText)) {
+              if (!map.keySet.contains(expr.getText))
                 map.put(expr.getText, expr.getTextRange.getStartOffset)
-              } else {
+              else
                 clearMap = true
-              }
             case _ =>
           }
           super.visitReferenceExpression(expr)

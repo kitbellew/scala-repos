@@ -58,19 +58,18 @@ private[prediction] object Webhooks {
     }
 
     eventFuture.flatMap { eventOpt =>
-      if (eventOpt.isEmpty) {
+      if (eventOpt.isEmpty)
         Future successful {
           val message = s"webhooks connection for $web is not supported."
           (StatusCodes.NotFound, Map("message" -> message))
         }
-      } else {
+      else {
         val event = eventOpt.get
         val data = eventClient.futureInsert(event, appId, channelId).map { id =>
           val result = (StatusCodes.Created, Map("eventId" -> s"$id"))
 
-          if (stats) {
+          if (stats)
             statsActorRef ! Bookkeeping(appId, result._1, event)
-          }
           result
         }
         data
@@ -112,19 +111,18 @@ private[prediction] object Webhooks {
     }
 
     eventFuture.flatMap { eventOpt =>
-      if (eventOpt.isEmpty) {
+      if (eventOpt.isEmpty)
         Future {
           val message = s"webhooks connection for $web is not supported."
           (StatusCodes.NotFound, Map("message" -> message))
         }
-      } else {
+      else {
         val event = eventOpt.get
         val data = eventClient.futureInsert(event, appId, channelId).map { id =>
           val result = (StatusCodes.Created, Map("eventId" -> s"$id"))
 
-          if (stats) {
+          if (stats)
             statsActorRef ! Bookkeeping(appId, result._1, event)
-          }
           result
         }
         data

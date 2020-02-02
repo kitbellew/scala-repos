@@ -149,9 +149,8 @@ class PagedSeq[T: ClassTag] protected (
       current = first1
     while (absindex >= current.end && current.next != null)
       current = current.next
-    while (absindex >= current.end && !current.isLast) {
+    while (absindex >= current.end && !current.isLast)
       current = addMore()
-    }
     current
   }
 
@@ -190,10 +189,9 @@ class PagedSeq[T: ClassTag] protected (
     val s = start + _start
     val e = if (_end == UndeterminedEnd) _end else start + _end
     var f = first1
-    while (f.end <= s && !f.isLast) {
+    while (f.end <= s && !f.isLast)
       if (f.next eq null) f = f.addMore(more)
       else f = f.next
-    }
     // Warning -- not refining `more` means that slices can freely request and obtain
     // data outside of their slice.  This is part of the design of PagedSeq
     // (to read pages!) but can be surprising.

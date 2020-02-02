@@ -128,13 +128,12 @@ final object Aggregation {
     import extracted._
     def get(key: SettingKey[Boolean]): Boolean =
       key in currentRef get structure.data getOrElse true
-    if (get(showSuccess)) {
+    if (get(showSuccess))
       if (get(showTiming)) {
         val msg = timingString(start, stop, "", structure.data, currentRef, log)
         if (success) log.success(msg) else log.error(msg)
       } else if (success)
         log.success("")
-    }
   }
   private def timingString(
       startTime: Long,
@@ -204,7 +203,7 @@ final object Aggregation {
       //  tasks, and input tasks in the same call.  The code below allows settings and tasks to be mixed, but not input tasks.
       // One problem with input tasks in `all` is that many input tasks consume all input and would need syntactic delimiters.
       // Once that is addressed, the tasks constructed by the input tasks would need to be combined with the explicit tasks.
-      if (inputTasks.nonEmpty) {
+      if (inputTasks.nonEmpty)
         if (other.nonEmpty) {
           val inputStrings =
             inputTasks.map(_.key).mkString("Input task(s):\n\t", "\n\t", "\n")
@@ -214,7 +213,7 @@ final object Aggregation {
             s"Cannot mix input tasks with plain tasks/settings.  $inputStrings $otherStrings")
         } else
           applyDynamicTasks(s, structure, maps(inputTasks)(castToAny), show)
-      } else {
+      else {
         val base =
           if (tasks.isEmpty) success(() => s)
           else

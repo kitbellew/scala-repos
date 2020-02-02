@@ -36,7 +36,7 @@ final class PhantomJettyClassLoader(
   )
 
   override protected def loadClass(name: String, resolve: Boolean): Class[_] =
-    if (bridgeClasses.contains(name)) {
+    if (bridgeClasses.contains(name))
       // Load bridgeClasses manually since they must be associated to this
       // class loader, rather than the parent class loader in order to find the
       // jetty classes
@@ -46,19 +46,17 @@ final class PhantomJettyClassLoader(
         val wsManager =
           parent.getResourceAsStream(name.replace('.', '/') + ".class")
 
-        if (wsManager == null) {
+        if (wsManager == null)
           throw new ClassNotFoundException(name)
-        } else {
+        else {
           val buf = IO.readInputStreamToByteArray(wsManager)
           defineClass(name, buf, 0, buf.length)
         }
       }
-    } else {
-      try {
-        jettyLoader.loadClass(name)
-      } catch {
+    else
+      try jettyLoader.loadClass(name)
+      catch {
         case _: ClassNotFoundException =>
           super.loadClass(name, resolve)
       }
-    }
 }

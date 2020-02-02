@@ -151,29 +151,28 @@ private[cluster] class Reachability private (
           case None ⇒
             if (status == Reachable && oldObserverRows.forall {
                   case (_, r) ⇒ r.status == Reachable
-                }) {
+                })
               // all Reachable, prune by removing the records of the observer, and bump the version
               new Reachability(
                 records.filterNot(_.observer == observer),
                 newVersions)
-            } else
+            else
               new Reachability(records :+ newRecord, newVersions)
           case Some(oldRecord) ⇒
             if (oldRecord.status == Terminated || oldRecord.status == status)
               this
+            else if (status == Reachable && oldObserverRows.forall {
+                       case (_, r) ⇒
+                         r.status == Reachable || r.subject == subject
+                     })
+              // all Reachable, prune by removing the records of the observer, and bump the version
+              new Reachability(
+                records.filterNot(_.observer == observer),
+                newVersions)
             else {
-              if (status == Reachable && oldObserverRows.forall {
-                    case (_, r) ⇒ r.status == Reachable || r.subject == subject
-                  }) {
-                // all Reachable, prune by removing the records of the observer, and bump the version
-                new Reachability(
-                  records.filterNot(_.observer == observer),
-                  newVersions)
-              } else {
-                val newRecords =
-                  records.updated(records.indexOf(oldRecord), newRecord)
-                new Reachability(newRecords, newVersions)
-              }
+              val newRecords =
+                records.updated(records.indexOf(oldRecord), newRecord)
+              new Reachability(newRecords, newVersions)
             }
         }
     }

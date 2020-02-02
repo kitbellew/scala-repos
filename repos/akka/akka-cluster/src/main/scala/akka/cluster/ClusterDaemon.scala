@@ -199,14 +199,13 @@ private[cluster] final class ClusterDaemon(settings: ClusterSettings)
         Props(classOf[OnMemberStatusChangedListener], code, Removed)
           .withDeploy(Deploy.local))
     case PublisherCreated(publisher) ⇒
-      if (settings.MetricsEnabled) {
+      if (settings.MetricsEnabled)
         // metrics must be started after core/publisher to be able
         // to inject the publisher ref to the ClusterMetricsCollector
         context.actorOf(
           Props(classOf[ClusterMetricsCollector], publisher)
             .withDispatcher(context.props.dispatcher),
           name = "metrics")
-      }
   }
 
 }
@@ -466,19 +465,18 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       } else {
         // use unique name of this actor, stopSeedNodeProcess doesn't wait for termination
         seedNodeProcessCounter += 1
-        if (newSeedNodes.head == selfAddress) {
+        if (newSeedNodes.head == selfAddress)
           Some(
             context.actorOf(
               Props(classOf[FirstSeedNodeProcess], newSeedNodes)
                 .withDispatcher(UseDispatcher),
               name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
-        } else {
+        else
           Some(
             context.actorOf(
               Props(classOf[JoinSeedNodeProcess], newSeedNodes)
                 .withDispatcher(UseDispatcher),
               name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
-        }
       }
     }
 
@@ -718,14 +716,13 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         "Cluster Node [{}] - Ignoring received gossip status from unknown [{}]",
         selfAddress,
         from)
-    else {
+    else
       (status.version compareTo latestGossip.version) match {
         case VectorClock.Same ⇒ // same version
         case VectorClock.After ⇒
           gossipStatusTo(from, sender()) // remote is newer
         case _ ⇒ gossipTo(from, sender()) // conflicting or local is newer
       }
-    }
   }
 
   /**
@@ -839,16 +836,15 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         selfAddress,
         from)
 
-      if (comparison == VectorClock.Concurrent) {
+      if (comparison == VectorClock.Concurrent)
         log.debug(
           """Couldn't establish a causal relationship between "remote" gossip and "local" gossip - Remote[{}] - Local[{}] - merged them into [{}]""",
           remoteGossip,
           localGossip,
           winningGossip
         )
-      }
 
-      if (statsEnabled) {
+      if (statsEnabled)
         gossipStats = gossipType match {
           case Merge ⇒ gossipStats.incrementMergeCount
           case Same ⇒ gossipStats.incrementSameCount
@@ -856,18 +852,16 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           case Older ⇒ gossipStats.incrementOlderCount
           case Ignored ⇒ gossipStats // included in receivedGossipCount
         }
-      }
 
       publish(latestGossip)
 
       val selfStatus = latestGossip.member(selfUniqueAddress).status
       if (selfStatus == Exiting)
         shutdown()
-      else if (talkback) {
+      else if (talkback)
         // send back gossip to sender() when sender() had different view, i.e. merge, or sender() had
         // older or sender() had newer
         gossipTo(from, sender())
-      }
       gossipType
     }
   }
@@ -895,7 +889,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
       val preferredGossipTargets: Vector[UniqueAddress] =
         if (ThreadLocalRandom.current
-              .nextDouble() < adjustedGossipDifferentViewProbability) {
+              .nextDouble() < adjustedGossipDifferentViewProbability)
           // If it's time to try to gossip to some nodes with a different view
           // gossip to a random alive member with preference to a member with older gossip version
           localGossip.members.collect {
@@ -904,7 +898,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
                   m.uniqueAddress) ⇒
               m.uniqueAddress
           }(breakOut)
-        } else Vector.empty
+        else Vector.empty
 
       if (preferredGossipTargets.nonEmpty) {
         val peer = selectRandomNode(preferredGossipTargets)
@@ -1053,9 +1047,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
             val youngest = localGossip.youngestMember
             upNumber = 1 + (if (youngest.upNumber == Int.MaxValue) 0
                             else youngest.upNumber)
-          } else {
+          } else
             upNumber += 1
-          }
           m.copyUp(upNumber)
 
         case m if m.status == Leaving ⇒
@@ -1327,12 +1320,12 @@ private[cluster] final class FirstSeedNodeProcess(
 
   def receive = {
     case JoinSeedNode ⇒
-      if (timeout.hasTimeLeft) {
+      if (timeout.hasTimeLeft)
         // send InitJoin to remaining seed nodes (except myself)
         remainingSeedNodes foreach { a ⇒
           context.actorSelection(context.parent.path.toStringWithAddress(a)) ! InitJoin
         }
-      } else {
+      else {
         // no InitJoinAck received, initialize new cluster by joining myself
         context.parent ! JoinTo(selfAddress)
         context.stop(self)
@@ -1398,7 +1391,7 @@ private[cluster] final class JoinSeedNodeProcess(
       seedNodes.collect {
         case a if a != selfAddress ⇒
           context.actorSelection(context.parent.path.toStringWithAddress(a))
-      } foreach { _ ! InitJoin }
+      } foreach _ ! InitJoin
     case InitJoinAck(address) ⇒
       // first InitJoinAck reply
       context.parent ! JoinTo(address)
@@ -1464,9 +1457,7 @@ private[cluster] class OnMemberStatusChangedListener(
           "[{}] callback failed with [{}]",
           s"On${to.getSimpleName}",
           e.getMessage)
-    } finally {
-      context stop self
-    }
+    } finally context stop self
 
   private def isTriggered(m: Member): Boolean =
     m.uniqueAddress == cluster.selfUniqueAddress && m.status == status

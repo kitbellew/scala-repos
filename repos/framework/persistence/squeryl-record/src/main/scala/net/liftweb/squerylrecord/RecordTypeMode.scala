@@ -212,7 +212,7 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           createOutMapperTimestampTypeOption)
           with DateExpression[Option[Timestamp]]
           with SquerylRecordNonNumericalExpression[Option[Timestamp]]
-      case None => {
+      case None =>
         val date = f.get match {
           case Some(calendar) => Some(new Timestamp(calendar.getTimeInMillis))
           case None           => None
@@ -221,7 +221,6 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           createOutMapperTimestampTypeOption)
           with DateExpression[Option[Timestamp]]
           with SquerylRecordNonNumericalExpression[Option[Timestamp]]
-      }
     }
 
   /** Needed for inner selects. The cast is possible here because the type is not

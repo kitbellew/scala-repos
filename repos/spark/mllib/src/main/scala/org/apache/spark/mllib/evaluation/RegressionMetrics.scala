@@ -123,9 +123,8 @@ class RegressionMetrics @Since("2.0.0") (
     */
   @Since("1.2.0")
   def r2: Double =
-    if (throughOrigin) {
+    if (throughOrigin)
       1 - SSerr / SSy
-    } else {
+    else
       1 - SSerr / SStot
-    }
 }

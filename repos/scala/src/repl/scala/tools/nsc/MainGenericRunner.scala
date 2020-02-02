@@ -100,12 +100,12 @@ class MainGenericRunner {
         *
         *  This all needs a rewrite though.
         */
-      if (isE) {
+      if (isE)
         ScriptRunner.runCommand(
           settings,
           combinedCode,
           thingToRun +: command.arguments)
-      } else
+      else
         runTarget() match {
           case Left(ex) =>
             errorFn(

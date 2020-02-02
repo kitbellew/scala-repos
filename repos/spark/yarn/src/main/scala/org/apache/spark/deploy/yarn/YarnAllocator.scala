@@ -68,9 +68,8 @@ private[yarn] class YarnAllocator(
   import YarnAllocator._
 
   // RackResolver logs an INFO message whenever it resolves a rack, which is way too often.
-  if (Logger.getLogger(classOf[RackResolver]).getLevel == null) {
+  if (Logger.getLogger(classOf[RackResolver]).getLevel == null)
     Logger.getLogger(classOf[RackResolver]).setLevel(Level.WARN)
-  }
 
   // Visible for testing.
   val allocatedHostToContainersMap =
@@ -138,22 +137,20 @@ private[yarn] class YarnAllocator(
   // ContainerRequest constructor that can take a node label expression. We grab it through
   // reflection because it's only available in later versions of YARN.
   private val nodeLabelConstructor = labelExpression.flatMap { expr =>
-    try {
-      Some(
-        classOf[ContainerRequest].getConstructor(
-          classOf[Resource],
-          classOf[Array[String]],
-          classOf[Array[String]],
-          classOf[Priority],
-          classOf[Boolean],
-          classOf[String]))
-    } catch {
-      case e: NoSuchMethodException => {
+    try Some(
+      classOf[ContainerRequest].getConstructor(
+        classOf[Resource],
+        classOf[Array[String]],
+        classOf[Array[String]],
+        classOf[Priority],
+        classOf[Boolean],
+        classOf[String]))
+    catch {
+      case e: NoSuchMethodException =>
         logWarning(
           s"Node label expression $expr will be ignored because YARN version on" +
             " classpath does not support it.")
         None
-      }
     }
   }
 
@@ -209,9 +206,8 @@ private[yarn] class YarnAllocator(
         s"Driver requested a total number of $requestedTotal executor(s).")
       targetNumExecutors = requestedTotal
       true
-    } else {
+    } else
       false
-    }
   }
 
   /**
@@ -222,9 +218,8 @@ private[yarn] class YarnAllocator(
       val container = executorIdToContainer.get(executorId).get
       internalReleaseContainer(container)
       numExecutorsRunning -= 1
-    } else {
+    } else
       logWarning(s"Attempted to kill unknown executor $executorId!")
-    }
   }
 
   /**
@@ -321,13 +316,12 @@ private[yarn] class YarnAllocator(
         case _ =>
       }
 
-      if (availableContainers >= newLocalityRequests.size) {
+      if (availableContainers >= newLocalityRequests.size)
         // more containers are available than needed for locality, fill in requests for any host
-        for (i <- 0 until (availableContainers - newLocalityRequests.size)) {
+        for (i <- 0 until (availableContainers - newLocalityRequests.size))
           newLocalityRequests.append(
             createContainerRequest(resource, null, null))
-        }
-      } else {
+      else {
         val numToCancel = newLocalityRequests.size - availableContainers
         // cancel some requests without locality preferences to schedule more local containers
         anyHostRequests.slice(0, numToCancel).foreach { nonLocal =>
@@ -349,16 +343,15 @@ private[yarn] class YarnAllocator(
 
       val matchingRequests =
         amClient.getMatchingRequests(RM_REQUEST_PRIORITY, ANY_HOST, resource)
-      if (!matchingRequests.isEmpty) {
+      if (!matchingRequests.isEmpty)
         matchingRequests
           .iterator()
           .next()
           .asScala
           .take(numToCancel)
           .foreach(amClient.removeContainerRequest)
-      } else {
+      else
         logWarning("Expected to find pending requests, but found none.")
-      }
     }
   }
 
@@ -402,13 +395,12 @@ private[yarn] class YarnAllocator(
 
     // Match incoming requests by host
     val remainingAfterHostMatches = new ArrayBuffer[Container]
-    for (allocatedContainer <- allocatedContainers) {
+    for (allocatedContainer <- allocatedContainers)
       matchContainerToRequest(
         allocatedContainer,
         allocatedContainer.getNodeId.getHost,
         containersToUse,
         remainingAfterHostMatches)
-    }
 
     // Match remaining by rack
     val remainingAfterRackMatches = new ArrayBuffer[Container]
@@ -425,21 +417,19 @@ private[yarn] class YarnAllocator(
 
     // Assign remaining that are neither node-local nor rack-local
     val remainingAfterOffRackMatches = new ArrayBuffer[Container]
-    for (allocatedContainer <- remainingAfterRackMatches) {
+    for (allocatedContainer <- remainingAfterRackMatches)
       matchContainerToRequest(
         allocatedContainer,
         ANY_HOST,
         containersToUse,
         remainingAfterOffRackMatches)
-    }
 
     if (!remainingAfterOffRackMatches.isEmpty) {
       logDebug(
         s"Releasing ${remainingAfterOffRackMatches.size} unneeded containers that were " +
           s"allocated to us")
-      for (container <- remainingAfterOffRackMatches) {
+      for (container <- remainingAfterOffRackMatches)
         internalReleaseContainer(container)
-      }
     }
 
     runAllocatedContainers(containersToUse)
@@ -481,9 +471,8 @@ private[yarn] class YarnAllocator(
       val containerRequest = matchingRequests.get(0).iterator.next
       amClient.removeContainerRequest(containerRequest)
       containersToUse += allocatedContainer
-    } else {
+    } else
       remaining += allocatedContainer
-    }
   }
 
   /**
@@ -588,31 +577,28 @@ private[yarn] class YarnAllocator(
                 ". Diagnostics: " + completedContainer.getDiagnostics)
 
         }
-        if (exitCausedByApp) {
+        if (exitCausedByApp)
           logWarning(containerExitReason)
-        } else {
+        else
           logInfo(containerExitReason)
-        }
         ExecutorExited(exitStatus, exitCausedByApp, containerExitReason)
-      } else {
+      } else
         // If we have already released this container, then it must mean
         // that the driver has explicitly requested it to be killed
         ExecutorExited(
           completedContainer.getExitStatus,
           exitCausedByApp = false,
           s"Container $containerId exited from explicit termination request.")
-      }
 
       for {
         host <- hostOpt
         containerSet <- allocatedHostToContainersMap.get(host)
       } {
         containerSet.remove(containerId)
-        if (containerSet.isEmpty) {
+        if (containerSet.isEmpty)
           allocatedHostToContainersMap.remove(host)
-        } else {
+        else
           allocatedHostToContainersMap.update(host, containerSet)
-        }
 
         allocatedContainerToHostMap.remove(containerId)
       }
@@ -649,14 +635,14 @@ private[yarn] class YarnAllocator(
   private[yarn] def enqueueGetLossReasonRequest(
       eid: String,
       context: RpcCallContext): Unit = synchronized {
-    if (executorIdToContainer.contains(eid)) {
+    if (executorIdToContainer.contains(eid))
       pendingLossReasonRequests
         .getOrElseUpdate(eid, new ArrayBuffer[RpcCallContext]) += context
-    } else if (releasedExecutorLossReasons.contains(eid)) {
+    else if (releasedExecutorLossReasons.contains(eid))
       // Executor is already released explicitly before getting the loss reason, so directly send
       // the pre-stored lost reason
       context.reply(releasedExecutorLossReasons.remove(eid).get)
-    } else {
+    else {
       logWarning(s"Tried to get the loss reason for non-existent executor $eid")
       context.sendFailure(
         new SparkException(
@@ -697,13 +683,12 @@ private[yarn] class YarnAllocator(
     val preferredHosts = hostToLocalTaskCount.keySet
     pendingAllocations.foreach { cr =>
       val nodes = cr.getNodes
-      if (nodes == null) {
+      if (nodes == null)
         localityFree += cr
-      } else if (nodes.asScala.toSet.intersect(preferredHosts).nonEmpty) {
+      else if (nodes.asScala.toSet.intersect(preferredHosts).nonEmpty)
         localityMatched += cr
-      } else {
+      else
         localityUnMatched += cr
-      }
     }
 
     (localityMatched.toSeq, localityUnMatched.toSeq, localityFree.toSeq)

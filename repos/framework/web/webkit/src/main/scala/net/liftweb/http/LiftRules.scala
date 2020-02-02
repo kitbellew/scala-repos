@@ -135,9 +135,9 @@ object LiftRules extends LiftRulesMocker {
     * Get the real instance of LiftRules
     */
   def realInstance: LiftRules =
-    if (devOrTest) {
+    if (devOrTest)
       LiftRulesMocker.calcLiftRulesInstance()
-    } else prodInstance
+    else prodInstance
 
   type DispatchPF = PartialFunction[Req, () => Box[LiftResponse]];
 
@@ -262,11 +262,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val jsonOutputConverter = new FactoryMaker[JsonAST.JValue => String]({
     import json.{prettyRender, compactRender}
 
-    if (Props.devMode) {
+    if (Props.devMode)
       prettyRender _
-    } else {
+    else
       compactRender _
-    }
   }) {}
 
   /**
@@ -1063,7 +1062,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
           if (decodedMetaData
                 .get("parallel")
-                .headOption == Some(Text("true"))) {
+                .headOption == Some(Text("true")))
             DataAttributeProcessorAnswerFuture(
               LAFuture(() =>
                 new Elem(
@@ -1073,7 +1072,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
                   element.scope,
                   false,
                   element)))
-          } else {
+          else
             new Elem(
               "lift",
               snippetName,
@@ -1081,7 +1080,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
               element.scope,
               false,
               element)
-          }
       }
   }
 
@@ -1164,9 +1162,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   def setSiteMapFunc(smf: () => SiteMap) {
     sitemapFunc = Full(smf)
-    if (!Props.devMode) {
+    if (!Props.devMode)
       resolveSitemap()
-    }
   }
 
   /**
@@ -1181,9 +1178,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     try {
       _doneBoot = false
       f
-    } finally {
-      _doneBoot = old
-    }
+    } finally _doneBoot = old
   }
 
   private case class PerRequestPF[A, B](f: PartialFunction[A, B])
@@ -1218,11 +1213,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * mode, the sitemap may be recomputed on each page load.
     */
   def siteMap: Box[SiteMap] =
-    if (Props.devMode) {
+    if (Props.devMode)
       this.synchronized {
         sitemapRequestVar.is
       }
-    } else _sitemap
+    else _sitemap
 
   /**
     * A unified set of properties for managing how to treat
@@ -1261,7 +1256,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   val deferredSnippetFailure: FactoryMaker[Failure => NodeSeq] =
     new FactoryMaker(() => {
-      failure: Failure => {
+      failure: Failure =>
         if (Props.devMode)
           <div style="border: red solid 2px">A lift:parallel snippet failed to render.Message:{
             failure.msg
@@ -1278,7 +1273,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         </i>
         </div>
         else NodeSeq.Empty
-      }
     }) {}
 
   /**
@@ -1400,9 +1394,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * Sets the HTTPContext
     */
   def setContext(in: HTTPContext): Unit = synchronized {
-    if (in ne _context) {
+    if (in ne _context)
       _context = in
-    }
   }
 
   private var otherPackages: List[String] = Nil
@@ -1451,11 +1444,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   def doWithResource[T](name: String)(f: InputStream => T): Box[T] =
     getResource(name) map { _.openStream } map { is =>
-      try {
-        f(is)
-      } finally {
-        is.close
-      }
+      try f(is)
+      finally is.close
     }
 
   /**
@@ -1806,19 +1796,17 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         val cssPath = path.mkString("/", "/", ".css")
         val css = LiftRules.loadResourceAsString(cssPath);
 
-        () => {
+        () =>
           css.map(str =>
             CSSHelpers.fixCSS(
               new BufferedReader(new StringReader(str)),
               prefix openOr (S.contextPath)) match {
               case (Full(c), _) => CSSResponse(c)
-              case (x, input) => {
+              case (x, input) =>
                 logger.info(
                   "Fixing " + cssPath + " failed with result %s".format(x));
                 CSSResponse(input)
-              }
             })
-        }
       }
     }
     LiftRules.dispatch.prepend(cssFixer)
@@ -1992,16 +1980,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
         val len = last.length
         if (firstDot + 1 == len)
           -1 // if the dot is the last character, don't split
+        else if (last.indexOf(".", firstDot + 1) != -1)
+          -1 // if there are multiple dots, don't split out
         else {
-          if (last.indexOf(".", firstDot + 1) != -1)
-            -1 // if there are multiple dots, don't split out
-          else {
-            val suffix = last.substring(firstDot + 1)
-            // if the suffix isn't in the list of suffixes we care about, don't split it
-            if (!LiftRules.explicitlyParsedSuffixes.contains(
-                  suffix.toLowerCase)) -1
-            else firstDot
-          }
+          val suffix = last.substring(firstDot + 1)
+          // if the suffix isn't in the list of suffixes we care about, don't split it
+          if (!LiftRules.explicitlyParsedSuffixes.contains(suffix.toLowerCase))
+            -1
+          else firstDot
         }
       }
 
@@ -2399,12 +2385,12 @@ trait FormVendor {
     first match {
       case Some(x :: _) => Full(x.func.asInstanceOf[(T, T => Any) => NodeSeq])
       case _ =>
-        if (globalForms.containsKey(name)) {
+        if (globalForms.containsKey(name))
           globalForms
             .get(name)
             .headOption
             .map(_.func.asInstanceOf[(T, T => Any) => NodeSeq])
-        } else Empty
+        else Empty
     }
   }
 
@@ -2414,22 +2400,20 @@ trait FormVendor {
   def prependGlobalFormBuilder[T](builder: FormBuilderLocator[T]) {
     globalForms.synchronized {
       val name = builder.manifest.toString
-      if (globalForms.containsKey(name)) {
+      if (globalForms.containsKey(name))
         globalForms.put(name, builder :: globalForms.get(name))
-      } else {
+      else
         globalForms.put(name, List(builder))
-      }
     }
   }
 
   def appendGlobalFormBuilder[T](builder: FormBuilderLocator[T]) {
     globalForms.synchronized {
       val name = builder.manifest.toString
-      if (globalForms.containsKey(name)) {
+      if (globalForms.containsKey(name))
         globalForms.put(name, builder :: globalForms.get(name))
-      } else {
+      else
         globalForms.put(name, List(builder))
-      }
     }
   }
 

@@ -43,9 +43,7 @@ object DottyDownloader extends Downloader {
               .mkString
               .getBytes
             MavenJDOMUtil.read(bytes, null)
-          } finally {
-            connection.disconnect()
-          }
+          } finally connection.disconnect()
       }
     element.toOption.toSeq
       .flatMap(_.getDescendants.asScala)

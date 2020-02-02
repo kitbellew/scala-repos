@@ -144,17 +144,16 @@ trait SliceTransforms[M[+_]]
             (s: Slice, filter: Slice) =>
               assert(filter.size == s.size)
 
-              if (s.columns.isEmpty) {
+              if (s.columns.isEmpty)
                 s
-              } else {
+              else {
 
                 val definedAt = new BitSet
                 filter.columns.values.foreach {
-                  case col: BoolColumn => {
+                  case col: BoolColumn =>
                     cf.util.isSatisfied(col).foreach { c =>
                       definedAt.or(c.definedAt(0, s.size))
                     }
-                  }
                 }
 
                 s mapColumns { cf.util.filter(0, s.size, definedAt) }
@@ -250,11 +249,10 @@ trait SliceTransforms[M[+_]]
 
                 def stripTypes(cols: Map[ColumnRef, Column]) =
                   cols.foldLeft(Map[CPath, Set[Column]]()) {
-                    case (acc, (ColumnRef(path, _), column)) => {
-                      val set = acc get path map { _ + column } getOrElse Set(
-                        column)
+                    case (acc, (ColumnRef(path, _), column)) =>
+                      val set =
+                        acc get path map _ + column getOrElse Set(column)
                       acc.updated(path, set)
-                    }
                   }
 
                 val leftNumMulti = stripTypes(leftNum)
@@ -283,9 +281,8 @@ trait SliceTransforms[M[+_]]
 
                   case Right((left, right)) =>
                     val tests: Array[BoolColumn] =
-                      (for (l <- left; r <- right) yield {
-                        new FuzzyEqColumn(l, r)
-                      }).toArray
+                      (for (l <- left; r <- right)
+                        yield new FuzzyEqColumn(l, r)).toArray
                     new OrLotsColumn(tests)
                 })(collection.breakOut)
 
@@ -315,7 +312,7 @@ trait SliceTransforms[M[+_]]
             }
           }
 
-        case EqualLiteral(source, value, invert) => {
+        case EqualLiteral(source, value, invert) =>
           val id = System.currentTimeMillis
           import cf.std.Eq
 
@@ -364,7 +361,6 @@ trait SliceTransforms[M[+_]]
               }
             }
           }
-        }
 
         case ConstLiteral(value, target) =>
           composeSliceTransform2(target) map { _.definedConst(value) }
@@ -383,7 +379,7 @@ trait SliceTransforms[M[+_]]
           if (objects.size == 1) {
             val typed = Typed(objects.head, JObjectUnfixedT)
             composeSliceTransform2(typed)
-          } else {
+          } else
             objects.map(composeSliceTransform2).reduceLeft { (l0, r0) =>
               l0.zip(r0) { (sl, sr) =>
                 new Slice {
@@ -419,7 +415,6 @@ trait SliceTransforms[M[+_]]
                 }
               }
             }
-          }
 
         case InnerObjectConcat(objects @ _*) =>
           /**
@@ -447,7 +442,7 @@ trait SliceTransforms[M[+_]]
           if (objects.size == 1) {
             val typed = Typed(objects.head, JObjectUnfixedT)
             composeSliceTransform2(typed)
-          } else {
+          } else
             objects map composeSliceTransform2 reduceLeft { (l0, r0) =>
               l0.zip(r0) { (sl0, sr0) =>
                 val sl = sl0.typed(JObjectUnfixedT) // Help out the special cases.
@@ -457,14 +452,14 @@ trait SliceTransforms[M[+_]]
                   val size = sl.size
 
                   val columns: Map[ColumnRef, Column] = {
-                    if (sl.columns.isEmpty || sr.columns.isEmpty) {
+                    if (sl.columns.isEmpty || sr.columns.isEmpty)
                       Map.empty[ColumnRef, Column]
-                    } else if (isDisjoint(sl, sr)) {
+                    else if (isDisjoint(sl, sr))
                       // If we know sl & sr are disjoint, which is often the
                       // case for queries where objects are constructed
                       // manually, then we can do a lot less work.
                       sl.columns ++ sr.columns
-                    } else {
+                    else {
                       val (leftObjectBits, leftEmptyBits) = buildFilters(
                         sl.columns,
                         sl.size,
@@ -501,13 +496,12 @@ trait SliceTransforms[M[+_]]
                 }
               }
             }
-          }
 
         case OuterArrayConcat(elements @ _*) =>
           if (elements.size == 1) {
             val typed = Typed(elements.head, JArrayUnfixedT)
             composeSliceTransform2(typed)
-          } else {
+          } else
             elements.map(composeSliceTransform2).reduceLeft { (l0, r0) =>
               l0.zip(r0) { (sl, sr) =>
                 new Slice {
@@ -540,22 +534,21 @@ trait SliceTransforms[M[+_]]
                 }
               }
             }
-          }
 
         case InnerArrayConcat(elements @ _*) =>
           if (elements.size == 1) {
             val typed = Typed(elements.head, JArrayUnfixedT)
             composeSliceTransform2(typed)
-          } else {
+          } else
             elements.map(composeSliceTransform2).reduceLeft { (l0, r0) =>
               l0.zip(r0) { (sl, sr) =>
                 new Slice {
                   val size = sl.size
 
                   val columns: Map[ColumnRef, Column] = {
-                    if (sl.columns.isEmpty || sr.columns.isEmpty) {
+                    if (sl.columns.isEmpty || sr.columns.isEmpty)
                       Map.empty[ColumnRef, Column]
-                    } else {
+                    else {
                       val (leftArrayBits, leftEmptyBits) = buildFilters(
                         sl.columns,
                         sl.size,
@@ -589,7 +582,6 @@ trait SliceTransforms[M[+_]]
                 }
               }
             }
-          }
 
         case ObjectDelete(source, mask) =>
           composeSliceTransform2(source) map {
@@ -719,7 +711,7 @@ trait SliceTransforms[M[+_]]
             s1.filterDefined(s2, definedness)
           }
 
-        case Cond(pred, left, right) => {
+        case Cond(pred, left, right) =>
           val predTransform = composeSliceTransform2(pred)
           val leftTransform = composeSliceTransform2(left)
           val rightTransform = composeSliceTransform2(right)
@@ -751,7 +743,7 @@ trait SliceTransforms[M[+_]]
                         case (ref, Right3(col)) =>
                           ref -> cf.util.filter(0, size, rightMask)(col).get
 
-                        case (ref, Middle3((left :: Nil, right :: Nil))) => {
+                        case (ref, Middle3((left :: Nil, right :: Nil))) =>
                           val left2 =
                             cf.util.filter(0, size, leftMask)(left).get
                           val right2 =
@@ -760,7 +752,6 @@ trait SliceTransforms[M[+_]]
                           ref -> cf.util
                             .MaskedUnion(leftMask)(left2, right2)
                             .get // safe because types are grouped
-                        }
                       })(collection.breakOut)
 
                       joined
@@ -768,7 +759,6 @@ trait SliceTransforms[M[+_]]
                 }
               }
           }
-        }
       }
 
       result
@@ -1493,12 +1483,11 @@ trait ObjectConcatHelpers extends ConcatHelpers {
       }
 
       val rightMerged = rightSelection map {
-        case (ref, col) => {
+        case (ref, col) =>
           if (leftInner contains ref)
             ref -> cf.util.UnionRight(leftInner(ref), col).get
           else
             ref -> col
-        }
       }
 
       rightMerged ++ leftSelection

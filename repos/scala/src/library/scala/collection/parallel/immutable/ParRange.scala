@@ -100,9 +100,8 @@ class ParRange(val range: Range) extends ParSeq[Int] with Serializable {
     override def map2combiner[S, That](
         f: Int => S,
         cb: Combiner[S, That]): Combiner[S, That] = {
-      while (hasNext) {
+      while (hasNext)
         cb += f(next)
-      }
       cb
     }
   }

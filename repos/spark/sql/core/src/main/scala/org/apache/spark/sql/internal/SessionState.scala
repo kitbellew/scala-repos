@@ -77,7 +77,7 @@ private[sql] class SessionState(ctx: SQLContext) {
   /**
     * Logical query plan analyzer for resolving unresolved attributes and relations.
     */
-  lazy val analyzer: Analyzer = {
+  lazy val analyzer: Analyzer =
     new Analyzer(catalog, functionRegistry, conf) {
       override val extendedResolutionRules =
         python.ExtractPythonUDFs ::
@@ -87,7 +87,6 @@ private[sql] class SessionState(ctx: SQLContext) {
 
       override val extendedCheckRules = Seq(datasources.PreWriteCheck(catalog))
     }
-  }
 
   /**
     * Logical query plan optimizer.

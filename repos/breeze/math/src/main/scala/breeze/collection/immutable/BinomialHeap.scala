@@ -83,10 +83,9 @@ class BinomialHeap[T <% Ordered[T]]
     else {
       def getMin(t: List[Node[T]]): (Node[T], List[Node[T]]) = t match {
         case (n :: Nil) => (n, Nil)
-        case (n :: ts) => {
+        case (n :: ts) =>
           val (n2, ts2) = getMin(ts)
           if (n.x <= n2.x) (n, ts) else (n2, n :: ts2)
-        }
         case _ => throw new IllegalArgumentException("Shouldn't get Nil!")
       }
       val (Node(_, x, t1), t2) = getMin(trees)

@@ -51,14 +51,14 @@ private[changeInfo] trait ParametersChangeInfo {
   def getOldParameterTypes: Array[String] = oldParameterTypes
 
   def defaultParameterForJava(p: ScalaParameterInfo, idx: Int): String =
-    if (this.isAddDefaultArgs) {
-      if (this.function.isConstructor) {
+    if (this.isAddDefaultArgs)
+      if (this.function.isConstructor)
         this.function.containingClass match {
           case c: ScClass =>
             val className = ScalaNamesUtil.toJavaName(c.name)
             s"$className.$$lessinit$$greater$$default$$${idx + 1}()"
           case _ => p.defaultValue
         }
-      } else s"${this.getNewName}$$default$$${idx + 1}()"
-    } else p.defaultValue
+      else s"${this.getNewName}$$default$$${idx + 1}()"
+    else p.defaultValue
 }

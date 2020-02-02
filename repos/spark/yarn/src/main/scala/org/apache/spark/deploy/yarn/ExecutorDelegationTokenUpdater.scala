@@ -93,7 +93,7 @@ private[spark] class ExecutorDelegationTokenUpdater(
           sparkConf,
           0.8,
           UserGroupInformation.getCurrentUser.getCredentials)
-      if (timeFromNowToRenewal <= 0) {
+      if (timeFromNowToRenewal <= 0)
         // We just checked for new credentials but none were there, wait a minute and retry.
         // This handles the shutdown case where the staging directory may have been removed(see
         // SPARK-12316 for more details).
@@ -101,7 +101,7 @@ private[spark] class ExecutorDelegationTokenUpdater(
           executorUpdaterRunnable,
           1,
           TimeUnit.MINUTES)
-      } else {
+      else {
         logInfo(
           s"Scheduling token refresh from HDFS in $timeFromNowToRenewal millis.")
         delegationTokenRenewer.schedule(
@@ -130,9 +130,7 @@ private[spark] class ExecutorDelegationTokenUpdater(
       val newCredentials = new Credentials()
       newCredentials.readTokenStorageStream(stream)
       newCredentials
-    } finally {
-      stream.close()
-    }
+    } finally stream.close()
   }
 
   def stop(): Unit =

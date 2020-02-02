@@ -64,18 +64,16 @@ object FixInternalDebugLogging {
 
       var isPatched = false
       for (debugClass <- findClasses;
-           debugField <- debugClass.getDeclaredFields) {
+           debugField <- debugClass.getDeclaredFields)
         if (isValidField(debugField, debugType)) {
           logger.debug(s"run: patching $debugClass with $debugValue")
           monkeyPatchField(debugField, debugValue)
           isPatched = true
         }
-      }
 
       // Add an assertion here in case the class location changes, so the tests fail...
-      if (!isPatched) {
+      if (!isPatched)
         throw new IllegalStateException("No debug classes found!")
-      }
 
       // Switch out the args (for certpath loggers that AREN'T static and final)
       // This will result in those classes using the base Debug class which will write to System.out, but

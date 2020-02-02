@@ -20,11 +20,10 @@ object TwitterDateFormat {
 
   def validatePattern(pattern: String): Unit = {
     val stripped = stripSingleQuoted(pattern)
-    if (stripped.contains('Y') && !(stripped.contains('w'))) {
+    if (stripped.contains('Y') && !(stripped.contains('w')))
       throw new IllegalArgumentException(
         "Invalid date format uses 'Y' for week-of-year without 'w': %s".format(
           pattern))
-    }
   }
 
   /** Patterns can contain quoted strings 'foo' which we should ignore in checking the pattern */
@@ -41,10 +40,9 @@ object TwitterDateFormat {
         buf.append(pattern.substring(startIndex, endIndex))
         startIndex = endIndex + 1
         endIndex = pattern.indexOf('\'', startIndex)
-        if (endIndex < 0) {
+        if (endIndex < 0)
           throw new IllegalArgumentException(
             "Unmatched quote in date format: %s".format(pattern))
-        }
         startIndex = endIndex + 1
       }
     }

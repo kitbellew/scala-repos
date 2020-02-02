@@ -137,30 +137,27 @@ class StreamingContext private[streaming] (
       null)
   }
 
-  if (_sc == null && _cp == null) {
+  if (_sc == null && _cp == null)
     throw new Exception(
       "Spark Streaming cannot be initialized with " +
         "both SparkContext and checkpoint as null")
-  }
 
   private[streaming] val isCheckpointPresent = (_cp != null)
 
   private[streaming] val sc: SparkContext = {
-    if (_sc != null) {
+    if (_sc != null)
       _sc
-    } else if (isCheckpointPresent) {
+    else if (isCheckpointPresent)
       SparkContext.getOrCreate(_cp.createSparkConf())
-    } else {
+    else
       throw new SparkException(
         "Cannot create StreamingContext without a SparkContext")
-    }
   }
 
-  if (sc.conf.get("spark.master") == "local" || sc.conf.get("spark.master") == "local[1]") {
+  if (sc.conf.get("spark.master") == "local" || sc.conf.get("spark.master") == "local[1]")
     logWarning(
       "spark.master should be set as local[n], n > 1 in local mode if you have receivers" +
         " to get data, otherwise Spark jobs will not get resources to process the received data.")
-  }
 
   private[streaming] val conf = sc.conf
 
@@ -187,9 +184,8 @@ class StreamingContext private[streaming] (
     if (isCheckpointPresent) {
       sc.setCheckpointDir(_cp.checkpointDir)
       _cp.checkpointDir
-    } else {
+    } else
       null
-    }
   }
 
   private[streaming] val checkpointDuration: Duration = {
@@ -204,11 +200,10 @@ class StreamingContext private[streaming] (
     this)
 
   private[streaming] val uiTab: Option[StreamingTab] =
-    if (conf.getBoolean("spark.ui.enabled", true)) {
+    if (conf.getBoolean("spark.ui.enabled", true))
       Some(new StreamingTab(this))
-    } else {
+    else
       None
-    }
 
   /* Initializing a streamingSource to register metrics */
   private val streamingSource = new StreamingSource(this)
@@ -253,9 +248,8 @@ class StreamingContext private[streaming] (
       val fullPath = fs.getFileStatus(path).getPath().toString
       sc.setCheckpointDir(fullPath)
       checkpointDir = fullPath
-    } else {
+    } else
       checkpointDir = null
-    }
   }
 
   private[streaming] def isCheckpointingEnabled: Boolean =
@@ -554,9 +548,8 @@ class StreamingContext private[streaming] (
     // Verify whether the DStream checkpoint is serializable
     if (isCheckpointingEnabled) {
       val checkpoint = new Checkpoint(this, Time(0))
-      try {
-        Checkpoint.serialize(checkpoint, conf)
-      } catch {
+      try Checkpoint.serialize(checkpoint, conf)
+      catch {
         case e: NotSerializableException =>
           throw new NotSerializableException(
             "DStream checkpointing has been enabled but the DStreams with their functions " +
@@ -566,12 +559,11 @@ class StreamingContext private[streaming] (
       }
     }
 
-    if (Utils.isDynamicAllocationEnabled(sc.conf)) {
+    if (Utils.isDynamicAllocationEnabled(sc.conf))
       logWarning("Dynamic Allocation is enabled for this application. " +
         "Enabling Dynamic allocation for Spark Streaming applications can cause data loss if " +
         "Write Ahead Log is not enabled for non-replayable sources like Flume. " +
         "See the programming guide for details on how to enable the Write Ahead Log")
-    }
   }
 
   /**
@@ -688,10 +680,9 @@ class StreamingContext private[streaming] (
     */
   def stop(stopSparkContext: Boolean, stopGracefully: Boolean): Unit = {
     var shutdownHookRefToRemove: AnyRef = null
-    if (LiveListenerBus.withinListenerThread.value) {
+    if (LiveListenerBus.withinListenerThread.value)
       throw new SparkException(
         s"Cannot stop StreamingContext within listener thread of ${LiveListenerBus.name}")
-    }
     synchronized {
       // The state should always be Stopped after calling `stop()`, even if we haven't started yet
       state match {
@@ -730,9 +721,8 @@ class StreamingContext private[streaming] (
           state = STOPPED
       }
     }
-    if (shutdownHookRefToRemove != null) {
+    if (shutdownHookRefToRemove != null)
       ShutdownHookManager.removeShutdownHook(shutdownHookRefToRemove)
-    }
     // Even if we have already stopped, we still need to attempt to stop the SparkContext because
     // a user might stop(stopSparkContext = false) and then call stop(stopSparkContext = true).
     if (stopSparkContext) sc.stop()
@@ -766,12 +756,11 @@ object StreamingContext extends Logging {
 
   private def assertNoOtherContextIsActive(): Unit =
     ACTIVATION_LOCK.synchronized {
-      if (activeContext.get() != null) {
+      if (activeContext.get() != null)
         throw new IllegalStateException(
           "Only one StreamingContext may be started in this JVM. " +
             "Currently running StreamingContext was started at" +
             activeContext.get.getStartSite().longForm)
-      }
     }
 
   private def setActiveContext(ssc: StreamingContext): Unit =
@@ -894,12 +883,10 @@ object StreamingContext extends Logging {
       suffix: String,
       time: Time): String = {
     var result = time.milliseconds.toString
-    if (prefix != null && prefix.length > 0) {
+    if (prefix != null && prefix.length > 0)
       result = s"$prefix-$result"
-    }
-    if (suffix != null && suffix.length > 0) {
+    if (suffix != null && suffix.length > 0)
       result = s"$result.$suffix"
-    }
     result
   }
 }

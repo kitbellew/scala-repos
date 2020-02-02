@@ -39,10 +39,9 @@ private[streaming] class Job(val time: Time, func: () => _) {
   }
 
   def result: Try[_] = {
-    if (_result == null) {
+    if (_result == null)
       throw new IllegalStateException(
         "Cannot access result before job finishes")
-    }
     _result
   }
 
@@ -50,9 +49,8 @@ private[streaming] class Job(val time: Time, func: () => _) {
     * @return the global unique id of this Job.
     */
   def id: String = {
-    if (!isSet) {
+    if (!isSet)
       throw new IllegalStateException("Cannot access id before calling setId")
-    }
     _id
   }
 
@@ -60,18 +58,16 @@ private[streaming] class Job(val time: Time, func: () => _) {
     * @return the output op id of this Job. Each Job has a unique output op id in the same JobSet.
     */
   def outputOpId: Int = {
-    if (!isSet) {
+    if (!isSet)
       throw new IllegalStateException(
         "Cannot access number before calling setId")
-    }
     _outputOpId
   }
 
   def setOutputOpId(outputOpId: Int) {
-    if (isSet) {
+    if (isSet)
       throw new IllegalStateException(
         "Cannot call setOutputOpId more than once")
-    }
     isSet = true
     _id = s"streaming job $time.$outputOpId"
     _outputOpId = outputOpId
@@ -89,11 +85,11 @@ private[streaming] class Job(val time: Time, func: () => _) {
     _endTime = Some(endTime)
 
   def toOutputOperationInfo: OutputOperationInfo = {
-    val failureReason = if (_result != null && _result.isFailure) {
-      Some(Utils.exceptionString(_result.asInstanceOf[Failure[_]].exception))
-    } else {
-      None
-    }
+    val failureReason =
+      if (_result != null && _result.isFailure)
+        Some(Utils.exceptionString(_result.asInstanceOf[Failure[_]].exception))
+      else
+        None
     OutputOperationInfo(
       time,
       outputOpId,

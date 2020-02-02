@@ -147,13 +147,13 @@ private class PoolInterfaceActor(
         timeout.cancel()
         activeIdleTimeout = None
       }
-      if (totalDemand == 0) {
+      if (totalDemand == 0)
         // if we can't dispatch right now we buffer and dispatch when demand from the pool arrives
-        if (inputBuffer.isFull) {
+        if (inputBuffer.isFull)
           x.responsePromise.failure(new BufferOverflowException(
             s"Exceeded configured max-open-requests value of [${inputBuffer.capacity}]"))
-        } else inputBuffer.enqueue(x)
-      } else dispatchRequest(x) // if we can dispatch right now, do it
+        else inputBuffer.enqueue(x)
+      else dispatchRequest(x) // if we can dispatch right now, do it
       request(
         1
       ) // for every incoming request we demand one response from the pool

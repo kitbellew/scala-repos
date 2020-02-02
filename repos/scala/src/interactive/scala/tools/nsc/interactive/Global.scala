@@ -330,9 +330,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     */
   override def signalParseProgress(pos: Position) {
     // We only want to be interruptible when running on the PC thread.
-    if (onCompilerThread) {
+    if (onCompilerThread)
       checkForMoreWork(pos)
-    }
   }
 
   /** Called from typechecker, which signals hereby that a node has been completely typechecked.
@@ -348,7 +347,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         && analyzer.lockedCount == 0
         && !context.bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
     )
-    if (canObserveTree) {
+    if (canObserveTree)
       if (context.unit.exists &&
           result.pos.isOpaqueRange &&
           (result.pos includes context.unit.targetPos)) {
@@ -359,18 +358,15 @@ with ContextTrees with RichCompilationUnits with Picklers {
           located = result
         }
         throw new TyperResult(located)
-      } else {
-        try {
-          checkForMoreWork(old.pos)
-        } catch {
+      } else
+        try checkForMoreWork(old.pos)
+        catch {
           case ex: ValidateException => // Ignore, this will have been reported elsewhere
             debugLog("validate exception caught: " + ex)
           case ex: Throwable =>
             log.flush()
             throw ex
         }
-      }
-    }
   }
 
   /** Called from typechecker every time a context is created.
@@ -432,7 +428,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     */
   private[interactive] def pollForWork(pos: Position) {
     var loop: Boolean = true
-    while (loop) {
+    while (loop)
       breakable {
         loop = false
         if (!interruptsEnabled) return
@@ -469,9 +465,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             case _ =>
           }
 
-          if (logreplay("cancelled", pendingResponse.isCancelled)) {
+          if (logreplay("cancelled", pendingResponse.isCancelled))
             throw CancelException
-          }
 
           logreplay("exception thrown", scheduler.pollThrowable()) match {
             case Some(ex: FreshRunReq) =>
@@ -518,14 +513,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
                   "picked up work item at " + pos + ": " + action + timeStep)
                 action()
                 debugLog("done with work item: " + action)
-              } finally {
-                debugLog("quitting work item: " + action + timeStep)
-              }
+              } finally debugLog("quitting work item: " + action + timeStep)
             case None =>
           }
         }
       }
-    }
   }
 
   protected def checkForMoreWork(pos: Position) {
@@ -595,7 +587,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     }
 
     // ensure all loaded units are typechecked
-    for (s <- allSources; if !ignoredFiles(s.file); unit <- getUnit(s)) {
+    for (s <- allSources; if !ignoredFiles(s.file); unit <- getUnit(s))
       try {
         if (!unit.isUpToDate)
           if (unit.problems.isEmpty || !settings.YpresentationStrict)
@@ -615,9 +607,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             "[%s]: exception during background compile: "
               .format(unit.source) + ex)
           ex.printStackTrace()
-          for (r <- waitLoadedTypeResponses(unit.source)) {
+          for (r <- waitLoadedTypeResponses(unit.source))
             r.raise(ex)
-          }
           serviceParsedEntered()
 
           lastException = Some(ex)
@@ -631,7 +622,6 @@ with ContextTrees with RichCompilationUnits with Picklers {
             "Presentation compiler crashed while type checking this file: %s"
               .format(ex.toString()))
       }
-    }
 
     // move units removable after this run to the "to-be-removed" buffer
     toBeRemoved ++= toBeRemovedAfterRun
@@ -767,9 +757,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
           ex.printStackTrace()
         }
         response raise ex
-    } finally {
-      pendingResponse = prevResponse
-    }
+    } finally pendingResponse = prevResponse
   }
 
   private[interactive] def reloadSource(source: SourceFile) {
@@ -858,9 +846,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
             EmptyTree
           } catch {
             case ex: TyperResult => new Locator(pos) locateIn ex.tree
-          } finally {
-            unit.targetPos = NoPosition
-          }
+          } finally unit.targetPos = NoPosition
         }
     }
 
@@ -901,9 +887,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
         f(unitOfSrc)
       case unknown =>
         reloadSources(unknown)
-        try {
-          f(unitOfSrc)
-        } finally afterRunRemoveUnitsOf(unknown)
+        try f(unitOfSrc)
+        finally afterRunRemoveUnitsOf(unknown)
     }
   }
 
@@ -945,13 +930,13 @@ with ContextTrees with RichCompilationUnits with Picklers {
         }
       }
     }
-    if (newsym == NoSymbol) {
+    if (newsym == NoSymbol)
       if (rawsym.exists && !rawsym.isOverloaded) rawsym
       else {
         debugLog("mirror not found " + sym + " " + unit.source + " " + pre)
         NoSymbol
       }
-    } else if (newsym.isOverloaded) {
+    else if (newsym.isOverloaded) {
       settings.uniqid.value = true
       debugLog(
         "mirror ambiguous " + sym + " " + unit.source + " " + pre + " " + newsym.alternatives)
@@ -969,9 +954,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
       response: Response[Position]) {
     informIDE("getLinkPos " + sym + " " + source)
     respond(response) {
-      if (sym.owner.isClass) {
+      if (sym.owner.isClass)
         withTempUnit(source) { u => findMirrorSymbol(sym, u).pos }
-      } else {
+      else {
         debugLog("link not in class " + sym + " " + source + " " + sym.owner)
         NoPosition
       }
@@ -1005,12 +990,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
         val mirror = findMirrorSymbol(sym, units(source))
         if (mirror eq NoSymbol)
           ("", "", NoPosition)
-        else {
+        else
           (
             expandedDocComment(mirror, site),
             rawDocComment(mirror),
             docCommentPos(mirror))
-        }
       }
     }
     // New typer run to remove temp units and drop per-run caches that might refer to symbols entered from temp units.
@@ -1064,16 +1048,15 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
     def add(sym: Symbol, pre: Type, implicitlyAdded: Boolean)(
         toMember: (Symbol, Type) => M) {
-      if ((sym.isGetter || sym.isSetter) && sym.accessed != NoSymbol) {
+      if ((sym.isGetter || sym.isSetter) && sym.accessed != NoSymbol)
         add(sym.accessed, pre, implicitlyAdded)(toMember)
-      } else if (!sym.name.decodedName.containsName("$") && !sym.isError && !sym.isArtifact && sym.hasRawInfo) {
+      else if (!sym.name.decodedName.containsName("$") && !sym.isError && !sym.isArtifact && sym.hasRawInfo) {
         val symtpe = pre.memberType(sym) onTypeError ErrorType
         matching(sym, symtpe, this(sym.name)) match {
           case Some(m) =>
-            if (keepSecond(m, sym, implicitlyAdded)) {
+            if (keepSecond(m, sym, implicitlyAdded))
               //print(" -+ "+sym.name)
               this(sym.name) = this(sym.name) - m + toMember(sym, symtpe)
-            }
           case None =>
             //print(" + "+sym.name)
             this(sym.name) = this(sym.name) + toMember(sym, symtpe)
@@ -1236,9 +1219,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
       for (view <- applicableViews) {
         val vtree = viewApply(view)
         val vpre = stabilizedType(vtree)
-        for (sym <- vtree.tpe.members if sym.isTerm) {
+        for (sym <- vtree.tpe.members if sym.isTerm)
           addTypeMember(sym, vpre, inherited = false, view.tree.symbol)
-        }
       }
       //println()
       Stream(members.allMembers)
@@ -1400,11 +1382,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
         if (unit.isUpToDate) {
           debugLog("already typed")
           response set unit.body
-        } else if (ignoredFiles(source.file)) {
+        } else if (ignoredFiles(source.file))
           response.raise(lastException.getOrElse(CancelException))
-        } else if (onSameThread) {
+        else if (onSameThread)
           getTypedTree(source, forceReload = false, response)
-        } else {
+        else {
           debugLog("wait for later")
           outOfDate = true
           waitLoadedTypeResponses(source) += response
@@ -1429,15 +1411,12 @@ with ContextTrees with RichCompilationUnits with Picklers {
       case Some(unit) =>
         getParsedEnteredNow(source, response)
       case None =>
-        try {
-          if (keepLoaded || outOfDate && onSameThread)
-            reloadSources(List(source))
-        } finally {
-          if (keepLoaded || !outOfDate || onSameThread)
-            getParsedEnteredNow(source, response)
-          else
-            getParsedEnteredResponses(source) += response
-        }
+        try if (keepLoaded || outOfDate && onSameThread)
+          reloadSources(List(source))
+        finally if (keepLoaded || !outOfDate || onSameThread)
+          getParsedEnteredNow(source, response)
+        else
+          getParsedEnteredResponses(source) += response
     }
   }
 
@@ -1491,9 +1470,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   // but DivergentImplicit shouldn't leak anymore here
   class OnTypeError[T](op: => T) {
     def onTypeError(alt: => T) =
-      try {
-        op
-      } catch {
+      try op
+      catch {
         case ex: TypeError =>
           debugLog("type error caught: " + ex)
           alt

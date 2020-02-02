@@ -51,14 +51,14 @@ private[spark] object MetadataUtils {
     */
   def getCategoricalFeatures(featuresSchema: StructField): Map[Int, Int] = {
     val metadata = AttributeGroup.fromStructField(featuresSchema)
-    if (metadata.attributes.isEmpty) {
+    if (metadata.attributes.isEmpty)
       HashMap.empty[Int, Int]
-    } else {
+    else
       metadata.attributes.get.zipWithIndex.flatMap {
         case (attr, idx) =>
-          if (attr == null) {
+          if (attr == null)
             Iterator()
-          } else {
+          else
             attr match {
               case _: NumericAttribute | UnresolvedAttribute => Iterator()
               case binAttr: BinaryAttribute                  => Iterator(idx -> 2)
@@ -71,9 +71,7 @@ private[spark] object MetadataUtils {
                         " Nominal (categorical), but it does not have the number of values specified.")
                 }
             }
-          }
       }.toMap
-    }
   }
 
   /**

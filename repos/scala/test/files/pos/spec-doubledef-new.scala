@@ -24,10 +24,9 @@ abstract class B[
 
   def f(t: T, v2: V): Tuple2[U, V] = {
     val m: Array[U] = null
-    if (m.isEmpty) {
+    if (m.isEmpty)
       (u, v)
-    } else {
+    else
       (u, v2)
-    }
   }
 }

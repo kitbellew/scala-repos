@@ -117,9 +117,8 @@ object Reflect {
       : Option[Either[Class[_ <: ScalaTrait], Class[_ <: JavaInterface]]] = {
 
     def loadClass(className: String, notFoundFatal: Boolean): Option[Class[_]] =
-      try {
-        Some(environment.classLoader.loadClass(className))
-      } catch {
+      try Some(environment.classLoader.loadClass(className))
+      catch {
         case e: ClassNotFoundException if !notFoundFatal => None
         case e: VirtualMachineError                      => throw e
         case e: ThreadDeath                              => throw e
@@ -159,9 +158,8 @@ object Reflect {
   }
 
   def createInstance[T: ClassTag](fqcn: String, classLoader: ClassLoader): T =
-    try {
-      createInstance(getClass(fqcn, classLoader))
-    } catch {
+    try createInstance(getClass(fqcn, classLoader))
+    catch {
       case e: VirtualMachineError => throw e
       case e: ThreadDeath         => throw e
       case e: Throwable =>
@@ -197,11 +195,10 @@ object Reflect {
 
   class SubClassOf[T](val runtimeClass: Class[T]) {
     def unapply(clazz: Class[_]): Option[Class[_ <: T]] =
-      if (runtimeClass.isAssignableFrom(clazz)) {
+      if (runtimeClass.isAssignableFrom(clazz))
         Some(clazz.asInstanceOf[Class[_ <: T]])
-      } else {
+      else
         None
-      }
   }
 
   object SubClassOf {

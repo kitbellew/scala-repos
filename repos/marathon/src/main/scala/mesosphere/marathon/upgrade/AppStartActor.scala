@@ -31,16 +31,14 @@ class AppStartActor(
 
   override def postStop(): Unit = {
     eventBus.unsubscribe(self)
-    if (!promise.isCompleted) {
-      if (promise.tryFailure(new AppStartCanceledException(
-            "The app start has been cancelled"))) {
+    if (!promise.isCompleted)
+      if (promise.tryFailure(
+            new AppStartCanceledException("The app start has been cancelled")))
         scheduler
           .stopApp(driver, app)
           .onFailure {
             case NonFatal(e) => log.error(s"while stopping app ${app.id}", e)
           }(context.dispatcher)
-      }
-    }
   }
 
   def success(): Unit = {

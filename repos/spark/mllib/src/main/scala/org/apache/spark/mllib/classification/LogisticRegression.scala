@@ -55,13 +55,13 @@ class LogisticRegressionModel @Since("1.3.0") (
     with Saveable
     with PMMLExportable {
 
-  if (numClasses == 2) {
+  if (numClasses == 2)
     require(
       weights.size == numFeatures,
       s"LogisticRegressionModel with numClasses = 2 was given non-matching values:" +
         s" numFeatures = $numFeatures, but weights.size = ${weights.size}"
     )
-  } else {
+  else {
     val weightsSizeWithoutIntercept = (numClasses - 1) * numFeatures
     val weightsSizeWithIntercept = (numClasses - 1) * (numFeatures + 1)
     require(
@@ -154,9 +154,8 @@ class LogisticRegressionModel @Since("1.3.0") (
             margin += value * weightsArray((i * dataWithBiasSize) + index)
         }
         // Intercept is required to be added into margin.
-        if (withBias) {
+        if (withBias)
           margin += weightsArray((i * dataWithBiasSize) + dataMatrix.size)
-        }
         if (margin > maxMargin) {
           maxMargin = margin
           bestClass = i + 1
@@ -384,11 +383,10 @@ class LogisticRegressionWithLBFGS
   override protected val validators = List(multiLabelValidator)
 
   private def multiLabelValidator: RDD[LabeledPoint] => Boolean = { data =>
-    if (numOfLinearPredictor > 1) {
+    if (numOfLinearPredictor > 1)
       DataValidators.multiLabelValidator(numOfLinearPredictor + 1)(data)
-    } else {
+    else
       DataValidators.binaryLabelValidator(data)
-    }
   }
 
   /**
@@ -400,22 +398,20 @@ class LogisticRegressionWithLBFGS
   def setNumClasses(numClasses: Int): this.type = {
     require(numClasses > 1)
     numOfLinearPredictor = numClasses - 1
-    if (numClasses > 2) {
+    if (numClasses > 2)
       optimizer.setGradient(new LogisticGradient(numClasses))
-    }
     this
   }
 
   override protected def createModel(weights: Vector, intercept: Double) =
-    if (numOfLinearPredictor == 1) {
+    if (numOfLinearPredictor == 1)
       new LogisticRegressionModel(weights, intercept)
-    } else {
+    else
       new LogisticRegressionModel(
         weights,
         intercept,
         numFeatures,
         numOfLinearPredictor + 1)
-    }
 
   /**
     * Run Logistic Regression with the configured parameters on an input RDD
@@ -490,7 +486,6 @@ class LogisticRegressionWithLBFGS
         case x: L1Updater        => runWithMlLogisitcRegression(1.0)
         case _                   => super.run(input, initialWeights)
       }
-    } else {
+    } else
       super.run(input, initialWeights)
-    }
 }

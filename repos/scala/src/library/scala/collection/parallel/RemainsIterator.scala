@@ -306,9 +306,8 @@ private[collection] trait AugmentedIterableIterator[+T]
       cb: Combiner[(U, S), That]): Combiner[(U, S), That] = {
     if (isRemainingCheap && otherpit.isRemainingCheap)
       cb.sizeHint(remaining min otherpit.remaining)
-    while (hasNext && otherpit.hasNext) {
+    while (hasNext && otherpit.hasNext)
       cb += ((next(), otherpit.next()))
-    }
     cb
   }
 
@@ -340,20 +339,18 @@ private[collection] trait AugmentedSeqIterator[+T]
   def prefixLength(pred: T => Boolean): Int = {
     var total = 0
     var loop = true
-    while (hasNext && loop) {
+    while (hasNext && loop)
       if (pred(next())) total += 1
       else loop = false
-    }
     total
   }
 
   override def indexWhere(pred: T => Boolean): Int = {
     var i = 0
     var loop = true
-    while (hasNext && loop) {
+    while (hasNext && loop)
       if (pred(next())) loop = false
       else i += 1
-    }
     if (loop) -1 else i
   }
 
@@ -368,9 +365,8 @@ private[collection] trait AugmentedSeqIterator[+T]
   }
 
   def corresponds[S](corr: (T, S) => Boolean)(that: Iterator[S]): Boolean = {
-    while (hasNext && that.hasNext) {
+    while (hasNext && that.hasNext)
       if (!corr(next(), that.next())) return false
-    }
     hasNext == that.hasNext
   }
 
@@ -496,7 +492,7 @@ trait IterableSplitter[+T]
       val shortened =
         for ((it, (from, until)) <- sq zip (sizes.init zip sizes.tail))
           yield if (until < remaining) it else taker(it, remaining - from)
-      shortened filter { _.remaining > 0 }
+      shortened filter _.remaining > 0
     }
   }
 
@@ -588,10 +584,10 @@ trait IterableSplitter[+T]
     signalDelegate = self.signalDelegate
     def hasNext = self.hasNext || that.hasNext
     def next =
-      if (self.hasNext) {
+      if (self.hasNext)
         if (that.hasNext) (self.next(), that.next())
         else (self.next(), thatelem)
-      } else (thiselem, that.next())
+      else (thiselem, that.next())
 
     def remaining = self.remaining max that.remaining
     def dup: IterableSplitter[(U, S)] =

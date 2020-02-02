@@ -130,16 +130,14 @@ class HttpServerDispatcher(
   protected def setKeepAlive(rep: Response, keepAlive: Boolean): Unit =
     rep.version match {
       case Version.Http10 =>
-        if (keepAlive) {
+        if (keepAlive)
           rep.headers.set(Fields.Connection, "keep-alive")
-        } else {
+        else
           rep.headers.remove(Fields.Connection)
-        }
       case Version.Http11 =>
-        if (keepAlive) {
+        if (keepAlive)
           rep.headers.remove(Fields.Connection)
-        } else {
+        else
           rep.headers.set(Fields.Connection, "close")
-        }
     }
 }

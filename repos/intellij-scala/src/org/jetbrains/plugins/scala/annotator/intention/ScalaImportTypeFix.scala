@@ -226,9 +226,8 @@ class ScalaImportTypeFix(
         override def onChosen(
             selectedValue: TypeToImport,
             finalChoice: Boolean): PopupStep[_] = {
-          if (selectedValue == null) {
+          if (selectedValue == null)
             return FINAL_CHOICE
-          }
           if (finalChoice) {
             PsiDocumentManager.getInstance(project).commitAllDocuments()
             addImportOrReference(selectedValue)
@@ -242,9 +241,8 @@ class ScalaImportTypeFix(
             override def onChosen(
                 selectedValue: String,
                 finalChoice: Boolean): PopupStep[_] = {
-              if (finalChoice) {
+              if (finalChoice)
                 AddImportAction.excludeFromImport(project, selectedValue)
-              }
               super.onChosen(selectedValue, finalChoice)
             }
 
@@ -265,9 +263,9 @@ class ScalaImportTypeFix(
       for (clazz <- classes if !clazz.isValid) return false
 
       PsiDocumentManager.getInstance(project).commitAllDocuments()
-      if (classes.length == 1) {
+      if (classes.length == 1)
         addImportOrReference(classes(0))
-      } else chooseClass()
+      else chooseClass()
 
       true
     }
@@ -338,7 +336,7 @@ object ScalaImportTypeFix {
           .getInstance(project)
           .isAddImportMostCloseToReference)
       PsiTreeUtil.getParentOfType(ref, classOf[ScImportsHolder])
-    else {
+    else
       PsiTreeUtil.getParentOfType(ref, classOf[ScPackaging]) match {
         case null =>
           ref.getContainingFile match {
@@ -349,7 +347,6 @@ object ScalaImportTypeFix {
           }
         case packaging: ScPackaging => packaging
       }
-    }
 
   @tailrec
   private def notInner(clazz: PsiClass, ref: PsiElement): Boolean = {
@@ -395,19 +392,17 @@ object ScalaImportTypeFix {
               .indexOf(".") > 0 &&
             ResolveUtils.kindMatches(clazz, kinds) && notInner(clazz, ref) && ResolveUtils
               .isAccessible(clazz, ref) &&
-            !JavaCompletionUtil.isInExcludedPackage(clazz, false)) {
+            !JavaCompletionUtil.isInExcludedPackage(clazz, false))
           buffer += ClassTypeToImport(clazz)
-        }
       }
       addClazz(clazz)
       clazz match {
         case c: ScTypeDefinition if c.fakeCompanionModule.isDefined =>
-          if (ScalaPsiUtil.getBaseCompanionModule(c).isEmpty) {
+          if (ScalaPsiUtil.getBaseCompanionModule(c).isEmpty)
             ScalaPsiUtil.getCompanionModule(c) match {
               case Some(companion) => addClazz(companion)
               case _               =>
             }
-          }
         case _ =>
       }
     }
@@ -420,9 +415,8 @@ object ScalaImportTypeFix {
           ResolveUtils.kindMatches(alias, kinds) && ResolveUtils.isAccessible(
             alias,
             ref) &&
-          !JavaCompletionUtil.isInExcludedPackage(containingClass, false)) {
+          !JavaCompletionUtil.isInExcludedPackage(containingClass, false))
         buffer += TypeAliasToImport(alias)
-      }
     }
 
     val packagesList = ScalaCodeStyleSettings
@@ -445,12 +439,11 @@ object ScalaImportTypeFix {
             .kindMatches(pack, kinds) &&
           !JavaProjectCodeInsightSettings
             .getSettings(myProject)
-            .isExcluded(pack.getQualifiedName)) {
+            .isExcluded(pack.getQualifiedName))
         buffer += PrefixPackageToImport(pack)
-      }
     }
 
-    if (ref.getParent.isInstanceOf[ScMethodCall]) {
+    if (ref.getParent.isInstanceOf[ScMethodCall])
       buffer
         .filter {
           case ClassTypeToImport(clazz) =>
@@ -460,6 +453,6 @@ object ScalaImportTypeFix {
         }
         .sortBy(_.qualifiedName)
         .toArray
-    } else buffer.sortBy(_.qualifiedName).toArray
+    else buffer.sortBy(_.qualifiedName).toArray
   }
 }

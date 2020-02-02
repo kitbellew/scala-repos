@@ -134,9 +134,8 @@ case class IngestMessage(
       List(
         this.copy(data = dataA, streamRef = refA),
         this.copy(data = dataB, streamRef = refB))
-    } else {
+    } else
       List(this)
-    }
 
   override def toString =
     "IngestMessage(%s, %s, %s, (%d records), %s, %s, %s)".format(

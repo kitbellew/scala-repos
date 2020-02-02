@@ -8,15 +8,12 @@ abstract class SpecLite extends Properties("") with SpecLitePlatform {
   updateName
 
   def checkAll(name: String, props: Properties) {
-    for ((name2, prop) <- props.properties) yield {
-      property(name + ":" + name2) = prop
-    }
+    for ((name2, prop) <- props.properties)
+      yield property(name + ":" + name2) = prop
   }
 
   def checkAll(props: Properties) {
-    for ((name, prop) <- props.properties) yield {
-      property(name) = prop
-    }
+    for ((name, prop) <- props.properties) yield property(name) = prop
   }
 
   class PropertyOps(props: Properties) {

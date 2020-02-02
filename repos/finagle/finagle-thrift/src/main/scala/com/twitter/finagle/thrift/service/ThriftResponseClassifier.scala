@@ -118,9 +118,8 @@ object ThriftResponseClassifier {
             Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
           if (deserCtx eq NoDeserializeCtx)
             throw new MatchError("No DeserializeCtx found")
-          try {
-            classifier(deserialized(deserCtx, bytes))
-          } catch {
+          try classifier(deserialized(deserCtx, bytes))
+          catch {
             case NonFatal(e) => throw new MatchError(e)
           }
         case e => throw new MatchError(e)
@@ -144,13 +143,11 @@ object ThriftResponseClassifier {
           case Return(bytes: Array[Byte]) =>
             val deserCtx =
               Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
-            if (deserCtx ne NoDeserializeCtx) {
-              try {
-                deserCtx.deserialize(bytes)
-              } catch {
+            if (deserCtx ne NoDeserializeCtx)
+              try deserCtx.deserialize(bytes)
+              catch {
                 case _: Throwable =>
               }
-            }
           case _ =>
         }
 

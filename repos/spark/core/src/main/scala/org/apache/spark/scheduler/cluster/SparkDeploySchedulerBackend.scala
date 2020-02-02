@@ -91,11 +91,10 @@ private[spark] class SparkDeploySchedulerBackend(
     // compute-classpath.{cmd,sh} and makes all needed jars available to child processes
     // when the assembly is built with the "*-provided" profiles enabled.
     val testingClassPath =
-      if (sys.props.contains("spark.testing")) {
+      if (sys.props.contains("spark.testing"))
         sys.props("java.class.path").split(java.io.File.pathSeparator).toSeq
-      } else {
+      else
         Nil
-      }
 
     // Start executors with a few necessary configs for registering with the scheduler
     val sparkJavaOpts =
@@ -113,11 +112,10 @@ private[spark] class SparkDeploySchedulerBackend(
     // If we're using dynamic allocation, set our initial executor limit to 0 for now.
     // ExecutorAllocationManager will send the real initial limit to the Master later.
     val initialExecutorLimit =
-      if (Utils.isDynamicAllocationEnabled(conf)) {
+      if (Utils.isDynamicAllocationEnabled(conf))
         Some(0)
-      } else {
+      else
         None
-      }
     val appDesc = new ApplicationDescription(
       sc.appName,
       maxCores,
@@ -148,9 +146,8 @@ private[spark] class SparkDeploySchedulerBackend(
 
   override def disconnected() {
     notifyContext()
-    if (!stopping) {
+    if (!stopping)
       logWarning("Disconnected from Spark cluster! Waiting for reconnection...")
-    }
   }
 
   override def dead(reason: String) {
@@ -158,12 +155,10 @@ private[spark] class SparkDeploySchedulerBackend(
     if (!stopping) {
       launcherBackend.setState(SparkAppHandle.State.KILLED)
       logError("Application has been killed. Reason: " + reason)
-      try {
-        scheduler.error(reason)
-      } finally {
-        // Ensure the application terminates, as we can no longer run jobs.
-        sc.stop()
-      }
+      try scheduler.error(reason)
+      finally
+      // Ensure the application terminates, as we can no longer run jobs.
+      sc.stop()
     }
   }
 
@@ -241,9 +236,8 @@ private[spark] class SparkDeploySchedulerBackend(
       client.stop()
 
       val callback = shutdownCallback
-      if (callback != null) {
+      if (callback != null)
         callback(this)
-      }
     } finally {
       launcherBackend.setState(finalState)
       launcherBackend.close()

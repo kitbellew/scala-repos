@@ -21,9 +21,9 @@ import scala.collection.generic.CanBuildFrom
 object Simplification {
 
   def main(args: Array[String]): Unit =
-    if (args.isEmpty) {
+    if (args.isEmpty)
       println("usage: %s [nrat | rats | nprime | primes | snap] [number]")
-    } else {
+    else
       args(0) match {
         case "nrat" =>
           val n = if (args.length == 1) 10 else args(1).toInt
@@ -46,7 +46,6 @@ object Simplification {
           val (base, k, div) = snap(n)
           println("%s =~ nroot(%s, %s) / %s" format (n, base, k, div))
       }
-    }
 
   /**
     * Using Cantor's diagonalization method, create an infinite stream
@@ -60,15 +59,14 @@ object Simplification {
   val rationals: BigStream[Rational] = {
     @tailrec
     def next(i: Long, n: Long, d: Long): BigStream[Rational] =
-      if (n == 0L) {
+      if (n == 0L)
         next(i + 1L, i, 1L)
-      } else {
+      else {
         val r = Rational(n, d)
-        if (n == r.numeratorAsLong) {
+        if (n == r.numeratorAsLong)
           new BigCons(r, new BigCons(-r, loop(i, n - 1L, d + 1L)))
-        } else {
+        else
           next(i, n - 1L, d + 1L)
-        }
       }
 
     def loop(i: Long, n: Long, d: Long): BigStream[Rational] = next(i, n, d)
@@ -114,26 +112,24 @@ object Simplification {
       epsilon: Double = 0.00000000001): (Double, Int, Int) = {
     @tailrec
     def loop(i: Int, ex: Int, div: Int): (Double, Int, Int) =
-      if (i >= limit) {
+      if (i >= limit)
         (n, 1, 1)
-      } else if (div < 1) {
+      else if (div < 1)
         loop(i + 1, 1, i + 1)
-      } else {
+      else {
         val x = math.pow(n * div, ex)
         val m = x % 1.0
         val d = if (m < 0.5) m else m - 1.0
-        if (math.abs(d) < epsilon) {
+        if (math.abs(d) < epsilon)
           (x - m, ex, div)
-        } else {
+        else
           loop(i, ex + 1, div - 1)
-        }
       }
     if (n < 0.0) {
       val (x, k, div) = snap(-n, limit, epsilon)
       (x, k, -div)
-    } else {
+    } else
       loop(1, 1, 1)
-    }
   }
 }
 
@@ -190,9 +186,9 @@ trait BigStream[A] extends Iterable[A] with IterableLike[A, BigStream[A]] {
     def hasNext: Boolean = !stream.isEmpty
 
     def next: A =
-      if (stream.isEmpty) {
+      if (stream.isEmpty)
         throw new NoSuchElementException
-      } else {
+      else {
         val a = stream.head
         stream = stream.tail
         a

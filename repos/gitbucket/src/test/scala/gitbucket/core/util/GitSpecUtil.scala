@@ -18,15 +18,11 @@ object GitSpecUtil {
   def withTestFolder[U](f: File => U): U = {
     val folder =
       new File(System.getProperty("java.io.tmpdir"), "test-" + System.nanoTime)
-    if (!folder.mkdirs()) {
+    if (!folder.mkdirs())
       throw new java.io.IOException(
         "can't create folder " + folder.getAbsolutePath)
-    }
-    try {
-      f(folder)
-    } finally {
-      FileUtils.deleteQuietly(folder)
-    }
+    try f(folder)
+    finally FileUtils.deleteQuietly(folder)
   }
   def withTestRepository[U](f: Git => U): U =
     withTestFolder(folder => using(Git.open(createTestRepository(folder)))(f))
@@ -48,17 +44,15 @@ object GitSpecUtil {
     val builder = DirCache.newInCore.builder()
     val inserter = git.getRepository.newObjectInserter()
     val headId = git.getRepository.resolve(branch + "^{commit}")
-    if (headId != null) {
+    if (headId != null)
       JGitUtil.processTree(git, headId) { (path, tree) =>
-        if (name != path) {
+        if (name != path)
           builder.add(
             JGitUtil.createDirCacheEntry(
               path,
               tree.getEntryFileMode,
               tree.getEntryObjectId))
-        }
       }
-    }
     builder.add(
       JGitUtil.createDirCacheEntry(
         name,
@@ -103,14 +97,12 @@ object GitSpecUtil {
     val mergeBaseTip = repository.resolve(into)
     val mergeTip = repository.resolve(branch)
     val conflicted =
-      try {
-        !merger.merge(mergeBaseTip, mergeTip)
-      } catch {
+      try !merger.merge(mergeBaseTip, mergeTip)
+      catch {
         case e: NoMergeBaseException => true
       }
-    if (conflicted) {
+    if (conflicted)
       throw new RuntimeException("conflict!")
-    }
     val mergeTipCommit = using(new RevWalk(repository))(_.parseCommit(mergeTip))
     val committer = mergeTipCommit.getCommitterIdent;
     // creates merge commit

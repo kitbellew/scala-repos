@@ -112,9 +112,8 @@ class ScalaChangeSignatureRowEditor(
 
   def getPreferredFocusedComponent: JComponent = {
     val me: MouseEvent = getMouseEvent
-    if (me == null) {
+    if (me == null)
       return myNameEditor.getFocusTarget
-    }
     val x: Double = me.getPoint.getX
     if (x <= getNamesColumnWidth) myNameEditor.getFocusTarget
     else if (myDefaultValueEditor == null || x <= getTypesColumnWidth)
@@ -126,9 +125,8 @@ class ScalaChangeSignatureRowEditor(
     val focusable = ArrayBuffer[JComponent]()
     focusable += myNameEditor.getFocusTarget
     focusable += myTypeEditor.getFocusTarget
-    if (myDefaultValueEditor != null) {
+    if (myDefaultValueEditor != null)
       focusable += myDefaultValueEditor.getFocusTarget
-    }
     focusable.toArray
   }
 }

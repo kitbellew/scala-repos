@@ -25,7 +25,7 @@ object Test extends App {
   // continually modify properties trying to break live iteration over sys props
   // hint: don't iterate lively over sys props
   var alt = true
-  while (!done) {
+  while (!done)
     if (alt) {
       System.getProperties.remove("foo")
       System.setProperty("bar", "barz")
@@ -35,7 +35,6 @@ object Test extends App {
       System.setProperty("foo", "fooz")
       alt = true
     }
-  }
   Await.result(probe, Duration.Inf)
 }
 

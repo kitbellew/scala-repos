@@ -137,17 +137,15 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
 
     override def postStop =
       scheduledAwake foreach { sa =>
-        if (!sa.isCancelled) {
+        if (!sa.isCancelled)
           sa.cancel()
-        }
       }
 
     def scheduleNextTask(): Unit = {
       // Just make sure we don't multi-schedule
       scheduledAwake foreach { sa =>
-        if (!sa.isCancelled) {
+        if (!sa.isCancelled)
           sa.cancel()
-        }
       }
 
       scheduleQueue.headOption foreach { head =>
@@ -194,10 +192,10 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
     def executeTask(task: ScheduledTask): Future[PrecogUnit] = {
       import EvaluationError._
 
-      if (running.contains((task.source, task.sink))) {
+      if (running.contains((task.source, task.sink)))
         // We don't allow for more than one concurrent instance of a given task
         Promise successful PrecogUnit
-      } else {
+      else {
         def consumeStream(
             totalSize: Long,
             stream: StreamT[Future, Slice]): Future[Long] =

@@ -172,9 +172,8 @@ object AtLeastOnceDeliverySpec {
         if (count % dropMod != 0) {
           log.debug("Pass msg {} count {}", msg, count)
           target forward msg
-        } else {
+        } else
           log.debug("Drop msg {} count {}", msg, count)
-        }
     }
   }
 
@@ -462,15 +461,12 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
           async = true),
         name)
       val N = 100
-      for (n ← 1 to N) {
+      for (n ← 1 to N)
         snd.tell(Req("a-" + n), probe.ref)
-      }
-      for (n ← 1 to N) {
+      for (n ← 1 to N)
         snd.tell(Req("b-" + n), probe.ref)
-      }
-      for (n ← 1 to N) {
+      for (n ← 1 to N)
         snd.tell(Req("c-" + n), probe.ref)
-      }
       val deliverWithin = 20.seconds
       probeA
         .receiveN(N, deliverWithin)
@@ -505,9 +501,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
         name)
 
       val N = 10
-      for (n ← 1 to N) {
+      for (n ← 1 to N)
         snd.tell(Req("a-" + n), probe.ref)
-      }
 
       // initially all odd messages should go through
       for (n ← 1 to N if n % 2 == 1) probeA.expectMsg(Action(n, s"a-$n"))

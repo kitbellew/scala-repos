@@ -78,16 +78,14 @@ object Runner extends Logging {
       args: Seq[String]): Seq[String] =
     args map { arg =>
       val f =
-        try {
-          new File(new URI(arg))
-        } catch {
+        try new File(new URI(arg))
+        catch {
           case e: Throwable => new File(arg)
         }
-      if (f.exists()) {
+      if (f.exists())
         handleScratchFile(fileSystem, uri, f)
-      } else {
+      else
         arg
-      }
     }
 
   def runOnSpark(
@@ -157,31 +155,31 @@ object Runner extends Logging {
     val sparkSubmitCommand =
       Seq(Seq(sparkHome, "bin", "spark-submit").mkString(File.separator))
 
-    val sparkSubmitJars = if (extraJars.nonEmpty) {
-      Seq("--jars", deployedJars.map(_.toString).mkString(","))
-    } else {
-      Nil
-    }
+    val sparkSubmitJars =
+      if (extraJars.nonEmpty)
+        Seq("--jars", deployedJars.map(_.toString).mkString(","))
+      else
+        Nil
 
-    val sparkSubmitFiles = if (extraFiles.nonEmpty) {
-      Seq("--files", extraFiles.mkString(","))
-    } else {
-      Nil
-    }
+    val sparkSubmitFiles =
+      if (extraFiles.nonEmpty)
+        Seq("--files", extraFiles.mkString(","))
+      else
+        Nil
 
-    val sparkSubmitExtraClasspaths = if (extraClasspaths.nonEmpty) {
-      Seq("--driver-class-path", extraClasspaths.mkString(":"))
-    } else {
-      Nil
-    }
+    val sparkSubmitExtraClasspaths =
+      if (extraClasspaths.nonEmpty)
+        Seq("--driver-class-path", extraClasspaths.mkString(":"))
+      else
+        Nil
 
-    val sparkSubmitKryo = if (ca.common.sparkKryo) {
-      Seq(
-        "--conf",
-        "spark.serializer=org.apache.spark.serializer.KryoSerializer")
-    } else {
-      Nil
-    }
+    val sparkSubmitKryo =
+      if (ca.common.sparkKryo)
+        Seq(
+          "--conf",
+          "spark.serializer=org.apache.spark.serializer.KryoSerializer")
+      else
+        Nil
 
     val verbose = if (ca.common.verbose) Seq("--verbose") else Nil
 

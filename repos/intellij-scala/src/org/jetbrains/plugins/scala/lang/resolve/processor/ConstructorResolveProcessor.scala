@@ -56,7 +56,7 @@ class ConstructorResolveProcessor(
           val constructors: Array[PsiMethod] =
             if (accessibility) clazz.constructors.filter(isAccessible(_, ref))
             else clazz.constructors
-          if (constructors.isEmpty) {
+          if (constructors.isEmpty)
             //this is for Traits for example. They can be in constructor position.
             // But they haven't constructors.
             addResult(
@@ -68,7 +68,7 @@ class ConstructorResolveProcessor(
                 boundClass = getBoundClass(state),
                 fromType = fromType,
                 isAccessible = accessible))
-          } else {
+          else
             addResults(
               constructors.toSeq.map(constr =>
                 new ScalaResolveResult(
@@ -80,7 +80,6 @@ class ConstructorResolveProcessor(
                   boundClass = getBoundClass(state),
                   fromType = fromType,
                   isAccessible = isAccessible(constr, ref) && accessible)))
-          }
         case ta: ScTypeAliasDeclaration =>
           addResult(
             new ScalaResolveResult(
@@ -113,7 +112,7 @@ class ConstructorResolveProcessor(
                   clazz.constructors.filter(isAccessible(_, ref))
                 else clazz.constructors
               if (constructors.isEmpty) addResult(r)
-              else {
+              else
                 addResults(
                   constructors.toSeq.map(constr =>
                     new ScalaResolveResult(
@@ -125,7 +124,6 @@ class ConstructorResolveProcessor(
                       boundClass = getBoundClass(state),
                       fromType = fromType,
                       isAccessible = isAccessible(constr, ref) && accessible)))
-              }
             case _ =>
               addResult(r)
           }
@@ -139,7 +137,7 @@ class ConstructorResolveProcessor(
     if (!allConstructors) {
       val superCandidates = super.candidatesS
       if (superCandidates.size <= 1) superCandidates
-      else {
+      else
         superCandidates.map(constr =>
           new ScalaResolveResult(
             constr.getActualElement,
@@ -148,8 +146,6 @@ class ConstructorResolveProcessor(
             boundClass = constr.boundClass,
             fromType = constr.fromType,
             isAccessible = constr.isAccessible))
-      }
-    } else {
+    } else
       super.candidatesS
-    }
 }

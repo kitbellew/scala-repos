@@ -138,11 +138,11 @@ class ScriptRunner extends HasCompileSocket {
 
           compile match {
             case Some(compiledPath) =>
-              if (!hasClassToRun(compiledPath)) {
+              if (!hasClassToRun(compiledPath))
                 // it compiled ok, but there is nothing to run;
                 // running an empty script should succeed
                 true
-              } else {
+              else {
                 try io.Jar.create(jarFile, compiledPath, mainClass)
                 catch { case _: Exception => jarFile.delete() }
 

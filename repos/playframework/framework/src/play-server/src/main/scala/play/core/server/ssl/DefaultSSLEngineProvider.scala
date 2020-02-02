@@ -59,18 +59,14 @@ class DefaultSSLEngineProvider(
             kmf.init(keyStore, password)
             kmf
           } catch {
-            case NonFatal(e) => {
+            case NonFatal(e) =>
               throw new Exception(
                 "Error loading HTTPS keystore from " + file.getAbsolutePath,
                 e)
-            }
-          } finally {
-            PlayIO.closeQuietly(in)
-          }
-        } else {
+          } finally PlayIO.closeQuietly(in)
+        } else
           throw new Exception(
             "Unable to find HTTPS keystore at \"" + file.getAbsolutePath + "\"")
-        }
       } else {
         // Load a generated key store
         logger.warn(

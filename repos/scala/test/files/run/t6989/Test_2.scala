@@ -18,9 +18,8 @@ package object foo {
 
   def test(sym: Symbol): Unit = {
     printSymbolDetails(sym)
-    if (sym.isClass || sym.isModule) {
+    if (sym.isClass || sym.isModule)
       sym.info.decls.toList.sortBy(_.name.toString) foreach test
-    }
   }
 
   def printSymbolDetails(sym: Symbol): Unit = {

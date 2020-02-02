@@ -86,38 +86,32 @@ class Node @Since("1.2.0") (
     */
   @Since("1.1.0")
   def predict(features: Vector): Double =
-    if (isLeaf) {
+    if (isLeaf)
       predict.predict
-    } else {
-      if (split.get.featureType == Continuous) {
-        if (features(split.get.feature) <= split.get.threshold) {
-          leftNode.get.predict(features)
-        } else {
-          rightNode.get.predict(features)
-        }
-      } else {
-        if (split.get.categories.contains(features(split.get.feature))) {
-          leftNode.get.predict(features)
-        } else {
-          rightNode.get.predict(features)
-        }
-      }
-    }
+    else if (split.get.featureType == Continuous)
+      if (features(split.get.feature) <= split.get.threshold)
+        leftNode.get.predict(features)
+      else
+        rightNode.get.predict(features)
+    else if (split.get.categories.contains(features(split.get.feature)))
+      leftNode.get.predict(features)
+    else
+      rightNode.get.predict(features)
 
   /**
     * Returns a deep copy of the subtree rooted at this node.
     */
   private[tree] def deepCopy(): Node = {
-    val leftNodeCopy = if (leftNode.isEmpty) {
-      None
-    } else {
-      Some(leftNode.get.deepCopy())
-    }
-    val rightNodeCopy = if (rightNode.isEmpty) {
-      None
-    } else {
-      Some(rightNode.get.deepCopy())
-    }
+    val leftNodeCopy =
+      if (leftNode.isEmpty)
+        None
+      else
+        Some(leftNode.get.deepCopy())
+    val rightNodeCopy =
+      if (rightNode.isEmpty)
+        None
+      else
+        Some(rightNode.get.deepCopy())
     new Node(
       id,
       predict,
@@ -134,22 +128,20 @@ class Node @Since("1.2.0") (
     * E.g., if this is a leaf, returns 0.  If both children are leaves, returns 2.
     */
   private[tree] def numDescendants: Int =
-    if (isLeaf) {
+    if (isLeaf)
       0
-    } else {
+    else
       2 + leftNode.get.numDescendants + rightNode.get.numDescendants
-    }
 
   /**
     * Get depth of tree from this node.
     * E.g.: Depth 0 means this is a leaf node.
     */
   private[tree] def subtreeDepth: Int =
-    if (isLeaf) {
+    if (isLeaf)
       0
-    } else {
+    else
       1 + math.max(leftNode.get.subtreeDepth, rightNode.get.subtreeDepth)
-    }
 
   /**
     * Recursive print function.
@@ -160,27 +152,24 @@ class Node @Since("1.2.0") (
     def splitToString(split: Split, left: Boolean): String =
       split.featureType match {
         case Continuous =>
-          if (left) {
+          if (left)
             s"(feature ${split.feature} <= ${split.threshold})"
-          } else {
+          else
             s"(feature ${split.feature} > ${split.threshold})"
-          }
         case Categorical =>
-          if (left) {
+          if (left)
             s"(feature ${split.feature} in ${split.categories.mkString("{", ",", "}")})"
-          } else {
+          else
             s"(feature ${split.feature} not in ${split.categories.mkString("{", ",", "}")})"
-          }
       }
     val prefix: String = " " * indentFactor
-    if (isLeaf) {
+    if (isLeaf)
       prefix + s"Predict: ${predict.predict}\n"
-    } else {
+    else
       prefix + s"If ${splitToString(split.get, left = true)}\n" +
         leftNode.get.subtreeToString(indentFactor + 1) +
         prefix + s"Else ${splitToString(split.get, left = false)}\n" +
         rightNode.get.subtreeToString(indentFactor + 1)
-    }
   }
 
   /** Returns an iterator that traverses (DFS, left to right) the subtree of this node. */
@@ -244,12 +233,11 @@ private[spark] object Node {
     * Return the level of a tree which the given node is in.
     */
   def indexToLevel(nodeIndex: Int): Int =
-    if (nodeIndex == 0) {
+    if (nodeIndex == 0)
       throw new IllegalArgumentException(s"0 is not a valid node index.")
-    } else {
+    else
       java.lang.Integer
         .numberOfTrailingZeros(java.lang.Integer.highestOneBit(nodeIndex))
-    }
 
   /**
     * Returns true if this is a left child.
@@ -277,11 +265,10 @@ private[spark] object Node {
     var tmpNode: Node = rootNode
     var levelsToGo = indexToLevel(nodeIndex)
     while (levelsToGo > 0) {
-      if ((nodeIndex & (1 << levelsToGo - 1)) == 0) {
+      if ((nodeIndex & (1 << levelsToGo - 1)) == 0)
         tmpNode = tmpNode.leftNode.get
-      } else {
+      else
         tmpNode = tmpNode.rightNode.get
-      }
       levelsToGo -= 1
     }
     tmpNode

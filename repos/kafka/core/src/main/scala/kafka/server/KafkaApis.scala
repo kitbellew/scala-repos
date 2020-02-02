@@ -270,9 +270,8 @@ class KafkaApis(
           updateMetadataRequest,
           metadataCache)
         new UpdateMetadataResponse(Errors.NONE.code)
-      } else {
+      } else
         new UpdateMetadataResponse(Errors.CLUSTER_AUTHORIZATION_FAILED.code)
-      }
 
     val responseHeader = new ResponseHeader(correlationId)
     requestChannel.sendResponse(
@@ -355,11 +354,10 @@ class KafkaApis(
 
         mergedCommitStatus.foreach {
           case (topicPartition, errorCode) =>
-            if (errorCode != Errors.NONE.code) {
+            if (errorCode != Errors.NONE.code)
               debug(
                 s"Offset commit request with correlation id ${header.correlationId} from client ${header.clientId} " +
                   s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
-            }
         }
         val combinedCommitStatus =
           mergedCommitStatus.mapValues(new JShort(_)) ++ invalidRequestsInfo
@@ -381,17 +379,15 @@ class KafkaApis(
             val topicDirs = new ZKGroupTopicDirs(
               offsetCommitRequest.groupId,
               topicPartition.topic)
-            try {
-              if (!metadataCache.hasTopicMetadata(topicPartition.topic))
-                (topicPartition, Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
-              else if (partitionData.metadata != null && partitionData.metadata.length > config.offsetMetadataMaxSize)
-                (topicPartition, Errors.OFFSET_METADATA_TOO_LARGE.code)
-              else {
-                zkUtils.updatePersistentPath(
-                  s"${topicDirs.consumerOffsetDir}/${topicPartition.partition}",
-                  partitionData.offset.toString)
-                (topicPartition, Errors.NONE.code)
-              }
+            try if (!metadataCache.hasTopicMetadata(topicPartition.topic))
+              (topicPartition, Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
+            else if (partitionData.metadata != null && partitionData.metadata.length > config.offsetMetadataMaxSize)
+              (topicPartition, Errors.OFFSET_METADATA_TOO_LARGE.code)
+            else {
+              zkUtils.updatePersistentPath(
+                s"${topicDirs.consumerOffsetDir}/${topicPartition.partition}",
+                partitionData.offset.toString)
+              (topicPartition, Errors.NONE.code)
             } catch {
               case e: Throwable => (topicPartition, Errors.forException(e).code)
             }
@@ -424,12 +420,11 @@ class KafkaApis(
           new OffsetAndMetadata(
             offsetMetadata = OffsetMetadata(partitionData.offset, metadata),
             commitTimestamp = currentTimestamp,
-            expireTimestamp = {
+            expireTimestamp =
               if (partitionData.timestamp == OffsetCommitRequest.DEFAULT_TIMESTAMP)
                 defaultExpireTimestamp
               else
                 offsetRetention + partitionData.timestamp
-            }
           )
         }
 
@@ -494,7 +489,7 @@ class KafkaApis(
       }
 
       def produceResponseCallback(delayTimeMs: Int) {
-        if (produceRequest.acks == 0) {
+        if (produceRequest.acks == 0)
           // no operation needed if producer request.required.acks = 0; however, if there is any error in handling
           // the request, since no response is expected by the producer, the server will close socket server so that
           // the producer client will know that some error has happened and will refresh its metadata
@@ -513,10 +508,9 @@ class KafkaApis(
                 s"Topic and partition to exceptions: $exceptionsSummary"
             )
             requestChannel.closeConnection(request.processor, request)
-          } else {
+          } else
             requestChannel.noOperation(request.processor, request)
-          }
-        } else {
+        else {
           val respHeader = new ResponseHeader(request.header.correlationId)
           val respBody = request.header.apiVersion match {
             case 0 => new ProduceResponse(mergedResponseStatus.asJava)
@@ -605,7 +599,7 @@ class KafkaApis(
 
       val convertedPartitionData =
         // Need to down-convert message when consumer only takes magic value 0.
-        if (fetchRequest.versionId <= 1) {
+        if (fetchRequest.versionId <= 1)
           responsePartitionData.map {
             case (tp, data) =>
               // We only do down-conversion when:
@@ -634,7 +628,7 @@ class KafkaApis(
 
               tp -> convertedData
           }
-        } else responsePartitionData
+        else responsePartitionData
 
       val mergedPartitionData =
         convertedPartitionData ++ unauthorizedPartitionData
@@ -674,21 +668,20 @@ class KafkaApis(
       request.apiRemoteCompleteTimeMs = SystemTime.milliseconds
 
       // Do not throttle replication traffic
-      if (fetchRequest.isFromFollower) {
+      if (fetchRequest.isFromFollower)
         fetchResponseCallback(0)
-      } else {
+      else
         quotaManagers(ApiKeys.FETCH.id).recordAndMaybeThrottle(
           fetchRequest.clientId,
           FetchResponse.responseSize(
             mergedPartitionData.groupBy(_._1.topic),
             fetchRequest.versionId),
           fetchResponseCallback)
-      }
     }
 
     if (authorizedRequestInfo.isEmpty)
       sendResponseCallback(Map.empty)
-    else {
+    else
       // call the replica manager to fetch messages from the local replica
       replicaManager.fetchMessages(
         fetchRequest.maxWait.toLong,
@@ -696,7 +689,6 @@ class KafkaApis(
         fetchRequest.minBytes,
         authorizedRequestInfo,
         sendResponseCallback)
-    }
   }
 
   /**
@@ -740,9 +732,9 @@ class KafkaApis(
             topicPartition,
             partitionData.timestamp,
             partitionData.maxNumOffsets)
-          if (offsetRequest.replicaId != ListOffsetRequest.CONSUMER_REPLICA_ID) {
+          if (offsetRequest.replicaId != ListOffsetRequest.CONSUMER_REPLICA_ID)
             allOffsets
-          } else {
+          else {
             val hw = localReplica.highWatermark.messageOffset
             if (allOffsets.exists(_ > hw))
               hw +: allOffsets.dropWhile(_ > hw)
@@ -841,12 +833,11 @@ class KafkaApis(
         debug("Offset time array = " + offsetTimeArray.foreach(o =>
           "%d, %d".format(o._1, o._2)))
         startIndex = offsetTimeArray.length - 1
-        while (startIndex >= 0 && !isFound) {
+        while (startIndex >= 0 && !isFound)
           if (offsetTimeArray(startIndex)._2 <= timestamp)
             isFound = true
           else
             startIndex -= 1
-        }
     }
 
     val retSize = maxNumOffsets.min(startIndex + 1)
@@ -923,24 +914,23 @@ class KafkaApis(
       : Seq[MetadataResponse.TopicMetadata] = {
     val topicResponses =
       metadataCache.getTopicMetadata(topics, securityProtocol)
-    if (topics.isEmpty || topicResponses.size == topics.size) {
+    if (topics.isEmpty || topicResponses.size == topics.size)
       topicResponses
-    } else {
+    else {
       val nonExistentTopics = topics -- topicResponses.map(_.topic).toSet
       val responsesForNonExistentTopics = nonExistentTopics.map { topic =>
-        if (topic == TopicConstants.GROUP_METADATA_TOPIC_NAME) {
+        if (topic == TopicConstants.GROUP_METADATA_TOPIC_NAME)
           createGroupMetadataTopic()
-        } else if (config.autoCreateTopicsEnable) {
+        else if (config.autoCreateTopicsEnable)
           createTopic(
             topic,
             config.numPartitions,
             config.defaultReplicationFactor)
-        } else {
+        else
           new MetadataResponse.TopicMetadata(
             Errors.UNKNOWN_TOPIC_OR_PARTITION,
             topic,
             java.util.Collections.emptyList())
-        }
       }
       topicResponses ++ responsesForNonExistentTopics
     }
@@ -961,22 +951,20 @@ class KafkaApis(
           .filter(topic =>
             authorize(request.session, Describe, new Resource(Topic, topic)))
         (authorized, mutable.Set[String]())
-      } else {
+      } else
         topics.partition(topic =>
           authorize(request.session, Describe, new Resource(Topic, topic)))
-      }
 
     if (authorizedTopics.nonEmpty) {
       val nonExistingTopics =
         metadataCache.getNonExistingTopics(authorizedTopics)
-      if (config.autoCreateTopicsEnable && nonExistingTopics.nonEmpty) {
+      if (config.autoCreateTopicsEnable && nonExistingTopics.nonEmpty)
         authorizer.foreach { az =>
           if (!az.authorize(request.session, Create, Resource.ClusterResource)) {
             authorizedTopics --= nonExistingTopics
             unauthorizedTopics ++= nonExistingTopics
           }
         }
-      }
     }
 
     val unauthorizedTopicMetadata = unauthorizedTopics.map(topic =>
@@ -1061,25 +1049,23 @@ class KafkaApis(
             val topicDirs = new ZKGroupTopicDirs(
               offsetFetchRequest.groupId,
               topicPartition.topic)
-            try {
-              if (!metadataCache.hasTopicMetadata(topicPartition.topic))
-                (topicPartition, unknownTopicPartitionResponse)
-              else {
-                val payloadOpt = zkUtils
-                  .readDataMaybeNull(
-                    s"${topicDirs.consumerOffsetDir}/${topicPartition.partition}")
-                  ._1
-                payloadOpt match {
-                  case Some(payload) =>
-                    (
-                      topicPartition,
-                      new OffsetFetchResponse.PartitionData(
-                        payload.toLong,
-                        "",
-                        Errors.NONE.code))
-                  case None =>
-                    (topicPartition, unknownTopicPartitionResponse)
-                }
+            try if (!metadataCache.hasTopicMetadata(topicPartition.topic))
+              (topicPartition, unknownTopicPartitionResponse)
+            else {
+              val payloadOpt = zkUtils
+                .readDataMaybeNull(
+                  s"${topicDirs.consumerOffsetDir}/${topicPartition.partition}")
+                ._1
+              payloadOpt match {
+                case Some(payload) =>
+                  (
+                    topicPartition,
+                    new OffsetFetchResponse.PartitionData(
+                      payload.toLong,
+                      "",
+                      Errors.NONE.code))
+                case None =>
+                  (topicPartition, unknownTopicPartitionResponse)
               }
             } catch {
               case e: Throwable =>
@@ -1141,26 +1127,27 @@ class KafkaApis(
       val offsetsTopicMetadata = getOrCreateGroupMetadataTopic(
         request.securityProtocol)
 
-      val responseBody = if (offsetsTopicMetadata.error != Errors.NONE) {
-        new GroupCoordinatorResponse(
-          Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
-          Node.noNode)
-      } else {
-        val coordinatorEndpoint = offsetsTopicMetadata
-          .partitionMetadata()
-          .asScala
-          .find(_.partition == partition)
-          .map(_.leader())
+      val responseBody =
+        if (offsetsTopicMetadata.error != Errors.NONE)
+          new GroupCoordinatorResponse(
+            Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
+            Node.noNode)
+        else {
+          val coordinatorEndpoint = offsetsTopicMetadata
+            .partitionMetadata()
+            .asScala
+            .find(_.partition == partition)
+            .map(_.leader())
 
-        coordinatorEndpoint match {
-          case Some(endpoint) if !endpoint.isEmpty =>
-            new GroupCoordinatorResponse(Errors.NONE.code, endpoint)
-          case _ =>
-            new GroupCoordinatorResponse(
-              Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
-              Node.noNode)
+          coordinatorEndpoint match {
+            case Some(endpoint) if !endpoint.isEmpty =>
+              new GroupCoordinatorResponse(Errors.NONE.code, endpoint)
+            case _ =>
+              new GroupCoordinatorResponse(
+                Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
+                Node.noNode)
+          }
         }
-      }
 
       trace(
         "Sending consumer metadata %s for correlation id %d to client %s."
@@ -1187,10 +1174,10 @@ class KafkaApis(
           if (!authorize(
                 request.session,
                 Describe,
-                new Resource(Group, groupId))) {
+                new Resource(Group, groupId)))
             groupId -> DescribeGroupsResponse.GroupMetadata.forError(
               Errors.GROUP_AUTHORIZATION_FAILED)
-          } else {
+          else {
             val (error, summary) = coordinator.handleDescribeGroup(groupId)
             val members = summary.members.map { member =>
               val metadata = ByteBuffer.wrap(member.metadata)
@@ -1222,9 +1209,9 @@ class KafkaApis(
   def handleListGroupsRequest(request: RequestChannel.Request) {
     val responseHeader = new ResponseHeader(request.header.correlationId)
     val responseBody =
-      if (!authorize(request.session, Describe, Resource.ClusterResource)) {
+      if (!authorize(request.session, Describe, Resource.ClusterResource))
         ListGroupsResponse.fromError(Errors.CLUSTER_AUTHORIZATION_FAILED)
-      } else {
+      else {
         val (error, groups) = coordinator.handleListGroups()
         val allGroups = groups.map { group =>
           new ListGroupsResponse.Group(group.groupId, group.protocolType)
@@ -1321,11 +1308,11 @@ class KafkaApis(
     if (!authorize(
           request.session,
           Read,
-          new Resource(Group, syncGroupRequest.groupId()))) {
+          new Resource(Group, syncGroupRequest.groupId())))
       sendResponseCallback(
         Array[Byte](),
         Errors.GROUP_AUTHORIZATION_FAILED.code)
-    } else {
+    else
       coordinator.handleSyncGroup(
         syncGroupRequest.groupId(),
         syncGroupRequest.generationId(),
@@ -1333,7 +1320,6 @@ class KafkaApis(
         syncGroupRequest.groupAssignment().mapValues(Utils.toArray(_)),
         sendResponseCallback
       )
-    }
   }
 
   def handleHeartbeatRequest(request: RequestChannel.Request) {
@@ -1364,14 +1350,13 @@ class KafkaApis(
       requestChannel.sendResponse(new Response(
         request,
         new ResponseSend(request.connectionId, respHeader, heartbeatResponse)))
-    } else {
+    } else
       // let the coordinator to handle heartbeat
       coordinator.handleHeartbeat(
         heartbeatRequest.groupId(),
         heartbeatRequest.memberId(),
         heartbeatRequest.groupGenerationId(),
         sendResponseCallback)
-    }
   }
 
   /*
@@ -1436,13 +1421,12 @@ class KafkaApis(
       requestChannel.sendResponse(new Response(
         request,
         new ResponseSend(request.connectionId, respHeader, leaveGroupResponse)))
-    } else {
+    } else
       // let the coordinator to handle leave-group
       coordinator.handleLeaveGroup(
         leaveGroupRequest.groupId(),
         leaveGroupRequest.memberId(),
         sendResponseCallback)
-    }
   }
 
   def close() {

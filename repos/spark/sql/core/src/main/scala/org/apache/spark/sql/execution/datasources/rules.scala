@@ -79,11 +79,10 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
           _) =>
       // First, make sure the data to be inserted have the same number of fields with the
       // schema of the relation.
-      if (l.output.size != child.output.size) {
+      if (l.output.size != child.output.size)
         sys.error(
           s"$l requires that the query in the SELECT clause of the INSERT INTO/OVERWRITE " +
             s"statement generates the same number of columns as its schema.")
-      }
       castAndRenameChildOutput(i, l.output, child)
   }
 
@@ -106,11 +105,10 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
         }
     }
 
-    if (newChildOutput == child.output) {
+    if (newChildOutput == child.output)
       insertInto
-    } else {
+    else
       insertInto.copy(child = Project(newChildOutput, child))
-    }
   }
 }
 
@@ -130,18 +128,18 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
             overwrite,
             ifNotExists) =>
         // Right now, we do not support insert into a data source table with partition specs.
-        if (partition.nonEmpty) {
+        if (partition.nonEmpty)
           failAnalysis(
             s"Insert into a partition is not allowed because $l is not partitioned.")
-        } else {
+        else {
           // Get all input data source relations of the query.
           val srcRelations = query.collect {
             case LogicalRelation(src: BaseRelation, _, _) => src
           }
-          if (srcRelations.contains(t)) {
+          if (srcRelations.contains(t))
             failAnalysis(
               "Cannot insert overwrite into table that is also being read from.")
-          } else {
+          else {
             // OK
           }
         }
@@ -156,13 +154,13 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
         // columns of the relation.
         val existingPartitionColumns = r.partitionSchema.fieldNames.toSet
         val specifiedPartitionColumns = part.keySet
-        if (existingPartitionColumns != specifiedPartitionColumns) {
+        if (existingPartitionColumns != specifiedPartitionColumns)
           failAnalysis(
             s"Specified partition columns " +
               s"(${specifiedPartitionColumns.mkString(", ")}) " +
               s"do not match the partition columns of the table. Please use " +
               s"(${existingPartitionColumns.mkString(", ")}) as the partition columns.")
-        } else {
+        else {
           // OK
         }
 
@@ -175,10 +173,10 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
         val srcRelations = query.collect {
           case LogicalRelation(src: BaseRelation, _, _) => src
         }
-        if (srcRelations.contains(r)) {
+        if (srcRelations.contains(r))
           failAnalysis(
             "Cannot insert overwrite into table that is also being read from.")
-        } else {
+        else {
           // OK
         }
 
@@ -188,16 +186,16 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
 
       case logical.InsertIntoTable(t, _, _, _, _) =>
         if (!t.isInstanceOf[LeafNode] || t == OneRowRelation || t
-              .isInstanceOf[LocalRelation]) {
+              .isInstanceOf[LocalRelation])
           failAnalysis(s"Inserting into an RDD-based table is not allowed.")
-        } else {
+        else {
           // OK
         }
 
       case c: CreateTableUsingAsSelect =>
         // When the SaveMode is Overwrite, we need to check if the table is an input table of
         // the query. If so, we will throw an AnalysisException to let users know it is not allowed.
-        if (c.mode == SaveMode.Overwrite && catalog.tableExists(c.tableIdent)) {
+        if (c.mode == SaveMode.Overwrite && catalog.tableExists(c.tableIdent))
           // Need to remove SubQuery operator.
           EliminateSubqueryAliases(catalog.lookupRelation(c.tableIdent)) match {
             // Only do the check if the table is a data source table
@@ -207,16 +205,16 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
               val srcRelations = c.child.collect {
                 case LogicalRelation(src: BaseRelation, _, _) => src
               }
-              if (srcRelations.contains(dest)) {
+              if (srcRelations.contains(dest))
                 failAnalysis(
                   s"Cannot overwrite table ${c.tableIdent} that is also being read from.")
-              } else {
+              else {
                 // OK
               }
 
             case _ => // OK
           }
-        } else {
+        else {
           // OK
         }
 
@@ -229,12 +227,9 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
           spec <- c.bucketSpec
           sortColumnName <- spec.sortColumnNames
           sortColumn <- c.child.schema.find(_.name == sortColumnName)
-        } {
-          if (!RowOrdering.isOrderable(sortColumn.dataType)) {
-            failAnalysis(
-              s"Cannot use ${sortColumn.dataType.simpleString} for sorting column.")
-          }
-        }
+        } if (!RowOrdering.isOrderable(sortColumn.dataType))
+          failAnalysis(
+            s"Cannot use ${sortColumn.dataType.simpleString} for sorting column.")
 
       case _ => // OK
     }

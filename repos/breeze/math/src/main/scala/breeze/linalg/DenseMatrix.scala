@@ -79,44 +79,36 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       data,
       offset)
 
-  if (isTranspose && (math.abs(majorStride) < cols)) {
+  if (isTranspose && (math.abs(majorStride) < cols))
     throw new IndexOutOfBoundsException(
       "MajorStride == " + majorStride + " is smaller than cols == " + cols + ", which is impossible")
-  }
-  if ((!isTranspose) && (math.abs(majorStride) < rows)) {
+  if ((!isTranspose) && (math.abs(majorStride) < rows))
     throw new IndexOutOfBoundsException(
       "MajorStride == " + majorStride + " is smaller than rows == " + rows + ", which is impossible")
-  }
-  if (rows < 0) {
+  if (rows < 0)
     throw new IndexOutOfBoundsException(
       "Rows must be larger than zero. It was " + rows)
-  }
-  if (cols < 0) {
+  if (cols < 0)
     throw new IndexOutOfBoundsException(
       "Cols must be larger than zero. It was " + cols)
-  }
-  if (offset < 0) {
+  if (offset < 0)
     throw new IndexOutOfBoundsException(
       "Offset must be larger than zero. It was " + offset)
-  }
   if (majorStride > 0) {
-    if (data.length < linearIndex(rows - 1, cols - 1)) {
+    if (data.length < linearIndex(rows - 1, cols - 1))
       throw new IndexOutOfBoundsException(
         "Storage array has size " + data.size + " but indices can grow as large as " + linearIndex(
           rows - 1,
           cols - 1))
-    }
   } else {
-    if (data.length < linearIndex(rows - 1, 0)) {
+    if (data.length < linearIndex(rows - 1, 0))
       throw new IndexOutOfBoundsException(
         "Storage array has size " + data.size + " but indices can grow as large as " + linearIndex(
           rows - 1,
           cols - 1))
-    }
-    if (linearIndex(0, cols - 1) < 0) {
+    if (linearIndex(0, cols - 1) < 0)
       throw new IndexOutOfBoundsException(
         "Storage array has negative stride " + majorStride + " and offset " + offset + " which can result in negative indices.")
-    }
   }
 
   def apply(row: Int, col: Int) = {
@@ -144,11 +136,10 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
   def rowColumnFromLinearIndex(index: Int): (Int, Int) = {
     val r = (index - offset) % majorStride
     val c = (index - offset) / majorStride
-    if (isTranspose) {
+    if (isTranspose)
       (c, r)
-    } else {
+    else
       (r, c)
-    }
   }
 
   def update(row: Int, col: Int, v: V): Unit = {
@@ -345,14 +336,12 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       val matrices = ArrayBuffer[DenseMatrix[V]]()
       for (index <- sorted) {
         assert(index >= last)
-        if (index != last) {
+        if (index != last)
           matrices += this(last until index, ::)
-        }
         last = index + 1
       }
-      if (last != this.rows) {
+      if (last != this.rows)
         matrices += this(last until this.rows, ::)
-      }
       DenseMatrix.vertcat(matrices: _*)
     }
   }
@@ -371,14 +360,12 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
       val matrices = ArrayBuffer[DenseMatrix[V]]()
       for (index <- sorted) {
         assert(index >= last)
-        if (index != last) {
+        if (index != last)
           matrices += this(::, last until index)
-        }
         last = index + 1
       }
-      if (last != this.cols) {
+      if (last != this.cols)
         matrices += this(::, last until this.cols)
-      }
       DenseMatrix.horzcat(matrices: _*)
     }
   }
@@ -610,19 +597,17 @@ object DenseMatrix
             "Sorry, we can't support row ranges with step sizes other than 1")
           val first = rows.head
           require(rows.last < m.rows)
-          if (rows.last >= m.rows) {
+          if (rows.last >= m.rows)
             throw new IndexOutOfBoundsException(
               s"Row slice of $rows was bigger than matrix rows of ${m.rows}")
-          }
           DenseMatrix.create(
             rows.length,
             m.cols,
             m.data,
             m.offset + first,
             m.majorStride)
-        } else {
+        } else
           canSliceCols(m.t, ::, rows).t
-        }
       }
     }
 
@@ -633,23 +618,21 @@ object DenseMatrix
 
         val cols = colsWNegative.getRangeWithoutNegativeIndexes(m.cols)
 
-        if (cols.isEmpty) {
+        if (cols.isEmpty)
           DenseMatrix.create(m.rows, 0, m.data, 0, m.rows)
-        } else if (!m.isTranspose) {
+        else if (!m.isTranspose) {
           val first = cols.head
-          if (cols.last >= m.cols) {
+          if (cols.last >= m.cols)
             throw new IndexOutOfBoundsException(
               s"Col slice of $cols was bigger than matrix cols of ${m.cols}")
-          }
           DenseMatrix.create(
             m.rows,
             cols.length,
             m.data,
             m.offset + first * m.majorStride,
             m.majorStride * cols.step)
-        } else {
+        } else
           canSliceRows(m.t, cols, ::).t
-        }
       }
     }
 
@@ -671,14 +654,12 @@ object DenseMatrix
             rows.step == 1,
             "Sorry, we can't support row ranges with step sizes other than 1 for non transposed matrices")
           val first = cols.head
-          if (rows.last >= m.rows) {
+          if (rows.last >= m.rows)
             throw new IndexOutOfBoundsException(
               s"Row slice of $rows was bigger than matrix rows of ${m.rows}")
-          }
-          if (cols.last >= m.cols) {
+          if (cols.last >= m.cols)
             throw new IndexOutOfBoundsException(
               s"Col slice of $cols was bigger than matrix cols of ${m.cols}")
-          }
           DenseMatrix.create(
             rows.length,
             cols.length,
@@ -713,19 +694,18 @@ object DenseMatrix
             "Row must be in bounds for slice!")
         val col = if (colWNegative < 0) colWNegative + m.cols else colWNegative
 
-        if (rows.isEmpty) {
+        if (rows.isEmpty)
           DenseVector.create(m.data, 0, 0, 0)
-        } else if (!m.isTranspose) {
-          if (rows.last >= m.rows) {
+        else if (!m.isTranspose) {
+          if (rows.last >= m.rows)
             throw new IndexOutOfBoundsException(
               s"Row slice of $rows was bigger than matrix rows of ${m.rows}")
-          }
           DenseVector.create(
             m.data,
             col * m.majorStride + m.offset + rows.head,
             rows.step,
             rows.length)
-        } else {
+        } else
           // row major, so consecutive rows are separated by m.majorStride
           // we move rows.step * m.majorStride per step in the range
           DenseVector.create(
@@ -733,7 +713,6 @@ object DenseMatrix
             m.offset + col + rows.head * m.majorStride,
             m.majorStride * rows.step,
             rows.length)
-        }
       }
     }
 
@@ -807,9 +786,9 @@ object DenseMatrix
         import from._
         val idealMajorStride = if (isTranspose) cols else rows
 
-        if (majorStride == idealMajorStride) {
+        if (majorStride == idealMajorStride)
           fn.visitArray(data, offset, rows * cols, 1)
-        } else if (!from.isTranspose) {
+        else if (!from.isTranspose) {
           var j = 0
           while (j < from.cols) {
             fn.visitArray(data, offset + j * majorStride, rows, 1)
@@ -843,14 +822,14 @@ object DenseMatrix
         import from._
         val idealMajorStride = if (isTranspose) cols else rows
 
-        if (majorStride == idealMajorStride) {
+        if (majorStride == idealMajorStride)
           fn.visitArray(
             from.rowColumnFromLinearIndex,
             data,
             offset,
             rows * cols,
             1)
-        } else if (!from.isTranspose) {
+        else if (!from.isTranspose) {
           var j = 0
           while (j < from.cols) {
             fn.visitArray(
@@ -885,9 +864,8 @@ object DenseMatrix
           cforRange(from.offset until from.offset + from.size) { j =>
             d(j) = fn(d(j))
           }
-        } else {
+        } else
           slowPath(from, fn)
-        }
       }
 
       private def slowPath(from: DenseMatrix[V], fn: (V) => V): Unit = {
@@ -1007,17 +985,15 @@ object DenseMatrix
         var result: DenseMatrix[R] = null
         for (c <- 0 until from.cols) {
           val col = f(from(::, c))
-          if (result eq null) {
+          if (result eq null)
             result = DenseMatrix.zeros[R](col.length, from.cols)
-          }
           result(::, c) := col
         }
 
-        if (result eq null) {
+        if (result eq null)
           DenseMatrix.zeros[R](0, from.cols)
-        } else {
+        else
           result
-        }
       }
     }
 
@@ -1042,17 +1018,15 @@ object DenseMatrix
         var result: DenseMatrix[Boolean] = null
         for (c <- 0 until from.cols) {
           val col = f(from(::, c))
-          if (result eq null) {
+          if (result eq null)
             result = DenseMatrix.zeros[Boolean](col.length, from.cols)
-          }
           result(::, c) := col
         }
 
-        if (result eq null) {
+        if (result eq null)
           DenseMatrix.zeros[Boolean](0, from.cols)
-        } else {
+        else
           result
-        }
       }
     }
 
@@ -1092,9 +1066,9 @@ object DenseMatrix
           result.t apply (::, r) := row
         }
 
-        if (result ne null) {
+        if (result ne null)
           result
-        } else {
+        else {
           val data = new Array[Res](0)
           result = DenseMatrix.create(rows, 0, data)
           result
@@ -1130,9 +1104,9 @@ object DenseMatrix
           result.t apply (::, r) := row
         }
 
-        if (result ne null) {
+        if (result ne null)
           result
-        } else {
+        else {
           val data = new Array[Boolean](0)
           result = DenseMatrix.create(rows, 0, data)
           result

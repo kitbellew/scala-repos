@@ -7,11 +7,8 @@ import scalaz.syntax.either._
 object TimerTest extends SpecLite {
   def withTimer[T](expression: Timer => T): T = {
     val timer = new Timer(10)
-    try {
-      expression(timer)
-    } finally {
-      timer.stop()
-    }
+    try expression(timer)
+    finally timer.stop()
   }
   "Timer" should {
     "stop normally" in {

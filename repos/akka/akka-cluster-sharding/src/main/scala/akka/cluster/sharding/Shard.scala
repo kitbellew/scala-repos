@@ -253,9 +253,8 @@ private[akka] class Shard(
         "Starting entity [{}] again, there are buffered messages for it",
         id)
       sendMsgBuffer(EntityStarted(id))
-    } else {
+    } else
       processChange(EntityStopped(id))(passivateCompleted)
-    }
 
     passivating = passivating - ref
   }
@@ -312,7 +311,7 @@ private[akka] class Shard(
         "Id must not be empty, dropping message [{}]",
         msg.getClass.getName)
       context.system.deadLetters ! msg
-    } else {
+    } else
       messageBuffers.get(id) match {
         case None ⇒ deliverTo(id, msg, payload, snd)
 
@@ -324,7 +323,6 @@ private[akka] class Shard(
           log.debug("Message for entity [{}] buffered", id)
           messageBuffers = messageBuffers.updated(id, buf :+ ((msg, snd)))
       }
-    }
   }
 
   def deliverTo(id: EntityId, msg: Any, payload: Msg, snd: ActorRef): Unit = {
@@ -433,16 +431,14 @@ private[akka] class PersistentShard(
         "Starting entity [{}] again, there are buffered messages for it",
         id)
       sendMsgBuffer(EntityStarted(id))
-    } else {
-      if (!passivating.contains(ref)) {
-        log.debug(
-          "Entity [{}] stopped without passivating, will restart after backoff",
-          id)
-        import context.dispatcher
-        context.system.scheduler
-          .scheduleOnce(entityRestartBackoff, self, RestartEntity(id))
-      } else processChange(EntityStopped(id))(passivateCompleted)
-    }
+    } else if (!passivating.contains(ref)) {
+      log.debug(
+        "Entity [{}] stopped without passivating, will restart after backoff",
+        id)
+      import context.dispatcher
+      context.system.scheduler
+        .scheduleOnce(entityRestartBackoff, self, RestartEntity(id))
+    } else processChange(EntityStopped(id))(passivateCompleted)
 
     passivating = passivating - ref
   }

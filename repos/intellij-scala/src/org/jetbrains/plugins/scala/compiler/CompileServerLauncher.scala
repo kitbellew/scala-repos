@@ -42,13 +42,12 @@ class CompileServerLauncher extends ApplicationComponent {
   def tryToStart(project: Project): Boolean =
     if (!running) {
       val started = start(project)
-      if (started) {
+      if (started)
         try new RemoteServerRunner(project)
           .send("addDisconnectListener", Seq.empty, null)
         catch {
           case e: Exception =>
         }
-      }
       started
     } else true
 
@@ -134,9 +133,9 @@ class CompileServerLauncher extends ApplicationComponent {
 
         val shutdownDelay = settings.COMPILE_SERVER_SHUTDOWN_DELAY
         val shutdownDelayArg =
-          if (settings.COMPILE_SERVER_SHUTDOWN_IDLE && shutdownDelay >= 0) {
+          if (settings.COMPILE_SERVER_SHUTDOWN_IDLE && shutdownDelay >= 0)
             Seq(s"-Dshutdown.delay=$shutdownDelay")
-          } else Nil
+          else Nil
 
         val commands =
           jdk.executable.canonicalPath +: bootclasspathArg ++: "-cp" +: classpath +: jvmParameters ++: shutdownDelayArg ++:
@@ -144,9 +143,8 @@ class CompileServerLauncher extends ApplicationComponent {
 
         val builder = new ProcessBuilder(commands.asJava)
 
-        if (settings.USE_PROJECT_HOME_AS_WORKING_DIR) {
+        if (settings.USE_PROJECT_HOME_AS_WORKING_DIR)
           projectHome(project).foreach(dir => builder.directory(dir))
-        }
 
         catching(classOf[IOException])
           .either(builder.start())

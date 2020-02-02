@@ -470,11 +470,11 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       MacroTooFewArgumentListsError(expandee)
 
     val macroImplArgs: List[Any] =
-      if (fastTrack contains macroDef) {
+      if (fastTrack contains macroDef)
         // Take a dry run of the fast track implementation
         if (fastTrack(macroDef) validate expandee) argss.flatten
         else MacroTooFewArgumentListsError(expandee)
-      } else {
+      else {
         def calculateMacroArgs(binding: MacroImplBinding) = {
           val signature =
             if (binding.isBundle) binding.signature else binding.signature.tail
@@ -541,19 +541,21 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
             case f if f.isTag => f.paramPos
           } map (paramPos => {
             val targ = binding.targs(paramPos).tpe.typeSymbol
-            val tpe = if (targ.isTypeParameterOrSkolem) {
-              if (targ.owner == macroDef) {
-                // doesn't work when macro def is compiled separately from its usages
-                // then targ is not a skolem and isn't equal to any of macroDef.typeParams
-                // val argPos = targ.deSkolemize.paramPos
-                val argPos = macroDef.typeParams.indexWhere(_.name == targ.name)
-                targs(argPos).tpe
-              } else
-                targ.tpe.asSeenFrom(
-                  if (prefix == EmptyTree) macroDef.owner.tpe else prefix.tpe,
-                  macroDef.owner)
-            } else
-              targ.tpe
+            val tpe =
+              if (targ.isTypeParameterOrSkolem)
+                if (targ.owner == macroDef) {
+                  // doesn't work when macro def is compiled separately from its usages
+                  // then targ is not a skolem and isn't equal to any of macroDef.typeParams
+                  // val argPos = targ.deSkolemize.paramPos
+                  val argPos =
+                    macroDef.typeParams.indexWhere(_.name == targ.name)
+                  targs(argPos).tpe
+                } else
+                  targ.tpe.asSeenFrom(
+                    if (prefix == EmptyTree) macroDef.owner.tpe else prefix.tpe,
+                    macroDef.owner)
+              else
+                targ.tpe
             context.WeakTypeTag(tpe)
           })
           macroLogVerbose(s"tags: $tags")
@@ -650,49 +652,46 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
         if (Statistics.canEnable) Statistics.startTimer(macroExpandNanos)
         else null
       if (Statistics.canEnable) Statistics.incCounter(macroExpandCount)
-      try {
-        withInfoLevel(nodePrinters.InfoLevel.Quiet) { // verbose printing might cause recursive macro expansions
-          if (expandee.symbol.isErroneous || (expandee exists (_.isErroneous))) {
-            val reason =
-              if (expandee.symbol.isErroneous)
-                "not found or incompatible macro implementation"
-              else "erroneous arguments"
-            macroLogVerbose(
-              s"cancelled macro expansion because of $reason: $expandee")
-            onFailure(typer.infer.setError(expandee))
-          } else
-            try {
-              val expanded = {
-                val runtime = macroRuntime(expandee)
-                if (runtime != null)
-                  macroExpandWithRuntime(typer, expandee, runtime)
-                else macroExpandWithoutRuntime(typer, expandee)
-              }
-              expanded match {
-                case Success(expanded) =>
-                  // also see http://groups.google.com/group/scala-internals/browse_thread/thread/492560d941b315cc
-                  val expanded1 =
-                    try onSuccess(duplicateAndKeepPositions(expanded))
-                    finally popMacroContext()
-                  if (!hasMacroExpansionAttachment(expanded1))
-                    linkExpandeeAndExpanded(expandee, expanded1)
-                  if (settings.Ymacroexpand.value == settings.MacroExpand.Discard) {
-                    suppressMacroExpansion(expandee)
-                    expandee.setType(expanded1.tpe)
-                  } else expanded1
-                case Fallback(fallback) => onFallback(fallback)
-                case Delayed(delayed)   => onDelayed(delayed)
-                case Skipped(skipped)   => onSkipped(skipped)
-                case Failure(failure)   => onFailure(failure)
-              }
-            } catch {
-              case typer.TyperErrorGen.MacroExpansionException =>
-                onFailure(expandee)
+      try withInfoLevel(nodePrinters.InfoLevel.Quiet) { // verbose printing might cause recursive macro expansions
+        if (expandee.symbol.isErroneous || (expandee exists (_.isErroneous))) {
+          val reason =
+            if (expandee.symbol.isErroneous)
+              "not found or incompatible macro implementation"
+            else "erroneous arguments"
+          macroLogVerbose(
+            s"cancelled macro expansion because of $reason: $expandee")
+          onFailure(typer.infer.setError(expandee))
+        } else
+          try {
+            val expanded = {
+              val runtime = macroRuntime(expandee)
+              if (runtime != null)
+                macroExpandWithRuntime(typer, expandee, runtime)
+              else macroExpandWithoutRuntime(typer, expandee)
             }
-        }
-      } finally {
-        if (Statistics.canEnable) Statistics.stopTimer(macroExpandNanos, start)
-      }
+            expanded match {
+              case Success(expanded) =>
+                // also see http://groups.google.com/group/scala-internals/browse_thread/thread/492560d941b315cc
+                val expanded1 =
+                  try onSuccess(duplicateAndKeepPositions(expanded))
+                  finally popMacroContext()
+                if (!hasMacroExpansionAttachment(expanded1))
+                  linkExpandeeAndExpanded(expandee, expanded1)
+                if (settings.Ymacroexpand.value == settings.MacroExpand.Discard) {
+                  suppressMacroExpansion(expandee)
+                  expandee.setType(expanded1.tpe)
+                } else expanded1
+              case Fallback(fallback) => onFallback(fallback)
+              case Delayed(delayed)   => onDelayed(delayed)
+              case Skipped(skipped)   => onSkipped(skipped)
+              case Failure(failure)   => onFailure(failure)
+            }
+          } catch {
+            case typer.TyperErrorGen.MacroExpansionException =>
+              onFailure(expandee)
+          }
+      } finally if (Statistics.canEnable)
+        Statistics.stopTimer(macroExpandNanos, start)
     }
   }
 
@@ -802,7 +801,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       // Thanks to that the materializer can take a look at what's going on and react accordingly.
       val shouldInstantiate =
         typer.context.undetparams.nonEmpty && !mode.inPolyMode
-      if (shouldInstantiate) {
+      if (shouldInstantiate)
         if (isBlackbox(expandee))
           typer.instantiatePossiblyExpectingUnit(delayed, mode, outerPt)
         else {
@@ -814,7 +813,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
             keepNothings = false)
           macroExpand(typer, delayed, mode, outerPt)
         }
-      } else delayed
+      else delayed
     }
     override def onFallback(fallback: Tree) =
       typer.typed(fallback, mode, outerPt)
@@ -934,9 +933,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
               case ex: TypeError           => MacroGeneratedTypeError(expandee, ex)
               case _                       => MacroGeneratedException(expandee, realex)
             }
-        } finally {
-          expandee.removeAttachment[MacroRuntimeAttachment]
-        }
+        } finally expandee.removeAttachment[MacroRuntimeAttachment]
     }
   }
 

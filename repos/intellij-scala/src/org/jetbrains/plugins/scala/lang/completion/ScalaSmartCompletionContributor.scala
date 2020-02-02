@@ -102,7 +102,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
               elementAdded = true
               if (etaExpanded) el.etaExpanded = true
               result.addElement(elemToAdd)
-            } else {
+            } else
               typez.foreach {
                 case ScParameterizedType(tpe, Seq(arg)) if !elementAdded =>
                   ScType.extractClass(tpe, Some(elem.getProject)) match {
@@ -118,7 +118,6 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   }
                 case _ =>
               }
-            }
             if (!elementAdded && chainCompletion && secondCompletion) {
               val processor = new CompletionProcessor(
                 StdKinds.refExprLastRef,
@@ -151,12 +150,11 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   checkForSecondCompletion && fun.paramClauses.flatten.isEmpty
                 checkType(fun.retType, ScSubstitutor.empty, second)
               case fun: ScFunction =>
-                if (fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef") {
+                if (fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef")
                   fun.name match {
                     case "implicitly" | "identity" | "locally" => return
                     case _                                     =>
                   }
-                }
                 val infer =
                   if (chainVariant) ScSubstitutor.empty
                   else ScalaPsiUtil.inferMethodTypesArgs(fun, subst)
@@ -169,13 +167,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   case Success(tp, _) => checkType(tp, infer, second)
                   case _              => false
                 }
-                if (!added) {
+                if (!added)
                   fun.getType(TypingContext.empty) match {
                     case Success(tp, _) =>
                       checkType(tp, infer, second, etaExpanded = true)
                     case _ =>
                   }
-                }
               case method: PsiMethod =>
                 val second =
                   checkForSecondCompletion && method.getParameterList.getParametersCount == 0
@@ -349,12 +346,10 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           checkType(tp)
         }
         variants.foreach(applyVariant(_, checkForSecondCompletion = true))
-        if (typez.exists(_.equiv(types.Boolean))) {
-          for (keyword <- Set("false", "true")) {
+        if (typez.exists(_.equiv(types.Boolean)))
+          for (keyword <- Set("false", "true"))
             result.addElement(
               LookupElementManager.getKeywrodLookupElement(keyword, place))
-          }
-        }
         if (completeThis) {
           var parent = place
           var foundClazz = false
@@ -420,7 +415,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           result: CompletionResultSet) {
         val element = positionFromParameters(parameters)
         val (ref, assign) = extractReference[ScAssignStmt](element)
-        if (assign.getRExpression.contains(ref)) {
+        if (assign.getRExpression.contains(ref))
           assign.getLExpression match {
             case call: ScMethodCall           => //todo: it's update method
             case leftExpression: ScExpression =>
@@ -436,7 +431,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 parameters.getOriginalPosition
               )
           }
-        } else { //so it's left expression
+        else { //so it's left expression
           //todo: if right expression exists?
         }
       }
@@ -553,9 +548,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       end = true
                     } else prefixIndex -= 1
                   }
-                  if (!end) {
+                  if (!end)
                     presentation.setItemText(s"... $arrowText ")
-                  }
                 } else presentation.setItemText(text)
                 presentation.setIcon(Icons.LAMBDA)
               case _ =>
@@ -789,14 +783,12 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
         val typez: ArrayBuffer[ScType] = new ArrayBuffer[ScType]
         if (infix.lOp == ref) {
           val op: String = infix.operation.getText
-          if (op.endsWith(":")) {
+          if (op.endsWith(":"))
             typez ++= ref.expectedTypes()
-          }
         } else if (infix.rOp == ref) {
           val op: String = infix.operation.getText
-          if (!op.endsWith(":")) {
+          if (!op.endsWith(":"))
             typez ++= ref.expectedTypes()
-          }
         }
         acceptTypes(
           typez,
@@ -1021,12 +1013,11 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
             new AfterNewLookupElementRenderer(_, _, _),
             new ScalaConstructorInsertHandler,
             renamesMap)
-          if (element != null) {
+          if (element != null)
             result.addElement(element)
-          }
         }
 
-        for (typez <- types) {
+        for (typez <- types)
           collectInheritorsForType(
             typez,
             newExpr,
@@ -1035,7 +1026,6 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
             new AfterNewLookupElementRenderer(_, _, _),
             new ScalaConstructorInsertHandler,
             renamesMap)
-        }
       }
     }
   )
@@ -1074,9 +1064,8 @@ private[completion] object ScalaSmartCompletionContributor {
       PlatformPatterns
         .psiElement(ScalaTokenTypes.tIDENTIFIER)
         .withParent(classes(0))
-    for (i <- 1 until classes.length) {
+    for (i <- 1 until classes.length)
       pattern = pattern.withSuperParent(i + 1, classes(i))
-    }
     pattern
   }
   val bracesCallPattern = superParentsPattern(

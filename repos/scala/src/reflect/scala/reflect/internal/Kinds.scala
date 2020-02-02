@@ -43,13 +43,11 @@ trait Kinds {
 
     private def qualify(a0: Symbol, b0: Symbol): String =
       if (a0.toString != b0.toString) ""
+      else if ((a0 eq b0) || (a0.owner eq b0.owner)) ""
       else {
-        if ((a0 eq b0) || (a0.owner eq b0.owner)) ""
-        else {
-          var a = a0; var b = b0
-          while (a.owner.name == b.owner.name) { a = a.owner; b = b.owner }
-          if (a.locationString ne "") " (" + a.locationString.trim + ")" else ""
-        }
+        var a = a0; var b = b0
+        while (a.owner.name == b.owner.name) { a = a.owner; b = b.owner }
+        if (a.locationString ne "") " (" + a.locationString.trim + ")" else ""
       }
     private def kindMessage(a: Symbol, p: Symbol)(
         f: (String, String) => String): String =
@@ -169,12 +167,12 @@ trait Kinds {
           "checkKindBoundsHK under params: " + underHKParams + " with args " + withHKArgs)
       }
 
-      if (!sameLength(hkargs, hkparams)) {
+      if (!sameLength(hkargs, hkparams))
         // Any and Nothing are kind-overloaded
         if (arg == AnyClass || arg == NothingClass) NoKindErrors
         // shortcut: always set error, whether explainTypesOrNot
         else return kindErrors.arityError(arg -> param)
-      } else
+      else
         foreach2(hkargs, hkparams) { (hkarg, hkparam) =>
           if (hkparam.typeParams.isEmpty && hkarg.typeParams.isEmpty) { // base-case: kind *
             kindCheck(
@@ -252,11 +250,9 @@ trait Kinds {
             tparamsHO
           )
           if (kindErrors.isEmpty) Nil
-          else {
-            if (explainErrors) List((targ, tparam, kindErrors))
-            // Return as soon as an error is seen if there's nothing to explain.
-            else return List((NoType, NoSymbol, NoKindErrors))
-          }
+          else if (explainErrors) List((targ, tparam, kindErrors))
+          // Return as soon as an error is seen if there's nothing to explain.
+          else return List((NoType, NoSymbol, NoKindErrors))
         } else Nil
       }
     }
@@ -410,9 +406,8 @@ trait Kinds {
       args.zipWithIndex foreach {
         case (arg, i) =>
           s = arg.kind.buildState(arg.sym, arg.variance)(s)
-          if (i != args.size - 1) {
+          if (i != args.size - 1)
             s = s.append(",")
-          }
       }
       s = s.append("]").append(bounds.scalaNotation(_.toString))
       s

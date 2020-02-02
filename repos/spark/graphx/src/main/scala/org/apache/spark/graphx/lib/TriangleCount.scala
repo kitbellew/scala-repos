@@ -72,9 +72,8 @@ object TriangleCount {
         var i = 0
         while (i < nbrs.length) {
           // prevent self cycle
-          if (nbrs(i) != vid) {
+          if (nbrs(i) != vid)
             set.add(nbrs(i))
-          }
           i += 1
         }
         set
@@ -87,18 +86,17 @@ object TriangleCount {
 
     // Edge function computes intersection of smaller vertex with larger vertex
     def edgeFunc(ctx: EdgeContext[VertexSet, ED, Int]) {
-      val (smallSet, largeSet) = if (ctx.srcAttr.size < ctx.dstAttr.size) {
-        (ctx.srcAttr, ctx.dstAttr)
-      } else {
-        (ctx.dstAttr, ctx.srcAttr)
-      }
+      val (smallSet, largeSet) =
+        if (ctx.srcAttr.size < ctx.dstAttr.size)
+          (ctx.srcAttr, ctx.dstAttr)
+        else
+          (ctx.dstAttr, ctx.srcAttr)
       val iter = smallSet.iterator
       var counter: Int = 0
       while (iter.hasNext) {
         val vid = iter.next()
-        if (vid != ctx.srcId && vid != ctx.dstId && largeSet.contains(vid)) {
+        if (vid != ctx.srcId && vid != ctx.dstId && largeSet.contains(vid))
           counter += 1
-        }
       }
       ctx.sendToSrc(counter)
       ctx.sendToDst(counter)

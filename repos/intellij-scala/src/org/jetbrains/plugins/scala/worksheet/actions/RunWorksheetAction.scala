@@ -103,7 +103,7 @@ object RunWorksheetAction {
       case file: ScalaFile if file.isWorksheetFile =>
         val viewer = WorksheetViewerInfo getViewer editor
 
-        if (viewer != null) {
+        if (viewer != null)
           ApplicationManager.getApplication.invokeAndWait(
             new Runnable {
               override def run() {
@@ -117,7 +117,6 @@ object RunWorksheetAction {
             },
             ModalityState.any()
           )
-        }
 
         def runnable() =
           new WorksheetCompiler().compileAndRun(
@@ -138,7 +137,7 @@ object RunWorksheetAction {
             auto
           )
 
-        if (WorksheetCompiler isMakeBeforeRun psiFile) {
+        if (WorksheetCompiler isMakeBeforeRun psiFile)
           CompilerManager
             .getInstance(project)
             .make(
@@ -153,7 +152,7 @@ object RunWorksheetAction {
                 }
               }
             )
-        } else runnable()
+        else runnable()
       case _ =>
     }
   }
@@ -197,9 +196,8 @@ object RunWorksheetAction {
 
     val rootManager = ModuleRootManager.getInstance(module)
     val sdk = rootManager.getSdk
-    if (sdk == null || !sdk.getSdkType.isInstanceOf[JavaSdkType]) {
+    if (sdk == null || !sdk.getSdkType.isInstanceOf[JavaSdkType])
       throw CantRunException.noJdkForModule(module)
-    }
 
     val params = new JavaParameters()
     val files = scalaSdk.compilerClasspath
@@ -233,9 +231,8 @@ object RunWorksheetAction {
       override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
         val text = event.getText
         if (ConsoleViewContentType.NORMAL_OUTPUT == ConsoleViewContentType
-              .getConsoleViewType(outputType)) {
+              .getConsoleViewType(outputType))
           worksheetPrinter processLine text
-        }
       }
 
       override def processTerminated(event: ProcessEvent): Unit =

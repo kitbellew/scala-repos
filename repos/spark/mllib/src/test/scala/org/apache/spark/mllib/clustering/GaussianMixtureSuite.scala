@@ -183,9 +183,7 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
         assert(sameModel.gaussians(i).mu === gmm.gaussians(i).mu)
         assert(sameModel.gaussians(i).sigma === gmm.gaussians(i).sigma)
       }
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 
   test("model prediction, parallel and local") {

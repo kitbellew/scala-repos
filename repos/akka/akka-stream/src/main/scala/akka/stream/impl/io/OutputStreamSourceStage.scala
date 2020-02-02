@@ -155,17 +155,16 @@ private[akka] class OutputStreamAdapter(
 
   @scala.throws(classOf[IOException])
   private[this] def send(sendAction: () ⇒ Unit): Unit =
-    if (isActive) {
+    if (isActive)
       if (isPublisherAlive) sendAction()
       else throw publisherClosedException
-    } else throw new IOException("OutputStream is closed")
+    else throw new IOException("OutputStream is closed")
 
   @scala.throws(classOf[IOException])
   private[this] def sendData(data: ByteString): Unit =
     send { () ⇒
-      try {
-        dataQueue.put(data)
-      } catch { case NonFatal(ex) ⇒ throw new IOException(ex) }
+      try dataQueue.put(data)
+      catch { case NonFatal(ex) ⇒ throw new IOException(ex) }
       if (downstreamStatus.get() == Canceled) {
         isPublisherAlive = false
         throw publisherClosedException

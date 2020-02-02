@@ -448,9 +448,8 @@ class CommandCodec extends UnifiedProtocolCodec {
       "Invalid client command protocol")
     val cmd = BytesToString(lines.head)
     val args = lines.tail
-    try {
-      Commands.doMatch(cmd, args)
-    } catch {
+    try Commands.doMatch(cmd, args)
+    catch {
       case e: ClientError => throw e
       case t: Throwable =>
         log.warning(

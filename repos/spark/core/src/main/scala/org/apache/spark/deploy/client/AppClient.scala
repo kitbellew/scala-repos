@@ -92,9 +92,8 @@ private[spark] class AppClient(
         "appclient-receive-and-reply-threadpool")
 
     override def onStart(): Unit =
-      try {
-        registerWithMaster(1)
-      } catch {
+      try registerWithMaster(1)
+      catch {
         case e: Exception =>
           logWarning("Failed to connect to master", e)
           markDisconnected()
@@ -105,13 +104,12 @@ private[spark] class AppClient(
       *  Register with all masters asynchronously and returns an array `Future`s for cancellation.
       */
     private def tryRegisterAllMasters(): Array[JFuture[_]] =
-      for (masterAddress <- masterRpcAddresses) yield {
-        registerMasterThreadPool.submit(new Runnable {
+      for (masterAddress <- masterRpcAddresses)
+        yield registerMasterThreadPool.submit(new Runnable {
           override def run(): Unit =
             try {
-              if (registered.get) {
+              if (registered.get)
                 return
-              }
               logInfo(
                 "Connecting to master " + masterAddress.toSparkURL + "...")
               val masterRef =
@@ -123,7 +121,6 @@ private[spark] class AppClient(
                 logWarning(s"Failed to connect to master $masterAddress", e)
             }
         })
-      }
 
     /**
       * Register with all masters asynchronously. It will call `registerWithMaster` every
@@ -141,9 +138,9 @@ private[spark] class AppClient(
               if (registered.get) {
                 registerMasterFutures.get.foreach(_.cancel(true))
                 registerMasterThreadPool.shutdownNow()
-              } else if (nthRetry >= REGISTRATION_RETRIES) {
+              } else if (nthRetry >= REGISTRATION_RETRIES)
                 markDead("All masters are unresponsive! Giving up.")
-              } else {
+              else {
                 registerMasterFutures.get.foreach(_.cancel(true))
                 registerWithMaster(nthRetry + 1)
               }
@@ -200,9 +197,8 @@ private[spark] class AppClient(
         val messageText = message.map(s => " (" + s + ")").getOrElse("")
         logInfo(
           "Executor updated: %s is now %s%s".format(fullId, state, messageText))
-        if (ExecutorState.isFinished(state)) {
+        if (ExecutorState.isFinished(state))
           listener.executorRemoved(fullId, message.getOrElse(""), exitStatus)
-        }
 
       case MasterChanged(masterRef, masterWebUiUrl) =>
         logInfo(
@@ -247,9 +243,8 @@ private[spark] class AppClient(
       // interrupted during shutdown, otherwise context must be notified of NonFatal errors.
       askAndReplyThreadPool.execute(new Runnable {
         override def run(): Unit =
-          try {
-            context.reply(endpointRef.askWithRetry[Boolean](msg))
-          } catch {
+          try context.reply(endpointRef.askWithRetry[Boolean](msg))
+          catch {
             case ie: InterruptedException => // Cancelled
             case NonFatal(t) =>
               context.sendFailure(t)
@@ -264,9 +259,8 @@ private[spark] class AppClient(
       }
 
     override def onNetworkError(cause: Throwable, address: RpcAddress): Unit =
-      if (isPossibleMaster(address)) {
+      if (isPossibleMaster(address))
         logWarning(s"Could not connect to $address: $cause")
-      }
 
     /**
       * Notify the listener that we disconnected, if we hadn't already done so before.
@@ -286,9 +280,8 @@ private[spark] class AppClient(
     }
 
     override def onStop(): Unit = {
-      if (registrationRetryTimer.get != null) {
+      if (registrationRetryTimer.get != null)
         registrationRetryTimer.get.cancel(true)
-      }
       registrationRetryThread.shutdownNow()
       registerMasterFutures.get.foreach(_.cancel(true))
       registerMasterThreadPool.shutdownNow()
@@ -323,10 +316,10 @@ private[spark] class AppClient(
     * @return whether the request is acknowledged.
     */
   def requestTotalExecutors(requestedTotal: Int): Boolean =
-    if (endpoint.get != null && appId.get != null) {
+    if (endpoint.get != null && appId.get != null)
       endpoint.get
         .askWithRetry[Boolean](RequestExecutors(appId.get, requestedTotal))
-    } else {
+    else {
       logWarning(
         "Attempted to request executors before driver fully initialized.")
       false
@@ -337,9 +330,9 @@ private[spark] class AppClient(
     * @return whether the kill request is acknowledged.
     */
   def killExecutors(executorIds: Seq[String]): Boolean =
-    if (endpoint.get != null && appId.get != null) {
+    if (endpoint.get != null && appId.get != null)
       endpoint.get.askWithRetry[Boolean](KillExecutors(appId.get, executorIds))
-    } else {
+    else {
       logWarning("Attempted to kill executors before driver fully initialized.")
       false
     }

@@ -123,11 +123,10 @@ class ScalaControlFlowBuilder(
       instruction: InstructionImpl) {
     if (instruction == null) return
     var index = 0
-    if (scopeWhenAdded != null) {
+    if (scopeWhenAdded != null)
       index = myPending.indexWhere {
         case (_, e) => !PsiTreeUtil.isAncestor(e, scopeWhenAdded, true)
       }
-    }
     if (!myPending.contains((instruction, scopeWhenAdded)))
       myPending.insert(math.max(index, 0), (instruction, scopeWhenAdded))
   }
@@ -138,9 +137,7 @@ class ScalaControlFlowBuilder(
     for {
       ((instr, scope), idx) <- myPending.zipWithIndex
       if scope != null && PsiTreeUtil.isAncestor(fromScope, scope, false)
-    } {
-      myPending.update(idx, (instr, toScope))
-    }
+    } myPending.update(idx, (instr, toScope))
   }
 
   private def interruptFlow() {
@@ -275,9 +272,8 @@ class ScalaControlFlowBuilder(
         ScFunctionType.isFunctionType(p.paramType))
     }
     val receiver = call.getInvokedExpr
-    if (receiver != null) {
+    if (receiver != null)
       receiver.accept(this)
-    }
     val head = myHead
     if (head != null)
       checkPendingEdges(head)
@@ -285,9 +281,8 @@ class ScalaControlFlowBuilder(
       arg <- call.argumentExpressions
     } {
       arg.accept(this)
-      if (myHead == null && isByNameOrFunction(arg)) {
+      if (myHead == null && isByNameOrFunction(arg))
         moveHead(head)
-      }
     }
   }
 
@@ -413,7 +408,7 @@ class ScalaControlFlowBuilder(
   override def visitInfixExpression(infix: ScInfixExpr): Unit = {
     val matchedParams = infix.matchedParameters
     val byNameParam = matchedParams.exists(_._2.isByName)
-    if (byNameParam) {
+    if (byNameParam)
       startNode(Some(infix)) { infixInstr =>
         checkPendingEdges(infixInstr)
         addPendingEdge(infix, infixInstr)
@@ -422,7 +417,7 @@ class ScalaControlFlowBuilder(
         infix.getArgExpr.accept(this)
         if (myHead == null) moveHead(infixInstr)
       }
-    } else {
+    else {
       infix.getBaseExpr.accept(this)
       infix.operation.accept(this)
       infix.getArgExpr.accept(this)
@@ -535,7 +530,7 @@ class ScalaControlFlowBuilder(
       }
 
       // remove exceptions
-      for (_ <- 1 to catchedExnCount) { myCatchedExnStack.pop() }
+      for (_ <- 1 to catchedExnCount) myCatchedExnStack.pop()
 
       def processCatch(fin: InstructionImpl) = tryStmt.catchBlock.map { cb =>
         cb.expression match {
@@ -546,9 +541,8 @@ class ScalaControlFlowBuilder(
               if (fin == null) {
                 advancePendingEdges(cc, tryStmt)
                 addPendingEdge(tryStmt, myHead)
-              } else {
+              } else
                 addEdge(myHead, fin)
-              }
               myHead = null
             }
           case _ =>
@@ -558,17 +552,16 @@ class ScalaControlFlowBuilder(
               if (fin == null) {
                 advancePendingEdges(cc, tryStmt)
                 addPendingEdge(tryStmt, myHead)
-              } else {
+              } else
                 addEdge(myHead, fin)
-              }
               myHead = null
             }
         }
       }
 
-      if (fBlock == null) {
+      if (fBlock == null)
         processCatch((null))
-      } else {
+      else
         startNode(Some(fBlock)) { finInstr =>
           for (p @ (instr, info) <- myTransitionInstructions;
                if info.elem eq fBlock) {
@@ -579,7 +572,6 @@ class ScalaControlFlowBuilder(
           myHead = finInstr
           fBlock.accept(this)
         }
-      }
     }
   }
 }

@@ -318,14 +318,14 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
       case Eq    => "="
     } mkString ""
 
-  private[this] def lex(s: String) = {
+  private[this] def lex(s: String) =
     s.foldLeft(List[Token]()) {
-      case (ts, '=')        => Eq :: ts
-      case (ts, '!')        => Bang :: ts
-      case (El(s) :: ts, c) => El(s + c) :: ts
-      case (ts, c)          => El("" + c) :: ts
-    }
-  }.reverse
+        case (ts, '=')        => Eq :: ts
+        case (ts, '!')        => Bang :: ts
+        case (El(s) :: ts, c) => El(s + c) :: ts
+        case (ts, c)          => El("" + c) :: ts
+      }
+      .reverse
 
   /**
     * Resolve a group from an address, a string. Resolve uses

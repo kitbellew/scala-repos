@@ -32,9 +32,8 @@ trait ResizableParArrayCombiner[T]
         new CopyChainToArray(array, 0, size))
 
       new ParArray(arrayseq)
-    } else { // optimisation if there is only 1 array
+    } else // optimisation if there is only 1 array
       new ParArray(new ExposedArraySeq[T](chain(0).internalArray, size))
-    }
 
   override def toString = "ResizableParArrayCombiner(" + size + "): " //+ chain
 

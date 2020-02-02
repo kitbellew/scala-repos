@@ -198,12 +198,11 @@ class ClientRegistryTest
     GlobalRegistry.withRegistry(simple) {
       val factory =
         (RegistryEntryLifecycle.module[Int, Int] +: stk).make(params)
-      val expected = {
+      val expected =
         Set(
           Entry(Seq("client", "fancy", "foo", "/$/fail", "name", "p1"), "999"),
           Entry(Seq("client", "fancy", "foo", "/$/fail", "head", "p2"), "1")
         )
-      }
       assert(GlobalRegistry.get.toSet == expected)
       Await.result(factory.close())
 

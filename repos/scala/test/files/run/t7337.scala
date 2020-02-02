@@ -11,9 +11,8 @@ object Test extends DirectTest {
   }
 
   override def show() {
-    try {
-      newCompiler()
-    } catch {
+    try newCompiler()
+    catch {
       case fe: FatalError => println(fe.getMessage)
     }
   }

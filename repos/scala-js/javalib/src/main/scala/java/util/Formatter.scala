@@ -16,12 +16,11 @@ final class Formatter(private val dest: Appendable)
   def this() = this(new StringBuilder())
 
   def close(): Unit = {
-    if (!closed) {
+    if (!closed)
       dest match {
         case cl: Closeable => cl.close()
         case _             =>
       }
-    }
     closed = true
   }
 
@@ -62,14 +61,15 @@ final class Formatter(private val dest: Appendable)
           def hasFlag(flag: String) = flags.indexOf(flag) >= 0
 
           val indexStr = matchResult(1).getOrElse("")
-          val index = if (!indexStr.isEmpty) {
-            Integer.parseInt(indexStr)
-          } else if (hasFlag("<")) {
-            lastIndex
-          } else {
-            lastImplicitIndex += 1
-            lastImplicitIndex
-          }
+          val index =
+            if (!indexStr.isEmpty)
+              Integer.parseInt(indexStr)
+            else if (hasFlag("<"))
+              lastIndex
+            else {
+              lastImplicitIndex += 1
+              lastImplicitIndex
+            }
           lastIndex = index
           if (index <= 0 || index > args.length)
             throw new MissingFormatArgumentException(matchResult(5).get)
@@ -124,19 +124,17 @@ final class Formatter(private val dest: Appendable)
           }
 
           def with_+(s: String, preventZero: scala.Boolean = false) =
-            if (s.charAt(0) != '-') {
+            if (s.charAt(0) != '-')
               if (hasFlag("+"))
                 pad(s, "+", preventZero)
               else if (hasFlag(" "))
                 pad(s, " ", preventZero)
               else
                 pad(s, "", preventZero)
-            } else {
-              if (hasFlag("("))
-                pad(s.substring(1) + ")", "(", preventZero)
-              else
-                pad(s.substring(1), "-", preventZero)
-            }
+            else if (hasFlag("("))
+              pad(s.substring(1) + ")", "(", preventZero)
+            else
+              pad(s.substring(1), "-", preventZero)
 
           def pad(
               argStr: String,
@@ -145,9 +143,9 @@ final class Formatter(private val dest: Appendable)
             val prePadLen = argStr.length + prefix.length
 
             val padStr = {
-              if (width <= prePadLen) {
+              if (width <= prePadLen)
                 prefix + argStr
-              } else {
+              else {
                 val padRight = hasFlag("-")
                 val padZero = hasFlag("0") && !preventZero
                 val padLength = width - prePadLen
@@ -248,10 +246,10 @@ final class Formatter(private val dest: Appendable)
               {
                 // check if we need additional 0 padding in exponent
                 // JavaDoc: at least 2 digits
-                if ('e' == exp.charAt(exp.length - 3)) {
+                if ('e' == exp.charAt(exp.length - 3))
                   exp.substring(0, exp.length - 1) + "0" +
                     exp.charAt(exp.length - 1)
-                } else exp
+                else exp
               },
               numberArg.isNaN || numberArg.isInfinite
             )

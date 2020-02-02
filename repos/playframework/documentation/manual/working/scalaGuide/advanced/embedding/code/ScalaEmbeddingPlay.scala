@@ -27,13 +27,11 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       }
       //#simple
 
-      try {
-        testRequest(9000)
-      } finally {
-        //#stop
-        server.stop()
-        //#stop
-      }
+      try testRequest(9000)
+      finally
+      //#stop
+      server.stop()
+      //#stop
     }
 
     "be configurable" in {
@@ -54,11 +52,8 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       }
       //#config
 
-      try {
-        testRequest(19000)
-      } finally {
-        server.stop()
-      }
+      try testRequest(19000)
+      finally server.stop()
     }
 
     "allow overriding components" in {
@@ -95,11 +90,8 @@ object ScalaEmbeddingPlay extends Specification with WsTestClient {
       val server = components.server
       //#components
 
-      try {
-        testRequest(9000)
-      } finally {
-        server.stop()
-      }
+      try testRequest(9000)
+      finally server.stop()
     }
 
   }

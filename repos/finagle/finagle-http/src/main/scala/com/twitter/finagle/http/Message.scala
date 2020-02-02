@@ -168,7 +168,7 @@ abstract class Message extends HttpMessageProxy {
         builder.append(";")
         builder.append(parts(i))
       }
-    } else {
+    } else
       // Replace charset= parameter(s)
       1.to(parts.length - 1) foreach { i =>
         val part = parts(i)
@@ -180,7 +180,6 @@ abstract class Message extends HttpMessageProxy {
           builder.append(part)
         }
       }
-    }
     this.contentType = builder.toString
   }
 
@@ -274,11 +273,10 @@ abstract class Message extends HttpMessageProxy {
     contentType match {
       case Some(contentType) =>
         val parts = StringUtils.split(contentType, ";", 2)
-        if (parts.length == 2) {
+        if (parts.length == 2)
           this.contentType = value + ";" + parts(1)
-        } else {
+        else
           this.contentType = value
-        }
       case None =>
         this.contentType = value
     }
@@ -344,9 +342,8 @@ abstract class Message extends HttpMessageProxy {
   /** Get the content as a string. */
   def contentString: String = {
     val encoding =
-      try {
-        Charset.forName(charset getOrElse "UTF-8")
-      } catch {
+      try Charset.forName(charset getOrElse "UTF-8")
+      catch {
         case _: Throwable => Message.Utf8
       }
     getContent.toString(encoding)
@@ -420,14 +417,13 @@ abstract class Message extends HttpMessageProxy {
   @throws(classOf[IllegalStateException])
   def write(buffer: ChannelBuffer) {
     if (isChunked) writeChunk(buffer)
-    else {
+    else
       getContent match {
         case ChannelBuffers.EMPTY_BUFFER =>
           setContent(buffer)
         case content =>
           setContent(ChannelBuffers.wrappedBuffer(content, buffer))
       }
-    }
   }
 
   /**

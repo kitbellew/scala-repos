@@ -83,24 +83,21 @@ class JavaCopyPastePostProcessor
             while (elem.getParent != null && !elem.getParent
                      .isInstanceOf[PsiFile] &&
                    elem.getParent.getTextRange.getEndOffset <= endOffset &&
-                   elem.getParent.getTextRange.getStartOffset >= startOffset) {
+                   elem.getParent.getTextRange.getStartOffset >= startOffset)
               elem = elem.getParent
-            }
-            if (startOffset < elem.getTextRange.getStartOffset) {
+            if (startOffset < elem.getTextRange.getStartOffset)
               buffer += TextPart(
                 new TextRange(startOffset, elem.getTextRange.getStartOffset)
                   .substring(file.getText))
-            }
             buffer += ElementPart(elem)
             while (elem.getNextSibling != null && elem.getNextSibling.getTextRange.getEndOffset <= endOffset) {
               elem = elem.getNextSibling
               buffer += ElementPart(elem)
             }
-            if (elem.getTextRange.getEndOffset < endOffset) {
+            if (elem.getTextRange.getEndOffset < endOffset)
               buffer += TextPart(
                 new TextRange(elem.getTextRange.getEndOffset, endOffset)
                   .substring(file.getText))
-            }
           }
         }
         buffer.toSeq
@@ -132,7 +129,7 @@ class JavaCopyPastePostProcessor
       val resultNode = new MainConstruction
       val topElements = getTopElements
       val data = getRefs
-      for (part <- topElements) {
+      for (part <- topElements)
         part match {
           case TextPart(s) =>
             resultNode.addChild(LiteralExpression(s))
@@ -143,7 +140,6 @@ class JavaCopyPastePostProcessor
               withComments = true)
             resultNode.addChild(result)
         }
-      }
 
       val visitor = new SimplePrintVisitor
       visitor.visit(resultNode)
@@ -267,9 +263,8 @@ class JavaCopyPastePostProcessor
     settings.KEEP_BLANK_LINES_IN_DECLARATIONS = 0
     settings.KEEP_BLANK_LINES_BEFORE_RBRACE = 0
 
-    try {
-      block
-    } finally {
+    try block
+    finally {
       settings.KEEP_BLANK_LINES_IN_CODE = keep_blank_lines_in_code
       settings.KEEP_BLANK_LINES_IN_DECLARATIONS =
         keep_blank_lines_in_declarations

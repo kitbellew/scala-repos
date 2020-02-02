@@ -567,12 +567,12 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     * Abstraction for unification of sender and senderFuture for later reply
     */
   def channel: Channel[Any] =
-    if (senderFuture.isDefined) {
+    if (senderFuture.isDefined)
       new Channel[Any] {
         val future = senderFuture.get
         def !(msg: Any) = future completeWithResult msg
       }
-    } else if (sender.isDefined) {
+    else if (sender.isDefined) {
       val someSelf = Some(this)
       new Channel[Any] {
         val client = sender.get
@@ -718,12 +718,11 @@ class LocalActorRef private[akka] (
     * Sets the dispatcher for this actor. Needs to be invoked before the actor is started.
     */
   def dispatcher_=(md: MessageDispatcher): Unit = guard.withGuard {
-    if (!isBeingRestarted) {
+    if (!isBeingRestarted)
       if (!isRunning) _dispatcher = md
       else
         throw new ActorInitializationException(
           "Can not swap dispatcher for " + toString + " after it has been started")
-    }
   }
 
   /**
@@ -767,9 +766,8 @@ class LocalActorRef private[akka] (
       cancelReceiveTimeout
       dispatcher.detach(this)
       _status = ActorRefInternals.SHUTDOWN
-      try {
-        actor.postStop
-      } finally {
+      try actor.postStop
+      finally {
         currentMessage = null
         Actor.registry.unregister(this)
         if (isRemotingEnabled) {
@@ -908,7 +906,7 @@ class LocalActorRef private[akka] (
   protected[akka] def postMessageToMailbox(
       message: Any,
       senderOption: Option[ActorRef]): Unit =
-    if (isClientManaged_?) {
+    if (isClientManaged_?)
       Actor.remote.send[Any](
         message,
         senderOption,
@@ -920,7 +918,7 @@ class LocalActorRef private[akka] (
         None,
         ActorType.ScalaActor,
         None)
-    } else
+    else
       dispatcher dispatchMessage new MessageInvocation(
         this,
         message,
@@ -965,31 +963,24 @@ class LocalActorRef private[akka] (
     */
   protected[akka] def invoke(messageHandle: MessageInvocation): Unit = {
     guard.lock.lock
-    try {
-      if (!isShutdown) {
-        currentMessage = messageHandle
-        try {
-          try {
-            cancelReceiveTimeout // FIXME: leave this here?
-            actor(messageHandle.message)
-            currentMessage = null // reset current message after successful invocation
-          } catch {
-            case e: InterruptedException =>
-              currentMessage = null // received message while actor is shutting down, ignore
-            case e =>
-              handleExceptionInDispatch(e, messageHandle.message)
-          } finally {
-            checkReceiveTimeout // Reschedule receive timeout
-          }
-        } catch {
-          case e =>
-            EventHandler.error(e, this, messageHandle.message.toString)
-            throw e
-        }
+    try if (!isShutdown) {
+      currentMessage = messageHandle
+      try try {
+        cancelReceiveTimeout // FIXME: leave this here?
+        actor(messageHandle.message)
+        currentMessage = null // reset current message after successful invocation
+      } catch {
+        case e: InterruptedException =>
+          currentMessage = null // received message while actor is shutting down, ignore
+        case e =>
+          handleExceptionInDispatch(e, messageHandle.message)
+      } finally checkReceiveTimeout // Reschedule receive timeout
+      catch {
+        case e =>
+          EventHandler.error(e, this, messageHandle.message.toString)
+          throw e
       }
-    } finally {
-      guard.lock.unlock
-    }
+    } finally guard.lock.unlock
   }
 
   protected[akka] def handleTrapExit(dead: ActorRef, reason: Throwable) {
@@ -1013,9 +1004,9 @@ class LocalActorRef private[akka] (
       maxNrOfRetries: Option[Int],
       withinTimeRange: Option[Int]): Boolean = {
     val denied =
-      if (maxNrOfRetries.isEmpty && withinTimeRange.isEmpty) { //Immortal
+      if (maxNrOfRetries.isEmpty && withinTimeRange.isEmpty) //Immortal
         false
-      } else if (withinTimeRange.isEmpty) { // restrict number of restarts
+      else if (withinTimeRange.isEmpty) { // restrict number of restarts
         maxNrOfRetriesCount += 1 //Increment number of retries
         maxNrOfRetriesCount > maxNrOfRetries.get
       } else { // cannot restart more than N within M timerange
@@ -1087,7 +1078,7 @@ class LocalActorRef private[akka] (
     @tailrec
     def attemptRestart() {
       val success =
-        if (requestRestartPermission(maxNrOfRetries, withinTimeRange)) {
+        if (requestRestartPermission(maxNrOfRetries, withinTimeRange))
           guard.withGuard[Boolean] {
             _status = ActorRefInternals.BEING_RESTARTED
 
@@ -1108,9 +1099,7 @@ class LocalActorRef private[akka] (
                         this,
                         "Exception in restart of Actor [%s]".format(toString))
                       false // an error or exception here should trigger a retry
-                  } finally {
-                    currentMessage = null
-                  }
+                  } finally currentMessage = null
                 if (success) {
                   _status = ActorRefInternals.RUNNING
                   dispatcher.resume(this)
@@ -1119,7 +1108,7 @@ class LocalActorRef private[akka] (
                 success
             }
           }
-        } else {
+        else {
           tooManyRestarts()
           true // done
         }
@@ -1168,9 +1157,7 @@ class LocalActorRef private[akka] (
         throw new ActorInitializationException(
           "Actor instance passed to ActorRef can not be 'null'")
       a
-    } finally {
-      Actor.actorRefInCreation.set(None)
-    }
+    } finally Actor.actorRefInCreation.set(None)
 
   private def shutDownTemporaryActor(temporaryActor: ActorRef) {
     temporaryActor.stop()
@@ -1189,12 +1176,11 @@ class LocalActorRef private[akka] (
     senderFuture.foreach(_.completeWithException(reason))
 
     if (supervisor.isDefined) notifySupervisorWithMessage(Exit(this, reason))
-    else {
+    else
       lifeCycle match {
         case Temporary => shutDownTemporaryActor(this)
         case _         => dispatcher.resume(this) //Resume processing for this actor
       }
-    }
   }
 
   private def notifySupervisorWithMessage(notification: LifeCycleMessage) =
@@ -1254,14 +1240,13 @@ class LocalActorRef private[akka] (
 
   protected[akka] def checkReceiveTimeout = {
     cancelReceiveTimeout
-    if (receiveTimeout.isDefined && dispatcher.mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
+    if (receiveTimeout.isDefined && dispatcher.mailboxSize(this) <= 0) //Only reschedule if desired and there are currently no more messages to be processed
       _futureTimeout = Some(
         Scheduler.scheduleOnce(
           this,
           ReceiveTimeout,
           receiveTimeout.get,
           TimeUnit.MILLISECONDS))
-    }
   }
 
   protected[akka] def cancelReceiveTimeout =
@@ -1530,9 +1515,8 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
         if (isTypedActorEnabled)
           TypedActorModule.resolveFutureIfMessageIsJoinPoint(message, future)
         else false
-      try {
-        future.await
-      } catch {
+      try future.await
+      catch {
         case e: FutureTimeoutException =>
           if (isMessageJoinPoint) {
             EventHandler.error(e, this, e.getMessage)
@@ -1571,7 +1555,7 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
     * Works with '!', '!!' and '!!!'.
     */
   def forward(message: Any)(implicit sender: Some[ActorRef]) =
-    if (isRunning) {
+    if (isRunning)
       if (sender.get.senderFuture.isDefined)
         postMessageToMailboxAndCreateFutureResultWithTimeout(
           message,
@@ -1580,7 +1564,7 @@ trait ScalaActorRef extends ActorRefShared { ref: ActorRef =>
           sender.get.senderFuture)
       else
         postMessageToMailbox(message, sender.get.sender)
-    } else
+    else
       throw new ActorInitializationException(
         "Actor has not been started, you need to invoke 'actor.start()' before using it")
 

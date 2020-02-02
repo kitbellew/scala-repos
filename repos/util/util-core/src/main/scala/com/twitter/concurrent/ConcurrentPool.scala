@@ -48,9 +48,9 @@ class ConcurrentPool[K, V] {
 
   def get(k: K): Option[V] = {
     val objs = map.get(k)
-    if (objs eq null) {
+    if (objs eq null)
       None
-    } else {
+    else {
       val obj = objs.poll()
 
       if (objs.isEmpty) {

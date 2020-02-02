@@ -111,7 +111,7 @@ trait JsObj extends JsExp {
 
   override def equals(other: Any): Boolean =
     other match {
-      case jsObj: JsObj => {
+      case jsObj: JsObj =>
         import scala.annotation.tailrec
 
         @tailrec def test(
@@ -129,7 +129,6 @@ trait JsObj extends JsExp {
           }
 
         test(Map(props: _*), jsObj.props)
-      }
 
       case x => super.equals(x)
     }
@@ -671,10 +670,9 @@ trait HtmlFixer {
 
     val revised = ("script" #> nsFunc { ns =>
       ns match {
-        case FindScript(e) => {
+        case FindScript(e) =>
           lb += JE.JsRaw(ns.text).cmd
           NodeSeq.Empty
-        }
         case x => x
       }
     }).apply(xhtml)
@@ -686,11 +684,10 @@ trait HtmlFixer {
 
   private object FindScript {
     def unapply(in: NodeSeq): Option[Elem] = in match {
-      case e: Elem => {
+      case e: Elem =>
         e.attribute("type").map(_.text).filter(_ == "text/javascript").flatMap {
           a => if (e.attribute("src").isEmpty) Some(e) else None
         }
-      }
       case _ => None
     }
   }

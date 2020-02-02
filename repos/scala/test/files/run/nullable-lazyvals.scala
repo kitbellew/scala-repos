@@ -17,9 +17,8 @@ object Test extends App {
 
   for (f <- foo.getClass.getDeclaredFields) {
     f.setAccessible(true)
-    if (f.getName.startsWith("param")) {
+    if (f.getName.startsWith("param"))
       println("%s: %s".format(f.getName, f.get(foo)))
-    }
   }
 
   // test that try-finally does not generated a liftedTry
@@ -29,8 +28,7 @@ object Test extends App {
   // be nulled).
   for (f <- foo.getClass.getDeclaredMethods) {
     f.setAccessible(true)
-    if (f.getName.startsWith("lifted")) {
+    if (f.getName.startsWith("lifted"))
       println("not expected: %s".format(f))
-    }
   }
 }

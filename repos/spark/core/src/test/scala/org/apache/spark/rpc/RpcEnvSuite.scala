@@ -62,13 +62,10 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   override def afterAll(): Unit =
     try {
-      if (env != null) {
+      if (env != null)
         env.shutdown()
-      }
       SparkEnv.set(null)
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   def createRpcEnv(
       conf: SparkConf,
@@ -141,9 +138,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case msg: String => {
+          case msg: String =>
             context.reply(msg)
-          }
         }
       }
     )
@@ -159,9 +155,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case msg: String => {
+          case msg: String =>
             context.reply(msg)
-          }
         }
       }
     )
@@ -188,10 +183,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
         override def receiveAndReply(
             context: RpcCallContext): PartialFunction[Any, Unit] = {
-          case msg: String => {
+          case msg: String =>
             Thread.sleep(100)
             context.reply(msg)
-          }
         }
       }
     )
@@ -349,10 +343,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       override val rpcEnv = env
 
       override def receive: PartialFunction[Any, Unit] = {
-        case m => {
+        case m =>
           self
           callSelfSuccessfully = true
-        }
       }
     })
 
@@ -758,9 +751,8 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
           override def receiveAndReply(
               context: RpcCallContext): PartialFunction[Any, Unit] = {
-            case msg: String => {
+            case msg: String =>
               context.reply(msg)
-            }
           }
         }
       )

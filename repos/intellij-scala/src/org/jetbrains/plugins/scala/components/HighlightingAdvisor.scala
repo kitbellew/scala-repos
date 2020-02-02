@@ -105,12 +105,11 @@ class HighlightingAdvisor(project: Project)
   }
 
   private def notifyIfNeeded() {
-    if (settings.SUGGEST_TYPE_AWARE_HIGHLIGHTING && !enabled && applicable) {
+    if (settings.SUGGEST_TYPE_AWARE_HIGHLIGHTING && !enabled && applicable)
       notify(
         "Configure type-aware highlighting for the project",
         AdviceMessage,
         NotificationType.WARNING)
-    }
   }
 
   private def notify(
@@ -207,9 +206,8 @@ class HighlightingAdvisor(project: Project)
     def onScalaProjectChanged() {
       statusBar.foreach { bar =>
         configureWidget(bar)
-        if (project.hasScala) {
+        if (project.hasScala)
           notifyIfNeeded()
-        }
       }
     }
   }

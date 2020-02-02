@@ -92,11 +92,9 @@ trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
         for {
           ref <- body.depthFirst.filterByType(classOf[ScReferenceElement]).toSeq
           if ref.isReferenceTo(this)
-        } yield {
-          RecursiveReference(
-            ref,
-            expressions.contains(possiblyTailRecursiveCallFor(ref)))
-        }
+        } yield RecursiveReference(
+          ref,
+          expressions.contains(possiblyTailRecursiveCallFor(ref)))
       case None => Seq.empty
     }
   }

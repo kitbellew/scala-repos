@@ -63,17 +63,17 @@ private[math] object Conversion {
     val radixOutOfBounds =
       radix < Character.MIN_RADIX || radix > Character.MAX_RADIX
 
-    if (sign == 0) {
+    if (sign == 0)
       "0"
-    } else if (numberLength == 1) {
+    else if (numberLength == 1) {
       val highDigit = digits(numberLength - 1)
       var v = highDigit & 0xFFFFFFFFL
       if (sign < 0)
         v = -v
       java.lang.Long.toString(v, radix)
-    } else if (radix == 10 || radixOutOfBounds) {
+    } else if (radix == 10 || radixOutOfBounds)
       bi.toString
-    } else {
+    else {
       var bitsForRadixDigit: Double = 0.0
       bitsForRadixDigit = Math.log(radix) / Math.log(2)
       val addForSign = if (sign < 0) 1 else 0
@@ -115,16 +115,15 @@ private[math] object Conversion {
             i += 1
           }
           i = tempLen - 1
-          while (i > 0 && temp(i) == 0) {
+          while (i > 0 && temp(i) == 0)
             i -= 1
-          }
           tempLen = i + 1
           if (!(tempLen == 1 && temp(0) == 0))
             loop()
         }
 
         loop()
-      } else {
+      } else
         for (i <- 0 until numberLength) {
           var j = 0
           while (j < 8 && currentChar > 0) {
@@ -134,7 +133,6 @@ private[math] object Conversion {
             j += 1
           }
         }
-      }
       // strip leading zero's
       result = result.dropWhile(_ == '0')
       if (sign == -1) '-' + result
@@ -157,9 +155,9 @@ private[math] object Conversion {
     var resLengthInChars: Int = 0
     var currentChar: Int = 0
 
-    if (sign == 0) {
+    if (sign == 0)
       "0"
-    } else {
+    else {
       // one 32-bit unsigned value may contains 10 decimal digits
       // Explanation why +1+7:
       // +1 - one char for sign if needed.
@@ -230,9 +228,8 @@ private[math] object Conversion {
             i += 1
           }
           var j = tempLen - 1
-          while ((temp(j) == 0) && (j != 0)) {
+          while ((temp(j) == 0) && (j != 0))
             j -= 1
-          }
           tempLen = j + 1
           if (!(j == 0 && (temp(j) == 0))) loop
         }
@@ -247,7 +244,7 @@ private[math] object Conversion {
 
   /* can process only 32-bit numbers */
   def toDecimalScaledString(value: Long, scale: Int): String =
-    if (value == 0) {
+    if (value == 0)
       scale match {
         case 0 => "0"
         case 1 => "0.0"
@@ -264,7 +261,7 @@ private[math] object Conversion {
           val result = if (scale < 0) "0E+" else "0E"
           result + scaleVal
       }
-    } else {
+    else {
       // one 32-bit unsigned value may contains 10 decimal digits
       // Explanation why 10+1+7:
       // +1 - one char for sign if needed.
@@ -288,14 +285,13 @@ private[math] object Conversion {
 
       if (scale > 0 && exponent >= -6) {
         val index = exponent + 1
-        if (index > 0) {
+        if (index > 0)
           // special case 1
           result = result.substring(0, index) + "." + result.substring(index)
-        } else {
+        else {
           // special case 2
-          for (j <- 0 until -index) {
+          for (j <- 0 until -index)
             result = '0' + result
-          }
           result = "0." + result
         }
       } else if (scale != 0) {
@@ -333,25 +329,25 @@ private[math] object Conversion {
   }
 
   def bigInteger2Double(bi: BigInteger): Double =
-    if (bi.numberLength < 2 || ((bi.numberLength == 2) && (bi.digits(1) > 0))) {
+    if (bi.numberLength < 2 || ((bi.numberLength == 2) && (bi.digits(1) > 0)))
       bi.longValue()
-    } else if (bi.numberLength > 32) {
+    else if (bi.numberLength > 32)
       if (bi.sign > 0) Double.PositiveInfinity
       else Double.NegativeInfinity
-    } else {
+    else {
       val bitLen = bi.abs().bitLength()
       var exponent: Long = bitLen - 1
       val delta = bitLen - 54
       val lVal = bi.abs().shiftRight(delta).longValue()
       var mantissa = lVal & 0x1FFFFFFFFFFFFFL
 
-      if (exponent == 1023 && mantissa == 0X1FFFFFFFFFFFFFL) {
+      if (exponent == 1023 && mantissa == 0X1FFFFFFFFFFFFFL)
         if (bi.sign > 0) Double.PositiveInfinity
         else Double.NegativeInfinity
-      } else if (exponent == 1023 && mantissa == 0x1FFFFFFFFFFFFEL) {
+      else if (exponent == 1023 && mantissa == 0x1FFFFFFFFFFFFEL)
         if (bi.sign > 0) Double.MaxValue
         else -Double.MaxValue
-      } else {
+      else {
         val droppedBits = BitLevel.nonZeroDroppedBits(delta, bi.digits)
         if (((mantissa & 1) == 1) && (((mantissa & 2) == 2) || droppedBits))
           mantissa += 2

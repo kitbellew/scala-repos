@@ -30,15 +30,11 @@ object ExtractCssSelectorExamples extends App {
       docsDir <- ((Full(docsFile)
         .filter(_.exists) ?~ s"'$docsFile' should be a directory, but does not exist.")
         .filter(_.isDirectory) ?~ s"'$docsFile' should be a directory, not a file.")
-    } yield {
-      for {
-        file <- docsDir.listFiles.toList
-        if file.getName.endsWith(".html")
-        fileContents <- tryo(Source.fromFile(file).mkString)
-      } yield {
-        FileContents(file.getName.replace('.', '-'), fileContents)
-      }
-    }
+    } yield for {
+      file <- docsDir.listFiles.toList
+      if file.getName.endsWith(".html")
+      fileContents <- tryo(Source.fromFile(file).mkString)
+    } yield FileContents(file.getName.replace('.', '-'), fileContents)
   }
 
   private def extractPart(partBuilder: (String) => ExamplePart)(
@@ -116,9 +112,7 @@ object ExtractCssSelectorExamples extends App {
               for {
                 extractor <- specializedPartExtractor
                 extractedPart <- extractor(part)
-              } {
-                parts ::= extractedPart
-              }
+              } parts ::= extractedPart
 
               part
             }
@@ -140,17 +134,15 @@ object ExtractCssSelectorExamples extends App {
       exampleContents.reverse
     }
 
-  if (args.length < 2) {
+  if (args.length < 2)
     Console.err.println(
       "Expected two arguments: the base directory of generated HTML and the base directory of the Lift project."
     )
-  } else {
+  else {
     val examples =
       for {
         extractedContents <- contentsToProcess(args(0))
-      } yield {
-        extractedContents.flatMap(extractExamplesFromContents _)
-      }
+      } yield extractedContents.flatMap(extractExamplesFromContents _)
 
     examples match {
       case Full(exampleContents) =>
@@ -170,8 +162,7 @@ object ExtractCssSelectorExamples extends App {
               ExampleInput(input) <- exampleParts.lift(i)
               ExampleFunction(function) <- exampleParts.lift(i + 1)
               ExampleOutput(output) <- exampleParts.lift(i + 2)
-            } yield {
-              s"""
+            } yield s"""
               |    ""\"$exampleLabel""\" in {
               |      $setupCode
               |
@@ -186,7 +177,6 @@ object ExtractCssSelectorExamples extends App {
               |         rendered must ==/(output.toOption.get)
               |      }
               |    }""".stripMargin('|')
-            }
 
           val file = new File(s"$testPath/${filename}Test.scala")
 
@@ -211,9 +201,7 @@ object ExtractCssSelectorExamples extends App {
             |${examples.mkString("\n")}
             |  }
             |}""".stripMargin('|'))
-          } finally {
-            Option(stream).map(_.close)
-          }
+          } finally Option(stream).map(_.close)
         }
 
       case Failure(message, _, _) => Console.err.println(message)

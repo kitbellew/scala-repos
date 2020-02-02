@@ -49,9 +49,8 @@ class ScParameterImpl protected (
 
   def isCallByNameParameter: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScParameterStub].isCallByNameParameter
-    }
     paramType match {
       case Some(paramType) =>
         paramType.isCallByNameParameter
@@ -70,7 +69,7 @@ class ScParameterImpl protected (
           case args =>
             val exprs = args.exprs
             if (exprs.length != 1) None
-            else {
+            else
               exprs(0) match {
                 case literal: ScLiteral
                     if literal.getNode.getFirstChildNode != null &&
@@ -80,7 +79,6 @@ class ScParameterImpl protected (
                   else Some(literalText.substring(1))
                 case _ => None
               }
-            }
         }
       case None => None
     }
@@ -95,9 +93,8 @@ class ScParameterImpl protected (
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScParameterStub].getTypeElement
-    }
     paramType match {
       case Some(x) if x.typeElement != null => Some(x.typeElement)
       case _                                => None
@@ -108,7 +105,7 @@ class ScParameterImpl protected (
     //todo: this is very error prone way to calc type, when usually we need real parameter type
     val computeType: ScType = {
       val stub = getStub
-      if (stub != null) {
+      if (stub != null)
         stub.asInstanceOf[ScParameterStub].getTypeText match {
           case ""
               if stub.getParentStub != null && stub.getParentStub.getParentStub != null &&
@@ -123,7 +120,7 @@ class ScParameterImpl protected (
               case None     => return Failure("Wrong type element", Some(this))
             }
         }
-      } else {
+      else
         typeElement match {
           case None if baseDefaultParam =>
             getActualDefaultExpression match {
@@ -137,24 +134,21 @@ class ScParameterImpl protected (
             }
           case Some(e) => e.getType(TypingContext.empty).getOrAny
         }
-      }
     }
     Success(computeType, Some(this))
   }
 
   def baseDefaultParam: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScParameterStub].isDefaultParam
-    }
     findChildByType[PsiElement](ScalaTokenTypes.tASSIGN) != null
   }
 
   def isRepeatedParameter: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScParameterStub].isRepeated
-    }
     paramType match {
       case Some(p: ScParameterType) => p.isRepeatedParameter
       case None                     => false
@@ -163,9 +157,8 @@ class ScParameterImpl protected (
 
   def getActualDefaultExpression: Option[ScExpression] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScParameterStub].getDefaultExpr
-    }
     findChild(classOf[ScExpression])
   }
 
@@ -176,7 +169,7 @@ class ScParameterImpl protected (
       case clause: ScParameterClause =>
         val index = clause.parameters.indexOf(this)
         val length = clause.parameters.length
-        if (length != 1) {
+        if (length != 1)
           if (index != length) {
             var n = node.getTreeNext
             while (n != null && n.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
@@ -192,12 +185,10 @@ class ScParameterImpl protected (
               n = n.getTreePrev
             }
           }
-        }
       case _ =>
     }
-    for (elem <- toRemove) {
+    for (elem <- toRemove)
       elem.getTreeParent.removeChild(elem)
-    }
   }
 
   override def accept(visitor: ScalaElementVisitor) {

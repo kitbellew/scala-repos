@@ -103,10 +103,9 @@ object Test {
     }
 
     /* Scaling for forward transform */
-    if (dir == 1) {
+    if (dir == 1)
       for (i <- 0L until n)
         x(i.toInt) = div(x(i.toInt), n)
-    }
   }
 
   def run() {

@@ -1,7 +1,6 @@
 class C {
-  val blob = {
+  val blob =
     new { case class Foo() }
-  }
   val blub = {
     class Inner { case class Foo() }
     new Inner

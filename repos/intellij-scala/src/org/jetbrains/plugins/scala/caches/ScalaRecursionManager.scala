@@ -29,9 +29,7 @@ object ScalaRecursionManager {
     try {
       recursionMap.set(m)
       body
-    } finally {
-      recursionMap.set(currentMap)
-    }
+    } finally recursionMap.set(currentMap)
   }
 
   private def getSearches[Dom <: PsiElement](
@@ -82,16 +80,14 @@ object ScalaRecursionManager {
       compute: => Result,
       key: String): Option[Result] = {
     val searches: List[Object] = getSearches(element, key)
-    if (checkAdd(addElement, searches)) {
+    if (checkAdd(addElement, searches))
       try {
         addLast(element, key, addElement)
 
         //computations
         Some(compute)
-      } finally {
-        removeLast(element, key)
-      }
-    } else None
+      } finally removeLast(element, key)
+    else None
   }
 
   def doComputationsForTwoElements[Dom <: PsiElement, Result](
@@ -104,7 +100,7 @@ object ScalaRecursionManager {
       key: String): Option[Result] = {
     val searches1: List[Object] = getSearches(element1, key)
     val searches2: List[Object] = getSearches(element2, key)
-    if (checkAdd(addElement1, searches1) && checkAdd(addElement2, searches2)) {
+    if (checkAdd(addElement1, searches1) && checkAdd(addElement2, searches2))
       try {
         addLast(element1, key, addElement1)
         addLast(element2, key, addElement2)
@@ -115,7 +111,7 @@ object ScalaRecursionManager {
         removeLast(element2, key)
         removeLast(element1, key)
       }
-    } else None
+    else None
   }
 
 }

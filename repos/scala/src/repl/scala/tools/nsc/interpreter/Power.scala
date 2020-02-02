@@ -70,11 +70,10 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
       pass += 1
       val (repeats, unseen) = todo partition seen
       unseenHistory += unseen.size
-      if (settings.verbose) {
+      if (settings.verbose)
         println(
           "%3d  %s accumulated, %s discarded.  This pass: %s unseen, %s repeats"
             .format(pass, keep.size, discarded, unseen.size, repeats.size))
-      }
       if (lastCount == processed || unseen.isEmpty || isFinished())
         return keep.toSet
 

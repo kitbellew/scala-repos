@@ -48,13 +48,11 @@ trait Task[R, +Tp] {
 
   // tries to do the leaf computation, storing the possible exception
   private[parallel] def tryLeaf(lastres: Option[R]) {
-    try {
-      tryBreakable {
-        leaf(lastres)
-        result = result // ensure that effects of `leaf` are visible to readers of `result`
-      } catchBreak {
-        signalAbort()
-      }
+    try tryBreakable {
+      leaf(lastres)
+      result = result // ensure that effects of `leaf` are visible to readers of `result`
+    } catchBreak {
+      signalAbort()
     } catch {
       case thr: Throwable =>
         result = result // ensure that effects of `leaf` are visible
@@ -177,10 +175,9 @@ trait AdaptiveWorkStealingTasks extends Tasks {
           // println("Done with " + beforelast.body + ", next direct is " + last.body)
           last.body.tryLeaf(Some(body.result))
           last.release()
-        } else {
+        } else
           // println("Done with " + beforelast.body + ", next sync is " + last.body)
           last.sync()
-        }
         // println("Merging " + body + " with " + last.body)
         body.tryMerge(last.body.repr)
       }
@@ -243,10 +240,9 @@ trait ThreadPoolTasks extends Tasks {
       // utb: future.get()
       executor.synchronized {
         val coresize = executor.getCorePoolSize
-        if (coresize < totaltasks) {
+        if (coresize < totaltasks)
           executor.setCorePoolSize(coresize + 1)
-          //assert(executor.getCorePoolSize == (coresize + 1))
-        }
+        //assert(executor.getCorePoolSize == (coresize + 1))
       }
       while (!completed) this.wait
     }
@@ -267,10 +263,10 @@ trait ThreadPoolTasks extends Tasks {
           isOkToRun = true
         }
       }
-      if (isOkToRun) {
+      if (isOkToRun)
         // debuglog("Running body of " + body)
         compute()
-      } else {
+      else {
         // just skip
         // debuglog("skipping body of " + body)
       }
@@ -402,11 +398,10 @@ trait ForkJoinTasks extends Tasks with HavingForkJoinPool {
   def execute[R, Tp](task: Task[R, Tp]): () => R = {
     val fjtask = newWrappedTask(task)
 
-    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread]) {
+    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread])
       fjtask.fork
-    } else {
+    else
       forkJoinPool.execute(fjtask)
-    }
 
     () => {
       fjtask.sync()
@@ -425,11 +420,10 @@ trait ForkJoinTasks extends Tasks with HavingForkJoinPool {
   def executeAndWaitResult[R, Tp](task: Task[R, Tp]): R = {
     val fjtask = newWrappedTask(task)
 
-    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread]) {
+    if (Thread.currentThread.isInstanceOf[ForkJoinWorkerThread])
       fjtask.fork
-    } else {
+    else
       forkJoinPool.execute(fjtask)
-    }
 
     fjtask.sync()
     // if (fjtask.body.throwable != null) println("throwing: " + fjtask.body.throwable + " at " + fjtask.body)

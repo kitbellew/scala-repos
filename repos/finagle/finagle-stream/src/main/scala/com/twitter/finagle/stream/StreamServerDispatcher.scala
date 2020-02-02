@@ -47,17 +47,16 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
       httpRes.getProtocolVersion == HttpVersion.HTTP_1_1 &&
         httpRes.headers.get(HttpHeaders.Names.CONTENT_LENGTH) == null)
 
-    if (httpRes.isChunked) {
+    if (httpRes.isChunked)
       HttpHeaders.setHeader(
         httpRes,
         HttpHeaders.Names.TRANSFER_ENCODING,
         HttpHeaders.Values.CHUNKED)
-    } else {
+    else
       HttpHeaders.setHeader(
         httpRes,
         HttpHeaders.Names.CONNECTION,
         HttpHeaders.Values.CLOSE)
-    }
 
     val f = trans
       .write(httpRes)

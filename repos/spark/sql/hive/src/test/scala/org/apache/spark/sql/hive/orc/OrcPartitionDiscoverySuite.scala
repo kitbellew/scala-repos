@@ -93,11 +93,9 @@ class OrcPartitionDiscoverySuite
       for {
         pi <- Seq(1, 2)
         ps <- Seq("foo", "bar")
-      } {
-        makeOrcFile(
-          (1 to 10).map(i => OrcParData(i, i.toString)),
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
-      }
+      } makeOrcFile(
+        (1 to 10).map(i => OrcParData(i, i.toString)),
+        makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
 
       read.orc(base.getCanonicalPath).registerTempTable("t")
 
@@ -132,11 +130,9 @@ class OrcPartitionDiscoverySuite
       for {
         pi <- Seq(1, 2)
         ps <- Seq("foo", "bar")
-      } {
-        makeOrcFile(
-          (1 to 10).map(i => OrcParDataWithKey(i, pi, i.toString, ps)),
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
-      }
+      } makeOrcFile(
+        (1 to 10).map(i => OrcParDataWithKey(i, pi, i.toString, ps)),
+        makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
 
       read.orc(base.getCanonicalPath).registerTempTable("t")
 
@@ -172,11 +168,9 @@ class OrcPartitionDiscoverySuite
         // Must be `Integer` rather than `Int` here. `null.asInstanceOf[Int]` results in a zero...
         pi <- Seq(1, null.asInstanceOf[Integer])
         ps <- Seq("foo", null.asInstanceOf[String])
-      } {
-        makeOrcFile(
-          (1 to 10).map(i => OrcParData(i, i.toString)),
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
-      }
+      } makeOrcFile(
+        (1 to 10).map(i => OrcParData(i, i.toString)),
+        makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
 
       read
         .option(ConfVars.DEFAULTPARTITIONNAME.varname, defaultPartitionName)
@@ -209,11 +203,9 @@ class OrcPartitionDiscoverySuite
       for {
         pi <- Seq(1, 2)
         ps <- Seq("foo", null.asInstanceOf[String])
-      } {
-        makeOrcFile(
-          (1 to 10).map(i => OrcParDataWithKey(i, pi, i.toString, ps)),
-          makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
-      }
+      } makeOrcFile(
+        (1 to 10).map(i => OrcParDataWithKey(i, pi, i.toString, ps)),
+        makePartitionDir(base, defaultPartitionName, "pi" -> pi, "ps" -> ps))
 
       read
         .option(ConfVars.DEFAULTPARTITIONNAME.varname, defaultPartitionName)

@@ -17,13 +17,13 @@ object message {
       var sum = 0
 
       override def run() =
-        while (true) {
+        while (true)
           receive {
             case Message(value) =>
               val j = value + 1
-              if (null != next) {
+              if (null != next)
                 next ! Message(j)
-              } else {
+              else {
                 sum = sum + j
                 if (sum >= finalSum) {
                   Console.println(sum);
@@ -31,7 +31,6 @@ object message {
                 }
               }
           }
-        }
 
       def pid() = { this.start; this.self }
     }

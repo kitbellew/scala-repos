@@ -126,11 +126,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
         print("[");
         printSeq(ts) { t =>
           printAnnotations(t)
-          if (t.mods.hasFlag(CONTRAVARIANT)) {
+          if (t.mods.hasFlag(CONTRAVARIANT))
             print("-")
-          } else if (t.mods.hasFlag(COVARIANT)) {
+          else if (t.mods.hasFlag(COVARIANT))
             print("+")
-          }
           printParam(t)
         } { print(", ") }; print("]")
       }
@@ -197,9 +196,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
       }
     private def ifSym(tree: Tree, p: Symbol => Boolean) = symFn(tree, p, false)
 
-    def printOpt(prefix: String, tree: Tree) = if (tree.nonEmpty) {
-      print(prefix, tree)
-    }
+    def printOpt(prefix: String, tree: Tree) =
+      if (tree.nonEmpty)
+        print(prefix, tree)
 
     def printModifiers(tree: Tree, mods: Modifiers): Unit = printFlags(
       if (tree.symbol == NoSymbol) mods.flags else tree.symbol.flags,
@@ -393,11 +392,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
           if (body.nonEmpty) {
             if (self.name != nme.WILDCARD) {
               print(" { ", self.name); printOpt(": ", self.tpt); print(" => ")
-            } else if (self.tpt.nonEmpty) {
+            } else if (self.tpt.nonEmpty)
               print(" { _ : ", self.tpt, " => ")
-            } else {
+            else
               print(" {")
-            }
             printColumn(body, "", ";", "}")
           }
           currentOwner = currentOwner1
@@ -498,14 +496,13 @@ trait Printers extends api.Printers { self: SymbolTable =>
           print(x.escapedStringValue)
 
         case tt: TypeTree =>
-          if ((tree.tpe eq null) || (printPositions && tt.original != null)) {
+          if ((tree.tpe eq null) || (printPositions && tt.original != null))
             if (tt.original != null) print("<type: ", tt.original, ">")
             else print("<type ?>")
-          } else if ((tree.tpe.typeSymbol ne null) && tree.tpe.typeSymbol.isAnonymousClass) {
+          else if ((tree.tpe.typeSymbol ne null) && tree.tpe.typeSymbol.isAnonymousClass)
             print(tree.tpe.typeSymbol.toString)
-          } else {
+          else
             print(tree.tpe.toString)
-          }
 
         case an @ Annotated(
               Apply(Select(New(tpt), nme.CONSTRUCTOR), args),
@@ -970,9 +967,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
               case _                                   => Nil
             }
             printArgss(constrArgss)
-            if (traits.nonEmpty) {
+            if (traits.nonEmpty)
               printRow(traits, " with ", " with ", "")
-            }
           }
           /* Remove primary constr def and constr val and var defs
            * right contains all constructors
@@ -998,11 +994,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
               print(" { ", self.name);
               printOpt(": ", self.tpt);
               print(" =>")
-            } else if (self.tpt.nonEmpty) {
+            } else if (self.tpt.nonEmpty)
               print(" { _ : ", self.tpt, " =>")
-            } else {
+            else
               print(" {")
-            }
             printColumn(modBody, "", ";", "}")
           }
 
@@ -1074,9 +1069,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
         // print only fun when targs are TypeTrees with empty original
         case TypeApply(fun, targs) =>
-          if (targs.exists(isEmptyTree(_))) {
+          if (targs.exists(isEmptyTree(_)))
             print(fun)
-          } else super.printTree(tree)
+          else super.printTree(tree)
 
         case Apply(fun, vargs) =>
           tree match {
@@ -1147,19 +1142,18 @@ trait Printers extends api.Printers { self: SymbolTable =>
           else print(resolveSelect(qual), ".", printedName(name))
 
         case id @ Ident(name) =>
-          if (name.nonEmpty) {
-            if (name == nme.dollarScope) {
+          if (name.nonEmpty)
+            if (name == nme.dollarScope)
               print(s"scala.xml.${nme.TopScope}")
-            } else {
+            else {
               val str = printedName(name)
               val strIsBackquoted = str.startsWith("`") && str.endsWith("`")
               print(
                 if (id.isBackquoted && !strIsBackquoted) "`" + str + "`"
                 else str)
             }
-          } else {
+          else
             print("")
-          }
 
         case l @ Literal(x) =>
           import Chars.LF
@@ -1214,14 +1208,12 @@ trait Printers extends api.Printers { self: SymbolTable =>
             print("(")
             printRow(args.init, "(", ", ", ")")
             print(" => ", args.last, ")")
-          } else {
-            if (treeInfo.isRepeatedParamType(tree) && args.nonEmpty) {
-              print(args(0), "*")
-            } else if (treeInfo.isByNameParamType(tree)) {
-              print("=> ", if (args.isEmpty) "()" else args(0))
-            } else
-              super.printTree(tree)
-          }
+          } else if (treeInfo.isRepeatedParamType(tree) && args.nonEmpty)
+            print(args(0), "*")
+          else if (treeInfo.isByNameParamType(tree))
+            print("=> ", if (args.isEmpty) "()" else args(0))
+          else
+            super.printTree(tree)
 
         case ExistentialTypeTree(tpt, whereClauses) =>
           print("(", tpt);
@@ -1354,7 +1346,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
                   if (isError) print("<")
                   print(name)
                   if (isError) print(": error>")
-                } else if (hasSymbolField) {
+                } else if (hasSymbolField)
                   tree match {
                     case refTree: RefTree =>
                       if (tree.symbol.name != refTree.name)
@@ -1365,9 +1357,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
                     case _ =>
                       print(tree.symbol.name)
                   }
-                } else {
+                else
                   print(name)
-                }
               case Constant(s: String) =>
                 print("Constant(\"" + s + "\")")
               case Constant(null) =>

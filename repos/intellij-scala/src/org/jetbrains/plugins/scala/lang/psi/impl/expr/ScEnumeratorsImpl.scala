@@ -52,7 +52,7 @@ class ScEnumeratorsImpl(node: ASTNode)
             }
           ))
       else reverseChildren
-    for (c <- children) {
+    for (c <- children)
       c match {
         case c: ScGenerator =>
           for (b <- c.pattern.bindings)
@@ -66,7 +66,6 @@ class ScEnumeratorsImpl(node: ASTNode)
             if (!processor.execute(b, state)) return false
         case _ =>
       }
-    }
     true
   }
 

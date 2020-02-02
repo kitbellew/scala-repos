@@ -91,9 +91,7 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         deleted <- accountManager.deleteAccount(before.get.accountId)
         after <- accountManager.findAccountById(account.accountId)
         // deleteCol <- accountManager.findDeletedAccount(account.accountId)
-      } yield {
-        (before, deleted, after)
-      }).copoint must beLike {
+      } yield (before, deleted, after)).copoint must beLike {
         case (Some(t1), Some(t2), None) =>
           t1 must_== t2
         //t1 must_== t3
@@ -113,9 +111,7 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
         deleted2 <- accountManager.deleteAccount(before.get.accountId)
         after <- accountManager.findAccountById(account.accountId)
         //  deleteCol <- accountManager.findDeletedAccount(account.accountId)
-      } yield {
-        (before, deleted1, deleted2, after)
-      }).copoint must beLike {
+      } yield (before, deleted1, deleted2, after)).copoint must beLike {
         case (Some(t1), Some(t2), None, None) =>
           t1 must_== t2
         //t1 must_== t4

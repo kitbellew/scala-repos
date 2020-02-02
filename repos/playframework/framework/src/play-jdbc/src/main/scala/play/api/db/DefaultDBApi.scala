@@ -21,7 +21,7 @@ class DefaultDBApi(
 
   import DefaultDBApi._
 
-  lazy val databases: Seq[Database] = {
+  lazy val databases: Seq[Database] =
     configuration.map {
       case (name, config) =>
         val pool = ConnectionPool.fromConfig(
@@ -31,11 +31,9 @@ class DefaultDBApi(
           defaultConnectionPool)
         new PooledDatabase(name, config, environment, pool)
     }.toSeq
-  }
 
-  private lazy val databaseByName: Map[String, Database] = {
+  private lazy val databaseByName: Map[String, Database] =
     databases.map(db => (db.name, db)).toMap
-  }
 
   def database(name: String): Database =
     databaseByName.getOrElse(

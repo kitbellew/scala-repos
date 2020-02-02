@@ -86,9 +86,8 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
     if (queues contains mbox) {
       val newSet = queues(mbox) + new WeakReference(q)
       queues += mbox -> newSet
-    } else {
+    } else
       queues += mbox -> Set(new WeakReference(q))
-    }
     val now = System.nanoTime
     if (now - lastGC > 1000000000L) {
       lastGC = now
@@ -109,7 +108,7 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
   protected[akka] def gatherFromAllOtherQueues(
       mbox: CallingThreadMailbox,
       own: MessageQueue): Unit = synchronized {
-    if (queues contains mbox) {
+    if (queues contains mbox)
       for {
         ref ← queues(mbox)
         q = ref.get
@@ -123,7 +122,6 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
           msg = q.dequeue()
         }
       }
-    }
   }
 }
 
@@ -202,7 +200,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
 
   protected[akka] override def suspend(actor: ActorCell) {
     actor.mailbox match {
-      case m: CallingThreadMailbox ⇒ { m.suspendSwitch.switchOn; m.suspend() }
+      case m: CallingThreadMailbox ⇒ m.suspendSwitch.switchOn; m.suspend()
       case m ⇒ m.systemEnqueue(actor.self, Suspend())
     }
   }
@@ -291,7 +289,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
         val handle = mbox.suspendSwitch.fold[Envelope](null) {
           if (mbox.isClosed) null else queue.dequeue()
         }
-        if (handle ne null) {
+        if (handle ne null)
           try {
             if (Mailbox.debug)
               println(mbox.actor.self + " processing message " + handle)
@@ -309,7 +307,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
               log.error(e, "Error during message processing")
               false
           }
-        } else false
+        else false
       }
       if (recurse) process(intex)
       else intex
@@ -320,9 +318,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
     if (!mbox.ctdLock.isHeldByCurrentThread) {
       var intex = interruptedEx
       val gotLock =
-        try {
-          mbox.ctdLock.tryLock(50, TimeUnit.MILLISECONDS)
-        } catch {
+        try mbox.ctdLock.tryLock(50, TimeUnit.MILLISECONDS)
+        catch {
           case ie: InterruptedException ⇒
             Thread
               .interrupted() // clear interrupted flag before we continue, exception will be thrown later
@@ -331,20 +328,15 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
         }
       if (gotLock) {
         val ie =
-          try {
-            process(intex)
-          } finally {
-            mbox.ctdLock.unlock
-          }
+          try process(intex)
+          finally mbox.ctdLock.unlock
         throwInterruptionIfExistsOrSet(ie)
-      } else {
-        // if we didn't get the lock and our mailbox still has messages, then we need to try again
-        if (mbox.hasSystemMessages || mbox.hasMessages) {
-          runQueue(mbox, queue, intex)
-        } else {
-          throwInterruptionIfExistsOrSet(intex)
-        }
-      }
+      } else
+      // if we didn't get the lock and our mailbox still has messages, then we need to try again
+      if (mbox.hasSystemMessages || mbox.hasMessages)
+        runQueue(mbox, queue, intex)
+      else
+        throwInterruptionIfExistsOrSet(intex)
     }
   }
 }

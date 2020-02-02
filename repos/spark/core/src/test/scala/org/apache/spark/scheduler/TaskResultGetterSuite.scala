@@ -228,9 +228,7 @@ class TaskResultGetterSuite
 
       assert(expectedFailure.findFirstMatchIn(exceptionMessage).isDefined)
       assert(unknownFailure.findFirstMatchIn(exceptionMessage).isEmpty)
-    } finally {
-      Thread.currentThread.setContextClassLoader(originalClassLoader)
-    }
+    } finally Thread.currentThread.setContextClassLoader(originalClassLoader)
   }
 
   test("task result size is set on the driver, not the executors") {

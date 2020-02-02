@@ -263,9 +263,7 @@ private[streaming] object MasterFailureTest extends Logging {
         }
       } catch {
         case e: Exception => logError("Error running streaming context", e)
-      } finally {
-        ssc.stop()
-      }
+      } finally ssc.stop()
       if (killingThread.isAlive) {
         killingThread.interrupt()
         // SparkContext.stop will set SparkEnv.env to null. We need to make sure SparkContext is
@@ -318,11 +316,10 @@ private[streaming] object MasterFailureTest extends Logging {
       output: Seq[T],
       expectedOutput: Seq[T]) {
     // Verify whether expected outputs do not consecutive batches with same output
-    for (i <- 0 until expectedOutput.size - 1) {
+    for (i <- 0 until expectedOutput.size - 1)
       assert(
         expectedOutput(i) != expectedOutput(i + 1),
         "Expected output has consecutive duplicate sequence of values")
-    }
 
     // Log the output
     // scalastyle:off println
@@ -415,20 +412,18 @@ private[streaming] class FileGeneratingThread(
             fs.rename(tempHadoopFile, hadoopFile)
             done = true
           } catch {
-            case ioe: IOException => {
+            case ioe: IOException =>
               fs = testDir.getFileSystem(new Configuration())
               logWarning(
                 "Attempt " + tries + " at generating file " + hadoopFile + " failed.",
                 ioe)
-            }
           }
         }
-        if (!done) {
+        if (!done)
           logError("Could not generate file " + hadoopFile)
-        } else {
+        else
           logInfo(
             "Generated file " + hadoopFile + " at " + System.currentTimeMillis)
-        }
         Thread.sleep(interval)
         localFile.delete()
       }

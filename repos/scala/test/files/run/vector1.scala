@@ -48,9 +48,8 @@ object Test {
     assert(
       res.length == (end - start),
       res.length + "!=" + (end - start) + " (" + res + ")")
-    for (i <- start until end) {
+    for (i <- start until end)
       assert(res(i) == (label + i), "" + res(i) + "!=" + (label + i))
-    }
     res
   }
 
@@ -108,12 +107,9 @@ object Test {
       min -= 1; a = ("a" + min) +: a
     }
 
-    try {
-
-      while (min > 0 || max < N) {
-        seqFront()
-        seqBack()
-      }
+    try while (min > 0 || max < N) {
+      seqFront()
+      seqBack()
     } catch {
       case ex: Throwable =>
         //println("----------------")

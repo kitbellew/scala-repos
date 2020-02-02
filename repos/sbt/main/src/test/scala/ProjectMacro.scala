@@ -25,9 +25,8 @@ object ProjectMacro extends Properties("ProjectMacro") {
   import pd._
 
   def secure(f: => Prop): Prop =
-    try {
-      Prop.secure(f)
-    } catch {
+    try Prop.secure(f)
+    catch {
       case e: Throwable =>
         e.printStackTrace
         throw e

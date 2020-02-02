@@ -104,11 +104,10 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     // but it is handled in "optimize" in general, so that (g^k)*something works
     assert(power > 0, "exponent must be >= 1")
     val literal = this.asInstanceOf[Matrix2[R, R, V]]
-    if (power == 1) {
+    if (power == 1)
       literal
-    } else {
+    else
       literal * (literal ^ (power - 1))
-    }
   }
 
   // TODO: complete the rest of the API to match the old Matrix API (many methods are effectively on the TypedPipe)
@@ -160,11 +159,13 @@ sealed trait Matrix2[R, C, V] extends Serializable {
     lazy val newPipe = toTypedPipe
       .map {
         case (r, c, x) =>
-          (r, c, if (mon.isNonZero(x)) {
-            ring.one
-          } else {
-            ring.zero
-          })
+          (
+            r,
+            c,
+            if (mon.isNonZero(x))
+              ring.one
+            else
+              ring.zero)
       }
       .filter { kv => ring.isNonZero(kv._3) }
     MatrixLiteral(newPipe, this.sizeHint)
@@ -292,15 +293,14 @@ class DefaultMatrixJoiner(sizeRatioThreshold: Long) extends MatrixJoiner2 {
     // use block join on tall skinny times skinny tall (or skewed): the result really big,
     // but the direct approach can't get much parallelism.
     // https://github.com/twitter/scalding/issues/629
-    if (sizeOne / sizeTwo > sizeRatioThreshold) {
+    if (sizeOne / sizeTwo > sizeRatioThreshold)
       one.hashJoin(two)
-    } else if (sizeTwo / sizeOne > sizeRatioThreshold) {
+    else if (sizeTwo / sizeOne > sizeRatioThreshold)
       swapInner(two.hashJoin(one))
-    } else if (sizeOne > sizeTwo) {
+    else if (sizeOne > sizeTwo)
       one.join(two).toTypedPipe
-    } else {
+    else
       swapInner(two.join(one).toTypedPipe)
-    }
   }
 }
 
@@ -377,23 +377,22 @@ case class Product[R, C, C2, V](
       .sum(localRing)
       .filter { kv => localRing.isNonZero(kv._2) }
 
-    if (leftMatrix) {
+    if (leftMatrix)
       joined
         .map { case (r, v) => (r, (), v) }
         .asInstanceOf[TypedPipe[(R, C2, V)]] // we know C2 is Unit
-    } else {
+    else
       joined
         .map { case (c, v) => ((), c, v) }
         .asInstanceOf[TypedPipe[(R, C2, V)]] // we know R is Unit
-    }
   }
 
   // represents `\sum_{i j} M_{i j}` where `M_{i j}` is the Matrix with exactly one element at `row=i, col = j`.
   lazy val toOuterSum: TypedPipe[(R, C2, V)] = {
-    if (optimal) {
-      if (isSpecialCase) {
+    if (optimal)
+      if (isSpecialCase)
         specialCase
-      } else {
+      else {
         implicit val ord: Ordering[C] = right.rowOrd
         val localRing = ring
         joiner
@@ -403,18 +402,17 @@ case class Product[R, C, C2, V](
               (l1, r2, localRing.times(lv, rv))
           }
       }
-    } else {
+    else
       // this branch might be tricky, since not clear to me that optimizedSelf will be a Product with a known C type
       // Maybe it is Product[R, _, C2, V]
       optimizedSelf.asInstanceOf[Product[R, _, C2, V]].toOuterSum
-    }
   }
 
   private def computePipe(
       joined: TypedPipe[(R, C2, V)] = toOuterSum): TypedPipe[(R, C2, V)] =
-    if (isSpecialCase) {
+    if (isSpecialCase)
       joined
-    } else {
+    else {
       val localRing = ring
       joined
         .groupBy(w => (w._1, w._2))
@@ -429,11 +427,10 @@ case class Product[R, C, C2, V](
       case Some(m) =>
         m.get(this) match {
           case Some(pipe) => pipe
-          case None => {
+          case None =>
             val result = computePipe()
             m.put(this, result)
             result
-          }
         }
       case None => optimizedSelf.toTypedPipe
     }
@@ -450,11 +447,10 @@ case class Product[R, C, C2, V](
     Product(right.transpose, left.transpose, ring)
   override def negate(implicit g: Group[V]): Product[R, C, C2, V] =
     if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
-          .getOrElse(BigInt(0L))) {
+          .getOrElse(BigInt(0L)))
       Product(left, right.negate, ring, expressions)
-    } else {
+    else
       Product(left.negate, right, ring, expressions)
-    }
 
   /**
     * Trace(A B) = Trace(B A) so we optimize to choose the lowest cost item
@@ -506,26 +502,22 @@ case class Sum[R, C, V](
       }
 
     sum match {
-      case Sum(l @ Sum(_, _, _), r @ Sum(_, _, _), _) => {
+      case Sum(l @ Sum(_, _, _), r @ Sum(_, _, _), _) =>
         collectAddends(l) ++ collectAddends(r)
-      }
-      case Sum(l @ Sum(_, _, _), r, _) => {
+      case Sum(l @ Sum(_, _, _), r, _) =>
         collectAddends(l) ++ List(getLiteral(r))
-      }
-      case Sum(l, r @ Sum(_, _, _), _) => {
+      case Sum(l, r @ Sum(_, _, _), _) =>
         getLiteral(l) :: collectAddends(r)
-      }
-      case Sum(l, r, _) => {
+      case Sum(l, r, _) =>
         List(getLiteral(l), getLiteral(r))
-      }
     }
   }
 
   override lazy val toTypedPipe: TypedPipe[(R, C, V)] = {
-    if (left.equals(right)) {
+    if (left.equals(right))
       left.optimizedSelf.toTypedPipe.map(v =>
         (v._1, v._2, mon.plus(v._3, v._3)))
-    } else {
+    else
       collectAddends(this)
         .reduce((x, y) => x ++ y)
         .groupBy(x => (x._1, x._2))
@@ -533,7 +525,6 @@ case class Sum[R, C, V](
         .sum(mon)
         .filter { kv => mon.isNonZero(kv._2) }
         .map { case ((r, c), v) => (r, c, v) }
-    }
   }
 
   override val sizeHint = left.sizeHint + right.sizeHint
@@ -573,10 +564,10 @@ case class HadamardProduct[R, C, V](
 
   // TODO: optimize / combine with Sums: https://github.com/tomtau/scalding/issues/14#issuecomment-22971582
   override lazy val toTypedPipe: TypedPipe[(R, C, V)] = {
-    if (left.equals(right)) {
+    if (left.equals(right))
       left.optimizedSelf.toTypedPipe.map(v =>
         (v._1, v._2, ring.times(v._3, v._3)))
-    } else {
+    else
       // tracking values which were reduced (multiplied by non-zero) or non-reduced (multiplied by zero) with a boolean
       (left.optimizedSelf.toTypedPipe.map {
         case (r, c, v) => (r, c, (v, false))
@@ -589,7 +580,6 @@ case class HadamardProduct[R, C, V](
         .reduce((x, y) => (ring.times(x._1, y._1), true))
         .filter { kv => kv._2._2 && ring.isNonZero(kv._2._1) }
         .map { case ((r, c), v) => (r, c, v._1) }
-    }
   }
 
   override lazy val transpose: MatrixLiteral[C, R, V] = MatrixLiteral(
@@ -830,7 +820,7 @@ object Matrix2 {
         // basic block of one matrix
         case element @ MatrixLiteral(_, _) => (List(element), 0, None, None)
         // two potential basic blocks connected by a sum
-        case Sum(left, right, mon) => {
+        case Sum(left, right, mon) =>
           val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(
             left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
@@ -844,8 +834,7 @@ object Matrix2 {
             lastCost1 + lastCost2 + cost1 + cost2,
             ringL.orElse(ringR),
             joinerL.orElse(joinerR))
-        }
-        case HadamardProduct(left, right, ring) => {
+        case HadamardProduct(left, right, ring) =>
           val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(
             left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
@@ -859,9 +848,8 @@ object Matrix2 {
             lastCost1 + lastCost2 + cost1 + cost2,
             ringL.orElse(ringR),
             joinerL.orElse(joinerR))
-        }
         // chain (...something...)*(...something...)
-        case p @ Product(left, right, ring, _) => {
+        case p @ Product(left, right, ring, _) =>
           val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(
             left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
@@ -871,7 +859,6 @@ object Matrix2 {
             lastCost1 + lastCost2,
             Some(ring),
             Some(p.joiner))
-        }
         // OneC, OneR and potentially other intermediate matrices
         case el => (List(el), 0, None, None)
       }

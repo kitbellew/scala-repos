@@ -83,13 +83,12 @@ class ScalaChangeSignatureUsageProcessor
           case other        => other
         }.distinct
 
-        if (info.isParameterSetOrOrderChanged || info.isParameterNamesChanged) {
+        if (info.isParameterSetOrOrderChanged || info.isParameterNamesChanged)
           methods.foreach {
             case m: PsiMethod =>
               findParameterUsages(jInfo, m, results)
             case _ =>
           }
-        }
 
         (overriders ++ synthetics).foreach {
           case named: PsiNamedElement =>
@@ -198,7 +197,7 @@ class ScalaChangeSignatureUsageProcessor
       return false
     }
 
-    if (beforeMethodChange) {
+    if (beforeMethodChange)
       usageInfo match {
         case namedInfo: ScalaNamedElementUsageInfo =>
           processNamedElementUsage(changeInfo, namedInfo)
@@ -209,7 +208,6 @@ class ScalaChangeSignatureUsageProcessor
         case _ =>
           processSimpleUsage(changeInfo, usageInfo)
       }
-    }
 
     if (isLastUsage) {
       updateNamedElements()
@@ -332,9 +330,7 @@ class ScalaChangeSignatureUsageProcessor
       param = parameters(oldIdx)
       newName = paramInfo.getName
       if oldName == param.name /*skip overriders with other param name*/ && newName != param.name
-    } {
-      addParameterUsages(param, oldIdx, newName, results)
-    }
+    } addParameterUsages(param, oldIdx, newName, results)
 
   private def addParameterUsages(
       param: PsiParameter,

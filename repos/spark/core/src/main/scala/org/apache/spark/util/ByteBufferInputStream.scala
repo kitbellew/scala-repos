@@ -35,9 +35,8 @@ private[spark] class ByteBufferInputStream(
     if (buffer == null || buffer.remaining() == 0) {
       cleanUp()
       -1
-    } else {
+    } else
       buffer.get() & 0xFF
-    }
 
   override def read(dest: Array[Byte]): Int =
     read(dest, 0, dest.length)
@@ -56,22 +55,19 @@ private[spark] class ByteBufferInputStream(
     if (buffer != null) {
       val amountToSkip = math.min(bytes, buffer.remaining).toInt
       buffer.position(buffer.position + amountToSkip)
-      if (buffer.remaining() == 0) {
+      if (buffer.remaining() == 0)
         cleanUp()
-      }
       amountToSkip
-    } else {
+    } else
       0L
-    }
 
   /**
     * Clean up the buffer, and potentially dispose of it using StorageUtils.dispose().
     */
   private def cleanUp() {
     if (buffer != null) {
-      if (dispose) {
+      if (dispose)
         StorageUtils.dispose(buffer)
-      }
       buffer = null
     }
   }

@@ -13,7 +13,6 @@ object DebugPrint {
     dLog = b
 
   def println(st: String): Unit =
-    if (displayLog) {
+    if (displayLog)
       Console.println(st)
-    }
 }

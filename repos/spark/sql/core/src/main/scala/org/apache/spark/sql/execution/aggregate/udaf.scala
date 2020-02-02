@@ -118,59 +118,52 @@ sealed trait BufferSetterGetterUtils {
 
         case b: BooleanType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setBoolean(ordinal, value.asInstanceOf[Boolean])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case ByteType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setByte(ordinal, value.asInstanceOf[Byte])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case ShortType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setShort(ordinal, value.asInstanceOf[Short])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case IntegerType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setInt(ordinal, value.asInstanceOf[Int])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case LongType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setLong(ordinal, value.asInstanceOf[Long])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case FloatType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setFloat(ordinal, value.asInstanceOf[Float])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case DoubleType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setDouble(ordinal, value.asInstanceOf[Double])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case dt: DecimalType =>
           val precision = dt.precision
@@ -181,27 +174,24 @@ sealed trait BufferSetterGetterUtils {
 
         case DateType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setInt(ordinal, value.asInstanceOf[Int])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case TimestampType =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.setLong(ordinal, value.asInstanceOf[Long])
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
 
         case other =>
           (row: MutableRow, ordinal: Int, value: Any) =>
-            if (value != null) {
+            if (value != null)
               row.update(ordinal, value)
-            } else {
+            else
               row.setNullAt(ordinal)
-            }
       }
 
       i += 1
@@ -240,19 +230,17 @@ private[sql] class MutableAggregationBufferImpl(
   override def length: Int = toCatalystConverters.length
 
   override def get(i: Int): Any = {
-    if (i >= length || i < 0) {
+    if (i >= length || i < 0)
       throw new IllegalArgumentException(
         s"Could not access ${i}th value in this buffer because it only has $length values.")
-    }
 
     toScalaConverters(i)(bufferValueGetters(i)(underlyingBuffer, offsets(i)))
   }
 
   def update(i: Int, value: Any): Unit = {
-    if (i >= length || i < 0) {
+    if (i >= length || i < 0)
       throw new IllegalArgumentException(
         s"Could not update ${i}th value in this buffer because it only has $length values.")
-    }
 
     bufferValueSetters(i)(
       underlyingBuffer,
@@ -304,10 +292,9 @@ private[sql] class InputAggregationBuffer private[sql] (
   override def length: Int = toCatalystConverters.length
 
   override def get(i: Int): Any = {
-    if (i >= length || i < 0) {
+    if (i >= length || i < 0)
       throw new IllegalArgumentException(
         s"Could not access ${i}th value in this buffer because it only has $length values.")
-    }
     toScalaConverters(i)(
       bufferValueGetters(i)(underlyingInputBuffer, offsets(i)))
   }
@@ -388,21 +375,18 @@ private[sql] case class ScalaUDAF(
   private[this] lazy val inputToScalaConverters: Any => Any =
     CatalystTypeConverters.createToScalaConverter(childrenSchema)
 
-  private[this] lazy val bufferValuesToCatalystConverters: Array[Any => Any] = {
+  private[this] lazy val bufferValuesToCatalystConverters: Array[Any => Any] =
     aggBufferSchema.fields.map { field =>
       CatalystTypeConverters.createToCatalystConverter(field.dataType)
     }
-  }
 
-  private[this] lazy val bufferValuesToScalaConverters: Array[Any => Any] = {
+  private[this] lazy val bufferValuesToScalaConverters: Array[Any => Any] =
     aggBufferSchema.fields.map { field =>
       CatalystTypeConverters.createToScalaConverter(field.dataType)
     }
-  }
 
-  private[this] lazy val outputToCatalystConverter: Any => Any = {
+  private[this] lazy val outputToCatalystConverter: Any => Any =
     CatalystTypeConverters.createToCatalystConverter(dataType)
-  }
 
   // This buffer is only used at executor side.
   private[this] lazy val inputAggregateBuffer: InputAggregationBuffer = {

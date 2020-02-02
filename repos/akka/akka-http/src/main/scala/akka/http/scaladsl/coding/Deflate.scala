@@ -145,11 +145,9 @@ abstract class DeflateDecompressorBase(
             Some(ByteString.fromArray(buffer, 0, read)),
             next,
             noPostProcessing)
-        } else {
-          if (inflater.finished())
-            ParseResult(None, afterInflate, noPostProcessing)
-          else throw ByteStringParser.NeedMoreData
-        }
+        } else if (inflater.finished())
+          ParseResult(None, afterInflate, noPostProcessing)
+        else throw ByteStringParser.NeedMoreData
       }
     }
   }

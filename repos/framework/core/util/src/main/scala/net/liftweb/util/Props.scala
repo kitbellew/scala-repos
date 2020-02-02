@@ -57,11 +57,10 @@ private[util] trait Props extends Logger {
       before + lookedUp + after
     }
 
-    if (interpolated.isEmpty) {
+    if (interpolated.isEmpty)
       value.toString
-    } else {
+    else
       interpolated.mkString
-    }
   }
 
   // def apply(name: String): String = props(name)

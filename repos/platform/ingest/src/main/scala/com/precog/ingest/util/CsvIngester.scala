@@ -49,9 +49,8 @@ case object CsvType {
       var len = row.length min types.length
       var i = 0
       while (i < len) {
-        if (types(i) != CsvString) {
+        if (types(i) != CsvString)
           types(i) = CsvType.lub(types(i), CsvType.infer(row(i)))
-        }
         i += 1
       }
     }

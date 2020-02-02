@@ -166,7 +166,7 @@ class HTTPRequestServlet(
           NormalParamHolder(
             f.getFieldName,
             new String(readWholeStream(f.openStream), "UTF-8"))
-        case f => {
+        case f =>
           val headers = f.getHeaders()
           val names: List[String] =
             if (headers eq null) Nil
@@ -188,7 +188,6 @@ class HTTPRequestServlet(
               f.getName,
               f.openStream)
           }
-        }
       }
     }).toList
 

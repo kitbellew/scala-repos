@@ -55,14 +55,14 @@ object WorksheetSourceProcessor {
   def extractLineInfoFrom(encoded: String): Option[(Int, Int)] =
     if (encoded startsWith END_TOKEN_MARKER) {
       val nums = encoded stripPrefix END_TOKEN_MARKER stripSuffix "\n" split '|'
-      if (nums.length == 2) {
+      if (nums.length == 2)
         try {
           val (a, b) = (Integer parseInt nums(0), Integer parseInt nums(1))
           if (a > -1 && b > -1) Some((a, b)) else None
         } catch {
           case _: NumberFormatException => None
         }
-      } else None
+      else None
     } else None
 
   /**
@@ -306,7 +306,7 @@ object WorksheetSourceProcessor {
 
     val root =
       if (!isForObject(srcFile)) srcFile
-      else {
+      else
         ((null: PsiElement) /: srcFile.getChildren) {
           case (a, imp: ScImportStmt) =>
             processImport(imp)
@@ -323,7 +323,6 @@ object WorksheetSourceProcessor {
             a
           case (a, _) => a
         }
-      }
 
     insertUntouched(preDeclarations)
 

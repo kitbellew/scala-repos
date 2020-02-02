@@ -113,11 +113,10 @@ case class CategoricalNaiveBayesModel(
     val label = point.label
     val features = point.features
 
-    if (!priors.contains(label)) {
+    if (!priors.contains(label))
       None
-    } else {
+    else
       Some(logScoreInternal(label, features, defaultLikelihood))
-    }
   }
 
   private def logScoreInternal(

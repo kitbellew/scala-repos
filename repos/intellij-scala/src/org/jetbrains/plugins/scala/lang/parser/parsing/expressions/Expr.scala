@@ -26,7 +26,7 @@ object Expr {
         val pmarker = builder.mark
         builder.advanceLexer() //Ate id
         builder.getTokenType match {
-          case ScalaTokenTypes.tFUNTYPE => {
+          case ScalaTokenTypes.tFUNTYPE =>
             val psm = pmarker.precede // 'parameter clause'
             val pssm = psm.precede // 'parameter list'
             pmarker.done(ScalaElementTypes.PARAM)
@@ -37,27 +37,23 @@ object Expr {
             if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
             exprMarker.done(ScalaElementTypes.FUNCTION_EXPR)
             return true
-          }
-          case _ => {
+          case _ =>
             pmarker.drop()
             exprMarker.rollbackTo()
-          }
         }
 
       case ScalaTokenTypes.tLPARENTHESIS =>
-        if (Bindings.parse(builder)) {
+        if (Bindings.parse(builder))
           builder.getTokenType match {
-            case ScalaTokenTypes.tFUNTYPE => {
+            case ScalaTokenTypes.tFUNTYPE =>
               builder.advanceLexer() //Ate =>
               if (!Expr.parse(builder)) builder error ErrMsg("wrong.expression")
               exprMarker.done(ScalaElementTypes.FUNCTION_EXPR)
               return true
-            }
             case _ => exprMarker.rollbackTo()
           }
-        } else {
+        else
           exprMarker.drop()
-        }
       case _ => exprMarker.drop()
     }
     Expr1.parse(builder)

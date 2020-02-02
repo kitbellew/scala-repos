@@ -79,7 +79,7 @@ class MyEventsByTagPublisher(
   }
 
   def query(): Unit =
-    if (buf.isEmpty) {
+    if (buf.isEmpty)
       try {
         val result = Select.run(tag, currentOffset, Limit)
         currentOffset = if (result.nonEmpty) result.last._1 else currentOffset
@@ -95,10 +95,9 @@ class MyEventsByTagPublisher(
         case e: Exception ⇒
           onErrorThenStop(e)
       }
-    }
 
   final def deliverBuf(): Unit =
-    if (totalDemand > 0 && buf.nonEmpty) {
+    if (totalDemand > 0 && buf.nonEmpty)
       if (totalDemand <= Int.MaxValue) {
         val (use, keep) = buf.splitAt(totalDemand.toInt)
         buf = keep
@@ -107,6 +106,5 @@ class MyEventsByTagPublisher(
         buf foreach onNext
         buf = Vector.empty
       }
-    }
 }
 //#events-by-tag-publisher

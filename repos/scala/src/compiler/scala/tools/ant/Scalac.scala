@@ -394,9 +394,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       val st = s.trim()
       if (CompilerPhase.isPermissible(st))
         (if (input != "") List(st) else Nil)
-      else {
+      else
         buildError("Phase " + st + " in log does not exist.")
-      }
     }
   }
 

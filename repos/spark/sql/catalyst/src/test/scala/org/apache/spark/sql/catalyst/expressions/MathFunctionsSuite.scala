@@ -63,17 +63,16 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       expectNull: Boolean = false,
       expectNaN: Boolean = false,
       evalType: DataType = DoubleType): Unit = {
-    if (expectNull) {
+    if (expectNull)
       domain.foreach { value =>
         checkEvaluation(c(Literal(value)), null, EmptyRow)
       }
-    } else if (expectNaN) {
+    else if (expectNaN)
       domain.foreach { value => checkNaN(c(Literal(value)), EmptyRow) }
-    } else {
+    else
       domain.foreach { value =>
         checkEvaluation(c(Literal(value)), f(value), EmptyRow)
       }
-    }
     checkEvaluation(c(Literal.create(null, evalType)), null, create_row(null))
   }
 
@@ -93,17 +92,17 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         (-20 to 20).map(v => (v * 0.1, v * -0.1)),
       expectNull: Boolean = false,
       expectNaN: Boolean = false): Unit = {
-    if (expectNull) {
+    if (expectNull)
       domain.foreach {
         case (v1, v2) =>
           checkEvaluation(c(Literal(v1), Literal(v2)), null, create_row(null))
       }
-    } else if (expectNaN) {
+    else if (expectNaN)
       domain.foreach {
         case (v1, v2) =>
           checkNaN(c(Literal(v1), Literal(v2)), EmptyRow)
       }
-    } else {
+    else
       domain.foreach {
         case (v1, v2) =>
           checkEvaluation(
@@ -115,7 +114,6 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
             f(v2 + 0.0, v1 + 0.0),
             EmptyRow)
       }
-    }
     checkEvaluation(
       c(Literal.create(null, DoubleType), Literal(1.0)),
       null,
@@ -142,12 +140,11 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       catch {
         case e: Exception => fail(s"Exception evaluating $expression", e)
       }
-    if (!actual.asInstanceOf[Double].isNaN) {
+    if (!actual.asInstanceOf[Double].isNaN)
       fail(
         s"Incorrect evaluation (codegen off): $expression, " +
           s"actual: $actual, " +
           s"expected: NaN")
-    }
   }
 
   private def checkNaNWithGeneratedProjection(
@@ -160,9 +157,8 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       expression)
 
     val actual = plan(inputRow).get(0, expression.dataType)
-    if (!actual.asInstanceOf[Double].isNaN) {
+    if (!actual.asInstanceOf[Double].isNaN)
       fail(s"Incorrect Evaluation: $expression, actual: $actual, expected: NaN")
-    }
   }
 
   private def checkNaNWithOptimization(

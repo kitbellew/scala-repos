@@ -39,11 +39,10 @@ object AbsoluteDuration extends java.io.Serializable {
     (Millisecs, 1)).reverse
 
   def exact(fnms: TimeCons): (Long) => Option[AbsoluteDuration] = { ms: Long =>
-    if (ms % fnms._2 == 0) {
+    if (ms % fnms._2 == 0)
       Some(fnms._1((ms / fnms._2).toInt))
-    } else {
+    else
       None
-    }
   }
 
   def apply(count: Long, tunit: TimeUnit): AbsoluteDuration =
@@ -57,16 +56,16 @@ object AbsoluteDuration extends java.io.Serializable {
       diffInMs: Long,
       units: List[TimeCons],
       acc: List[AbsoluteDuration]): AbsoluteDuration =
-    if (diffInMs == 0L) {
+    if (diffInMs == 0L)
       //We are done:
       acc match {
         case Nil        => units.head._1(0)
         case (h :: Nil) => h
         case _          => AbsoluteDurationList(acc)
       }
-    } else {
+    else
       units match {
-        case (tc0 :: tc1 :: tail) => {
+        case (tc0 :: tc1 :: tail) =>
           //Only get as many as the next guy can't get:
           val nextSize = tc1._2
           val thisDiff =
@@ -75,12 +74,10 @@ object AbsoluteDuration extends java.io.Serializable {
           val (newDiff, newAcc) = if (theseUnits != 0L) {
             val dur = tc0._1(theseUnits.toInt)
             (diffInMs - dur.toMillisecs, dur :: acc)
-          } else {
+          } else
             (diffInMs, acc)
-          }
           fromMillisecs(newDiff, (tc1 :: tail), newAcc)
-        }
-        case (tc :: Nil) => {
+        case (tc :: Nil) =>
           // We can't go any further, try to jam the rest into this unit:
           val (fn, cnt) = tc
           val theseUnits = diffInMs / cnt
@@ -95,14 +92,11 @@ object AbsoluteDuration extends java.io.Serializable {
             thisPart
           else
             AbsoluteDurationList(thisPart :: acc)
-        }
-        case Nil => {
+        case Nil =>
           // These are left over millisecs, but should be unreachable
           sys.error(
             "this is only reachable if units is passed with a length == 0, which should never happen")
-        }
       }
-    }
 }
 
 sealed trait AbsoluteDuration extends Duration with Ordered[AbsoluteDuration] {

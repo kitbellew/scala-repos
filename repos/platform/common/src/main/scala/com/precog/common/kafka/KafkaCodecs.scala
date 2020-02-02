@@ -59,16 +59,14 @@ trait EncodingFlags {
       val msgType = buffer.get()
       val stop = buffer.get()
 
-      if (stop == stopByte) {
+      if (stop == stopByte)
         success(msgType)
-      } else {
+      else
         failure(
           Error.invalid("Invalid message: bad stop byte. Found [" + stop + "]"))
-      }
-    } else {
+    } else
       failure(
         Error.invalid("Invalid message: bad magic byte. Found [" + magic + "]"))
-    }
   }
 }
 

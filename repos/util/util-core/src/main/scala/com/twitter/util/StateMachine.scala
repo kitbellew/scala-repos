@@ -14,10 +14,9 @@ trait StateMachine {
 
   protected def transition[A](command: String)(f: PartialFunction[State, A]) =
     synchronized {
-      if (f.isDefinedAt(state)) {
+      if (f.isDefinedAt(state))
         f(state)
-      } else {
+      else
         throw new InvalidStateTransition(state.toString, command)
-      }
     }
 }

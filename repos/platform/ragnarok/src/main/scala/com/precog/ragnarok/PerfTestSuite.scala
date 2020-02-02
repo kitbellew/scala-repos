@@ -229,9 +229,9 @@ trait PerfTestSuite extends Logging {
           case _                         => path
         }
 
-        if (select(p.reverse, loc.tree.rootLabel)) {
+        if (select(p.reverse, loc.tree.rootLabel))
           find(loc, p, loc.tree :: matches, retreat = true)
-        } else {
+        else
           loc.firstChild match {
             case Some(loc) =>
               find(loc, p, matches)
@@ -239,7 +239,6 @@ trait PerfTestSuite extends Logging {
             case None =>
               find(loc, p, matches, retreat = true)
           }
-        }
       }
 
     test.subForest.headOption flatMap { root =>

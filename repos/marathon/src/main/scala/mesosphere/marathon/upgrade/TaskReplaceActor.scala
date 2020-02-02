@@ -57,9 +57,8 @@ class TaskReplaceActor(
       s"For minimumHealthCapacity ${app.upgradeStrategy.minimumHealthCapacity} of ${app.id.toString} leave " +
         s"$minHealthy tasks running, maximum capacity $maxCapacity, killing $nrToKillImmediately tasks immediately")
 
-    for (_ <- 0 until nrToKillImmediately) {
+    for (_ <- 0 until nrToKillImmediately)
       killNextOldTask()
-    }
 
     reconcileNewTasks()
 
@@ -194,11 +193,10 @@ class TaskReplaceActor(
         s"App All new tasks for $appId are healthy and all old tasks have been killed")
       promise.success(())
       context.stop(self)
-    } else if (log.isDebugEnabled) {
+    } else if (log.isDebugEnabled)
       log.debug(
         s"For app: [${app.id}] there are [${healthy.size}] healthy new instances and " +
           s"[${oldTaskIds.size}] old instances.")
-    }
 
   def retryKills(): Unit =
     outstandingKills.foreach { id =>

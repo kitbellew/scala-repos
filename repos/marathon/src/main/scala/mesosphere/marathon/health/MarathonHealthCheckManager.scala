@@ -127,11 +127,11 @@ class MarathonHealthCheckManager @Inject() (
       }
       val newHealthChecksForVersion = healthChecksForVersion -- toRemove
       val currentHealthChecksForApp = ahcs(appId)
-      val newHealthChecksForApp = if (newHealthChecksForVersion.isEmpty) {
-        currentHealthChecksForApp - appVersion
-      } else {
-        currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
-      }
+      val newHealthChecksForApp =
+        if (newHealthChecksForVersion.isEmpty)
+          currentHealthChecksForApp - appVersion
+        else
+          currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
 
       if (newHealthChecksForApp.isEmpty) ahcs -= appId
       else ahcs += (appId -> newHealthChecksForApp)
@@ -145,9 +145,7 @@ class MarathonHealthCheckManager @Inject() (
       for {
         (version, activeHealthChecks) <- ahcs(appId)
         activeHealthCheck <- activeHealthChecks
-      } {
-        remove(appId, version, activeHealthCheck.healthCheck)
-      }
+      } remove(appId, version, activeHealthCheck.healthCheck)
     }
 
   override def reconcileWith(appId: PathId): Future[Unit] =

@@ -200,9 +200,9 @@ object WorksheetCompiler extends WorksheetPerFileConfig {
     FileAttributeUtilCache.writeAttribute(CP_MODULE_NAME, file, moduleName)
 
   def getRunType(project: Project): WorksheetMakeType =
-    if (ScalaCompileServerSettings.getInstance().COMPILE_SERVER_ENABLED) {
+    if (ScalaCompileServerSettings.getInstance().COMPILE_SERVER_ENABLED)
       if (ScalaProjectSettings.getInstance(project).isInProcessMode)
         InProcessServer
       else OutOfProcessServer
-    } else NonServer
+    else NonServer
 }

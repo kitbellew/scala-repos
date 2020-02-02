@@ -59,9 +59,9 @@ final class BoostingApi(
         && game.winnerColor.isDefined
         && variants.contains(game.variant)
         && !game.isCorrespondence
-        && game.clock.fold(false) { _.limitInMinutes >= 1 }) {
+        && game.clock.fold(false) { _.limitInMinutes >= 1 })
       game.winnerColor match {
-        case Some(a) => {
+        case Some(a) =>
           val result: GameResult = a match {
             case Color.White =>
               GameResult(winner = whiteUser, loser = blackUser)
@@ -78,12 +78,10 @@ final class BoostingApi(
                 result.loser)
             case none => createBoostRecord(BoostingRecord(_id = id, games = 1))
           }
-        }
         case none => funit
       }
-    } else {
+    else
       funit
-    }
 
 }
 

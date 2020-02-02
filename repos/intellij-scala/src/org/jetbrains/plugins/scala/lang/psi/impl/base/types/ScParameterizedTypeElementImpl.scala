@@ -210,7 +210,7 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       case s: ScSimpleTypeElement =>
         s.reference match {
           case Some(ref) =>
-            if (ref.isConstructorReference) {
+            if (ref.isConstructorReference)
               ref.resolveNoConstructor match {
                 case Array(
                     ScalaResolveResult(
@@ -226,7 +226,6 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                   return tr //all things were done in ScSimpleTypeElementImpl.innerType
                 case _ =>
               }
-            }
             ref.bind() match {
               case Some(ScalaResolveResult(e: PsiMethod, _)) =>
                 return tr //all things were done in ScSimpleTypeElementImpl.innerType
@@ -273,7 +272,7 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
-    if (ScalaPsiUtil.kindProjectorPluginEnabled(this)) {
+    if (ScalaPsiUtil.kindProjectorPluginEnabled(this))
       computeDesugarizedType match {
         case Some(projection: ScTypeProjection) =>
           projection.typeElement match {
@@ -293,21 +292,21 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                             processor.execute(
                               new ScSyntheticClass(getManager, s"`$text`", Any),
                               state)
-                            if (lowerBound < 0 && upperBound > 0) {
+                            if (lowerBound < 0 && upperBound > 0)
                               processor.execute(
                                 new ScSyntheticClass(
                                   getManager,
                                   text.substring(0, upperBound),
                                   Any),
                                 state)
-                            } else if (upperBound < 0 && lowerBound > 0) {
+                            else if (upperBound < 0 && lowerBound > 0)
                               processor.execute(
                                 new ScSyntheticClass(
                                   getManager,
                                   text.substring(0, lowerBound),
                                   Any),
                                 state)
-                            } else if (upperBound > 0 && lowerBound > 0) {
+                            else if (upperBound > 0 && lowerBound > 0) {
                               val actualText = text.substring(
                                 0,
                                 math.min(lowerBound, upperBound))
@@ -332,7 +331,6 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
           processor.execute(new ScSyntheticClass(manager, "-", Any), state)
         case _ =>
       }
-    }
     super.processDeclarations(processor, state, lastParent, place)
   }
 }

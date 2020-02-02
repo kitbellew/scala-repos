@@ -113,9 +113,8 @@ class MongoDirectSpec extends Specification with MongoTestKit {
     // use a DBCollection directly
     MongoDB.useCollection("iDoc") { coll =>
       // insert multiple documents
-      for (i <- List.range(1, 101)) {
+      for (i <- List.range(1, 101))
         coll.insert(new BasicDBObject().append("i", i))
-      }
 
       // create an index
       coll.createIndex(

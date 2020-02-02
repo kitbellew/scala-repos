@@ -657,9 +657,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       val key = mkKey(sender())
       forwardMessages(key, sender())
 
-    case GetTopics ⇒ {
+    case GetTopics ⇒
       sender ! CurrentTopics(getCurrentTopics())
-    }
 
     case msg @ Subscribed(ack, ref) ⇒
       ref ! ack
@@ -689,18 +688,16 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       // the Delta contains potential updates (newer versions) from the other node
       // only accept deltas/buckets from known nodes, otherwise there is a risk of
       // adding back entries when nodes are removed
-      if (nodes(sender().path.address)) {
+      if (nodes(sender().path.address))
         buckets foreach { b ⇒
           if (nodes(b.owner)) {
             val myBucket = registry(b.owner)
-            if (b.version > myBucket.version) {
+            if (b.version > myBucket.version)
               registry += (b.owner -> myBucket.copy(
                 version = b.version,
                 content = myBucket.content ++ b.content))
-            }
           }
         }
-      }
 
     case GossipTick ⇒ gossip()
 

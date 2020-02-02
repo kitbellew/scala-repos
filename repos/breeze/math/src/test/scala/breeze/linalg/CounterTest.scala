@@ -125,9 +125,7 @@ class CounterOps_IntTest
 
   implicit def genS: Arbitrary[Counter[Int, Int]] =
     Arbitrary {
-      for { l <- Arbitrary.arbitrary[List[Int]] } yield {
-        Counter.count(l: _*)
-      }
+      for { l <- Arbitrary.arbitrary[List[Int]] } yield Counter.count(l: _*)
     }
 
   def genScalar: Arbitrary[Int] =

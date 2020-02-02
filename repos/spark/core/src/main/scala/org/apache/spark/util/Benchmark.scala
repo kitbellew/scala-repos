@@ -99,18 +99,17 @@ private[spark] object Benchmark {
     * This should return something like "Intel(R) Core(TM) i7-4870HQ CPU @ 2.50GHz"
     */
   def getProcessorName(): String =
-    if (SystemUtils.IS_OS_MAC_OSX) {
+    if (SystemUtils.IS_OS_MAC_OSX)
       Utils.executeAndGetOutput(
         Seq("/usr/sbin/sysctl", "-n", "machdep.cpu.brand_string"))
-    } else if (SystemUtils.IS_OS_LINUX) {
+    else if (SystemUtils.IS_OS_LINUX)
       Try {
         val grepPath = Utils.executeAndGetOutput(Seq("which", "grep"))
         Utils.executeAndGetOutput(
           Seq(grepPath, "-m", "1", "model name", "/proc/cpuinfo"))
       }.getOrElse("Unknown processor")
-    } else {
+    else
       System.getenv("PROCESSOR_IDENTIFIER")
-    }
 
   /**
     * Runs a single function `f` for iters, returning the average time the function took and
@@ -126,15 +125,13 @@ private[spark] object Benchmark {
 
       val end = System.nanoTime()
       val runTime = end - start
-      if (i > 0) {
+      if (i > 0)
         runTimes += runTime
-      }
 
-      if (outputPerIteration) {
+      if (outputPerIteration)
         // scalastyle:off
         println(s"Iteration $i took ${runTime / 1000} microseconds")
-        // scalastyle:on
-      }
+      // scalastyle:on
     }
     val best = runTimes.min
     val avg = runTimes.sum / iters

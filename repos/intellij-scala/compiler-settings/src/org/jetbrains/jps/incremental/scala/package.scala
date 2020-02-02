@@ -17,11 +17,8 @@ package object scala {
   def using[A <: Closeable, B](resource: A)(block: A => B): B = {
     import _root_.scala.language.reflectiveCalls
 
-    try {
-      block(resource)
-    } finally {
-      resource.close()
-    }
+    try block(resource)
+    finally resource.close()
   }
 
   def extractor[A, B](f: A => B) = new Extractor[A, B](f)

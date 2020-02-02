@@ -24,10 +24,9 @@ case class ScCompoundType(
   private var hash: Int = -1
 
   override def hashCode: Int = {
-    if (hash == -1) {
+    if (hash == -1)
       hash = components
         .hashCode() + (signatureMap.hashCode() * 31 + typesMap.hashCode()) * 31
-    }
     hash
   }
 
@@ -39,16 +38,16 @@ case class ScCompoundType(
     val depths = signatureMap.map {
       case (sign: Signature, tp: ScType) =>
         val rtDepth = tp.typeDepth
-        if (sign.typeParams.nonEmpty) {
+        if (sign.typeParams.nonEmpty)
           (ScType.typeParamsDepth(sign.typeParams) + 1).max(rtDepth)
-        } else rtDepth
+        else rtDepth
     } ++ typesMap.map {
       case (s: String, sign: TypeAliasSignature) =>
         val boundsDepth =
           sign.lowerBound.typeDepth.max(sign.upperBound.typeDepth)
-        if (sign.typeParams.nonEmpty) {
+        if (sign.typeParams.nonEmpty)
           (ScType.typeParamsDepth(sign.typeParams.toArray) + 1).max(boundsDepth)
-        } else boundsDepth
+        else boundsDepth
     }
     val ints = components.map(_.typeDepth)
     val componentsDepth = if (ints.length == 0) 0 else ints.max
@@ -107,12 +106,11 @@ case class ScCompoundType(
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: IHashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     update(this) match {
       case (true, res) => res
       case _ =>
@@ -319,11 +317,10 @@ object ScCompoundType {
       }
     val typesVal = new mutable.HashMap[String, TypeAliasSignature]
 
-    for (typeDecl <- typeDecls) {
+    for (typeDecl <- typeDecls)
       typesVal += ((typeDecl.name, new TypeAliasSignature(typeDecl)))
-    }
 
-    for (decl <- decls) {
+    for (decl <- decls)
       decl match {
         case fun: ScFunction =>
           signatureMapVal += (
@@ -365,7 +362,6 @@ object ScCompoundType {
                 valType.getOrAny))
           }
       }
-    }
 
     ScCompoundType(components, signatureMapVal.toMap, typesVal.toMap)
   }

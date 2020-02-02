@@ -136,17 +136,15 @@ object DesktopIngestShardServer
 
     logger.debug("Waiting for ZK startup")
 
-    if (!waitForPortOpen(config[Int]("zookeeper.port"), 60)) {
+    if (!waitForPortOpen(config[Int]("zookeeper.port"), 60))
       throw new Exception("Timeout waiting for ZK port to open")
-    }
 
     val kafka = startKafkaStandalone(config)
 
     logger.debug("Waiting for Kafka startup")
 
-    if (!waitForPortOpen(config[Int]("kafka.port"), 60)) {
+    if (!waitForPortOpen(config[Int]("kafka.port"), 60))
       throw new Exception("Time out waiting on kafka port to open")
-    }
 
     Runtime.getRuntime.addShutdownHook(new Thread {
       override def run() = {
@@ -197,7 +195,7 @@ object DesktopIngestShardServer
 
   def waitForPortOpen(port: Int, tries: Int): Boolean = {
     var remainingTries = tries
-    while (remainingTries > 0) {
+    while (remainingTries > 0)
       try {
         val conn = new Socket(InetAddress.getLocalHost, port)
         conn.close()
@@ -207,7 +205,6 @@ object DesktopIngestShardServer
           Thread.sleep(500)
           remainingTries -= 1
       }
-    }
 
     logger.error("Port %d did not open in %d tries".format(port, tries))
     false
@@ -288,7 +285,7 @@ object LaunchLabcoat {
         if (params.contains("launch")) {
           launchBrowser(config)
           sys.exit(0)
-        } else {
+        } else
           DesktopIngestShardServer
             .runGUI(config)
             .map {
@@ -297,7 +294,6 @@ object LaunchLabcoat {
             .getOrElse {
               sys.error("Failed to start bifrost!")
             }
-        }
       }
       .getOrElse {
         System.err.println("Usage: LaunchLabcoat --configFile <config file>")
@@ -327,10 +323,10 @@ object LaunchLabcoat {
 
     @tailrec
     def doLaunch() {
-      if (waitForPorts) {
+      if (waitForPorts)
         java.awt.Desktop.getDesktop
           .browse(new java.net.URI("http://localhost:%s".format(jettyPort)))
-      } else {
+      else {
         import javax.swing.JOptionPane
         JOptionPane.showMessageDialog(
           null,
@@ -341,10 +337,9 @@ object LaunchLabcoat {
       }
     }
 
-    if (Desktop.isDesktopSupported) {
+    if (Desktop.isDesktopSupported)
       doLaunch()
-    } else {
+    else
       sys.error("Browser open on non-desktop system")
-    }
   }
 }

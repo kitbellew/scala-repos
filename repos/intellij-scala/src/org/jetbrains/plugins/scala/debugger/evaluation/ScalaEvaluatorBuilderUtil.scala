@@ -222,9 +222,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     val containingClass =
       if (fun.isSynthetic) fun.containingClass else getContextClass(fun)
     val message = ScalaBundle.message("cannot.evaluate.local.method")
-    if (contextClass == null) {
+    if (contextClass == null)
       throw EvaluationException(message)
-    }
     val thisEvaluator: Evaluator = containingClass match {
       case obj: ScObject if isStable(obj) =>
         stableObjectEvaluator(obj)
@@ -555,12 +554,12 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         context)
       evaluatorFor(newExpr)
     }
-    if (exprsForP.length == 1) {
+    if (exprsForP.length == 1)
       exprsForP.head match {
         case t: ScTypedStmt if t.isSequenceArg => evaluatorFor(t.expr)
         case _                                 => seqEvaluator
       }
-    } else seqEvaluator
+    else seqEvaluator
   }
 
   def implicitArgEvaluator(
@@ -1017,10 +1016,10 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
       val containingClass = getContextClass(obj)
       val name = NameTransformer.encode(obj.name) + "$module"
-      if (containingClass == contextClass) {
+      if (containingClass == contextClass)
         fromVolatileObjectReference(
           new ScalaLocalVariableEvaluator(name, fileName))
-      } else {
+      else {
         val fieldEval = withOuterFieldEvaluator(
           containingClass,
           name,
@@ -1181,12 +1180,12 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
 
   def assignmentEvaluator(stmt: ScAssignStmt): Evaluator = {
     val message = ScalaBundle.message("assignent.without.expression")
-    if (stmt.isNamedParameter) {
+    if (stmt.isNamedParameter)
       stmt.getRExpression match {
         case Some(expr) => evaluatorFor(expr)
         case _          => throw EvaluationException(message)
       }
-    } else {
+    else
       stmt.getLExpression match {
         case call: ScMethodCall =>
           val invokedText = call.getInvokedExpr.getText
@@ -1223,7 +1222,6 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
           createAssignEvaluator(leftEvaluator).getOrElse(
             new AssignmentEvaluator(leftEvaluator, rightEvaluator))
       }
-    }
   }
 
   def evaluateSubpatternFromPattern(
@@ -1302,7 +1300,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     else if (nextPatternIndex < 0)
       throw new IllegalArgumentException(
         "Pattern is not ancestor of subpattern")
-    else {
+    else
       pattern match {
         case naming: ScNamingPattern =>
           evaluateSubpatternFromPattern(exprEval, naming.named, subPattern)
@@ -1341,17 +1339,15 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
               .message("kind.of.patterns.not.supported", pattern.getText)
           ) //todo: xml patterns
       }
-    }
   }
 
   def newTemplateDefinitionEvaluator(
       templ: ScNewTemplateDefinition): Evaluator =
     templ.extendsBlock.templateParents match {
       case Some(parents: ScClassParents) =>
-        if (parents.typeElements.length != 1) {
+        if (parents.typeElements.length != 1)
           throw new NeedCompilationException(
             ScalaBundle.message("anon.classes.not.supported"))
-        }
         parents.constructor match {
           case Some(constr) =>
             val tp = constr.typeElement.calcType
@@ -1577,17 +1573,15 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         tailString: String = "",
         matchedParameters: Map[Parameter, Seq[ScExpression]] = Map.empty)
         : Evaluator = {
-      if (call.isApplyOrUpdateCall) {
+      if (call.isApplyOrUpdateCall)
         if (!call.isUpdateCall) {
           val expr = applyCall(
             call.getInvokedExpr.getText,
             call.args.getText + tailString)
           return evaluatorFor(expr)
-        } else {
+        } else
           //should be handled on assignment
           throw new NeedCompilationException("Update method is not supported")
-        }
-      }
       val message = ScalaBundle.message("cannot.evaluate.method", call.getText)
       call.getInvokedExpr match {
         case ref: ScReferenceExpression =>

@@ -111,7 +111,7 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
       if (availablePermits > 0) {
         availablePermits -= 1
         Future.value(new SemaphorePermit)
-      } else {
+      } else
         maxWaiters match {
           case Some(max) if (waitq.size >= max) =>
             MaxWaitersExceededException
@@ -127,7 +127,6 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
             waitq.addLast(promise)
             promise
         }
-      }
     }
 
   /**

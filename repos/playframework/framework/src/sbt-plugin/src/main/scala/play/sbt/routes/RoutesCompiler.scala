@@ -215,14 +215,13 @@ object RoutesCompiler extends AutoPlugin {
 
   val routesPositionMapper: Position => Option[Position] = position => {
     position.sourceFile collect {
-      case GeneratedSource(generatedSource) => {
+      case GeneratedSource(generatedSource) =>
         new xsbti.Position {
-          lazy val line = {
+          lazy val line =
             position.line
               .flatMap(l => generatedSource.mapLine(l.asInstanceOf[Int]))
               .map(l => xsbti.Maybe.just(l.asInstanceOf[java.lang.Integer]))
               .getOrElse(xsbti.Maybe.nothing[java.lang.Integer])
-          }
           lazy val lineContent = {
             line flatMap { lineNo =>
               sourceFile.flatMap { file =>
@@ -236,7 +235,6 @@ object RoutesCompiler extends AutoPlugin {
           val sourceFile = xsbti.Maybe.just(generatedSource.source.get)
           val sourcePath = xsbti.Maybe.just(sourceFile.get.getCanonicalPath)
         }
-      }
     }
   }
 }

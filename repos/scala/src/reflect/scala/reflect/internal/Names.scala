@@ -120,10 +120,10 @@ trait Names extends api.Names {
         // that name.toString will become an eager val, in which case the call
         // to enterChars cannot follow the construction of the TermName.
         var startIndex = 0
-        if (cs == chrs) {
+        if (cs == chrs)
           // Optimize for subName, the new name is already stored in chrs
           startIndex = offset
-        } else {
+        else {
           startIndex = nc
           enterChars(cs, offset, len)
         }
@@ -196,9 +196,8 @@ trait Names extends api.Names {
              typeName.start,
              cs,
              0,
-             cs.length))) {
+             cs.length)))
       typeName = typeName.next
-    }
     assert(typeName != null, s"TypeName ${new String(cs)} not yet created.")
     typeName
   }

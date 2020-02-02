@@ -475,7 +475,7 @@ trait Implicits {
       if (Statistics.canEnable) Statistics.incCounter(improvesCount)
       (info2 == NoImplicitInfo) ||
       (info1 != NoImplicitInfo) && {
-        if (info1.sym.isStatic && info2.sym.isStatic) {
+        if (info1.sym.isStatic && info2.sym.isStatic)
           improvesCache get ((info1, info2)) match {
             case Some(b) =>
               if (Statistics.canEnable)
@@ -489,7 +489,7 @@ trait Implicits {
               improvesCache((info1, info2)) = result
               result
           }
-        } else
+        else
           isStrictlyMoreSpecific(info1.tpe, info2.tpe, info1.sym, info2.sym)
       }
     }
@@ -592,15 +592,12 @@ trait Implicits {
               OpenImplicit(info, pt, tree) :: context.openImplicits
             // println("  "*context.openImplicits.length+"typed implicit "+info+" for "+pt) //@MDEBUG
             val result = typedImplicit0(info, ptChecked, isLocalToCallsite)
-            if (result.isDivergent) {
+            if (result.isDivergent)
               //println("DivergentImplicit for pt:"+ pt +", open implicits:"+context.openImplicits) //@MDEBUG
               if (context.openImplicits.tail.isEmpty && !pt.isErroneous)
                 DivergingImplicitExpansionError(tree, pt, info.sym)(context)
-            }
             result
-          } finally {
-            context.openImplicits = context.openImplicits.tail
-          }
+          } finally context.openImplicits = context.openImplicits.tail
       }
 
     /** Does type `tp` match expected type `pt`
@@ -685,21 +682,20 @@ trait Implicits {
                   sym == FunctionClass(len) && {
                     var ps = params
                     var as = args
-                    if (fast) {
+                    if (fast)
                       while (ps.nonEmpty && as.nonEmpty) {
                         if (!isPlausiblySubType(as.head, ps.head.tpe))
                           return false
                         ps = ps.tail
                         as = as.tail
                       }
-                    } else {
+                    else
                       while (ps.nonEmpty && as.nonEmpty) {
                         if (!(as.head <:< ps.head.tpe))
                           return false
                         ps = ps.tail
                         as = as.tail
                       }
-                    }
                     ps.isEmpty && as.nonEmpty && {
                       val lastArg = as.head
                       as.tail.isEmpty && loop(restpe, lastArg)
@@ -762,11 +758,11 @@ trait Implicits {
       val isScaladoc = context.tree == EmptyTree
 
       val itree0 = atPos(pos.focus) {
-        if (isLocalToCallsite && !isScaladoc) {
+        if (isLocalToCallsite && !isScaladoc)
           // SI-4270 SI-5376 Always use an unattributed Ident for implicits in the local scope,
           // rather than an attributed Select, to detect shadowing.
           Ident(info.name)
-        } else {
+        else {
           assert(info.pre != NoPrefix, info)
           // SI-2405 Not info.name, which might be an aliased import
           val implicitMemberName = info.sym.name
@@ -1080,14 +1076,13 @@ trait Implicits {
               s"discarding divergent implicit ${i.sym} during implicit search")
             SearchFailure
           } else {
-            if (search.isFailure) {
+            if (search.isFailure)
               // Discard the divergentError we saved (if any), as well as all errors that are not of type DivergentImplicitTypeError
               // We don't want errors that occur while checking the implicit info
               // to influence the check of further infos, but we should retain divergent implicit errors
               // (except for the one we already squirreled away)
               context.reporter.retainDivergentErrorsExcept(
                 divergentError.getOrElse(null))
-            }
             search
           }
         }
@@ -1331,13 +1326,12 @@ trait Implicits {
                   getClassParts(tp)
                 args foreach getParts
               }
-            } else if (sym.isAliasType) {
+            } else if (sym.isAliasType)
               getParts(
                 tp.normalize
               ) // SI-7180 Normalize needed to expand HK type refs
-            } else if (sym.isAbstractType) {
+            else if (sym.isAbstractType)
               getParts(tp.bounds.hi)
-            }
           case ThisType(_) =>
             getParts(tp.widen)
           case _: SingletonType =>
@@ -1538,18 +1532,18 @@ trait Implicits {
           case ConstantType(value) =>
             manifestOfType(tp1.deconst, FullManifestClass)
           case TypeRef(pre, sym, args) =>
-            if (isPrimitiveValueClass(sym) || isPhantomClass(sym)) {
+            if (isPrimitiveValueClass(sym) || isPhantomClass(sym))
               findSingletonManifest(sym.name.toString)
-            } else if (sym == ObjectClass || sym == AnyRefClass) {
+            else if (sym == ObjectClass || sym == AnyRefClass)
               findSingletonManifest("Object")
-            } else if (sym == RepeatedParamClass || sym == ByNameParamClass) {
+            else if (sym == RepeatedParamClass || sym == ByNameParamClass)
               EmptyTree
-            } else if (sym == ArrayClass && args.length == 1) {
+            else if (sym == ArrayClass && args.length == 1)
               manifestFactoryCall(
                 "arrayType",
                 args.head,
                 findManifest(args.head))
-            } else if (sym.isClass) {
+            else if (sym.isClass) {
               val classarg0 = gen.mkClassOf(tp1)
               val classarg = tp match {
                 case _: ExistentialType => gen.mkCast(classarg0, ClassType(tp))
@@ -1561,22 +1555,20 @@ trait Implicits {
                 tp,
                 (if ((pre eq NoPrefix) || pre.typeSymbol.isStaticOwner) suffix
                  else findSubManifest(pre) :: suffix): _*)
-            } else if (sym.isExistentiallyBound && full) {
+            } else if (sym.isExistentiallyBound && full)
               manifestFactoryCall(
                 "wildcardType",
                 tp,
                 findManifest(tp.bounds.lo),
                 findManifest(tp.bounds.hi))
-            }
             // looking for a manifest of a type parameter that hasn't been inferred by now,
             // can't do much, but let's not fail
-            else if (undetParams contains sym) {
+            else if (undetParams contains sym)
               // #3859: need to include the mapping from sym -> NothingTpe in the SearchResult
               mot(NothingTpe, sym :: from, NothingTpe :: to)
-            } else {
+            else
               // a manifest should have been found by normal searchImplicit
               EmptyTree
-            }
           case RefinedType(
               parents,
               decls
@@ -1605,7 +1597,7 @@ trait Implicits {
           allowMaterialization = false)
         if (tagInScope.isEmpty) mot(tp, Nil, Nil)
         else {
-          if (ReflectRuntimeUniverse == NoSymbol) {
+          if (ReflectRuntimeUniverse == NoSymbol)
             // TODO: write a test for this (the next error message is already checked by neg/interop_typetags_without_classtags_arenot_manifests.scala)
             // TODO: this was using context.error, and implicit search always runs in silent mode, thus it was actually throwing a TypeError
             // with the new strategy-based reporting, a BufferingReporter buffers instead of throwing
@@ -1615,14 +1607,12 @@ trait Implicits {
               sm"""to create a manifest here, it is necessary to interoperate with the type tag `$tagInScope` in scope.
                   |however typetag -> manifest conversion requires Scala reflection, which is not present on the classpath.
                   |to proceed put scala-reflect.jar on your compilation classpath and recompile.""")
-          }
-          if (resolveClassTag(pos, tp, allowMaterialization = true) == EmptyTree) {
+          if (resolveClassTag(pos, tp, allowMaterialization = true) == EmptyTree)
             throw new TypeError(
               pos,
               sm"""to create a manifest here, it is necessary to interoperate with the type tag `$tagInScope` in scope.
                   |however typetag -> manifest conversion requires a class tag for the corresponding type to be present.
                   |to proceed add a class tag to the type `$tp` (e.g. by introducing a context bound) and recompile.""")
-          }
           val cm = typed(Ident(ReflectRuntimeCurrentMirror))
           val internal = gen.mkAttributedSelect(
             gen.mkAttributedRef(ReflectRuntimeUniverse),
@@ -1633,13 +1623,12 @@ trait Implicits {
             List(cm, tagInScope))
           wrapResult(interop)
         }
-      } else {
+      } else
         mot(tp, Nil, Nil) match {
           case SearchFailure if opt =>
             wrapResult(gen.mkAttributedRef(NoManifest))
           case result => result
         }
-      }
     }
 
     def wrapResult(tree: Tree): SearchResult =
@@ -1695,13 +1684,12 @@ trait Implicits {
 
       var result = searchImplicit(context.implicitss, isLocalToCallsite = true)
 
-      if (stats) {
+      if (stats)
         if (result.isFailure) Statistics.stopTimer(inscopeFailNanos, failstart)
         else {
           Statistics.stopTimer(inscopeSucceedNanos, succstart)
           Statistics.incCounter(inscopeImplicitHits)
         }
-      }
 
       if (result.isFailure) {
         val failstart =
@@ -1727,13 +1715,12 @@ trait Implicits {
         if (result.isFailure)
           context.reporter ++= previousErrs
 
-        if (stats) {
+        if (stats)
           if (result.isFailure) Statistics.stopTimer(oftypeFailNanos, failstart)
           else {
             Statistics.stopTimer(oftypeSucceedNanos, succstart)
             Statistics.incCounter(oftypeImplicitHits)
           }
-        }
       }
       if (result.isSuccess && isView) {
         def maybeInvalidConversionError(msg: String) {

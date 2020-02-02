@@ -27,9 +27,8 @@ import scala.reflect.NameTransformer
   */
 object ScClsStubBuilder {
   def canBeProcessed(file: VirtualFile): Boolean =
-    try {
-      canBeProcessed(file, file.contentsToByteArray())
-    } catch {
+    try canBeProcessed(file, file.contentsToByteArray())
+    catch {
       case ex: IOException => false
       case u: UnsupportedOperationException =>
         false //why we need to handle this?
@@ -117,9 +116,8 @@ class ScClsStubBuilder extends ClsStubBuilder {
   }
 
   private def isInner(name: String, directory: Directory): Boolean = {
-    if (name.endsWith("$") && directory.contains(name.dropRight(1))) {
+    if (name.endsWith("$") && directory.contains(name.dropRight(1)))
       return false //let's handle it separately to avoid giving it for Java.
-    }
     isInner(NameTransformer.decode(name), 0, directory)
   }
 

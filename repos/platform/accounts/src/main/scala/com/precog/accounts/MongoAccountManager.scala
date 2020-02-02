@@ -60,9 +60,8 @@ trait ZKAccountIdSource extends AccountManager[Future] {
   def settings: ZkAccountManagerSettings
 
   def newAccountId: Future[String] = M.point {
-    if (!zkc.exists(settings.zkAccountIdPath)) {
+    if (!zkc.exists(settings.zkAccountIdPath))
       zkc.createPersistent(settings.zkAccountIdPath, true)
-    }
 
     val createdPath = zkc
       .createPersistentSequential(settings.zkAccountIdPath, Array.empty[Byte])
@@ -230,7 +229,7 @@ abstract class MongoAccountManager(
               .into(settings.deletedAccounts))
           _ <- database(
             remove.from(settings.accounts).where("accountId" === accountId))
-        } yield { ot }
+        } yield ot
       case None =>
         M.point(None)
     }

@@ -45,12 +45,11 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     val elems2 = colls._2.iterator
     val elems3 = colls._3.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext && elems3.hasNext)
         b += f(el1, elems2.next(), elems3.next())
       else
         return b.result()
-    }
     b.result()
   }
 
@@ -60,12 +59,11 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     val elems2 = colls._2.iterator
     val elems3 = colls._3.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext && elems3.hasNext)
         b ++= f(el1, elems2.next(), elems3.next())
       else
         return b.result()
-    }
     b.result()
   }
 
@@ -80,7 +78,7 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     val elems3 = colls._3.iterator
     def result = (b1.result(), b2.result(), b3.result())
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext && elems3.hasNext) {
         val el2 = elems2.next()
         val el3 = elems3.next()
@@ -91,7 +89,6 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
           b3 += el3
         }
       } else return result
-    }
 
     result
   }
@@ -100,12 +97,11 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     val elems2 = colls._2.iterator
     val elems3 = colls._3.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext && elems3.hasNext) {
         if (p(el1, elems2.next(), elems3.next()))
           return true
       } else return false
-    }
     false
   }
 
@@ -116,12 +112,11 @@ final class Tuple3Zipped[El1, Repr1, El2, Repr2, El3, Repr3](
     val elems2 = colls._2.iterator
     val elems3 = colls._3.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext && elems3.hasNext)
         f(el1, elems2.next(), elems3.next())
       else
         return
-    }
   }
 
   override def toString: String =

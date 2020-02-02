@@ -163,10 +163,9 @@ abstract class Shape(override val delegate: jfxss.Shape)
     * @param c List of lengths of the dash segments to replace prior content.
     */
   def strokeDashArray_=(c: Iterable[java.lang.Double]) {
-    if (null == c) {
+    if (null == c)
       strokeDashArray.clear()
-    } else {
+    else
       strokeDashArray.setAll(c)
-    }
   }
 }

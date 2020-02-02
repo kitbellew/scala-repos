@@ -137,13 +137,12 @@ object EmpiricalHessian {
     }
 
     // symmetrize the hessian
-    for (i <- 0 until n) {
+    for (i <- 0 until n)
       for (j <- 0 until i) {
         val tmp = (H(i, j) + H(j, i)) * 0.5
         H(i, j) = tmp
         H(j, i) = tmp
       }
-    }
 
     H
   }

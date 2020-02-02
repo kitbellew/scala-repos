@@ -72,62 +72,59 @@ private[hive] class HiveFunctionRegistry(
       // When we instantiate hive UDF wrapper class, we may throw exception if the input expressions
       // don't satisfy the hive UDF, such as type mismatch, input number mismatch, etc. Here we
       // catch the exception and throw AnalysisException instead.
-      try {
-        if (classOf[GenericUDFMacro].isAssignableFrom(
-              functionInfo.getFunctionClass)) {
-          val udf = HiveGenericUDF(
-            name,
-            new HiveFunctionWrapper(
-              functionClassName,
-              functionInfo.getGenericUDF),
-            children)
-          udf.dataType // Force it to check input data types.
-          udf
-        } else if (classOf[UDF].isAssignableFrom(functionInfo.getFunctionClass)) {
-          val udf = HiveSimpleUDF(
-            name,
-            new HiveFunctionWrapper(functionClassName),
-            children)
-          udf.dataType // Force it to check input data types.
-          udf
-        } else if (classOf[GenericUDF].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
-          val udf = HiveGenericUDF(
-            name,
-            new HiveFunctionWrapper(functionClassName),
-            children)
-          udf.dataType // Force it to check input data types.
-          udf
-        } else if (classOf[AbstractGenericUDAFResolver].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
-          val udaf = HiveUDAFFunction(
-            name,
-            new HiveFunctionWrapper(functionClassName),
-            children)
-          udaf.dataType // Force it to check input data types.
-          udaf
-        } else if (classOf[UDAF].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
-          val udaf = HiveUDAFFunction(
-            name,
-            new HiveFunctionWrapper(functionClassName),
-            children,
-            isUDAFBridgeRequired = true)
-          udaf.dataType // Force it to check input data types.
-          udaf
-        } else if (classOf[GenericUDTF].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
-          val udtf = HiveGenericUDTF(
-            name,
-            new HiveFunctionWrapper(functionClassName),
-            children)
-          udtf.elementTypes // Force it to check input data types.
-          udtf
-        } else {
-          throw new AnalysisException(
-            s"No handler for udf ${functionInfo.getFunctionClass}")
-        }
-      } catch {
+      try if (classOf[GenericUDFMacro].isAssignableFrom(
+                functionInfo.getFunctionClass)) {
+        val udf = HiveGenericUDF(
+          name,
+          new HiveFunctionWrapper(
+            functionClassName,
+            functionInfo.getGenericUDF),
+          children)
+        udf.dataType // Force it to check input data types.
+        udf
+      } else if (classOf[UDF].isAssignableFrom(functionInfo.getFunctionClass)) {
+        val udf = HiveSimpleUDF(
+          name,
+          new HiveFunctionWrapper(functionClassName),
+          children)
+        udf.dataType // Force it to check input data types.
+        udf
+      } else if (classOf[GenericUDF].isAssignableFrom(
+                   functionInfo.getFunctionClass)) {
+        val udf = HiveGenericUDF(
+          name,
+          new HiveFunctionWrapper(functionClassName),
+          children)
+        udf.dataType // Force it to check input data types.
+        udf
+      } else if (classOf[AbstractGenericUDAFResolver].isAssignableFrom(
+                   functionInfo.getFunctionClass)) {
+        val udaf = HiveUDAFFunction(
+          name,
+          new HiveFunctionWrapper(functionClassName),
+          children)
+        udaf.dataType // Force it to check input data types.
+        udaf
+      } else if (classOf[UDAF].isAssignableFrom(functionInfo.getFunctionClass)) {
+        val udaf = HiveUDAFFunction(
+          name,
+          new HiveFunctionWrapper(functionClassName),
+          children,
+          isUDAFBridgeRequired = true)
+        udaf.dataType // Force it to check input data types.
+        udaf
+      } else if (classOf[GenericUDTF].isAssignableFrom(
+                   functionInfo.getFunctionClass)) {
+        val udtf = HiveGenericUDTF(
+          name,
+          new HiveFunctionWrapper(functionClassName),
+          children)
+        udtf.elementTypes // Force it to check input data types.
+        udtf
+      } else
+        throw new AnalysisException(
+          s"No handler for udf ${functionInfo.getFunctionClass}")
+      catch {
         case analysisException: AnalysisException =>
           // If the exception is an AnalysisException, just throw it.
           throw analysisException
@@ -159,21 +156,20 @@ private[hive] class HiveFunctionRegistry(
         val info = getFunctionInfo(name)
         val annotation =
           info.getFunctionClass.getAnnotation(classOf[Description])
-        if (annotation != null) {
+        if (annotation != null)
           Some(
             new ExpressionInfo(
               info.getFunctionClass.getCanonicalName,
               annotation.name(),
               annotation.value(),
               annotation.extended()))
-        } else {
+        else
           Some(
             new ExpressionInfo(
               info.getFunctionClass.getCanonicalName,
               name,
               null,
               null))
-        }
       }.getOrElse(None))
 }
 
@@ -285,9 +281,8 @@ private[hive] case class HiveGenericUDF(
   private lazy val argumentInspectors = children.map(toInspector)
 
   @transient
-  private lazy val returnInspector = {
+  private lazy val returnInspector =
     function.initializeAndFoldConstants(argumentInspectors.toArray)
-  }
 
   @transient
   private lazy val isUDFDeterministic = {
@@ -440,11 +435,10 @@ private[hive] case class HiveUDAFFunction(
 
   @transient
   private lazy val resolver =
-    if (isUDAFBridgeRequired) {
+    if (isUDAFBridgeRequired)
       new GenericUDAFBridge(funcWrapper.createFunction[UDAF]())
-    } else {
+    else
       funcWrapper.createFunction[AbstractGenericUDAFResolver]()
-    }
 
   @transient
   private lazy val inspectors = children.map(toInspector).toArray

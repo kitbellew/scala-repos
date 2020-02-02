@@ -283,7 +283,7 @@ trait OverridingAnnotator {
             annotation.setHighlightType(
               ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
-          for (signature <- superSignatures) {
+          for (signature <- superSignatures)
             signature match {
               case s: Signature =>
                 s.namedElement match {
@@ -295,7 +295,6 @@ trait OverridingAnnotator {
                 }
               case _ =>
             }
-          }
         case _ =>
       }
     }

@@ -232,7 +232,7 @@ private[testutil] trait AbstractComparator extends Assertions {
       javaMethodsNotMirrored: List[Method] = Nil): List[Method] =
     javaMethods match {
       case Nil => javaMethodsNotMirrored
-      case javaMethod :: otherMethods => {
+      case javaMethod :: otherMethods =>
         val finderMethod = MethodsComparators.getFinderMethod(javaMethod)
         val desirableName = getDesirableMethodName(javaMethod)
         val scalaHasMethod = scalaMethods
@@ -243,7 +243,6 @@ private[testutil] trait AbstractComparator extends Assertions {
           else javaMethod :: javaMethodsNotMirrored
 
         compare(otherMethods, scalaMethods, javaMethods)
-      }
     }
 
   /**

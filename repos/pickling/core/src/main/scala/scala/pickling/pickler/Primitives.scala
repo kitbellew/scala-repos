@@ -36,10 +36,10 @@ class PrimitivePickler[T: FastTypeTag](name: String)
     builder.endEntry()
   }
   def unpickle(tag: String, reader: PReader): Any =
-    try {
-      // TODO - beginEntry/endEntry?
-      reader.readPrimitive()
-    } catch {
+    try
+    // TODO - beginEntry/endEntry?
+    reader.readPrimitive()
+    catch {
       case PicklingException(msg, cause) =>
         throw PicklingException(
           s"""error in unpickle of primitive unpickler '$name':

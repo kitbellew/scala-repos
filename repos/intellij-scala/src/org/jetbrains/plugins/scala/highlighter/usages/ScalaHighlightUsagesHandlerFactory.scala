@@ -72,7 +72,7 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
         }
       case ScalaTokenTypes.kCASE =>
         val cc = PsiTreeUtil.getParentOfType(element, classOf[ScCaseClause])
-        if (cc != null) {
+        if (cc != null)
           cc.expr match {
             case Some(expr) =>
               return new ScalaHighlightExprResultHandler(
@@ -82,30 +82,27 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
                 element)
             case _ =>
           }
-        }
       case ScalaTokenTypes.kMATCH =>
         val matchStmt =
           PsiTreeUtil.getParentOfType(element, classOf[ScMatchStmt])
-        if (matchStmt != null) {
+        if (matchStmt != null)
           return new ScalaHighlightExprResultHandler(
             matchStmt,
             editor,
             file,
             element)
-        }
       case ScalaTokenTypes.kTRY =>
         val tryStmt = PsiTreeUtil.getParentOfType(element, classOf[ScTryStmt])
-        if (tryStmt != null) {
+        if (tryStmt != null)
           return new ScalaHighlightExprResultHandler(
             tryStmt,
             editor,
             file,
             element)
-        }
       case ScalaTokenTypes.kFOR =>
         val forStmt =
           PsiTreeUtil.getParentOfType(element, classOf[ScForStatement])
-        if (forStmt != null && forStmt.isYield) {
+        if (forStmt != null && forStmt.isYield)
           forStmt.body match {
             case Some(body) =>
               return new ScalaHighlightExprResultHandler(
@@ -115,20 +112,18 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
                 element)
             case _ =>
           }
-        }
       case ScalaTokenTypes.kIF =>
         val ifStmt = PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt])
-        if (ifStmt != null) {
+        if (ifStmt != null)
           return new ScalaHighlightExprResultHandler(
             ifStmt,
             editor,
             file,
             element)
-        }
       case ScalaTokenTypes.tFUNTYPE =>
         val funcExpr =
           PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr])
-        if (funcExpr != null) {
+        if (funcExpr != null)
           funcExpr.result match {
             case Some(resultExpr) =>
               return new ScalaHighlightExprResultHandler(
@@ -138,18 +133,16 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
                 element)
             case _ =>
           }
-        }
       case ScalaTokenTypes.kCLASS | ScalaTokenTypes.kTRAIT |
           ScalaTokenTypes.kOBJECT =>
         val templateDef =
           PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])
-        if (templateDef != null) {
+        if (templateDef != null)
           return new ScalaHighlightPrimaryConstructorExpressionsHandler(
             templateDef,
             editor,
             file,
             element)
-        }
       case _ =>
     }
     null

@@ -102,8 +102,8 @@ class RandomSamplerSuite extends SparkFunSuite with Matchers {
     val m = 1 + math.max(d1.max, d2.max)
     val h1 = Array.fill[Int](m)(0)
     val h2 = Array.fill[Int](m)(0)
-    for (v <- d1) { h1(v) += 1 }
-    for (v <- d2) { h2(v) += 1 }
+    for (v <- d1) h1(v) += 1
+    for (v <- d2) h2(v) += 1
     assert(h1.sum == h2.sum)
     assert(h1.sum == ss)
     (cumulativeDist(h1), cumulativeDist(h2))

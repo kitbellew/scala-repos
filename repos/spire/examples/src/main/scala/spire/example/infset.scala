@@ -13,9 +13,9 @@ object SetUtil {
     def powerLoop(as: Stream[A], i: Int): Stream[Set[A]] = {
       def nthLoop(as: Stream[A], i: Int): Stream[Set[A]] = as match {
         case a #:: tail =>
-          if (i == 0) {
+          if (i == 0)
             Set(a) #:: done
-          } else {
+          else {
             val next = nthLoop(tail, i - 1)
             next #::: next.map(_ + a)
           }

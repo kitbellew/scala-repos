@@ -41,15 +41,13 @@ class ServerMediator(project: Project) extends ProjectComponent {
           CompileServerManager.instance(project).configureWidget()
         }
 
-        if (CompileServerLauncher.needRestart(project)) {
+        if (CompileServerLauncher.needRestart(project))
           CompileServerLauncher.instance.stop()
-        }
 
-        if (!CompileServerLauncher.instance.running) {
+        if (!CompileServerLauncher.instance.running)
           invokeAndWait {
             CompileServerLauncher.instance.tryToStart(project)
           }
-        }
       }
 
     override def buildFinished(
@@ -62,10 +60,10 @@ class ServerMediator(project: Project) extends ProjectComponent {
 
   private val checkSettingsTask = new CompileTask {
     def execute(context: CompileContext): Boolean =
-      if (isScalaProject) {
+      if (isScalaProject)
         if (!checkCompilationSettings()) false
         else true
-      } else true
+      else true
   }
 
   CompilerManager.getInstance(project).addBeforeTask(checkSettingsTask)
@@ -82,10 +80,10 @@ class ServerMediator(project: Project) extends ProjectComponent {
 
     var result = true
 
-    if (modulesWithClashes.nonEmpty) {
+    if (modulesWithClashes.nonEmpty)
       invokeAndWait {
         val choice =
-          if (!ApplicationManager.getApplication.isUnitTestMode) {
+          if (!ApplicationManager.getApplication.isUnitTestMode)
             Messages.showYesNoDialog(
               project,
               "Production and test output paths are shared in: " + modulesWithClashes
@@ -96,11 +94,11 @@ class ServerMediator(project: Project) extends ProjectComponent {
               "Cancel compilation",
               Messages.getErrorIcon
             )
-          } else Messages.YES
+          else Messages.YES
 
         val splitAutomatically = choice == Messages.YES
 
-        if (splitAutomatically) {
+        if (splitAutomatically)
           inWriteAction {
             modulesWithClashes.foreach { module =>
               val model =
@@ -126,11 +124,9 @@ class ServerMediator(project: Project) extends ProjectComponent {
 
             project.save()
           }
-        }
 
         result = splitAutomatically
       }
-    }
 
     result
   }

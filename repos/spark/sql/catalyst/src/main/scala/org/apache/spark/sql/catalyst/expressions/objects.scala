@@ -69,11 +69,11 @@ case class StaticInvoke(
     val argString = argGen.map(_.value).mkString(", ")
 
     if (propagateNull) {
-      val objNullCheck = if (ctx.defaultValue(dataType) == "null") {
-        s"${ev.isNull} = ${ev.value} == null;"
-      } else {
-        ""
-      }
+      val objNullCheck =
+        if (ctx.defaultValue(dataType) == "null")
+          s"${ev.isNull} = ${ev.value} == null;"
+        else
+          ""
 
       val argsNonNull = s"!(${argGen.map(_.isNull).mkString(" || ")})"
       s"""
@@ -87,14 +87,13 @@ case class StaticInvoke(
           $objNullCheck
         }
        """
-    } else {
+    } else
       s"""
         ${argGen.map(_.code).mkString("\n")}
 
         $javaType ${ev.value} = $objectName.$functionName($argString);
         final boolean ${ev.isNull} = ${ev.value} == null;
       """
-    }
   }
 }
 
@@ -162,11 +161,11 @@ case class Invoke(
 
     // If the function can return null, we do an extra check to make sure our null bit is still set
     // correctly.
-    val objNullCheck = if (ctx.defaultValue(dataType) == "null") {
-      s"${ev.isNull} = ${ev.value} == null;"
-    } else {
-      ""
-    }
+    val objNullCheck =
+      if (ctx.defaultValue(dataType) == "null")
+        s"${ev.isNull} = ${ev.value} == null;"
+      else
+        ""
 
     val value = unboxer(s"${obj.value}.$functionName($argString)")
 
@@ -258,14 +257,13 @@ case class NewInstance(
           ${ev.isNull} = false;
         }
        """
-    } else {
+    } else
       s"""
         $setup
 
         final $javaType ${ev.value} = $constructorCall;
         final boolean ${ev.isNull} = false;
       """
-    }
   }
 
   override def toString: String = s"newInstance($cls)"
@@ -461,15 +459,13 @@ case class MapObjects private (
       val arrayPart =
         convertedType.reverse.takeWhile(c => c == '[' || c == ']').reverse
       s"new $rawType[$dataLength]$arrayPart"
-    } else {
+    } else
       s"new $convertedType[$dataLength]"
-    }
 
-    val loopNullCheck = if (primitiveElement) {
+    val loopNullCheck = if (primitiveElement)
       s"boolean ${loopVar.isNull} = ${genInputData.value}.isNullAt($loopIndex);"
-    } else {
+    else
       s"boolean ${loopVar.isNull} = ${genInputData.isNull} || ${loopVar.value} == null;"
-    }
 
     s"""
       ${genInputData.code}
@@ -564,15 +560,14 @@ case class EncodeUsingSerializer(child: Expression, kryo: Boolean)
     // Code to initialize the serializer.
     val serializer = ctx.freshName("serializer")
     val (serializerClass, serializerInstanceClass) = {
-      if (kryo) {
+      if (kryo)
         (
           classOf[KryoSerializer].getName,
           classOf[KryoSerializerInstance].getName)
-      } else {
+      else
         (
           classOf[JavaSerializer].getName,
           classOf[JavaSerializerInstance].getName)
-      }
     }
     val sparkConf = s"new ${classOf[SparkConf].getName}()"
     ctx.addMutableState(
@@ -611,15 +606,14 @@ case class DecodeUsingSerializer[T](
     // Code to initialize the serializer.
     val serializer = ctx.freshName("serializer")
     val (serializerClass, serializerInstanceClass) = {
-      if (kryo) {
+      if (kryo)
         (
           classOf[KryoSerializer].getName,
           classOf[KryoSerializerInstance].getName)
-      } else {
+      else
         (
           classOf[JavaSerializer].getName,
           classOf[JavaSerializerInstance].getName)
-      }
     }
     val sparkConf = s"new ${classOf[SparkConf].getName}()"
     ctx.addMutableState(

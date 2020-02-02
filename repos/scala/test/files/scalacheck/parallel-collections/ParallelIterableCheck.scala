@@ -68,9 +68,9 @@ abstract class ParallelIterableCheck[T](collName: String)
       }
 
   def areEqual(t1: GenTraversable[T], t2: GenTraversable[T]) =
-    if (hasStrictOrder) {
+    if (hasStrictOrder)
       t1 == t2 && t2 == t1
-    } else
+    else
       (t1, t2) match { // it is slightly delicate what `equal` means if the order is not strict
         case (m1: GenMap[_, _], m2: GenMap[_, _]) => m1 == m2 && m2 == m1
         case (i1: GenIterable[_], i2: GenIterable[_]) =>
@@ -370,9 +370,9 @@ abstract class ParallelIterableCheck[T](collName: String)
   if (hasStrictOrder)
     property("dropWhiles must be equal") = forAll(collectionPairs) {
       case (t, coll) =>
-        (for ((pred, ind) <- dropWhilePredicates.zipWithIndex) yield {
-          ("operator " + ind) |: t.dropWhile(pred) == coll.dropWhile(pred)
-        }).reduceLeft(_ && _)
+        (for ((pred, ind) <- dropWhilePredicates.zipWithIndex)
+          yield ("operator " + ind) |: t.dropWhile(pred) == coll.dropWhile(pred))
+          .reduceLeft(_ && _)
     }
 
   property("folds must be equal for assoc. operators") =

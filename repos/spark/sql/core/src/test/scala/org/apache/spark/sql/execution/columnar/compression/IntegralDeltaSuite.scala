@@ -39,14 +39,14 @@ class IntegralDeltaSuite extends SparkFunSuite {
 
       val builder =
         TestCompressibleColumnBuilder(columnStats, columnType, scheme)
-      val deltas = if (input.isEmpty) {
-        Seq.empty[Long]
-      } else {
-        (input.tail, input.init).zipped.map {
-          case (x: Int, y: Int)   => (x - y).toLong
-          case (x: Long, y: Long) => x - y
-        }
-      }
+      val deltas =
+        if (input.isEmpty)
+          Seq.empty[Long]
+        else
+          (input.tail, input.init).zipped.map {
+            case (x: Int, y: Int)   => (x - y).toLong
+            case (x: Long, y: Long) => x - y
+          }
 
       input.map { value =>
         val row = new GenericMutableRow(1)
@@ -59,9 +59,9 @@ class IntegralDeltaSuite extends SparkFunSuite {
       val headerSize = CompressionScheme.columnHeaderSize(buffer)
 
       // Compression scheme ID + compressed contents
-      val compressedSize = 4 + (if (deltas.isEmpty) {
+      val compressedSize = 4 + (if (deltas.isEmpty)
                                   0
-                                } else {
+                                else {
                                   val oneBoolean = columnType.defaultSize
                                   1 + oneBoolean + deltas.map { d =>
                                     if (math.abs(d) <= Byte.MaxValue) 1
@@ -85,9 +85,9 @@ class IntegralDeltaSuite extends SparkFunSuite {
           columnType.extract(buffer))
 
         (input.tail, deltas).zipped.foreach { (value, delta) =>
-          if (math.abs(delta) <= Byte.MaxValue) {
+          if (math.abs(delta) <= Byte.MaxValue)
             assertResult(delta, "Wrong delta")(buffer.get())
-          } else {
+          else {
             assertResult(Byte.MinValue, "Expecting escaping mark here")(
               buffer.get())
             assertResult(value, "Wrong value")(columnType.extract(buffer))
@@ -105,7 +105,7 @@ class IntegralDeltaSuite extends SparkFunSuite {
       val decoder = scheme.decoder(buffer, columnType)
       val mutableRow = new GenericMutableRow(1)
 
-      if (input.nonEmpty) {
+      if (input.nonEmpty)
         input.foreach {
           assert(decoder.hasNext)
           assertResult(_, "Wrong decoded value") {
@@ -113,7 +113,6 @@ class IntegralDeltaSuite extends SparkFunSuite {
             columnType.getField(mutableRow, 0)
           }
         }
-      }
       assert(!decoder.hasNext)
     }
 

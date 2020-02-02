@@ -86,7 +86,7 @@ object Metadata {
     new Extractor[Metadata] {
       override def validated(obj: JValue): Validation[Error, Metadata] =
         obj match {
-          case metadata @ JObject(entries) if entries.size == 1 => {
+          case metadata @ JObject(entries) if entries.size == 1 =>
             val (key, value) = entries.head
             MetadataType.fromName(key).map {
               case BooleanValueStats    => value.validated[BooleanValueStats]
@@ -95,7 +95,6 @@ object Metadata {
               case BigDecimalValueStats => value.validated[BigDecimalValueStats]
               case StringValueStats     => value.validated[StringValueStats]
             } getOrElse { Failure(Invalid("Unknown metadata type: " + key)) }
-          }
 
           case _ => Failure(Invalid("Invalid metadata entry: " + obj))
         }

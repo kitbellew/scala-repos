@@ -123,9 +123,9 @@ object ThrottlerTransportAdapter {
       extends ThrottleMode {
 
     private def isAvailable(nanoTimeOfSend: Long, tokens: Int): Boolean =
-      if ((tokens > capacity && availableTokens > 0)) {
+      if ((tokens > capacity && availableTokens > 0))
         true // Allow messages larger than capacity through, it will be recorded as negative tokens
-      } else
+      else
         min((availableTokens + tokensGenerated(nanoTimeOfSend)), capacity) >= tokens
 
     override def tryConsumeTokens(
@@ -376,10 +376,9 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       ref.result.future.transform(
         {
           case Terminated(t) if t.path == target.path ⇒ SetThrottleAck
-          case SetThrottleAck ⇒ {
+          case SetThrottleAck ⇒
             internalTarget.sendSystemMessage(Unwatch(target, ref));
             SetThrottleAck
-          }
         },
         t ⇒ { internalTarget.sendSystemMessage(Unwatch(target, ref)); t }
       )(ref.internalCallingThreadExecutionContext)
@@ -578,11 +577,9 @@ private[transport] class ThrottledAssociation(
 
   // This method captures ASSOCIATE packets and extracts the origin address
   private def peekOrigin(b: ByteString): Option[Address] =
-    try {
-      AkkaPduProtobufCodec.decodePdu(b) match {
-        case Associate(info) ⇒ Some(info.origin)
-        case _ ⇒ None
-      }
+    try AkkaPduProtobufCodec.decodePdu(b) match {
+      case Associate(info) ⇒ Some(info.origin)
+      case _ ⇒ None
     } catch {
       // This layer should not care about malformed packets. Also, this also useful for testing, because
       // arbitrary payload could be passed in
@@ -592,23 +589,20 @@ private[transport] class ThrottledAssociation(
   def forwardOrDelay(payload: ByteString): Unit =
     if (inboundThrottleMode == Blackhole) {
       // Do nothing
-    } else {
-      if (throttledMessages.isEmpty) {
-        val tokens = payload.length
-        val (newbucket, success) =
-          inboundThrottleMode.tryConsumeTokens(System.nanoTime(), tokens)
-        if (success) {
-          inboundThrottleMode = newbucket
-          upstreamListener notify InboundPayload(payload)
-        } else {
-          throttledMessages = throttledMessages.enqueue(payload)
-          scheduleDequeue(
-            inboundThrottleMode.timeToAvailable(System.nanoTime(), tokens))
-        }
+    } else if (throttledMessages.isEmpty) {
+      val tokens = payload.length
+      val (newbucket, success) =
+        inboundThrottleMode.tryConsumeTokens(System.nanoTime(), tokens)
+      if (success) {
+        inboundThrottleMode = newbucket
+        upstreamListener notify InboundPayload(payload)
       } else {
         throttledMessages = throttledMessages.enqueue(payload)
+        scheduleDequeue(
+          inboundThrottleMode.timeToAvailable(System.nanoTime(), tokens))
       }
-    }
+    } else
+      throttledMessages = throttledMessages.enqueue(payload)
 
   def scheduleDequeue(delay: FiniteDuration): Unit = inboundThrottleMode match {
     case Blackhole ⇒ // Do nothing
@@ -638,10 +632,10 @@ private[transport] final case class ThrottlerHandle(
       val timeOfSend = System.nanoTime()
       val (newBucket, allow) =
         currentBucket.tryConsumeTokens(timeOfSend, tokens)
-      if (allow) {
+      if (allow)
         if (outboundThrottleMode.compareAndSet(currentBucket, newBucket)) true
         else tryConsume(outboundThrottleMode.get())
-      } else false
+      else false
     }
 
     outboundThrottleMode.get match {

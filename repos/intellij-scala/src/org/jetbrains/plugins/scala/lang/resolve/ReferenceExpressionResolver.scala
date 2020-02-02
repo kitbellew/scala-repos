@@ -138,20 +138,19 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
               val iterator = reference.shapeResolve
                 .map(_.asInstanceOf[ScalaResolveResult])
                 .iterator
-              while (iterator.hasNext) {
+              while (iterator.hasNext)
                 levelSet.add(iterator.next())
-              }
               super.candidatesS
             }
         }
 
       var result: Array[ResolveResult] = Array.empty
-      if (shapesOnly) {
+      if (shapesOnly)
         result =
           reference.doResolve(reference, processor(smartProcessor = false))
-      } else {
+      else {
         val candidatesS = processor(smartProcessor = true).candidatesS //let's try to avoid treeWalkUp
-        if (candidatesS.isEmpty || candidatesS.forall(!_.isApplicable())) {
+        if (candidatesS.isEmpty || candidatesS.forall(!_.isApplicable()))
           // it has another resolve only in one case:
           // clazz.ref(expr)
           // clazz has method ref with one argument, but it's not ok
@@ -160,9 +159,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           // this is ugly, but it can improve performance
           result =
             reference.doResolve(reference, processor(smartProcessor = false))
-        } else {
+        else
           result = candidatesS.toArray
-        }
       }
       if (result.isEmpty && reference.isAssignmentOperator) {
         val assignProcessor = new MethodResolveProcessor(
@@ -177,9 +175,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
         result.map(r =>
           r.asInstanceOf[ScalaResolveResult]
             .copy(isAssignment = true): ResolveResult)
-      } else {
+      } else
         result
-      }
     }
 
     nonAssignResolve

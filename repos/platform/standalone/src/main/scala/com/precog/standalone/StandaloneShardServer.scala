@@ -81,15 +81,13 @@ trait StandaloneShardServer extends BlueEyesServer with ShardService {
     val jobManager = config.get[String]("jobs.jobdir").map { jobdir =>
       val dir = new File(jobdir)
 
-      if (!dir.isDirectory) {
+      if (!dir.isDirectory)
         throw new Exception(
           "Configured job dir %s is not a directory".format(dir))
-      }
 
-      if (!dir.canWrite) {
+      if (!dir.canWrite)
         throw new Exception(
           "Configured job dir %s is not writeable".format(dir))
-      }
 
       FileJobManager(dir, M)
     } getOrElse {

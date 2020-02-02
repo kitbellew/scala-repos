@@ -211,13 +211,11 @@ class ScalaJsonCombinatorsSpec extends Specification {
       val json: JsValue = sampleJson
 
       json.validate[Place] match {
-        case s: JsSuccess[Place] => {
+        case s: JsSuccess[Place] =>
           val place: Place = s.get
-          // do something with place
-        }
-        case e: JsError => {
-          // error handling flow
-        }
+        // do something with place
+        case e: JsError =>
+        // error handling flow
       }
       //#reads-model
 

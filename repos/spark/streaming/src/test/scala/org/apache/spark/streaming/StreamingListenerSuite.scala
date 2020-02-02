@@ -45,9 +45,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
 
   override def afterFunction() {
     super.afterFunction()
-    if (ssc != null) {
+    if (ssc != null)
       ssc.stop()
-    }
   }
 
   // To make sure that the processing start and end times in collected
@@ -136,20 +135,16 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     ssc.addStreamingListener(collector)
 
     ssc.start()
-    try {
-      eventually(timeout(30 seconds), interval(20 millis)) {
-        collector.startedReceiverStreamIds.size should equal(1)
-        collector.startedReceiverStreamIds.peek() should equal(0)
-        collector.stoppedReceiverStreamIds.size should equal(1)
-        collector.stoppedReceiverStreamIds.peek() should equal(0)
-        collector.receiverErrors should have size 1
-        collector.receiverErrors.peek()._1 should equal(0)
-        collector.receiverErrors.peek()._2 should include("report error")
-        collector.receiverErrors.peek()._3 should include("report exception")
-      }
-    } finally {
-      ssc.stop()
-    }
+    try eventually(timeout(30 seconds), interval(20 millis)) {
+      collector.startedReceiverStreamIds.size should equal(1)
+      collector.startedReceiverStreamIds.peek() should equal(0)
+      collector.stoppedReceiverStreamIds.size should equal(1)
+      collector.stoppedReceiverStreamIds.peek() should equal(0)
+      collector.receiverErrors should have size 1
+      collector.receiverErrors.peek()._1 should equal(0)
+      collector.receiverErrors.peek()._2 should include("report error")
+      collector.receiverErrors.peek()._3 should include("report exception")
+    } finally ssc.stop()
   }
 
   test("output operation reporting") {
@@ -163,16 +158,12 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     ssc.addStreamingListener(collector)
 
     ssc.start()
-    try {
-      eventually(timeout(30 seconds), interval(20 millis)) {
-        collector.startedOutputOperationIds.asScala.take(3) should be(
-          Seq(0, 1, 2))
-        collector.completedOutputOperationIds.asScala.take(3) should be(
-          Seq(0, 1, 2))
-      }
-    } finally {
-      ssc.stop()
-    }
+    try eventually(timeout(30 seconds), interval(20 millis)) {
+      collector.startedOutputOperationIds.asScala.take(3) should be(
+        Seq(0, 1, 2))
+      collector.completedOutputOperationIds.asScala.take(3) should be(
+        Seq(0, 1, 2))
+    } finally ssc.stop()
   }
 
   test("don't call ssc.stop in listener") {
@@ -262,9 +253,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     // Make sure running at least one batch
     if (!batchCounter.waitUntilBatchesCompleted(
           expectedNumCompletedBatches = 1,
-          timeout = 10000)) {
+          timeout = 10000))
       fail("The first batch cannot complete in 10 seconds")
-    }
     // When reaching here, we can make sure `StreamingContextStoppingCollector` won't call
     // `ssc.stop()`, so it's safe to call `_ssc.stop()` now.
     _ssc.stop()
@@ -282,11 +272,10 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     batchCounter.waitUntilBatchesCompleted(
       expectedNumCompletedBatches = 1,
       timeout = 10000)
-    if (isFailed) {
+    if (isFailed)
       intercept[RuntimeException] {
         _ssc.awaitTerminationOrTimeout(10000)
       }
-    }
     _ssc.stop()
     failureReasonsCollector.failureReasons.synchronized {
       failureReasonsCollector.failureReasons.toMap
@@ -411,9 +400,8 @@ class StreamingContextStoppingCollector(val ssc: StreamingContext)
       // thread is calling `ssc.stop()`, while StreamingContextStoppingCollector is also calling
       // `ssc.stop()` in the listener thread, which becomes a dead-lock.
       isFirstBatch = false
-      try {
-        ssc.stop()
-      } catch {
+      try ssc.stop()
+      catch {
         case se: SparkException =>
           sparkExSeen = true
       }

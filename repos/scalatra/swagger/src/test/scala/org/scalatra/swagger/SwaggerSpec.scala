@@ -66,11 +66,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     */
   override lazy val port: Int = {
     val s = new ServerSocket(0);
-    try {
-      s.getLocalPort
-    } finally {
-      s.close()
-    }
+    try s.getLocalPort
+    finally s.close()
   } //58468
 
   val listResourceJValue = readJson("api-docs.json") // merge (("basePath" -> ("http://localhost:" + port)):JValue)
@@ -103,9 +100,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
   }
 
   def parseInt(i: String): Option[Int] =
-    try {
-      Some(Integer.parseInt(i))
-    } catch {
+    try Some(Integer.parseInt(i))
+    catch {
       case _: Throwable ⇒ None
     }
 
@@ -312,9 +308,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
           def countsmatch =
             (af.size must_== ef.size)
               .setMessage("The count for the responseMessages is different")
-          if (r.nonEmpty) {
+          if (r.nonEmpty)
             countsmatch and (r reduce (_ and _))
-          } else countsmatch
+          else countsmatch
         case "parameters" =>
           val JArray(af) = act \ fn
           val JArray(ef) = exp \ fn

@@ -52,12 +52,11 @@ class KeyedCache[K, T](size: Int, loadFactor: Box[Float], cons: K => Box[T]) {
     * otherwise run cons and add that value to the cache and return it.
     */
   def apply(key: K): Box[T] =
-    if (cache.contains(key)) {
+    if (cache.contains(key))
       Full(cache(key))
-    } else {
+    else
       cons(key) match {
         case f @ Full(v) => cache.update(key, v); f
         case _           => Empty
       }
-    }
 }

@@ -198,9 +198,7 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
               classBTypeFromParsedClassfile(declClass),
               classBTypeFromParsedClassfile(lambdaBodyHandle.getOwner),
               ownerClass)
-          } yield {
-            isAccessible
-          }
+          } yield isAccessible
 
           def pos =
             callGraph
@@ -330,14 +328,14 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       val implMethodArgTypes =
         Type.getArgumentTypes(lambdaBodyMethodDescWithoutCaptures)
       val res = new Array[Option[AbstractInsnNode]](invokeArgTypes.length)
-      for (i <- invokeArgTypes.indices) {
-        if (invokeArgTypes(i) == implMethodArgTypes(i)) {
+      for (i <- invokeArgTypes.indices)
+        if (invokeArgTypes(i) == implMethodArgTypes(i))
           res(i) = None
-        } else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(i).getDescriptor == ObjectRef.descriptor) {
+        else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(i).getDescriptor == ObjectRef.descriptor)
           res(i) = Some(getScalaUnbox(implMethodArgTypes(i)))
-        } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(i).getDescriptor == ObjectRef.descriptor) {
+        else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(i).getDescriptor == ObjectRef.descriptor)
           res(i) = Some(getScalaBox(invokeArgTypes(i)))
-        } else {
+        else {
           assert(!isPrimitiveType(invokeArgTypes(i)), invokeArgTypes(i))
           assert(!isPrimitiveType(implMethodArgTypes(i)), implMethodArgTypes(i))
           // The comment in the unapply method of `LambdaMetaFactoryCall` explains why we have to introduce
@@ -351,7 +349,6 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           res(i) = Some(
             new TypeInsnNode(CHECKCAST, implMethodArgTypes(i).getInternalName))
         }
-      }
       res
     }
   }
@@ -422,14 +419,13 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         if (bodyReturnType.getSort == Type.VOID) getBoxedUnit
         else getScalaBox(bodyReturnType)
       ownerMethod.instructions.insertBefore(invocation, op)
-    } else {
+    } else
       // see comment of that method
       fixLoadedNothingOrNullValue(
         bodyReturnType,
         bodyInvocation,
         ownerMethod,
         btypes)
-    }
 
     ownerMethod.instructions.remove(invocation)
 

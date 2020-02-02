@@ -227,9 +227,8 @@ object Plot {
   val integerTickUnits = {
     val units = new TickUnits()
     val df = new java.text.DecimalFormat("0")
-    for (b <- List(1, 2, 5); e <- List(0, 1, 2, 3, 4, 5, 6, 7, 8)) {
+    for (b <- List(1, 2, 5); e <- List(0, 1, 2, 3, 4, 5, 6, 7, 8))
       units.add(new NumberTickUnit(b * math.pow(10, e).toInt, df))
-    }
     units
   }
 
@@ -301,9 +300,8 @@ object Plot {
 
     def +=(d: xy.XYDataset) {
       datasets += d
-      for (i <- 0 until d.getSeriesCount) {
+      for (i <- 0 until d.getSeriesCount)
         seriesDelegates += (datasets.size - 1)
-      }
       datasetSeriesOffsets += seriesDelegates.length
     }
 

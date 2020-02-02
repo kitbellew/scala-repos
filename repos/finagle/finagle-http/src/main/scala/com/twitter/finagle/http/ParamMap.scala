@@ -170,19 +170,17 @@ class RequestParamMap(val request: Request) extends ParamMap {
   private[this] val postParams: JMap[String, JList[String]] = {
     if (request.method != Method.Trace &&
         request.mediaType == Some(MediaType.WwwForm) &&
-        request.length > 0) {
+        request.length > 0)
       parseParams("?" + request.contentString)
-    } else {
+    else
       ParamMap.EmptyJMap
-    }
   }
 
   // Convert IllegalArgumentException to ParamMapException so it can be handled
   // appropriately (e.g., 400 Bad Request).
   private[this] def parseParams(s: String): JMap[String, JList[String]] =
-    try {
-      new QueryStringDecoder(s).getParameters
-    } catch {
+    try new QueryStringDecoder(s).getParameters
+    catch {
       case e: IllegalArgumentException =>
         _isValid = false
         ParamMap.EmptyJMap
@@ -214,11 +212,10 @@ class RequestParamMap(val request: Request) extends ParamMap {
       params: JMap[String, JList[String]],
       name: String): Option[String] = {
     val values = params.get(name)
-    if (values != null && !values.isEmpty()) {
+    if (values != null && !values.isEmpty())
       Some(values.get(0))
-    } else {
+    else
       None
-    }
   }
 
   // Get values from JMap, which might be null
@@ -226,11 +223,10 @@ class RequestParamMap(val request: Request) extends ParamMap {
       params: JMap[String, JList[String]],
       name: String): Iterable[String] = {
     val values = params.get(name)
-    if (values != null) {
+    if (values != null)
       values.asScala
-    } else {
+    else
       Nil
-    }
   }
 
   // Get iterable for JMap, which might be null

@@ -41,11 +41,10 @@ object ConsoleProducer {
       reader.init(System.in, getReaderProps(config))
 
       val producer =
-        if (config.useOldProducer) {
+        if (config.useOldProducer)
           new OldProducer(getOldProducerProps(config))
-        } else {
+        else
           new NewShinyProducer(getNewProducerProps(config))
-        }
 
       Runtime.getRuntime.addShutdownHook(new Thread() {
         override def run() {

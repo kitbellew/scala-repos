@@ -205,7 +205,7 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
     def test(body: ((Alternative*) ⇒ Option[ContentType]) ⇒ Unit): Unit =
       example in {
         val headers =
-          if (example != "(without headers)") {
+          if (example != "(without headers)")
             example.stripMarginWithNewline("\n").split('\n').toList map {
               rawHeader ⇒
                 val Array(name, value) = rawHeader.split(':')
@@ -214,7 +214,7 @@ class ContentNegotiationSpec extends FreeSpec with Matchers {
                   case result ⇒ fail(result.errors.head.formatPretty)
                 }
             }
-          } else Nil
+          else Nil
 
         testHeaders(headers: _*)(accept ⇒ body(accept))
       }

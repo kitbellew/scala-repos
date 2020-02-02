@@ -51,14 +51,12 @@ class JavaGlobalSettingsAdapter(val underlying: play.GlobalSettings)
       .getOrElse(super.onBadRequest(request, error))
 
   override def doFilter(a: EssentialAction): EssentialAction =
-    try {
-      Filters(
-        super.doFilter(a),
-        underlying.filters.map(_.newInstance: play.api.mvc.EssentialFilter): _*)
-    } catch {
-      case NonFatal(e) => {
+    try Filters(
+      super.doFilter(a),
+      underlying.filters.map(_.newInstance: play.api.mvc.EssentialFilter): _*)
+    catch {
+      case NonFatal(e) =>
         EssentialAction(req => Accumulator.done(onError(req, e)))
-      }
     }
 
 }

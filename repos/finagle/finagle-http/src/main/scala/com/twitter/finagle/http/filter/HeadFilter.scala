@@ -25,9 +25,8 @@ class HeadFilter[Req <: Request] extends SimpleFilter[Req, Response] {
         request.method = Method.Head
         request.response.clearContent()
       }
-    } else {
+    } else
       service(request)
-    }
 }
 
 object HeadFilter extends HeadFilter[Request]

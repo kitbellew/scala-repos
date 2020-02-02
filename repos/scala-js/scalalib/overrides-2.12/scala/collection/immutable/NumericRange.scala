@@ -121,16 +121,16 @@ abstract class NumericRange[T](
   import NumericRange.defaultOrdering
 
   override def min[T1 >: T](implicit ord: Ordering[T1]): T =
-    if (ord eq defaultOrdering(num)) {
+    if (ord eq defaultOrdering(num))
       if (num.signum(step) > 0) start
       else last
-    } else super.min(ord)
+    else super.min(ord)
 
   override def max[T1 >: T](implicit ord: Ordering[T1]): T =
-    if (ord eq defaultOrdering(num)) {
+    if (ord eq defaultOrdering(num))
       if (num.signum(step) > 0) last
       else start
-    } else super.max(ord)
+    else super.max(ord)
 
   // Motivated by the desire for Double ranges with BigDecimal precision,
   // we need some way to map a Range and get another Range.  This can't be
@@ -195,20 +195,19 @@ abstract class NumericRange[T](
       if (isEmpty) num fromInt 0
       else if (numRangeElements == 1) head
       else ((num fromInt numRangeElements) * (head + last) / (num fromInt 2))
-    } else {
-      // user provided custom Numeric, we cannot rely on arithmetic series formula
-      if (isEmpty) num.zero
-      else {
-        var acc = num.zero
-        var i = head
-        var idx = 0
-        while (idx < length) {
-          acc = num.plus(acc, i)
-          i = i + step
-          idx = idx + 1
-        }
-        acc
+    } else
+    // user provided custom Numeric, we cannot rely on arithmetic series formula
+    if (isEmpty) num.zero
+    else {
+      var acc = num.zero
+      var i = head
+      var idx = 0
+      while (idx < length) {
+        acc = num.plus(acc, i)
+        i = i + step
+        idx = idx + 1
       }
+      acc
     }
 
   override lazy val hashCode = super.hashCode()
@@ -259,12 +258,10 @@ object NumericRange {
         val endint = num.toInt(end)
         if (end == num.fromInt(endint)) {
           val stepint = num.toInt(step)
-          if (step == num.fromInt(stepint)) {
-            return {
-              if (isInclusive) Range.inclusive(startint, endint, stepint).length
-              else Range(startint, endint, stepint).length
-            }
-          }
+          if (step == num.fromInt(stepint))
+            return
+          if (isInclusive) Range.inclusive(startint, endint, stepint).length
+          else Range(startint, endint, stepint).length
         }
       }
       // If we reach this point, deferring to Int failed.
@@ -302,12 +299,12 @@ object NumericRange {
             else num.plus(start, num.times(startq, step))
           val waypointB = num.plus(waypointA, step)
           check {
-            if (num.lt(waypointB, end) != upward) {
+            if (num.lt(waypointB, end) != upward)
               // No last piece
               if (isInclusive && waypointB == end)
                 num.plus(startq, num.fromInt(2))
               else num.plus(startq, one)
-            } else {
+            else {
               // There is a last piece
               val enddiff = num.minus(end, waypointB)
               val endq = check(num.quot(enddiff, step))

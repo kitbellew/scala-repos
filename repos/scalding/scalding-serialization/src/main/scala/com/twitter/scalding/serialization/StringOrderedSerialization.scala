@@ -46,14 +46,13 @@ object StringOrderedSerialization {
             seekingLeft.readUnsignedByte,
             seekingRight.readUnsignedByte)
         else 0
-      } else {
-        // there are 0 or 1 bytes to read
-        if (count == 0) 0
-        else
-          Integer.compare(
-            seekingLeft.readUnsignedByte,
-            seekingRight.readUnsignedByte)
-      }
+      } else
+      // there are 0 or 1 bytes to read
+      if (count == 0) 0
+      else
+        Integer.compare(
+          seekingLeft.readUnsignedByte,
+          seekingRight.readUnsignedByte)
 
     /**
       * Now we start by comparing blocks of ints, then 0 - 3 bytes
@@ -74,10 +73,9 @@ object StringOrderedSerialization {
     else {
       val bc = compareBytes(toCheck - 4 * ints)
       if (bc != 0) bc
-      else {
+      else
         // the size is the fallback when the prefixes match:
         Integer.compare(leftSize, rightSize)
-      }
     }
   }
 }

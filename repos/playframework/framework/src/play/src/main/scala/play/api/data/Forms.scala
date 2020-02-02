@@ -2617,17 +2617,16 @@ object Forms {
       max: N,
       strict: Boolean): Mapping[N] = {
     val number = of[N]
-    if (min == typeMin && max == typeMax) {
+    if (min == typeMin && max == typeMax)
       number
-    } else if (min == typeMin) {
+    else if (min == typeMin)
       number verifying Constraints.max(max, strict)
-    } else if (max == typeMax) {
+    else if (max == typeMax)
       number verifying Constraints.min(min, strict)
-    } else {
+    else
       number verifying (Constraints.min(min, strict), Constraints.max(
         max,
         strict))
-    }
   }
 
   /**

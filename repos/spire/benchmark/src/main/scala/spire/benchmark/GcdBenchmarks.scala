@@ -79,7 +79,7 @@ class GcdBenchmarks extends MyBenchmark {
     var yz = numberOfTrailingZeros(y)
     y >>= yz
 
-    while (x != y) {
+    while (x != y)
       if (x > y) {
         x -= y
         x >>= numberOfTrailingZeros(x)
@@ -87,7 +87,6 @@ class GcdBenchmarks extends MyBenchmark {
         y -= x
         y >>= numberOfTrailingZeros(y)
       }
-    }
 
     if (xz < yz) x << xz else x << yz
   }

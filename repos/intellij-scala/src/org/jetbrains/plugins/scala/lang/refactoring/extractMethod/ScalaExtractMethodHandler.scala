@@ -126,14 +126,12 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         override def visitReturnStatement(ret: ScReturnStmt) {
           val newFun =
             PsiTreeUtil.getParentOfType(ret, classOf[ScFunctionDefinition])
-          if (newFun == fun) {
+          if (newFun == fun)
             result = Some(fun.returnType.getOrElse(psi.types.Unit))
-          }
         }
       }
-      for (element <- elements if result.isEmpty) {
+      for (element <- elements if result.isEmpty)
         element.accept(visitor)
-      }
       result
     }
 
@@ -158,7 +156,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       return
     }
     val array = elements.toArray
-    if (ApplicationManager.getApplication.isUnitTestMode && siblings.length > 0) {
+    if (ApplicationManager.getApplication.isUnitTestMode && siblings.length > 0)
       invokeDialog(
         project,
         editor,
@@ -168,7 +166,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         siblings(0),
         siblings.length == 1,
         lastExprType)
-    } else if (siblings.length > 1) {
+    else if (siblings.length > 1)
       ScalaRefactoringUtil.showChooser(
         editor,
         siblings, { (selectedValue: PsiElement) =>
@@ -186,7 +184,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         getTextForElement,
         (e: PsiElement) => e.getParent
       )
-    } else if (siblings.length == 1) {
+    else if (siblings.length == 1)
       invokeDialog(
         project,
         editor,
@@ -196,7 +194,6 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
         siblings(0),
         smallestScope = true,
         lastExprType)
-    }
   }
 
   private def getSiblings(
@@ -360,10 +357,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       }
     val duplicates = DuplicatesUtil.findDuplicates(settings)
     performRefactoring(settings, editor)
-    if (settings.returnType.isEmpty && settings.typeParameters.isEmpty) {
+    if (settings.returnType.isEmpty && settings.typeParameters.isEmpty)
       if (duplicates.nonEmpty)
         DuplicatesUtil.processDuplicates(duplicates, settings, project, editor)
-    }
   }
 
   private def getTextForElement(element: PsiElement): String = {

@@ -44,9 +44,8 @@ class CoalescedPartitioner(
       val end =
         if (i < partitionStartIndices.length - 1) partitionStartIndices(i + 1)
         else n
-      for (j <- start until end) {
+      for (j <- start until end)
         result(j) = i
-      }
     }
     result
   }
@@ -89,10 +88,9 @@ class CustomShuffledRDD[K, V, C](
 
   override def getDependencies: Seq[Dependency[_]] = List(dependency)
 
-  override val partitioner = {
+  override val partitioner =
     Some(
       new CoalescedPartitioner(dependency.partitioner, partitionStartIndices))
-  }
 
   override def getPartitions: Array[Partition] = {
     val n = dependency.partitioner.numPartitions

@@ -19,12 +19,11 @@ private[akka] abstract class ExposedPublisherReceive(
   def apply(o: Any): Unit = o match {
     case ep: ExposedPublisher ⇒
       receiveExposedPublisher(ep)
-      if (stash.nonEmpty) {
+      if (stash.nonEmpty)
         // we don't use sender() so this is alright
         stash.reverse.foreach { msg ⇒
           activeReceive.applyOrElse(msg, unhandled)
         }
-      }
     case other ⇒
       stash ::= other
   }

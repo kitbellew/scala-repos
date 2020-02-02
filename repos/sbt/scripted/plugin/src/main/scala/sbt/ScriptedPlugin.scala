@@ -70,15 +70,14 @@ object ScriptedPlugin extends Plugin {
   def scriptedTask: Initialize[InputTask[Unit]] = Def.inputTask {
     val args = scriptedParser(sbtTestDirectory.value).parsed
     val prereq: Unit = scriptedDependencies.value
-    try {
-      scriptedRun.value.invoke(
-        scriptedTests.value,
-        sbtTestDirectory.value,
-        scriptedBufferLog.value: java.lang.Boolean,
-        args.toArray,
-        sbtLauncher.value,
-        scriptedLaunchOpts.value.toArray)
-    } catch {
+    try scriptedRun.value.invoke(
+      scriptedTests.value,
+      sbtTestDirectory.value,
+      scriptedBufferLog.value: java.lang.Boolean,
+      args.toArray,
+      sbtLauncher.value,
+      scriptedLaunchOpts.value.toArray)
+    catch {
       case e: java.lang.reflect.InvocationTargetException => throw e.getCause
     }
   }

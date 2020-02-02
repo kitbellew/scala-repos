@@ -63,9 +63,9 @@ class ObservableMapSpec[K, V]
       generatedMap: Map[Int, String],
       originalMap: ObservableMap[Int, String],
       shouldBeTheSame: Boolean) {
-    if (shouldBeTheSame) {
+    if (shouldBeTheSame)
       generatedMap should be theSameInstanceAs (originalMap)
-    } else {
+    else {
       generatedMap should not be theSameInstanceAs(originalMap)
       generatedMap.getClass.getInterfaces
         .contains(classOf[ObservableMap[Int, String]]) should be(true)
@@ -141,9 +141,8 @@ class ObservableMapSpec[K, V]
     val addedEntries = Buffer.empty[(Int, String)]
     map onChange { (sourceMap, change) =>
       change match {
-        case Add(key, valueAdded) => {
+        case Add(key, valueAdded) =>
           addedEntries += ((key, valueAdded))
-        }
         case _ => fail("Unexpected change: " + change)
       }
     }
@@ -194,9 +193,8 @@ class ObservableMapSpec[K, V]
     val removedEntries = Buffer.empty[(Int, String)]
     map onChange { (sourceMap, change) =>
       change match {
-        case Remove(key, valueRemoved) => {
+        case Remove(key, valueRemoved) =>
           removedEntries += ((key, valueRemoved))
-        }
         case _ => fail("Unexpected change: " + change)
       }
     }
@@ -231,7 +229,7 @@ class ObservableMapSpec[K, V]
     //      The `for` loop implements operation equivalent to `map.retain`
     //      without throwing ConcurrentModificationException.
     //    compareInstances(map.retain((i, str) => i % 2 == 0), map, true)
-    for (k <- map.keys.toArray if (k % 2 != 0)) { map.remove(k) }
+    for (k <- map.keys.toArray if (k % 2 != 0)) map.remove(k)
     map should equal(
       ObservableMap((10 to 20).filter(_ % 2 == 0).map(i => (i, i.toString))))
     removedEntries.toList.sortWith(_._1 < _._1) should equal(
@@ -251,9 +249,8 @@ class ObservableMapSpec[K, V]
     val replacedEntries = Buffer.empty[(Int, String, String)]
     map onChange { (sourceMap, change) =>
       change match {
-        case Replace(key, valueAdded, valueRemoved) => {
+        case Replace(key, valueAdded, valueRemoved) =>
           replacedEntries += ((key, valueAdded, valueRemoved))
-        }
         case _ => fail("Unexpected change: " + change)
       }
     }
@@ -304,10 +301,9 @@ class ObservableMapSpec[K, V]
       change match {
         case Add(key, value)    => addedValues += ((key, value))
         case Remove(key, value) => removedValues += ((key, value))
-        case Replace(key, added, removed) => {
+        case Replace(key, added, removed) =>
           addedValues += ((key, added))
           removedValues += ((key, removed))
-        }
       }
     }
 

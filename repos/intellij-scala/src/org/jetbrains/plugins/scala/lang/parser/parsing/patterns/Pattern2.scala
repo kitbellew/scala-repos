@@ -48,9 +48,9 @@ object Pattern2 {
           builder.advanceLexer()
           pattern2Marker.done(ScalaElementTypes.REFERENCE_PATTERN)
           return true
-        } else if (isVarId) {
+        } else if (isVarId)
           backupMarker.rollbackTo()
-        } else {
+        else {
           builder.advanceLexer() //Ate id
           val idMarker = builder.mark
           builder.getTokenType match {

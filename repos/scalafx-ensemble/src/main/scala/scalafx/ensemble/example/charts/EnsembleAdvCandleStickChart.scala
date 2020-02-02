@@ -176,9 +176,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
     /** Called to update and layout the content for the plot */
     override protected def layoutPlotChildren() {
-      if (data == null) {
+      if (data == null)
         return
-      }
 
       for (series <- data) {
         val seriesPath: Option[Path] = series.node() match {
@@ -187,7 +186,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
         }
         seriesPath.foreach(_.elements.clear())
 
-        for (item <- getDisplayedDataIterator(series)) {
+        for (item <- getDisplayedDataIterator(series))
           item.extraValue() match {
             case dayValues: CandleStick =>
               val x = xAxis.displayPosition(dayValues.day)
@@ -220,15 +219,13 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
               seriesPath.foreach { p =>
                 val yAverage = yAxis.displayPosition(dayValues.average)
-                if (p.elements.isEmpty) {
+                if (p.elements.isEmpty)
                   p.elements += MoveTo(x, yAverage)
-                } else {
+                else
                   p.elements += LineTo(x, yAverage)
-                }
               }
             case _ =>
           }
-        }
       }
     }
 
@@ -246,27 +243,24 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
         new FadeTransition(500 ms, candle) {
           toValue = 1
         }.play()
-      } else {
+      } else
         plotChildren += candle
-      }
-      if (series.node() != null) {
+      if (series.node() != null)
         series.node().toFront()
-      }
     }
 
     override protected def dataItemRemoved(
         item: jfxsc.XYChart.Data[Number, Number],
         series: jfxsc.XYChart.Series[Number, Number]) {
       val candle = item.node()
-      if (shouldAnimate) {
+      if (shouldAnimate)
         new FadeTransition(500 ms, candle) {
           toValue = 0
           onFinished = (_: ActionEvent) => plotChildren -= candle
 
         }.play()
-      } else {
+      else
         plotChildren -= candle
-      }
     }
 
     override protected def seriesAdded(
@@ -282,9 +276,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
             toValue = 1
           }
           ft.play()
-        } else {
+        } else
           plotChildren += candle
-        }
       }
       val seriesPath = new Path {
         styleClass = Seq("candlestick-average-line", "series" + seriesIndex)
@@ -297,14 +290,13 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
         series: jfxsc.XYChart.Series[Number, Number]) {
       for (d <- series.getData) {
         val candle = d.node()
-        if (shouldAnimate) {
+        if (shouldAnimate)
           new FadeTransition(500 ms, candle) {
             toValue = 0
             onFinished = (_: ActionEvent) => plotChildren -= candle
           }.play()
-        } else {
+        else
           plotChildren -= candle
-        }
       }
     }
 
@@ -324,7 +316,7 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
 
       if (yAxis.isAutoRanging) {
         val yData = mutable.ListBuffer.empty[Number]
-        for (series <- data; seriesData <- series.data()) {
+        for (series <- data; seriesData <- series.data())
           seriesData.extraValue() match {
             case extras: CandleStick =>
               yData += extras.high
@@ -332,7 +324,6 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
             case _ =>
               yData += seriesData.YValue()
           }
-        }
 
         yAxis.invalidateRange(yData)
       }
@@ -404,16 +395,16 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
       updateStyleClasses()
       highLowLine.startY = highOffset
       highLowLine.endY = lowOffset
-      val cw = if (candleWidth == -1) {
-        // FIXME: It should be possible to access this method without delegate, it is not the same as setPrefWidth
-        bar.delegate.prefWidth(-1)
-      } else
-        candleWidth
-      if (openAboveClose) {
+      val cw =
+        if (candleWidth == -1)
+          // FIXME: It should be possible to access this method without delegate, it is not the same as setPrefWidth
+          bar.delegate.prefWidth(-1)
+        else
+          candleWidth
+      if (openAboveClose)
         bar.resizeRelocate(-cw / 2, 0, cw, closeOffset)
-      } else {
+      else
         bar.resizeRelocate(-cw / 2, closeOffset, cw, closeOffset * -1)
-      }
     }
 
     def updateTooltip(open: Double, close: Double, high: Double, low: Double) {

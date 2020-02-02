@@ -58,7 +58,7 @@ class ScFunctionDefinitionImpl protected (
     //processing parameters for default parameters in ScParameters
     val parameterIncludingSynthetic: Seq[ScParameter] =
       effectiveParameterClauses.flatMap(_.effectiveParameters)
-    if (getStub == null) {
+    if (getStub == null)
       body match {
         case Some(x)
             if lastParent != null &&
@@ -70,14 +70,11 @@ class ScFunctionDefinitionImpl protected (
           }
         case _ =>
       }
-    } else {
-      if (lastParent != null && lastParent.getContext != lastParent.getParent) {
-        for (p <- parameterIncludingSynthetic) {
-          ProgressManager.checkCanceled()
-          if (!processor.execute(p, state)) return false
-        }
+    else if (lastParent != null && lastParent.getContext != lastParent.getParent)
+      for (p <- parameterIncludingSynthetic) {
+        ProgressManager.checkCanceled()
+        if (!processor.execute(p, state)) return false
       }
-    }
     true
   }
 

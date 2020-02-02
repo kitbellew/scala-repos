@@ -266,13 +266,11 @@ object PowerIterationClustering extends Logging {
         val i = ctx.srcId
         val j = ctx.dstId
         val s = ctx.attr
-        if (s < 0.0) {
+        if (s < 0.0)
           throw new SparkException(
             "Similarity must be nonnegative but found s($i, $j) = $s.")
-        }
-        if (s > 0.0) {
+        if (s > 0.0)
           ctx.sendToSrc(s)
-        }
       },
       mergeMsg = _ + _,
       TripletFields.EdgeOnly
@@ -291,15 +289,13 @@ object PowerIterationClustering extends Logging {
       similarities: RDD[(Long, Long, Double)]): Graph[Double, Double] = {
     val edges = similarities.flatMap {
       case (i, j, s) =>
-        if (s < 0.0) {
+        if (s < 0.0)
           throw new SparkException(
             "Similarity must be nonnegative but found s($i, $j) = $s.")
-        }
-        if (i != j) {
+        if (i != j)
           Seq(Edge(i, j, s), Edge(j, i, s))
-        } else {
+        else
           None
-        }
     }
     val gA = Graph.fromEdges(edges, 0.0)
     val vD = gA.aggregateMessages[Double](sendMsg = ctx => {

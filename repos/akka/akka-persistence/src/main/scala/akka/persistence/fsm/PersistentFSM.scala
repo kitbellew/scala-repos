@@ -91,16 +91,15 @@ trait PersistentFSM[S <: FSMState, D, E]
     var eventsToPersist: immutable.Seq[Any] = nextState.domainEvents.toList
 
     //Prevent StateChangeEvent persistence when staying in the same state, except when state defines a timeout
-    if (nextState.notifies || nextState.timeout.nonEmpty) {
+    if (nextState.notifies || nextState.timeout.nonEmpty)
       eventsToPersist = eventsToPersist :+ StateChangeEvent(
         nextState.stateName.identifier,
         nextState.timeout)
-    }
 
-    if (eventsToPersist.isEmpty) {
+    if (eventsToPersist.isEmpty)
       //If there are no events to persist, just apply the state
       super.applyState(nextState)
-    } else {
+    else {
       //Persist the events and apply the new state after all event handlers were executed
       var nextData: D = stateData
       var handlersExecutedCounter = 0

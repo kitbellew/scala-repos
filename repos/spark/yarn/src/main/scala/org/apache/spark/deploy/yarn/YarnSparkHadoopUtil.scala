@@ -146,11 +146,10 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       sparkConf: SparkConf,
       conf: Configuration,
       credentials: Credentials) {
-    if (shouldGetTokens(sparkConf, "hive") && UserGroupInformation.isSecurityEnabled) {
+    if (shouldGetTokens(sparkConf, "hive") && UserGroupInformation.isSecurityEnabled)
       YarnSparkHadoopUtil.get.obtainTokenForHiveMetastore(conf).foreach {
         credentials.addToken(new Text("hive.server2.delegation.token"), _)
       }
-    }
   }
 
   /**
@@ -160,12 +159,11 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       sparkConf: SparkConf,
       conf: Configuration,
       credentials: Credentials): Unit =
-    if (shouldGetTokens(sparkConf, "hbase") && UserGroupInformation.isSecurityEnabled) {
+    if (shouldGetTokens(sparkConf, "hbase") && UserGroupInformation.isSecurityEnabled)
       YarnSparkHadoopUtil.get.obtainTokenForHBase(conf).foreach { token =>
         credentials.addToken(token.getService, token)
         logInfo("Added HBase security token to credentials.")
       }
-    }
 
   /**
     * Return whether delegation tokens should be retrieved for the given service when security is
@@ -199,9 +197,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     */
   def obtainTokenForHiveMetastore(
       conf: Configuration): Option[Token[DelegationTokenIdentifier]] =
-    try {
-      obtainTokenForHiveMetastoreInner(conf)
-    } catch {
+    try obtainTokenForHiveMetastoreInner(conf)
+    catch {
       case e: ClassNotFoundException =>
         logInfo(s"Hive class not found $e")
         logDebug("Hive class not found", e)
@@ -260,10 +257,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
           hive2Token.decodeFromUrlString(tokenStr)
           Some(hive2Token)
         }
-      } finally {
-        Utils.tryLogNonFatalError {
-          closeCurrent.invoke(null)
-        }
+      } finally Utils.tryLogNonFatalError {
+        closeCurrent.invoke(null)
       }
     } else {
       logDebug("HiveMetaStore configured in localmode")
@@ -285,9 +280,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
     * @return a token if the requirements were met, `None` if not.
     */
   def obtainTokenForHBase(conf: Configuration): Option[Token[TokenIdentifier]] =
-    try {
-      obtainTokenForHBaseInner(conf)
-    } catch {
+    try obtainTokenForHBaseInner(conf)
+    catch {
       case e: ClassNotFoundException =>
         logInfo(s"HBase class not found $e")
         logDebug("HBase class not found", e)
@@ -317,9 +311,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
         obtainToken
           .invoke(null, hbaseConf)
           .asInstanceOf[Token[TokenIdentifier]])
-    } else {
+    } else
       None
-    }
   }
 
   /**
@@ -332,11 +325,10 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
 
     // For some reason the Scala-generated anonymous class ends up causing an
     // UndeclaredThrowableException, even if you annotate the method with @throws.
-    try {
-      realUser.doAs(new PrivilegedExceptionAction[T]() {
-        override def run(): T = fn
-      })
-    } catch {
+    try realUser.doAs(new PrivilegedExceptionAction[T]() {
+      override def run(): T = fn
+    })
+    catch {
       case e: UndeclaredThrowableException =>
         throw Option(e.getCause()).getOrElse(e)
     }
@@ -363,10 +355,9 @@ object YarnSparkHadoopUtil {
   def get: YarnSparkHadoopUtil = {
     val yarnMode = java.lang.Boolean.valueOf(
       System.getProperty("SPARK_YARN_MODE", System.getenv("SPARK_YARN_MODE")))
-    if (!yarnMode) {
+    if (!yarnMode)
       throw new SparkException(
         "YarnSparkHadoopUtil is not available in non-YARN mode!")
-    }
     SparkHadoopUtil.get.asInstanceOf[YarnSparkHadoopUtil]
   }
 
@@ -378,9 +369,10 @@ object YarnSparkHadoopUtil {
       env: HashMap[String, String],
       key: String,
       value: String): Unit = {
-    val newValue = if (env.contains(key)) {
-      env(key) + getClassPathSeparator + value
-    } else value
+    val newValue =
+      if (env.contains(key))
+        env(key) + getClassPathSeparator + value
+      else value
     env.put(key, newValue)
   }
 
@@ -401,15 +393,14 @@ object YarnSparkHadoopUtil {
         while (m.find()) {
           val variable = m.group(1)
           var replace = ""
-          if (env.get(variable) != None) {
+          if (env.get(variable) != None)
             replace = env.get(variable).get
-          } else {
+          else {
             // if this key is not configured for the child .. get it from the env
             replace = System.getenv(variable)
-            if (replace == null) {
+            if (replace == null)
               // the env key is note present anywhere .. simply set it
               replace = ""
-            }
           }
           m.appendReplacement(sb, Matcher.quoteReplacement(replace))
         }
@@ -421,11 +412,10 @@ object YarnSparkHadoopUtil {
     }
 
   private val environmentVariableRegex: String = {
-    if (Utils.isWindows) {
+    if (Utils.isWindows)
       "%([A-Za-z_][A-Za-z0-9_]*?)%"
-    } else {
+    else
       "\\$([A-Za-z_][A-Za-z0-9_]*)"
-    }
   }
 
   /**
@@ -443,11 +433,10 @@ object YarnSparkHadoopUtil {
     * @return The correct OOM Error handler JVM option, platform dependent.
     */
   def getOutOfMemoryErrorArgument: String =
-    if (Utils.isWindows) {
+    if (Utils.isWindows)
       escapeForShell("-XX:OnOutOfMemoryError=taskkill /F /PID %%%%p")
-    } else {
+    else
       "-XX:OnOutOfMemoryError='kill %p'"
-    }
 
   /**
     * Escapes a string for inclusion in a command line executed by Yarn. Yarn executes commands
@@ -467,24 +456,22 @@ object YarnSparkHadoopUtil {
     * @return Argument quoted for execution via Yarn's generated shell script.
     */
   def escapeForShell(arg: String): String =
-    if (arg != null) {
-      if (Utils.isWindows) {
+    if (arg != null)
+      if (Utils.isWindows)
         YarnCommandBuilderUtils.quoteForBatchScript(arg)
-      } else {
+      else {
         val escaped = new StringBuilder("'")
-        for (i <- 0 to arg.length() - 1) {
+        for (i <- 0 to arg.length() - 1)
           arg.charAt(i) match {
             case '$'  => escaped.append("\\$")
             case '"'  => escaped.append("\\\"")
             case '\'' => escaped.append("'\\''")
             case c    => escaped.append(c)
           }
-        }
         escaped.append("'").toString()
       }
-    } else {
+    else
       arg
-    }
 
   def getApplicationAclsForYarn(
       securityMgr: SecurityManager): Map[ApplicationAccessType, String] =

@@ -101,14 +101,11 @@ object Logger {
   def logWith[F](mdcValues: (String, Any)*)(f: => F): F = {
     val old = SLF4JMDC.getCopyOfContextMap
     MDC.put(mdcValues: _*)
-    try {
-      f
-    } finally {
-      if (old eq null)
-        MDC.clear
-      else
-        SLF4JMDC.setContextMap(old)
-    }
+    try f
+    finally if (old eq null)
+      MDC.clear
+    else
+      SLF4JMDC.setContextMap(old)
   }
 }
 
@@ -178,7 +175,7 @@ trait Logger {
     * the `Failure` contains an `Exception`, trace that as well.
     */
   def trace(msg: => AnyRef, box: Box[_]): Unit =
-    if (logger.isTraceEnabled) {
+    if (logger.isTraceEnabled)
       box match {
         case Failure(fmsg, Full(e), _) =>
           trace(
@@ -188,7 +185,6 @@ trait Logger {
         case Failure(fmsg, _, _) => trace(String.valueOf(msg) + ": " + fmsg)
         case _                   =>
       }
-    }
 
   def trace(msg: => AnyRef) =
     if (logger.isTraceEnabled) logger.trace(String.valueOf(msg))
@@ -206,7 +202,7 @@ trait Logger {
     * the `Failure` contains an `Exception`, debug that as well.
     */
   def debug(msg: => AnyRef, box: Box[_]): Unit =
-    if (logger.isDebugEnabled) {
+    if (logger.isDebugEnabled)
       box match {
         case Failure(fmsg, Full(e), _) =>
           debug(
@@ -216,7 +212,6 @@ trait Logger {
         case Failure(fmsg, _, _) => debug(String.valueOf(msg) + ": " + fmsg)
         case _                   =>
       }
-    }
 
   def debug(msg: => AnyRef) =
     if (logger.isDebugEnabled) logger.debug(String.valueOf(msg))
@@ -234,7 +229,7 @@ trait Logger {
     * `Failure` contains an `Exception`, info that as well.
     */
   def info(msg: => AnyRef, box: Box[_]): Unit =
-    if (logger.isInfoEnabled) {
+    if (logger.isInfoEnabled)
       box match {
         case Failure(fmsg, Full(e), _) =>
           info(
@@ -244,7 +239,6 @@ trait Logger {
         case Failure(fmsg, _, _) => info(String.valueOf(msg) + ": " + fmsg)
         case _                   =>
       }
-    }
   def info(msg: => AnyRef) =
     if (logger.isInfoEnabled) logger.info(String.valueOf(msg))
   def info(msg: => AnyRef, t: => Throwable) =
@@ -261,7 +255,7 @@ trait Logger {
     * `Failure` contains an `Exception`, warn that as well.
     */
   def warn(msg: => AnyRef, box: Box[_]): Unit =
-    if (logger.isWarnEnabled) {
+    if (logger.isWarnEnabled)
       box match {
         case Failure(fmsg, Full(e), _) =>
           warn(
@@ -271,7 +265,6 @@ trait Logger {
         case Failure(fmsg, _, _) => warn(String.valueOf(msg) + ": " + fmsg)
         case _                   =>
       }
-    }
   def warn(msg: => AnyRef) =
     if (logger.isWarnEnabled) logger.warn(String.valueOf(msg))
   def warn(msg: => AnyRef, t: Throwable) =
@@ -288,7 +281,7 @@ trait Logger {
     * `Failure` contains an `Exception`, error that as well.
     */
   def error(msg: => AnyRef, box: Box[_]): Unit =
-    if (logger.isErrorEnabled) {
+    if (logger.isErrorEnabled)
       box match {
         case Failure(fmsg, Full(e), _) =>
           error(
@@ -298,7 +291,6 @@ trait Logger {
         case Failure(fmsg, _, _) => error(String.valueOf(msg) + ": " + fmsg)
         case _                   =>
       }
-    }
 
   def error(msg: => AnyRef) =
     if (logger.isErrorEnabled) logger.error(String.valueOf(msg))

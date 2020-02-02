@@ -37,9 +37,8 @@ class StreamingLogisticRegressionSuite
 
   override def afterFunction() {
     super.afterFunction()
-    if (ssc != null) {
+    if (ssc != null)
       ssc.stop()
-    }
   }
 
   // Test if we can accurately learn B for Y = logistic(BX) on streaming data

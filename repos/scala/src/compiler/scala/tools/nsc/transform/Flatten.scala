@@ -65,17 +65,17 @@ abstract class Flatten extends InfoTransform {
         var parents1 = parents
         val decls1 = scopeTransform(clazz) {
           val decls1 = newScope
-          if (clazz.isPackageClass) {
+          if (clazz.isPackageClass)
             exitingFlatten { decls foreach (decls1 enter _) }
-          } else {
+          else {
             val oldowner = clazz.owner
             exitingFlatten { oldowner.info }
             parents1 = parents mapConserve (this)
 
-            for (sym <- decls) {
+            for (sym <- decls)
               if (sym.isTerm && !sym.isStaticModule) {
                 decls1 enter sym
-                if (sym.isModule) {
+                if (sym.isModule)
                   // In theory, we could assert(sym.isMethod), because nested, non-static modules are
                   // transformed to methods (lateMETHOD flag added in RefChecks). But this requires
                   // forcing sym.info (see comment on isModuleNotMethod), which forces stub symbols
@@ -88,10 +88,8 @@ abstract class Flatten extends InfoTransform {
                   // TODO: should we also set the LIFTED flag for static, nested module classes?
                   // currently they don't get the flag, even though they are lifted to the package
                   sym.moduleClass setFlag LIFTED
-                }
               } else if (sym.isClass)
                 liftSymbol(sym)
-            }
           }
           decls1
         }

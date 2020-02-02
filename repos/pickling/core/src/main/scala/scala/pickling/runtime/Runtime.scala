@@ -38,12 +38,12 @@ abstract class PicklerRuntime(
   val sym = if (clazz != null) mirror.classSymbol(clazz) else NullClass
   val tpe = {
     val elType = if (clazz != null) clazz.getComponentType() else null
-    if (elType != null) {
+    if (elType != null)
       // TODO: correctly convert elType
       appliedType(
         ArrayClass.toType,
         List(mirror.classSymbol(elType).asType.toType))
-    } else {
+    else {
       // TODO: fix duplication w.r.t Tools.scala
       val tpeWithMaybeTparams = sym.asType.toType
       val tparams = tpeWithMaybeTparams match {
@@ -201,41 +201,39 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
       def tag: FastTypeTag[Any] = fastTag.asInstanceOf[FastTypeTag[Any]]
       def unpickle(tagKey: String, reader: PReader): Any = {
         scala.pickling.internal.GRL.lock()
-        try {
-          if (cir.javaGetInstance) {
-            clazz.getDeclaredMethod("getInstance").invoke(null)
-          } else if (reader.atPrimitive) {
-            val result = reader.readPrimitive()
-            if (shouldBotherAboutSharing(tpe))
-              registerUnpicklee(result, preregisterUnpicklee())
-            result
-          } else if (tagKey.endsWith("$")) {
-            val c = Class.forName(tagKey)
-            c.getField("MODULE$").get(c)
-          } else {
-            val pendingFields =
-              if (tagKey.contains("anonfun$")) List[FieldIR]()
-              else
-                cir.fields.filter(fir =>
-                  fir.hasGetter || {
-                    // exists as Java field
-                    scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
-                  })
+        try if (cir.javaGetInstance)
+          clazz.getDeclaredMethod("getInstance").invoke(null)
+        else if (reader.atPrimitive) {
+          val result = reader.readPrimitive()
+          if (shouldBotherAboutSharing(tpe))
+            registerUnpicklee(result, preregisterUnpicklee())
+          result
+        } else if (tagKey.endsWith("$")) {
+          val c = Class.forName(tagKey)
+          c.getField("MODULE$").get(c)
+        } else {
+          val pendingFields =
+            if (tagKey.contains("anonfun$")) List[FieldIR]()
+            else
+              cir.fields.filter(fir =>
+                fir.hasGetter || {
+                  // exists as Java field
+                  scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
+                })
 
-            def fieldVals =
-              pendingFields.map { fir =>
-                val freader = reader.readField(fir.name)
-                val fstaticTag = FastTypeTag(mirror, fir.tpe, fir.tpe.key)
-                val fstaticSym = fstaticTag.tpe.typeSymbol
-                if (fstaticSym.isEffectivelyFinal)
-                  freader.hintElidedType(fstaticTag)
-                val fdynamicTag =
-                  try {
-                    freader.beginEntry()
-                  } catch {
-                    case e @ PicklingException(msg, cause) =>
-                      debug(
-                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}
+          def fieldVals =
+            pendingFields.map { fir =>
+              val freader = reader.readField(fir.name)
+              val fstaticTag = FastTypeTag(mirror, fir.tpe, fir.tpe.key)
+              val fstaticSym = fstaticTag.tpe.typeSymbol
+              if (fstaticSym.isEffectivelyFinal)
+                freader.hintElidedType(fstaticTag)
+              val fdynamicTag =
+                try freader.beginEntry()
+                catch {
+                  case e @ PicklingException(msg, cause) =>
+                    debug(
+                      s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}
 ':
                          |$msg
 
@@ -243,51 +241,50 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 '
                          |static type of field: '${fir.tpe.key}'
                          |""".stripMargin)
-                      throw e
-                  }
-                val fval = {
-                  if (freader.atPrimitive) {
-                    val result = freader.readPrimitive()
-                    if (shouldBotherAboutSharing(fir.tpe))
-                      registerUnpicklee(result, preregisterUnpicklee())
-                    result
-                  } else {
-                    val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
-                    fieldUnpickler.unpickle(fdynamicTag, freader)
-                  }
+                    throw e
                 }
-
-                freader.endEntry()
-                fval
+              val fval = {
+                if (freader.atPrimitive) {
+                  val result = freader.readPrimitive()
+                  if (shouldBotherAboutSharing(fir.tpe))
+                    registerUnpicklee(result, preregisterUnpicklee())
+                  result
+                } else {
+                  val fieldUnpickler =
+                    scala.pickling.internal.currentRuntime.picklers
+                      .genUnpickler(mirror, fdynamicTag)
+                  fieldUnpickler.unpickle(fdynamicTag, freader)
+                }
               }
 
-            // TODO: need to support modules and other special guys here
-            // TODO: in principle, we could invoke a constructor here
-            val inst =
-              scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
-            if (shouldBotherAboutSharing(tpe))
-              registerUnpicklee(inst, preregisterUnpicklee())
-            val im = mirror.reflect(inst)
-
-            //debug(s"pendingFields: ${pendingFields.size}")
-            //debug(s"fieldVals: ${fieldVals.size}")
-
-            pendingFields.zip(fieldVals) foreach {
-              case (fir, fval) =>
-                if (fir.field.nonEmpty) {
-                  val fmX = im.reflectField(fir.field.get)
-                  fmX.set(fval)
-                } else {
-                  val javaField = clazz.getDeclaredField(fir.name)
-                  javaField.setAccessible(true)
-                  javaField.set(inst, fval)
-                }
+              freader.endEntry()
+              fval
             }
 
-            inst
+          // TODO: need to support modules and other special guys here
+          // TODO: in principle, we could invoke a constructor here
+          val inst =
+            scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
+          if (shouldBotherAboutSharing(tpe))
+            registerUnpicklee(inst, preregisterUnpicklee())
+          val im = mirror.reflect(inst)
+
+          //debug(s"pendingFields: ${pendingFields.size}")
+          //debug(s"fieldVals: ${fieldVals.size}")
+
+          pendingFields.zip(fieldVals) foreach {
+            case (fir, fval) =>
+              if (fir.field.nonEmpty) {
+                val fmX = im.reflectField(fir.field.get)
+                fmX.set(fval)
+              } else {
+                val javaField = clazz.getDeclaredField(fir.name)
+                javaField.setAccessible(true)
+                javaField.set(inst, fval)
+              }
           }
+
+          inst
         } finally GRL.unlock()
       }
     }
@@ -316,83 +313,79 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
       def tag: FastTypeTag[Any] = fastTag.asInstanceOf[FastTypeTag[Any]]
       def unpickle(tagKey: String, reader: PReader): Any = {
         GRL.lock()
-        try {
-          if (reader.atPrimitive) {
-            reader.readPrimitive()
-          } else if (tagKey.endsWith("$")) {
-            val c = Class.forName(tagKey)
-            c.getField("MODULE$").get(c)
-          } else {
-            val pendingFields =
-              if (tagKey.contains("anonfun$")) {
-                List[FieldIR]()
-              } else {
-                cir.fields.filter(fir =>
-                  fir.hasGetter || {
-                    // exists as Java field
-                    scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
-                  })
-              }
+        try if (reader.atPrimitive)
+          reader.readPrimitive()
+        else if (tagKey.endsWith("$")) {
+          val c = Class.forName(tagKey)
+          c.getField("MODULE$").get(c)
+        } else {
+          val pendingFields =
+            if (tagKey.contains("anonfun$"))
+              List[FieldIR]()
+            else
+              cir.fields.filter(fir =>
+                fir.hasGetter || {
+                  // exists as Java field
+                  scala.util.Try(clazz.getDeclaredField(fir.name)).isSuccess
+                })
 
-            def fieldVals =
-              pendingFields.map { fir =>
-                val freader = reader.readField(fir.name)
-                val fstaticTag = FastTypeTag(mirror, fir.tpe, fir.tpe.key)
-                val fstaticSym = fstaticTag.tpe.typeSymbol
-                if (fstaticSym.isEffectivelyFinal)
-                  freader.hintElidedType(fstaticTag)
-                val fdynamicTag =
-                  try {
-                    freader.beginEntry()
-                  } catch {
-                    case e @ PicklingException(msg, cause) =>
-                      debug(
-                        s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':
+          def fieldVals =
+            pendingFields.map { fir =>
+              val freader = reader.readField(fir.name)
+              val fstaticTag = FastTypeTag(mirror, fir.tpe, fir.tpe.key)
+              val fstaticSym = fstaticTag.tpe.typeSymbol
+              if (fstaticSym.isEffectivelyFinal)
+                freader.hintElidedType(fstaticTag)
+              val fdynamicTag =
+                try freader.beginEntry()
+                catch {
+                  case e @ PicklingException(msg, cause) =>
+                    debug(
+                      s"""error in interpreted runtime unpickler while reading tag of field '${fir.name}':
                          |$msg
                          |enclosing object has type: '$tagKey'
                          |static type of field: '${fir.tpe.key}'
                          |""".stripMargin)
-                      throw e
-                  }
-                val fval = {
-                  if (freader.atPrimitive) {
-                    val result = freader.readPrimitive()
-                    result
-                  } else {
-                    val fieldUnpickler =
-                      scala.pickling.internal.currentRuntime.picklers
-                        .genUnpickler(mirror, fdynamicTag)
-                    fieldUnpickler.unpickle(fdynamicTag, freader)
-                  }
+                    throw e
                 }
-
-                freader.endEntry()
-                fval
+              val fval = {
+                if (freader.atPrimitive) {
+                  val result = freader.readPrimitive()
+                  result
+                } else {
+                  val fieldUnpickler =
+                    scala.pickling.internal.currentRuntime.picklers
+                      .genUnpickler(mirror, fdynamicTag)
+                  fieldUnpickler.unpickle(fdynamicTag, freader)
+                }
               }
 
-            // TODO: need to support modules and other special guys here
-            // TODO: in principle, we could invoke a constructor here
-            val inst =
-              scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
-            val im = mirror.reflect(inst)
-
-            //debug(s"pendingFields: ${pendingFields.size}")
-            //debug(s"fieldVals: ${fieldVals.size}")
-
-            pendingFields.zip(fieldVals) foreach {
-              case (fir, fval) =>
-                if (fir.field.nonEmpty) {
-                  val fmX = im.reflectField(fir.field.get)
-                  fmX.set(fval)
-                } else {
-                  val javaField = clazz.getDeclaredField(fir.name)
-                  javaField.setAccessible(true)
-                  javaField.set(inst, fval)
-                }
+              freader.endEntry()
+              fval
             }
 
-            inst
+          // TODO: need to support modules and other special guys here
+          // TODO: in principle, we could invoke a constructor here
+          val inst =
+            scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
+          val im = mirror.reflect(inst)
+
+          //debug(s"pendingFields: ${pendingFields.size}")
+          //debug(s"fieldVals: ${fieldVals.size}")
+
+          pendingFields.zip(fieldVals) foreach {
+            case (fir, fval) =>
+              if (fir.field.nonEmpty) {
+                val fmX = im.reflectField(fir.field.get)
+                fmX.set(fval)
+              } else {
+                val javaField = clazz.getDeclaredField(fir.name)
+                javaField.setAccessible(true)
+                javaField.set(inst, fval)
+              }
           }
+
+          inst
         } finally GRL.unlock()
       }
     }

@@ -220,7 +220,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   // Set our own authenticator to properly negotiate user/password for HTTP connections.
   // This is needed by the HTTP client fetching from the HttpServer. Put here so its
   // only set once.
-  if (authOn) {
+  if (authOn)
     Authenticator.setDefault(
       new Authenticator() {
         override def getPasswordAuthentication(): PasswordAuthentication = {
@@ -235,7 +235,6 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
         }
       }
     )
-  }
 
   // the default SSL configuration - it will be used by all communication layers unless overwritten
   private val defaultSSLOptions =
@@ -259,9 +258,7 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
             TrustManagerFactory.getDefaultAlgorithm)
           tmf.init(ks)
           tmf.getTrustManagers
-        } finally {
-          input.close()
-        }
+        } finally input.close()
       }
 
     lazy val credulousTrustStoreManagers = Array({
@@ -291,9 +288,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     }
 
     (Some(sslContext.getSocketFactory), Some(hostVerifier))
-  } else {
+  } else
     (None, None)
-  }
 
   def getSSLOptions(module: String): SSLOptions = {
     val opts =
@@ -325,11 +321,10 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * Checking the existence of "*" is necessary as YARN can't recognize the "*" in "defaultuser,*"
     */
   def getViewAcls: String =
-    if (viewAcls.contains("*")) {
+    if (viewAcls.contains("*"))
       "*"
-    } else {
+    else
       viewAcls.mkString(",")
-    }
 
   /**
     * Admin acls should be set before the view or modify acls.  If you modify the admin
@@ -344,11 +339,10 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * Checking the existence of "*" is necessary as YARN can't recognize the "*" in "defaultuser,*"
     */
   def getModifyAcls: String =
-    if (modifyAcls.contains("*")) {
+    if (modifyAcls.contains("*"))
       "*"
-    } else {
+    else
       modifyAcls.mkString(",")
-    }
 
   /**
     * Admin acls should be set before the view or modify acls.  If you modify the admin
@@ -374,9 +368,9 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
     * we throw an exception.
     */
   private def generateSecretKey(): String =
-    if (!isAuthenticationEnabled) {
+    if (!isAuthenticationEnabled)
       null
-    } else if (SparkHadoopUtil.get.isYarnMode) {
+    else if (SparkHadoopUtil.get.isYarnMode) {
       // In YARN mode, the secure cookie will be created by the driver and stashed in the
       // user's credentials, where executors can get it. The check for an array of size 0
       // is because of the test code in YarnSparkHadoopUtilSuite.
@@ -395,10 +389,9 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
         SparkHadoopUtil.get
           .addSecretKeyToUserCredentials(SECRET_LOOKUP_KEY, cookie)
         cookie
-      } else {
+      } else
         new Text(secretKey).toString
-      }
-    } else {
+    } else
       // user must have set spark.authenticate.secret config
       // For Master/Worker, auth secret is in conf; for Executors, it is in env variable
       Option(sparkConf.getenv(SecurityManager.ENV_AUTH_SECRET))
@@ -409,7 +402,6 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
             "Error: a secret key must be specified via the " +
               SecurityManager.SPARK_AUTH_SECRET_CONF + " config")
       }
-    }
 
   /**
     * Check to see if Acls for the UI are enabled

@@ -12,9 +12,9 @@ import scala.util.Properties
 object DevModeBuild {
 
   def jdk7WatchService = Def.setting {
-    if (Properties.isJavaAtLeast("1.7")) {
+    if (Properties.isJavaAtLeast("1.7"))
       FileWatchService.jdk7(Keys.sLog.value)
-    } else {
+    else {
       println("Not testing JDK7 watch service because we're not on JDK7")
       FileWatchService.sbt(Keys.pollInterval.value)
     }
@@ -43,18 +43,17 @@ object DevModeBuild {
       conn.setConnectTimeout(ConnectTimeout)
       conn.setReadTimeout(ReadTimeout)
 
-      if (status == conn.getResponseCode) {
+      if (status == conn.getResponseCode)
         messages += s"Resource at $path returned $status as expected"
-      } else {
+      else
         throw new RuntimeException(
           s"Resource at $path returned ${conn.getResponseCode} instead of $status")
-      }
 
-      val is = if (conn.getResponseCode >= 400) {
-        conn.getErrorStream
-      } else {
-        conn.getInputStream
-      }
+      val is =
+        if (conn.getResponseCode >= 400)
+          conn.getErrorStream
+        else
+          conn.getInputStream
 
       // The input stream may be null if there's no body
       val contents = if (is != null) {
@@ -65,12 +64,11 @@ object DevModeBuild {
       conn.disconnect()
 
       assertions.foreach { assertion =>
-        if (contents.contains(assertion)) {
+        if (contents.contains(assertion))
           messages += s"Resource at $path contained $assertion"
-        } else {
+        else
           throw new RuntimeException(
             s"Resource at $path didn't contain '$assertion':\n$contents")
-        }
       }
 
       messages.foreach(println)

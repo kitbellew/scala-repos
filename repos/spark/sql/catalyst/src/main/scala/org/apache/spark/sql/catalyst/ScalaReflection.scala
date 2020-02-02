@@ -167,14 +167,13 @@ object ScalaReflection extends ScalaReflection {
       /** Returns the current path or `BoundReference`. */
       def getPath: Expression = {
         val dataType = schemaFor(tpe).dataType
-        if (path.isDefined) {
+        if (path.isDefined)
           path.get
-        } else {
+        else
           upCastToExpectedType(
             BoundReference(0, dataType, true),
             dataType,
             walkedTypePath)
-        }
       }
 
       /**
@@ -314,11 +313,10 @@ object ScalaReflection extends ScalaReflection {
 
           val mapFunction: Expression => Expression = p => {
             val converter = constructorFor(elementType, Some(p), newTypePath)
-            if (nullable) {
+            if (nullable)
               converter
-            } else {
+            else
               AssertNotNull(converter, newTypePath)
-            }
           }
 
           val array = Invoke(
@@ -381,37 +379,35 @@ object ScalaReflection extends ScalaReflection {
               val newTypePath =
                 s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
               // For tuples, we based grab the inner fields by ordinal instead of name.
-              if (cls.getName startsWith "scala.Tuple") {
+              if (cls.getName startsWith "scala.Tuple")
                 constructorFor(
                   fieldType,
                   Some(addToPathOrdinal(i, dataType, newTypePath)),
                   newTypePath)
-              } else {
+              else {
                 val constructor = constructorFor(
                   fieldType,
                   Some(addToPath(fieldName, dataType, newTypePath)),
                   newTypePath)
 
-                if (!nullable) {
+                if (!nullable)
                   AssertNotNull(constructor, newTypePath)
-                } else {
+                else
                   constructor
-                }
               }
           }
 
           val newInstance =
             NewInstance(cls, arguments, ObjectType(cls), propagateNull = false)
 
-          if (path.nonEmpty) {
+          if (path.nonEmpty)
             expressions.If(
               IsNull(getPath),
               expressions.Literal.create(null, ObjectType(cls)),
               newInstance
             )
-          } else {
+          else
             newInstance
-          }
 
         case t
             if Utils.classIsLoadable(className) &&
@@ -470,12 +466,12 @@ object ScalaReflection extends ScalaReflection {
           elementType: `Type`): Expression = {
         val externalDataType = dataTypeFor(elementType)
         val Schema(catalystType, nullable) = silentSchemaFor(elementType)
-        if (isNativeType(externalDataType)) {
+        if (isNativeType(externalDataType))
           NewInstance(
             classOf[GenericArrayData],
             input :: Nil,
             dataType = ArrayType(catalystType, nullable))
-        } else {
+        else {
           val clsName = getClassNameFromType(elementType)
           val newPath =
             s"""- array element class: "$clsName"""" +: walkedTypePath
@@ -486,9 +482,9 @@ object ScalaReflection extends ScalaReflection {
         }
       }
 
-      if (!inputObject.dataType.isInstanceOf[ObjectType]) {
+      if (!inputObject.dataType.isInstanceOf[ObjectType])
         inputObject
-      } else {
+      else {
         val className = getClassNameFromType(tpe)
         tpe match {
           case t if t <:< localTypeOf[Option[_]] =>
@@ -880,9 +876,8 @@ trait ScalaReflection {
     * `NullType` silently instead.
     */
   def silentSchemaFor(tpe: `Type`): Schema =
-    try {
-      schemaFor(tpe)
-    } catch {
+    try schemaFor(tpe)
+    catch {
       case _: UnsupportedOperationException => Schema(NullType, nullable = true)
     }
 
@@ -926,20 +921,20 @@ trait ScalaReflection {
 
   protected def constructParams(tpe: Type): Seq[Symbol] = {
     val constructorSymbol = tpe.member(nme.CONSTRUCTOR)
-    val params = if (constructorSymbol.isMethod) {
-      constructorSymbol.asMethod.paramss
-    } else {
-      // Find the primary constructor, and use its parameter ordering.
-      val primaryConstructorSymbol: Option[Symbol] =
-        constructorSymbol.asTerm.alternatives.find(s =>
-          s.isMethod && s.asMethod.isPrimaryConstructor)
-      if (primaryConstructorSymbol.isEmpty) {
-        sys.error(
-          "Internal SQL error: Product object did not have a primary constructor.")
-      } else {
-        primaryConstructorSymbol.get.asMethod.paramss
+    val params =
+      if (constructorSymbol.isMethod)
+        constructorSymbol.asMethod.paramss
+      else {
+        // Find the primary constructor, and use its parameter ordering.
+        val primaryConstructorSymbol: Option[Symbol] =
+          constructorSymbol.asTerm.alternatives.find(s =>
+            s.isMethod && s.asMethod.isPrimaryConstructor)
+        if (primaryConstructorSymbol.isEmpty)
+          sys.error(
+            "Internal SQL error: Product object did not have a primary constructor.")
+        else
+          primaryConstructorSymbol.get.asMethod.paramss
       }
-    }
     params.flatten
   }
 

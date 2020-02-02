@@ -90,9 +90,8 @@ class PluginRegistry {
   def getRepositoryRouting(
       repositoryPath: String): Option[GitRepositoryRouting] =
     PluginRegistry().getRepositoryRoutings().find {
-      case GitRepositoryRouting(urlPath, _, _) => {
+      case GitRepositoryRouting(urlPath, _, _) =>
         repositoryPath.matches("/" + urlPath + "(/.*)?")
-      }
     }
 
   def addReceiveHook(commitHook: ReceiveHook): Unit =
@@ -140,7 +139,7 @@ object PluginRegistry {
       settings: SystemSettings,
       conn: java.sql.Connection): Unit = {
     val pluginDir = new File(PluginHome)
-    if (pluginDir.exists && pluginDir.isDirectory) {
+    if (pluginDir.exists && pluginDir.isDirectory)
       pluginDir
         .listFiles(new FilenameFilter {
           override def accept(dir: File, name: String): Boolean =
@@ -159,10 +158,9 @@ object PluginRegistry {
             val currentVersion = conn.find(
               "SELECT * FROM PLUGIN WHERE PLUGIN_ID = ?",
               plugin.pluginId)(_.getString("VERSION")) match {
-              case Some(x) => {
+              case Some(x) =>
                 val dim = x.split("\\.")
                 Version(dim(0).toInt, dim(1).toInt)
-              }
               case None => Version(0, 0)
             }
 
@@ -198,22 +196,18 @@ object PluginRegistry {
               ))
 
           } catch {
-            case e: Throwable => {
+            case e: Throwable =>
               logger.error(s"Error during plugin initialization", e)
-            }
           }
         }
-    }
   }
 
   def shutdown(context: ServletContext, settings: SystemSettings): Unit =
     instance.getPlugins().foreach { pluginInfo =>
-      try {
-        pluginInfo.pluginClass.shutdown(instance, context, settings)
-      } catch {
-        case e: Exception => {
+      try pluginInfo.pluginClass.shutdown(instance, context, settings)
+      catch {
+        case e: Exception =>
           logger.error(s"Error during plugin shutdown", e)
-        }
       }
     }
 

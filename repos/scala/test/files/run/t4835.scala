@@ -11,15 +11,12 @@ object Test {
     val iter = stream.iterator
     print(num)
     // if num == -1, then steram is infinite sequence
-    if (num == INFINITE) {
-      for (i <- 0 until 10) {
+    if (num == INFINITE)
+      for (i <- 0 until 10)
         print(" " + iter.next())
-      }
-    } else {
-      while (iter.hasNext) {
+    else
+      while (iter.hasNext)
         print(" " + iter.next())
-      }
-    }
     println()
   }
 

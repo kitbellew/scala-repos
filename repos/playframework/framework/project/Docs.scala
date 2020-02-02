@@ -121,11 +121,11 @@ object Docs {
     if ((publishArtifact in packageDoc).value) {
 
       val version = Keys.version.value
-      val sourceTree = if (version.endsWith("-SNAPSHOT")) {
-        BuildSettings.snapshotBranch
-      } else {
-        version
-      }
+      val sourceTree =
+        if (version.endsWith("-SNAPSHOT"))
+          BuildSettings.snapshotBranch
+        else
+          version
 
       val scalaCache = new File(targetDir, "scalaapidocs.cache")
       val javaCache = new File(targetDir, "javaapidocs.cache")

@@ -51,7 +51,7 @@ object Test1 extends TestUtil {
   println()
 
   print(new Bar[String] { def f = "abc" });
-  { print(new Bar[String] { def f = "abc" }) }
+  print(new Bar[String] { def f = "abc" })
   println()
 }
 

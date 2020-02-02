@@ -51,16 +51,13 @@ package object util {
     val outStream = new ByteArrayOutputStream
     try {
       var reading = true
-      while (reading) {
+      while (reading)
         inStream.read() match {
           case -1 => reading = false
           case c  => outStream.write(c)
         }
-      }
       outStream.flush()
-    } finally {
-      inStream.close()
-    }
+    } finally inStream.close()
     new String(outStream.toByteArray, encoding)
   }
 
@@ -71,16 +68,13 @@ package object util {
     val outStream = new ByteArrayOutputStream
     try {
       var reading = true
-      while (reading) {
+      while (reading)
         inStream.read() match {
           case -1 => reading = false
           case c  => outStream.write(c)
         }
-      }
       outStream.flush()
-    } finally {
-      inStream.close()
-    }
+    } finally inStream.close()
     outStream.toByteArray
   }
 

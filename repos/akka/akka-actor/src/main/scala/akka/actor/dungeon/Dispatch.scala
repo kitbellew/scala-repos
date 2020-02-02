@@ -89,11 +89,10 @@ private[akka] trait Dispatch { this: ActorCell ⇒
     // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
     mailbox.systemEnqueue(self, createMessage)
 
-    if (sendSupervise) {
+    if (sendSupervise)
       // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
       parent.sendSystemMessage(
         akka.dispatch.sysmsg.Supervise(self, async = false))
-    }
     this
   }
 

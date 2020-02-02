@@ -345,9 +345,9 @@ class VecCheck extends Specification with ScalaCheck {
 
         if (v.length == 0)
           res must_== Vec.empty[Double]
-        else if (v.length == 1) {
+        else if (v.length == 1)
           res.raw(0) must_== v.sum
-        } else {
+        else {
           val dat = v.contents
           val exp = for {
             i <- 0 until v.length - 1

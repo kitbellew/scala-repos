@@ -33,9 +33,8 @@ class ScImportSelectorsImpl private (
 
   def hasWildcard: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScImportSelectorsStub].hasWildcard
-    }
     findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null
   }
 

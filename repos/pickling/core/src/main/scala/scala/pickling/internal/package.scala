@@ -70,11 +70,10 @@ package object internal {
                               |full type string: '$stpe'""".stripMargin
 
             val sym =
-              try {
-                if (typename.endsWith(".type"))
-                  mirror.staticModule(typename.stripSuffix(".type")).moduleClass
-                else mirror.staticClass(typename)
-              } catch {
+              try if (typename.endsWith(".type"))
+                mirror.staticModule(typename.stripSuffix(".type")).moduleClass
+              else mirror.staticClass(typename)
+              catch {
                 case _: ScalaReflectionException =>
                   sys.error(errorMsg)
                 case _: scala.reflect.internal.MissingRequirementError =>

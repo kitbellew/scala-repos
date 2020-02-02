@@ -79,15 +79,14 @@ class ShuffledRDD[K: ClassTag, V: ClassTag, C: ClassTag](
   override def getDependencies: Seq[Dependency[_]] = {
     val serializer = userSpecifiedSerializer.getOrElse {
       val serializerManager = SparkEnv.get.serializerManager
-      if (mapSideCombine) {
+      if (mapSideCombine)
         serializerManager.getSerializer(
           implicitly[ClassTag[K]],
           implicitly[ClassTag[C]])
-      } else {
+      else
         serializerManager.getSerializer(
           implicitly[ClassTag[K]],
           implicitly[ClassTag[V]])
-      }
     }
     List(
       new ShuffleDependency(

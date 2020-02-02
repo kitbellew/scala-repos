@@ -22,9 +22,8 @@ class ExceptionFilter[REQUEST <: Request]
   def apply(
       request: REQUEST,
       service: Service[REQUEST, Response]): Future[Response] = {
-    try {
-      service(request)
-    } catch {
+    try service(request)
+    catch {
       // apply() threw an exception - convert to Future
       case NonFatal(e) => Future.exception(e)
     }

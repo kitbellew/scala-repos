@@ -99,9 +99,9 @@ class TestService[K, V](
     }
   override def readLast(exclusiveUB: BatchID, mode: Mode) = {
     val candidates = lasts.filter { _._1 < exclusiveUB }
-    if (candidates.isEmpty) {
+    if (candidates.isEmpty)
       Left(List("No batches < :" + exclusiveUB.toString))
-    } else {
+    else {
       val (batch, _) = candidates.maxBy { _._1 }
       val mappable = lastMappable(batch)
       val rdr = Reader { (fd: (FlowDef, Mode)) =>

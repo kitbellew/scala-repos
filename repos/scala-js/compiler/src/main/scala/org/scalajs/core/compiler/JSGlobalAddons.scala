@@ -97,11 +97,10 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
 
     @inline private def enteringUncurryIfAtPhaseAfter[A](op: => A): A =
       if (currentRun.uncurryPhase != NoPhase &&
-          isAtPhaseAfter(currentRun.uncurryPhase)) {
+          isAtPhaseAfter(currentRun.uncurryPhase))
         enteringPhase(currentRun.uncurryPhase)(op)
-      } else {
+      else
         op
-      }
 
     /** has this symbol to be translated into a JS getter (both directions)? */
     def isJSGetter(sym: Symbol): Boolean =

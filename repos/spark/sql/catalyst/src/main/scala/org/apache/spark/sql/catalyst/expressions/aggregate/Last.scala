@@ -62,27 +62,25 @@ case class Last(child: Expression, ignoreNullsExpr: Expression)
   )
 
   override lazy val updateExpressions: Seq[Expression] = {
-    if (ignoreNulls) {
+    if (ignoreNulls)
       Seq(
         /* last = */ If(IsNull(child), last, child)
       )
-    } else {
+    else
       Seq(
         /* last = */ child
       )
-    }
   }
 
   override lazy val mergeExpressions: Seq[Expression] = {
-    if (ignoreNulls) {
+    if (ignoreNulls)
       Seq(
         /* last = */ If(IsNull(last.right), last.left, last.right)
       )
-    } else {
+    else
       Seq(
         /* last = */ last.right
       )
-    }
   }
 
   override lazy val evaluateExpression: AttributeReference = last

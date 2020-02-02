@@ -133,7 +133,7 @@ object M3 {
 object M4 {
 
   def test = {
-    for (i <- range(1, 4)) { Console.print(i + " ") };
+    for (i <- range(1, 4)) Console.print(i + " ");
     Console.println;
     Console.println(for (i <- range(1, 4)) yield i);
     Console.println;
@@ -179,16 +179,15 @@ object M5 {
 
     private def next: Unit = agenda match {
       case List() => ()
-      case (time, action) :: ag1 => {
+      case (time, action) :: ag1 =>
         agenda = ag1;
         curtime = time;
         action();
-      }
     }
 
     def run: Unit = {
       afterDelay(0) { () => Console.println("*** simulation started ***"); }
-      while (!agenda.isEmpty) { next }
+      while (!agenda.isEmpty) next
     }
   }
 
@@ -428,18 +427,17 @@ class Simulator() {
 
   def next: Unit = agenda match {
     case List() => ()
-    case (time, action) :: rest => {
+    case (time, action) :: rest =>
       agenda = rest;
       curtime = time;
       action();
-    }
   }
 
   protected def currentTime: Int = curtime;
 
   def run = {
     afterDelay(0) { () => Console.println("*** simulation started ***"); }
-    while (!agenda.isEmpty) { next }
+    while (!agenda.isEmpty) next
   }
 }
 
@@ -556,14 +554,14 @@ class Main() extends CircuitSimulator() {
     val outNum = 1 << n;
 
     val in = new Wire();
-    val ctrl = for (x <- range(0, n)) yield { new Wire() };
-    val out = for (x <- range(0, outNum)) yield { new Wire() };
+    val ctrl = for (x <- range(0, n)) yield new Wire();
+    val out = for (x <- range(0, outNum)) yield new Wire();
 
     demux(in, ctrl.reverse, out.reverse);
 
     probe("in", in);
-    for ((x, c) <- range(0, n) zip ctrl) { probe("ctrl" + x, c) }
-    for ((x, o) <- range(0, outNum) zip out) { probe("out" + x, o) }
+    for ((x, c) <- range(0, n) zip ctrl) probe("ctrl" + x, c)
+    for ((x, o) <- range(0, outNum) zip out) probe("out" + x, o)
 
     in.setSignal(true);
     run;

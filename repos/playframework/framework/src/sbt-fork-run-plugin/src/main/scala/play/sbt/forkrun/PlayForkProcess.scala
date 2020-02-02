@@ -105,10 +105,10 @@ object PlayForkProcess {
   }
 
   def timedWaitFor(process: JProcess, millis: Long): Option[Int] =
-    try {
-      // exitValue throws if process hasn't exited
-      Some(process.exitValue())
-    } catch {
+    try
+    // exitValue throws if process hasn't exited
+    Some(process.exitValue())
+    catch {
       case _: IllegalThreadStateException =>
         Thread.sleep(100)
         if (millis > 0)
@@ -129,9 +129,8 @@ object PlayForkProcess {
     if (optionsTooLong(options)) {
       val otherOptions = jvmOptions ++ Seq(mainClass) ++ arguments
       (Option(classpathOption), otherOptions)
-    } else {
+    } else
       (None, options)
-    }
   }
 
   val isWindows: Boolean = sys

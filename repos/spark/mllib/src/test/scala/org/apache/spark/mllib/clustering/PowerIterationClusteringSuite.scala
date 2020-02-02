@@ -53,9 +53,9 @@ class PowerIterationClusteringSuite
     val n2 = 40
     val n = n1 + n2
     val points = genCircle(r1, n1) ++ genCircle(r2, n2)
-    val similarities = for (i <- 1 until n; j <- 0 until i) yield {
-      (i.toLong, j.toLong, sim(points(i), points(j)))
-    }
+    val similarities =
+      for (i <- 1 until n; j <- 0 until i)
+        yield (i.toLong, j.toLong, sim(points(i), points(j)))
 
     val model = new PowerIterationClustering()
       .setK(2)
@@ -85,17 +85,16 @@ class PowerIterationClusteringSuite
     val n2 = 40
     val n = n1 + n2
     val points = genCircle(r1, n1) ++ genCircle(r2, n2)
-    val similarities = for (i <- 1 until n; j <- 0 until i) yield {
-      (i.toLong, j.toLong, sim(points(i), points(j)))
-    }
+    val similarities =
+      for (i <- 1 until n; j <- 0 until i)
+        yield (i.toLong, j.toLong, sim(points(i), points(j)))
 
     val edges = similarities.flatMap {
       case (i, j, s) =>
-        if (i != j) {
+        if (i != j)
           Seq(Edge(i, j, s), Edge(j, i, s))
-        } else {
+        else
           None
-        }
     }
     val graph = Graph.fromEdges(sc.parallelize(edges, 2), 0.0)
 
@@ -181,9 +180,7 @@ class PowerIterationClusteringSuite
       model.save(sc, path)
       val sameModel = PowerIterationClusteringModel.load(sc, path)
       PowerIterationClusteringSuite.checkEqual(model, sameModel)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 }
 

@@ -60,14 +60,14 @@ case class SettingGraph(
         case f: File => IO.relativize(basedir, f) getOrElse { f.toString }
         case x       => x.toString
       } getOrElse { d.typeName }
-    } getOrElse { "" }
+    } getOrElse ""
 
   def dependsAscii: String =
     Graph.toAscii(
       this,
       (x: SettingGraph) => x.depends.toSeq.sortBy(_.name),
       (x: SettingGraph) =>
-        "%s = %s" format (x.definedIn getOrElse { "" }, x.dataString))
+        "%s = %s" format (x.definedIn getOrElse "", x.dataString))
 }
 
 object Graph {

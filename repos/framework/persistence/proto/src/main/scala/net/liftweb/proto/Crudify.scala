@@ -207,10 +207,8 @@ trait Crudify {
         pointer <- fieldsForDisplay
         field <- computeFieldFromPointer(entry, pointer).toList
         if field.shouldDisplay_?
-      } yield {
-        ".name *" #> field.displayHtml &
-          ".value *" #> field.asHtml
-      }
+      } yield ".name *" #> field.displayHtml &
+        ".value *" #> field.asHtml
     }
 
   /**
@@ -360,10 +358,8 @@ trait Crudify {
         pointer <- fieldsForDisplay
         field <- computeFieldFromPointer(item, pointer).toList
         if field.shouldDisplay_?
-      } yield {
-        ".name *" #> field.displayHtml &
-          ".value *" #> field.asHtml
-      }
+      } yield ".name *" #> field.displayHtml &
+        ".value *" #> field.asHtml
     }
 
   /**
@@ -644,9 +640,7 @@ trait Crudify {
       for {
         pointer <- fieldsForList
         field <- computeFieldFromPointer(c, pointer).toList
-      } yield {
-        ".value *" #> field.asHtml
-      }
+      } yield ".value *" #> field.asHtml
     }
 
   /**
@@ -666,16 +660,15 @@ trait Crudify {
     * generated
     */
   protected def crudAllPrev(first: Long): (NodeSeq) => NodeSeq =
-    if (first < rowsPerPage) {
+    if (first < rowsPerPage)
       ClearNodes
-    } else {
+    else
       "^ <*>" #>
         <a href={
           listPathString +
             "?first=" + (0L max (first -
             rowsPerPage.toLong))
         }></a>
-    }
 
   /**
     * Override this method to change how the next link is generated
@@ -683,15 +676,14 @@ trait Crudify {
   protected def crudAllNext(
       first: Long,
       list: List[TheCrudType]): (NodeSeq) => NodeSeq =
-    if (first < rowsPerPage) {
+    if (first < rowsPerPage)
       ClearNodes
-    } else {
+    else
       "^ <*>" #>
         <a href={
           listPathString + "?first=" + (first +
             rowsPerPage.toLong)
         }></a>
-    }
 
   /**
     * Override this method if you want to change the behavior
@@ -748,11 +740,10 @@ trait Crudify {
     * to "required_field".
     */
   def wrapNameInRequired(fieldName: NodeSeq, required: Boolean): NodeSeq =
-    if (required) {
+    if (required)
       <span class="required_field">{fieldName}</span>
-    } else {
+    else
       fieldName
-    }
 
   def crudDoForm(item: TheCrudType, noticeMsg: String)(in: NodeSeq): NodeSeq = {
     val from = referer

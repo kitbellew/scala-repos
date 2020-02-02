@@ -14,8 +14,7 @@ object Global extends GlobalSettings {
     writer.write(new Date() + " - reloaded\n")
     writer.close()
 
-    if (app.configuration.getBoolean("fail").getOrElse(false)) {
+    if (app.configuration.getBoolean("fail").getOrElse(false))
       throw new RuntimeException()
-    }
   }
 }

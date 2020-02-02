@@ -104,10 +104,9 @@ private[impl] class TaskUpdateActor(
       operationsByTaskId += taskId -> newQueue
       metrics.numberOfQueuedOps.increment()
 
-      if (oldQueue.isEmpty) {
+      if (oldQueue.isEmpty)
         // start processing the just received operation
         processNextOpIfExists(taskId)
-      }
 
     case FinishedTaskOp(op) =>
       val (dequeued, newQueue) = operationsByTaskId(op.taskId).dequeue

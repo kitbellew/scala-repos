@@ -111,9 +111,8 @@ class ScDocTagValueImpl(node: ASTNode)
   def getVariants: Array[AnyRef] = {
     val result = ArrayBuilder.make[AnyRef]()
     val parameters = getParametersVariants
-    if (parameters == null) {
+    if (parameters == null)
       return Array[AnyRef]()
-    }
     parameters.foreach { param =>
       result += new ScalaLookupItem(param, param.name, None)
     }
@@ -133,9 +132,8 @@ class ScDocTagValueImpl(node: ASTNode)
       case _           => null
     }
     var parent = getParent
-    while (parent != null && !parent.isInstanceOf[ScDocComment]) {
+    while (parent != null && !parent.isInstanceOf[ScDocComment])
       parent = parent.getParent
-    }
 
     if (parent == null || (parentTagType != PARAM_TAG && parentTagType != TYPE_PARAM_TAG))
       return Array.empty[ScNamedElement]
@@ -158,39 +156,35 @@ class ScDocTagValueImpl(node: ASTNode)
 
     parent.getParent match {
       case func: ScFunction =>
-        if (parentTagType == PARAM_TAG) {
+        if (parentTagType == PARAM_TAG)
           filterParamsByName(PARAM_TAG, func.parameters)
-        } else {
+        else
           filterParamsByName(TYPE_PARAM_TAG, func.typeParameters)
-        }
       case clazz: ScClass =>
         val constr = clazz.constructor
 
         constr match {
           case primaryConstr: Some[ScPrimaryConstructor] =>
-            if (parentTagType == PARAM_TAG) {
+            if (parentTagType == PARAM_TAG)
               filterParamsByName(PARAM_TAG, primaryConstr.get.parameters)
-            } else {
+            else
               primaryConstr.get.getClassTypeParameters match {
                 case tParam: Some[ScTypeParamClause] =>
                   filterParamsByName(TYPE_PARAM_TAG, tParam.get.typeParameters)
                 case _ => Array.empty[ScNamedElement]
               }
-            }
           case None => Array.empty[ScNamedElement]
         }
       case traitt: ScTrait =>
-        if (parentTagType == TYPE_PARAM_TAG) {
+        if (parentTagType == TYPE_PARAM_TAG)
           filterParamsByName(TYPE_PARAM_TAG, traitt.typeParameters)
-        } else {
+        else
           Array.empty[ScNamedElement]
-        }
       case typeAlias: ScTypeAlias =>
-        if (parentTagType == TYPE_PARAM_TAG) {
+        if (parentTagType == TYPE_PARAM_TAG)
           filterParamsByName(TYPE_PARAM_TAG, typeAlias.typeParameters)
-        } else {
+        else
           Array.empty[ScNamedElement]
-        }
       case _ => Array.empty[ScNamedElement]
     }
   }

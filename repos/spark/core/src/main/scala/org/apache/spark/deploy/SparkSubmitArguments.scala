@@ -99,9 +99,8 @@ private[deploy] class SparkSubmitArguments(
   }
 
   // Set parameters from command line arguments
-  try {
-    parse(args.asJava)
-  } catch {
+  try parse(args.asJava)
+  catch {
     case e: IllegalArgumentException =>
       SparkSubmit.printErrorAndExit(e.getMessage())
   }
@@ -125,9 +124,8 @@ private[deploy] class SparkSubmitArguments(
     // Honor --conf before the defaults file
     defaultSparkProperties.foreach {
       case (k, v) =>
-        if (!sparkProperties.contains(k)) {
+        if (!sparkProperties.contains(k))
           sparkProperties(k) = v
-        }
     }
   }
 
@@ -225,15 +223,13 @@ private[deploy] class SparkSubmitArguments(
     master = Option(master).getOrElse("local[*]")
 
     // In YARN mode, app name can be set via SPARK_YARN_APP_NAME (see SPARK-5222)
-    if (master.startsWith("yarn")) {
+    if (master.startsWith("yarn"))
       name = Option(name).orElse(env.get("SPARK_YARN_APP_NAME")).orNull
-    }
 
     // Set name from main class if not given
     name = Option(name).orElse(Option(mainClass)).orNull
-    if (name == null && primaryResource != null) {
+    if (name == null && primaryResource != null)
       name = Utils.stripDirectory(primaryResource)
-    }
 
     // Action should be SUBMIT unless otherwise specified
     action = Option(action).getOrElse(SUBMIT)
@@ -248,57 +244,47 @@ private[deploy] class SparkSubmitArguments(
     }
 
   private def validateSubmitArguments(): Unit = {
-    if (args.length == 0) {
+    if (args.length == 0)
       printUsageAndExit(-1)
-    }
-    if (primaryResource == null) {
+    if (primaryResource == null)
       SparkSubmit.printErrorAndExit(
         "Must specify a primary resource (JAR or Python or R file)")
-    }
-    if (mainClass == null && SparkSubmit.isUserJar(primaryResource)) {
+    if (mainClass == null && SparkSubmit.isUserJar(primaryResource))
       SparkSubmit.printErrorAndExit(
         "No main class set in JAR; please specify one with --class")
-    }
-    if (pyFiles != null && !isPython) {
+    if (pyFiles != null && !isPython)
       SparkSubmit.printErrorAndExit(
         "--py-files given but primary resource is not a Python script")
-    }
 
     if (master.startsWith("yarn")) {
       val hasHadoopEnv =
         env.contains("HADOOP_CONF_DIR") || env.contains("YARN_CONF_DIR")
-      if (!hasHadoopEnv && !Utils.isTesting) {
+      if (!hasHadoopEnv && !Utils.isTesting)
         throw new Exception(
           s"When running with master '$master' " +
             "either HADOOP_CONF_DIR or YARN_CONF_DIR must be set in the environment.")
-      }
     }
 
-    if (proxyUser != null && principal != null) {
+    if (proxyUser != null && principal != null)
       SparkSubmit.printErrorAndExit(
         "Only one of --proxy-user or --principal can be provided.")
-    }
   }
 
   private def validateKillArguments(): Unit = {
-    if (!master.startsWith("spark://") && !master.startsWith("mesos://")) {
+    if (!master.startsWith("spark://") && !master.startsWith("mesos://"))
       SparkSubmit.printErrorAndExit(
         "Killing submissions is only supported in standalone or Mesos mode!")
-    }
-    if (submissionToKill == null) {
+    if (submissionToKill == null)
       SparkSubmit.printErrorAndExit("Please specify a submission to kill.")
-    }
   }
 
   private def validateStatusRequestArguments(): Unit = {
-    if (!master.startsWith("spark://") && !master.startsWith("mesos://")) {
+    if (!master.startsWith("spark://") && !master.startsWith("mesos://"))
       SparkSubmit.printErrorAndExit(
         "Requesting submission statuses is only supported in standalone or Mesos mode!")
-    }
-    if (submissionToRequestStatusFor == null) {
+    if (submissionToRequestStatusFor == null)
       SparkSubmit.printErrorAndExit(
         "Please specify a submission to request status for.")
-    }
   }
 
   def isStandaloneCluster: Boolean =
@@ -351,10 +337,9 @@ private[deploy] class SparkSubmitArguments(
         mainClass = value
 
       case DEPLOY_MODE =>
-        if (value != "client" && value != "cluster") {
+        if (value != "client" && value != "cluster")
           SparkSubmit.printErrorAndExit(
             "--deploy-mode must be either \"client\" or \"cluster\"")
-        }
         deployMode = value
 
       case NUM_EXECUTORS =>
@@ -389,18 +374,16 @@ private[deploy] class SparkSubmitArguments(
 
       case KILL_SUBMISSION =>
         submissionToKill = value
-        if (action != null) {
+        if (action != null)
           SparkSubmit.printErrorAndExit(
             s"Action cannot be both $action and $KILL.")
-        }
         action = KILL
 
       case STATUS =>
         submissionToRequestStatusFor = value
-        if (action != null) {
+        if (action != null)
           SparkSubmit.printErrorAndExit(
             s"Action cannot be both $action and $REQUEST_STATUS.")
-        }
         action = REQUEST_STATUS
 
       case SUPERVISE =>
@@ -471,16 +454,14 @@ private[deploy] class SparkSubmitArguments(
     * treated as application arguments.
     */
   override protected def handleUnknown(opt: String): Boolean = {
-    if (opt.startsWith("-")) {
+    if (opt.startsWith("-"))
       SparkSubmit.printErrorAndExit(s"Unrecognized option '$opt'.")
-    }
 
     primaryResource =
-      if (!SparkSubmit.isShell(opt) && !SparkSubmit.isInternal(opt)) {
+      if (!SparkSubmit.isShell(opt) && !SparkSubmit.isInternal(opt))
         Utils.resolveURI(opt).toString
-      } else {
+      else
         opt
-      }
     isPython = SparkSubmit.isPython(opt)
     isR = SparkSubmit.isR(opt)
     false
@@ -494,9 +475,8 @@ private[deploy] class SparkSubmitArguments(
       unknownParam: Any = null): Unit = {
     // scalastyle:off println
     val outStream = SparkSubmit.printStream
-    if (unknownParam != null) {
+    if (unknownParam != null)
       outStream.println("Unknown/unsupported param " + unknownParam)
-    }
     val command = sys.env
       .get("_SPARK_CMD_USAGE")
       .getOrElse(
@@ -618,17 +598,15 @@ private[deploy] class SparkSubmitArguments(
       }
       System.setSecurityManager(sm)
 
-      try {
-        Utils
-          .classForName(mainClass)
-          .getMethod("main", classOf[Array[String]])
-          .invoke(null, Array(HELP))
-      } catch {
+      try Utils
+        .classForName(mainClass)
+        .getMethod("main", classOf[Array[String]])
+        .invoke(null, Array(HELP))
+      catch {
         case e: InvocationTargetException =>
           // Ignore SecurityException, since we throw it above.
-          if (!e.getCause().isInstanceOf[SecurityException]) {
+          if (!e.getCause().isInstanceOf[SecurityException])
             throw e
-          }
       }
 
       stream.flush()

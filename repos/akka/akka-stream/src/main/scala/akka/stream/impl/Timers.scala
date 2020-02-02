@@ -252,12 +252,10 @@ private[stream] object Timers {
                 push(out, grab(in))
                 if (isClosed(in)) completeStage()
                 else pull(in)
-              } else {
-                if (nextDeadline.isOverdue()) {
-                  nextDeadline = Deadline.now + timeout
-                  push(out, inject())
-                } else scheduleOnce(IdleTimer, nextDeadline.timeLeft)
-              }
+              } else if (nextDeadline.isOverdue()) {
+                nextDeadline = Deadline.now + timeout
+                push(out, inject())
+              } else scheduleOnce(IdleTimer, nextDeadline.timeLeft)
           }
         )
 

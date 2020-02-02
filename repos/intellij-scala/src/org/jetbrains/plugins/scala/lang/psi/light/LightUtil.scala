@@ -53,7 +53,7 @@ object LightUtil {
                 case _ => Seq.empty
               }
             }
-          if (classes.isEmpty) {
+          if (classes.isEmpty)
             annotation.constructor.typeArgList match {
               case Some(args) =>
                 val classes = args.typeArgs
@@ -75,7 +75,7 @@ object LightUtil {
                 else accumulator
               case None => accumulator
             }
-          } else accumulator :+ classes.mkString(sep = ", ")
+          else accumulator :+ classes.mkString(sep = ", ")
         case _ => ArrayBuffer()
       }
     throwAnnotations.mkString(start = " throws ", sep = ", ", end = " ")

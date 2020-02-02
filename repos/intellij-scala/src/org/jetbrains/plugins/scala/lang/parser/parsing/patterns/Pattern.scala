@@ -25,9 +25,8 @@ object Pattern {
     while (builder.getTokenText == "|") {
       isComposite = true
       builder.advanceLexer() //Ate |
-      if (!Pattern1.parse(builder)) {
+      if (!Pattern1.parse(builder))
         builder error ScalaBundle.message("wrong.pattern")
-      }
     }
     if (isComposite) patternMarker.done(ScalaElementTypes.PATTERN)
     else patternMarker.drop()

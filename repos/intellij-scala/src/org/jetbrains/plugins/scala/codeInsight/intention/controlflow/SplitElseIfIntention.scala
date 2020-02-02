@@ -39,9 +39,8 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
       return false
 
     val elseIfExpr = ifStmt.elseBranch.orNull
-    if (elseIfExpr != null && elseIfExpr.isInstanceOf[ScIfStmt]) {
+    if (elseIfExpr != null && elseIfExpr.isInstanceOf[ScIfStmt])
       return true
-    }
 
     false
   }

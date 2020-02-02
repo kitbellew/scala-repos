@@ -93,9 +93,8 @@ private[precog] object VectorCase {
           builder = new VectorBuilder[A]
           builder ++= small
         }
-      } else {
+      } else
         builder += a
-      }
       this
     }
 
@@ -107,14 +106,13 @@ private[precog] object VectorCase {
           builder = new VectorBuilder[A]
           builder ++= small
         }
-      } else {
+      } else
         builder ++= seq
-      }
       this
     }
 
     def result() =
-      if (builder == null) {
+      if (builder == null)
         small.length match {
           case 0 => Vector0
           case 1 => Vector1(small(0))
@@ -122,9 +120,8 @@ private[precog] object VectorCase {
           case 3 => Vector3(small(0), small(1), small(2))
           case 4 => Vector4(small(0), small(1), small(2), small(3))
         }
-      } else {
+      else
         VectorN(builder.result())
-      }
 
     def clear() = this
   }
@@ -330,9 +327,9 @@ private[precog] case class VectorN[+A](vector: Vector[A])
   def ++[B >: A](that: VectorCase[B]) = VectorN(vector ++ that.toVector)
 
   override def drop(n: Int) =
-    if (n <= 0) {
+    if (n <= 0)
       this
-    } else {
+    else
       (vector.length - n) match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(vector.length - 1))
@@ -350,12 +347,11 @@ private[precog] case class VectorN[+A](vector: Vector[A])
             vector(vector.length - 1))
         case _ => VectorN(vector drop n)
       }
-    }
 
   override def dropRight(n: Int) =
-    if (n <= 0) {
+    if (n <= 0)
       this
-    } else {
+    else
       (vector.length - n) match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(0))
@@ -364,7 +360,6 @@ private[precog] case class VectorN[+A](vector: Vector[A])
         case 4           => Vector4(vector(0), vector(1), vector(2), vector(3))
         case _           => VectorN(vector dropRight n)
       }
-    }
 
   override def init = (vector.length - 1) match {
     case x if x <= 0 => Vector0
@@ -389,9 +384,9 @@ private[precog] case class VectorN[+A](vector: Vector[A])
   }
 
   override def take(n: Int) =
-    if (n >= length) {
+    if (n >= length)
       this
-    } else {
+    else
       n match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(0))
@@ -400,12 +395,11 @@ private[precog] case class VectorN[+A](vector: Vector[A])
         case 4           => Vector4(vector(0), vector(1), vector(2), vector(3))
         case _           => VectorN(vector take n)
       }
-    }
 
   override def takeRight(n: Int) =
-    if (n >= length) {
+    if (n >= length)
       this
-    } else {
+    else
       n match {
         case x if x <= 0 => Vector0
         case 1           => Vector1(vector(vector.length - 1))
@@ -423,7 +417,6 @@ private[precog] case class VectorN[+A](vector: Vector[A])
             vector(vector.length - 1))
         case _ => VectorN(vector takeRight n)
       }
-    }
 
   // note: this actually defeats a HotSpot optimization in trivial micro-benchmarks
   override def iterator = vector.iterator

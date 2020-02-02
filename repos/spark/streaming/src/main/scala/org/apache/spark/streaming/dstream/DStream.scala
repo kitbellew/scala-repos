@@ -123,9 +123,8 @@ abstract class DStream[T: ClassTag](
     *
     * This is not defined if the DStream is created outside of one of the public DStream operations.
     */
-  protected[streaming] val baseScope: Option[String] = {
+  protected[streaming] val baseScope: Option[String] =
     Option(ssc.sc.getLocalProperty(SparkContext.RDD_SCOPE_KEY))
-  }
 
   /**
     * Make a scope that groups RDDs created in the same DStream operation in the same batch.
@@ -143,22 +142,20 @@ abstract class DStream[T: ClassTag](
       val bs = RDDOperationScope.fromJson(bsJson)
       val baseName = bs.name // e.g. countByWindow, "kafka stream [0]"
       val scopeName =
-        if (baseName.length > 10) {
+        if (baseName.length > 10)
           // If the operation name is too long, wrap the line
           s"$baseName\n@ $formattedBatchTime"
-        } else {
+        else
           s"$baseName @ $formattedBatchTime"
-        }
       val scopeId = s"${bs.id}_${time.milliseconds}"
       new RDDOperationScope(scopeName, id = scopeId)
     }
 
   /** Persist the RDDs of this DStream with the given storage level */
   def persist(level: StorageLevel): DStream[T] = {
-    if (this.isInitialized) {
+    if (this.isInitialized)
       throw new UnsupportedOperationException(
         "Cannot change storage level of an DStream after streaming context has started")
-    }
     this.storageLevel = level
     this
   }
@@ -174,10 +171,9 @@ abstract class DStream[T: ClassTag](
     * @param interval Time interval after which generated RDD will be checkpointed
     */
   def checkpoint(interval: Duration): DStream[T] = {
-    if (isInitialized) {
+    if (isInitialized)
       throw new UnsupportedOperationException(
         "Cannot change checkpoint interval of an DStream after streaming context has started")
-    }
     persist()
     checkpointDuration = interval
     this
@@ -189,11 +185,10 @@ abstract class DStream[T: ClassTag](
     * its parent DStreams.
     */
   private[streaming] def initialize(time: Time) {
-    if (zeroTime != null && zeroTime != time) {
+    if (zeroTime != null && zeroTime != time)
       throw new SparkException(
         s"ZeroTime is already initialized to $zeroTime"
           + s", cannot initialize it again to $time")
-    }
     zeroTime = time
 
     // Set the checkpoint interval to be slideDuration or 10 seconds, which ever is larger
@@ -206,13 +201,11 @@ abstract class DStream[T: ClassTag](
 
     // Set the minimum value of the rememberDuration if not already set
     var minRememberDuration = slideDuration
-    if (checkpointDuration != null && minRememberDuration <= checkpointDuration) {
+    if (checkpointDuration != null && minRememberDuration <= checkpointDuration)
       // times 2 just to be sure that the latest checkpoint is not forgotten (#paranoia)
       minRememberDuration = checkpointDuration * 2
-    }
-    if (rememberDuration == null || rememberDuration < minRememberDuration) {
+    if (rememberDuration == null || rememberDuration < minRememberDuration)
       rememberDuration = minRememberDuration
-    }
 
     // Initialize the dependencies
     dependencies.foreach(_.initialize(zeroTime))
@@ -285,18 +278,16 @@ abstract class DStream[T: ClassTag](
   }
 
   private[streaming] def setContext(s: StreamingContext) {
-    if (ssc != null && ssc != s) {
+    if (ssc != null && ssc != s)
       throw new SparkException(s"Context must not be set again for $this")
-    }
     ssc = s
     logInfo(s"Set context for $this")
     dependencies.foreach(_.setContext(ssc))
   }
 
   private[streaming] def setGraph(g: DStreamGraph) {
-    if (graph != null && graph != g) {
+    if (graph != null && graph != g)
       throw new SparkException(s"Graph must not be set again for $this")
-    }
     graph = g
     dependencies.foreach(_.setGraph(graph))
   }
@@ -312,10 +303,9 @@ abstract class DStream[T: ClassTag](
 
   /** Checks whether the 'time' is valid wrt slideDuration for generating RDD */
   private[streaming] def isTimeValid(time: Time): Boolean =
-    if (!isInitialized) {
+    if (!isInitialized)
       throw new SparkException(this + " has not been initialized")
-    } else if (time <= zeroTime || !(time - zeroTime).isMultipleOf(
-                 slideDuration)) {
+    else if (time <= zeroTime || !(time - zeroTime).isMultipleOf(slideDuration)) {
       logInfo(s"Time $time is invalid as zeroTime is $zeroTime" +
         s" , slideDuration is $slideDuration and difference is ${time - zeroTime}")
       false
@@ -364,9 +354,8 @@ abstract class DStream[T: ClassTag](
             generatedRDDs.put(time, newRDD)
         }
         rddOption
-      } else {
+      } else
         None
-      }
     }
 
   /**
@@ -400,11 +389,10 @@ abstract class DStream[T: ClassTag](
         // Unset the short form call site, so that generated RDDs get their own
         ssc.sparkContext.setLocalProperty(CallSite.SHORT_FORM, null)
         ssc.sparkContext.setLocalProperty(CallSite.LONG_FORM, null)
-      } else {
+      } else
         // Set the callsite, so that the generated RDDs get the DStream's call site and
         // the internal RDD call sites do not get displayed
         ssc.sparkContext.setCallSite(creationSite)
-      }
 
       // Use the DStream's base scope for this RDD so we can (1) preserve the higher level
       // DStream operation name, and (2) share this scope with other DStreams created in the
@@ -412,13 +400,12 @@ abstract class DStream[T: ClassTag](
       // TODO: merge callsites with scopes so we can just reuse the code there
       makeScope(time).foreach { s =>
         ssc.sparkContext.setLocalProperty(scopeKey, s.toJson)
-        if (displayInnerRDDOps) {
+        if (displayInnerRDDOps)
           // Allow inner RDDs to add inner scopes
           ssc.sparkContext.setLocalProperty(scopeNoOverrideKey, null)
-        } else {
+        else
           // Do not allow inner RDDs to override the scope set by DStream
           ssc.sparkContext.setLocalProperty(scopeNoOverrideKey, "true")
-        }
       }
 
       body
@@ -438,13 +425,12 @@ abstract class DStream[T: ClassTag](
     */
   private[streaming] def generateJob(time: Time): Option[Job] =
     getOrCompute(time) match {
-      case Some(rdd) => {
+      case Some(rdd) =>
         val jobFunc = () => {
           val emptyFunc = { (iterator: Iterator[T]) => }
           context.sparkContext.runJob(rdd, emptyFunc)
         }
         Some(new Job(time, jobFunc))
-      }
       case None => None
     }
 
@@ -523,11 +509,11 @@ abstract class DStream[T: ClassTag](
   private def writeObject(oos: ObjectOutputStream): Unit =
     Utils.tryOrIOException {
       logDebug(s"${this.getClass().getSimpleName}.writeObject used")
-      if (graph != null) {
+      if (graph != null)
         graph.synchronized {
-          if (graph.checkpointInProgress) {
+          if (graph.checkpointInProgress)
             oos.defaultWriteObject()
-          } else {
+          else {
             val msg =
               s"Object of ${this.getClass.getName} is being serialized " +
                 " possibly as a part of closure of an RDD operation. This is because " +
@@ -538,10 +524,9 @@ abstract class DStream[T: ClassTag](
             throw new java.io.NotSerializableException(msg)
           }
         }
-      } else {
+      else
         throw new java.io.NotSerializableException(
           "Graph is unexpectedly null when DStream is being serialized.")
-      }
     }
 
   @throws(classOf[IOException])
@@ -917,22 +902,22 @@ abstract class DStream[T: ClassTag](
     * Return all the RDDs between 'fromTime' to 'toTime' (both included)
     */
   def slice(fromTime: Time, toTime: Time): Seq[RDD[T]] = ssc.withScope {
-    if (!isInitialized) {
+    if (!isInitialized)
       throw new SparkException(this + " has not been initialized")
-    }
 
-    val alignedToTime = if ((toTime - zeroTime).isMultipleOf(slideDuration)) {
-      toTime
-    } else {
-      logWarning(
-        s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
-      toTime.floor(slideDuration, zeroTime)
-    }
+    val alignedToTime =
+      if ((toTime - zeroTime).isMultipleOf(slideDuration))
+        toTime
+      else {
+        logWarning(
+          s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
+        toTime.floor(slideDuration, zeroTime)
+      }
 
     val alignedFromTime =
-      if ((fromTime - zeroTime).isMultipleOf(slideDuration)) {
+      if ((fromTime - zeroTime).isMultipleOf(slideDuration))
         fromTime
-      } else {
+      else {
         logWarning(
           s"fromTime ($fromTime) is not a multiple of slideDuration ($slideDuration)")
         fromTime.floor(slideDuration, zeroTime)

@@ -69,9 +69,7 @@ class ScaladocAction
         case e: ExecutionException =>
           ExecutionErrorDialog.show(e, CommonBundle.getErrorTitle, project)
       }
-    } finally {
-      disposeForm()
-    }
+    } finally disposeForm()
   }
 
   override def canceled() {

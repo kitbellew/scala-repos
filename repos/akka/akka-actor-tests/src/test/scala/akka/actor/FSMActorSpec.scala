@@ -39,37 +39,32 @@ object FSMActorSpec {
     startWith(Locked, CodeState("", code))
 
     when(Locked) {
-      case Event(digit: Char, CodeState(soFar, code)) ⇒ {
+      case Event(digit: Char, CodeState(soFar, code)) ⇒
         soFar + digit match {
           case incomplete if incomplete.length < code.length ⇒
             stay using CodeState(incomplete, code)
-          case codeTry if (codeTry == code) ⇒ {
+          case codeTry if (codeTry == code) ⇒
             doUnlock()
             goto(Open) using CodeState("", code) forMax timeout
-          }
-          case wrong ⇒ {
+          case wrong ⇒
             stay using CodeState("", code)
-          }
         }
-      }
       case Event("hello", _) ⇒ stay replying "world"
       case Event("bye", _) ⇒ stop(FSM.Shutdown)
     }
 
     when(Open) {
-      case Event(StateTimeout, _) ⇒ {
+      case Event(StateTimeout, _) ⇒
         doLock()
         goto(Locked)
-      }
     }
 
     whenUnhandled {
-      case Event(msg, _) ⇒ {
+      case Event(msg, _) ⇒
         log.warning(
           "unhandled event " + msg + " in state " + stateName + " with data " + stateData)
         unhandledLatch.open
         stay
-      }
     }
 
     onTransition {
@@ -233,10 +228,9 @@ class FSMActorSpec
               setTimer(timerName, (), 10 seconds, false)
         }
         onTermination {
-          case _ ⇒ {
+          case _ ⇒
             checkTimersActive(false)
             testActor ! "stopped"
-          }
         }
       })
 
@@ -265,60 +259,56 @@ class FSMActorSpec
             "akka.actor.debug.fsm" -> true).asJava)
         .withFallback(system.settings.config)
       val fsmEventSystem = ActorSystem("fsmEvent", config)
-      try {
-        new TestKit(fsmEventSystem) {
-          EventFilter.debug(occurrences = 5) intercept {
-            val fsm = TestActorRef(new Actor with LoggingFSM[Int, Null] {
-              startWith(1, null)
-              when(1) {
-                case Event("go", _) ⇒
-                  setTimer("t", FSM.Shutdown, 1.5 seconds, false)
-                  goto(2)
-              }
-              when(2) {
-                case Event("stop", _) ⇒
-                  cancelTimer("t")
-                  stop
-              }
-              onTermination {
-                case StopEvent(r, _, _) ⇒ testActor ! r
-              }
-            })
-            val name = fsm.path.toString
-            val fsmClass = fsm.underlyingActor.getClass
-            system.eventStream.subscribe(testActor, classOf[Logging.Debug])
-            fsm ! "go"
-            expectMsgPF(1 second, hint = "processing Event(go,null)") {
-              case Logging.Debug(`name`, `fsmClass`, s: String)
-                  if s.startsWith("processing Event(go,null) from Actor[") ⇒
-                true
+      try new TestKit(fsmEventSystem) {
+        EventFilter.debug(occurrences = 5) intercept {
+          val fsm = TestActorRef(new Actor with LoggingFSM[Int, Null] {
+            startWith(1, null)
+            when(1) {
+              case Event("go", _) ⇒
+                setTimer("t", FSM.Shutdown, 1.5 seconds, false)
+                goto(2)
             }
-            expectMsg(
-              1 second,
-              Logging.Debug(
-                name,
-                fsmClass,
-                "setting timer 't'/1500 milliseconds: Shutdown"))
-            expectMsg(
-              1 second,
-              Logging.Debug(name, fsmClass, "transition 1 -> 2"))
-            fsm ! "stop"
-            expectMsgPF(1 second, hint = "processing Event(stop,null)") {
-              case Logging.Debug(`name`, `fsmClass`, s: String)
-                  if s.startsWith("processing Event(stop,null) from Actor[") ⇒
-                true
+            when(2) {
+              case Event("stop", _) ⇒
+                cancelTimer("t")
+                stop
             }
-            expectMsgAllOf(
-              1 second,
-              Logging.Debug(name, fsmClass, "canceling timer 't'"),
-              FSM.Normal)
-            expectNoMsg(1 second)
-            system.eventStream.unsubscribe(testActor)
+            onTermination {
+              case StopEvent(r, _, _) ⇒ testActor ! r
+            }
+          })
+          val name = fsm.path.toString
+          val fsmClass = fsm.underlyingActor.getClass
+          system.eventStream.subscribe(testActor, classOf[Logging.Debug])
+          fsm ! "go"
+          expectMsgPF(1 second, hint = "processing Event(go,null)") {
+            case Logging.Debug(`name`, `fsmClass`, s: String)
+                if s.startsWith("processing Event(go,null) from Actor[") ⇒
+              true
           }
+          expectMsg(
+            1 second,
+            Logging.Debug(
+              name,
+              fsmClass,
+              "setting timer 't'/1500 milliseconds: Shutdown"))
+          expectMsg(
+            1 second,
+            Logging.Debug(name, fsmClass, "transition 1 -> 2"))
+          fsm ! "stop"
+          expectMsgPF(1 second, hint = "processing Event(stop,null)") {
+            case Logging.Debug(`name`, `fsmClass`, s: String)
+                if s.startsWith("processing Event(stop,null) from Actor[") ⇒
+              true
+          }
+          expectMsgAllOf(
+            1 second,
+            Logging.Debug(name, fsmClass, "canceling timer 't'"),
+            FSM.Normal)
+          expectNoMsg(1 second)
+          system.eventStream.unsubscribe(testActor)
         }
-      } finally {
-        TestKit.shutdownActorSystem(fsmEventSystem)
-      }
+      } finally TestKit.shutdownActorSystem(fsmEventSystem)
     }
 
     "fill rolling event log and hand it out" in {
@@ -400,9 +390,7 @@ class FSMActorSpec
         fsm ! OverrideTimeoutToInf
         p.expectMsg(OverrideTimeoutToInf)
         p.expectNoMsg(3.seconds)
-      } finally {
-        TestKit.shutdownActorSystem(sys)
-      }
+      } finally TestKit.shutdownActorSystem(sys)
     }
 
   }

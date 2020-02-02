@@ -109,11 +109,10 @@ object GetOffsetShell {
       System.exit(1)
     }
     val partitions =
-      if (partitionList == "") {
+      if (partitionList == "")
         topicsMetadata.head.partitionsMetadata.map(_.partitionId)
-      } else {
+      else
         partitionList.split(",").map(_.toInt).toSeq
-      }
     partitions.foreach { partitionId =>
       val partitionMetadataOpt = topicsMetadata.head.partitionsMetadata
         .find(_.partitionId == partitionId)

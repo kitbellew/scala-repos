@@ -142,8 +142,6 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
       }
 
       mock.annotations
-    } finally {
-      Compatibility.seqClass = None
-    }
+    } finally Compatibility.seqClass = None
   }
 }

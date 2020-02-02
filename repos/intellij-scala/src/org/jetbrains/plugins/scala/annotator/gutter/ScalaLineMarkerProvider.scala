@@ -58,15 +58,13 @@ class ScalaLineMarkerProvider(
       element: PsiElement): LineMarkerInfo[_ <: PsiElement] = {
     if (!element.isValid) return null
     val gator = getGatorInfo(element)
-    if (daemonSettings.SHOW_METHOD_SEPARATORS && isSeparatorNeeded(element)) {
-      if (gator == null) {
+    if (daemonSettings.SHOW_METHOD_SEPARATORS && isSeparatorNeeded(element))
+      if (gator == null)
         addSeparatorInfo(createMarkerInfo(element))
-      } else {
+      else
         addSeparatorInfo(gator)
-      }
-    } else {
+    else
       gator
-    }
   }
 
   def createMarkerInfo(element: PsiElement) =
@@ -136,9 +134,8 @@ class ScalaLineMarkerProvider(
               OVERRIDING_METHOD_ICON
             else IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
-          if (signatures.nonEmpty) {
+          if (signatures.nonEmpty)
             return marker(method.nameId, icon, typez)
-          }
         case (x @ (_: ScValue | _: ScVariable), _: ScTemplateBody)
             if containsNamedElement(x.asInstanceOf[ScDeclaredElementsHolder]) =>
           val signatures = new ArrayBuffer[Signature]
@@ -168,23 +165,20 @@ class ScalaLineMarkerProvider(
             if (GutterUtil.isOverrides(x, signatures)) OVERRIDING_METHOD_ICON
             else IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
-          if (signatures.nonEmpty) {
+          if (signatures.nonEmpty)
             return marker(x.getObjectToken, icon, typez)
-          }
         case (td: ScTypeDefinition, _: ScTemplateBody) if !td.isObject =>
           val signature = ScalaPsiUtil.superTypeMembers(td, withSelfType = true)
           val icon = IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
-          if (signature.nonEmpty) {
+          if (signature.nonEmpty)
             return marker(td.getObjectClassOrTraitToken, icon, typez)
-          }
         case (ta: ScTypeAlias, _: ScTemplateBody) =>
           val signature = ScalaPsiUtil.superTypeMembers(ta, withSelfType = true)
           val icon = IMPLEMENTING_METHOD_ICON
           val typez = ScalaMarkerType.OVERRIDING_MEMBER
-          if (signature.nonEmpty) {
+          if (signature.nonEmpty)
             return marker(ta.getTypeToken, icon, typez)
-          }
         case _ =>
       }
 
@@ -245,9 +239,8 @@ class ScalaLineMarkerProvider(
         case _                                 =>
       }
     }
-    if (members.nonEmpty) {
+    if (members.nonEmpty)
       GutterUtil.collectOverridingMembers(members, result)
-    }
   }
 }
 

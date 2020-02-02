@@ -53,7 +53,7 @@ class Normalizer @Since("1.1.0") (p: Double) extends VectorTransformer {
   override def transform(vector: Vector): Vector = {
     val norm = Vectors.norm(vector, p)
 
-    if (norm != 0.0) {
+    if (norm != 0.0)
       // For dense vector, we've to allocate new memory for new output vector.
       // However, for sparse vector, the `index` array will not be changed,
       // so we can re-use it to save memory.
@@ -80,12 +80,11 @@ class Normalizer @Since("1.1.0") (p: Double) extends VectorTransformer {
           throw new IllegalArgumentException(
             "Do not support vector type " + v.getClass)
       }
-    } else {
+    else
       // Since the norm is zero, return the input vector object itself.
       // Note that it's safe since we always assume that the data in RDD
       // should be immutable.
       vector
-    }
   }
 
 }

@@ -50,18 +50,15 @@ private[tree] case class NodeIndexUpdater(split: Split, nodeIndex: Int) {
       val binIndex = binnedFeatures(featureIndex)
       val featureValueUpperBound =
         bins(featureIndex)(binIndex).highSplit.threshold
-      if (featureValueUpperBound <= split.threshold) {
+      if (featureValueUpperBound <= split.threshold)
         Node.leftChildIndex(nodeIndex)
-      } else {
+      else
         Node.rightChildIndex(nodeIndex)
-      }
-    } else {
-      if (split.categories.contains(binnedFeatures(split.feature).toDouble)) {
-        Node.leftChildIndex(nodeIndex)
-      } else {
-        Node.rightChildIndex(nodeIndex)
-      }
-    }
+    } else if (split.categories.contains(
+                 binnedFeatures(split.feature).toDouble))
+      Node.leftChildIndex(nodeIndex)
+    else
+      Node.rightChildIndex(nodeIndex)
 }
 
 /**
@@ -102,14 +99,13 @@ private[spark] class NodeIdCache(
       data: RDD[BaggedPoint[TreePoint]],
       nodeIdUpdaters: Array[mutable.Map[Int, NodeIndexUpdater]],
       bins: Array[Array[Bin]]): Unit = {
-    if (prevNodeIdsForInstances != null) {
+    if (prevNodeIdsForInstances != null)
       // Unpersist the previous one if one exists.
       prevNodeIdsForInstances.unpersist()
-    }
 
     prevNodeIdsForInstances = nodeIdsForInstances
     nodeIdsForInstances = data.zip(nodeIdsForInstances).map {
-      case (point, node) => {
+      case (point, node) =>
         var treeId = 0
         while (treeId < nodeIdUpdaters.length) {
           val nodeIdUpdater =
@@ -125,7 +121,6 @@ private[spark] class NodeIdCache(
         }
 
         node
-      }
     }
 
     // Keep on persisting new ones.
@@ -137,7 +132,7 @@ private[spark] class NodeIdCache(
         (rddUpdateCount % checkpointInterval) == 0) {
       // Let's see if we can delete previous checkpoints.
       var canDelete = true
-      while (checkpointQueue.size > 1 && canDelete) {
+      while (checkpointQueue.size > 1 && canDelete)
         // We can delete the oldest checkpoint iff
         // the next checkpoint actually exists in the file system.
         if (checkpointQueue.get(1).get.getCheckpointFile.isDefined) {
@@ -147,10 +142,8 @@ private[spark] class NodeIdCache(
           // we'll manually delete it here.
           val fs = FileSystem.get(old.sparkContext.hadoopConfiguration)
           fs.delete(new Path(old.getCheckpointFile.get), true)
-        } else {
+        } else
           canDelete = false
-        }
-      }
 
       nodeIdsForInstances.checkpoint()
       checkpointQueue.enqueue(nodeIdsForInstances)
@@ -168,10 +161,9 @@ private[spark] class NodeIdCache(
         fs.delete(new Path(checkpointFile), true)
       }
     }
-    if (prevNodeIdsForInstances != null) {
+    if (prevNodeIdsForInstances != null)
       // Unpersist the previous one if one exists.
       prevNodeIdsForInstances.unpersist()
-    }
   }
 }
 

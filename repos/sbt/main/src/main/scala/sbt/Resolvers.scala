@@ -147,9 +147,8 @@ object Resolvers {
 
   def creates(file: File)(f: => Unit) = {
     if (!file.exists)
-      try {
-        f
-      } catch {
+      try f
+      catch {
         case e: Throwable =>
           IO.delete(file)
           throw e

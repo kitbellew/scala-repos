@@ -463,9 +463,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     if (debugEvent)
       log.debug(
         "setting " + (if (repeat) "repeating " else "") + "timer '" + name + "'/" + timeout + ": " + msg)
-    if (timers contains name) {
+    if (timers contains name)
       timers(name).cancel
-    }
     val timer = Timer(name, msg, repeat, timerGen.next)(context)
     timer.schedule(self, timeout)
     timers(name) = timer
@@ -651,7 +650,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private var transitionEvent: List[TransitionHandler] = Nil
   private def handleTransition(prev: S, next: S) {
     val tuple = (prev, next)
-    for (te ← transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+    for (te ← transitionEvent) if (te.isDefinedAt(tuple)) te(tuple)
   }
 
   /*
@@ -661,9 +660,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
    */
   override def receive: Receive = {
     case TimeoutMarker(gen) ⇒
-      if (generation == gen) {
+      if (generation == gen)
         processMsg(StateTimeout, "state timeout")
-      }
     case t @ Timer(name, msg, repeat, gen) ⇒
       if ((timers contains name) && (timers(name).generation == gen)) {
         if (timeoutFuture.isDefined) {
@@ -671,9 +669,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
           timeoutFuture = None
         }
         generation += 1
-        if (!repeat) {
+        if (!repeat)
           timers -= name
-        }
         processMsg(msg, t)
       }
     case SubscribeTransitionCallBack(actorRef) ⇒
@@ -690,14 +687,13 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       listeners.remove(actorRef)
     case Deafen(actorRef) ⇒
       listeners.remove(actorRef)
-    case value ⇒ {
+    case value ⇒
       if (timeoutFuture.isDefined) {
         timeoutFuture.get.cancel()
         timeoutFuture = None
       }
       generation += 1
       processMsg(value, sender())
-    }
   }
 
   private def processMsg(value: Any, source: AnyRef): Unit = {
@@ -707,12 +703,12 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
   private[akka] def processEvent(event: Event, source: AnyRef): Unit = {
     val stateFunc = stateFunctions(currentState.stateName)
-    val nextState = if (stateFunc isDefinedAt event) {
-      stateFunc(event)
-    } else {
-      // handleEventDefault ensures that this is always defined
-      handleEvent(event)
-    }
+    val nextState =
+      if (stateFunc isDefinedAt event)
+        stateFunc(event)
+      else
+        // handleEventDefault ensures that this is always defined
+        handleEvent(event)
     applyState(nextState)
   }
 
@@ -726,11 +722,11 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     }
 
   private[akka] def makeTransition(nextState: State): Unit =
-    if (!stateFunctions.contains(nextState.stateName)) {
+    if (!stateFunctions.contains(nextState.stateName))
       terminate(
         stay withStopReason Failure(
           "Next state %s does not exist".format(nextState.stateName)))
-    } else {
+    else {
       nextState.replies.reverse foreach { r ⇒ sender() ! r }
       if (currentState.stateName != nextState.stateName || nextState.notifies) {
         this.nextState = nextState
@@ -824,9 +820,8 @@ trait LoggingFSM[S, D] extends FSM[S, D] { this: Actor ⇒
     if (n == logDepth) {
       full = true
       pos = 0
-    } else {
+    } else
       pos = n
-    }
   }
 
   private[akka] abstract override def processEvent(
@@ -864,11 +859,10 @@ trait LoggingFSM[S, D] extends FSM[S, D] { this: Actor ⇒
   protected def getLog: IndexedSeq[LogEntry[S, D]] = {
     val log = events zip states filter (_._1 ne null) map (x ⇒
       LogEntry(x._2.asInstanceOf[S], x._1.stateData, x._1.event))
-    if (full) {
+    if (full)
       IndexedSeq() ++ log.drop(pos) ++ log.take(pos)
-    } else {
+    else
       IndexedSeq() ++ log
-    }
   }
 
 }

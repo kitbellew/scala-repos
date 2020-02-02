@@ -71,9 +71,8 @@ class RankingMetrics[T: ClassTag](
             var i = 0
             var cnt = 0
             while (i < n) {
-              if (labSet.contains(pred(i))) {
+              if (labSet.contains(pred(i)))
                 cnt += 1
-              }
               i += 1
             }
             cnt.toDouble / k
@@ -90,7 +89,7 @@ class RankingMetrics[T: ClassTag](
     * If a query has an empty ground truth set, the average precision will be zero and a log
     * warning is generated.
     */
-  lazy val meanAveragePrecision: Double = {
+  lazy val meanAveragePrecision: Double =
     predictionAndLabels
       .map {
         case (pred, lab) =>
@@ -115,7 +114,6 @@ class RankingMetrics[T: ClassTag](
           }
       }
       .mean()
-  }
 
   /**
     * Compute the average NDCG value of all the queries, truncated at ranking position k.
@@ -150,12 +148,10 @@ class RankingMetrics[T: ClassTag](
             var i = 0
             while (i < n) {
               val gain = 1.0 / math.log(i + 2)
-              if (labSet.contains(pred(i))) {
+              if (labSet.contains(pred(i)))
                 dcg += gain
-              }
-              if (i < labSetSize) {
+              if (i < labSetSize)
                 maxDcg += gain
-              }
               i += 1
             }
             dcg / maxDcg

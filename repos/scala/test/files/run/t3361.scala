@@ -53,9 +53,8 @@ object Test extends App {
 
   def insert_2 {
     val ten = DoubleLinkedList(1 to 10: _*)
-    try {
-      DoubleLinkedList().insert(ten)
-    } catch {
+    try DoubleLinkedList().insert(ten)
+    catch {
       case _: IllegalArgumentException => require(true)
       case _: Throwable                => require(false)
     }
@@ -83,9 +82,8 @@ object Test extends App {
 
   def append_2 {
     val ten = DoubleLinkedList(1 to 10: _*)
-    try {
-      DoubleLinkedList().append(ten)
-    } catch {
+    try DoubleLinkedList().append(ten)
+    catch {
       case _: IllegalArgumentException => require(true)
       case _: Throwable                => require(false)
     }

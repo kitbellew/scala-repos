@@ -47,29 +47,27 @@ class CodecSpec extends Specification with ScalaCheck {
   implicit def arbSparseBitSet: Arbitrary[(Codec[BitSet], BitSet)] =
     Arbitrary(Gen.chooseNum(0, 500) flatMap { size =>
       val codec = Codec.SparseBitSetCodec(size)
-      if (size > 0) {
+      if (size > 0)
         Gen.listOf(Gen.choose(0, size - 1)) map { bits =>
           //(codec, BitSet(bits: _*))
           (codec, BitSetUtil.create(bits))
         }
-      } else {
+      else
         Gen.value((codec, new BitSet()))
-      }
     })
 
   implicit def arbSparseRawBitSet: Arbitrary[(Codec[RawBitSet], RawBitSet)] =
     Arbitrary(Gen.chooseNum(0, 500) flatMap { size =>
       val codec = Codec.SparseRawBitSetCodec(size)
-      if (size > 0) {
+      if (size > 0)
         Gen.listOf(Gen.choose(0, size - 1)) map { bits =>
           //(codec, BitSet(bits: _*))
           val bs = RawBitSet.create(size)
           bits foreach { RawBitSet.set(bs, _) }
           (codec, bs)
         }
-      } else {
+      else
         Gen.value((codec, RawBitSet.create(0)))
-      }
     })
 
   implicit def arbIndexedSeq[A](

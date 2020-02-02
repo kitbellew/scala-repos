@@ -64,11 +64,11 @@ object HashEqualsArrayWrapper {
     override def compare(x: Array[Long], y: Array[Long]): Int = {
       val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
+      if (lenCmp != 0)
         lenCmp
-      } else if (x.length == 0) {
+      else if (x.length == 0)
         0
-      } else {
+      else {
         val len = x.length
         var i = 1
         var cmp = java.lang.Long.compare(x(0), y(0))
@@ -85,11 +85,11 @@ object HashEqualsArrayWrapper {
     override def compare(x: Array[Int], y: Array[Int]): Int = {
       val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
+      if (lenCmp != 0)
         lenCmp
-      } else if (x.length == 0) {
+      else if (x.length == 0)
         0
-      } else {
+      else {
         val len = x.length
         var i = 1
         var cmp = java.lang.Integer.compare(x(0), y(0))
@@ -107,11 +107,11 @@ object HashEqualsArrayWrapper {
       override def compare(x: Array[Short], y: Array[Short]): Int = {
         val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-        if (lenCmp != 0) {
+        if (lenCmp != 0)
           lenCmp
-        } else if (x.length == 0) {
+        else if (x.length == 0)
           0
-        } else {
+        else {
           val len = x.length
           var i = 1
           var cmp = java.lang.Short.compare(x(0), y(0))
@@ -128,11 +128,11 @@ object HashEqualsArrayWrapper {
     override def compare(x: Array[Char], y: Array[Char]): Int = {
       val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
+      if (lenCmp != 0)
         lenCmp
-      } else if (x.length == 0) {
+      else if (x.length == 0)
         0
-      } else {
+      else {
         val len = x.length
         var i = 1
         var cmp = java.lang.Character.compare(x(0), y(0))
@@ -149,11 +149,11 @@ object HashEqualsArrayWrapper {
     override def compare(x: Array[Byte], y: Array[Byte]): Int = {
       val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-      if (lenCmp != 0) {
+      if (lenCmp != 0)
         lenCmp
-      } else if (x.length == 0) {
+      else if (x.length == 0)
         0
-      } else {
+      else {
         val len = x.length
         var i = 1
         var cmp = java.lang.Byte.compare(x(0), y(0))
@@ -171,11 +171,11 @@ object HashEqualsArrayWrapper {
       override def compare(x: Array[Boolean], y: Array[Boolean]): Int = {
         val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-        if (lenCmp != 0) {
+        if (lenCmp != 0)
           lenCmp
-        } else if (x.length == 0) {
+        else if (x.length == 0)
           0
-        } else {
+        else {
           val len = x.length
           var i = 1
           var cmp = java.lang.Boolean.compare(x(0), y(0))
@@ -193,11 +193,11 @@ object HashEqualsArrayWrapper {
       override def compare(x: Array[Float], y: Array[Float]): Int = {
         val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-        if (lenCmp != 0) {
+        if (lenCmp != 0)
           lenCmp
-        } else if (x.length == 0) {
+        else if (x.length == 0)
           0
-        } else {
+        else {
           val len = x.length
           var i = 1
           var cmp = java.lang.Float.compare(x(0), y(0))
@@ -215,11 +215,11 @@ object HashEqualsArrayWrapper {
       override def compare(x: Array[Double], y: Array[Double]): Int = {
         val lenCmp = java.lang.Integer.compare(x.length, y.length)
 
-        if (lenCmp != 0) {
+        if (lenCmp != 0)
           lenCmp
-        } else if (x.length == 0) {
+        else if (x.length == 0)
           0
-        } else {
+        else {
           val len = x.length
           var i = 1
           var cmp = java.lang.Double.compare(x(0), y(0))

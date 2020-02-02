@@ -92,23 +92,20 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
     if (invokedExprText.last == ':') {
       putArgsFirst = true
       invokedExprBuilder.append(operText).append(" ").append(qual.getText)
-    } else {
+    } else
       invokedExprBuilder.append(qual.getText).append(" ").append(operText)
-    }
 
     argsBuilder.append(methodCallArgs.getText)
 
     IntentionUtils.analyzeMethodCallArgs(methodCallArgs, argsBuilder)
 
     var forA = qual.getText
-    if (forA.startsWith("(") && forA.endsWith(")")) {
+    if (forA.startsWith("(") && forA.endsWith(")"))
       forA = qual.getText.drop(1).dropRight(1)
-    }
 
     var forB = argsBuilder.toString()
-    if (forB.startsWith("(") && forB.endsWith(")")) {
+    if (forB.startsWith("(") && forB.endsWith(")"))
       forB = argsBuilder.toString().drop(1).dropRight(1)
-    }
 
     val exprA: ScExpression =
       ScalaPsiElementFactory.createExpressionFromText(forA, element.getManager)

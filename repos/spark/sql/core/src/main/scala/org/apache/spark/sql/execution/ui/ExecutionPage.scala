@@ -57,7 +57,7 @@ private[sql] class ExecutionPage(parent: SQLTab)
               <strong>Duration: </strong>{UIUtils.formatDuration(duration)}
             </li>
             {
-              if (executionUIData.runningJobs.nonEmpty) {
+              if (executionUIData.runningJobs.nonEmpty)
                 <li>
                 <strong>Running Jobs: </strong>
                 {
@@ -66,10 +66,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                   }
                 }
               </li>
-              }
             }
             {
-              if (executionUIData.succeededJobs.nonEmpty) {
+              if (executionUIData.succeededJobs.nonEmpty)
                 <li>
                 <strong>Succeeded Jobs: </strong>
                 {
@@ -78,10 +77,9 @@ private[sql] class ExecutionPage(parent: SQLTab)
                   }
                 }
               </li>
-              }
             }
             {
-              if (executionUIData.failedJobs.nonEmpty) {
+              if (executionUIData.failedJobs.nonEmpty)
                 <li>
                 <strong>Failed Jobs: </strong>
                 {
@@ -90,7 +88,6 @@ private[sql] class ExecutionPage(parent: SQLTab)
                   }
                 }
               </li>
-              }
             }
           </ul>
         </div>

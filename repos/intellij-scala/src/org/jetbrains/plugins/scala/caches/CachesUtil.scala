@@ -102,16 +102,15 @@ object CachesUtil {
           def compute(): CachedValueProvider.Result[Result] = {
             val guard = getRecursionGuard(key.toString)
             if (guard.currentStack().contains(e)) {
-              if (ScPackageImpl.isPackageObjectProcessing) {
+              if (ScPackageImpl.isPackageObjectProcessing)
                 throw new ScPackageImpl.DoNotProcessPackageObjectException
-              }
               val fun =
                 PsiTreeUtil.getContextOfType(e, true, classOf[ScFunction])
-              if (fun == null || fun.isProbablyRecursive) {
+              if (fun == null || fun.isProbablyRecursive)
                 return new CachedValueProvider.Result(
                   defaultValue,
                   provider.getDependencyItem)
-              } else {
+              else {
                 fun.setProbablyRecursive(true)
                 throw new ProbablyRecursionException(e, (), key, Set(fun))
               }
@@ -121,14 +120,12 @@ object CachesUtil {
               false /* todo: true? */,
               new Computable[CachedValueProvider.Result[Result]] {
                 def compute(): CachedValueProvider.Result[Result] =
-                  try {
-                    provider.compute()
-                  } catch {
+                  try provider.compute()
+                  catch {
                     case ProbablyRecursionException(`e`, (), k, set)
                         if k == key =>
-                      try {
-                        provider.compute()
-                      } finally set.foreach(_.setProbablyRecursive(false))
+                      try provider.compute()
+                      finally set.foreach(_.setProbablyRecursive(false))
                     case t @ ProbablyRecursionException(ee, data, k, set)
                         if k == key =>
                       val fun = PsiTreeUtil
@@ -234,9 +231,8 @@ object CachesUtil {
       result = {
         val guard = getRecursionGuard(key.toString)
         if (guard.currentStack().contains((e, data))) {
-          if (ScPackageImpl.isPackageObjectProcessing) {
+          if (ScPackageImpl.isPackageObjectProcessing)
             throw new ScPackageImpl.DoNotProcessPackageObjectException
-          }
           val fun = PsiTreeUtil.getContextOfType(e, true, classOf[ScFunction])
           if (fun == null || fun.isProbablyRecursive) {
             isCache = false
@@ -245,20 +241,18 @@ object CachesUtil {
             fun.setProbablyRecursive(true)
             throw new ProbablyRecursionException(e, data, key, Set(fun))
           }
-        } else {
+        } else
           guard.doPreventingRecursion(
             (e, data),
             false,
             new Computable[Result] {
               def compute(): Result =
-                try {
-                  builder(e, data)
-                } catch {
+                try builder(e, data)
+                catch {
                   case ProbablyRecursionException(`e`, `data`, k, set)
                       if k == key =>
-                    try {
-                      builder(e, data)
-                    } finally set.foreach(_.setProbablyRecursive(false))
+                    try builder(e, data)
+                    finally set.foreach(_.setProbablyRecursive(false))
                   case t @ ProbablyRecursionException(ee, innerData, k, set)
                       if k == key =>
                     val fun =
@@ -278,11 +272,9 @@ object CachesUtil {
             case null    => defaultValue
             case notNull => notNull
           }
-        }
       }
-      if (isCache) {
+      if (isCache)
         map.put(data, result)
-      }
     }
     result
   }
@@ -294,9 +286,8 @@ object CachesUtil {
         if (!ProjectRootManager
               .getInstance(element.getProject)
               .getFileIndex
-              .isInContent(file.getVirtualFile)) {
+              .isInContent(file.getVirtualFile))
           return dep_item
-        }
         var dir = file.getParent
         while (dir != null) {
           if (dir.getName == "scala-library.jar")
@@ -365,10 +356,8 @@ object CachesUtil {
     try {
       associatedQueueLock.lock()
       ac(funsRetTpToCheck)
-    } finally {
-      if (associatedQueueLock.isHeldByCurrentThread)
-        associatedQueueLock.unlock()
-    }
+    } finally if (associatedQueueLock.isHeldByCurrentThread)
+      associatedQueueLock.unlock()
 
   @volatile
   private[this] var needToCheckFuns: Boolean = false
@@ -388,17 +377,15 @@ object CachesUtil {
       while (cur != null) {
         val (fun, proj) = cur
         val isValid: Boolean = fun.isValid
-        if ((!isValid || fun.returnTypeHasChangedSinceLastCheck) && !proj.isDisposed) {
+        if ((!isValid || fun.returnTypeHasChangedSinceLastCheck) && !proj.isDisposed)
           //if there's more than one, just increment the general modCount If there's one, go up th
           if (!isValid || checkSize) {
             ScalaPsiManager.instance(proj).incModificationCount()
             clearQueue()
-          } else {
+          } else
             updateModificationCount(
               fun.getContext,
               incModCountOnTopLevel = true)
-          }
-        }
 
         cur = nextElement
       }
@@ -406,14 +393,11 @@ object CachesUtil {
       doQueueWithLock(_ => { needToCheckFuns = false })
     }
 
-    if (needToCheckFuns && !currentThreadIsCheckingFuns.get()) {
+    if (needToCheckFuns && !currentThreadIsCheckingFuns.get())
       try {
         currentThreadIsCheckingFuns.set(true)
         checkFuns()
-      } finally {
-        currentThreadIsCheckingFuns.set(false)
-      }
-    }
+      } finally currentThreadIsCheckingFuns.set(false)
   }
 
   def addModificationFunctionsReturnType(

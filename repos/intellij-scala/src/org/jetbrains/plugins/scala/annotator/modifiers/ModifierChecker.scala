@@ -39,9 +39,8 @@ import scala.collection.mutable
   */
 private[annotator] object ModifierChecker {
   def checkModifiers(ml: ScModifierList, holder: AnnotationHolder) {
-    if (!ml.getParent.isInstanceOf[ScModifierListOwner]) {
+    if (!ml.getParent.isInstanceOf[ScModifierListOwner])
       return
-    }
     val owner = ml.getParent.asInstanceOf[ScModifierListOwner]
     val modifiersSet = new mutable.HashSet[String]
     def checkDublicates(element: PsiElement, text: String): Boolean =
@@ -82,11 +81,10 @@ private[annotator] object ModifierChecker {
       val modifierPsi = modifier.getPsi
       modifierPsi match {
         case am: ScAccessModifier => //todo: check private with final or sealed combination.
-          if (am.isPrivate) {
+          if (am.isPrivate)
             checkDublicates(am, "private")
-          } else if (am.isProtected) {
+          else if (am.isProtected)
             checkDublicates(am, "protected")
-          }
         case _ =>
           modifier.getText match {
             case "lazy" =>
@@ -129,14 +127,13 @@ private[annotator] object ModifierChecker {
                     new RemoveModifierQuickFix(owner, "final"))
                 case _: ScClass => checkDublicates(modifierPsi, "final")
                 case _: ScObject =>
-                  if (checkDublicates(modifierPsi, "final")) {
+                  if (checkDublicates(modifierPsi, "final"))
                     proccessWarning(
                       ScalaBundle.message(
                         "final.modifier.is.redundant.with.object"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "final"))
-                  }
                 case e: ScMember
                     if e.getParent.isInstanceOf[ScTemplateBody] || e.getParent
                       .isInstanceOf[ScEarlyDefinitions] =>
@@ -149,32 +146,28 @@ private[annotator] object ModifierChecker {
                     case _                                => false
                   }
                   if (redundant) {
-                    if (checkDublicates(modifierPsi, "final")) {
+                    if (checkDublicates(modifierPsi, "final"))
                       proccessWarning(
                         ScalaBundle.message(
                           "final.modifier.is.redundant.with.final.parents"),
                         modifierPsi,
                         holder,
                         new RemoveModifierQuickFix(owner, "final"))
-                    }
-                  } else {
+                  } else
                     checkDublicates(modifierPsi, "final")
-                  }
                 case e: ScClassParameter =>
                   if (PsiTreeUtil
                         .getParentOfType(e, classOf[ScTypeDefinition])
                         .hasFinalModifier) {
-                    if (checkDublicates(modifierPsi, "final")) {
+                    if (checkDublicates(modifierPsi, "final"))
                       proccessWarning(
                         ScalaBundle.message(
                           "final.modifier.is.redundant.with.final.parents"),
                         modifierPsi,
                         holder,
                         new RemoveModifierQuickFix(owner, "final"))
-                    }
-                  } else {
+                  } else
                     checkDublicates(modifierPsi, "final")
-                  }
                 case _ =>
                   proccessError(
                     ScalaBundle.message("final.modifier.is.not.allowed.here"),
@@ -199,29 +192,27 @@ private[annotator] object ModifierChecker {
               owner match {
                 case _: ScClass => checkDublicates(modifierPsi, "abstract")
                 case _: ScTrait =>
-                  if (checkDublicates(modifierPsi, "abstract")) {
+                  if (checkDublicates(modifierPsi, "abstract"))
                     proccessWarning(
                       ScalaBundle.message(
                         "abstract.modifier.redundant.fot.traits"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "abstract"))
-                  }
                 case member: ScMember
                     if !member.isInstanceOf[ScTemplateBody] &&
                       member.getParent.isInstanceOf[ScTemplateBody] =>
                   // 'abstract override' modifier only allowed for members of traits
                   if (!member.containingClass.isInstanceOf[ScTrait] && owner
-                        .hasModifierProperty("override")) {
+                        .hasModifierProperty("override"))
                     proccessError(
                       ScalaBundle.message(
                         "abstract.override.modifier.is.not.allowed"),
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "abstract"))
-                  } else {
+                  else
                     checkDublicates(modifierPsi, "abstract")
-                  }
                 case _ =>
                   proccessError(
                     ScalaBundle.message("abstract.modifier.is.not.allowed"),
@@ -261,13 +252,13 @@ private[annotator] object ModifierChecker {
                     case p: ScPackaging => true
                     case _              => false
                   }
-                  if (onTopLevel) {
+                  if (onTopLevel)
                     proccessError(
                       "'implicit' modifier cannot be used for top-level objects",
                       modifierPsi,
                       holder,
                       new RemoveModifierQuickFix(owner, "implicit"))
-                  } else
+                  else
                     c match {
                       case clazz: ScClass =>
                         def errorResult() {

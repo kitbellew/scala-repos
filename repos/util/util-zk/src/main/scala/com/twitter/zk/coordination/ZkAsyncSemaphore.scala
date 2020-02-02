@@ -80,32 +80,27 @@ class ZkAsyncSemaphore(
           sequenceNumberOf(child.path)
         }
         getConsensusNumPermits(permits) flatMap { consensusNumPermits =>
-          if (consensusNumPermits != numPermits) {
+          if (consensusNumPermits != numPermits)
             throw ZkAsyncSemaphore.PermitMismatchException(
               "Attempted to create semaphore of %d permits when consensus is %d"
                 .format(numPermits, consensusNumPermits))
-          }
-          if (permits.size < numPermits) {
+          if (permits.size < numPermits)
             Future.value(new ZkSemaphorePermit(permitNode))
-          } else if (mySequenceNumber <= sequenceNumbers(numPermits - 1)) {
+          else if (mySequenceNumber <= sequenceNumbers(numPermits - 1))
             Future.value(new ZkSemaphorePermit(permitNode))
-          } else {
+          else
             maxWaiters match {
-              case Some(max) if (waitq.size >= max) => {
+              case Some(max) if (waitq.size >= max) =>
                 MaxWaitersExceededException
-              }
-              case _ => {
+              case _ =>
                 val promise = new Promise[ZkSemaphorePermit]
                 waitq.add((promise, permitNode))
                 promise
-              }
             }
-          }
         } onFailure {
-          case err => {
+          case err =>
             permitNode.delete()
             Future.exception(err)
-          }
         }
       }
     }
@@ -124,10 +119,9 @@ class ZkAsyncSemaphore(
         monitorSemaphore(semaphoreNode)
         zk onSessionEvent {
           case StateEvent.Expired => rejectWaitQueue()
-          case StateEvent.Connected => {
+          case StateEvent.Connected =>
             permitNodes() map { nodes => checkWaiters(nodes) }
             monitorSemaphore(semaphoreNode)
-          }
         }
       }
       semaphoreNode
@@ -189,14 +183,12 @@ class ZkAsyncSemaphore(
     */
   private[this] def checkWaiters(nodes: Seq[ZNode]) = {
     nodes.size match {
-      case length if length <= numPermits => {
+      case length if length <= numPermits =>
         numPermitsAvailable = numPermits - length
         numWaiters = 0
-      }
-      case length => {
+      case length =>
         numPermitsAvailable = 0
         numWaiters = length - numPermits
-      }
     }
     val permits = nodes filter { child =>
       child.path.startsWith(permitNodePathPrefix)
@@ -206,10 +198,10 @@ class ZkAsyncSemaphore(
     while (waitqIterator.hasNext) {
       val (promise, permitNode) = waitqIterator.next()
       val id = sequenceNumberOf(permitNode.path)
-      if (!permits.contains(permitNode)) {
+      if (!permits.contains(permitNode))
         promise.setException(PermitNodeException(
           "Node for this permit has been deleted (client released, session expired, or tree was clobbered)."))
-      } else if (permits.size < numPermits) {
+      else if (permits.size < numPermits) {
         promise.setValue(new ZkSemaphorePermit(permitNode))
         waitqIterator.remove()
       } else if (id <= ids(numPermits - 1)) {
@@ -259,15 +251,14 @@ class ZkAsyncSemaphore(
       val cardinalityOfMax =
         permitsToBelievers.values.filter({ _ == numBelieversOfMax }).size
 
-      if (cardinalityOfMax == 1) {
+      if (cardinalityOfMax == 1)
         // Consensus
         numPermitsInMax
-      } else {
+      else
         // No consensus or this vote breaks consensus (two votes in discord)
         throw LackOfConsensusException(
           "Cannot create semaphore with %d permits. Loss of consensus on %d permits."
             .format(numPermits, numPermitsInMax))
-      }
     }
 
   private[this] def sequenceNumberOf(path: String): Int = {
@@ -278,9 +269,8 @@ class ZkAsyncSemaphore(
 
   private[this] def numPermitsOf(node: ZNode): Future[Int] =
     node.getData() map { data =>
-      try {
-        new String(data.bytes, Charset.forName("UTF8")).toInt
-      } catch {
+      try new String(data.bytes, Charset.forName("UTF8")).toInt
+      catch {
         case err: NumberFormatException => -1
       }
     }

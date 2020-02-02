@@ -140,9 +140,7 @@ private[spire] trait Fuser[C <: Context, A] {
 
     val ind0 = t(ind).map(Left(_)) orElse l(ind).map(Right(_))
 
-    for (a <- t(apx); b <- t(mes); c <- ind0; d <- t(exact)) yield {
-      (a, b, c, d)
-    }
+    for (a <- t(apx); b <- t(mes); c <- ind0; d <- t(exact)) yield (a, b, c, d)
   }
 
   private def freshApproxNames(): (TermName, TermName, TermName, TermName) = {

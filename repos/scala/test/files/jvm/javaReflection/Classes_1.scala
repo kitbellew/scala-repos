@@ -36,9 +36,8 @@ class A {
       object J
       new T {}
       (() => "3")
-    } else {
+    } else
       ()
-    }
   }
 
   {

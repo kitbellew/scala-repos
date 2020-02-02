@@ -214,34 +214,30 @@ trait MergeSpec[M[+_]]
           JParser.parseManyFromString(r3Json).valueOr(throw _).toStream)
 
         (key match {
-          case K0 => {
+          case K0 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(3):")
             //partition(3).flatMap(_.toJson).copoint.foreach(println)
             r0
-          }
-          case K1 => {
+          case K1 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(3):")
             //partition(3).flatMap(_.toJson).copoint.foreach(println)
             r1
-          }
-          case K2 => {
+          case K2 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(3):")
             //partition(3).flatMap(_.toJson).copoint.foreach(println)
             r2
-          }
-          case K3 => {
+          case K3 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(3):")
             //partition(3).flatMap(_.toJson).copoint.foreach(println)
             r3
-          }
           case _ => sys.error("Unexpected group key")
         }).point[M]
       }
@@ -397,34 +393,30 @@ trait MergeSpec[M[+_]]
           JParser.parseManyFromString(r3Json).valueOr(throw _).toStream)
 
         (key match {
-          case K0 => {
+          case K0 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(2):")
             //partition(2).flatMap(_.toJson).copoint.foreach(println)
             r0
-          }
-          case K1 => {
+          case K1 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(2):")
             //partition(2).flatMap(_.toJson).copoint.foreach(println)
             r1
-          }
-          case K2 => {
+          case K2 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(2):")
             //partition(2).flatMap(_.toJson).copoint.foreach(println)
             r2
-          }
-          case K3 => {
+          case K3 =>
             //println("key: "+keyJson+" partition(0):")
             //partition(0).flatMap(_.toJson).copoint.foreach(println)
             //println("key: "+keyJson+" partition(3):")
             //partition(3).flatMap(_.toJson).copoint.foreach(println)
             r3
-          }
           case _ => sys.error("Unexpected group key")
         }).point[M]
       }

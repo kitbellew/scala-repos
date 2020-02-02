@@ -72,9 +72,8 @@ class SparkSubmitSuite
 
     val thread = new Thread {
       override def run() =
-        try {
-          SparkSubmit.main(input)
-        } catch {
+        try SparkSubmit.main(input)
+        catch {
           // If exceptions occur after the "exit" has happened, fine to ignore them.
           // These represent code paths not reachable during normal execution.
           case e: Exception => if (!exitedCleanly) throw e
@@ -83,9 +82,8 @@ class SparkSubmitSuite
     thread.start()
     thread.join()
     val joined = printStream.lineBuffer.mkString("\n")
-    if (!joined.contains(searchString)) {
+    if (!joined.contains(searchString))
       fail(s"Search string '$searchString' not found in $joined")
-    }
   }
 
   // scalastyle:off println
@@ -729,14 +727,12 @@ class SparkSubmitSuite
 
     try {
       val exitCode = failAfter(60 seconds) { process.waitFor() }
-      if (exitCode != 0) {
+      if (exitCode != 0)
         fail(
           s"Process returned with exit code $exitCode. See the log4j logs for more detail.")
-      }
-    } finally {
-      // Ensure we still kill the process in case it timed out
-      process.destroy()
-    }
+    } finally
+    // Ensure we still kill the process in case it timed out
+    process.destroy()
   }
 
   private def forConfDir(defaults: Map[String, String])(f: String => Unit) = {
@@ -750,11 +746,8 @@ class SparkSubmitSuite
 
     writer.close()
 
-    try {
-      f(tmpDir.getAbsolutePath)
-    } finally {
-      Utils.deleteRecursively(tmpDir)
-    }
+    try f(tmpDir.getAbsolutePath)
+    finally Utils.deleteRecursively(tmpDir)
   }
 }
 
@@ -778,9 +771,8 @@ object JarCreationTest extends Logging {
         Option(exception).toSeq.iterator
       }
       .collect()
-    if (result.nonEmpty) {
+    if (result.nonEmpty)
       throw new Exception("Could not load user class from jar:\n" + result(0))
-    }
     sc.stop()
   }
 }
@@ -798,15 +790,13 @@ object SimpleApplicationTest {
         .map(x => SparkEnv.get.conf.get(config))
         .collect()
         .distinct
-      if (executorValues.size != 1) {
+      if (executorValues.size != 1)
         throw new SparkException(
           s"Inconsistent values for $config: $executorValues")
-      }
       val executorValue = executorValues(0)
-      if (executorValue != masterValue) {
+      if (executorValue != masterValue)
         throw new SparkException(
           s"Master had $config=$masterValue but executor had $config=$executorValue")
-      }
     }
     sc.stop()
   }
@@ -818,9 +808,8 @@ object UserClasspathFirstTest {
     val resource = ccl.getResourceAsStream("test.resource")
     val bytes = ByteStreams.toByteArray(resource)
     val contents = new String(bytes, 0, bytes.length, StandardCharsets.UTF_8)
-    if (contents != "USER") {
+    if (contents != "USER")
       throw new SparkException(
         "Should have read user resource, but instead read: " + contents)
-    }
   }
 }

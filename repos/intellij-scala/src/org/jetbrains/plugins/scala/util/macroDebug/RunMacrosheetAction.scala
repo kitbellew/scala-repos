@@ -55,7 +55,7 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
 
         val project = e.getProject
 
-        if (viewer != null) {
+        if (viewer != null)
           ApplicationManager.getApplication.invokeAndWait(
             new Runnable {
               override def run() {
@@ -68,7 +68,6 @@ class RunMacrosheetAction extends AnAction with TopComponentAction {
             },
             ModalityState.any()
           )
-        }
 
         ScalaMacroDebuggingUtil.macrosToExpand.clear()
         ScalaMacroDebuggingUtil.allMacroCalls.foreach(

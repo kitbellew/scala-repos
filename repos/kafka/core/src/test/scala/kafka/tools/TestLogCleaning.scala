@@ -275,9 +275,8 @@ object TestLogCleaning {
         val exitCode = process.waitFor()
         if (exitCode != 0) {
           System.err.println("Process exited abnormally.")
-          while (process.getErrorStream.available > 0) {
+          while (process.getErrorStream.available > 0)
             System.err.write(process.getErrorStream().read())
-          }
         }
       }
     }.start()
@@ -366,14 +365,12 @@ object TestLogCleaning {
     val consumedWriter = new BufferedWriter(new FileWriter(consumedFile))
     for (topic <- topics) {
       val stream = streams(topic).head
-      try {
-        for (item <- stream) {
-          val delete = item.message == null
-          val value = if (delete) -1L else item.message.toLong
-          consumedWriter.write(
-            TestRecord(topic, item.key.toInt, value, delete).toString)
-          consumedWriter.newLine()
-        }
+      try for (item <- stream) {
+        val delete = item.message == null
+        val value = if (delete) -1L else item.message.toLong
+        consumedWriter.write(
+          TestRecord(topic, item.key.toInt, value, delete).toString)
+        consumedWriter.newLine()
       } catch {
         case e: ConsumerTimeoutException =>
       }

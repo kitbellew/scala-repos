@@ -123,9 +123,8 @@ object IteratorSpec extends Spec {
     }
 
     def assertEqual(a: Map[Wrap, Int], b: Map[Wrap, Int]) {
-      if (a != b) {
+      if (a != b)
         println(a.size + " vs " + b.size)
-      }
       assert(a == b)
     }
 
@@ -153,9 +152,8 @@ object IteratorSpec extends Spec {
             val initial = mutable.Map[Wrap, Int]()
             for (kv <- snap) initial += kv
 
-            for (i <- 0 until checks) {
+            for (i <- 0 until checks)
               assertEqual(snap.iterator.toMap, initial)
-            }
           }
         }
 

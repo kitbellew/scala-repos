@@ -46,12 +46,12 @@ object InfoTest extends Build {
   def checkInfo = (customInfo, delivered) map { (addInfo, d) =>
     if ((d \ "info").isEmpty)
       sys.error("No info tag generated")
-    else if (addInfo) {
+    else if (addInfo)
       if (!deliveredWithCustom(d))
         sys.error(
           "Expected 'license' and 'description' tags in info tag, got: \n" + (d \ "info"))
       else ()
-    } else if (deliveredWithCustom(d))
+    else if (deliveredWithCustom(d))
       sys.error("Expected empty 'info' tag, got: \n" + (d \ "info"))
     else ()
   }

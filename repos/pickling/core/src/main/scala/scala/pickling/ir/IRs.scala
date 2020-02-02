@@ -125,15 +125,13 @@ class IRs[U <: Universe with Singleton](val uni: U) {
                 None,
                 None,
                 Some(JavaProperty(shortName, tpe.toString, sym.isPublic))))
-          } else {
+          } else
             List()
-          }
 
         case _ => List()
       }
-    } else {
+    } else
       List()
-    }
 
     (tpe.declarations.collect {
       case sym: MethodSymbol
@@ -272,12 +270,12 @@ class IRs[U <: Universe with Singleton](val uni: U) {
       val fieldIRs2 = {
         // also add ctor params that are not accessors (need Java reflection for those!)
         val reflectionGetters = {
-          if (primaryCtor.isMethod) {
+          if (primaryCtor.isMethod)
             primaryCtor.asMethod.paramss.flatten.filter { s =>
               val acc = allAccessors.find(_.name == s.name)
               acc.isEmpty
             }
-          } else List()
+          else List()
         }
 
         reflectionGetters.map { sym =>

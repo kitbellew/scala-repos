@@ -105,11 +105,10 @@ object MovieLensALS {
 
   def run(params: Params) {
     val conf = new SparkConf().setAppName(s"MovieLensALS with $params")
-    if (params.kryo) {
+    if (params.kryo)
       conf
         .registerKryoClasses(Array(classOf[mutable.BitSet], classOf[Rating]))
         .set("spark.kryoserializer.buffer", "8m")
-    }
     val sc = new SparkContext(conf)
 
     Logger.getRootLogger.setLevel(Level.WARN)
@@ -120,7 +119,7 @@ object MovieLensALS {
       .textFile(params.input)
       .map { line =>
         val fields = line.split("::")
-        if (implicitPrefs) {
+        if (implicitPrefs)
           /*
            * MovieLens ratings are on a scale of 1-5:
            * 5: Must see
@@ -136,9 +135,8 @@ object MovieLensALS {
            * are "the same as never having interacted at all".
            */
           Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble - 2.5)
-        } else {
+        else
           Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble)
-        }
       }
       .cache()
 
@@ -151,19 +149,20 @@ object MovieLensALS {
 
     val splits = ratings.randomSplit(Array(0.8, 0.2))
     val training = splits(0).cache()
-    val test = if (params.implicitPrefs) {
-      /*
-       * 0 means "don't know" and positive values mean "confident that the prediction should be 1".
-       * Negative values means "confident that the prediction should be 0".
-       * We have in this case used some kind of weighted RMSE. The weight is the absolute value of
-       * the confidence. The error is the difference between prediction and either 1 or 0,
-       * depending on whether r is positive or negative.
-       */
-      splits(1).map(x =>
-        Rating(x.user, x.product, if (x.rating > 0) 1.0 else 0.0))
-    } else {
-      splits(1)
-    }.cache()
+    val test =
+      if (params.implicitPrefs)
+        /*
+         * 0 means "don't know" and positive values mean "confident that the prediction should be 1".
+         * Negative values means "confident that the prediction should be 0".
+         * We have in this case used some kind of weighted RMSE. The weight is the absolute value of
+         * the confidence. The error is the difference between prediction and either 1 or 0,
+         * depending on whether r is positive or negative.
+         */
+        splits(1).map(x =>
+          Rating(x.user, x.product, if (x.rating > 0) 1.0 else 0.0))
+      else
+        splits(1)
+          .cache()
 
     val numTraining = training.count()
     val numTest = test.count()

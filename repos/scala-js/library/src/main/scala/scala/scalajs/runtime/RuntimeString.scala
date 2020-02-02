@@ -38,11 +38,10 @@ private[runtime] object RuntimeString {
   def charAt(thiz: String, index: Int): Char =
     specialJSStringOps(thiz).charCodeAt(index).toChar
 
-  final lazy val CASE_INSENSITIVE_ORDER: Comparator[String] = {
+  final lazy val CASE_INSENSITIVE_ORDER: Comparator[String] =
     new Comparator[String] with Serializable {
       def compare(o1: String, o2: String): Int = o1.compareToIgnoreCase(o2)
     }
-  }
 
   def codePointAt(thiz: String, index: Int): Int = {
     val high = thiz.charAt(index)
@@ -52,9 +51,8 @@ private[runtime] object RuntimeString {
         Character.toCodePoint(high, low)
       else
         high.toInt
-    } else {
+    } else
       high.toInt
-    }
   }
 
   def codePointCount(thiz: String, beginIndex: Int, endIndex: Int): Int = {
@@ -130,9 +128,8 @@ private[runtime] object RuntimeString {
     if (srcEnd > thiz.length || // first test uses thiz
         srcBegin < 0 ||
         srcEnd < 0 ||
-        srcBegin > srcEnd) {
+        srcBegin > srcEnd)
       throw new StringIndexOutOfBoundsException("Index out of Bound")
-    }
 
     val offset = dstBegin - srcBegin
     var i = srcBegin
@@ -205,13 +202,13 @@ private[runtime] object RuntimeString {
       ooffset: Int,
       len: Int): Boolean = {
     checkNull(thiz)
-    if (other == null) {
+    if (other == null)
       throw new NullPointerException()
-    } else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length || ooffset + len > other.length) {
+    else if (toffset < 0 || ooffset < 0 || toffset + len > thiz.length || ooffset + len > other.length)
       false
-    } else if (len <= 0) {
+    else if (len <= 0)
       true
-    } else {
+    else {
       val left = thiz.substring(toffset, toffset + len)
       val right = other.substring(ooffset, ooffset + len)
       if (ignoreCase) left.equalsIgnoreCase(right) else left == right
@@ -359,9 +356,9 @@ private[runtime] object RuntimeString {
       val cp = codePoints(i)
       if (cp < 0 || cp > Character.MAX_CODE_POINT)
         throw new IllegalArgumentException
-      if (cp <= Character.MAX_VALUE) {
+      if (cp <= Character.MAX_VALUE)
         charCodes += cp
-      } else {
+      else {
         val offsetCp = cp - 0x10000
         charCodes += (offsetCp >> 10) | 0xd800
         charCodes += (offsetCp & 0x3ff) | 0xdc00

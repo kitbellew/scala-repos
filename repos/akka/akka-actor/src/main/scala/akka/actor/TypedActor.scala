@@ -159,12 +159,10 @@ object TypedActor
       * Throws the underlying exception if there's an InvocationTargetException thrown on the invocation.
       */
     def apply(instance: AnyRef): AnyRef =
-      try {
-        parameters match {
-          case null ⇒ method.invoke(instance)
-          case args if args.length == 0 ⇒ method.invoke(instance)
-          case args ⇒ method.invoke(instance, args: _*)
-        }
+      try parameters match {
+        case null ⇒ method.invoke(instance)
+        case args if args.length == 0 ⇒ method.invoke(instance)
+        case args ⇒ method.invoke(instance, args: _*)
       } catch { case i: InvocationTargetException ⇒ throw i.getTargetException }
 
     @throws(classOf[ObjectStreamException]) private def writeReplace(): AnyRef =
@@ -328,20 +326,17 @@ object TypedActor
     }
 
     override def postStop(): Unit =
-      try {
-        withContext {
-          me match {
-            case l: PostStop ⇒ l.postStop()
-            case _ ⇒ super.postStop()
-          }
+      try withContext {
+        me match {
+          case l: PostStop ⇒ l.postStop()
+          case _ ⇒ super.postStop()
         }
-      } finally {
-        TypedActor(context.system).invocationHandlerFor(proxyVar.get) match {
-          case null ⇒
-          case some ⇒
-            some.actorVar.set(context.system.deadLetters) //Point it to the DLQ
-            proxyVar.set(null.asInstanceOf[R])
-        }
+      } finally TypedActor(context.system)
+        .invocationHandlerFor(proxyVar.get) match {
+        case null ⇒
+        case some ⇒
+          some.actorVar.set(context.system.deadLetters) //Point it to the DLQ
+          proxyVar.set(null.asInstanceOf[R])
       }
 
     override def preRestart(reason: Throwable, message: Option[Any]): Unit =
@@ -374,7 +369,7 @@ object TypedActor
       case m: MethodCall ⇒
         withContext {
           if (m.isOneWay) m(me)
-          else {
+          else
             try {
               val s = sender()
               m(me) match {
@@ -393,7 +388,6 @@ object TypedActor
                 sender() ! Status.Failure(e)
                 throw e
             }
-          }
         }
 
       case msg if me.isInstanceOf[Receiver] ⇒
@@ -509,9 +503,8 @@ object TypedActor
               }
             case m if m.returnsJOption || m.returnsOption ⇒
               val f = ask(actor, m)(timeout)
-              (try {
-                Await.ready(f, timeout.duration).value
-              } catch { case _: TimeoutException ⇒ None }) match {
+              (try Await.ready(f, timeout.duration).value
+              catch { case _: TimeoutException ⇒ None }) match {
                 case None | Some(Success(NullResponse)) | Some(
                       Failure(_: AskTimeoutException)) ⇒
                   if (m.returnsJOption) JOption.none[Any] else None

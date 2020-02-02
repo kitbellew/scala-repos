@@ -78,10 +78,9 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
   def getCurrentDatabase: String = currentDb
 
   def setCurrentDatabase(db: String): Unit = {
-    if (!databaseExists(db)) {
+    if (!databaseExists(db))
       throw new AnalysisException(
         s"cannot set current database to non-existent '$db'")
-    }
     currentDb = db
   }
 
@@ -147,9 +146,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       name: String,
       tableDefinition: LogicalPlan,
       ignoreIfExists: Boolean): Unit = {
-    if (tempTables.containsKey(name) && !ignoreIfExists) {
+    if (tempTables.containsKey(name) && !ignoreIfExists)
       throw new AnalysisException(s"Temporary table '$name' already exists.")
-    }
     tempTables.put(name, tableDefinition)
   }
 
@@ -163,14 +161,13 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     * This assumes the database specified in `oldName` matches the one specified in `newName`.
     */
   def renameTable(oldName: TableIdentifier, newName: TableIdentifier): Unit = {
-    if (oldName.database != newName.database) {
+    if (oldName.database != newName.database)
       throw new AnalysisException(
         "rename does not support moving tables across databases")
-    }
     val db = oldName.database.getOrElse(currentDb)
-    if (oldName.database.isDefined || !tempTables.containsKey(oldName.table)) {
+    if (oldName.database.isDefined || !tempTables.containsKey(oldName.table))
       externalCatalog.renameTable(db, oldName.table, newName.table)
-    } else {
+    else {
       val table = tempTables.remove(oldName.table)
       tempTables.put(newName.table, table)
     }
@@ -185,11 +182,10 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     */
   def dropTable(name: TableIdentifier, ignoreIfNotExists: Boolean): Unit = {
     val db = name.database.getOrElse(currentDb)
-    if (name.database.isDefined || !tempTables.containsKey(name.table)) {
+    if (name.database.isDefined || !tempTables.containsKey(name.table))
       externalCatalog.dropTable(db, name.table, ignoreIfNotExists)
-    } else {
+    else
       tempTables.remove(name.table)
-    }
   }
 
   /**
@@ -207,9 +203,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       if (name.database.isDefined || !tempTables.containsKey(name.table)) {
         val metadata = externalCatalog.getTable(db, name.table)
         CatalogRelation(db, metadata, alias)
-      } else {
+      } else
         tempTables.get(name.table)
-      }
     val tableWithQualifiers = SubqueryAlias(name.table, relation)
     // If an alias was specified by the lookup, wrap the plan in a subquery so that
     // attributes are properly qualified with this alias.
@@ -406,9 +401,8 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       funcDefinition.name.database.isEmpty,
       "attempted to create a temporary function while specifying a database")
     val name = funcDefinition.name.funcName
-    if (tempFunctions.containsKey(name) && !ignoreIfExists) {
+    if (tempFunctions.containsKey(name) && !ignoreIfExists)
       throw new AnalysisException(s"Temporary function '$name' already exists.")
-    }
     tempFunctions.put(name, funcDefinition)
   }
 
@@ -419,10 +413,9 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
   // Hive has DROP FUNCTION and DROP TEMPORARY FUNCTION. We may want to consolidate
   // dropFunction and dropTempFunction.
   def dropTempFunction(name: String, ignoreIfNotExists: Boolean): Unit = {
-    if (!tempFunctions.containsKey(name) && !ignoreIfNotExists) {
+    if (!tempFunctions.containsKey(name) && !ignoreIfNotExists)
       throw new AnalysisException(
         s"Temporary function '$name' cannot be dropped because it does not exist!")
-    }
     tempFunctions.remove(name)
   }
 
@@ -438,15 +431,14 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
   def renameFunction(
       oldName: FunctionIdentifier,
       newName: FunctionIdentifier): Unit = {
-    if (oldName.database != newName.database) {
+    if (oldName.database != newName.database)
       throw new AnalysisException(
         "rename does not support moving functions across databases")
-    }
     val db = oldName.database.getOrElse(currentDb)
     if (oldName.database.isDefined || !tempFunctions.containsKey(
-          oldName.funcName)) {
+          oldName.funcName))
       externalCatalog.renameFunction(db, oldName.funcName, newName.funcName)
-    } else {
+    else {
       val func = tempFunctions.remove(oldName.funcName)
       val newFunc =
         func.copy(name = func.name.copy(funcName = newName.funcName))
@@ -463,11 +455,10 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
     */
   def getFunction(name: FunctionIdentifier): CatalogFunction = {
     val db = name.database.getOrElse(currentDb)
-    if (name.database.isDefined || !tempFunctions.containsKey(name.funcName)) {
+    if (name.database.isDefined || !tempFunctions.containsKey(name.funcName))
       externalCatalog.getFunction(db, name.funcName)
-    } else {
+    else
       tempFunctions.get(name.funcName)
-    }
   }
 
   // TODO: implement lookupFunction that returns something from the registry itself

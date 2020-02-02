@@ -16,7 +16,7 @@ class VMEventManager(val eventQueue: EventQueue, debugManager: ActorRef)
 
   @volatile var finished = false
   override def run(): Unit =
-    while (!finished) {
+    while (!finished)
       try {
         val eventSet = eventQueue.remove()
         val it = eventSet.eventIterator()
@@ -39,5 +39,4 @@ class VMEventManager(val eventQueue: EventQueue, debugManager: ActorRef)
           log.info("Exception during execution", t)
           finished = true
       }
-    }
 }

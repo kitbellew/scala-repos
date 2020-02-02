@@ -188,7 +188,7 @@ class SparseVector[@spec(Double, Int, Float, Long) V](val array: SparseArray[V])
     // zero SV
     if (index.length == 0)
       CSCMatrix.zeros[V](length, 1)
-    else {
+    else
       new CSCMatrix[V](
         data.clone(),
         length,
@@ -196,7 +196,6 @@ class SparseVector[@spec(Double, Int, Float, Long) V](val array: SparseArray[V])
         Array(0, used),
         activeSize,
         index)
-    }
 }
 
 object SparseVector
@@ -224,9 +223,8 @@ object SparseVector
   def apply[V: ClassTag: Zero](length: Int)(
       values: (Int, V)*): SparseVector[V] = {
     val r = zeros[V](length)
-    for ((i, v) <- values) {
+    for ((i, v) <- values)
       r(i) = v
-    }
     r
   }
 
@@ -337,12 +335,11 @@ object SparseVector
         import from._
 
         fn.visitArray(index, data, 0, activeSize, 1)
-        if (activeSize != size) {
+        if (activeSize != size)
           fn.zeros(
             size - activeSize,
             Iterator.range(0, size).filterNot(index contains _),
             from.default)
-        }
       }
 
     }

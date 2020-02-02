@@ -51,11 +51,10 @@ trait ObjectOperator extends LogicalPlan {
     * Used in the optimizer when transforming plans to remove unneeded serialization.
     */
   def withObjectOutput: LogicalPlan =
-    if (output.head.dataType.isInstanceOf[ObjectType]) {
+    if (output.head.dataType.isInstanceOf[ObjectType])
       this
-    } else {
+    else
       withNewSerializer(outputObject :: Nil)
-    }
 
   /** Returns a copy of this operator with a different serializer. */
   def withNewSerializer(newSerializer: Seq[NamedExpression]): LogicalPlan =

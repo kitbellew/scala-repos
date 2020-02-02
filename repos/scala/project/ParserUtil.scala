@@ -23,17 +23,16 @@ object ParserUtil {
       val preFile = file(prefix)
       val cwd = base
       val parent = Option(preFile.getParentFile).getOrElse(cwd)
-      if (preFile.exists) {
-        if (preFile.isDirectory) {
+      if (preFile.exists)
+        if (preFile.isDirectory)
           preFile
             .*(IsDirectoryFilter.&&(dirFilter) || fileFilter)
             .get
             .map(_.getPath)
             .toList
-        } else {
+        else
           List(preFile).filter(fileFilter.accept).map(_.getPath)
-        }
-      } else if (parent != null) {
+      else if (parent != null) {
         def ensureSuffix(s: String, suffix: String) =
           if (s.endsWith(suffix)) s else s + suffix
         def pathOf(f: File): String = {

@@ -38,11 +38,11 @@ private[spark] case class RpcEndpointAddress(
     this(RpcAddress(host, port), name)
   }
 
-  override val toString = if (rpcAddress != null) {
-    s"spark://$name@${rpcAddress.host}:${rpcAddress.port}"
-  } else {
-    s"spark-client://$name"
-  }
+  override val toString =
+    if (rpcAddress != null)
+      s"spark://$name@${rpcAddress.host}:${rpcAddress.port}"
+    else
+      s"spark-client://$name"
 }
 
 private[spark] object RpcEndpointAddress {
@@ -62,9 +62,8 @@ private[spark] object RpcEndpointAddress {
           name == null ||
           (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
           uri.getFragment != null ||
-          uri.getQuery != null) {
+          uri.getQuery != null)
         throw new SparkException("Invalid Spark URL: " + sparkUrl)
-      }
       new RpcEndpointAddress(host, port, name)
     } catch {
       case e: java.net.URISyntaxException =>

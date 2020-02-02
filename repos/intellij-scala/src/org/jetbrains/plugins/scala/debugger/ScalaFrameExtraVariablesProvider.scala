@@ -261,11 +261,11 @@ private class CollectingProcessor(element: PsiElement)
     classOf[ScTemplateDefinition],
     classOf[PsiFile])
   val usedNames: Set[String] =
-    if (containingBlock != null) {
+    if (containingBlock != null)
       containingBlock.depthFirst.collect {
         case ref: ScReferenceExpression if ref.qualifier.isEmpty => ref.refName
       }.toSet
-    } else Set.empty
+    else Set.empty
 
   override def execute(element: PsiElement, state: ResolveState): Boolean = {
     val result = super.execute(element, state)

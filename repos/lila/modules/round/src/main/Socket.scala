@@ -48,7 +48,7 @@ private[round] final class Socket(
     var userId = none[String]
 
     def ping {
-      isGone foreach { _ ?? notifyGone(color, false) }
+      isGone foreach _ ?? notifyGone(color, false)
       if (bye > 0) bye = bye - 1
       time = nowMillis
     }
@@ -124,7 +124,7 @@ private[round] final class Socket(
       broom
       if (timeBomb.boom) self ! PoisonPill
       else if (!hasAi) Color.all foreach { c =>
-        playerGet(c, _.isGone) foreach { _ ?? notifyGone(c, true) }
+        playerGet(c, _.isGone) foreach _ ?? notifyGone(c, true)
       }
 
     case GetVersion => sender ! history.getVersion

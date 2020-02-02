@@ -72,37 +72,35 @@ class ScTypeAliasDeclarationImpl private (
   override def upperTypeElement: Option[ScTypeElement] = {
     import org.jetbrains.plugins.scala.extensions._
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub
         .asInstanceOf[ScTypeAliasStub]
         .getUpperBoundTypeElement
         .toOption
-    }
     val tUpper = findLastChildByType[PsiElement](ScalaTokenTypes.tUPPER_BOUND)
-    if (tUpper != null) {
+    if (tUpper != null)
       PsiTreeUtil.getNextSiblingOfType(tUpper, classOf[ScTypeElement]) match {
         case null => None
         case te   => Some(te)
       }
-    } else None
+    else None
   }
 
   override def lowerTypeElement: Option[ScTypeElement] = {
     import org.jetbrains.plugins.scala.extensions._
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub
         .asInstanceOf[ScTypeAliasStub]
         .getLowerBoundTypeElement
         .toOption
-    }
     val tLower = findLastChildByType[PsiElement](ScalaTokenTypes.tLOWER_BOUND)
-    if (tLower != null) {
+    if (tLower != null)
       PsiTreeUtil.getNextSiblingOfType(tLower, classOf[ScTypeElement]) match {
         case null => None
         case te   => Some(te)
       }
-    } else None
+    else None
   }
 
   override def getPresentation: ItemPresentation =

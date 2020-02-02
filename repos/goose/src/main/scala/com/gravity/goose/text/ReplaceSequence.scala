@@ -110,9 +110,8 @@ class ReplaceSequence {
     if (string.isNullOrEmpty(input)) return string.empty
     var mutatedString = input
     import scala.collection.JavaConversions._
-    for (rp <- replacements) {
+    for (rp <- replacements)
       mutatedString = rp.replaceAll(mutatedString)
-    }
     mutatedString
   }
 

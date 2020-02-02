@@ -50,7 +50,7 @@ private[jackson] object JsValueSerializer extends JsonSerializer[JsValue] {
       json: JsonGenerator,
       provider: SerializerProvider) {
     value match {
-      case JsNumber(v) => {
+      case JsNumber(v) =>
         // Workaround #3784: Same behaviour as if JsonGenerator were
         // configured with WRITE_BIGDECIMAL_AS_PLAIN, but forced as this
         // configuration is ignored when called from ObjectMapper.valueToTree
@@ -58,22 +58,19 @@ private[jackson] object JsValueSerializer extends JsonSerializer[JsValue] {
 
         if (raw contains ".") json.writeTree(new DecimalNode(new JBigDec(raw)))
         else json.writeTree(new BigIntegerNode(new BigInteger(raw)))
-      }
       case JsString(v)  => json.writeString(v)
       case JsBoolean(v) => json.writeBoolean(v)
-      case JsArray(elements) => {
+      case JsArray(elements) =>
         json.writeStartArray()
         elements.foreach { t => serialize(t, json, provider) }
         json.writeEndArray()
-      }
-      case JsObject(values) => {
+      case JsObject(values) =>
         json.writeStartObject()
         values.foreach { t =>
           json.writeFieldName(t._1)
           serialize(t._2, json, provider)
         }
         json.writeEndObject()
-      }
       case JsNull => json.writeNull()
     }
   }
@@ -121,9 +118,8 @@ private[jackson] class JsValueDeserializer(
       ctxt: DeserializationContext): JsValue = {
     val value = deserialize(jp, ctxt, List())
 
-    if (!klass.isAssignableFrom(value.getClass)) {
+    if (!klass.isAssignableFrom(value.getClass))
       throw ctxt.mappingException(klass)
-    }
     value
   }
 
@@ -132,9 +128,8 @@ private[jackson] class JsValueDeserializer(
       jp: JsonParser,
       ctxt: DeserializationContext,
       parserContext: List[DeserializerContext]): JsValue = {
-    if (jp.getCurrentToken == null) {
+    if (jp.getCurrentToken == null)
       jp.nextToken()
-    }
 
     val (maybeValue, nextContext) = (jp.getCurrentToken.id(): @switch) match {
 
@@ -222,9 +217,9 @@ private[jackson] class PlayDeserializers extends Deserializers.Base {
       config: DeserializationConfig,
       beanDesc: BeanDescription) = {
     val klass = javaType.getRawClass
-    if (classOf[JsValue].isAssignableFrom(klass) || klass == JsNull.getClass) {
+    if (classOf[JsValue].isAssignableFrom(klass) || klass == JsNull.getClass)
       new JsValueDeserializer(config.getTypeFactory, klass)
-    } else null
+    else null
   }
 
 }
@@ -235,11 +230,10 @@ private[jackson] class PlaySerializers extends Serializers.Base {
       javaType: JavaType,
       beanDesc: BeanDescription) = {
     val ser: Object =
-      if (classOf[JsValue].isAssignableFrom(beanDesc.getBeanClass)) {
+      if (classOf[JsValue].isAssignableFrom(beanDesc.getBeanClass))
         JsValueSerializer
-      } else {
+      else
         null
-      }
     ser.asInstanceOf[JsonSerializer[Object]]
   }
 }
@@ -277,9 +271,8 @@ private[json] object JacksonJson {
     val sw = new java.io.StringWriter
     val gen = stringJsonGenerator(sw)
 
-    if (escapeNonASCII) {
+    if (escapeNonASCII)
       gen.enable(JsonGenerator.Feature.ESCAPE_NON_ASCII)
-    }
 
     mapper.writeValue(gen, jsValue)
     sw.flush()

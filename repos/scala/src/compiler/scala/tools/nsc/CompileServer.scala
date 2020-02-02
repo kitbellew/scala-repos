@@ -146,9 +146,8 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
         info("[Reusing existing Global instance.]")
         compiler.currentSettings = newSettings
         compiler.reporter = reporter
-      } else {
+      } else
         compiler = newGlobal(newSettings, reporter)
-      }
       val c = compiler
       try new c.Run() compile command.files
       catch {
@@ -197,11 +196,10 @@ object CompileServer {
     var port = 0
 
     val i = args.indexOf("-p")
-    if (i >= 0 && args.length > i + 1) {
+    if (i >= 0 && args.length > i + 1)
       scala.util.control.Exception.ignoring(classOf[NumberFormatException]) {
         port = args(i + 1).toInt
       }
-    }
 
     // Create instance rather than extend to pass a port parameter.
     val server = new StandardCompileServer(port)

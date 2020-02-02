@@ -47,10 +47,9 @@ trait Encoder[T] {
       v: Vector[Double],
       keepZeros: Boolean = false): Counter[T, Double] = {
     val ctr = Counter[T, Double]()
-    for ((i, v) <- v.active.pairs) {
+    for ((i, v) <- v.active.pairs)
       if (keepZeros || v != 0.0)
         ctr(index.get(i)) = v
-    }
     ctr
   }
 
@@ -142,9 +141,8 @@ trait Encoder[T] {
     */
   def tabulateArray[V: ClassTag](f: T => V): Array[V] = {
     val arr = new Array[V](index.size)
-    for ((e, i) <- index.pairs) {
+    for ((e, i) <- index.pairs)
       arr(i) = f(e)
-    }
     arr
   }
 

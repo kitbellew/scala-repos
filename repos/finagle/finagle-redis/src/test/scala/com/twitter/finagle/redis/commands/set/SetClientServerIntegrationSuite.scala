@@ -48,10 +48,9 @@ final class SetClientServerIntegrationSuite
         Await.result(client(SAdd(key, List(bar)))) == IntegerReply(1),
         addMemErrMessage)
       Await.result(client(SMembers(key))) match {
-        case MBulkReply(message) => {
+        case MBulkReply(message) =>
           val messageSet = ReplyFormat.toString(message).toSet
           assert(messageSet == CollectionSet("foo", "bar"))
-        }
         case EmptyMBulkReply() =>
           fail("Should not have received an EmptyMBulkReply")
         case _ => fail("Received incorrect reply type")

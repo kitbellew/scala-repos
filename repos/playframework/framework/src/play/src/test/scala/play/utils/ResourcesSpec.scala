@@ -43,12 +43,10 @@ object ResourcesSpec extends Specification {
       val f = new File(resourcesDir, name)
       val fURL = f.toURI.toURL
       if (!f.exists) null
-      else {
-        if (name.last == '/')
-          if (f.isDirectory) fURL
-          else null
-        else fURL
-      }
+      else if (name.last == '/')
+        if (f.isDirectory) fURL
+        else null
+      else fURL
     }
   }
 

@@ -998,9 +998,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
     if (opt1.isDefined) {
       assert(opt2.isDefined)
       assertEquals(opt1.get, opt2.get)
-    } else {
+    } else
       assert(!opt2.isDefined)
-    }
   }
 
   /**
@@ -1055,13 +1054,12 @@ private[spark] object JsonProtocolSuite extends Assertions {
     p
   }
 
-  private val stackTrace = {
+  private val stackTrace =
     Array[StackTraceElement](
       new StackTraceElement("Apollo", "Venus", "Mercury", 42),
       new StackTraceElement("Afollo", "Vemus", "Mercurry", 420),
       new StackTraceElement("Ayollo", "Vesus", "Blackberry", 4200)
     )
-  }
 
   private def makeRddInfo(a: Int, b: Int, c: Int, d: Long, e: Long) = {
     val r = new RDDInfo(

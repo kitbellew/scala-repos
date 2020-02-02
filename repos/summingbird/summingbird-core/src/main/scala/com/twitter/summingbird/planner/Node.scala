@@ -108,9 +108,9 @@ case class Dag[P <: Platform[P]](
   lazy val producerDependants = Dependants(tail)
 
   def connect(src: Node[P], dest: Node[P]): Dag[P] =
-    if (src == dest) {
+    if (src == dest)
       this
-    } else {
+    else {
       assert(!dest.isInstanceOf[SourceNode[_]])
       // We build/maintain two maps,
       // Nodes to which each node depends on
@@ -260,9 +260,8 @@ object Dag {
               dag,
               nodeToName + (curTail -> tailN),
               usedNames + tailN)
-          } else {
+          } else
             (nodeToName, usedNames)
-          }
       }
 
     val nameToNode = nodeToName.map((t) => (t._2, t._1))

@@ -69,7 +69,7 @@ class ScReferencePatternImpl private (
     PsiReferenceService.getService.getContributedReferences(this)
 
   override def getNavigationElement = getContainingFile match {
-    case sf: ScalaFile if sf.isCompiled => {
+    case sf: ScalaFile if sf.isCompiled =>
       val parent = PsiTreeUtil.getParentOfType(this, classOf[ScMember]) // there is no complicated pattern-based declarations in decompiled files
       if (parent != null) {
         val navElem = parent.getNavigationElement
@@ -79,7 +79,6 @@ class ScReferencePatternImpl private (
           case x => x
         }
       } else super.getNavigationElement
-    }
     case _ => super.getNavigationElement
   }
 

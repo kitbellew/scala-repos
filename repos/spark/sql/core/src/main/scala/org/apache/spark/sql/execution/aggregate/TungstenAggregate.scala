@@ -41,9 +41,8 @@ case class TungstenAggregate(
     extends UnaryNode
     with CodegenSupport {
 
-  private[this] val aggregateBufferAttributes = {
+  private[this] val aggregateBufferAttributes =
     aggregateExpressions.flatMap(_.aggregateFunction.aggBufferAttributes)
-  }
 
   require(TungstenAggregate.supportsAggregate(aggregateBufferAttributes))
 
@@ -91,11 +90,11 @@ case class TungstenAggregate(
 
       child.execute().mapPartitions { iter =>
         val hasInput = iter.hasNext
-        if (!hasInput && groupingExpressions.nonEmpty) {
+        if (!hasInput && groupingExpressions.nonEmpty)
           // This is a grouped aggregate and the input iterator is empty,
           // so return an empty iterator.
           Iterator.empty
-        } else {
+        else {
           val aggregationIterator =
             new TungstenAggregationIterator(
               groupingExpressions,
@@ -118,9 +117,8 @@ case class TungstenAggregate(
             numOutputRows += 1
             Iterator.single[UnsafeRow](
               aggregationIterator.outputForEmptyGroupingKeyWithoutInput())
-          } else {
+          } else
             aggregationIterator
-          }
         }
       }
     }
@@ -139,21 +137,19 @@ case class TungstenAggregate(
     child.asInstanceOf[CodegenSupport].upstreams()
 
   protected override def doProduce(ctx: CodegenContext): String =
-    if (groupingExpressions.isEmpty) {
+    if (groupingExpressions.isEmpty)
       doProduceWithoutKeys(ctx)
-    } else {
+    else
       doProduceWithKeys(ctx)
-    }
 
   override def doConsume(
       ctx: CodegenContext,
       input: Seq[ExprCode],
       row: String): String =
-    if (groupingExpressions.isEmpty) {
+    if (groupingExpressions.isEmpty)
       doConsumeWithoutKeys(ctx, input)
-    } else {
+    else
       doConsumeWithKeys(ctx, input)
-    }
 
   // The variables used as aggregation buffer
   private var bufVars: Seq[ExprCode] = _
@@ -201,10 +197,10 @@ case class TungstenAggregate(
         |$evaluateAggResults
         |${evaluateVariables(resultVars)}
        """.stripMargin)
-      } else if (modes.contains(Partial) || modes.contains(PartialMerge)) {
+      } else if (modes.contains(Partial) || modes.contains(PartialMerge))
         // output the aggregate buffer directly
         (bufVars, "")
-      } else {
+      else {
         // no aggregate function, the result should be literals
         val resultVars = resultExpressions.map(_.gen(ctx))
         (resultVars, evaluateVariables(resultVars))
@@ -332,10 +328,9 @@ case class TungstenAggregate(
     metrics.incPeakExecutionMemory(peakMemory)
     // TODO: update data size and spill size
 
-    if (sorter == null) {
+    if (sorter == null)
       // not spilled
       return hashMap.iterator()
-    }
 
     // merge the final hashMap into sorter
     sorter.merge(hashMap.destructAndCreateExternalSorter())
@@ -356,11 +351,11 @@ case class TungstenAggregate(
 
       var currentKey: UnsafeRow = null
       var currentRow: UnsafeRow = null
-      var nextKey: UnsafeRow = if (sortedIter.next()) {
-        sortedIter.getKey
-      } else {
-        null
-      }
+      var nextKey: UnsafeRow =
+        if (sortedIter.next())
+          sortedIter.getKey
+        else
+          null
 
       override def next(): Boolean =
         if (nextKey != null) {
@@ -374,9 +369,9 @@ case class TungstenAggregate(
           var findNextGroup = false
           while (!findNextGroup && sortedIter.next()) {
             val key = sortedIter.getKey
-            if (currentKey.equals(key)) {
+            if (currentKey.equals(key))
               mergeProjection(joinedRow(currentRow, sortedIter.getValue))
-            } else {
+            else {
               // We find a new group.
               findNextGroup = true
               nextKey = key
@@ -384,9 +379,8 @@ case class TungstenAggregate(
           }
 
           true
-        } else {
+        } else
           false
-        }
 
       override def getKey: UnsafeRow = currentKey
       override def getValue: UnsafeRow = currentRow
@@ -580,9 +574,8 @@ case class TungstenAggregate(
           s"$countTerm < ${testFallbackStartsAt.get}",
           s"$countTerm = 0;",
           s"$countTerm += 1;")
-      } else {
+      } else
         ("true", "", "")
-      }
 
     // We try to do hash map based in-memory aggregation first. If there is not enough memory (the
     // hash map will return null for new key), we spill the hash map to disk to free memory, then

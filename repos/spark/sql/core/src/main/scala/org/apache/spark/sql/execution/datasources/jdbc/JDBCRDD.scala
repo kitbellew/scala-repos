@@ -68,11 +68,10 @@ private[sql] object JDBCRDD extends Logging {
       // scalastyle:off
       case java.sql.Types.ARRAY => null
       case java.sql.Types.BIGINT =>
-        if (signed) {
+        if (signed)
           LongType
-        } else {
+        else
           DecimalType(20, 0)
-        }
       case java.sql.Types.BINARY   => BinaryType
       case java.sql.Types.BIT      => BooleanType // @see JdbcDialect for quirks
       case java.sql.Types.BLOB     => BinaryType
@@ -88,11 +87,10 @@ private[sql] object JDBCRDD extends Logging {
       case java.sql.Types.DOUBLE   => DoubleType
       case java.sql.Types.FLOAT    => FloatType
       case java.sql.Types.INTEGER =>
-        if (signed) {
+        if (signed)
           IntegerType
-        } else {
+        else
           LongType
-        }
       case java.sql.Types.JAVA_OBJECT   => null
       case java.sql.Types.LONGNVARCHAR  => StringType
       case java.sql.Types.LONGVARBINARY => BinaryType
@@ -173,15 +171,9 @@ private[sql] object JDBCRDD extends Logging {
             i = i + 1
           }
           return new StructType(fields)
-        } finally {
-          rs.close()
-        }
-      } finally {
-        statement.close()
-      }
-    } finally {
-      conn.close()
-    }
+        } finally rs.close()
+      } finally statement.close()
+    } finally conn.close()
 
     throw new RuntimeException("This line is unreachable.")
   }
@@ -242,18 +234,16 @@ private[sql] object JDBCRDD extends Logging {
         // It applies too for the following And filter.
         // If we can make sure compileFilter supports all filters, we can remove this check.
         val or = Seq(f1, f2).flatMap(compileFilter(_))
-        if (or.size == 2) {
+        if (or.size == 2)
           or.map(p => s"($p)").mkString(" OR ")
-        } else {
+        else
           null
-        }
       case And(f1, f2) =>
         val and = Seq(f1, f2).flatMap(compileFilter(_))
-        if (and.size == 2) {
+        if (and.size == 2)
           and.map(p => s"($p)").mkString(" AND ")
-        } else {
+        else
           null
-        }
       case _ => null
     })
 
@@ -337,15 +327,14 @@ private[sql] class JDBCRDD(
     * A WHERE clause representing both `filters`, if any, and the current partition.
     */
   private def getWhereClause(part: JDBCPartition): String =
-    if (part.whereClause != null && filterWhereClause.length > 0) {
+    if (part.whereClause != null && filterWhereClause.length > 0)
       "WHERE " + filterWhereClause + " AND " + part.whereClause
-    } else if (part.whereClause != null) {
+    else if (part.whereClause != null)
       "WHERE " + part.whereClause
-    } else if (filterWhereClause.length > 0) {
+    else if (filterWhereClause.length > 0)
       "WHERE " + filterWhereClause
-    } else {
+    else
       ""
-    }
 
   // Each JDBC-to-Catalyst conversion corresponds to a tag defined here so that
   // we don't have to potentially poke around in the Metadata once for every
@@ -444,11 +433,10 @@ private[sql] class JDBCRDD(
               case DateConversion =>
                 // DateTimeUtils.fromJavaDate does not handle null value, so we need to check it.
                 val dateVal = rs.getDate(pos)
-                if (dateVal != null) {
+                if (dateVal != null)
                   mutableRow.setInt(i, DateTimeUtils.fromJavaDate(dateVal))
-                } else {
+                else
                   mutableRow.update(i, null)
-                }
               // When connecting with Oracle DB through JDBC, the precision and scale of BigDecimal
               // object returned by ResultSet.getBigDecimal is not correctly matched to the table
               // schema reported by ResultSetMetaData.getPrecision and ResultSetMetaData.getScale.
@@ -459,11 +447,10 @@ private[sql] class JDBCRDD(
               // So it is needed to set precision and scale for Decimal based on JDBC metadata.
               case DecimalConversion(p, s) =>
                 val decimalVal = rs.getBigDecimal(pos)
-                if (decimalVal == null) {
+                if (decimalVal == null)
                   mutableRow.update(i, null)
-                } else {
+                else
                   mutableRow.update(i, Decimal(decimalVal, p, s))
-                }
               case DoubleConversion =>
                 mutableRow.setDouble(i, rs.getDouble(pos))
               case FloatConversion   => mutableRow.setFloat(i, rs.getFloat(pos))
@@ -474,11 +461,10 @@ private[sql] class JDBCRDD(
                 mutableRow.update(i, UTF8String.fromString(rs.getString(pos)))
               case TimestampConversion =>
                 val t = rs.getTimestamp(pos)
-                if (t != null) {
+                if (t != null)
                   mutableRow.setLong(i, DateTimeUtils.fromJavaTimestamp(t))
-                } else {
+                else
                   mutableRow.update(i, null)
-                }
               case BinaryConversion => mutableRow.update(i, rs.getBytes(pos))
               case BinaryLongConversion =>
                 val bytes = rs.getBytes(pos)
@@ -524,9 +510,8 @@ private[sql] class JDBCRDD(
                     case _ => array.asInstanceOf[Array[Any]]
                   }
                   mutableRow.update(i, new GenericArrayData(data))
-                } else {
+                } else
                   mutableRow.update(i, null)
-                }
             }
             if (rs.wasNull) mutableRow.setNullAt(i)
             i = i + 1
@@ -540,30 +525,24 @@ private[sql] class JDBCRDD(
 
       def close() {
         if (closed) return
-        try {
-          if (null != rs) {
-            rs.close()
-          }
-        } catch {
+        try if (null != rs)
+          rs.close()
+        catch {
           case e: Exception => logWarning("Exception closing resultset", e)
         }
-        try {
-          if (null != stmt) {
-            stmt.close()
-          }
-        } catch {
+        try if (null != stmt)
+          stmt.close()
+        catch {
           case e: Exception => logWarning("Exception closing statement", e)
         }
         try {
           if (null != conn) {
-            if (!conn.isClosed && !conn.getAutoCommit) {
-              try {
-                conn.commit()
-              } catch {
+            if (!conn.isClosed && !conn.getAutoCommit)
+              try conn.commit()
+              catch {
                 case NonFatal(e) =>
                   logWarning("Exception committing transaction", e)
               }
-            }
             conn.close()
           }
           logInfo("closed connection")
@@ -574,31 +553,27 @@ private[sql] class JDBCRDD(
       }
 
       override def hasNext: Boolean = {
-        if (!finished) {
+        if (!finished)
           if (!gotNext) {
             nextValue = getNext()
-            if (finished) {
+            if (finished)
               close()
-            }
             gotNext = true
           }
-        }
         !finished
       }
 
       override def next(): InternalRow = {
-        if (!hasNext) {
+        if (!hasNext)
           throw new NoSuchElementException("End of stream")
-        }
         gotNext = false
         nextValue
       }
     }
 
   private def nullSafeConvert[T](input: T, f: T => Any): Any =
-    if (input == null) {
+    if (input == null)
       null
-    } else {
+    else
       f(input)
-    }
 }

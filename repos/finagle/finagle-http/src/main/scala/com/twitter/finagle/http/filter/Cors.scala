@@ -87,9 +87,8 @@ object Cors {
         response: Response,
         origin: String): Response = {
       response.headers.add("Access-Control-Allow-Origin", origin)
-      if (policy.supportsCredentials && origin != "*") {
+      if (policy.supportsCredentials && origin != "*")
         response.headers.add("Access-Control-Allow-Credentials", "true")
-      }
       response
     }
 
@@ -116,11 +115,10 @@ object Cors {
       * Origin header and url is a case-sensitive match for the URL of the resource.
       */
     protected[this] def addExposedHeaders(response: Response): Response = {
-      if (policy.exposedHeaders.nonEmpty) {
+      if (policy.exposedHeaders.nonEmpty)
         response.headers.add(
           "Access-Control-Expose-Headers",
           policy.exposedHeaders.mkString(", "))
-      }
       response
     }
 
@@ -195,10 +193,9 @@ object Cors {
     protected[this] def setHeaders(
         response: Response,
         headers: Seq[String]): Response = {
-      if (headers.nonEmpty) {
+      if (headers.nonEmpty)
         response.headers
           .set("Access-Control-Allow-Headers", headers.mkString(", "))
-      }
       response
     }
 

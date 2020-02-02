@@ -174,17 +174,15 @@ private[spark] abstract class ImpurityCalculator(val stats: Array[Double])
   protected def indexOfLargestArrayElement(array: Array[Double]): Int = {
     val result = array.foldLeft(-1, Double.MinValue, 0) {
       case ((maxIndex, maxValue, currentIndex), currentValue) =>
-        if (currentValue > maxValue) {
+        if (currentValue > maxValue)
           (currentIndex, currentValue, currentIndex + 1)
-        } else {
+        else
           (maxIndex, maxValue, currentIndex + 1)
-        }
     }
-    if (result._1 < 0) {
+    if (result._1 < 0)
       throw new RuntimeException(
         "ImpurityCalculator internal error:" +
           " indexOfLargestArrayElement failed")
-    }
     result._1
   }
 

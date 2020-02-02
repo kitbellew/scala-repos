@@ -52,14 +52,12 @@ class MakeExplicitAction
 
   def getCurrentItemBounds: Rectangle = {
     val index: Int = GoToImplicitConversionAction.getList.getSelectedIndex
-    if (index < 0) {
+    if (index < 0)
       throw new RuntimeException("Index = " + index + " is less than zero.")
-    }
     val itemBounds: Rectangle =
       GoToImplicitConversionAction.getList.getCellBounds(index, index)
-    if (itemBounds == null) {
+    if (itemBounds == null)
       throw new RuntimeException("No bounds for index = " + index + ".")
-    }
     itemBounds
   }
 }

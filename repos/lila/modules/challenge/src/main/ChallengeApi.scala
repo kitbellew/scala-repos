@@ -24,7 +24,7 @@ final class ChallengeApi(
     createdByDestId(userId) zip createdByChallengerId(userId) map (AllChallenges.apply _).tupled
 
   def create(c: Challenge): Funit = {
-    repo like c flatMap { _ ?? repo.cancel }
+    repo like c flatMap _ ?? repo.cancel
   } >> (repo insert c) >> uncacheAndNotify(c) >>- {
     lilaBus.publish(Event.Create(c), 'challenge)
   }

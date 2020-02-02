@@ -38,10 +38,10 @@ object BuildSettings {
   val snapshotBranch = {
     try {
       val branch = "git rev-parse --abbrev-ref HEAD".!!.trim
-      if (branch == "HEAD") {
+      if (branch == "HEAD")
         // not on a branch, get the hash
         "git rev-parse HEAD".!!.trim
-      } else branch
+      else branch
     } catch {
       case NonFatal(_) => "unknown"
     }
@@ -75,12 +75,11 @@ object BuildSettings {
   def playRuntimeSettings: Seq[Setting[_]] =
     playCommonSettings ++ mimaDefaultSettings ++ Seq(
       previousArtifacts := {
-        if (crossPaths.value) {
+        if (crossPaths.value)
           Set(
             organization.value % s"${moduleName.value}_${scalaBinaryVersion.value}" % previousVersion)
-        } else {
+        else
           Set(organization.value % moduleName.value % previousVersion)
-        }
       },
       Docs.apiDocsInclude := true
     )

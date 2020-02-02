@@ -271,7 +271,7 @@ class BaseReplicationClient(
     Future.collect((clients zip casUniques) map {
       case (c, u) =>
         c.checkAndSet(key, flags, expiry, value, u).transform(Future.value)
-    }) map { toReplicationStatus }
+    }) map toReplicationStatus
   }
 
   /**
@@ -395,7 +395,7 @@ class BaseReplicationClient(
   private[this] def collectAndResolve[T](op: Client => Future[T]) =
     Future.collect(clients map {
       op(_).transform(Future.value)
-    }) map { toReplicationStatus }
+    }) map toReplicationStatus
 }
 
 /**

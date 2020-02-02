@@ -35,20 +35,18 @@ class ScTraitParentsImpl private (
 
   def superTypes: Seq[ScType] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTemplateParentsStub].getTemplateParentsTypes ++
         syntheticTypeElements.map(_.getType(TypingContext.empty).getOrAny)
-    }
     allTypeElements.map(_.getType(TypingContext.empty).getOrAny)
   }
 
   def typeElements: Seq[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub
         .asInstanceOf[ScTemplateParentsStub]
         .getTemplateParentsTypeElements
-    }
     findChildrenByClassScala(classOf[ScTypeElement])
   }
 }

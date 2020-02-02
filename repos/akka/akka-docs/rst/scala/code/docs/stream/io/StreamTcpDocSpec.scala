@@ -107,11 +107,9 @@ class StreamTcpDocSpec extends AkkaSpec {
         case _ ⇒ "q"
       }
 
-    {
-      //#repl-client
-      val connection = Tcp().outgoingConnection("127.0.0.1", 8888)
-      //#repl-client
-    }
+    //#repl-client
+    val connection = Tcp().outgoingConnection("127.0.0.1", 8888)
+    //#repl-client
 
     {
       val connection = Tcp().outgoingConnection(localhost)

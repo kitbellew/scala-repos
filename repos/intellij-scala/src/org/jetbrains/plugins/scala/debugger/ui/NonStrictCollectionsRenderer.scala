@@ -75,14 +75,13 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       context: EvaluationContext) = {
     val suitableMethods =
       objectRef.referenceType().methodsByName(methodName, "()" + signature)
-    if (suitableMethods.size() > 0) {
+    if (suitableMethods.size() > 0)
       companionObject.invokeEmptyArgsMethod(
         objectRef,
         suitableMethods get 0,
         context)
-    } else {
+    else
       MethodNotFound()
-    }
   }
 
   private def tryToGetSize(
@@ -91,10 +90,9 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
     @inline def invoke(name: String) =
       invokeLengthMethodByName(objectRef, name, 'I', context)
 
-    try {
-      if (!ScalaCollectionRenderer.hasDefiniteSize(objectRef, context) || isStreamView(
-            objectRef.referenceType())) return Success[String]("?")
-    } catch {
+    try if (!ScalaCollectionRenderer.hasDefiniteSize(objectRef, context) || isStreamView(
+              objectRef.referenceType())) return Success[String]("?")
+    catch {
       case e: EvaluateException => return Fail(e)
     }
 
@@ -115,13 +113,12 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
       val suitableMethods = actualRefType methodsByName methodName
       if (suitableMethods.size() == 0) return null
 
-      try {
-        evaluationContext.getDebugProcess.invokeMethod(
-          evaluationContext,
-          obj,
-          suitableMethods get 0,
-          companionObject.EMPTY_ARGS)
-      } catch {
+      try evaluationContext.getDebugProcess.invokeMethod(
+        evaluationContext,
+        obj,
+        suitableMethods get 0,
+        companionObject.EMPTY_ARGS)
+      catch {
         case (_: EvaluateException | _: InvocationException |
             _: InvalidTypeException | _: IncompatibleThreadStateException |
             _: ClassNotLoadedException) =>
@@ -146,15 +143,14 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
           if ScalaCollectionRenderer.nonEmpty(objectRef, evaluationContext) =>
         var currentTail = objectRef
 
-        for (i <- 0 until getStartIndex) {
+        for (i <- 0 until getStartIndex)
           getTail(currentTail, currentTail.referenceType()) match {
             case newTail: ObjectReference => currentTail = newTail
             case _                        => return //ourCollection.size < startIndex
           }
-        }
 
         var indexCount = getStartIndex
-        for (i <- getStartIndex to getEndIndex) {
+        for (i <- getStartIndex to getEndIndex)
           getAll(currentTail, currentTail.referenceType()) match {
             case (newHead: ObjectReference, newTail: ObjectReference) =>
               val newNode = builder.getNodeManager.createNode(
@@ -168,7 +164,6 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
               indexCount += 1
             case _ => returnChildren(); return
           }
-        }
 
       case _ =>
     }
@@ -249,14 +244,12 @@ object NonStrictCollectionsRenderer {
       obj: ObjectReference,
       method: Method,
       context: EvaluationContext): SimpleMethodInvocationResult[_] =
-    try {
-      context.getDebugProcess.invokeMethod(context, obj, method, EMPTY_ARGS) match {
-        case intValue: IntegerValue => Success[Int](intValue.intValue())
-        case boolValue: BooleanValue =>
-          Success[Boolean](boolValue.booleanValue())
-        case objValue: ObjectReference => Success[Value](objValue)
-        case _                         => MethodNotFound()
-      }
+    try context.getDebugProcess.invokeMethod(context, obj, method, EMPTY_ARGS) match {
+      case intValue: IntegerValue => Success[Int](intValue.intValue())
+      case boolValue: BooleanValue =>
+        Success[Boolean](boolValue.booleanValue())
+      case objValue: ObjectReference => Success[Value](objValue)
+      case _                         => MethodNotFound()
     } catch {
       case e @ (_: EvaluateException | _: InvocationException |
           _: InvalidTypeException | _: IncompatibleThreadStateException |
@@ -288,14 +281,11 @@ object NonStrictCollectionsRenderer {
     def calcValue(evaluationContext: EvaluationContextImpl) = value
 
     def getDescriptorEvaluation(context: DebuggerContext): PsiExpression =
-      try {
-        JavaPsiFacade
-          .getInstance(project)
-          .getElementFactory
-          .createExpressionFromText(
-            name,
-            PositionUtil getContextElement context)
-      } catch {
+      try JavaPsiFacade
+        .getInstance(project)
+        .getElementFactory
+        .createExpressionFromText(name, PositionUtil getContextElement context)
+      catch {
         case e: IncorrectOperationException => null
       }
 

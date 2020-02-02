@@ -193,10 +193,10 @@ abstract class ExplicitOuter
         if (hasOuterField(clazz)) //2
           decls1 enter newOuterField(clazz)
       }
-      if (!clazz.isTrait && !parents.isEmpty) {
+      if (!clazz.isTrait && !parents.isEmpty)
         for (mc <- clazz.mixinClasses) {
           val mixinOuterAcc: Symbol = exitingExplicitOuter(outerAccessor(mc))
-          if (mixinOuterAcc != NoSymbol) {
+          if (mixinOuterAcc != NoSymbol)
             if (skipMixinOuterAccessor(clazz, mc))
               debuglog(
                 s"Reusing outer accessor symbol of $clazz for the mixin outer accessor of $mc")
@@ -207,9 +207,7 @@ abstract class ExplicitOuter
               newAcc setInfo (clazz.thisType memberType mixinOuterAcc)
               decls1 enter newAcc
             }
-          }
         }
-      }
       if (decls1 eq decls) tp else ClassInfoType(parents, decls1, clazz)
     case PolyType(tparams, restp) =>
       val restp1 = transformInfo(sym, restp)
@@ -258,18 +256,18 @@ abstract class ExplicitOuter
     private def outerSelect(base: Tree): Tree = {
       val baseSym = base.tpe.typeSymbol
       val outerAcc = outerAccessor(baseSym)
-      if (outerAcc == NoSymbol) {
-        if (baseSym.ownersIterator.exists(isUnderConstruction)) {
+      if (outerAcc == NoSymbol)
+        if (baseSym.ownersIterator.exists(isUnderConstruction))
           // e.g neg/t6666.scala
           // The caller will report the error with more information.
           EmptyTree
-        } else {
+        else {
           globalError(
             currentOwner.pos,
             s"Internal error: unable to find the outer accessor symbol of $baseSym")
           EmptyTree
         }
-      } else {
+      else {
         val currentClass = this.currentClass //todo: !!! if this line is removed, we get a build failure that protected$currentClass need an override modifier
         // outerFld is the $outer field of the current class, if the reference can
         // use it (i.e. reference is allowed to be of the form this.$outer),
@@ -454,7 +452,7 @@ abstract class ExplicitOuter
               else decls ::: newDefs.toList)
           )
         case DefDef(_, _, _, vparamss, _, rhs) =>
-          if (sym.isClassConstructor) {
+          if (sym.isClassConstructor)
             rhs match {
               case Literal(_) =>
                 sys.error("unexpected case") //todo: remove
@@ -462,11 +460,10 @@ abstract class ExplicitOuter
                 val clazz = sym.owner
                 val vparamss1 =
                   if (isInner(clazz)) { // (4)
-                    if (isUnderConstruction(clazz.outerClass)) {
+                    if (isUnderConstruction(clazz.outerClass))
                       reporter.error(
                         tree.pos,
                         s"Implementation restriction: ${clazz.fullLocationString} requires premature access to ${clazz.outerClass}.")
-                    }
                     val outerParam =
                       sym.newValueParameter(nme.OUTER, sym.pos) setInfo clazz.outerClass
                         .thisType
@@ -474,7 +471,7 @@ abstract class ExplicitOuter
                   } else vparamss
                 super.transform(copyDefDef(tree)(vparamss = vparamss1))
             }
-          } else
+          else
             super.transform(tree)
 
         case This(qual) =>

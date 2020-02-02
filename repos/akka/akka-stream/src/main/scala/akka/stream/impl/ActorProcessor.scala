@@ -232,10 +232,10 @@ private[akka] class SimpleOutputs(val actor: ActorRef, val pump: Pump)
     case SubscribePending ⇒
       subscribePending(exposedPublisher.takePendingSubscribers())
     case RequestMore(subscription, elements) ⇒
-      if (elements < 1) {
+      if (elements < 1)
         error(
           ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
-      } else {
+      else {
         downstreamDemand += elements
         if (downstreamDemand < 1)
           downstreamDemand = Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded

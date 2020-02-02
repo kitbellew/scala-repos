@@ -87,9 +87,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       tree match {
         case cd @ ClassDef(mods0, name0, tparams0, impl0)
             if !isPrimitiveValueClass(cd.symbol) && cd.symbol.primaryConstructor != NoSymbol =>
-          if (cd.symbol eq AnyValClass) {
+          if (cd.symbol eq AnyValClass)
             cd
-          } else {
+          else {
             checkUninitializedReads(cd)
             val tplTransformer = new TemplateTransformer(unit, impl0)
             treeCopy.ClassDef(
@@ -468,41 +468,39 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
      */
     def guardSpecializedInitializer(stats: List[Tree]): List[Tree] =
       if (settings.nospecialization.value) stats
-      else {
-        // // split the statements in presuper and postsuper
-        // var (prefix, postfix) = stats0.span(tree => !((tree.symbol ne null) && tree.symbol.isConstructor))
-        // if (postfix.nonEmpty) {
-        //   prefix = prefix :+ postfix.head
-        //   postfix = postfix.tail
-        // }
+      else
+      // // split the statements in presuper and postsuper
+      // var (prefix, postfix) = stats0.span(tree => !((tree.symbol ne null) && tree.symbol.isConstructor))
+      // if (postfix.nonEmpty) {
+      //   prefix = prefix :+ postfix.head
+      //   postfix = postfix.tail
+      // }
+      if (guardSpecializedFieldInit && usesSpecializedField && stats.nonEmpty) {
+        // save them for duplication in the specialized subclass
+        guardedCtorStats(clazz) = stats
+        ctorParams(clazz) = primaryConstrParams
 
-        if (guardSpecializedFieldInit && usesSpecializedField && stats.nonEmpty) {
-          // save them for duplication in the specialized subclass
-          guardedCtorStats(clazz) = stats
-          ctorParams(clazz) = primaryConstrParams
+        val tree =
+          If(
+            Apply(
+              CODE.NOT(
+                Apply(gen.mkAttributedRef(hasSpecializedFieldsSym), List())),
+              List()),
+            Block(stats, Literal(Constant(()))),
+            EmptyTree)
 
-          val tree =
-            If(
-              Apply(
-                CODE.NOT(
-                  Apply(gen.mkAttributedRef(hasSpecializedFieldsSym), List())),
-                List()),
-              Block(stats, Literal(Constant(()))),
-              EmptyTree)
+        List(localTyper.typed(tree))
+      } else if (clazz.hasFlag(SPECIALIZED)) {
+        // add initialization from its generic class constructor
+        val genericName = nme.unspecializedName(clazz.name)
+        val genericClazz = clazz.owner.info.decl(genericName.toTypeName)
+        assert(genericClazz != NoSymbol, clazz)
 
-          List(localTyper.typed(tree))
-        } else if (clazz.hasFlag(SPECIALIZED)) {
-          // add initialization from its generic class constructor
-          val genericName = nme.unspecializedName(clazz.name)
-          val genericClazz = clazz.owner.info.decl(genericName.toTypeName)
-          assert(genericClazz != NoSymbol, clazz)
-
-          guardedCtorStats.get(genericClazz) match {
-            case Some(stats1) => mergeConstructors(genericClazz, stats1, stats)
-            case None         => stats
-          }
-        } else stats
-      }
+        guardedCtorStats.get(genericClazz) match {
+          case Some(stats1) => mergeConstructors(genericClazz, stats1, stats)
+          case None         => stats
+        }
+      } else stats
 
   } // GuardianOfCtorStmts
 
@@ -607,9 +605,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
         case Select(_, _)
             if guardSpecializedFieldInit => // reasoning behind this guard in the docu of `usesSpecializedField`
-          if (possiblySpecialized(tree.symbol)) {
+          if (possiblySpecialized(tree.symbol))
             usesSpecializedField = true
-          }
           super.transform(tree)
 
         case _ =>

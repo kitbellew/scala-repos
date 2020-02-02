@@ -220,14 +220,13 @@ class ScalaFindUsagesHandler(
             case _ =>
           }
         }
-        if (s.isSearchCompanionModule) {
+        if (s.isSearchCompanionModule)
           ScalaPsiUtil.getBaseCompanionModule(clazz) match {
             case Some(companion) =>
               if (!super.processElementUsages(companion, processor, options))
                 return false
             case _ =>
           }
-        }
         if (s.isImplementingTypeDefinitions) {
           val res = new mutable.HashSet[PsiClass]()
           ClassInheritorsSearch

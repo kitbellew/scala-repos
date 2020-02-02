@@ -46,32 +46,26 @@ object Equivalence {
     val nowEval = eval.get()
     val tuple =
       if (nowEval) null
-      else {
+      else
         try {
           eval.set(true)
           cache.get(key)
-        } finally {
-          eval.set(false)
-        }
-      }
+        } finally eval.set(false)
     if (tuple != null) {
       if (subst.isEmpty) return tuple
       return tuple.copy(_2 = subst + tuple._2)
     }
 
-    if (guard.currentStack().contains(key)) {
+    if (guard.currentStack().contains(key))
       return (false, new ScUndefinedSubstitutor())
-    }
 
     val uSubst = new ScUndefinedSubstitutor()
 
     def comp(): (Boolean, ScUndefinedSubstitutor) = {
-      if (l.isInstanceOf[ScDesignatorType] && l.getValType.isDefined) {
+      if (l.isInstanceOf[ScDesignatorType] && l.getValType.isDefined)
         return equivInner(l.getValType.get, r, subst, falseUndef)
-      }
-      if (r.isInstanceOf[ScDesignatorType] && r.getValType.isDefined) {
+      if (r.isInstanceOf[ScDesignatorType] && r.getValType.isDefined)
         return equivInner(l, r.getValType.get, subst, falseUndef)
-      }
 
       r.isAliasType match {
         case Some(AliasType(ta: ScTypeAliasDefinition, _, _)) =>
@@ -114,14 +108,11 @@ object Equivalence {
         def compute(): (Boolean, ScUndefinedSubstitutor) = comp()
       })
     if (res == null) return (false, new ScUndefinedSubstitutor())
-    if (!nowEval) {
+    if (!nowEval)
       try {
         eval.set(true)
         cache.put(key, res)
-      } finally {
-        eval.set(false)
-      }
-    }
+      } finally eval.set(false)
     if (subst.isEmpty) return res
     res.copy(_2 = subst + res._2)
   }

@@ -75,23 +75,21 @@ trait PartitionSchemed[P, T]
   override def createTap(readOrWrite: AccessMode)(
       implicit mode: Mode): Tap[_, _, _] =
     mode match {
-      case Local(_) => {
+      case Local(_) =>
         val fileTap = new FileTap(localScheme, path, SinkMode.REPLACE)
         new LocalPartitionTap(
           fileTap,
           new TemplatePartition(partitionFields, template),
           SinkMode.UPDATE)
           .asInstanceOf[Tap[_, _, _]]
-      }
-      case Hdfs(_, _) => {
+      case Hdfs(_, _) =>
         val hfs = createHfsTap(hdfsScheme, path, SinkMode.REPLACE)
         new PartitionTap(
           hfs,
           new TemplatePartition(partitionFields, template),
           SinkMode.UPDATE)
           .asInstanceOf[Tap[_, _, _]]
-      }
-      case hdfsTest @ HadoopTest(_, _) => {
+      case hdfsTest @ HadoopTest(_, _) =>
         val hfs = createHfsTap(
           hdfsScheme,
           hdfsTest.getWritePathFor(this),
@@ -101,7 +99,6 @@ trait PartitionSchemed[P, T]
           new TemplatePartition(partitionFields, template),
           SinkMode.UPDATE)
           .asInstanceOf[Tap[_, _, _]]
-      }
       case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
     }
 }

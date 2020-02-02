@@ -45,23 +45,21 @@ case class Coalesce(children: Seq[Expression]) extends Expression {
   override def foldable: Boolean = children.forall(_.foldable)
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (children == Nil) {
+    if (children == Nil)
       TypeCheckResult.TypeCheckFailure(
         "input to function coalesce cannot be empty")
-    } else {
+    else
       TypeUtils.checkForSameTypeInputExpr(
         children.map(_.dataType),
         "function coalesce")
-    }
 
   override def dataType: DataType = children.head.dataType
 
   override def eval(input: InternalRow): Any = {
     var result: Any = null
     val childIterator = children.iterator
-    while (childIterator.hasNext && result == null) {
+    while (childIterator.hasNext && result == null)
       result = childIterator.next().eval(input)
-    }
     result
   }
 
@@ -106,14 +104,13 @@ case class IsNaN(child: Expression)
 
   override def eval(input: InternalRow): Any = {
     val value = child.eval(input)
-    if (value == null) {
+    if (value == null)
       false
-    } else {
+    else
       child.dataType match {
         case DoubleType => value.asInstanceOf[Double].isNaN
         case FloatType  => value.asInstanceOf[Float].isNaN
       }
-    }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -147,16 +144,15 @@ case class NaNvl(left: Expression, right: Expression)
 
   override def eval(input: InternalRow): Any = {
     val value = left.eval(input)
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       left.dataType match {
         case DoubleType =>
           if (!value.asInstanceOf[Double].isNaN) value else right.eval(input)
         case FloatType =>
           if (!value.asInstanceOf[Float].isNaN) value else right.eval(input)
       }
-    }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -241,7 +237,7 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
     var i = 0
     while (i < childrenArray.length && numNonNulls < n) {
       val evalC = childrenArray(i).eval(input)
-      if (evalC != null) {
+      if (evalC != null)
         childrenArray(i).dataType match {
           case DoubleType =>
             if (!evalC.asInstanceOf[Double].isNaN) numNonNulls += 1
@@ -249,7 +245,6 @@ case class AtLeastNNonNulls(n: Int, children: Seq[Expression])
             if (!evalC.asInstanceOf[Float].isNaN) numNonNulls += 1
           case _ => numNonNulls += 1
         }
-      }
       i += 1
     }
     numNonNulls >= n

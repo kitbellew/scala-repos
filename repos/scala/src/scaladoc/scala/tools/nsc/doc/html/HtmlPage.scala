@@ -204,11 +204,10 @@ abstract class HtmlPage extends Page { thisPage =>
         scala.xml.Text(string.slice(inPos, string.length))
       else if (inPos == starts.head)
         toLinksIn(inPos, starts)
-      else {
+      else
         scala.xml.Text(string.slice(inPos, starts.head)) ++ toLinksIn(
           starts.head,
           starts)
-      }
     def toLinksIn(inPos: Int, starts: List[Int]): NodeSeq = {
       val (link, width) = tpe.refEntity(inPos)
       val text = comment.Text(string.slice(inPos, inPos + width))
@@ -236,13 +235,12 @@ abstract class HtmlPage extends Page { thisPage =>
   /** Returns the HTML code that represents the template in `tpl` as a hyperlinked name. */
   def templateToHtml(tpl: TemplateEntity, name: String = null) = tpl match {
     case dTpl: DocTemplateEntity =>
-      if (hasPage(dTpl)) {
+      if (hasPage(dTpl))
         <a href={relativeLinkTo(dTpl)} class="extype" name={dTpl.qualifiedName}>{
           if (name eq null) dTpl.name else name
         }</a>
-      } else {
+      else
         scala.xml.Text(if (name eq null) dTpl.name else name)
-      }
     case ndTpl: NoDocTemplate =>
       scala.xml.Text(if (name eq null) ndTpl.name else name)
   }
@@ -269,16 +267,15 @@ abstract class HtmlPage extends Page { thisPage =>
       else if (e.isAbstractType || e.isAliasType) Image.Type
       else if (e.isObject) Image.Object
       else if (e.isPackage) Image.Package
-      else {
+      else
         // FIXME: an entity *should* fall into one of the above categories,
         // but AnyRef is somehow not
         Image.Class
-      }
 
     val image = entityToImage(ety)
     val companionImage = ety.companion filter { e =>
       e.visibility.isPublic && !e.inSource.isEmpty
-    } map { entityToImage }
+    } map entityToImage
 
     (image, companionImage) match {
       case (from, Some(to)) =>

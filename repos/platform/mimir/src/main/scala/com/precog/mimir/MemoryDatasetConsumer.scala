@@ -88,13 +88,12 @@ trait MemoryDatasetConsumer[M[+_]] extends EvaluatorModule[M] {
     case JNum(bi)     => SDecimal(bi)
     case JString(str) => SString(str)
 
-    case JObject(fields) => {
+    case JObject(fields) =>
       val map: Map[String, SValue] = fields.map({
         case JField(name, value) => (name, jvalueToSValue(value))
       })(collection.breakOut)
 
       SObject(map)
-    }
 
     case JArray(values) =>
       SArray(Vector(values map jvalueToSValue: _*))

@@ -89,13 +89,12 @@ class ClusterSingletonManagerLeaveSpec
       name = "echo"
     )
 
-  lazy val echoProxy: ActorRef = {
+  lazy val echoProxy: ActorRef =
     system.actorOf(
       ClusterSingletonProxy.props(
         singletonManagerPath = "/user/echo",
         settings = ClusterSingletonProxySettings(system)),
       name = "echoProxy")
-  }
 
   "Leaving ClusterSingletonManager" must {
 

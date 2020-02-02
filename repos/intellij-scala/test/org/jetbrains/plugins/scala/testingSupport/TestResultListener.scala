@@ -37,9 +37,8 @@ class TestResultListener(private val testConfigurationName: String)
     if (text.contains(testResultPrefix) && text.contains(testResultSuffix)) {
       val from = text.indexOf(testResultPrefix)
       val to = text.indexOf(testResultSuffix)
-      if (from != -1 && to != -1) {
+      if (from != -1 && to != -1)
         builder.append(text.substring(from + testResultPrefix.length, to))
-      }
     }
   }
 

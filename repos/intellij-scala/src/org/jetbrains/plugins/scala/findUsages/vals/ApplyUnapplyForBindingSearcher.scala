@@ -69,7 +69,7 @@ class ApplyUnapplyForBindingSearcher
         val IsApply = new Apply(binding)
         val IsUnapply = new Unapply(binding)
         for (ref <- references
-             if ref.getRangeInElement.contains(offsetInElement)) {
+             if ref.getRangeInElement.contains(offsetInElement))
           inReadAction {
             ref match {
               case IsApply(reference) if checkApply =>
@@ -79,7 +79,6 @@ class ApplyUnapplyForBindingSearcher
               case _ =>
             }
           }
-        }
         true
       }
     }
@@ -159,7 +158,7 @@ class ApplyUnapplyForBindingSearcher
           case "unapply" | "unapplySeq" => (false, true)
           case _                        => (false, false)
         }
-        if (checkApply || checkUnapply) {
+        if (checkApply || checkUnapply)
           fun.containingClass match {
             case anon: ScNewTemplateDefinition =>
               ScalaPsiUtil
@@ -167,7 +166,7 @@ class ApplyUnapplyForBindingSearcher
                 .flatMap(Some(_, checkApply, checkUnapply))
             case _ => None
           }
-        } else None
+        else None
       }
   }
 

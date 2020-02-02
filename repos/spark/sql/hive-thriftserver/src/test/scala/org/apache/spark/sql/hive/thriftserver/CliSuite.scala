@@ -55,9 +55,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
       warehousePath.delete()
       metastorePath.delete()
       scratchDirPath.delete()
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   /**
     * Run a CLI operation and expect all the queries and expected answers to be returned.
@@ -107,17 +105,14 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
       if (next < expectedAnswers.size && line.contains(expectedAnswers(next))) {
         next += 1
         // If all expected answers have been found...
-        if (next == expectedAnswers.size) {
+        if (next == expectedAnswers.size)
           foundAllExpectedAnswers.trySuccess(())
-        }
-      } else {
+      } else
         errorResponses.foreach { r =>
-          if (line.contains(r)) {
+          if (line.contains(r))
             foundAllExpectedAnswers.tryFailure(
               new RuntimeException(s"Failed with error line '$line'"))
-          }
         }
-      }
     }
 
     val process = new ProcessBuilder(command: _*).start()
@@ -133,9 +128,8 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
     new ProcessOutputCapturer(process.getErrorStream, captureOutput("stderr"))
       .start()
 
-    try {
-      Await.result(foundAllExpectedAnswers.future, timeout)
-    } catch {
+    try Await.result(foundAllExpectedAnswers.future, timeout)
+    catch {
       case cause: Throwable =>
         val message =
           s"""
@@ -154,9 +148,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
          """.stripMargin
         logError(message, cause)
         fail(message, cause)
-    } finally {
-      process.destroy()
-    }
+    } finally process.destroy()
   }
 
   test("Simple commands") {

@@ -612,7 +612,7 @@ class ClusterSingletonManager(
           "Retry [{}], sending HandOverToMe to [{}]",
           count,
           previousOldestOption)
-        previousOldestOption foreach { peer(_) ! HandOverToMe }
+        previousOldestOption foreach peer(_) ! HandOverToMe
         setTimer(
           HandOverRetryTimer,
           HandOverRetry(count + 1),
@@ -703,7 +703,7 @@ class ClusterSingletonManager(
           "Retry [{}], sending TakeOverFromMe to [{}]",
           count,
           newOldestOption)
-        newOldestOption foreach { peer(_) ! TakeOverFromMe }
+        newOldestOption foreach peer(_) ! TakeOverFromMe
         setTimer(
           TakeOverRetryTimer,
           TakeOverRetry(count + 1),
@@ -741,10 +741,10 @@ class ClusterSingletonManager(
       singleton: ActorRef,
       singletonTerminated: Boolean,
       handOverTo: Option[ActorRef]): State =
-    if (singletonTerminated) {
+    if (singletonTerminated)
       handOverDone(handOverTo)
-    } else {
-      handOverTo foreach { _ ! HandOverInProgress }
+    else {
+      handOverTo foreach _ ! HandOverInProgress
       singleton ! terminationMessage
       goto(HandingOver) using HandingOverData(singleton, handOverTo)
     }
@@ -768,7 +768,7 @@ class ClusterSingletonManager(
       "Singleton terminated, hand-over done [{} -> {}]",
       cluster.selfAddress,
       newOldest)
-    handOverTo foreach { _ ! HandOverDone }
+    handOverTo foreach _ ! HandOverDone
     if (removed.contains(cluster.selfAddress)) {
       logInfo("Self removed, stopping ClusterSingletonManager")
       stop()

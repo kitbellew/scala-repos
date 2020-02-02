@@ -89,9 +89,9 @@ private[finagle] object TimerStats {
       bucketHeadField
         .map { headField =>
           val head = headField.get(hashedWheelBucket) // this is a HashedWheelTimeout
-          if (head == null) {
+          if (head == null)
             0
-          } else {
+          else {
             val nextField = head.getClass.getDeclaredField("next")
             nextField.setAccessible(true)
             var num = 1 // count the one we've started with.
@@ -114,9 +114,7 @@ private[finagle] object TimerStats {
         for {
           qTimeouts <- queuedTimeouts
           wTimeouts <- wheelTimeouts
-        } {
-          pendingTimeouts.add(qTimeouts.size() + wTimeouts)
-        }
+        } pendingTimeouts.add(qTimeouts.size() + wTimeouts)
 
         val elapsedMicros =
           TimeUnit.NANOSECONDS.toMicros(System.nanoTime() - startAt)

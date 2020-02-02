@@ -154,7 +154,7 @@ object TypeCheckToMatchUtil {
         case patternDef: ScPatternDefinition =>
           val bindings = patternDef.bindings
           //pattern consist of one assignment of asInstanceOf call
-          if (bindings.size == 1 && patternDef.expr.get == asInstOfCall) {
+          if (bindings.size == 1 && patternDef.expr.get == asInstOfCall)
             definition match {
               //store first occurence of pattern definition and name
               case Some(oldDef)
@@ -165,7 +165,7 @@ object TypeCheckToMatchUtil {
                 definition = Some(patternDef)
                 true
             }
-          } else false
+          else false
         case null => false
       }
 
@@ -187,15 +187,14 @@ object TypeCheckToMatchUtil {
       val asInstOfInGuard = findAsInstOfCalls(guardCond, isInstOf)
       val asInstOfEverywhere = asInstOfInBody ++ asInstOfInGuard
 
-      if (asInstOfInBody.count(checkAndStoreNameAndDef) == 0) {
+      if (asInstOfInBody.count(checkAndStoreNameAndDef) == 0)
         //no usage of asInstanceOf
-        if (asInstOfEverywhere.isEmpty) {
+        if (asInstOfEverywhere.isEmpty)
           buildCaseClauseText(
             "_ : " + typeName,
             guardCond,
             ifStmt.thenBranch,
             ifStmt.getProject)
-        }
         //no named usage
         else {
           val suggestedNames: Array[String] = NameSuggester.suggestNames(
@@ -224,7 +223,6 @@ object TypeCheckToMatchUtil {
             ifStmt.thenBranch,
             ifStmt.getProject)
         }
-      }
       //have named usage, use this name in case clause pattern definition
       else {
         //deleting unnecessary val declaration
@@ -282,7 +280,7 @@ object TypeCheckToMatchUtil {
       currentIfStmt: ScIfStmt,
       currentCall: ScGenericCall,
       onlyFirst: Boolean): List[(ScIfStmt, ScGenericCall)] = {
-    for (currentBase <- baseExpr(currentCall)) {
+    for (currentBase <- baseExpr(currentCall))
       currentIfStmt.elseBranch match {
         case Some(nextIfStmt: ScIfStmt) =>
           for {
@@ -290,16 +288,13 @@ object TypeCheckToMatchUtil {
             nextCall <- findIsInstanceOfCalls(nextCond, onlyFirst)
             nextBase <- baseExpr(nextCall)
             if equiv(currentBase, nextBase)
-          } {
-            return (currentIfStmt, currentCall) :: listOfIfAndIsInstOf(
-              nextIfStmt,
-              nextCall,
-              onlyFirst)
-          }
+          } return (currentIfStmt, currentCall) :: listOfIfAndIsInstOf(
+            nextIfStmt,
+            nextCall,
+            onlyFirst)
           return (currentIfStmt, currentCall) :: Nil
         case _ => return (currentIfStmt, currentCall) :: Nil
       }
-    }
     Nil
   }
 
@@ -320,9 +315,7 @@ object TypeCheckToMatchUtil {
         isInstOf(index),
         index,
         renameData)
-    } {
-      builder.append(text)
-    }
+    } builder.append(text)
 
     if (ifStmts != Nil) {
       val lastElse = ifStmts.last.elseBranch
@@ -338,7 +331,7 @@ object TypeCheckToMatchUtil {
   def findIsInstanceOfCalls(
       condition: ScExpression,
       onlyFirst: Boolean): List[ScGenericCall] =
-    if (onlyFirst) {
+    if (onlyFirst)
       condition match {
         case IsInstanceOfCall(call) => List(call)
         case infixExpr: ScInfixExpr if infixExpr.operation.refName == "&&" =>
@@ -347,11 +340,10 @@ object TypeCheckToMatchUtil {
           findIsInstanceOfCalls(parenth.expr.orNull, onlyFirst)
         case _ => Nil
       }
-    } else {
+    else
       separateConditions(condition).collect {
         case IsInstanceOfCall(call) => call
       }
-    }
 
   def findAsInstOfCalls(
       body: Option[ScExpression],
@@ -392,9 +384,7 @@ object TypeCheckToMatchUtil {
           if isAsInstOfCall(call)
           if equalTypes(call, isInstOfCall)
           if equiv(base1, base2)
-        } {
-          result += call
-        }
+        } result += call
         super.visitGenericCallExpression(call)
       }
     }
@@ -431,10 +421,9 @@ object TypeCheckToMatchUtil {
 
       val referenceVisitor = new ScalaRecursiveElementVisitor() {
         override def visitReferenceExpression(ref: ScReferenceExpression) {
-          for (prim <- primary) {
+          for (prim <- primary)
             if (ref.refName == name && ref.resolve() == prim)
               dependents += ref
-          }
           super.visitReferenceExpression(ref)
         }
       }

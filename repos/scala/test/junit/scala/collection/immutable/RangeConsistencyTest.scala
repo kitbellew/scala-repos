@@ -36,11 +36,10 @@ class RangeConsistencyTest {
     def NR(s: T, e: T, i: T) = {
       val delta = (bi(e) - bi(s)).abs - (if (r.isInclusive) 0 else 1)
       val n = if (r.length == 0) BigInt(0) else delta / bi(i).abs + 1
-      if (r.isInclusive) {
+      if (r.isInclusive)
         (n, Try(NumericRange.inclusive(s, e, i).length))
-      } else {
+      else
         (n, Try(NumericRange(s, e, i).length))
-      }
     }
 
     List(NR(start, end, step)) :::
@@ -54,7 +53,7 @@ class RangeConsistencyTest {
   @Test
   def rangeChurnTest() {
     val rn = new Random(4370)
-    for (i <- 0 to 10000) {
+    for (i <- 0 to 10000)
       control.Breaks.breakable {
         val start = rn.nextInt
         val end = rn.nextInt
@@ -68,9 +67,8 @@ class RangeConsistencyTest {
           if (rn.nextBoolean) Range.inclusive(start, end, step)
           else Range(start, end, step)
 
-        try {
-          r.length
-        } catch { case iae: IllegalArgumentException => control.Breaks.break }
+        try r.length
+        catch { case iae: IllegalArgumentException => control.Breaks.break }
 
         val lpuff = rn.nextInt(4) match {
           case 0 => 1L
@@ -126,7 +124,6 @@ class RangeConsistencyTest {
             )
         }
       }
-    }
   }
 
   @Test

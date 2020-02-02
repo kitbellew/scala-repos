@@ -61,7 +61,7 @@ object FileWatchService {
   private case object OSX extends OS
   private case object Other extends OS
 
-  private val os: OS = {
+  private val os: OS =
     sys.props
       .get("os.name")
       .map { name =>
@@ -73,7 +73,6 @@ object FileWatchService {
         }
       }
       .getOrElse(Other)
-  }
 
   def defaultWatchService(
       targetDirectory: File,
@@ -189,9 +188,8 @@ private object JNotifyFileWatchService {
         )
         .asInstanceOf[Int]
     def removeWatch(id: Int): Unit =
-      try {
-        removeWatchMethod.invoke(null, id.asInstanceOf[AnyRef])
-      } catch {
+      try removeWatchMethod.invoke(null, id.asInstanceOf[AnyRef])
+      catch {
         case _: Throwable =>
         // Ignore, if we fail to remove a watch it's not the end of the world.
         // http://sourceforge.net/p/jnotify/bugs/12/
@@ -236,13 +234,12 @@ private object JNotifyFileWatchService {
               val nativeLibrariesDirectory =
                 new File(targetDirectory, "native_libraries")
 
-              if (!nativeLibrariesDirectory.exists) {
+              if (!nativeLibrariesDirectory.exists)
                 // Unzip native libraries from the jnotify jar to target/native_libraries
                 IO.unzip(
                   jnotifyJarFile,
                   targetDirectory,
                   (name: String) => name.startsWith("native_libraries"))
-              }
 
               val libs = new File(
                 nativeLibrariesDirectory,
@@ -309,9 +306,9 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
 
   def watch(filesToWatch: Seq[File], onChange: () => Unit) = {
     val dirsToWatch = filesToWatch.filter { file =>
-      if (file.isDirectory) {
+      if (file.isDirectory)
         true
-      } else if (file.isFile) {
+      else if (file.isFile) {
         // JDK7 WatchService can't watch files
         logger.warn(
           "JDK7 WatchService only supports watching directories, but an attempt has been made to watch the file: " + file.getCanonicalPath)
@@ -340,37 +337,33 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
 
     val thread = new Thread(new Runnable {
       def run() =
-        try {
-          while (true) {
-            val watchKey = watcher.take()
+        try while (true) {
+          val watchKey = watcher.take()
 
-            val events = watchKey.pollEvents()
+          val events = watchKey.pollEvents()
 
-            import scala.collection.JavaConversions._
-            // If a directory has been created, we must watch it and its sub directories
-            events.foreach { event =>
-              if (event.kind == ENTRY_CREATE) {
-                val file = watchKey.watchable
-                  .asInstanceOf[Path]
-                  .resolve(event.context.asInstanceOf[Path])
-                  .toFile
+          import scala.collection.JavaConversions._
+          // If a directory has been created, we must watch it and its sub directories
+          events.foreach { event =>
+            if (event.kind == ENTRY_CREATE) {
+              val file = watchKey.watchable
+                .asInstanceOf[Path]
+                .resolve(event.context.asInstanceOf[Path])
+                .toFile
 
-                if (file.isDirectory) {
-                  allSubDirectories(Seq(file)).foreach(watchDir)
-                }
-              }
+              if (file.isDirectory)
+                allSubDirectories(Seq(file)).foreach(watchDir)
             }
-
-            onChange()
-
-            watchKey.reset()
           }
+
+          onChange()
+
+          watchKey.reset()
         } catch {
           case NonFatal(e) => // Do nothing, this means the watch service has been closed, or we've been interrupted.
-        } finally {
-          // Just in case it wasn't closed.
-          watcher.close()
-        }
+        } finally
+        // Just in case it wasn't closed.
+        watcher.close()
     }, "sbt-play-watch-service")
     thread.setDaemon(true)
     thread.start()
@@ -449,13 +442,12 @@ private[runsupport] object GlobalStaticVar {
         "get",
         Array.empty,
         Array.empty)
-      if (ct.runtimeClass.isInstance(value)) {
+      if (ct.runtimeClass.isInstance(value))
         Some(value.asInstanceOf[T])
-      } else {
+      else
         throw new ClassCastException(
           s"Global static var $name is not an instance of ${ct.runtimeClass}, but is actually a ${Option(
             value).fold("null")(_.getClass.getName)}")
-      }
     } catch {
       case e: InstanceNotFoundException =>
         None
@@ -465,9 +457,9 @@ private[runsupport] object GlobalStaticVar {
     * Clear a global static variable with the given name.
     */
   def remove(name: String): Unit =
-    try {
-      ManagementFactory.getPlatformMBeanServer.unregisterMBean(objectName(name))
-    } catch {
+    try ManagementFactory.getPlatformMBeanServer.unregisterMBean(
+      objectName(name))
+    catch {
       case e: InstanceNotFoundException =>
     }
 }

@@ -37,11 +37,10 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
   def handleInsert(context: InsertionContext, item: LookupElement) {
     val editor = context.getEditor
     val document = editor.getDocument
-    if (context.getCompletionChar == '(') {
+    if (context.getCompletionChar == '(')
       context.setAddCompletionChar(false)
-    } else if (context.getCompletionChar == '[') {
+    else if (context.getCompletionChar == '[')
       context.setAddCompletionChar(false)
-    }
     val startOffset = context.getStartOffset
     val lookupStringLength = item.getLookupString.length
     var endOffset = startOffset + lookupStringLength
@@ -132,7 +131,7 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                     }
                   case _ => null
                 }
-                if (ref != null && !isRenamed) {
+                if (ref != null && !isRenamed)
                   if (item.prefixCompletion) {
                     val newRefText =
                       clazz.qualifiedName.split('.').takeRight(2).mkString(".")
@@ -143,10 +142,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                       .replace(newRef)
                       .asInstanceOf[ScStableCodeReferenceElement]
                     replaced.bindToElement(clazz)
-                  } else {
+                  } else
                     ref.bindToElement(clazz)
-                  }
-                }
               }
             case _ =>
           }
@@ -154,7 +151,7 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
         }
 
         if ((clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
-            clazz.hasModifierPropertyScala("abstract")) && !item.typeParametersProblem) {
+            clazz.hasModifierPropertyScala("abstract")) && !item.typeParametersProblem)
           context.setLaterRunnable(new Runnable {
             def run() {
               val file = context.getFile
@@ -174,7 +171,6 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
               }
             }
           })
-        }
       case _ =>
     }
   }

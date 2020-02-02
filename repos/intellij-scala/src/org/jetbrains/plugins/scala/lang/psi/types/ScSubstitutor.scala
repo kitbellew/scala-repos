@@ -63,9 +63,8 @@ class ScSubstitutor(
   private var myDependentMethodTypesFunDefined: Boolean = false
   private var myDependentMethodTypes: Map[Parameter, ScType] = null
   private def getDependentMethodTypes: Map[Parameter, ScType] = {
-    if (myDependentMethodTypes == null) {
+    if (myDependentMethodTypes == null)
       myDependentMethodTypes = myDependentMethodTypesFun()
-    }
     myDependentMethodTypes
   }
 
@@ -155,10 +154,9 @@ class ScSubstitutor(
   }
 
   def subst(t: ScType): ScType =
-    try {
-      if (follower != null) follower.subst(substInternal(t))
-      else substInternal(t)
-    } catch {
+    try if (follower != null) follower.subst(substInternal(t))
+    else substInternal(t)
+    catch {
       case s: StackOverflowError =>
         throw new RuntimeException(
           "StackOverFlow during ScSubstitutor.subst(" + t + ") this = " + this,
@@ -236,7 +234,7 @@ class ScSubstitutor(
         }
 
       override def visitDesignatorType(d: ScDesignatorType): Unit =
-        if (getDependentMethodTypes.nonEmpty) {
+        if (getDependentMethodTypes.nonEmpty)
           result = getDependentMethodTypes.find {
             case (parameter: Parameter, tp: ScType) =>
               parameter.paramInCode match {
@@ -247,7 +245,6 @@ class ScSubstitutor(
             case Some((_, res)) => res
             case _              => t
           }
-        }
 
       override def visitThisType(th: ScThisType): Unit = {
         val clazz = th.clazz
@@ -273,7 +270,7 @@ class ScSubstitutor(
                 case Some((t: ScTypeDefinition, subst)) =>
                   if (t == clazz) tp
                   else if (ScalaPsiUtil.cachedDeepIsInheritor(t, clazz)) tp
-                  else {
+                  else
                     t.selfType match {
                       case Some(selfType) =>
                         ScType.extractDesignated(
@@ -303,7 +300,6 @@ class ScSubstitutor(
                         }
                       case None => null
                     }
-                  }
                 case Some((cl: PsiClass, subst)) =>
                   typez match {
                     case t: ScTypeParameterType => return update(t.upper.v)
@@ -394,13 +390,12 @@ class ScSubstitutor(
           case tpt: ScTypeParameterType =>
             tvMap.get((tpt.name, tpt.getId)) match {
               case Some(param: ScParameterizedType) if pt != param =>
-                if (tpt.args.isEmpty) {
+                if (tpt.args.isEmpty)
                   substInternal(param) //to prevent types like T[A][A]
-                } else {
+                else
                   ScParameterizedType(
                     param.designator,
                     typeArgs.map(substInternal))
-                }
               case _ =>
                 substInternal(tpt) match {
                   case ScParameterizedType(des, _) =>
@@ -412,13 +407,12 @@ class ScSubstitutor(
           case u: ScUndefinedType =>
             tvMap.get((u.tpt.name, u.tpt.getId)) match {
               case Some(param: ScParameterizedType) if pt != param =>
-                if (u.tpt.args.isEmpty) {
+                if (u.tpt.args.isEmpty)
                   substInternal(param) //to prevent types like T[A][A]
-                } else {
+                else
                   ScParameterizedType(
                     param.designator,
                     typeArgs map substInternal)
-                }
               case _ =>
                 substInternal(u) match {
                   case ScParameterizedType(des, _) =>
@@ -430,13 +424,12 @@ class ScSubstitutor(
           case u: ScAbstractType =>
             tvMap.get((u.tpt.name, u.tpt.getId)) match {
               case Some(param: ScParameterizedType) if pt != param =>
-                if (u.tpt.args.isEmpty) {
+                if (u.tpt.args.isEmpty)
                   substInternal(param) //to prevent types like T[A][A]
-                } else {
+                else
                   ScParameterizedType(
                     param.designator,
                     typeArgs map substInternal)
-                }
               case _ =>
                 substInternal(u) match {
                   case ScParameterizedType(des, _) =>
@@ -566,27 +559,19 @@ class ScUndefinedSubstitutor(
   //todo: this is can be rewritten in more fast way
   def addSubst(subst: ScUndefinedSubstitutor): ScUndefinedSubstitutor = {
     var res: ScUndefinedSubstitutor = this
-    for ((name, seq) <- subst.upperMap) {
-      for (upper <- seq) {
+    for ((name, seq) <- subst.upperMap)
+      for (upper <- seq)
         res = res.addUpper(name, upper, variance = 0)
-      }
-    }
-    for ((name, seq) <- subst.lowerMap) {
-      for (lower <- seq) {
+    for ((name, seq) <- subst.lowerMap)
+      for (lower <- seq)
         res = res.addLower(name, lower, variance = 0)
-      }
-    }
 
-    for ((name, seq) <- subst.upperAdditionalMap) {
-      for (upper <- seq) {
+    for ((name, seq) <- subst.upperAdditionalMap)
+      for (upper <- seq)
         res = res.addUpper(name, upper, additional = true, variance = 0)
-      }
-    }
-    for ((name, seq) <- subst.lowerAdditionalMap) {
-      for (lower <- seq) {
+    for ((name, seq) <- subst.lowerAdditionalMap)
+      for (lower <- seq)
         res = res.addLower(name, lower, additional = true, variance = 0)
-      }
-    }
 
     res
   }
@@ -798,9 +783,8 @@ class ScUndefinedSubstitutor(
                   else ScSubstitutor.empty
                 var lower: ScType = Nothing
                 val setIterator = set.iterator
-                while (setIterator.hasNext) {
+                while (setIterator.hasNext)
                   lower = Bounds.lub(lower, subst.subst(setIterator.next()))
-                }
                 lMap += ((name, lower))
                 tvMap += ((name, lower))
               }
@@ -865,12 +849,11 @@ class ScUndefinedSubstitutor(
                 } else if (size > 1) {
                   var upper: ScType = Any
                   val setIterator = set.iterator
-                  while (setIterator.hasNext) {
+                  while (setIterator.hasNext)
                     upper = Bounds.glb(
                       upper,
                       subst.subst(setIterator.next()),
                       checkWeak = false)
-                  }
                   rType = upper
                   rMap += ((name, rType))
                 }
@@ -880,9 +863,8 @@ class ScUndefinedSubstitutor(
                       val seqIterator = set.iterator
                       while (seqIterator.hasNext) {
                         val upper = seqIterator.next()
-                        if (!lower.conforms(subst.subst(upper))) {
+                        if (!lower.conforms(subst.subst(upper)))
                           return None
-                        }
                       }
                     }
                   case None => tvMap += ((name, rType))
@@ -891,9 +873,8 @@ class ScUndefinedSubstitutor(
             case None =>
           }
 
-          if (tvMap.get(name).isEmpty) {
+          if (tvMap.get(name).isEmpty)
             tvMap += ((name, Nothing))
-          }
           tvMap.get(name)
       }
     }

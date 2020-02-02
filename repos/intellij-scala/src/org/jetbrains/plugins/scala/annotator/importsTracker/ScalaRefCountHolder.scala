@@ -69,18 +69,16 @@ class ScalaRefCountHolder private () {
       val iterator: java.util.Iterator[ImportUsed] = myImportUsed.iterator
       while (iterator.hasNext) {
         val ref: ImportUsed = iterator.next
-        if (!ref.e.isValid) {
+        if (!ref.e.isValid)
           iterator.remove()
-        }
       }
     }
     myValueUsed synchronized {
       val valuesIterator: java.util.Iterator[ValueUsed] = myValueUsed.iterator()
       while (valuesIterator.hasNext) {
         val ref: ValueUsed = valuesIterator.next
-        if (!ref.e.isValid) {
+        if (!ref.e.isValid)
           valuesIterator.remove()
-        }
       }
     }
   }
@@ -92,13 +90,11 @@ class ScalaRefCountHolder private () {
     myState.compareAndSet(State.READY, State.VIRGIN)
     if (!myState.compareAndSet(State.VIRGIN, State.WRITE)) return false
     try {
-      if (dirtyScope != null) {
-        if (dirtyScope.equals(file.getTextRange)) {
+      if (dirtyScope != null)
+        if (dirtyScope.equals(file.getTextRange))
           clear()
-        } else {
+        else
           removeInvalidRefs()
-        }
-      }
       analyze.run()
     } finally {
       val set: Boolean = myState.compareAndSet(State.WRITE, State.READY)
@@ -108,12 +104,10 @@ class ScalaRefCountHolder private () {
   }
 
   def retrieveUnusedReferencesInfo(analyze: Runnable): Boolean = {
-    if (!myState.compareAndSet(State.READY, State.READ)) {
+    if (!myState.compareAndSet(State.READY, State.READ))
       return false
-    }
-    try {
-      analyze.run()
-    } finally {
+    try analyze.run()
+    finally {
       val set: Boolean = myState.compareAndSet(State.READ, State.READY)
       assert(set, myState.get)
     }

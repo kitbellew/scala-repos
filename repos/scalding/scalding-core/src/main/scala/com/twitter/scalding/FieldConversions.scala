@@ -31,14 +31,12 @@ trait LowPriorityFieldConversions {
     case z: java.lang.Integer => z
     case v: Enumeration#Value => v.toString
     case fld: Field[_]        => fld.id
-    case flds: Fields => {
-      if (flds.size == 1) {
+    case flds: Fields =>
+      if (flds.size == 1)
         flds.get(0)
-      } else {
+      else
         throw new Exception(
           "Cannot convert Fields(" + flds.toString + ") to a single fields arg")
-      }
-    }
     case w =>
       throw new Exception(
         "Could not convert: " + w.toString + " to Fields argument")
@@ -89,16 +87,16 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * 4) Otherwise, ALL is used.
     */
   def defaultMode(fromFields: Fields, toFields: Fields): Fields =
-    if (toFields.isArguments) {
+    if (toFields.isArguments)
       //In this case we replace the input with the output
       Fields.REPLACE
-    } else if (fromFields.isAll && toFields.isAll) {
+    else if (fromFields.isAll && toFields.isAll)
       // if you go from all to all, you must mean replace (ALL would fail at the cascading layer)
       Fields.REPLACE
-    } else if (fromFields.size == 0) {
+    else if (fromFields.size == 0)
       //This is all the UNKNOWN, ALL, etc...
       Fields.ALL
-    } else {
+    else {
       val fromSet = asSet(fromFields)
       val toSet = asSet(toFields)
       (fromSet.subsetOf(toSet), toSet.subsetOf(fromSet)) match {
@@ -126,11 +124,10 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * '* means Fields.ALL, otherwise we take the .name
     */
   implicit def symbolToFields(x: Symbol) =
-    if (x == '*) {
+    if (x == '*)
       Fields.ALL
-    } else {
+    else
       new Fields(x.name)
-    }
   implicit def fieldToFields(f: Field[_]) = RichFields(f)
 
   @tailrec
@@ -138,18 +135,17 @@ trait FieldConversions extends LowPriorityFieldConversions {
       avoid: Set[Symbol],
       guess: Symbol,
       trial: Int = 0): Symbol =
-    if (!avoid(guess)) {
+    if (!avoid(guess))
       //We are good:
       guess
-    } else if (0 == trial) {
+    else if (0 == trial)
       newSymbol(avoid, guess, 1)
-    } else {
+    else {
       val newGuess = Symbol(guess.name + trial.toString)
-      if (!avoid(newGuess)) {
+      if (!avoid(newGuess))
         newGuess
-      } else {
+      else
         newSymbol(avoid, guess, trial + 1)
-      }
     }
 
   final def ensureUniqueFields(
@@ -158,9 +154,9 @@ trait FieldConversions extends LowPriorityFieldConversions {
       rightPipe: Pipe): (Fields, Pipe) = {
     val leftSet = asSet(left)
     val collisions = asSet(left) & asSet(right)
-    if (collisions.isEmpty) {
+    if (collisions.isEmpty)
       (right, rightPipe)
-    } else {
+    else {
       // Rename the collisions with random integer names:
       val leftSetSyms = leftSet.map { f => Symbol(f.toString) }
       val (_, reversedRename) = asList(right)
@@ -221,7 +217,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
     * in the Fields API.
     */
   implicit def fieldsToRichFields(fields: Fields): RichFields = {
-    if (!fields.isDefined) {
+    if (!fields.isDefined)
       // TODO We could provide a reasonable conversion here by designing a rich type hierarchy such as
       // Fields
       //   RichFieldSelector
@@ -231,7 +227,6 @@ trait FieldConversions extends LowPriorityFieldConversions {
       // etc., together with an implicit for converting a Fields instance to a RichFieldSelector
       // of the appropriate type
       sys.error("virtual Fields cannot be converted to RichFields")
-    }
 
     // This bit is kludgy because cascading provides different interfaces for extracting
     // IDs and Comparators from a Fields instance.  (The IDs are only available

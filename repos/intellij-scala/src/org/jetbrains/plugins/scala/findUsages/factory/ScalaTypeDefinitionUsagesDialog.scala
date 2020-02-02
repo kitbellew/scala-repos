@@ -46,19 +46,15 @@ class ScalaTypeDefinitionUsagesDialog(
   override def calcFindUsagesOptions(
       options: ScalaTypeDefinitionFindUsagesOptions) {
     super.calcFindUsagesOptions(options)
-    if (isToChange(myCbUsages)) {
+    if (isToChange(myCbUsages))
       options.isUsages = isSelected(myCbUsages)
-    }
-    if (isToChange(myCbMembersUsages)) {
+    if (isToChange(myCbMembersUsages))
       options.isMembersUsages = isSelected(myCbMembersUsages)
-    }
-    if (isToChange(myCbImplementingTypeDefinitions)) {
+    if (isToChange(myCbImplementingTypeDefinitions))
       options.isImplementingTypeDefinitions = isSelected(
         myCbImplementingTypeDefinitions)
-    }
-    if (isToChange(myCbCompanionModule)) {
+    if (isToChange(myCbCompanionModule))
       options.isSearchCompanionModule = isSelected(myCbCompanionModule)
-    }
     options.isSkipImportStatements = false
   }
 
@@ -96,20 +92,16 @@ class ScalaTypeDefinitionUsagesDialog(
   }
 
   protected override def update() {
-    if (myCbToSearchForTextOccurrences != null) {
-      if (isSelected(myCbUsages)) {
+    if (myCbToSearchForTextOccurrences != null)
+      if (isSelected(myCbUsages))
         myCbToSearchForTextOccurrences.makeSelectable()
-      } else {
+      else
         myCbToSearchForTextOccurrences.makeUnselectable(false)
-      }
-    }
-    if (myCbCompanionModule != null) {
-      if (isSelected(myCbUsages)) {
+    if (myCbCompanionModule != null)
+      if (isSelected(myCbUsages))
         myCbCompanionModule.makeSelectable()
-      } else {
+      else
         myCbCompanionModule.makeUnselectable(false)
-      }
-    }
     val hasSelected: Boolean =
       isSelected(myCbUsages) || isSelected(myCbMembersUsages) ||
         isSelected(myCbImplementingTypeDefinitions)

@@ -298,18 +298,16 @@ object EitherT extends EitherTInstances {
       implicit F: Applicative[F],
       nn: NotNothing[B],
       ex: ClassTag[B]): EitherT[F, B, A] =
-    try {
-      right(a)
-    } catch {
+    try right(a)
+    catch {
       case e if ex.runtimeClass.isInstance(e) =>
         left(F.point(e.asInstanceOf[B]))
     }
 
   def fromTryCatchNonFatal[F[_], A](a: => F[A])(
       implicit F: Applicative[F]): EitherT[F, Throwable, A] =
-    try {
-      right(a)
-    } catch {
+    try right(a)
+    catch {
       case NonFatal(t) => left(F.point(t))
     }
 

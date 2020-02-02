@@ -64,9 +64,8 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
           .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
           .toInt
         if (skippedStageIds.contains(stageId) && !g.rootCluster.name.contains(
-              "skipped")) {
+              "skipped"))
           g.rootCluster.setName(g.rootCluster.name + " (skipped)")
-        }
       }
       graphs
     }
@@ -102,11 +101,10 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
   override def onStageCompleted(
       stageCompleted: SparkListenerStageCompleted): Unit = synchronized {
     val stageId = stageCompleted.stageInfo.stageId
-    if (stageIdToJobId.contains(stageId)) {
+    if (stageIdToJobId.contains(stageId))
       // Note: Only do this if the stage has not already been cleaned up
       // Otherwise, we may never clean this stage from `completedStageIds`
       completedStageIds += stageCompleted.stageInfo.stageId
-    }
   }
 
   /** On job end, find all stages in this job that are skipped and mark them as such. */

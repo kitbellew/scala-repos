@@ -643,14 +643,14 @@ trait ProtoUser {
   }
 
   def logUserIn(who: TheUserType, postLogin: () => Nothing): Nothing =
-    if (destroySessionOnLogin) {
+    if (destroySessionOnLogin)
       S.session
         .openOrThrowException("we have a session here")
         .destroySessionAndContinueInNewSession { () =>
           logUserIn(who)
           postLogin()
         }
-    } else {
+    else {
       logUserIn(who)
       postLogin()
     }
@@ -778,12 +778,11 @@ trait ProtoUser {
       sendValidationEmail(theUser)
       S.notice(S.?("sign.up.message"))
       func()
-    } else {
+    } else
       logUserIn(theUser, () => {
         S.notice(S.?("welcome"))
         func()
       })
-    }
   }
 
   /**
@@ -899,12 +898,12 @@ trait ProtoUser {
   protected def capturePreLoginState(): () => Unit = () => {}
 
   def login = {
-    if (S.post_?) {
+    if (S.post_?)
       S.param("username")
         .flatMap(username => findUserByUserName(username)) match {
         case Full(user)
             if user.validated_? &&
-              user.testPassword(S.param("password")) => {
+              user.testPassword(S.param("password")) =>
           val preLoginState = capturePreLoginState()
           val redir = loginRedirect.get match {
             case Full(url) =>
@@ -921,14 +920,12 @@ trait ProtoUser {
 
             S.redirectTo(redir)
           })
-        }
 
         case Full(user) if !user.validated_? =>
           S.error(S.?("account.validation.error"))
 
         case _ => S.error(S.?("invalid.credentials"))
       }
-    }
 
     val emailElemId = nextFuncName
     S.appendJs(Focus(emailElemId))

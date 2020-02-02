@@ -66,9 +66,8 @@ trait FileDeclarationsHolder
           lastParent,
           place)) return false
 
-    if (context != null) {
+    if (context != null)
       return true
-    }
 
     if (ScalaPsiUtil.kindProjectorPluginEnabled(place)) {
       val manager = place.getManager
@@ -83,24 +82,22 @@ trait FileDeclarationsHolder
 
     place match {
       case ref: ScStableCodeReferenceElement
-          if ref.refName == "_root_" && ref.qualifier == None => {
+          if ref.refName == "_root_" && ref.qualifier == None =>
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(
               top,
               state.put(ResolverEnv.nameKey, "_root_"))) return false
         state.put(ResolverEnv.nameKey, null)
-      }
       case ref: ScReferenceExpressionImpl
-          if ref.refName == "_root_" && ref.qualifier == None => {
+          if ref.refName == "_root_" && ref.qualifier == None =>
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(
               top,
               state.put(ResolverEnv.nameKey, "_root_"))) return false
         state.put(ResolverEnv.nameKey, null)
-      }
-      case _ => {
+      case _ =>
         val defaultPackage = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (place != null && PsiTreeUtil.getParentOfType(
@@ -151,7 +148,6 @@ trait FileDeclarationsHolder
               return false
           }
         }
-      }
     }
 
     if (isScriptProcessed) {
@@ -286,11 +282,10 @@ trait FileDeclarationsHolder
       scope: GlobalSearchScope,
       objects: Seq[String]): Seq[PsiClass] = {
     val res = new ArrayBuffer[PsiClass]
-    for (obj <- objects) {
+    for (obj <- objects)
       res ++= ScalaPsiManager
         .instance(manager.getProject)
         .getCachedClasses(scope, obj)
-    }
     res.toSeq
   }
 

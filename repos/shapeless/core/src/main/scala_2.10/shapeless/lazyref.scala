@@ -48,21 +48,17 @@ object LazyMacrosRef {
     lmSym.attachments.all.headOption match {
       case Some(lm) =>
         if (lm == LazyMacrosRef) forward
-        else {
+        else
           lm.asInstanceOf[
               {
                 def mkLazyImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Lazy[I]]
               }
             ]
             .mkLazyImpl(c)(weakTypeTag[I])
-        }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)
-        try {
-          forward
-        } finally {
-          lmSym.removeAttachment[LazyMacrosRef.type]
-        }
+        try forward
+        finally lmSym.removeAttachment[LazyMacrosRef.type]
     }
   }
 
@@ -79,7 +75,7 @@ object LazyMacrosRef {
     lmSym.attachments.all.headOption match {
       case Some(lm) =>
         if (lm == LazyMacrosRef) forward
-        else {
+        else
           lm.asInstanceOf[
               {
                 def mkStrictImpl(c: Context)(
@@ -87,14 +83,10 @@ object LazyMacrosRef {
               }
             ]
             .mkStrictImpl(c)(weakTypeTag[I])
-        }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)
-        try {
-          forward
-        } finally {
-          lmSym.removeAttachment[LazyMacrosRef.type]
-        }
+        try forward
+        finally lmSym.removeAttachment[LazyMacrosRef.type]
     }
   }
 }

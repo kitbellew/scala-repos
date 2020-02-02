@@ -45,9 +45,8 @@ object NeedsToBeAbstract extends AnnotatorPart[ScTemplateDefinition] {
           annotation.registerFix(new AddModifierQuickFix(owner, "abstract"))
         case _ =>
       }
-      if (getMembersToImplement(definition).nonEmpty) {
+      if (getMembersToImplement(definition).nonEmpty)
         annotation.registerFix(new ImplementMethodsQuickFix(definition))
-      }
     }
   }
 

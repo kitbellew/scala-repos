@@ -33,8 +33,6 @@ class LoadedStatsReceiverTest extends FunSuite {
       assert(mem.counters(Seq("req")) == 1)
       assert(mem.counters(Seq("clnt", "req")) == 1)
       assert(mem.counters(Seq("srv", "req")) == 1)
-    } finally {
-      LoadedStatsReceiver.self = prev
-    }
+    } finally LoadedStatsReceiver.self = prev
   }
 }

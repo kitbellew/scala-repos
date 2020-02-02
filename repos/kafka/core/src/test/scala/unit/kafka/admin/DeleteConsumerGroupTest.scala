@@ -268,11 +268,10 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
       zkUtils.getConsumerPartitionOwnerPath(group, topic, partition),
       "")
     zkUtils.makeSurePersistentPathExists(dir.consumerRegistryDir)
-    if (registerConsumer) {
+    if (registerConsumer)
       zkUtils.createEphemeralPathExpectConflict(
         dir.consumerRegistryDir + "/" + consumerId,
         "")
-    }
   }
 
   private def groupDirExists(dir: ZKGroupDirs) =

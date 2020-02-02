@@ -71,54 +71,44 @@ object ActorModelSpec {
       context.dispatcher.asInstanceOf[MessageDispatcherInterceptor]
 
     def ack(): Unit =
-      if (!busy.switchOn(())) {
+      if (!busy.switchOn(()))
         throw new Exception("isolation violated")
-      } else {
+      else
         interceptor.getStats(self).msgsProcessed.incrementAndGet()
-      }
 
     override def postRestart(reason: Throwable) {
       interceptor.getStats(self).restarts.incrementAndGet()
     }
 
     def receive = {
-      case AwaitLatch(latch) ⇒ { ack(); latch.await(); busy.switchOff(()) }
-      case Meet(sign, wait) ⇒ {
+      case AwaitLatch(latch) ⇒ ack(); latch.await(); busy.switchOff(())
+      case Meet(sign, wait) ⇒
         ack(); sign.countDown(); wait.await(); busy.switchOff(())
-      }
-      case Wait(time) ⇒ { ack(); Thread.sleep(time); busy.switchOff(()) }
-      case WaitAck(time, l) ⇒ {
+      case Wait(time) ⇒ ack(); Thread.sleep(time); busy.switchOff(())
+      case WaitAck(time, l) ⇒
         ack(); Thread.sleep(time); l.countDown(); busy.switchOff(())
-      }
-      case Reply(msg) ⇒ { ack(); sender() ! msg; busy.switchOff(()) }
-      case TryReply(msg) ⇒ {
+      case Reply(msg) ⇒ ack(); sender() ! msg; busy.switchOff(())
+      case TryReply(msg) ⇒
         ack(); sender().tell(msg, null); busy.switchOff(())
-      }
-      case Forward(to, msg) ⇒ { ack(); to.forward(msg); busy.switchOff(()) }
-      case CountDown(latch) ⇒ { ack(); latch.countDown(); busy.switchOff(()) }
-      case Increment(count) ⇒ {
+      case Forward(to, msg) ⇒ ack(); to.forward(msg); busy.switchOff(())
+      case CountDown(latch) ⇒ ack(); latch.countDown(); busy.switchOff(())
+      case Increment(count) ⇒
         ack(); count.incrementAndGet(); busy.switchOff(())
-      }
-      case CountDownNStop(l) ⇒ {
+      case CountDownNStop(l) ⇒
         ack(); l.countDown(); context.stop(self); busy.switchOff(())
-      }
-      case Restart ⇒ {
+      case Restart ⇒
         ack(); busy.switchOff(()); throw new Exception("Restart requested")
-      }
-      case Interrupt ⇒ {
+      case Interrupt ⇒
         ack();
         sender() ! Status.Failure(
           new ActorInterruptedException(new InterruptedException("Ping!")));
         busy.switchOff(()); throw new InterruptedException("Ping!")
-      }
-      case InterruptNicely(msg) ⇒ {
+      case InterruptNicely(msg) ⇒
         ack(); sender() ! msg; busy.switchOff(());
         Thread.currentThread().interrupt()
-      }
-      case ThrowException(e: Throwable) ⇒ { ack(); busy.switchOff(()); throw e }
-      case DoubleStop ⇒ {
+      case ThrowException(e: Throwable) ⇒ ack(); busy.switchOff(()); throw e
+      case DoubleStop ⇒
         ack(); context.stop(self); context.stop(self); busy.switchOff
-      }
     }
   }
 
@@ -186,9 +176,8 @@ object ActorModelSpec {
       stops: Long = dispatcher.stops.get())(implicit system: ActorSystem) {
     val deadline =
       System.currentTimeMillis + dispatcher.shutdownTimeout.toMillis * 5
-    try {
-      await(deadline)(stops == dispatcher.stops.get)
-    } catch {
+    try await(deadline)(stops == dispatcher.stops.get)
+    catch {
       case e: Throwable ⇒
         system.eventStream.publish(
           Error(
@@ -380,13 +369,11 @@ abstract class ActorModelSpec(config: String)
       val counter = new CountDownLatch(200)
       val a = newTestActor(dispatcher.id)
 
-      for (i ← 1 to 10) {
+      for (i ← 1 to 10)
         spawn {
-          for (i ← 1 to 20) {
+          for (i ← 1 to 20)
             a ! WaitAck(1, counter)
-          }
         }
-      }
       assertCountDown(
         counter,
         3.seconds.dilated.toMillis,
@@ -474,12 +461,11 @@ abstract class ActorModelSpec(config: String)
               }(dispatcher)
           }).start()
           boss ! "run"
-          try {
-            assertCountDown(
-              cachedMessage.latch,
-              waitTime,
-              "Counting down from " + num)
-          } catch {
+          try assertCountDown(
+            cachedMessage.latch,
+            waitTime,
+            "Counting down from " + num)
+          catch {
             case e: Throwable ⇒
               dispatcher match {
                 case dispatcher: BalancingDispatcher ⇒

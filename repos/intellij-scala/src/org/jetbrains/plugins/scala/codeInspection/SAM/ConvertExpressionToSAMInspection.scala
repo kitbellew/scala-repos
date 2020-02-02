@@ -26,9 +26,8 @@ class ConvertExpressionToSAMInspection
   override def actionFor(
       holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case param: ScNewTemplateDefinition if ScalaPsiUtil.isSAMEnabled(param) =>
-      for (expected <- param.expectedTypes()) {
+      for (expected <- param.expectedTypes())
         inspectAccordingToExpectedType(expected, param, holder)
-      }
   }
 
   private def inspectAccordingToExpectedType(

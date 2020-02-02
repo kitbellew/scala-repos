@@ -119,12 +119,11 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
   override def toString: String = s"cast($child as ${dataType.simpleString})"
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (Cast.canCast(child.dataType, dataType)) {
+    if (Cast.canCast(child.dataType, dataType))
       TypeCheckResult.TypeCheckSuccess
-    } else {
+    else
       TypeCheckResult.TypeCheckFailure(
         s"cannot cast ${child.dataType} to $dataType")
-    }
 
   override def nullable: Boolean =
     Cast.forceNullable(child.dataType, dataType) || child.nullable
@@ -158,13 +157,13 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       buildCast[UTF8String](
         _,
         s =>
-          if (StringUtils.isTrueString(s)) {
+          if (StringUtils.isTrueString(s))
             true
-          } else if (StringUtils.isFalseString(s)) {
+          else if (StringUtils.isFalseString(s))
             false
-          } else {
+          else
             null
-          })
+      )
     case TimestampType =>
       buildCast[Long](_, t => t != 0)
     case DateType =>
@@ -350,9 +349,8 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       buildCast[UTF8String](
         _,
         s =>
-          try {
-            changePrecision(Decimal(new JavaBigDecimal(s.toString)), target)
-          } catch {
+          try changePrecision(Decimal(new JavaBigDecimal(s.toString)), target)
+          catch {
             case _: NumberFormatException => null
           })
     case BooleanType =>
@@ -375,11 +373,10 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           target)
     case x: FractionalType =>
       b =>
-        try {
-          changePrecision(
-            Decimal(x.fractional.asInstanceOf[Fractional[Any]].toDouble(b)),
-            target)
-        } catch {
+        try changePrecision(
+          Decimal(x.fractional.asInstanceOf[Fractional[Any]].toDouble(b)),
+          target)
+        catch {
           case _: NumberFormatException => null
         }
   }
@@ -436,11 +433,11 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
         array.foreach(
           fromType,
           (i, e) =>
-            if (e == null) {
+            if (e == null)
               values(i) = null
-            } else {
+            else
               values(i) = elementCast(e)
-            })
+        )
         new GenericArrayData(values)
       }
     )
@@ -998,7 +995,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
 
     val fieldsEvalCode = fieldsCasts.zipWithIndex
       .map {
-        case (cast, i) => {
+        case (cast, i) =>
           val fromFieldPrim = ctx.freshName("ffp")
           val fromFieldNull = ctx.freshName("ffn")
           val toFieldPrim = ctx.freshName("tfp")
@@ -1026,7 +1023,6 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
           }
         }
        """
-        }
       }
       .mkString("\n")
 

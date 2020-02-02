@@ -41,10 +41,9 @@ case class Binomial(n: Int, p: Double)(implicit rand: RandBasis = Rand)
     require(k >= 0)
     if (p == 0) logI(k == 0)
     else if (p == 1) logI(k == n)
-    else {
+    else
       lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1) + k * log(p) + (n - k) * log(
         1 - p)
-    }
   }
 
   // faster binomial from NR

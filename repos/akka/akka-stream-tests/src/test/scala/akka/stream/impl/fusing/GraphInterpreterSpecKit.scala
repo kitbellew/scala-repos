@@ -103,15 +103,13 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
           fuzzingMode = false,
           null)
 
-        for ((upstream, i) ← upstreams.zipWithIndex) {
+        for ((upstream, i) ← upstreams.zipWithIndex)
           _interpreter.attachUpstreamBoundary(i, upstream._1)
-        }
 
-        for ((downstream, i) ← downstreams.zipWithIndex) {
+        for ((downstream, i) ← downstreams.zipWithIndex)
           _interpreter.attachDownstreamBoundary(
             i + upstreams.size + connections.size,
             downstream._2)
-        }
 
         _interpreter.init(null)
       }

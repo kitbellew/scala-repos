@@ -70,7 +70,7 @@ class TimerBasedThrottlerSpec
       val echo = system.actorOf(TestActors.echoActorProps)
       val throttler = system.actorOf(
         Props(classOf[TimerBasedThrottler], 3 msgsPer (1.second.dilated)))
-      1 to 6 foreach { throttler ! _ }
+      1 to 6 foreach throttler ! _
       expectNoMsg(1 second)
       throttler ! SetTarget(Some(echo))
       within(2.5 seconds) {
@@ -83,7 +83,7 @@ class TimerBasedThrottlerSpec
       val throttler = system.actorOf(
         Props(classOf[TimerBasedThrottler], 3 msgsPer (1.second.dilated)))
       throttler ! SetTarget(Some(echo))
-      1 to 3 foreach { throttler ! _ }
+      1 to 3 foreach throttler ! _
       throttler ! SetTarget(None)
       within(1 second) {
         1 to 3 foreach { expectMsg(_) }
@@ -91,7 +91,7 @@ class TimerBasedThrottlerSpec
       }
       expectNoMsg(1 second)
       throttler ! SetTarget(Some(echo))
-      4 to 7 foreach { throttler ! _ }
+      4 to 7 foreach throttler ! _
       within(1.5 seconds) {
         4 to 7 foreach { expectMsg(_) }
       }
@@ -102,7 +102,7 @@ class TimerBasedThrottlerSpec
       val throttler = system.actorOf(
         Props(classOf[TimerBasedThrottler], 3 msgsPer (1.second.dilated)))
       throttler ! SetTarget(Some(echo))
-      1 to 7 foreach { throttler ! _ }
+      1 to 7 foreach throttler ! _
       throttler ! SetTarget(None)
       within(1 second) {
         1 to 3 foreach { expectMsg(_) }
@@ -120,7 +120,7 @@ class TimerBasedThrottlerSpec
       val throttler = system.actorOf(
         Props(classOf[TimerBasedThrottler], 3 msgsPer (1.second.dilated)))
       throttler ! SetTarget(Some(echo))
-      1 to 7 foreach { throttler ! _ }
+      1 to 7 foreach throttler ! _
       1 to 7 foreach { expectMsg(_) }
     }
 
@@ -129,7 +129,7 @@ class TimerBasedThrottlerSpec
       val throttler = system.actorOf(
         Props(classOf[TimerBasedThrottler], 4 msgsPer (1.second.dilated)))
       throttler ! SetTarget(Some(echo))
-      1 to 9 foreach { throttler ! _ }
+      1 to 9 foreach throttler ! _
       1 to 9 foreach { expectMsg(_) }
     }
   }

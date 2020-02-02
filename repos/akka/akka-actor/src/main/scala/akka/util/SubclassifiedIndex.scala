@@ -113,9 +113,9 @@ private[akka] class SubclassifiedIndex[K, V] private (
         n.innerAddKey(key)
       } else Nil
     }
-    if (!found) {
+    if (!found)
       integrate(new Nonroot(root, key, values)) :+ ((key, values))
-    } else ch
+    else ch
   }
 
   /**

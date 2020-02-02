@@ -48,24 +48,21 @@ private[sird] object QueryStringParameterMacros {
             )
         }
 
-        if (parts.length == 1) {
+        if (parts.length == 1)
           c.abort(
             c.enclosingPosition.withPoint(startOfString + paramName.length),
             "Unexpected end of String, expected parameter extractor, eg $extracted")
-        }
 
-        if (parts.length > 2) {
+        if (parts.length > 2)
           c.abort(
             c.enclosingPosition,
             "Query string extractor can only extract one parameter, extract multiple parameters using the & extractor, eg: " + name + "\"param1=$param1\" & " + name + "\"param2=$param2\""
           )
-        }
 
-        if (parts(1).nonEmpty) {
+        if (parts(1).nonEmpty)
           c.abort(
             c.enclosingPosition,
             s"Unexpected text at end of query string extractor: '${parts(1)}'")
-        }
 
         // Return AST that invokes the desired method to create the extractor on QueryStringParameterExtractor, passing
         // the parameter name to it

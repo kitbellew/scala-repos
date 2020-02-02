@@ -95,9 +95,8 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
           .getOrElse(sqlContext.emptyDataFrame)
 
         Some(new Batch(currentOffset, df))
-      } else {
+      } else
         None
-      }
     }
 
   override def toString: String = s"MemoryStream[${output.mkString(",")}]"

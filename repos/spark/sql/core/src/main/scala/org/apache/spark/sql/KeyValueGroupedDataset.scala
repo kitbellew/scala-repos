@@ -233,9 +233,8 @@ class KeyValueGroupedDataset[K, V] private[sql] (
     val keyColumn = if (resolvedKEncoder.flat) {
       assert(groupingAttributes.length == 1)
       groupingAttributes.head
-    } else {
+    } else
       Alias(CreateStruct(groupingAttributes), "key")()
-    }
     val aggregate =
       Aggregate(groupingAttributes, keyColumn +: namedColumns, logicalPlan)
     val execution = new QueryExecution(sqlContext, aggregate)

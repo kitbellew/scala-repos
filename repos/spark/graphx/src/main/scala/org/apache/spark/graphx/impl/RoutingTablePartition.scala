@@ -92,9 +92,8 @@ private[graphx] object RoutingTablePartition {
     val bitset = new BitSet(flags.size)
     var i = 0
     while (i < flags.size) {
-      if (flags(i)) {
+      if (flags(i))
         bitset.set(i)
-      }
       i += 1
     }
     bitset
@@ -136,10 +135,10 @@ private[graphx] class RoutingTablePartition(
       includeDst: Boolean)(f: VertexId => Unit) {
     val (vidsCandidate, srcVids, dstVids) = routingTable(pid)
     val size = vidsCandidate.length
-    if (includeSrc && includeDst) {
+    if (includeSrc && includeDst)
       // Avoid checks for performance
       vidsCandidate.iterator.foreach(f)
-    } else if (!includeSrc && !includeDst) {
+    else if (!includeSrc && !includeDst) {
       // Do nothing
     } else {
       val relevantVids = if (includeSrc) srcVids else dstVids

@@ -206,22 +206,20 @@ object Types {
         case (FloatType, DoubleType) => true
 
         case (ArrayType(lhsBase, lhsDims), ArrayType(rhsBase, rhsDims)) =>
-          if (lhsDims < rhsDims) {
+          if (lhsDims < rhsDims)
             false // because Array[A] </: Array[Array[A]]
-          } else if (lhsDims > rhsDims) {
+          else if (lhsDims > rhsDims)
             rhsBase == ObjectClass // because Array[Array[A]] <: Array[Object]
-          } else { // lhsDims == rhsDims
-            // lhsBase must be <: rhsBase
-            if (isPrimitiveClass(lhsBase) || isPrimitiveClass(rhsBase)) {
-              lhsBase == rhsBase
-            } else {
-              /* All things must be considered subclasses of Object for this
-               * purpose, even raw JS types and interfaces, which do not have
-               * Object in their ancestors.
-               */
-              rhsBase == ObjectClass || isSubclass(lhsBase, rhsBase)
-            }
-          }
+          else // lhsDims == rhsDims
+          // lhsBase must be <: rhsBase
+          if (isPrimitiveClass(lhsBase) || isPrimitiveClass(rhsBase))
+            lhsBase == rhsBase
+          else
+            /* All things must be considered subclasses of Object for this
+             * purpose, even raw JS types and interfaces, which do not have
+             * Object in their ancestors.
+             */
+            rhsBase == ObjectClass || isSubclass(lhsBase, rhsBase)
 
         case (ArrayType(_, _), ClassType(cls)) =>
           AncestorsOfPseudoArrayClass.contains(cls)

@@ -86,9 +86,8 @@ class AnalyticsTask(settings: Settings)
             JParser.parseFromString(Http(res OK as.String)()).valueOr(throw _)
           val mean = (json \ "data")(0).deserialize[Double]
           mean must_== 3.0
-        } else {
+        } else
           str must_!= ""
-        }
       }
     }
   }

@@ -64,18 +64,14 @@ private[spark] class IndexShuffleBlockResolver(
     * */
   def removeDataByMap(shuffleId: Int, mapId: Int): Unit = {
     var file = getDataFile(shuffleId, mapId)
-    if (file.exists()) {
-      if (!file.delete()) {
+    if (file.exists())
+      if (!file.delete())
         logWarning(s"Error deleting data ${file.getPath()}")
-      }
-    }
 
     file = getIndexFile(shuffleId, mapId)
-    if (file.exists()) {
-      if (!file.delete()) {
+    if (file.exists())
+      if (!file.delete())
         logWarning(s"Error deleting index ${file.getPath()}")
-      }
-    }
   }
 
   /**
@@ -87,24 +83,22 @@ private[spark] class IndexShuffleBlockResolver(
       data: File,
       blocks: Int): Array[Long] = {
     // the index file should have `block + 1` longs as offset.
-    if (index.length() != (blocks + 1) * 8) {
+    if (index.length() != (blocks + 1) * 8)
       return null
-    }
     val lengths = new Array[Long](blocks)
     // Read the lengths of blocks
     val in =
-      try {
-        new DataInputStream(new BufferedInputStream(new FileInputStream(index)))
-      } catch {
+      try new DataInputStream(
+        new BufferedInputStream(new FileInputStream(index)))
+      catch {
         case e: IOException =>
           return null
       }
     try {
       // Convert the offsets into lengths of each block
       var offset = in.readLong()
-      if (offset != 0L) {
+      if (offset != 0L)
         return null
-      }
       var i = 0
       while (i < blocks) {
         val off = in.readLong()
@@ -115,16 +109,13 @@ private[spark] class IndexShuffleBlockResolver(
     } catch {
       case e: IOException =>
         return null
-    } finally {
-      in.close()
-    }
+    } finally in.close()
 
     // the size of data file should match with index file
-    if (data.length() == lengths.sum) {
+    if (data.length() == lengths.sum)
       lengths
-    } else {
+    else
       null
-    }
   }
 
   /**
@@ -168,28 +159,23 @@ private[spark] class IndexShuffleBlockResolver(
         // Another attempt for the same task has already written our map outputs successfully,
         // so just use the existing partition lengths and delete our temporary map outputs.
         System.arraycopy(existingLengths, 0, lengths, 0, lengths.length)
-        if (dataTmp != null && dataTmp.exists()) {
+        if (dataTmp != null && dataTmp.exists())
           dataTmp.delete()
-        }
         indexTmp.delete()
       } else {
         // This is the first successful attempt in writing the map outputs for this task,
         // so override any existing index and data files with the ones we wrote.
-        if (indexFile.exists()) {
+        if (indexFile.exists())
           indexFile.delete()
-        }
-        if (dataFile.exists()) {
+        if (dataFile.exists())
           dataFile.delete()
-        }
-        if (!indexTmp.renameTo(indexFile)) {
+        if (!indexTmp.renameTo(indexFile))
           throw new IOException(
             "fail to rename file " + indexTmp + " to " + indexFile)
-        }
         if (dataTmp != null && dataTmp
-              .exists() && !dataTmp.renameTo(dataFile)) {
+              .exists() && !dataTmp.renameTo(dataFile))
           throw new IOException(
             "fail to rename file " + dataTmp + " to " + dataFile)
-        }
       }
     }
   }
@@ -209,9 +195,7 @@ private[spark] class IndexShuffleBlockResolver(
         getDataFile(blockId.shuffleId, blockId.mapId),
         offset,
         nextOffset - offset)
-    } finally {
-      in.close()
-    }
+    } finally in.close()
   }
 
   override def stop(): Unit = {}

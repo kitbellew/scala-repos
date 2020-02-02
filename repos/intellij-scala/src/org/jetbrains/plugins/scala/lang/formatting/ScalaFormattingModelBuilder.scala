@@ -59,16 +59,14 @@ object ScalaFormattingModelBuilder {
         textRange: TextRange,
         whiteSpace: String,
         leafElement: ASTNode): String = {
-      if (!myCanModifyAllWhiteSpaces) {
+      if (!myCanModifyAllWhiteSpaces)
         if (ScalaTokenTypes.WHITES_SPACES_FOR_FORMATTER_TOKEN_SET.contains(
               leafElement.getElementType)) return null
-      }
       var elementTypeToUse: IElementType = TokenType.WHITE_SPACE
       val prevNode: ASTNode = TreeUtil.prevLeaf(leafElement)
       if (prevNode != null && ScalaTokenTypes.WHITES_SPACES_FOR_FORMATTER_TOKEN_SET
-            .contains(prevNode.getElementType)) {
+            .contains(prevNode.getElementType))
         elementTypeToUse = prevNode.getElementType
-      }
       com.intellij.psi.formatter.FormatterUtil
         .replaceWhiteSpace(whiteSpace, leafElement, elementTypeToUse, textRange)
       whiteSpace

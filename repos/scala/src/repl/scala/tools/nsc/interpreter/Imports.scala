@@ -194,7 +194,7 @@ trait Imports {
             currentImps ++= x.importedNames
 
           case x if isClassBased =>
-            for (imv <- x.definedNames) {
+            for (imv <- x.definedNames)
               if (!currentImps.contains(imv)) {
                 x match {
                   case _: ClassHandler =>
@@ -210,7 +210,6 @@ trait Imports {
                 }
                 currentImps += imv
               }
-            }
           // For other requests, import each defined name.
           // import them explicitly instead of with _, so that
           // ambiguity errors will not be generated. Also, quote

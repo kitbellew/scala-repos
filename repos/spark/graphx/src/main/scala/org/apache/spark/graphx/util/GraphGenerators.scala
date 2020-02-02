@@ -151,15 +151,13 @@ object GraphGenerators extends Logging {
       .toInt
     val numEdgesUpperBound =
       math.pow(2.0, 2 * ((math.log(numVertices) / math.log(2.0)) - 1)).toInt
-    if (numEdgesUpperBound < numEdges) {
+    if (numEdgesUpperBound < numEdges)
       throw new IllegalArgumentException(
         s"numEdges must be <= $numEdgesUpperBound but was $numEdges")
-    }
     var edges: Set[Edge[Int]] = Set()
     while (edges.size < numEdges) {
-      if (edges.size % 100 == 0) {
+      if (edges.size % 100 == 0)
         logDebug(edges.size + " edges")
-      }
       edges += addEdge(numVertices)
     }
     outDegreeFromEdges(sc.parallelize(edges.toList))
@@ -220,9 +218,9 @@ object GraphGenerators extends Logging {
     */
   @tailrec
   private def chooseCell(x: Int, y: Int, t: Int): (Int, Int) =
-    if (t <= 1) {
+    if (t <= 1)
       (x, y)
-    } else {
+    else {
       val newT = math.round(t.toFloat / 2.0).toInt
       pickQuadrant(RMATa, RMATb, RMATc, RMATd) match {
         case 0 => chooseCell(x, y, newT)
@@ -234,11 +232,10 @@ object GraphGenerators extends Logging {
 
   // TODO(crankshaw) turn result into an enum (or case class for pattern matching}
   private def pickQuadrant(a: Double, b: Double, c: Double, d: Double): Int = {
-    if (a + b + c + d != 1.0) {
+    if (a + b + c + d != 1.0)
       throw new IllegalArgumentException(
         "R-MAT probability parameters sum to " + (a + b + c + d)
           + ", should sum to 1.0")
-    }
     val rand = new Random()
     val result = rand.nextDouble()
     result match {
@@ -276,16 +273,14 @@ object GraphGenerators extends Logging {
       vertices
         .flatMap {
           case (vid, (r, c)) =>
-            (if (r + 1 < rows) {
+            (if (r + 1 < rows)
                Seq((sub2ind(r, c), sub2ind(r + 1, c)))
-             } else {
-               Seq.empty
-             }) ++
-              (if (c + 1 < cols) {
+             else
+               Seq.empty) ++
+              (if (c + 1 < cols)
                  Seq((sub2ind(r, c), sub2ind(r, c + 1)))
-               } else {
-                 Seq.empty
-               })
+               else
+                 Seq.empty)
         }
         .map { case (src, dst) => Edge(src, dst, 1.0) }
     Graph(vertices, edges)

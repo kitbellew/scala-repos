@@ -112,9 +112,8 @@ object SliceVector {
       : CanTransformValues[SliceVector[K, V], V] =
     new CanTransformValues[SliceVector[K, V], V] {
       def transform(from: SliceVector[K, V], fn: (V) => V) {
-        for (i <- 0 until from.length) {
+        for (i <- 0 until from.length)
           from(i) = fn(from(i))
-        }
       }
 
       def transformActive(from: SliceVector[K, V], fn: (V) => V) {

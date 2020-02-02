@@ -103,7 +103,7 @@ class WorksheetEditorPrinter(
     if (!isInsideOutput && line.trim.length == 0) {
       outputBuffer append line
       totalCount += 1
-    } else if (isResultEnd(line)) {
+    } else if (isResultEnd(line))
       WorksheetSourceProcessor extractLineInfoFrom line match {
         case Some((start, end)) =>
           if (!inited) {
@@ -118,9 +118,9 @@ class WorksheetEditorPrinter(
 
           val differ = end - start + 1 - linesCount
 
-          if (differ > 0) {
+          if (differ > 0)
             outputBuffer append getNewLines(differ)
-          } else if (0 > differ) {
+          else if (0 > differ) {
             insertedToOriginal -= differ
 
             foldingOffsets += (
@@ -139,8 +139,7 @@ class WorksheetEditorPrinter(
           clear()
         case _ =>
       }
-
-    } else if (!cutoffPrinted) {
+    else if (!cutoffPrinted) {
       linesCount += 1
       totalCount += 1
 
@@ -338,7 +337,7 @@ class WorksheetEditorPrinter(
     if (total >= linesOld || text.length >= viewerDocument.getTextLength) {
       document setText text
       commitDocument(document)
-    } else {
+    } else
       CommandProcessor
         .getInstance()
         .executeCommand(
@@ -360,7 +359,6 @@ class WorksheetEditorPrinter(
           null,
           null
         )
-    }
   }
 
   object TimerListener extends ActionListener {
@@ -505,9 +503,8 @@ object WorksheetEditorPrinter {
     val ratio =
       FileAttributeUtilCache.readAttribute(LAST_WORKSHEET_RUN_RATIO, file) map {
         case rr =>
-          try {
-            java.lang.Float.parseFloat(rr)
-          } catch {
+          try java.lang.Float.parseFloat(rr)
+          catch {
             case _: NumberFormatException => 0.5f
           }
       } getOrElse 0.5f

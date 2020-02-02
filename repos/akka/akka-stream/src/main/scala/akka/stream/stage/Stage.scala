@@ -65,9 +65,8 @@ private[stream] object AbstractStage {
       // No need to refer to the handle in a private val
       val handler = new InHandler with OutHandler {
         override def onPush(): Unit =
-          try {
-            currentStage.onPush(grab(shape.in), ctx)
-          } catch { case NonFatal(ex) ⇒ onSupervision(ex) }
+          try currentStage.onPush(grab(shape.in), ctx)
+          catch { case NonFatal(ex) ⇒ onSupervision(ex) }
 
         override def onPull(): Unit = currentStage.onPull(ctx)
 
@@ -632,10 +631,10 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
   final def terminationEmit(
       iter: Iterator[Out],
       ctx: Context[Out]): TerminationDirective =
-    if (iter.isEmpty) {
+    if (iter.isEmpty)
       if (emitting) ctx.absorbTermination()
       else ctx.finish()
-    } else {
+    else {
       val nextState = current match {
         case es: EmittingState if emitting ⇒ es.copy(iter = es.iter ++ iter)
         case _ ⇒ emittingState(iter, andThen = Finish)

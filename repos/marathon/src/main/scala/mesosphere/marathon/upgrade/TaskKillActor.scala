@@ -23,9 +23,8 @@ class TaskKillActor(
 
   def initializeStop(): Unit = {
     log.info(s"Killing ${tasksToKill.size} instances")
-    for (taskId <- tasksToKill) {
+    for (taskId <- tasksToKill)
       driver.killTask(taskId.mesosTaskId)
-    }
   }
 }
 

@@ -80,9 +80,7 @@ private final class InfoChecker(
     for {
       (id, actualMethodInfo) <- actualMethods
       expectedMethodInfo <- expectedMethods.get(id)
-    } {
-      checkMethodInfo(className, actualMethodInfo, expectedMethodInfo)
-    }
+    } checkMethodInfo(className, actualMethodInfo, expectedMethodInfo)
   }
 
   private def checkMethodInfo(

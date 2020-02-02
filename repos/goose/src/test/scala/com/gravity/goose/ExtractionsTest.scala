@@ -177,11 +177,10 @@ class ExtractionsTest {
     assertNotNull("Tags should not be NULL!", article.tags)
     assertTrue("Tags should not be empty!", article.tags.size > 0)
 
-    for (actualTag <- article.tags) {
+    for (actualTag <- article.tags)
       assertTrue(
         "Each Tag should be contained in the expected set!",
         expectedTags.contains(actualTag))
-    }
   }
   @Test
   def wallStreetJournal() {

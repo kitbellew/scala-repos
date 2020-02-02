@@ -192,9 +192,8 @@ private[scala] class SerializedExpr(
   @throws(classOf[ObjectStreamException])
   private def readResolve(): AnyRef = {
     val loader: ClassLoader =
-      try {
-        Thread.currentThread().getContextClassLoader()
-      } catch {
+      try Thread.currentThread().getContextClassLoader()
+      catch {
         case se: SecurityException => null
       }
     val m = runtimeMirror(loader)

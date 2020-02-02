@@ -30,9 +30,9 @@ object StackTrace {
     *  by `extract()` to create an Array[StackTraceElement].
     */
   @inline def captureState(throwable: Throwable): Unit =
-    if (js.isUndefined(js.constructorOf[js.Error].captureStackTrace)) {
+    if (js.isUndefined(js.constructorOf[js.Error].captureStackTrace))
       captureState(throwable, createException())
-    } else {
+    else {
       /* V8-specific.
        * The Error.captureStackTrace(e) method records the current stack trace
        * on `e` as would do `new Error()`, thereby turning `e` into a proper
@@ -47,10 +47,10 @@ object StackTrace {
 
   /** Creates a JS Error with the current stack trace state. */
   @inline private def createException(): Any =
-    try {
-      // Intentionally throw a JavaScript error
-      new js.Object().asInstanceOf[js.Dynamic].undef()
-    } catch {
+    try
+    // Intentionally throw a JavaScript error
+    new js.Object().asInstanceOf[js.Dynamic].undef()
+    catch {
       case js.JavaScriptException(e) => e
     }
 
@@ -129,10 +129,9 @@ object StackTrace {
                 methodName,
                 mtch2(2).get,
                 mtch2(3).get.toInt))
-          } else {
+          } else
             // just in case
             trace.push(JSStackTraceElem("<jscode>", line, null, -1))
-          }
         }
       }
       i += 1
@@ -211,9 +210,8 @@ object StackTrace {
         else
           decodeMethodName(mtch(2).get)
       (className, methodName)
-    } else {
+    } else
       ("<jscode>", functionName)
-    }
   }
 
   // decodeClassName -----------------------------------------------------------
@@ -224,24 +222,24 @@ object StackTrace {
     val encoded =
       if (encodedName.charAt(0) == '$') encodedName.substring(1)
       else encodedName
-    val base = if (decompressedClasses.contains(encoded)) {
-      decompressedClasses(encoded)
-    } else {
-      @tailrec
-      def loop(i: Int): String =
-        if (i < compressedPrefixes.length) {
-          val prefix = compressedPrefixes(i)
-          if (encoded.startsWith(prefix))
-            decompressedPrefixes(prefix) + encoded.substring(prefix.length)
-          else
-            loop(i + 1)
-        } else {
+    val base =
+      if (decompressedClasses.contains(encoded))
+        decompressedClasses(encoded)
+      else {
+        @tailrec
+        def loop(i: Int): String =
+          if (i < compressedPrefixes.length) {
+            val prefix = compressedPrefixes(i)
+            if (encoded.startsWith(prefix))
+              decompressedPrefixes(prefix) + encoded.substring(prefix.length)
+            else
+              loop(i + 1)
+          } else
           // no prefix matches
           if (encoded.startsWith("L")) encoded.substring(1)
           else encoded // just in case
-        }
-      loop(0)
-    }
+        loop(0)
+      }
     base.replace("_", ".").replace("$und", "_")
   }
 
@@ -294,9 +292,9 @@ object StackTrace {
   // end of decodeClassName ----------------------------------------------------
 
   private def decodeMethodName(encodedName: String): String =
-    if (encodedName startsWith "init___") {
+    if (encodedName startsWith "init___")
       "<init>"
-    } else {
+    else {
       val methodNameLen = encodedName.indexOf("__")
       if (methodNameLen < 0) encodedName
       else encodedName.substring(0, methodNameLen)
@@ -341,46 +339,43 @@ object StackTrace {
     @inline def `opera#sourceloc` = e.`opera#sourceloc`
     @inline def stacktrace = e.stacktrace
 
-    if (!e) {
+    if (!e)
       js.Array[String]()
-    } else if (isRhino) {
+    else if (isRhino)
       extractRhino(e)
-    } else if (arguments && stack) {
+    else if (arguments && stack)
       extractChrome(e)
-    } else if (stack && sourceURL) {
+    else if (stack && sourceURL)
       extractSafari(e)
-    } else if (stack && number) {
+    else if (stack && number)
       extractIE(e)
-    } else if (stack && fileName) {
+    else if (stack && fileName)
       extractFirefox(e)
-    } else if (message && `opera#sourceloc`) {
+    else if (message && `opera#sourceloc`) {
       // e.message.indexOf("Backtrace:") > -1 -> opera9
       // 'opera#sourceloc' in e -> opera9, opera10a
       // !e.stacktrace -> opera9
       @inline def messageIsLongerThanStacktrace =
         message.split("\n").length > stacktrace.split("\n").length
-      if (!stacktrace) {
+      if (!stacktrace)
         extractOpera9(e) // use e.message
-      } else if ((message.indexOf("\n") > -1) && messageIsLongerThanStacktrace) {
+      else if ((message.indexOf("\n") > -1) && messageIsLongerThanStacktrace)
         // e.message may have more stack entries than e.stacktrace
         extractOpera9(e) // use e.message
-      } else {
+      else
         extractOpera10a(e) // use e.stacktrace
-      }
-    } else if (message && stack && stacktrace) {
+    } else if (message && stack && stacktrace)
       // stacktrace && stack -> opera10b
-      if (stacktrace.indexOf("called from line") < 0) {
+      if (stacktrace.indexOf("called from line") < 0)
         extractOpera10b(e)
-      } else {
+      else
         extractOpera11(e)
-      }
-    } else if (stack && !fileName) {
+    else if (stack && !fileName)
       /* Chrome 27 does not have e.arguments as earlier versions,
        * but still does not have e.fileName as Firefox */
       extractChrome(e)
-    } else {
+    else
       extractOther(e)
-    }
   }
 
   private def extractRhino(e: js.Dynamic): js.Array[String] =
@@ -454,11 +449,10 @@ object StackTrace {
     val len = lines.length.toInt
     while (i < len) {
       val mtch = lineRE.exec(lines(i))
-      if (mtch ne null) {
+      if (mtch ne null)
         result.push(
           "{anonymous}()@" + mtch(2).get + ":" + mtch(1).get
           /* + " -- " + lines(i+1).replace("""^\s+""".re, "") */ )
-      }
       i += 2
     }
 

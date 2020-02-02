@@ -206,13 +206,12 @@ class FileSourceStrategySuite
       name: String,
       arg: LastArguments.type => T,
       expected: T): Unit =
-    if (arg(LastArguments) != expected) {
+    if (arg(LastArguments) != expected)
       fail(s"""
            |Wrong $name
            |expected: $expected
            |actual: ${arg(LastArguments)}
          """.stripMargin)
-    }
 
   /** Returns a resolved expression for `str` in the context of `df`. */
   def resolve(df: DataFrame, str: String): Expression =
@@ -267,9 +266,8 @@ class FileSourceStrategySuite
             Some(BucketSpec(numBuckets = buckets, "c1" :: Nil, Nil))))
       }
       Dataset.newDataFrame(sqlContext, bucketed)
-    } else {
+    } else
       df
-    }
   }
 }
 
@@ -337,6 +335,6 @@ class TestFileFormat extends FileFormat {
     LastArguments.filters = filters
     LastArguments.options = options
 
-    (file: PartitionedFile) => { Iterator.empty }
+    (file: PartitionedFile) => Iterator.empty
   }
 }

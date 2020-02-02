@@ -71,9 +71,8 @@ private[ml] trait ValidatorParams extends Params {
       s"Validator requires non-empty estimatorParamMaps")
     val firstEstimatorParamMap = $(estimatorParamMaps).head
     val est = $(estimator)
-    for (paramMap <- $(estimatorParamMaps).tail) {
+    for (paramMap <- $(estimatorParamMaps).tail)
       est.copy(paramMap).transformSchema(schema)
-    }
     est.copy(firstEstimatorParamMap).transformSchema(schema)
   }
 }

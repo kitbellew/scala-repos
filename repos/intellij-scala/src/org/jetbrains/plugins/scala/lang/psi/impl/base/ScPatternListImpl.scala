@@ -32,19 +32,17 @@ class ScPatternListImpl private (
 
   def patterns: Seq[ScPattern] = {
     val stub = getStub
-    if (stub != null && allPatternsSimple) {
+    if (stub != null && allPatternsSimple)
       return stub.getChildrenByType(
         ScalaElementTypes.REFERENCE_PATTERN,
         JavaArrayFactoryUtil.ScReferencePatternFactory)
-    }
     findChildrenByClass[ScPattern](classOf[ScPattern])
   }
 
   def allPatternsSimple: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScPatternListStub].allPatternsSimple
-    }
     !patterns.exists(p => !(p.isInstanceOf[ScReferencePattern]))
   }
 }

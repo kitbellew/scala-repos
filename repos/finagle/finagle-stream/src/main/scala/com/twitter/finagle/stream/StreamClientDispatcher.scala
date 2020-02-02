@@ -57,14 +57,13 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
               val content = httpRes.getContent
               if (content.readable) out ! ChannelBufferBuf.Owned(content)
               done.setDone()
-            } else {
+            } else
               readChunks(out) respond {
                 case Return(_) | Throw(_: ChannelClosedException) =>
                   err ! EOF
                 case Throw(exc) =>
                   err ! exc
               } ensure done.setDone()
-            }
 
             val res = new StreamResponse {
               val info = from(httpRes)

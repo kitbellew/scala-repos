@@ -40,7 +40,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
   private val progressListener = parent.progressListener
   private val operationGraphListener = parent.operationGraphListener
 
-  private val TIMELINE_LEGEND = {
+  private val TIMELINE_LEGEND =
     <div class="legend-area">
       <svg>
         {
@@ -66,7 +66,6 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
     }
       </svg>
     </div>
-  }
 
   // TODO: We should consider increasing the number of this parameter over time
   // if we find that it's okay.
@@ -169,27 +168,25 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               {getLocalitySummaryString(stageData)}
             </li>
             {
-          if (stageData.hasInput) {
+          if (stageData.hasInput)
             <li>
                 <strong>Input Size / Records: </strong>
                 {
               s"${Utils.bytesToString(stageData.inputBytes)} / ${stageData.inputRecords}"
             }
               </li>
-          }
         }
             {
-          if (stageData.hasOutput) {
+          if (stageData.hasOutput)
             <li>
                 <strong>Output: </strong>
                 {
               s"${Utils.bytesToString(stageData.outputBytes)} / ${stageData.outputRecords}"
             }
               </li>
-          }
         }
             {
-          if (stageData.hasShuffleRead) {
+          if (stageData.hasShuffleRead)
             <li>
                 <strong>Shuffle Read: </strong>
                 {
@@ -197,10 +194,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                 s"${stageData.shuffleReadRecords}"
             }
               </li>
-          }
         }
             {
-          if (stageData.hasShuffleWrite) {
+          if (stageData.hasShuffleWrite)
             <li>
                 <strong>Shuffle Write: </strong>
                  {
@@ -208,10 +204,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                 s"${stageData.shuffleWriteRecords}"
             }
               </li>
-          }
         }
             {
-          if (stageData.hasBytesSpilled) {
+          if (stageData.hasBytesSpilled)
             <li>
                 <strong>Shuffle Spill (Memory): </strong>
                 {Utils.bytesToString(stageData.memoryBytesSpilled)}
@@ -220,7 +215,6 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                 <strong>Shuffle Spill (Disk): </strong>
                 {Utils.bytesToString(stageData.diskBytesSpilled)}
               </li>
-          }
         }
           </ul>
         </div>
@@ -256,7 +250,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                 </span>
               </li>
               {
-          if (stageData.hasShuffleRead) {
+          if (stageData.hasShuffleRead)
             <li>
                   <span data-toggle="tooltip"
                         title={ToolTips.SHUFFLE_READ_BLOCKED_TIME} data-placement="right">
@@ -275,7 +269,6 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                     <span class="additional-metric-title">Shuffle Remote Reads</span>
                   </span>
                 </li>
-          }
         }
               <li>
                 <span data-toggle="tooltip"
@@ -296,7 +289,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                 </span>
               </li>
               {
-          if (displayPeakExecutionMemory) {
+          if (displayPeakExecutionMemory)
             <li>
                   <span data-toggle="tooltip"
                         title={ToolTips.PEAK_EXECUTION_MEMORY} data-placement="right">
@@ -306,7 +299,6 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                     <span class="additional-metric-title">Peak Execution Memory</span>
                   </span>
                 </li>
-          }
         }
             </ul>
           </div>
@@ -331,11 +323,10 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val page: Int = {
         // If the user has changed to a larger page size, then go to page 1 in order to avoid
         // IndexOutOfBoundsException.
-        if (taskPageSize <= taskPrevPageSize) {
+        if (taskPageSize <= taskPrevPageSize)
           taskPage
-        } else {
+        else
           1
-        }
       }
       val currentTime = System.currentTimeMillis()
       val (taskTable, taskTableHTML) =
@@ -395,9 +386,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         t.taskInfo.status == "SUCCESS" && t.taskMetrics.isDefined)
 
       val summaryTable: Option[Seq[Node]] =
-        if (validTasks.size == 0) {
+        if (validTasks.size == 0)
           None
-        } else {
+        else {
           def getDistributionQuantiles(data: Seq[Double]): IndexedSeq[Double] =
             Distribution(data).get.getQuantiles()
           def getFormattedTimeQuantiles(times: Seq[Double]): Seq[Node] =
@@ -638,13 +629,12 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             <tr class={TaskDetailsClassNames.GETTING_RESULT_TIME}>{
               gettingResultQuantiles
             }</tr>,
-            if (displayPeakExecutionMemory) {
+            if (displayPeakExecutionMemory)
               <tr class={TaskDetailsClassNames.PEAK_EXECUTION_MEMORY}>
                 {peakExecutionMemoryQuantiles}
               </tr>
-            } else {
-              Nil
-            },
+            else
+              Nil,
             if (stageData.hasInput) <tr>{
               inputQuantiles
             }</tr>
@@ -653,7 +643,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               outputQuantiles
             }</tr>
             else Nil,
-            if (stageData.hasShuffleRead) {
+            if (stageData.hasShuffleRead)
               <tr class={TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME}>
                 {shuffleReadBlockedQuantiles}
               </tr>
@@ -661,9 +651,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               <tr class={TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE}>
                 {shuffleReadRemoteQuantiles}
               </tr>
-            } else {
-              Nil
-            },
+            else
+              Nil,
             if (stageData.hasShuffleWrite) <tr>{
               shuffleWriteQuantiles
             }</tr>
@@ -700,9 +689,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
       val executorTable = new ExecutorTable(stageId, stageAttemptId, parent)
 
       val maybeAccumulableTable: Seq[Node] =
-        if (hasAccumulators) {
+        if (hasAccumulators)
           <h4>Accumulators</h4> ++ accumulableTable
-        } else Seq()
+        else Seq()
 
       val content =
         summary ++
@@ -780,14 +769,14 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val schedulerDelayProportion = toProportion(schedulerDelay)
 
           val executorOverhead = serializationTime + deserializationTime
-          val executorRunTime = if (taskInfo.running) {
-            totalExecutionTime - executorOverhead - gettingResultTime
-          } else {
-            metricsOpt
-              .map(_.executorRunTime)
-              .getOrElse(
-                totalExecutionTime - executorOverhead - gettingResultTime)
-          }
+          val executorRunTime =
+            if (taskInfo.running)
+              totalExecutionTime - executorOverhead - gettingResultTime
+            else
+              metricsOpt
+                .map(_.executorRunTime)
+                .getOrElse(
+                  totalExecutionTime - executorOverhead - gettingResultTime)
           val executorComputingTime =
             executorRunTime - shuffleReadTime - shuffleWriteTime
           val executorComputingTimeProportion =
@@ -813,10 +802,10 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           val attempt = taskInfo.attemptNumber
 
           val svgTag =
-            if (totalExecutionTime == 0) {
+            if (totalExecutionTime == 0)
               // SPARK-8705: Avoid invalid attribute error in JavaScript if execution time is 0
               """<svg class="task-assignment-timeline-duration-bar"></svg>"""
-            } else {
+            else
               s"""<svg class="task-assignment-timeline-duration-bar">
                  |<rect class="scheduler-delay-proportion"
                    |x="$schedulerDelayProportionPos%" y="0px" height="26px"
@@ -839,7 +828,6 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                  |<rect class="getting-result-time-proportion"
                    |x="$gettingResultTimeProportionPos%" y="0px" height="26px"
                    |width="$gettingResultTimeProportion%"></rect></svg>""".stripMargin
-            }
           val timelineObject =
             s"""
              |{
@@ -851,11 +839,10 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                  |data-title="${s"Task " + index + " (attempt " + attempt + ")"}<br>
                  |Status: ${taskInfo.status}<br>
                  |Launch Time: ${UIUtils.formatDate(new Date(launchTime))}
-                 |${if (!taskInfo.running) {
+                 |${if (!taskInfo.running)
                  s"""<br>Finish Time: ${UIUtils.formatDate(new Date(finishTime))}"""
-               } else {
-                 ""
-               }}
+               else
+                 ""}
                  |<br>Scheduler Delay: $schedulerDelay ms
                  |<br>Task Deserialization Time: ${UIUtils.formatDuration(
                  deserializationTime)}
@@ -896,15 +883,14 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
     </span> ++
       <div id="task-assignment-timeline" class="collapsed">
       {
-        if (MAX_TIMELINE_TASKS < tasks.size) {
+        if (MAX_TIMELINE_TASKS < tasks.size)
           <strong>
             This stage has more than the maximum number of tasks that can be shown in the
             visualization! Only the most recent {MAX_TIMELINE_TASKS} tasks
             (of {tasks.size} total) are shown.
           </strong>
-        } else {
+        else
           Seq.empty
-        }
       }
       <div class="control-panel">
         <div id="task-assignment-timeline-zoom-lock">
@@ -928,16 +914,14 @@ private[ui] object StagePage {
   private[ui] def getGettingResultTime(
       info: TaskInfo,
       currentTime: Long): Long =
-    if (info.gettingResult) {
-      if (info.finished) {
+    if (info.gettingResult)
+      if (info.finished)
         info.finishTime - info.gettingResultTime
-      } else {
+      else
         // The task is still fetching the result.
         currentTime - info.gettingResultTime
-      }
-    } else {
+    else
       0L
-    }
 
   private[ui] def getSchedulerDelay(
       info: TaskInfo,
@@ -951,10 +935,9 @@ private[ui] object StagePage {
         0,
         totalExecutionTime - metrics.executorRunTime - executorOverhead -
           getGettingResultTime(info, currentTime))
-    } else {
+    } else
       // The task is still running and the metrics like executorRunTime are not available.
       0L
-    }
 }
 
 private[ui] case class TaskTableRowInputData(
@@ -1139,27 +1122,25 @@ private[ui] class TaskDataSource(
       maybeDiskBytesSpilled.map(Utils.bytesToString).getOrElse("")
 
     val input =
-      if (hasInput) {
+      if (hasInput)
         Some(
           TaskTableRowInputData(
             inputSortable,
             s"$inputReadable / $inputRecords"))
-      } else {
+      else
         None
-      }
 
     val output =
-      if (hasOutput) {
+      if (hasOutput)
         Some(
           TaskTableRowOutputData(
             outputSortable,
             s"$outputReadable / $outputRecords"))
-      } else {
+      else
         None
-      }
 
     val shuffleRead =
-      if (hasShuffleRead) {
+      if (hasShuffleRead)
         Some(
           TaskTableRowShuffleReadData(
             shuffleReadBlockedTimeSortable,
@@ -1169,12 +1150,11 @@ private[ui] class TaskDataSource(
             shuffleReadRemoteSortable,
             shuffleReadRemoteReadable
           ))
-      } else {
+      else
         None
-      }
 
     val shuffleWrite =
-      if (hasShuffleWrite) {
+      if (hasShuffleWrite)
         Some(
           TaskTableRowShuffleWriteData(
             writeTimeSortable,
@@ -1182,12 +1162,11 @@ private[ui] class TaskDataSource(
             shuffleWriteSortable,
             s"$shuffleWriteReadable / $shuffleWriteRecords"
           ))
-      } else {
+      else
         None
-      }
 
     val bytesSpilled =
-      if (hasBytesSpilled) {
+      if (hasBytesSpilled)
         Some(
           TaskTableRowBytesSpilledData(
             memoryBytesSpilledSortable,
@@ -1195,9 +1174,8 @@ private[ui] class TaskDataSource(
             diskBytesSpilledSortable,
             diskBytesSpilledReadable
           ))
-      } else {
+      else
         None
-      }
 
     new TaskTableRowData(
       info.index,
@@ -1306,19 +1284,18 @@ private[ui] class TaskDataSource(
               .compare(x.peakExecutionMemoryUsed, y.peakExecutionMemoryUsed)
         }
       case "Accumulators" =>
-        if (hasAccumulators) {
+        if (hasAccumulators)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
                 y: TaskTableRowData): Int =
               Ordering.String.compare(x.accumulators.get, y.accumulators.get)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Accumulators because of no accumulators")
-        }
       case "Input Size / Records" =>
-        if (hasInput) {
+        if (hasInput)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1326,12 +1303,11 @@ private[ui] class TaskDataSource(
               Ordering.Long
                 .compare(x.input.get.inputSortable, y.input.get.inputSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Input Size / Records because of no inputs")
-        }
       case "Output Size / Records" =>
-        if (hasOutput) {
+        if (hasOutput)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1340,13 +1316,12 @@ private[ui] class TaskDataSource(
                 x.output.get.outputSortable,
                 y.output.get.outputSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Output Size / Records because of no outputs")
-        }
       // ShuffleRead
       case "Shuffle Read Blocked Time" =>
-        if (hasShuffleRead) {
+        if (hasShuffleRead)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1355,12 +1330,11 @@ private[ui] class TaskDataSource(
                 x.shuffleRead.get.shuffleReadBlockedTimeSortable,
                 y.shuffleRead.get.shuffleReadBlockedTimeSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Shuffle Read Blocked Time because of no shuffle reads")
-        }
       case "Shuffle Read Size / Records" =>
-        if (hasShuffleRead) {
+        if (hasShuffleRead)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1369,12 +1343,11 @@ private[ui] class TaskDataSource(
                 x.shuffleRead.get.shuffleReadSortable,
                 y.shuffleRead.get.shuffleReadSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Shuffle Read Size / Records because of no shuffle reads")
-        }
       case "Shuffle Remote Reads" =>
-        if (hasShuffleRead) {
+        if (hasShuffleRead)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1383,13 +1356,12 @@ private[ui] class TaskDataSource(
                 x.shuffleRead.get.shuffleReadRemoteSortable,
                 y.shuffleRead.get.shuffleReadRemoteSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Shuffle Remote Reads because of no shuffle reads")
-        }
       // ShuffleWrite
       case "Write Time" =>
-        if (hasShuffleWrite) {
+        if (hasShuffleWrite)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1398,12 +1370,11 @@ private[ui] class TaskDataSource(
                 x.shuffleWrite.get.writeTimeSortable,
                 y.shuffleWrite.get.writeTimeSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Write Time because of no shuffle writes")
-        }
       case "Shuffle Write Size / Records" =>
-        if (hasShuffleWrite) {
+        if (hasShuffleWrite)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1412,13 +1383,12 @@ private[ui] class TaskDataSource(
                 x.shuffleWrite.get.shuffleWriteSortable,
                 y.shuffleWrite.get.shuffleWriteSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Shuffle Write Size / Records because of no shuffle writes")
-        }
       // BytesSpilled
       case "Shuffle Spill (Memory)" =>
-        if (hasBytesSpilled) {
+        if (hasBytesSpilled)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1427,12 +1397,11 @@ private[ui] class TaskDataSource(
                 x.bytesSpilled.get.memoryBytesSpilledSortable,
                 y.bytesSpilled.get.memoryBytesSpilledSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Shuffle Spill (Memory) because of no spills")
-        }
       case "Shuffle Spill (Disk)" =>
-        if (hasBytesSpilled) {
+        if (hasBytesSpilled)
           new Ordering[TaskTableRowData] {
             override def compare(
                 x: TaskTableRowData,
@@ -1441,10 +1410,9 @@ private[ui] class TaskDataSource(
                 x.bytesSpilled.get.diskBytesSpilledSortable,
                 y.bytesSpilled.get.diskBytesSpilledSortable)
           }
-        } else {
+        else
           throw new IllegalArgumentException(
             "Cannot sort by Shuffle Spill (Disk) because of no spills")
-        }
       case "Errors" =>
         new Ordering[TaskTableRowData] {
           override def compare(x: TaskTableRowData, y: TaskTableRowData): Int =
@@ -1453,11 +1421,10 @@ private[ui] class TaskDataSource(
       case unknownColumn =>
         throw new IllegalArgumentException(s"Unknown column: $unknownColumn")
     }
-    if (desc) {
+    if (desc)
       ordering.reverse
-    } else {
+    else
       ordering
-    }
   }
 
 }
@@ -1541,18 +1508,17 @@ private[ui] class TaskPagedTable(
           TaskDetailsClassNames.RESULT_SERIALIZATION_TIME),
         ("Getting Result Time", TaskDetailsClassNames.GETTING_RESULT_TIME)
       ) ++ {
-        if (displayPeakExecutionMemory) {
+        if (displayPeakExecutionMemory)
           Seq(
             (
               "Peak Execution Memory",
               TaskDetailsClassNames.PEAK_EXECUTION_MEMORY))
-        } else {
+        else
           Nil
-        }
       } ++ { if (hasAccumulators) Seq(("Accumulators", "")) else Nil } ++ {
         if (hasInput) Seq(("Input Size / Records", "")) else Nil
       } ++ { if (hasOutput) Seq(("Output Size / Records", "")) else Nil } ++ {
-        if (hasShuffleRead) {
+        if (hasShuffleRead)
           Seq(
             (
               "Shuffle Read Blocked Time",
@@ -1562,29 +1528,25 @@ private[ui] class TaskPagedTable(
               "Shuffle Remote Reads",
               TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE)
           )
-        } else {
+        else
           Nil
-        }
       } ++ {
-        if (hasShuffleWrite) {
+        if (hasShuffleWrite)
           Seq(("Write Time", ""), ("Shuffle Write Size / Records", ""))
-        } else {
+        else
           Nil
-        }
       } ++ {
-        if (hasBytesSpilled) {
+        if (hasBytesSpilled)
           Seq(("Shuffle Spill (Memory)", ""), ("Shuffle Spill (Disk)", ""))
-        } else {
+        else
           Nil
-        }
       } ++
         Seq(("Errors", ""))
 
-    if (!taskHeadersAndCssClasses.map(_._1).contains(sortColumn)) {
+    if (!taskHeadersAndCssClasses.map(_._1).contains(sortColumn))
       throw new IllegalArgumentException(s"Unknown column: $sortColumn")
-    }
 
-    val headerRow: Seq[Node] = {
+    val headerRow: Seq[Node] =
       taskHeadersAndCssClasses.map {
         case (header, cssClass) =>
           if (header == sortColumn) {
@@ -1612,7 +1574,6 @@ private[ui] class TaskPagedTable(
           </th>
           }
       }
-    }
     <thead>{headerRow}</thead>
   }
 
@@ -1645,29 +1606,25 @@ private[ui] class TaskPagedTable(
         {UIUtils.formatDuration(task.gettingResultTime)}
       </td>
       {
-      if (displayPeakExecutionMemory) {
+      if (displayPeakExecutionMemory)
         <td class={TaskDetailsClassNames.PEAK_EXECUTION_MEMORY}>
           {Utils.bytesToString(task.peakExecutionMemoryUsed)}
         </td>
-      }
     }
       {
-      if (task.accumulators.nonEmpty) {
+      if (task.accumulators.nonEmpty)
         <td>{Unparsed(task.accumulators.get)}</td>
-      }
     }
       {
-      if (task.input.nonEmpty) {
+      if (task.input.nonEmpty)
         <td>{task.input.get.inputReadable}</td>
-      }
     }
       {
-      if (task.output.nonEmpty) {
+      if (task.output.nonEmpty)
         <td>{task.output.get.outputReadable}</td>
-      }
     }
       {
-      if (task.shuffleRead.nonEmpty) {
+      if (task.shuffleRead.nonEmpty)
         <td class={TaskDetailsClassNames.SHUFFLE_READ_BLOCKED_TIME}>
           {task.shuffleRead.get.shuffleReadBlockedTimeReadable}
         </td>
@@ -1675,19 +1632,16 @@ private[ui] class TaskPagedTable(
         <td class={TaskDetailsClassNames.SHUFFLE_READ_REMOTE_SIZE}>
           {task.shuffleRead.get.shuffleReadRemoteReadable}
         </td>
-      }
     }
       {
-      if (task.shuffleWrite.nonEmpty) {
+      if (task.shuffleWrite.nonEmpty)
         <td>{task.shuffleWrite.get.writeTimeReadable}</td>
         <td>{task.shuffleWrite.get.shuffleWriteReadable}</td>
-      }
     }
       {
-      if (task.bytesSpilled.nonEmpty) {
+      if (task.bytesSpilled.nonEmpty)
         <td>{task.bytesSpilled.get.memoryBytesSpilledReadable}</td>
         <td>{task.bytesSpilled.get.diskBytesSpilledReadable}</td>
-      }
     }
       {errorMessageCell(task.error)}
     </tr>
@@ -1695,24 +1649,24 @@ private[ui] class TaskPagedTable(
   private def errorMessageCell(error: String): Seq[Node] = {
     val isMultiline = error.indexOf('\n') >= 0
     // Display the first line by default
-    val errorSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      error.substring(0, error.indexOf('\n'))
-    } else {
-      error
-    })
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val errorSummary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline)
+        error.substring(0, error.indexOf('\n'))
+      else
+        error)
+    val details =
+      if (isMultiline)
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{error}</pre>
         </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+      else
+        ""
     <td>{errorSummary}{details}</td>
   }
 }

@@ -31,14 +31,12 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
     * Blocking method to wait for and return the final value.
     */
   def getFinalValue(): R = synchronized {
-    while (finalValue.isEmpty && failure.isEmpty) {
+    while (finalValue.isEmpty && failure.isEmpty)
       this.wait()
-    }
-    if (finalValue.isDefined) {
+    if (finalValue.isDefined)
       return finalValue.get
-    } else {
+    else
       throw failure.get
-    }
   }
 
   /**
@@ -46,15 +44,13 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
     * is supported per PartialResult.
     */
   def onComplete(handler: R => Unit): PartialResult[R] = synchronized {
-    if (completionHandler.isDefined) {
+    if (completionHandler.isDefined)
       throw new UnsupportedOperationException(
         "onComplete cannot be called twice")
-    }
     completionHandler = Some(handler)
-    if (finalValue.isDefined) {
+    if (finalValue.isDefined)
       // We already have a final value, so let's call the handler
       handler(finalValue.get)
-    }
     return this
   }
 
@@ -64,14 +60,12 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
     */
   def onFail(handler: Exception => Unit) {
     synchronized {
-      if (failureHandler.isDefined) {
+      if (failureHandler.isDefined)
         throw new UnsupportedOperationException("onFail cannot be called twice")
-      }
       failureHandler = Some(handler)
-      if (failure.isDefined) {
+      if (failure.isDefined)
         // We already have a failure, so let's call the handler
         handler(failure.get)
-      }
     }
   }
 
@@ -104,10 +98,9 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
 
   private[spark] def setFinalValue(value: R) {
     synchronized {
-      if (finalValue.isDefined) {
+      if (finalValue.isDefined)
         throw new UnsupportedOperationException(
           "setFinalValue called twice on a PartialResult")
-      }
       finalValue = Some(value)
       // Call the completion handler if it was set
       completionHandler.foreach(h => h(value))
@@ -120,10 +113,9 @@ class PartialResult[R](initialVal: R, isFinal: Boolean) {
 
   private[spark] def setFailure(exception: Exception) {
     synchronized {
-      if (failure.isDefined) {
+      if (failure.isDefined)
         throw new UnsupportedOperationException(
           "setFailure called twice on a PartialResult")
-      }
       failure = Some(exception)
       // Call the failure handler if it was set
       failureHandler.foreach(h => h(exception))

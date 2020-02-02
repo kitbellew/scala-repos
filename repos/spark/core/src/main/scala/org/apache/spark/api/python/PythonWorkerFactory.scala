@@ -65,14 +65,12 @@ private[spark] class PythonWorkerFactory(
   def create(): Socket =
     if (useDaemon) {
       synchronized {
-        if (idleWorkers.size > 0) {
+        if (idleWorkers.size > 0)
           return idleWorkers.dequeue()
-        }
       }
       createThroughDaemon()
-    } else {
+    } else
       createSimpleWorker()
-    }
 
   /**
     * Connect to a worker launched through pyspark/daemon.py, which forks python processes itself
@@ -83,10 +81,9 @@ private[spark] class PythonWorkerFactory(
     def createSocket(): Socket = {
       val socket = new Socket(daemonHost, daemonPort)
       val pid = new DataInputStream(socket.getInputStream).readInt()
-      if (pid < 0) {
+      if (pid < 0)
         throw new IllegalStateException(
           "Python daemon failed to launch worker with code " + pid)
-      }
       daemonWorkers.put(socket, pid)
       socket
     }
@@ -96,9 +93,8 @@ private[spark] class PythonWorkerFactory(
       startDaemon()
 
       // Attempt to connect, restart and retry once if it fails
-      try {
-        createSocket()
-      } catch {
+      try createSocket()
+      catch {
         case exc: SocketException =>
           logWarning("Failed to open socket to Python daemon:", exc)
           logWarning(
@@ -150,20 +146,16 @@ private[spark] class PythonWorkerFactory(
             "Python worker did not connect back in time",
             e)
       }
-    } finally {
-      if (serverSocket != null) {
-        serverSocket.close()
-      }
-    }
+    } finally if (serverSocket != null)
+      serverSocket.close()
     null
   }
 
   private def startDaemon() {
     synchronized {
       // Is it already running?
-      if (daemon != null) {
+      if (daemon != null)
         return
-      }
 
       try {
         // Create and start the daemon
@@ -204,9 +196,8 @@ private[spark] class PythonWorkerFactory(
             val wrappedException = new SparkException(errorMessage.stripMargin)
             wrappedException.setStackTrace(e.getStackTrace)
             throw wrappedException
-          } else {
+          } else
             throw e
-          }
       }
 
       // Important: don't close daemon's stdin (daemon.getOutputStream) so it can correctly
@@ -256,10 +247,10 @@ private[spark] class PythonWorkerFactory(
   private def cleanupIdleWorkers() {
     while (idleWorkers.length > 0) {
       val worker = idleWorkers.dequeue()
-      try {
-        // the worker will exit after closing the socket
-        worker.close()
-      } catch {
+      try
+      // the worker will exit after closing the socket
+      worker.close()
+      catch {
         case e: Exception =>
           logWarning("Failed to close worker socket", e)
       }
@@ -272,15 +263,13 @@ private[spark] class PythonWorkerFactory(
         cleanupIdleWorkers()
 
         // Request shutdown of existing daemon by sending SIGTERM
-        if (daemon != null) {
+        if (daemon != null)
           daemon.destroy()
-        }
 
         daemon = null
         daemonPort = 0
-      } else {
+      } else
         simpleWorkers.mapValues(_.destroy())
-      }
     }
   }
 
@@ -291,7 +280,7 @@ private[spark] class PythonWorkerFactory(
   def stopWorker(worker: Socket) {
     synchronized {
       if (useDaemon) {
-        if (daemon != null) {
+        if (daemon != null)
           daemonWorkers.get(worker).foreach { pid =>
             // tell daemon to kill worker by pid
             val output = new DataOutputStream(daemon.getOutputStream)
@@ -299,29 +288,25 @@ private[spark] class PythonWorkerFactory(
             output.flush()
             daemon.getOutputStream.flush()
           }
-        }
-      } else {
+      } else
         simpleWorkers.get(worker).foreach(_.destroy())
-      }
     }
     worker.close()
   }
 
   def releaseWorker(worker: Socket) {
-    if (useDaemon) {
+    if (useDaemon)
       synchronized {
         lastActivity = System.currentTimeMillis()
         idleWorkers.enqueue(worker)
       }
-    } else {
+    else
       // Cleanup the worker socket. This will also cause the Python worker to exit.
-      try {
-        worker.close()
-      } catch {
+      try worker.close()
+      catch {
         case e: Exception =>
           logWarning("Failed to close worker socket", e)
       }
-    }
   }
 }
 

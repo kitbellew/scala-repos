@@ -179,15 +179,14 @@ object Driver {
     // redirect err to out, for logging
     val prevErr = System.err
     System.setErr(System.out)
-    try {
-      // this test is only valid under JDK 1.7+
-      testUnderJavaAtLeast("1.7") {
-        generateClass()
-        compile()
-        ()
-      } otherwise {
-        ()
-      }
+    try
+    // this test is only valid under JDK 1.7+
+    testUnderJavaAtLeast("1.7") {
+      generateClass()
+      compile()
+      ()
+    } otherwise {
+      ()
     } finally System.setErr(prevErr)
   }
 }

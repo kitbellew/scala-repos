@@ -262,14 +262,14 @@ trait FutureCombinators extends TestBase {
 
   def testFilterSuccess(): Unit = once { done =>
     val f = Future { 4 }
-    val g = f filter { _ % 2 == 0 }
+    val g = f filter _ % 2 == 0
     g onSuccess { case x: Int => done(x == 4) }
     g onFailure { case _      => done(false) }
   }
 
   def testFilterFailure(): Unit = once { done =>
     val f = Future { 4 }
-    val g = f filter { _ % 2 == 1 }
+    val g = f filter _ % 2 == 1
     g onSuccess { case x: Int => done(false) }
     g onFailure {
       case e: NoSuchElementException => done(true)
@@ -693,11 +693,8 @@ trait CustomExecutionContext extends TestBase {
       val wrapper = new Runnable() {
         override def run() = {
           enterEC()
-          try {
-            runnable.run()
-          } finally {
-            leaveEC()
-          }
+          try runnable.run()
+          finally leaveEC()
         }
       }
       delegate.execute(wrapper)

@@ -63,23 +63,20 @@ private[spark] object BaggedPoint {
       numSubsamples: Int,
       withReplacement: Boolean,
       seed: Long = Utils.random.nextLong()): RDD[BaggedPoint[Datum]] =
-    if (withReplacement) {
+    if (withReplacement)
       convertToBaggedRDDSamplingWithReplacement(
         input,
         subsamplingRate,
         numSubsamples,
         seed)
-    } else {
-      if (numSubsamples == 1 && subsamplingRate == 1.0) {
-        convertToBaggedRDDWithoutSampling(input)
-      } else {
-        convertToBaggedRDDSamplingWithoutReplacement(
-          input,
-          subsamplingRate,
-          numSubsamples,
-          seed)
-      }
-    }
+    else if (numSubsamples == 1 && subsamplingRate == 1.0)
+      convertToBaggedRDDWithoutSampling(input)
+    else
+      convertToBaggedRDDSamplingWithoutReplacement(
+        input,
+        subsamplingRate,
+        numSubsamples,
+        seed)
 
   private def convertToBaggedRDDSamplingWithoutReplacement[Datum](
       input: RDD[Datum],
@@ -95,9 +92,8 @@ private[spark] object BaggedPoint {
         var subsampleIndex = 0
         while (subsampleIndex < numSubsamples) {
           val x = rng.nextDouble()
-          subsampleWeights(subsampleIndex) = {
+          subsampleWeights(subsampleIndex) =
             if (x < subsamplingRate) 1.0 else 0.0
-          }
           subsampleIndex += 1
         }
         new BaggedPoint(instance, subsampleWeights)

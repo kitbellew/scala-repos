@@ -155,9 +155,8 @@ object Trilean {
     if (java.lang.Double.isNaN(n)) Unknown else Trilean(f(n))
 
   final def run(body: => Boolean): Trilean =
-    try {
-      apply(body)
-    } catch {
+    try apply(body)
+    catch {
       case _: Exception => Unknown
     }
 

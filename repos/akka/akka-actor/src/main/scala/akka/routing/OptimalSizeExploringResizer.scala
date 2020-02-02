@@ -276,14 +276,12 @@ case class DefaultOptimalSizeExploringResizer(
         val downsizeTo =
           (record.underutilizationStreak.get.highestUtilization * downsizeRatio).toInt
         Math.min(downsizeTo - currentSize, 0)
-      } else if (performanceLog.isEmpty || record.underutilizationStreak.isDefined) {
+      } else if (performanceLog.isEmpty || record.underutilizationStreak.isDefined)
         0
-      } else {
-        if (!stopExploring && random.nextDouble() < explorationProbability)
-          explore(currentSize)
-        else
-          optimize(currentSize)
-      }
+      else if (!stopExploring && random.nextDouble() < explorationProbability)
+        explore(currentSize)
+      else
+        optimize(currentSize)
     Math.max(lowerBound, Math.min(proposedChange + currentSize, upperBound)) - currentSize
   }
 

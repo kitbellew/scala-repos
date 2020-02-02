@@ -652,16 +652,14 @@ class Dataset[T] private[sql] (
         Some(joinExprs.expr))).queryExecution.analyzed.asInstanceOf[Join]
 
     // If auto self join alias is disabled, return the plan.
-    if (!sqlContext.conf.dataFrameSelfJoinAutoResolveAmbiguity) {
+    if (!sqlContext.conf.dataFrameSelfJoinAutoResolveAmbiguity)
       return withPlan(plan)
-    }
 
     // If left/right have no output set intersection, return the plan.
     val lanalyzed = withPlan(this.logicalPlan).queryExecution.analyzed
     val ranalyzed = withPlan(right.logicalPlan).queryExecution.analyzed
-    if (lanalyzed.outputSet.intersect(ranalyzed.outputSet).isEmpty) {
+    if (lanalyzed.outputSet.intersect(ranalyzed.outputSet).isEmpty)
       return withPlan(plan)
-    }
 
     // Otherwise, find the trivially true predicates and automatically resolves them to both sides.
     // By the time we get here, since we have already run analysis, all attributes should've been
@@ -1650,16 +1648,14 @@ class Dataset[T] private[sql] (
     val shouldReplace = output.exists(f => resolver(f.name, colName))
     if (shouldReplace) {
       val columns = output.map { field =>
-        if (resolver(field.name, colName)) {
+        if (resolver(field.name, colName))
           col.as(colName)
-        } else {
+        else
           Column(field)
-        }
       }
       select(columns: _*)
-    } else {
+    } else
       select(Column("*"), col.as(colName))
-    }
   }
 
   /**
@@ -1674,16 +1670,14 @@ class Dataset[T] private[sql] (
     val shouldReplace = output.exists(f => resolver(f.name, colName))
     if (shouldReplace) {
       val columns = output.map { field =>
-        if (resolver(field.name, colName)) {
+        if (resolver(field.name, colName))
           col.as(colName, metadata)
-        } else {
+        else
           Column(field)
-        }
       }
       select(columns: _*)
-    } else {
+    } else
       select(Column("*"), col.as(colName, metadata))
-    }
   }
 
   /**
@@ -1699,16 +1693,14 @@ class Dataset[T] private[sql] (
     val shouldRename = output.exists(f => resolver(f.name, existingName))
     if (shouldRename) {
       val columns = output.map { col =>
-        if (resolver(col.name, existingName)) {
+        if (resolver(col.name, existingName))
           Column(col).as(newName)
-        } else {
+        else
           Column(col)
-        }
       }
       select(columns: _*)
-    } else {
+    } else
       toDF()
-    }
   }
 
   /**
@@ -1735,11 +1727,10 @@ class Dataset[T] private[sql] (
       schema
         .filter(f => colNames.forall(n => !resolver(f.name, n)))
         .map(f => Column(f.name))
-    if (remainingCols.size == this.schema.size) {
+    if (remainingCols.size == this.schema.size)
       toDF()
-    } else {
+    else
       this.select(remainingCols: _*)
-    }
   }
 
   /**
@@ -1786,11 +1777,10 @@ class Dataset[T] private[sql] (
     val groupCols = colNames.map(resolve)
     val groupColExprIds = groupCols.map(_.exprId)
     val aggCols = logicalPlan.output.map { attr =>
-      if (groupColExprIds.contains(attr.exprId)) {
+      if (groupColExprIds.contains(attr.exprId))
         attr
-      } else {
+      else
         Alias(new First(attr).toAggregateExpression(), attr.name)()
-      }
     }
     Aggregate(groupCols, aggCols, logicalPlan)
   }
@@ -1859,10 +1849,9 @@ class Dataset[T] private[sql] (
         case (aggregation, (statistic, _)) =>
           Row(statistic :: aggregation.toList: _*)
       }
-    } else {
+    } else
       // If there are no output columns, just output a single column that contains the stats.
       statistics.map { case (name, _) => Row(name) }
-    }
 
     // All columns are string type
     val schema = StructType(
@@ -2116,11 +2105,10 @@ class Dataset[T] private[sql] (
       queryExecution.executedPlan.executeCollect().map(boundTEncoder.fromRow)
     }
 
-    if (needCallback) {
+    if (needCallback)
       withCallback("collect", toDF())(_ => execute())
-    } else {
+    else
       execute()
-    }
   }
 
   /**
@@ -2264,11 +2252,10 @@ class Dataset[T] private[sql] (
     * @group rdd
     * @since 1.6.0
     */
-  lazy val rdd: RDD[T] = {
+  lazy val rdd: RDD[T] =
     queryExecution.toRdd.mapPartitions { rows =>
       rows.map(boundTEncoder.fromRow)
     }
-  }
 
   /**
     * Returns the content of the [[Dataset]] as a [[JavaRDD]] of [[Row]]s.
@@ -2325,11 +2312,10 @@ class Dataset[T] private[sql] (
           gen.flush()
 
           val json = writer.toString
-          if (hasNext) {
+          if (hasNext)
             writer.reset()
-          } else {
+          else
             gen.close()
-          }
 
           json
         }

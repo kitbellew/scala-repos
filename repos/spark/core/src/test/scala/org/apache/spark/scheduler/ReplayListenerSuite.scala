@@ -71,9 +71,7 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
       val replayer = new ReplayListenerBus()
       replayer.addListener(eventMonster)
       replayer.replay(logData, logFilePath.toString)
-    } finally {
-      logData.close()
-    }
+    } finally logData.close()
     assert(eventMonster.loggedEvents.size === 2)
     assert(
       eventMonster.loggedEvents(0) === JsonProtocol.sparkEventToJson(
@@ -134,9 +132,7 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
       val replayer = new ReplayListenerBus()
       replayer.addListener(eventMonster)
       replayer.replay(logData, eventLog.getPath().toString)
-    } finally {
-      logData.close()
-    }
+    } finally logData.close()
 
     // Verify the same events are replayed in the same order
     assert(sc.eventLogger.isDefined)

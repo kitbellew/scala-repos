@@ -30,9 +30,9 @@ case class GradientPaintScale[T](
     implicit view: T => Double)
     extends PaintScale[T] {
   def apply(value: T): Paint =
-    if (view(value).isNaN) {
+    if (view(value).isNaN)
       PaintScale.nanPaint
-    } else {
+    else {
       val index = gradient.length * (value - lower) / (upper - lower)
       gradient(math.min(gradient.length - 1, math.max(0, index.toInt)))
     }
@@ -47,11 +47,10 @@ case class GradientPaintScale[T](
 case class CategoricalPaintScale[T](categories: Function1[T, Paint])
     extends PaintScale[T] {
   def apply(value: T): Paint =
-    if (categories == null) {
+    if (categories == null)
       PaintScale.nanPaint
-    } else {
+    else
       categories(value)
-    }
 
   private def ida(v: T) = categories match {
     case f: PartialFunction[T, Paint] => f.isDefinedAt(v)
@@ -452,7 +451,7 @@ object PaintScale {
       }
     }
 
-    if (gradientIndex < numSteps) {
+    if (gradientIndex < numSteps)
       //The rounding didn't work out in our favor, and there is at least
       // one unfilled slot in the gradient[] array.
       //We can just copy the final color there
@@ -460,7 +459,6 @@ object PaintScale {
         gradient(gradientIndex) = colors(colors.length - 1)
         gradientIndex += 1
       }
-    }
 
     gradient
   }

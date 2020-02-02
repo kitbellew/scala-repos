@@ -50,11 +50,10 @@ trait Solving extends Logic {
     type Cnf = Array[Clause]
 
     class SymbolMapping(symbols: Set[Sym]) {
-      val variableForSymbol: Map[Sym, Int] = {
+      val variableForSymbol: Map[Sym, Int] =
         symbols.zipWithIndex.map {
           case (sym, i) => sym -> (i + 1)
         }.toMap
-      }
 
       val symForVar: Map[Int, Sym] = variableForSymbol.map(_.swap)
 
@@ -77,9 +76,7 @@ trait Solving extends Logic {
         "Solvable\nLiterals:\n" +
           (for {
             (lit, sym) <- symbolMapping.symForVar.toSeq.sortBy(_._1)
-          } yield {
-            s"$lit -> $sym"
-          }).mkString("\n") + "Cnf:\n" + cnfString(cnf)
+          } yield s"$lit -> $sym").mkString("\n") + "Cnf:\n" + cnfString(cnf)
     }
 
     trait CnfBuilder {
@@ -106,9 +103,8 @@ trait Solving extends Logic {
       def isConst(l: Lit): Boolean = l == constTrue || l == constFalse
 
       def addClauseProcessed(clause: Clause) {
-        if (clause.nonEmpty) {
+        if (clause.nonEmpty)
           buff += clause
-        }
       }
 
       def buildCnf: Array[Clause] = {
@@ -172,14 +168,14 @@ trait Solving extends Logic {
           }
 
         def and(bv: Set[Lit]): Lit =
-          if (bv.isEmpty) {
+          if (bv.isEmpty)
             // this case can actually happen because `removeVarEq` could add no constraints
             constTrue
-          } else if (bv.size == 1) {
+          else if (bv.size == 1)
             bv.head
-          } else if (bv.contains(constFalse)) {
+          else if (bv.contains(constFalse))
             constFalse
-          } else {
+          else {
             // op1 /\ op2 /\ ... /\ opx <==>
             // (o -> op1) /\ (o -> op2) ... (o -> opx) /\ (!op1 \/ !op2 \/... \/ !opx \/ o)
             // (!o \/ op1) /\ (!o \/ op2) ... (!o \/ opx) /\ (!op1 \/ !op2 \/... \/ !opx \/ o)
@@ -190,13 +186,13 @@ trait Solving extends Logic {
           }
 
         def or(bv: Set[Lit]): Lit =
-          if (bv.isEmpty) {
+          if (bv.isEmpty)
             constFalse
-          } else if (bv.size == 1) {
+          else if (bv.size == 1)
             bv.head
-          } else if (bv.contains(constTrue)) {
+          else if (bv.contains(constTrue))
             constTrue
-          } else {
+          else {
             // op1 \/ op2 \/ ... \/ opx <==>
             // (op1 -> o) /\ (op2 -> o) ... (opx -> o) /\ (op1 \/ op2 \/... \/ opx \/ !o)
             // (!op1 \/ o) /\ (!op2 \/ o) ... (!opx \/ o) /\ (op1 \/ op2 \/... \/ opx \/ !o)
@@ -248,13 +244,12 @@ trait Solving extends Logic {
                     si
                 }
                 /\(-convertSym(xn), -snMinus)
-              } else {
+              } else
                 ops.map(convertSym).combinations(2).foreach {
                   case a :: b :: Nil =>
                     addClauseProcessed(clause(-a, -b))
                   case _ =>
                 }
-              }
           }
         }
 
@@ -316,25 +311,22 @@ trait Solving extends Logic {
       def doesFormulaExceedSize(p: Prop): Boolean =
         p match {
           case And(ops) =>
-            if (ops.size > AnalysisBudget.maxFormulaSize) {
+            if (ops.size > AnalysisBudget.maxFormulaSize)
               true
-            } else {
+            else
               ops.exists(doesFormulaExceedSize)
-            }
           case Or(ops) =>
-            if (ops.size > AnalysisBudget.maxFormulaSize) {
+            if (ops.size > AnalysisBudget.maxFormulaSize)
               true
-            } else {
+            else
               ops.exists(doesFormulaExceedSize)
-            }
           case Not(a) => doesFormulaExceedSize(a)
           case _      => false
         }
 
       val simplified = simplify(p)
-      if (doesFormulaExceedSize(simplified)) {
+      if (doesFormulaExceedSize(simplified))
         throw AnalysisBudget.formulaSizeExceeded
-      }
 
       // collect all variables since after simplification / CNF conversion
       // they could have been removed from the formula
@@ -534,12 +526,11 @@ trait Solving extends Logic {
           case lit if symForVar isDefinedAt lit.variable =>
             (symForVar(lit.variable), lit.positive)
         }
-        if (mappedModels.isEmpty) {
+        if (mappedModels.isEmpty)
           // could get an empty model if mappedModels is a constant like `True`
           EmptyModel
-        } else {
+        else
           mappedModels.toMap
-        }
       }
   }
 }

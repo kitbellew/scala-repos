@@ -57,9 +57,8 @@ private[spark] class ManualClock(private var time: Long) extends Clock {
     * @return current time reported by the clock when waiting finishes
     */
   def waitTillTime(targetTime: Long): Long = synchronized {
-    while (time < targetTime) {
+    while (time < targetTime)
       wait(10)
-    }
     getTimeMillis()
   }
 }

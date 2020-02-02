@@ -242,9 +242,9 @@ private[twitter] class ServerDispatcher(
           write(Message.Rerr(m.tag, exc.toString))
       }
 
-      if (!tracker.isTracking(m.tag)) {
+      if (!tracker.isTracking(m.tag))
         tracker.track(m.tag, service(m))(reply)
-      } else {
+      else {
         // This can mean two things:
         //
         // 1. We have a pathalogical client which is sending duplicate tags.
@@ -338,21 +338,19 @@ private[twitter] class ServerDispatcher(
     case State.Closed => Future.Done
     case s @ (State.Draining | State.Open) =>
       if (!state.compareAndSet(s, State.Closed)) hangup(deadline)
-      else {
+      else
         trans.close(deadline)
-      }
   }
 
   def close(deadline: Time): Future[Unit] = {
     if (!state.compareAndSet(State.Open, State.Draining))
       return trans.onClose.unit
 
-    if (!gracefulShutdownEnabled()) {
+    if (!gracefulShutdownEnabled())
       // In theory, we can do slightly better here.
       // (i.e., at least try to wait for requests to drain)
       // but instead we should just disable this flag.
       return hangup(deadline)
-    }
 
     statsReceiver.counter("draining").incr()
     val done = write(Message.Tdrain(1)) before

@@ -65,8 +65,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
     assert(df.schema.fieldNames.length === numColumns)
     assert(df.count === numRows)
 
-    if (checkHeader) {
-      if (withHeader) {
+    if (checkHeader)
+      if (withHeader)
         assert(
           df.schema.fieldNames === Array(
             "year",
@@ -74,10 +74,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
             "model",
             "comment",
             "blank"))
-      } else {
+      else
         assert(df.schema.fieldNames === Array("C0", "C1", "C2", "C3", "C4"))
-      }
-    }
 
     if (checkValues) {
       val yearValues = List("2012", "1997", "2015")
@@ -88,11 +86,10 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
       years.zipWithIndex.foreach {
         case (year, index) =>
-          if (checkTypes) {
+          if (checkTypes)
             assert(year === Row(actualYears(index).toInt))
-          } else {
+          else
             assert(year === Row(actualYears(index)))
-          }
       }
     }
   }

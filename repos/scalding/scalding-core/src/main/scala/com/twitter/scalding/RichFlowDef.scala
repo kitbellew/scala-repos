@@ -136,15 +136,13 @@ class RichFlowDef(val fd: FlowDef) {
     headNames
       .foreach { head =>
         // TODO: make sure we handle checkpoints correctly
-        if (!newSrcs.containsKey(head)) {
+        if (!newSrcs.containsKey(head))
           newFd.addSource(head, sourceTaps.get(head))
-        }
       }
 
     val sinks = fd.getSinks
-    if (sinks.containsKey(pipe.getName)) {
+    if (sinks.containsKey(pipe.getName))
       newFd.addTailSink(pipe, sinks.get(pipe.getName))
-    }
     // Update the FlowState:
     FlowStateMap
       .get(fd)

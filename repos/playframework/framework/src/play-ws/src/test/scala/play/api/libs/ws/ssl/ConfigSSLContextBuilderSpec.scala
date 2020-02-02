@@ -90,11 +90,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
 
       val tempFile = java.io.File.createTempFile("privatekeystore", ".p12")
       val out = new java.io.FileOutputStream(tempFile)
-      try {
-        keyStore.store(out, password.toCharArray)
-      } finally {
-        out.close()
-      }
+      try keyStore.store(out, password.toCharArray)
+      finally out.close()
       val filePath = tempFile.getAbsolutePath
       val keyStoreConfig = KeyStoreConfig(
         storeType = "PKCS12",
@@ -424,9 +421,9 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
         signatureConstraints = Set(),
         keyConstraints = disabledKeyAlgorithms)
 
-      {
-        builder.validateStore(trustStore, checker)
-      }.must(not(throwAn[CertPathValidatorException]))
+      builder
+        .validateStore(trustStore, checker)
+        .must(not(throwAn[CertPathValidatorException]))
     }
 
     "warnOnPKCS12EmptyPasswordBug returns true when a PKCS12 keystore has a null or empty password" in {

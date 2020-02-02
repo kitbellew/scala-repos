@@ -89,9 +89,8 @@ class ConcurrentLinkedQueueTest extends AbstractCollectionTest {
     val pq = factory.newFrom(l)
 
     assertEquals(5, pq.size())
-    for (i <- l) {
+    for (i <- l)
       assertEquals(i, pq.poll())
-    }
     assertTrue(pq.isEmpty)
   }
 

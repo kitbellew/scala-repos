@@ -79,17 +79,16 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       val uri = destPath.toUri()
       val pathURI =
         new URI(uri.getScheme(), uri.getAuthority(), uri.getPath(), null, link)
-      if (resourceType == LocalResourceType.FILE) {
+      if (resourceType == LocalResourceType.FILE)
         distCacheFiles(pathURI.toString()) = (
           destStatus.getLen().toString(),
           destStatus.getModificationTime().toString(),
           visibility.name())
-      } else {
+      else
         distCacheArchives(pathURI.toString()) = (
           destStatus.getLen().toString(),
           destStatus.getModificationTime().toString(),
           visibility.name())
-      }
     }
   }
 
@@ -141,11 +140,10 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       conf: Configuration,
       uri: URI,
       statCache: Map[URI, FileStatus]): LocalResourceVisibility =
-    if (isPublic(conf, uri, statCache)) {
+    if (isPublic(conf, uri, statCache))
       LocalResourceVisibility.PUBLIC
-    } else {
+    else
       LocalResourceVisibility.PRIVATE
-    }
 
   /**
     * Returns a boolean to denote whether a cache file is visible to all (public)
@@ -158,9 +156,8 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
     val fs = FileSystem.get(uri, conf)
     val current = new Path(uri.getPath())
     // the leaf level file should be readable by others
-    if (!checkPermissionOfOther(fs, current, FsAction.READ, statCache)) {
+    if (!checkPermissionOfOther(fs, current, FsAction.READ, statCache))
       return false
-    }
     ancestorsHaveExecutePermissions(fs, current.getParent(), statCache)
   }
 
@@ -177,9 +174,8 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
     var current = path
     while (current != null) {
       // the subdirs in the path should have execute permissions for others
-      if (!checkPermissionOfOther(fs, current, FsAction.EXECUTE, statCache)) {
+      if (!checkPermissionOfOther(fs, current, FsAction.EXECUTE, statCache))
         return false
-      }
       current = current.getParent()
     }
     true

@@ -11,7 +11,7 @@ class InfoEmbedResolverTest
 
   val prefixes = Seq("", "app.", "apps.")
 
-  for (prefix <- prefixes) {
+  for (prefix <- prefixes)
     test(s"resolve ${prefix}lastTaskFailure") {
       When(s"embed=${prefix}lastTaskFailure")
       val resolved =
@@ -19,36 +19,32 @@ class InfoEmbedResolverTest
       Then("it should resolve correctly")
       resolved should be(Set(AppInfo.Embed.LastTaskFailure))
     }
-  }
 
-  for (prefix <- prefixes) {
+  for (prefix <- prefixes)
     test(s"resolve ${prefix}counts") {
       When(s"embed=${prefix}counts")
       val resolved = InfoEmbedResolver.resolveApp(Set(s"${prefix}counts"))
       Then("it should resolve correctly")
       resolved should be(Set(AppInfo.Embed.Counts))
     }
-  }
 
-  for (prefix <- prefixes) {
+  for (prefix <- prefixes)
     test(s"resolve ${prefix}deployments") {
       When(s"embed=${prefix}deployments")
       val resolved = InfoEmbedResolver.resolveApp(Set(s"${prefix}deployments"))
       Then("it should resolve correctly")
       resolved should be(Set(AppInfo.Embed.Deployments))
     }
-  }
 
-  for (prefix <- prefixes) {
+  for (prefix <- prefixes)
     test(s"resolve ${prefix}tasks") {
       When(s"embed=${prefix}tasks")
       val resolved = InfoEmbedResolver.resolveApp(Set(s"${prefix}tasks"))
       Then("it should resolve correctly")
       resolved should be(Set(AppInfo.Embed.Tasks, AppInfo.Embed.Deployments))
     }
-  }
 
-  for (prefix <- prefixes) {
+  for (prefix <- prefixes)
     test(s"resolve ${prefix}failures") {
       When(s"embed=${prefix}failures")
       val resolved = InfoEmbedResolver.resolveApp(Set(s"${prefix}failures"))
@@ -59,7 +55,6 @@ class InfoEmbedResolverTest
           AppInfo.Embed.Deployments,
           AppInfo.Embed.LastTaskFailure))
     }
-  }
 
   test("Combining embed options works") {
     When(s"embed=lastTaskFailure and embed=counts")

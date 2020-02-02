@@ -732,10 +732,9 @@ object GroupSolverSpecs
             origin,
             target,
             UnfixedSolution("'a", sub @ Sub(_, fooa, n), _),
-            _) => {
+            _) =>
           sub.provenance mustEqual StaticProvenance("/foo")
-          // anything else?
-        }
+        // anything else?
       }
     }
 

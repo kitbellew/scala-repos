@@ -14,12 +14,11 @@ class HoconIncludeResolutionInspection extends LocalInspectionTool {
       override def visitElement(element: PsiElement) = element match {
         case hit: HIncludeTarget =>
           hit.getFileReferences.foreach { ref =>
-            if (!ref.isSoft && ref.multiResolve(false).isEmpty) {
+            if (!ref.isSoft && ref.multiResolve(false).isEmpty)
               holder.registerProblem(
                 ref,
                 ProblemsHolder.unresolvedReferenceMessage(ref),
                 ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
-            }
           }
         case _ =>
           super.visitElement(element)

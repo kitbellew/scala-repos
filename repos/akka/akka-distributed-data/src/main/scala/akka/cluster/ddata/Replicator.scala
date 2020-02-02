@@ -600,7 +600,7 @@ object Replicator {
         if (other.data == DeletedData) DeletedEnvelope
         else {
           var mergedRemovedNodePruning = other.pruning
-          for ((key, thisValue) ← pruning) {
+          for ((key, thisValue) ← pruning)
             mergedRemovedNodePruning.get(key) match {
               case None ⇒
                 mergedRemovedNodePruning =
@@ -610,7 +610,6 @@ object Replicator {
                   key,
                   thisValue merge thatValue)
             }
-          }
 
           // cleanup both sides before merging, `merge((otherData: ReplicatedData)` will cleanup other.data
           copy(
@@ -1064,13 +1063,12 @@ final class Replicator(settings: ReplicatorSettings)
             .merge(pruningCleanupTombstoned(writeEnvelope))
             .addSeen(selfAddress)
           setData(key, merged)
-        } else {
+        } else
           log.warning(
             "Wrong type for writing [{}], existing type [{}], got [{}]",
             key,
             existing.getClass.getName,
             writeEnvelope.data.getClass.getName)
-        }
       case None ⇒
         setData(
           key,
@@ -1152,11 +1150,10 @@ final class Replicator(settings: ReplicatorSettings)
       }
     }
 
-    if (subscribers.nonEmpty) {
+    if (subscribers.nonEmpty)
       for (key ← changed; if subscribers.contains(key);
            subs ← subscribers.get(key))
         notify(key, subs)
-    }
 
     // Changed event is sent to new subscribers even though the key has not changed,
     // i.e. send current value
@@ -1349,9 +1346,8 @@ final class Replicator(settings: ReplicatorSettings)
   }
 
   def receiveRemovedNodePruningTick(): Unit = {
-    if (isLeader && removedNodes.nonEmpty) {
+    if (isLeader && removedNodes.nonEmpty)
       initRemovedNodePruning()
-    }
     performRemovedNodePruning()
     tombstoneRemovedNodePruning()
   }
@@ -1364,7 +1360,7 @@ final class Replicator(settings: ReplicatorSettings)
         r
     }(collection.breakOut)
 
-    if (removedSet.nonEmpty) {
+    if (removedSet.nonEmpty)
       for ((key, (envelope, _)) ← dataEntries; removed ← removedSet) {
 
         def init(): Unit = {
@@ -1374,7 +1370,7 @@ final class Replicator(settings: ReplicatorSettings)
           setData(key, newEnvelope)
         }
 
-        if (envelope.needPruningFrom(removed)) {
+        if (envelope.needPruningFrom(removed))
           envelope.data match {
             case dataWithRemovedNodePruning: RemovedNodePruning ⇒
               envelope.pruning.get(removed) match {
@@ -1386,9 +1382,7 @@ final class Replicator(settings: ReplicatorSettings)
               }
             case _ ⇒
           }
-        }
       }
-    }
   }
 
   def performRemovedNodePruning(): Unit =

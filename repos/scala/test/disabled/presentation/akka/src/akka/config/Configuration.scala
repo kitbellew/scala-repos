@@ -30,11 +30,10 @@ object Configuration {
 
   def fromFile(filename: String): Configuration = {
     val n = filename.lastIndexOf('/')
-    if (n < 0) {
+    if (n < 0)
       fromFile(DefaultPath, filename)
-    } else {
+    else
       fromFile(filename.substring(0, n), filename.substring(n + 1))
-    }
   }
 
   def fromResource(filename: String): Configuration =
@@ -63,9 +62,8 @@ class Configuration(val map: Map[String, Any]) {
   def keys: Iterable[String] = map.keys
 
   def getAny(key: String): Option[Any] =
-    try {
-      Some(map(key))
-    } catch {
+    try Some(map(key))
+    catch {
       case _ => None
     }
 
@@ -73,9 +71,8 @@ class Configuration(val map: Map[String, Any]) {
     getAny(key).getOrElse(defaultValue)
 
   def getSeqAny(key: String): Seq[Any] =
-    try {
-      map(key).asInstanceOf[Seq[Any]]
-    } catch {
+    try map(key).asInstanceOf[Seq[Any]]
+    catch {
       case _ => Seq.empty[Any]
     }
 
@@ -85,16 +82,14 @@ class Configuration(val map: Map[String, Any]) {
     getString(key).getOrElse(defaultValue)
 
   def getList(key: String): Seq[String] =
-    try {
-      map(key).asInstanceOf[Seq[String]]
-    } catch {
+    try map(key).asInstanceOf[Seq[String]]
+    catch {
       case _ => Seq.empty[String]
     }
 
   def getInt(key: String): Option[Int] =
-    try {
-      Some(map(key).toString.toInt)
-    } catch {
+    try Some(map(key).toString.toInt)
+    catch {
       case _ => None
     }
 
@@ -102,9 +97,8 @@ class Configuration(val map: Map[String, Any]) {
     getInt(key).getOrElse(defaultValue)
 
   def getLong(key: String): Option[Long] =
-    try {
-      Some(map(key).toString.toLong)
-    } catch {
+    try Some(map(key).toString.toLong)
+    catch {
       case _ => None
     }
 
@@ -112,9 +106,8 @@ class Configuration(val map: Map[String, Any]) {
     getLong(key).getOrElse(defaultValue)
 
   def getFloat(key: String): Option[Float] =
-    try {
-      Some(map(key).toString.toFloat)
-    } catch {
+    try Some(map(key).toString.toFloat)
+    catch {
       case _ => None
     }
 
@@ -122,9 +115,8 @@ class Configuration(val map: Map[String, Any]) {
     getFloat(key).getOrElse(defaultValue)
 
   def getDouble(key: String): Option[Double] =
-    try {
-      Some(map(key).toString.toDouble)
-    } catch {
+    try Some(map(key).toString.toDouble)
+    catch {
       case _ => None
     }
 

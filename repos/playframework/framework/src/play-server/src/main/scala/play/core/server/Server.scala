@@ -45,20 +45,18 @@ trait Server extends ServerWithStop {
     def logExceptionAndGetResult(e: Throwable): Left[Future[Result], Nothing] =
       Left(DefaultHttpErrorHandler.onServerError(request, e))
 
-    try {
-      applicationProvider.handleWebCommand(request) match {
-        case Some(result) =>
-          Left(Future.successful(result))
-        case None =>
-          applicationProvider.get match {
-            case Success(application) =>
-              application.requestHandler.handlerForRequest(request) match {
-                case (requestHeader, handler) =>
-                  Right((requestHeader, handler, application))
-              }
-            case Failure(e) => logExceptionAndGetResult(e)
-          }
-      }
+    try applicationProvider.handleWebCommand(request) match {
+      case Some(result) =>
+        Left(Future.successful(result))
+      case None =>
+        applicationProvider.get match {
+          case Success(application) =>
+            application.requestHandler.handlerForRequest(request) match {
+              case (requestHeader, handler) =>
+                Right((requestHeader, handler, application))
+            }
+          case Failure(e) => logExceptionAndGetResult(e)
+        }
     } catch {
       case e: ThreadDeath         => throw e
       case e: VirtualMachineError => throw e
@@ -119,11 +117,8 @@ object Server {
       block: Port => T)(implicit provider: ServerProvider): T = {
     Play.start(application)
     val server = provider.createServer(config, application)
-    try {
-      block(new Port((server.httpPort orElse server.httpsPort).get))
-    } finally {
-      server.stop()
-    }
+    try block(new Port((server.httpPort orElse server.httpsPort).get))
+    finally server.stop()
   }
 
   /**

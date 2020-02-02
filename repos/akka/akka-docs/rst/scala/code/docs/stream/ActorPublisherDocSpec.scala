@@ -46,7 +46,7 @@ object ActorPublisherDocSpec {
     }
 
     @tailrec final def deliverBuf(): Unit =
-      if (totalDemand > 0) {
+      if (totalDemand > 0)
         /*
          * totalDemand is a Long and could be larger than
          * what buf.splitAt can accept
@@ -61,7 +61,6 @@ object ActorPublisherDocSpec {
           use foreach onNext
           deliverBuf()
         }
-      }
   }
   //#job-manager
 }

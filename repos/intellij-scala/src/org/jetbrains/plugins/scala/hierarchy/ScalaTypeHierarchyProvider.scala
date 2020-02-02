@@ -27,11 +27,10 @@ class ScalaTypeHierarchyProvider extends JavaTypeHierarchyProvider {
       visited: HashSet[ScTypeDefinition]) {
     clazz.supers.foreach {
       case clazz: ScTypeDefinition =>
-        if (visited.contains(clazz)) {
+        if (visited.contains(clazz))
           println("clazz.getText = " + clazz.getText)
-        } else {
+        else
           collectSupers(clazz, visited + clazz)
-        }
       case _ =>
     }
   }

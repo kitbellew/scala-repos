@@ -28,11 +28,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
   import AccumulatorParam._
 
   override def afterEach(): Unit =
-    try {
-      Accumulators.clear()
-    } finally {
-      super.afterEach()
-    }
+    try Accumulators.clear()
+    finally super.afterEach()
 
   test("get param") {
     assert(getParam(EXECUTOR_DESERIALIZE_TIME) === LongAccumulatorParam)
@@ -267,16 +264,15 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
         val taskContext = TaskContext.get()
         val isFirstStageAttempt = taskContext
           .taskAttemptId() < numPartitions * 2
-        if (isFirstStageAttempt) {
+        if (isFirstStageAttempt)
           throw new FetchFailedException(
             SparkEnv.get.blockManager.blockManagerId,
             sid,
             taskContext.partitionId(),
             taskContext.partitionId(),
             "simulated fetch failure")
-        } else {
+        else
           iter
-        }
     }
 
     // Register asserts in job completion callback to avoid flakiness
@@ -287,11 +283,10 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       ) // 1 shuffle map stage + 1 result stage, both are retried
       val mapStageId = stageInfos.head.stageId
       val mapStageInfo1stAttempt = stageInfos.head
-      val mapStageInfo2ndAttempt = {
+      val mapStageInfo2ndAttempt =
         stageInfos.tail.find(_.stageId == mapStageId).getOrElse {
           fail("expected two attempts of the same shuffle map stage.")
         }
-      }
       val stageAccum1stAttempt =
         findTestAccum(mapStageInfo1stAttempt.accumulables.values)
       val stageAccum2ndAttempt =

@@ -67,9 +67,8 @@ private[spark] class RollingFileAppender(
       closeFile()
       moveFile()
       openFile()
-      if (maxRetainedFiles > 0) {
+      if (maxRetainedFiles > 0)
         deleteOldFiles()
-      }
     } catch {
       case e: Exception =>
         logError(s"Error rolling over $activeFile", e)
@@ -83,7 +82,7 @@ private[spark] class RollingFileAppender(
       activeFile.getParentFile,
       activeFile.getName + rolloverSuffix).getAbsoluteFile
     logDebug(s"Attempting to rollover file $activeFile to file $rolloverFile")
-    if (activeFile.exists) {
+    if (activeFile.exists)
       if (!rolloverFile.exists) {
         Files.move(activeFile, rolloverFile)
         logInfo(s"Rolled over $activeFile to $rolloverFile")
@@ -106,9 +105,8 @@ private[spark] class RollingFileAppender(
             s"rolled over $activeFile to file $altRolloverFile")
         Files.move(activeFile, altRolloverFile)
       }
-    } else {
+    else
       logWarning(s"File $activeFile does not exist")
-    }
   }
 
   /** Retain only last few files */

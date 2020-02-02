@@ -289,10 +289,9 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
         "Expected exception when producing to topic with fewer brokers than min.insync.replicas")
     } catch {
       case e: ExecutionException =>
-        if (!e.getCause.isInstanceOf[NotEnoughReplicasException]) {
+        if (!e.getCause.isInstanceOf[NotEnoughReplicasException])
           fail(
             "Expected NotEnoughReplicasException when producing to topic with fewer brokers than min.insync.replicas")
-        }
     }
   }
 
@@ -329,10 +328,9 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
       case e: ExecutionException =>
         if (!e.getCause.isInstanceOf[NotEnoughReplicasException] &&
             !e.getCause.isInstanceOf[NotEnoughReplicasAfterAppendException] &&
-            !e.getCause.isInstanceOf[TimeoutException]) {
+            !e.getCause.isInstanceOf[TimeoutException])
           fail("Expected NotEnoughReplicasException or NotEnoughReplicasAfterAppendException when producing to topic " +
             "with fewer brokers than min.insync.replicas, but saw " + e.getCause)
-        }
     }
 
     // restart the server

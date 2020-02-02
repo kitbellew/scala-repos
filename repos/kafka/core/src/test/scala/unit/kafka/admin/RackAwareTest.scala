@@ -31,12 +31,11 @@ trait RackAwareTest {
       verifyLeaderDistribution: Boolean = true,
       verifyReplicasDistribution: Boolean = true) {
     // always verify that no broker will be assigned for more than one replica
-    for ((_, brokerList) <- assignment) {
+    for ((_, brokerList) <- assignment)
       assertEquals(
         "More than one replica is assigned to same broker for the same partition",
         brokerList.toSet.size,
         brokerList.size)
-    }
     val distribution = getReplicaDistribution(assignment, brokerRackMapping)
 
     if (verifyRackAware) {

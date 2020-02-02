@@ -99,12 +99,11 @@ private[impl] class ReviveOffersActor(
           conf.minReviveOffersInterval()
         )
         nextReviveCancellableOpt = Some(schedulerCheck(untilNextRevive))
-      } else if (log.isDebugEnabled) {
+      } else if (log.isDebugEnabled)
         log.info(
           "=> Next revive already scheduled at {} not yet due for {}",
           nextRevive,
           untilNextRevive)
-      }
     }
   }
 
@@ -143,18 +142,16 @@ private[impl] class ReviveOffersActor(
         log.info(
           s"Received reviveOffers notification: ${msg.getClass.getSimpleName}")
         initiateNewSeriesOfRevives()
-      } else {
+      } else
         log.info(
           s"Ignoring ${msg.getClass.getSimpleName} because no one is currently interested in offers")
-      }
 
     case ReviveOffersActor.TimedCheck =>
       log.info(s"Received TimedCheck")
-      if (revivesNeeded > 0) {
+      if (revivesNeeded > 0)
         reviveOffers()
-      } else {
+      else
         log.info("=> no revives needed right now")
-      }
   }
 
   protected def schedulerCheck(duration: FiniteDuration): Cancellable = {

@@ -36,22 +36,22 @@ private[spark] class MeanEvaluator(totalOutputs: Int, confidence: Double)
   }
 
   override def currentResult(): BoundedDouble =
-    if (outputsMerged == totalOutputs) {
+    if (outputsMerged == totalOutputs)
       new BoundedDouble(counter.mean, 1.0, counter.mean, counter.mean)
-    } else if (outputsMerged == 0) {
+    else if (outputsMerged == 0)
       new BoundedDouble(
         0,
         0.0,
         Double.NegativeInfinity,
         Double.PositiveInfinity)
-    } else {
+    else {
       val mean = counter.mean
       val stdev = math.sqrt(counter.sampleVariance / counter.count)
       val confFactor = {
-        if (counter.count > 100) {
+        if (counter.count > 100)
           new NormalDistribution()
             .inverseCumulativeProbability(1 - (1 - confidence) / 2)
-        } else {
+        else {
           val degreesOfFreedom = (counter.count - 1).toInt
           new TDistribution(degreesOfFreedom)
             .inverseCumulativeProbability(1 - (1 - confidence) / 2)

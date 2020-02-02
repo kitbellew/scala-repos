@@ -138,9 +138,8 @@ final class ListBuffer[A]
     if (exported) copy()
     if (n == 0) {
       val newElem = new ::(x, start.tail)
-      if (last0 eq start) {
+      if (last0 eq start)
         last0 = newElem
-      }
       start = newElem
     } else {
       var cursor = start
@@ -150,9 +149,8 @@ final class ListBuffer[A]
         i += 1
       }
       val newElem = new ::(x, cursor.tail.tail)
-      if (last0 eq cursor.tail) {
+      if (last0 eq cursor.tail)
         last0 = newElem
-      }
       cursor.asInstanceOf[::[A]].tl = newElem
     }
   }
@@ -224,14 +222,14 @@ final class ListBuffer[A]
     if (exported) copy()
     var elems = seq.toList.reverse
     len += elems.length
-    if (n == 0) {
+    if (n == 0)
       while (!elems.isEmpty) {
         val newElem = new ::(elems.head, start)
         if (start.isEmpty) last0 = newElem
         start = newElem
         elems = elems.tail
       }
-    } else {
+    else {
       var cursor = start
       var i = 1
       while (i < n) {
@@ -343,9 +341,9 @@ final class ListBuffer[A]
     if (n < 0 || n >= len) throw new IndexOutOfBoundsException(n.toString())
     if (exported) copy()
     var old = start.head
-    if (n == 0) {
+    if (n == 0)
       start = start.tail
-    } else {
+    else {
       var cursor = start
       var i = 1
       while (i < n) {
@@ -373,9 +371,8 @@ final class ListBuffer[A]
       reduceLengthBy(1)
     } else {
       var cursor = start
-      while (!cursor.tail.isEmpty && cursor.tail.head != elem) {
+      while (!cursor.tail.isEmpty && cursor.tail.head != elem)
         cursor = cursor.tail
-      }
       if (!cursor.tail.isEmpty) {
         val z = cursor.asInstanceOf[::[A]]
         if (z.tl == last0)

@@ -88,9 +88,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
       conf,
       new SecurityManager(conf))
     // initialize workers
-    for (i <- 0 until 5) {
+    for (i <- 0 until 5)
       worker.executors += s"app1/$i" -> createExecutorRunner(i)
-    }
     // initialize ExecutorStateChanged Message
     worker.handleExecutorStateChanged(
       ExecutorStateChanged("app1", 0, ExecutorState.EXITED, None, None))
@@ -100,9 +99,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
       worker.handleExecutorStateChanged(
         ExecutorStateChanged("app1", i, ExecutorState.EXITED, None, None))
       assert(worker.finishedExecutors.size === 2)
-      if (i > 1) {
+      if (i > 1)
         assert(!worker.finishedExecutors.contains(s"app1/${i - 2}"))
-      }
       assert(worker.executors.size === 4 - i)
     }
   }
@@ -123,9 +121,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
       conf,
       new SecurityManager(conf))
     // initialize workers
-    for (i <- 0 until 50) {
+    for (i <- 0 until 50)
       worker.executors += s"app1/$i" -> createExecutorRunner(i)
-    }
     // initialize ExecutorStateChanged Message
     worker.handleExecutorStateChanged(
       ExecutorStateChanged("app1", 0, ExecutorState.EXITED, None, None))
@@ -133,19 +130,16 @@ class WorkerSuite extends SparkFunSuite with Matchers {
     assert(worker.executors.size === 49)
     for (i <- 1 until 50) {
       val expectedValue = {
-        if (worker.finishedExecutors.size < 30) {
+        if (worker.finishedExecutors.size < 30)
           worker.finishedExecutors.size + 1
-        } else {
+        else
           28
-        }
       }
       worker.handleExecutorStateChanged(
         ExecutorStateChanged("app1", i, ExecutorState.EXITED, None, None))
-      if (expectedValue == 28) {
-        for (j <- i - 30 until i - 27) {
+      if (expectedValue == 28)
+        for (j <- i - 30 until i - 27)
           assert(!worker.finishedExecutors.contains(s"app1/$j"))
-        }
-      }
       assert(worker.executors.size === 49 - i)
       assert(worker.finishedExecutors.size === expectedValue)
     }
@@ -180,9 +174,8 @@ class WorkerSuite extends SparkFunSuite with Matchers {
       val driverId = s"driverId-$i"
       worker.handleDriverStateChanged(
         DriverStateChanged(driverId, DriverState.FINISHED, None))
-      if (i > 1) {
+      if (i > 1)
         assert(!worker.finishedDrivers.contains(s"driverId-${i - 2}"))
-      }
       assert(worker.drivers.size === 4 - i)
       assert(worker.finishedDrivers.size === 2)
     }
@@ -215,20 +208,17 @@ class WorkerSuite extends SparkFunSuite with Matchers {
     assert(worker.drivers.size === 49)
     for (i <- 1 until 50) {
       val expectedValue = {
-        if (worker.finishedDrivers.size < 30) {
+        if (worker.finishedDrivers.size < 30)
           worker.finishedDrivers.size + 1
-        } else {
+        else
           28
-        }
       }
       val driverId = s"driverId-$i"
       worker.handleDriverStateChanged(
         DriverStateChanged(driverId, DriverState.FINISHED, None))
-      if (expectedValue == 28) {
-        for (j <- i - 30 until i - 27) {
+      if (expectedValue == 28)
+        for (j <- i - 30 until i - 27)
           assert(!worker.finishedDrivers.contains(s"driverId-$j"))
-        }
-      }
       assert(worker.drivers.size === 49 - i)
       assert(worker.finishedDrivers.size === expectedValue)
     }

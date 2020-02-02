@@ -26,13 +26,11 @@ object TypecheckingMacros {
         } catch {
           case e: TypecheckException =>
             val errMsg = e.getMessage
-            for (msg <- expectedMsg) {
-              if (errMsg != msg) {
+            for (msg <- expectedMsg)
+              if (errMsg != msg)
                 c.abort(
                   c.enclosingPosition,
                   s"Type errors mismatch.\nExpected: $msg\nFound: $errMsg")
-              }
-            }
         }
 
       reify(())

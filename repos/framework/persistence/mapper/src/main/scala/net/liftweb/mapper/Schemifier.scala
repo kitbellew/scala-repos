@@ -85,11 +85,8 @@ object Schemifier extends Loggable {
   private def using[RetType <: Any, VarType <: ResultSet](f: => VarType)(
       f2: VarType => RetType): RetType = {
     val theVar = f
-    try {
-      f2(theVar)
-    } finally {
-      theVar.close()
-    }
+    try f2(theVar)
+    finally theVar.close()
   }
 
   /**
@@ -130,13 +127,12 @@ object Schemifier extends Loggable {
       val connection = con // SuperConnection(con)
       val driver = DriverType.calcDriver(connection)
       val actualTableNames = new HashMap[String, String]
-      if (performWrite) {
+      if (performWrite)
         tables.foreach { t =>
           logger.debug(
             "Running beforeSchemifier on table %s".format(t.dbTableName))
           t.beforeSchemifier
         }
-      }
 
       def tableCheck(
           t: BaseMetaMapper,
@@ -315,7 +311,7 @@ object Schemifier extends Loggable {
           table,
           connection).mkString(" , ") + ") " + connection.createTablePostpend
       }
-      if (!connection.driverType.pkDefinedByIndexColumn_?) {
+      if (!connection.driverType.pkDefinedByIndexColumn_?)
         // Add primary key only when it has not been created by the index field itself.
         table.mappedFields
           .filter { f => f.dbPrimaryKey_? }
@@ -328,7 +324,6 @@ object Schemifier extends Loggable {
               }
             }
           }
-      }
       hasTable_?(table, connection, actualTableNames)
       Collector(table.dbAddTable.toList, cmds.toList)
     } else Collector(Nil, cmds.toList)
@@ -383,12 +378,11 @@ object Schemifier extends Loggable {
             "ALTER TABLE " + table._dbTableNameLC + " " + connection.driverType.alterAddColumn + " " + field
               .fieldCreatorString(connection.driverType, colName)
           }
-          if ((!connection.driverType.pkDefinedByIndexColumn_?) && field.dbPrimaryKey_?) {
+          if ((!connection.driverType.pkDefinedByIndexColumn_?) && field.dbPrimaryKey_?)
             // Add primary key only when it has not been created by the index field itself.
             cmds += maybeWrite(performWrite, logFunc, connection) { () =>
               "ALTER TABLE " + table._dbTableNameLC + " ADD CONSTRAINT " + table._dbTableNameLC + "_PK PRIMARY KEY(" + field._dbColumnNameLC + ")"
             }
-          }
       }
 
       field.dbAddedColumn.toList
@@ -419,17 +413,15 @@ object Schemifier extends Loggable {
         false)) { rs =>
       def quad(rs: ResultSet): List[(String, String, Int)] =
         if (!rs.next) Nil
-        else {
-          if (rs.getString(3).equalsIgnoreCase(table._dbTableNameLC)) {
-            // Skip index statistics
-            if (rs.getShort(7) != DatabaseMetaData.tableIndexStatistic) {
-              (
-                rs.getString(6).toLowerCase,
-                rs.getString(9).toLowerCase,
-                rs.getInt(8)) :: quad(rs)
-            } else quad(rs)
-          } else Nil
-        }
+        else if (rs.getString(3).equalsIgnoreCase(table._dbTableNameLC))
+          // Skip index statistics
+          if (rs.getShort(7) != DatabaseMetaData.tableIndexStatistic)
+            (
+              rs.getString(6).toLowerCase,
+              rs.getString(9).toLowerCase,
+              rs.getInt(8)) :: quad(rs)
+          else quad(rs)
+        else Nil
       quad(rs)
     }
     // val q = quad(rs)
@@ -478,11 +470,10 @@ object Schemifier extends Loggable {
       }
 
       val fn = columns.map(_.field._dbColumnNameLC.toLowerCase).sortWith(_ < _)
-      if (!indexedFields.contains(fn)) {
+      if (!indexedFields.contains(fn))
         cmds += maybeWrite(performWrite, logFunc, connection) { () =>
           createStatement
         }
-      }
     }
 
     Collector(single, cmds.toList)
@@ -498,7 +489,7 @@ object Schemifier extends Loggable {
     val cmds = new ListBuffer[String]()
     val ret =
       if (connection.supportsForeignKeys_? && MapperRules.createForeignKeys_?(
-            dbId)) {
+            dbId))
         table.mappedFields
           .flatMap { f =>
             f match {
@@ -533,13 +524,11 @@ object Schemifier extends Loggable {
                 "ALTER TABLE " + table._dbTableNameLC + " ADD FOREIGN KEY ( " + field._dbColumnNameLC + " ) REFERENCES " + other._dbTableNameLC + " ( " + field.dbKeyToColumn._dbColumnNameLC + " ) "
               }
               field.dbAddedForeignKey.toList
-            } else {
+            } else
               Nil
-            }
           }
-      } else {
+      else
         Nil
-      }
 
     Collector(ret, cmds.toList)
   }

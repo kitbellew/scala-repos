@@ -141,14 +141,12 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           cookThreshold,
           storageTimeout,
           txLogScheduler)(actorSystem)
-      } yield {
-        nihdbV.disjunction leftMap {
-          ResourceError.fromExtractorError(
-            "Failed to create NIHDB in %s as %s"
-              .format(versionDir.toString, authorities))
-        } map {
-          NIHDBResource(_)
-        }
+      } yield nihdbV.disjunction leftMap {
+        ResourceError.fromExtractorError(
+          "Failed to create NIHDB in %s as %s"
+            .format(versionDir.toString, authorities))
+      } map {
+        NIHDBResource(_)
       }
 
     def openNIHDB(descriptorDir: File): IO[ResourceError \/ NIHDBResource] =
@@ -314,9 +312,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           if (read < 0) None
           else if (read == bytes.length) Some(bytes)
           else Some(java.util.Arrays.copyOf(bytes, read))
-        } else {
+        } else
           readChunk(fin, remaining)
-        }
       }
 
       StreamT.unfoldM[IO, Array[Byte], Long](0L) { offset =>
@@ -346,11 +343,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
     def pathStructure(selector: CPath)(implicit M: Monad[Future]) = {
       (projection: Projection) =>
         right {
-          for (children <- projection.structure) yield {
-            PathStructure(
+          for (children <- projection.structure)
+            yield PathStructure(
               projection.reduce(Reductions.count, selector),
               children.map(_.selector))
-          }
         }
     }
   }
@@ -402,9 +398,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       EitherT {
         (projectionsActor ? FindChildren(path)).mapTo[MetadataResult] map {
           case PathChildren(_, children) =>
-            \/.right(for (pm <- children; p0 <- (pm.path - path)) yield {
-              pm.copy(path = p0)
-            })
+            \/.right(
+              for (pm <- children; p0 <- (pm.path - path))
+                yield pm.copy(path = p0))
           case PathOpFailure(_, error) => \/.left(error)
         }
       }
@@ -488,11 +484,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               IO { pathActors += (path -> newActor); pathLRU += (path -> ()) }
             }
           }
-        } yield {
-          actorV valueOr {
-            case Extractor.Thrown(t) => throw t
-            case error               => throw new Exception(error.message)
-          }
+        } yield actorV valueOr {
+          case Extractor.Thrown(t) => throw t
+          case error               => throw new Exception(error.message)
         }
       }
 
@@ -541,7 +535,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                   permissionsFinder.writePermissions(
                     apiKey,
                     path,
-                    clock.instant()) map { apiKey -> _ }
+                    clock.instant()) map apiKey -> _
               } map { perms =>
                 val allPerms: Map[APIKey, Set[WritePermission]] =
                   perms.map(Map(_)).suml
@@ -625,11 +619,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     private def promoteVersion(version: UUID): IO[PrecogUnit] =
       // we only promote if the requested version is in progress
-      if (versionLog.isCompleted(version)) {
+      if (versionLog.isCompleted(version))
         IO(PrecogUnit)
-      } else {
+      else
         versionLog.completeVersion(version)
-      }
 
     private def openResource(
         version: UUID): EitherT[IO, ResourceError, Resource] =
@@ -641,11 +634,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         versionLog.find(version) map {
           case VersionEntry(v, _, _) =>
             val dir = versionDir(v)
-            val openf = if (NIHDB.hasProjection(dir)) {
-              resourceBuilder.openNIHDB _
-            } else {
-              resourceBuilder.openBlob _
-            }
+            val openf =
+              if (NIHDB.hasProjection(dir))
+                resourceBuilder.openNIHDB _
+              else
+                resourceBuilder.openBlob _
 
             for {
               resource <- EitherT {
@@ -694,12 +687,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 .setHead(version) >> maybeExpireCache(apiKey, resource))
           } yield PrecogUnit
         }
-      } yield {
-        created.fold(
-          error => PathOpFailure(path, error),
-          (_: Resource) => UpdateSuccess(path)
-        )
-      }
+      } yield created.fold(
+        error => PathOpFailure(path, error),
+        (_: Resource) => UpdateSuccess(path)
+      )
     }
 
     private def maybeExpireCache(
@@ -763,7 +754,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         def batch(msg: IngestMessage) =
           NIHDB.Batch(offset, msg.data.map(_.value))
 
-        if (versionLog.find(streamId).isDefined) {
+        if (versionLog.find(streamId).isDefined)
           openNIHDB(streamId)
             .fold[IO[PrecogUnit]](
               error => IO(requestor ! PathOpFailure(path, error)),
@@ -782,7 +773,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 }
             )
             .join
-        } else if (createIfAbsent) {
+        else if (createIfAbsent) {
           logger.trace("Creating new nihdb database for streamId " + streamId)
           performCreate(
             msg.apiKey,
@@ -815,7 +806,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         // TODO: I think the semantics here of createIfAbsent aren't
         // quite right. If we're in a replay we don't want to return
         // errors if we're already complete
-        if (createIfAbsent) {
+        if (createIfAbsent)
           performCreate(
             msg.apiKey,
             BlobData(msg.content.data, msg.content.mimeType),
@@ -825,7 +816,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             maybeCompleteJob(msg, terminal, response) pipeTo requestor
             PrecogUnit
           }
-        } else {
+        else
           //TODO: update job
           IO(
             requestor ! PathOpFailure(
@@ -833,7 +824,6 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               IllegalWriteRequestError(
                 "Cannot overwrite existing resource. %s not applied.".format(
                   msg.toString))))
-        }
       }
 
       msgs traverse {
@@ -887,11 +877,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             msg @ StoreFileMessage(_, path, _, _, _, _, _, streamRef)) =>
           streamRef match {
             case StreamRef.Create(streamId, terminal) =>
-              if (!terminal) {
+              if (!terminal)
                 logger.warn(
                   "Non-terminal BLOB for %s will not currently behave correctly!"
                     .format(path))
-              }
               persistFile(
                 versionLog.current.isEmpty && !versionLog.isCompleted(streamId),
                 offset,
@@ -900,11 +889,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 terminal)
 
             case StreamRef.Replace(streamId, terminal) =>
-              if (!terminal) {
+              if (!terminal)
                 logger.warn(
                   "Non-terminal BLOB for %s will not currently behave correctly!"
                     .format(path))
-              }
               persistFile(
                 !versionLog.isCompleted(streamId),
                 offset,

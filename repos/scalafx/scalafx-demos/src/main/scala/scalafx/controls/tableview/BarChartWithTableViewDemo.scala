@@ -96,12 +96,12 @@ object BarChartWithTableViewDemo extends JFXApp {
       columns ++= List(
         new TableColumn[Position, String] {
           text = "Position"
-          cellValueFactory = { _.value.name }
+          cellValueFactory = _.value.name
           prefWidth = 180
         },
         new TableColumn[Position, Int] {
           text = "Value"
-          cellValueFactory = { _.value.value }
+          cellValueFactory = _.value.value
           prefWidth = 180
         }
       )

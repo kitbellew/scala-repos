@@ -175,9 +175,8 @@ abstract class Source extends java.io.Serializable {
     //insane workaround for scala compiler bug
     val sinks = flowDef.getSinks.asInstanceOf[JMap[String, Any]]
     val sinkName = sourceId
-    if (!sinks.containsKey(sinkName)) {
+    if (!sinks.containsKey(sinkName))
       sinks.put(sinkName, createTap(Write)(mode))
-    }
     val newPipe = (mode, transformInTest) match {
       case (test: TestMode, false) => pipe
       case _                       => transformForWrite(pipe)

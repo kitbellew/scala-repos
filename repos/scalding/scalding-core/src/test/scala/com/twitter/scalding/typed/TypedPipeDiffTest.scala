@@ -189,17 +189,13 @@ class TypedPipeDiffLaws extends PropSpec with PropertyChecks with Checkers {
     implicit val arbNoOrdering = Arbitrary {
       for {
         strs <- Arbitrary.arbitrary[Array[String]]
-      } yield {
-        strs.map { new NoOrdering(_) }
-      }
+      } yield strs.map { new NoOrdering(_) }
     }
 
     implicit val arbNoOrderingHashCollision = Arbitrary {
       for {
         strs <- Arbitrary.arbitrary[Array[String]]
-      } yield {
-        strs.map { new NoOrderingHashCollisions(_) }
-      }
+      } yield strs.map { new NoOrderingHashCollisions(_) }
     }
 
     check(TypedPipeDiffLaws.diffArrayLaw[Long])
@@ -220,17 +216,13 @@ class TypedPipeDiffLaws extends PropSpec with PropertyChecks with Checkers {
     implicit val arbNoOrdering = Arbitrary {
       for {
         name <- Arbitrary.arbitrary[String]
-      } yield {
-        new NoOrdering(name)
-      }
+      } yield new NoOrdering(name)
     }
 
     implicit val arbNoOrderingHashCollision = Arbitrary {
       for {
         name <- Arbitrary.arbitrary[String]
-      } yield {
-        new NoOrderingHashCollisions(name)
-      }
+      } yield new NoOrderingHashCollisions(name)
     }
 
     check(TypedPipeDiffLaws.diffByGroupLaw[Int])

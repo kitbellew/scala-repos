@@ -22,18 +22,17 @@ case class Logarthmic(p: Double)(implicit rand: RandBasis = Rand)
 
     val u2 = rand.uniform.draw()
 
-    if (u2 > p) {
+    if (u2 > p)
       1
-    } else {
+    else {
       val u1 = rand.uniform.draw()
       val q = -expm1(u1 * h)
-      if (u2 < q * q) {
+      if (u2 < q * q)
         round(1.0 + log(u2) / log(q)).toInt
-      } else if (u2 > q) {
+      else if (u2 > q)
         1
-      } else {
+      else
         2
-      }
     }
 
   }

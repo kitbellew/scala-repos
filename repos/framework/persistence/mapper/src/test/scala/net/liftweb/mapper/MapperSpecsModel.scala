@@ -35,11 +35,10 @@ import Helpers._
 object MapperSpecsModel {
   // These rules are common to all Mapper specs
   def snakify(connid: ConnectionIdentifier, name: String): String =
-    if (connid.jndiName == "snake") {
+    if (connid.jndiName == "snake")
       StringHelpers.snakify(name)
-    } else {
+    else
       name.toLowerCase
-    }
 
   MapperRules.columnName = snakify
   MapperRules.tableName = snakify

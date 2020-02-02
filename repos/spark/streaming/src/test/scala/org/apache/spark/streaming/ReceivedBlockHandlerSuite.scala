@@ -92,11 +92,9 @@ class ReceivedBlockHandlerSuite
   }
 
   after {
-    for (blockManager <- blockManagerBuffer) {
-      if (blockManager != null) {
+    for (blockManager <- blockManagerBuffer)
+      if (blockManager != null)
         blockManager.stop()
-      }
-    }
     blockManager = null
     blockManagerBuffer.clear()
     if (blockManagerMaster != null) {
@@ -360,38 +358,34 @@ class ReceivedBlockHandlerSuite
     blockManager = bManager
     storageLevel = sLevel
     var bId: StreamBlockId = null
-    try {
-      if (isBlockManagedBasedBlockHandler) {
-        // test received block with BlockManager based handler
-        withBlockManagerBasedBlockHandler { handler =>
-          val (blockId, blockStoreResult) =
-            storeSingleBlock(handler, receivedBlock)
-          bId = blockId
-          assert(
-            blockStoreResult.numRecords === expectedNumRecords,
-            "Message count not matches for a " +
-              receivedBlock.getClass.getName +
-              " being inserted using BlockManagerBasedBlockHandler with " + sLevel
-          )
-        }
-      } else {
-        // test received block with WAL based handler
-        withWriteAheadLogBasedBlockHandler { handler =>
-          val (blockId, blockStoreResult) =
-            storeSingleBlock(handler, receivedBlock)
-          bId = blockId
-          assert(
-            blockStoreResult.numRecords === expectedNumRecords,
-            "Message count not matches for a " +
-              receivedBlock.getClass.getName +
-              " being inserted using WriteAheadLogBasedBlockHandler with " + sLevel
-          )
-        }
+    try if (isBlockManagedBasedBlockHandler)
+      // test received block with BlockManager based handler
+      withBlockManagerBasedBlockHandler { handler =>
+        val (blockId, blockStoreResult) =
+          storeSingleBlock(handler, receivedBlock)
+        bId = blockId
+        assert(
+          blockStoreResult.numRecords === expectedNumRecords,
+          "Message count not matches for a " +
+            receivedBlock.getClass.getName +
+            " being inserted using BlockManagerBasedBlockHandler with " + sLevel
+        )
       }
-    } finally {
-      // Removing the Block Id to use same blockManager for next test
-      blockManager.removeBlock(bId, true)
-    }
+    else
+      // test received block with WAL based handler
+      withWriteAheadLogBasedBlockHandler { handler =>
+        val (blockId, blockStoreResult) =
+          storeSingleBlock(handler, receivedBlock)
+        bId = blockId
+        assert(
+          blockStoreResult.numRecords === expectedNumRecords,
+          "Message count not matches for a " +
+            receivedBlock.getClass.getName +
+            " being inserted using WriteAheadLogBasedBlockHandler with " + sLevel
+        )
+      } finally
+    // Removing the Block Id to use same blockManager for next test
+    blockManager.removeBlock(bId, true)
   }
 
   /**
@@ -467,11 +461,8 @@ class ReceivedBlockHandlerSuite
       hadoopConf,
       tempDirectory.toString,
       manualClock)
-    try {
-      body(receivedBlockHandler)
-    } finally {
-      receivedBlockHandler.stop()
-    }
+    try body(receivedBlockHandler)
+    finally receivedBlockHandler.stop()
   }
 
   /** Store blocks using a handler */

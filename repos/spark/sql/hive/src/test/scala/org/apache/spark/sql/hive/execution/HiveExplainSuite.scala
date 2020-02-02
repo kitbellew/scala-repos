@@ -109,9 +109,8 @@ class HiveExplainSuite
         "== Parsed Logical Plan ==" :: "== Analyzed Logical Plan ==" :: "Subquery" ::
           "== Optimized Logical Plan ==" :: "== Physical Plan ==" ::
           "CreateTableAsSelect" :: "InsertIntoHiveTable" :: "jt" :: Nil
-      for (key <- shouldContain) {
+      for (key <- shouldContain)
         assert(outputs.contains(key), s"$key doesn't exist in result")
-      }
 
       val physicalIndex = outputs.indexOf("== Physical Plan ==")
       assert(

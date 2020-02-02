@@ -48,21 +48,19 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
     require(x <= 1)
     x match {
       case 0.0 =>
-        if (a > 1) {
+        if (a > 1)
           0
-        } else if (a == 1) {
+        else if (a == 1)
           normalizer
-        } else {
+        else
           Double.PositiveInfinity
-        }
       case 1.0 =>
-        if (b > 1) {
+        if (b > 1)
           0
-        } else if (b == 1) {
+        else if (b == 1)
           normalizer
-        } else {
+        else
           Double.PositiveInfinity
-        }
       case x => math.exp(logPdf(x))
     }
   }
@@ -89,12 +87,10 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
           //        val Y = math.pow(V, 1.0 / b)
           val logY = math.log(V) / b
           val logSum = softmax(logX, logY)
-          if (logSum <= 0.0) {
+          if (logSum <= 0.0)
             return math.exp(logX - logSum)
-          }
-        } else {
+        } else
           throw new RuntimeException("Underflow!")
-        }
       }
       throw new RuntimeException("Shouldn't be here.")
     } else if (a <= 1 && b <= 1) {
@@ -107,12 +103,10 @@ class Beta(a: Double, b: Double)(implicit rand: RandBasis = Rand)
           val X = math.pow(U, 1.0 / a)
           val Y = math.pow(V, 1.0 / b)
           val sum = X + Y
-          if (sum <= 1.0) {
+          if (sum <= 1.0)
             return X / sum
-          }
-        } else {
+        } else
           throw new RuntimeException("Underflow!")
-        }
       }
       throw new RuntimeException("Shouldn't be here.")
     } else {

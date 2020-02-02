@@ -64,10 +64,10 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
       }
       val m = flow.module
       val mat =
-        if (combine == Keep.left) {
+        if (combine == Keep.left)
           if (IgnorableMatValComp(m)) Ignore
           else Transform(_ => NotUsed, Atomic(m))
-        } else
+        else
           Combine(combine.asInstanceOf[(Any, Any) => Any], Ignore, Atomic(m))
       new Flow(
         CompositeModule(Set(m), m.shape, empty, empty, mat, Attributes.none))

@@ -49,11 +49,10 @@ case class Max(child: Expression) extends DeclarativeAggregate {
     /* max = */ Greatest(Seq(max, child))
   )
 
-  override lazy val mergeExpressions: Seq[Expression] = {
+  override lazy val mergeExpressions: Seq[Expression] =
     Seq(
       /* max = */ Greatest(Seq(max.left, max.right))
     )
-  }
 
   override lazy val evaluateExpression: AttributeReference = max
 }

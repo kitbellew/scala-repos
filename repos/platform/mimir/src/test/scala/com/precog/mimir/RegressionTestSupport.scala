@@ -96,9 +96,8 @@ trait RegressionTestSupport[M[+_]] {
         val idx1 = (length / 2) - 1
         val idx2 = (length / 2)
         (sorted(idx1) + sorted(idx2)) / 2
-      } else {
+      } else
         sorted(length / 2)
-      }
     }
 
     val median = computeMedian(values)

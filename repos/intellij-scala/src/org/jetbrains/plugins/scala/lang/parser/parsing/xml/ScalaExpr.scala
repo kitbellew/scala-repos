@@ -27,12 +27,10 @@ object ScalaExpr {
         builder.enableNewlines
       case _ => return false
     }
-    if (!Block.parse(builder, hasBrace = false, needNode = true)) {
+    if (!Block.parse(builder, hasBrace = false, needNode = true))
       builder error ErrMsg("xml.scala.expression.exected")
-    }
-    while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON) {
+    while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON)
       builder.advanceLexer()
-    }
     builder.getTokenType match {
       case ScalaTokenTypesEx.SCALA_IN_XML_INJECTION_END =>
         builder.advanceLexer()

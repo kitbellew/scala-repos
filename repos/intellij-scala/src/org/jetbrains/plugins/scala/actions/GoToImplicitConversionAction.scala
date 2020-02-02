@@ -227,9 +227,9 @@ class GoToImplicitConversionAction
       }
       if (expressions.length == 0)
         editor.getSelectionModel.selectLineAtCaret()
-      else if (expressions.length == 1) {
+      else if (expressions.length == 1)
         chooseExpression(expressions(0))
-      } else {
+      else
         ScalaRefactoringUtil.showChooser(
           editor,
           expressions,
@@ -237,7 +237,6 @@ class GoToImplicitConversionAction
           "Expressions",
           (expr: ScExpression) => ScalaRefactoringUtil.getShortText(expr)
         )
-      }
     }
   }
 
@@ -289,10 +288,9 @@ class GoToImplicitConversionAction
         ActionManager.getInstance.getAction(
           IdeActions.ACTION_SHOW_INTENTION_ACTIONS))
 
-      if (toolTipText.length > 0) {
+      if (toolTipText.length > 0)
         setToolTipText(
           CodeInsightBundle.message("lightbulb.tooltip", toolTipText))
-      }
 
       addMouseListener(new MouseAdapter {
         override def mouseEntered(e: MouseEvent) {
@@ -342,14 +340,12 @@ class GoToImplicitConversionAction
 
     def getCurrentItemBounds: Rectangle = {
       val index: Int = GoToImplicitConversionAction.getList.getSelectedIndex
-      if (index < 0) {
+      if (index < 0)
         throw new RuntimeException("Index = " + index + " is less than zero.")
-      }
       val itemBounds: Rectangle =
         GoToImplicitConversionAction.getList.getCellBounds(index, index)
-      if (itemBounds == null) {
+      if (itemBounds == null)
         throw new RuntimeException("No bounds for index = " + index + ".")
-      }
       itemBounds
     }
   }

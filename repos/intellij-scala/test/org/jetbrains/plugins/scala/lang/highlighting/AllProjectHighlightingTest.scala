@@ -86,9 +86,8 @@ class AllProjectHighlightingTest
         else internalSdk
 
       //todo: why we need this??? Looks like SBT integration problem, as we attached SDK as setting
-      if (ProjectJdkTable.getInstance().findJdk(sdk.getName) == null) {
+      if (ProjectJdkTable.getInstance().findJdk(sdk.getName) == null)
         ProjectJdkTable.getInstance().addJdk(sdk)
-      }
       ProjectRootManager.getInstance(myProject).setProjectSdk(sdk)
     }
 
@@ -154,9 +153,8 @@ class AllProjectHighlightingTest
 
       val visitor = new ScalaRecursiveElementVisitor {
         override def visitElement(element: ScalaPsiElement) {
-          try {
-            annotator.annotate(element, mock)
-          } catch {
+          try annotator.annotate(element, mock)
+          catch {
             case e: Throwable =>
               println(s"Exception in ${file.getName}, Stacktrace: ")
               e.printStackTrace()

@@ -37,13 +37,12 @@ class HttpBenchmark {
 
   @Setup
   def setup(): Unit = {
-    val route = {
+    val route =
       path("test") {
         get {
           complete("ok")
         }
       }
-    }
 
     binding =
       Await.result(Http().bindAndHandle(route, "127.0.0.1", 0), 1.second)

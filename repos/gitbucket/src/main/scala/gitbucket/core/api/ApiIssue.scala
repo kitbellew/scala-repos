@@ -19,23 +19,22 @@ case class ApiIssue(
     body: String)(repositoryName: RepositoryName, isPullRequest: Boolean) {
   val comments_url = ApiPath(
     s"/api/v3/repos/${repositoryName.fullName}/issues/$number/comments")
-  val html_url = ApiPath(s"/${repositoryName.fullName}/${if (isPullRequest) {
+  val html_url = ApiPath(s"/${repositoryName.fullName}/${if (isPullRequest)
     "pull"
-  } else {
-    "issues"
-  }}/$number")
-  val pull_request = if (isPullRequest) {
-    Some(
-      Map(
-        "url" -> ApiPath(
-          s"/api/v3/repos/${repositoryName.fullName}/pulls/$number"),
-        "html_url" -> ApiPath(s"/${repositoryName.fullName}/pull/$number")
-        // "diff_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.diff"),
-        // "patch_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.patch")
-      ))
-  } else {
-    None
-  }
+  else
+    "issues"}/$number")
+  val pull_request =
+    if (isPullRequest)
+      Some(
+        Map(
+          "url" -> ApiPath(
+            s"/api/v3/repos/${repositoryName.fullName}/pulls/$number"),
+          "html_url" -> ApiPath(s"/${repositoryName.fullName}/pull/$number")
+          // "diff_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.diff"),
+          // "patch_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.patch")
+        ))
+    else
+      None
 }
 
 object ApiIssue {
@@ -47,11 +46,11 @@ object ApiIssue {
       number = issue.issueId,
       title = issue.title,
       user = user,
-      state = if (issue.closed) {
-        "closed"
-      } else {
-        "open"
-      },
+      state =
+        if (issue.closed)
+          "closed"
+        else
+          "open",
       body = issue.content.getOrElse(""),
       created_at = issue.registeredDate,
       updated_at = issue.updatedDate

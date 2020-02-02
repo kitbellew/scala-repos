@@ -27,9 +27,8 @@ class SingleImportInspection extends LocalInspectionTool {
                                                                                  1
                                                                                else
                                                                                  0) == 1) {
-          if (importExpr.selectors.length == 1 && importExpr.selectors.head.isAliasedImport) {
+          if (importExpr.selectors.length == 1 && importExpr.selectors.head.isAliasedImport)
             return
-          }
           holder.registerProblem(
             holder.getManager.createProblemDescriptor(
               importExpr.selectorSet.get,

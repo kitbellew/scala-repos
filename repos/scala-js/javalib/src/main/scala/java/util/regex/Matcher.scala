@@ -59,9 +59,8 @@ final class Matcher private[regex] (
       if (lastMatch ne null) {
         if (lastMatch(0).get.isEmpty)
           regexp.lastIndex += 1
-      } else {
+      } else
         canStillFind = false
-      }
       lastMatch ne null
     } else false
 
@@ -80,7 +79,7 @@ final class Matcher private[regex] (
 
     val len = replacement.length
     var i = 0
-    while (i < len) {
+    while (i < len)
       replacement.charAt(i) match {
         case '$' =>
           i += 1
@@ -99,7 +98,6 @@ final class Matcher private[regex] (
           sb.append(c)
           i += 1
       }
-    }
 
     appendPos = end
     this
@@ -119,18 +117,16 @@ final class Matcher private[regex] (
       appendReplacement(sb, replacement)
       appendTail(sb)
       sb.toString
-    } else {
+    } else
       inputstr
-    }
   }
 
   def replaceAll(replacement: String): String = {
     reset()
 
     val sb = new StringBuffer
-    while (find()) {
+    while (find())
       appendReplacement(sb, replacement)
-    }
     appendTail(sb)
 
     sb.toString

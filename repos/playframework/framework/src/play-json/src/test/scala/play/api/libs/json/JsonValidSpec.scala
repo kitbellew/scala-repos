@@ -447,13 +447,12 @@ object JsonValidSpec extends Specification {
     "Format simpler syntax without constraints" in {
       val bobby = User("bobby", 54)
 
-      implicit val userFormats = {
+      implicit val userFormats =
         (
           (__ \ 'name).format[String]
             and
               (__ \ 'age).format[Int]
         )(User, unlift(User.unapply))
-      }
 
       val js = Json.toJson(bobby)
 

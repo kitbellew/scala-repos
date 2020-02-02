@@ -62,15 +62,13 @@ class ScConstructorPatternImpl(node: ASTNode)
                     return false //todo: repeated parameters?
                   var i = 0
                   while (i < subpatterns.length) {
-                    val tp = {
+                    val tp =
                       substitutor.subst(
                         params(i)
                           .getType(TypingContext.empty)
                           .getOrElse(return false))
-                    }
-                    if (!subpatterns.apply(i).isIrrefutableFor(Some(tp))) {
+                    if (!subpatterns.apply(i).isIrrefutableFor(Some(tp)))
                       return false
-                    }
                     i = i + 1
                   }
                   true

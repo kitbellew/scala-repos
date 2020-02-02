@@ -27,9 +27,8 @@ import org.apache.spark.sql.hive.test.TestHiveSingleton
 abstract class SQLBuilderTest extends QueryTest with TestHiveSingleton {
   protected def checkSQL(e: Expression, expectedSQL: String): Unit = {
     val actualSQL = e.sql
-    try {
-      assert(actualSQL === expectedSQL)
-    } catch {
+    try assert(actualSQL === expectedSQL)
+    catch {
       case cause: Throwable =>
         fail(s"""Wrong SQL generated for the following expression:
              |
@@ -51,9 +50,8 @@ abstract class SQLBuilderTest extends QueryTest with TestHiveSingleton {
          """.stripMargin)
       }
 
-    try {
-      assert(generatedSQL === expectedSQL)
-    } catch {
+    try assert(generatedSQL === expectedSQL)
+    catch {
       case cause: Throwable =>
         fail(s"""Wrong SQL generated for the following logical query plan:
              |

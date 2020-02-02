@@ -384,11 +384,11 @@ trait PatternTypers {
 
       if (fun1.tpe.isErroneous)
         duplErrTree
-      else if (unapplyMethod.isMacro && !fun1.isInstanceOf[Apply]) {
+      else if (unapplyMethod.isMacro && !fun1.isInstanceOf[Apply])
         if (isBlackbox(unapplyMethod))
           duplErrorTree(BlackboxExtractorExpansion(tree))
         else duplErrorTree(WrongShapeExtractorExpansion(tree))
-      } else
+      else
         makeTypedUnapply()
     }
 

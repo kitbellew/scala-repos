@@ -76,10 +76,8 @@ object IngestSystem extends Logging {
       _ <- Future(logger.debug(
         config.logPrefix + " Stopping " + name + " actor within " + config.stopTimeout.duration))
       b <- gracefulStop(actor, config.stopTimeout.duration)
-    } yield {
-      logger.debug(
-        config.logPrefix + " Stop call for " + name + " actor returned " + b)
-    }
+    } yield logger.debug(
+      config.logPrefix + " Stop call for " + name + " actor returned " + b)
   } recover {
     case e => logger.error("Error stopping " + name + " actor", e)
   }

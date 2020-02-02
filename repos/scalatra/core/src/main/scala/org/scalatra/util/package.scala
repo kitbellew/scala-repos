@@ -11,12 +11,8 @@ package object util {
     * @param f the block
     */
   def using[A, B <: { def close(): Unit }](closeable: B)(f: B => A): A =
-    try {
-      f(closeable)
-    } finally {
-      if (closeable != null) {
-        closeable.close()
-      }
-    }
+    try f(closeable)
+    finally if (closeable != null)
+      closeable.close()
 
 }

@@ -122,7 +122,7 @@ trait ModelFactoryTypeSupport {
             if (aSym.isTypeParameterOrSkolem || aSym.isExistentiallyBound /* existential or existential skolem */ )
               return false
 
-            for (tpl <- inTpl.sym.ownerChain) {
+            for (tpl <- inTpl.sym.ownerChain)
               tpl.info.member(bSym.name) match {
                 case NoSymbol =>
                 // No syms with that name, look further inside the owner chain
@@ -138,13 +138,12 @@ trait ModelFactoryTypeSupport {
                         return true
                     }
               }
-            }
             // if it's not found in the owner chain, we can safely leave out the prefix
             false
           }
 
           val prefix =
-            if (!settings.docNoPrefixes && needsPrefix && (bSym != AnyRefClass /* which we normalize */ )) {
+            if (!settings.docNoPrefixes && needsPrefix && (bSym != AnyRefClass /* which we normalize */ ))
               if (!owner.isRefinementClass) {
                 val qName = makeQualifiedName(owner, Some(inTpl.sym))
                 if (qName != "") qName + "." else ""
@@ -154,7 +153,7 @@ trait ModelFactoryTypeSupport {
                 nameBuffer append ")#"
                 "" // we already appended the prefix
               }
-            } else ""
+            else ""
 
           //DEBUGGING:
           //if (makeQualifiedName(bSym) == "pack1.A") println("needsPrefix(" + bSym + ", " + owner + ", " + inTpl.qualifiedName + ") => " + needsPrefix + "  and prefix=" + prefix)
@@ -225,18 +224,17 @@ trait ModelFactoryTypeSupport {
                   nameBuffer append " <: "
                   appendType0(rt)
               }
-            } else {
+            } else
               // fallback to the Symbol infoString
               nameBuffer append sym.infoString(tp)
-            }
 
           def appendClauses = {
             nameBuffer append " forSome {"
             var first = true
             for (sym <- quantified) {
-              if (!first) {
+              if (!first)
                 nameBuffer append ", "
-              } else first = false
+              else first = false
               if (sym.isSingletonExistential) {
                 nameBuffer append "val "
                 nameBuffer append tpnme.dropSingletonName(sym.name)
@@ -261,9 +259,9 @@ trait ModelFactoryTypeSupport {
               var first = true
               val qset = quantified.toSet
               for (arg <- args) {
-                if (!first) {
+                if (!first)
                   nameBuffer append ", "
-                } else first = false
+                else first = false
                 arg match {
                   case TypeRef(_, sym, _) if (qset contains sym) =>
                     nameBuffer append "_"

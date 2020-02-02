@@ -134,7 +134,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
 
     // Messages received from executors
     case heartbeat @ Heartbeat(executorId, accumUpdates, blockManagerId) =>
-      if (scheduler != null) {
+      if (scheduler != null)
         if (executorLastSeen.contains(executorId)) {
           executorLastSeen(executorId) = clock.getTimeMillis()
           eventLoopThread.submit(new Runnable {
@@ -156,7 +156,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
           logDebug(s"Received heartbeat from unknown executor $executorId")
           context.reply(HeartbeatResponse(reregisterBlockManager = true))
         }
-      } else {
+      else {
         // Because Executor will sleep several seconds before sending the first "Heartbeat", this
         // case rarely happens. However, if it really happens, log it and ask the executor to
         // register itself again.
@@ -209,7 +209,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
     logTrace(
       "Checking for hosts with no recent heartbeats in HeartbeatReceiver.")
     val now = clock.getTimeMillis()
-    for ((executorId, lastSeenMs) <- executorLastSeen) {
+    for ((executorId, lastSeenMs) <- executorLastSeen)
       if (now - lastSeenMs > executorTimeoutMs) {
         logWarning(
           s"Removing executor $executorId with no recent heartbeats: " +
@@ -229,13 +229,11 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
         })
         executorLastSeen.remove(executorId)
       }
-    }
   }
 
   override def onStop(): Unit = {
-    if (timeoutCheckingTask != null) {
+    if (timeoutCheckingTask != null)
       timeoutCheckingTask.cancel(true)
-    }
     eventLoopThread.shutdownNow()
     killExecutorThread.shutdownNow()
   }

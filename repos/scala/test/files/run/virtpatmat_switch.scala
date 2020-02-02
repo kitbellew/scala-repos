@@ -29,9 +29,8 @@ object Test extends App {
     case 0 => 0
   }
 
-  try {
-    implicitDefault(5)
-  } catch {
+  try implicitDefault(5)
+  catch {
     case e: MatchError => println(e)
   }
 

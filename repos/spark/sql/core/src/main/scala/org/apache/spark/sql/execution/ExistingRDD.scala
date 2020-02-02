@@ -195,14 +195,14 @@ private[sql] case class DataSourceScan(
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
-    val unsafeRow = if (outputUnsafeRows) {
-      rdd
-    } else {
-      rdd.mapPartitionsInternal { iter =>
-        val proj = UnsafeProjection.create(schema)
-        iter.map(proj)
-      }
-    }
+    val unsafeRow =
+      if (outputUnsafeRows)
+        rdd
+      else
+        rdd.mapPartitionsInternal { iter =>
+          val proj = UnsafeProjection.create(schema)
+          iter.map(proj)
+        }
 
     val numOutputRows = longMetric("numOutputRows")
     unsafeRow.map { r =>

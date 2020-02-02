@@ -215,9 +215,8 @@ class VerifiableProperties(val props: Properties) extends Logging {
     */
   def getCompressionCodec(name: String, default: CompressionCodec) = {
     val prop = getString(name, NoCompressionCodec.name)
-    try {
-      CompressionCodec.getCompressionCodec(prop.toInt)
-    } catch {
+    try CompressionCodec.getCompressionCodec(prop.toInt)
+    catch {
       case nfe: NumberFormatException =>
         CompressionCodec.getCompressionCodec(prop)
     }
@@ -229,13 +228,12 @@ class VerifiableProperties(val props: Properties) extends Logging {
       import JavaConversions._
       Collections.list(props.propertyNames).map(_.toString).sorted
     }
-    for (key <- propNames) {
+    for (key <- propNames)
       if (!referenceSet.contains(key) && !key.startsWith("external"))
         warn("Property %s is not valid".format(key))
       else
         info(
           "Property %s is overridden to %s".format(key, props.getProperty(key)))
-    }
   }
 
   override def toString(): String = props.toString

@@ -153,9 +153,8 @@ object SparkPlanTest {
       input.queryExecution.sparkPlan)
 
     val expectedAnswer: Seq[Row] =
-      try {
-        executePlan(expectedOutputPlan, sqlContext)
-      } catch {
+      try executePlan(expectedOutputPlan, sqlContext)
+      catch {
         case NonFatal(e) =>
           val errorMessage =
             s"""
@@ -169,9 +168,8 @@ object SparkPlanTest {
       }
 
     val actualAnswer: Seq[Row] =
-      try {
-        executePlan(outputPlan, sqlContext)
-      } catch {
+      try executePlan(outputPlan, sqlContext)
+      catch {
         case NonFatal(e) =>
           val errorMessage =
             s"""
@@ -216,9 +214,8 @@ object SparkPlanTest {
     val outputPlan = planFunction(input.map(_.queryExecution.sparkPlan))
 
     val sparkAnswer: Seq[Row] =
-      try {
-        executePlan(outputPlan, sqlContext)
-      } catch {
+      try executePlan(outputPlan, sqlContext)
+      catch {
         case NonFatal(e) =>
           val errorMessage =
             s"""

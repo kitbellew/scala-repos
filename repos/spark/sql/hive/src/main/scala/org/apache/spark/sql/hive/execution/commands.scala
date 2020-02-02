@@ -60,9 +60,8 @@ private[hive] case class DropTable(tableName: String, ifExists: Boolean)
   override def run(sqlContext: SQLContext): Seq[Row] = {
     val hiveContext = sqlContext.asInstanceOf[HiveContext]
     val ifExistsClause = if (ifExists) "IF EXISTS " else ""
-    try {
-      hiveContext.cacheManager.tryUncacheQuery(hiveContext.table(tableName))
-    } catch {
+    try hiveContext.cacheManager.tryUncacheQuery(hiveContext.table(tableName))
+    catch {
       // This table's metadata is not in Hive metastore (e.g. the table does not exist).
       case _: org.apache.hadoop.hive.ql.metadata.InvalidTableException    =>
       case _: org.apache.spark.sql.catalyst.analysis.NoSuchTableException =>
@@ -116,29 +115,25 @@ private[hive] case class CreateMetastoreDataSource(
     // the table name and database name we have for this query. MetaStoreUtils.validateName
     // is the method used by Hive to check if a table name or a database name is valid for
     // the metastore.
-    if (!MetaStoreUtils.validateName(tableIdent.table)) {
+    if (!MetaStoreUtils.validateName(tableIdent.table))
       throw new AnalysisException(
         s"Table name ${tableIdent.table} is not a valid name for " +
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
-    }
     if (tableIdent.database.isDefined && !MetaStoreUtils.validateName(
-          tableIdent.database.get)) {
+          tableIdent.database.get))
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +
           s"characters, numbers and _.")
-    }
 
     val tableName = tableIdent.unquotedString
     val hiveContext = sqlContext.asInstanceOf[HiveContext]
 
-    if (hiveContext.sessionState.catalog.tableExists(tableIdent)) {
-      if (allowExisting) {
+    if (hiveContext.sessionState.catalog.tableExists(tableIdent))
+      if (allowExisting)
         return Seq.empty[Row]
-      } else {
+      else
         throw new AnalysisException(s"Table $tableName already exists.")
-      }
-    }
 
     var isExternal = true
     val optionsWithPath =
@@ -146,9 +141,8 @@ private[hive] case class CreateMetastoreDataSource(
         isExternal = false
         options + ("path" -> hiveContext.sessionState.catalog
           .hiveDefaultTableFilePath(tableIdent))
-      } else {
+      } else
         options
-      }
 
     // Create the relation to validate the arguments before writing the metadata to the metastore.
     DataSource(
@@ -186,18 +180,16 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
     // the table name and database name we have for this query. MetaStoreUtils.validateName
     // is the method used by Hive to check if a table name or a database name is valid for
     // the metastore.
-    if (!MetaStoreUtils.validateName(tableIdent.table)) {
+    if (!MetaStoreUtils.validateName(tableIdent.table))
       throw new AnalysisException(
         s"Table name ${tableIdent.table} is not a valid name for " +
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
-    }
     if (tableIdent.database.isDefined && !MetaStoreUtils.validateName(
-          tableIdent.database.get)) {
+          tableIdent.database.get))
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +
           s"characters, numbers and _.")
-    }
 
     val tableName = tableIdent.unquotedString
     val hiveContext = sqlContext.asInstanceOf[HiveContext]
@@ -208,12 +200,11 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
         isExternal = false
         options + ("path" -> hiveContext.sessionState.catalog
           .hiveDefaultTableFilePath(tableIdent))
-      } else {
+      } else
         options
-      }
 
     var existingSchema = None: Option[StructType]
-    if (sqlContext.sessionState.catalog.tableExists(tableIdent)) {
+    if (sqlContext.sessionState.catalog.tableExists(tableIdent))
       // Check if we need to throw an exception or just return.
       mode match {
         case SaveMode.ErrorIfExists =>
@@ -254,10 +245,9 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
           // Need to create the table again.
           createMetastoreTable = true
       }
-    } else {
+    else
       // The table does not exist. We need to create it in metastore.
       createMetastoreTable = true
-    }
 
     val data = Dataset.newDataFrame(hiveContext, query)
     val df = existingSchema match {
@@ -277,7 +267,7 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
 
     val result = dataSource.write(mode, df)
 
-    if (createMetastoreTable) {
+    if (createMetastoreTable)
       // We will use the schema of resolved.relation as the schema of the table (instead of
       // the schema of df). It is important since the nullability may be changed by the relation
       // provider (for example, see org.apache.spark.sql.parquet.DefaultSource).
@@ -289,7 +279,6 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
         provider,
         optionsWithPath,
         isExternal)
-    }
 
     // Refresh the cache of the table in the catalog.
     hiveContext.sessionState.catalog.refreshTable(tableIdent)

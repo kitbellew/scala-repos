@@ -8,13 +8,12 @@ object StringUtility {
       textLength: Int,
       keyLength: Int): List[String] = {
     val firstIndex = text.indexOf(key, from)
-    if (firstIndex == -1) {
-      if (from < textLength) {
+    if (firstIndex == -1)
+      if (from < textLength)
         List(text.substring(from))
-      } else {
+      else
         List("")
-      }
-    } else {
+    else
       // the text till the separator should be kept in any case
       text.substring(from, firstIndex) :: fastSplitHelper(
         text,
@@ -22,7 +21,6 @@ object StringUtility {
         firstIndex + keyLength,
         textLength,
         keyLength)
-    }
   }
 
   def fastSplit(text: String, key: String): List[String] =

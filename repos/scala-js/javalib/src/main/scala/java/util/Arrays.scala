@@ -117,21 +117,19 @@ object Arrays {
   @noinline
   private def quickSort[@specialized K](a: Array[K], i0: Int, iN: Int)(
       implicit ord: Ordering[K]): Unit =
-    if (iN - i0 < qSortThreshold) {
+    if (iN - i0 < qSortThreshold)
       insertionSort(a, i0, iN)
-    } else {
+    else {
       val iK = (i0 + iN) >>> 1 // Unsigned div by 2
       // Find index of median of first, central, and last elements
       var pL = {
-        if (ord.compare(a(i0), a(iN - 1)) <= 0) {
+        if (ord.compare(a(i0), a(iN - 1)) <= 0)
           if (ord.compare(a(i0), a(iK)) >= 0) i0
           else if (ord.compare(a(iN - 1), a(iK)) < 0) iN - 1
           else iK
-        } else {
-          if (ord.compare(a(i0), a(iK)) < 0) i0
-          else if (ord.compare(a(iN - 1), a(iK)) <= 0) iN - 1
-          else iK
-        }
+        else if (ord.compare(a(i0), a(iK)) < 0) i0
+        else if (ord.compare(a(iN - 1), a(iK)) <= 0) iN - 1
+        else iK
       }
       val pivot = a(pL)
       // pL is the start of the pivot block; move it into the middle if needed
@@ -251,21 +249,19 @@ object Arrays {
   @noinline
   private def quickSortAnyRef(a: Array[AnyRef], i0: Int, iN: Int)(
       implicit ord: Ordering[AnyRef]): Unit =
-    if (iN - i0 < qSortThreshold) {
+    if (iN - i0 < qSortThreshold)
       insertionSortAnyRef(a, i0, iN)
-    } else {
+    else {
       val iK = (i0 + iN) >>> 1 // Unsigned div by 2
       // Find index of median of first, central, and last elements
       var pL = {
-        if (ord.compare(a(i0), a(iN - 1)) <= 0) {
+        if (ord.compare(a(i0), a(iN - 1)) <= 0)
           if (ord.compare(a(i0), a(iK)) >= 0) i0
           else if (ord.compare(a(iN - 1), a(iK)) < 0) iN - 1
           else iK
-        } else {
-          if (ord.compare(a(i0), a(iK)) < 0) i0
-          else if (ord.compare(a(iN - 1), a(iK)) <= 0) iN - 1
-          else iK
-        }
+        else if (ord.compare(a(i0), a(iK)) < 0) i0
+        else if (ord.compare(a(iN - 1), a(iK)) <= 0) iN - 1
+        else iK
       }
       val pivot = a(pL)
       // pL is the start of the pivot block; move it into the middle if needed
@@ -502,21 +498,20 @@ object Arrays {
       endIndex: Int,
       key: T,
       lt: (T, T) => Boolean): Int =
-    if (startIndex == endIndex) {
+    if (startIndex == endIndex)
       // Not found
       -startIndex - 1
-    } else {
+    else {
       // Indices are unsigned 31-bit integer, so this does not overflow
       val mid = (startIndex + endIndex) >>> 1
       val elem = a(mid)
-      if (lt(key, elem)) {
+      if (lt(key, elem))
         binarySearchImpl(a, startIndex, mid, key, lt)
-      } else if (key == elem) {
+      else if (key == elem)
         // Found
         mid
-      } else {
+      else
         binarySearchImpl(a, mid + 1, endIndex, key, lt)
-      }
     }
 
   @inline
@@ -526,21 +521,20 @@ object Arrays {
       startIndex: Int,
       endIndex: Int,
       key: AnyRef): Int =
-    if (startIndex == endIndex) {
+    if (startIndex == endIndex)
       // Not found
       -startIndex - 1
-    } else {
+    else {
       // Indices are unsigned 31-bit integer, so this does not overflow
       val mid = (startIndex + endIndex) >>> 1
       val cmp = key.asInstanceOf[Comparable[AnyRef]].compareTo(a(mid))
-      if (cmp < 0) {
+      if (cmp < 0)
         binarySearchImplRef(a, startIndex, mid, key)
-      } else if (cmp == 0) {
+      else if (cmp == 0)
         // Found
         mid
-      } else {
+      else
         binarySearchImplRef(a, mid + 1, endIndex, key)
-      }
     }
 
   @noinline def equals(a: Array[Long], b: Array[Long]): Boolean =
@@ -939,7 +933,7 @@ object Arrays {
     @inline
     def valueToString(e: AnyRef): String =
       if (e == null) "null"
-      else {
+      else
         e match {
           case e: Array[AnyRef]  => deepToStringImpl(e, branch + new AsRef(a))
           case e: Array[Long]    => toString(e)
@@ -952,7 +946,6 @@ object Arrays {
           case e: Array[Double]  => toString(e)
           case _                 => String.valueOf(e)
         }
-      }
     if (a == null) "null"
     else if (branch.contains(new AsRef(a))) "[...]"
     else a.iterator.map(valueToString).mkString("[", ", ", "]")

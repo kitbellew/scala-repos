@@ -44,9 +44,8 @@ object GroupVersioningUtil {
             log.info(
               s"[${newApp.id}]: restart detected for app (oldVersion ${oldApp.versionInfo})")
             oldApp.versionInfo.withScaleOrRestartChange(newVersion = version)
-          } else {
+          } else
             oldApp.versionInfo
-          }
       }
 
       newApp.copy(versionInfo = newVersionInfo)

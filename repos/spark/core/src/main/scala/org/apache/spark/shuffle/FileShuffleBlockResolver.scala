@@ -89,7 +89,7 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
       }
       val openStartTime = System.nanoTime
       val serializerInstance = serializer.newInstance()
-      val writers: Array[DiskBlockObjectWriter] = {
+      val writers: Array[DiskBlockObjectWriter] =
         Array.tabulate[DiskBlockObjectWriter](numReducers) { bucketId =>
           val blockId = ShuffleBlockId(shuffleId, mapId, bucketId)
           val blockFile = blockManager.diskBlockManager.getFile(blockId)
@@ -101,7 +101,6 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
             bufferSize,
             writeMetrics)
         }
-      }
       // Creating the file to write to and creating a disk writer both involve interacting with
       // the disk, so should be included in the shuffle write time.
       writeMetrics.incWriteTime(System.nanoTime - openStartTime)
@@ -133,9 +132,8 @@ private[spark] class FileShuffleBlockResolver(conf: SparkConf)
              reduceId <- 0 until state.numReducers) {
           val blockId = new ShuffleBlockId(shuffleId, mapId, reduceId)
           val file = blockManager.diskBlockManager.getFile(blockId)
-          if (!file.delete()) {
+          if (!file.delete())
             logWarning(s"Error deleting ${file.getPath()}")
-          }
         }
         logInfo("Deleted all files for shuffle " + shuffleId)
         true

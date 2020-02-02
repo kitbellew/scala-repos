@@ -132,16 +132,16 @@ abstract class NumericRange[T](
   import NumericRange.defaultOrdering
 
   override def min[T1 >: T](implicit ord: Ordering[T1]): T =
-    if (ord eq defaultOrdering(num)) {
+    if (ord eq defaultOrdering(num))
       if (num.signum(step) > 0) start
       else last
-    } else super.min(ord)
+    else super.min(ord)
 
   override def max[T1 >: T](implicit ord: Ordering[T1]): T =
-    if (ord eq defaultOrdering(num)) {
+    if (ord eq defaultOrdering(num))
       if (num.signum(step) > 0) last
       else start
-    } else super.max(ord)
+    else super.max(ord)
 
   // Motivated by the desire for Double ranges with BigDecimal precision,
   // we need some way to map a Range and get another Range.  This can't be

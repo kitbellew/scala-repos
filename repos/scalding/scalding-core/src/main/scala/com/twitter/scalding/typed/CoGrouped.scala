@@ -316,20 +316,18 @@ trait CoGrouped[K, +R]
                     val distinctSize = dsize
                     def distinctIndexOf(orig: Int) = mapping(orig)
                   }
-                } else {
+                } else
                   new DistinctCoGroupJoiner(
                     isize,
                     Grouped.keyGetter(ord),
                     joinFunction)
-                }
 
               new CoGroup(
                 pipes,
                 groupFields,
                 outFields(dsize),
                 WrappedJoiner(cjoiner))
-            } else {
-
+            } else
               /**
                 * This is non-trivial to encode in the type system, so we throw this exception
                 * at the planning phase.
@@ -338,7 +336,6 @@ trait CoGrouped[K, +R]
                 "Except for self joins, where you are joining something with only itself,\n" +
                   "left-most pipe can only appear once. Firsts: " +
                   inputs.collect { case x if x == inputs.head => x }.toString)
-            }
         }
         /*
          * the CoGrouped only populates the first two fields, the second two

@@ -181,7 +181,7 @@ class BlockManagerReplicationSuite
 
   test("block replication - 3x replication") {
     // Generate storage levels with 3x replication
-    val storageLevels = {
+    val storageLevels =
       Seq(
         MEMORY_ONLY,
         MEMORY_ONLY_SER,
@@ -195,7 +195,6 @@ class BlockManagerReplicationSuite
           level.deserialized,
           3)
       }
-    }
     testReplication(3, storageLevels)
   }
 
@@ -502,7 +501,7 @@ class BlockManagerReplicationSuite
 
           // If the block is supposed to be in disk (after dropping or otherwise, then
           // test whether master has correct disk usage for this store
-          if (storageLevel.useDisk) {
+          if (storageLevel.useDisk)
             assert(
               master
                 .getBlockStatus(blockId)(testStore.blockManagerId)
@@ -510,7 +509,6 @@ class BlockManagerReplicationSuite
               s"after dropping, master does not know size of ${blockId.name} " +
                 s"stored in disk of $testStoreName"
             )
-          }
         }
       master.removeBlock(blockId)
     }

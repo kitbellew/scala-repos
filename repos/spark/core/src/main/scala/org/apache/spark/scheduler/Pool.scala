@@ -70,14 +70,12 @@ private[spark] class Pool(
   }
 
   override def getSchedulableByName(schedulableName: String): Schedulable = {
-    if (schedulableNameToSchedulable.containsKey(schedulableName)) {
+    if (schedulableNameToSchedulable.containsKey(schedulableName))
       return schedulableNameToSchedulable.get(schedulableName)
-    }
     for (schedulable <- schedulableQueue.asScala) {
       val sched = schedulable.getSchedulableByName(schedulableName)
-      if (sched != null) {
+      if (sched != null)
         return sched
-      }
     }
     null
   }
@@ -91,9 +89,8 @@ private[spark] class Pool(
 
   override def checkSpeculatableTasks(): Boolean = {
     var shouldRevive = false
-    for (schedulable <- schedulableQueue.asScala) {
+    for (schedulable <- schedulableQueue.asScala)
       shouldRevive |= schedulable.checkSpeculatableTasks()
-    }
     shouldRevive
   }
 
@@ -102,23 +99,20 @@ private[spark] class Pool(
     val sortedSchedulableQueue =
       schedulableQueue.asScala.toSeq
         .sortWith(taskSetSchedulingAlgorithm.comparator)
-    for (schedulable <- sortedSchedulableQueue) {
+    for (schedulable <- sortedSchedulableQueue)
       sortedTaskSetQueue ++= schedulable.getSortedTaskSetQueue
-    }
     sortedTaskSetQueue
   }
 
   def increaseRunningTasks(taskNum: Int) {
     runningTasks += taskNum
-    if (parent != null) {
+    if (parent != null)
       parent.increaseRunningTasks(taskNum)
-    }
   }
 
   def decreaseRunningTasks(taskNum: Int) {
     runningTasks -= taskNum
-    if (parent != null) {
+    if (parent != null)
       parent.decreaseRunningTasks(taskNum)
-    }
   }
 }

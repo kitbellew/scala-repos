@@ -41,9 +41,7 @@ abstract class HoconActionTest(actionId: String, subpath: String)
     try {
       executeAction(dataContext, editor)
       resultAfterAction(editor)
-    } finally {
-      editorManager.closeFile(psiFile.getVirtualFile)
-    }
+    } finally editorManager.closeFile(psiFile.getVirtualFile)
   }
 
   protected def executeAction(
@@ -52,9 +50,8 @@ abstract class HoconActionTest(actionId: String, subpath: String)
     val action = ActionManager.getInstance.getAction(actionId)
     val e = new TestActionEvent(dataContext, action)
     action.beforeActionPerformedUpdate(e)
-    if (e.getPresentation.isEnabled && e.getPresentation.isVisible) {
+    if (e.getPresentation.isEnabled && e.getPresentation.isVisible)
       action.actionPerformed(e)
-    }
   }
 
   protected def resultAfterAction(editor: Editor): String

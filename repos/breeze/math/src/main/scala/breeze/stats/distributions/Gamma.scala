@@ -39,17 +39,14 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
     throw new IllegalArgumentException("Shape and scale must be positive")
 
   override def pdf(x: Double) =
-    if (x > 0) {
+    if (x > 0)
       math.exp(logPdf(x))
-    } else {
-      if (shape > 1.0) {
-        0.0
-      } else if (shape == 1.0) {
-        normalizer
-      } else {
-        Double.PositiveInfinity
-      }
-    }
+    else if (shape > 1.0)
+      0.0
+    else if (shape == 1.0)
+      normalizer
+    else
+      Double.PositiveInfinity
 
   lazy val logNormalizer: Double = lgamma(shape) + shape * log(scale)
 
@@ -81,9 +78,9 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
     } else math.log(draw)
 
   def draw() =
-    if (shape == 1.0) {
+    if (shape == 1.0)
       scale * -math.log(rand.uniform.draw())
-    } else if (shape < 1.0) {
+    else if (shape < 1.0) {
       // from numpy distributions.c which is Copyright 2005 Robert Kern (robert.kern@gmail.com) under BSD
       @tailrec
       def rec: Double = {

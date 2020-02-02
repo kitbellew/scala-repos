@@ -116,10 +116,9 @@ object ScalaJSPluginInternal {
   )
 
   /** A JS expression that detects the global scope just like Scala.js */
-  val jsGlobalExpr: String = {
+  val jsGlobalExpr: String =
     """((typeof global === "object" && global &&
          global["Object"] === Object) ? global : this)"""
-  }
 
   def logIRCacheStats(logger: Logger): Unit =
     logger.debug("Global IR cache stats: " + globalIRCache.stats.logLine)
@@ -361,22 +360,20 @@ object ScalaJSPluginInternal {
     val realFiles = Seq.newBuilder[File]
     val results = Seq.newBuilder[T]
 
-    for (cpEntry <- Attributed.data(cp) if cpEntry.exists) {
+    for (cpEntry <- Attributed.data(cp) if cpEntry.exists)
       if (cpEntry.isFile && cpEntry.getName.endsWith(".jar")) {
         realFiles += cpEntry
         val vf = new FileVirtualBinaryFile(cpEntry) with VirtualJarFile
         results ++= collectJar(vf)
-      } else if (cpEntry.isDirectory) {
+      } else if (cpEntry.isDirectory)
         for {
           (file, relPath) <- Path.selectSubpaths(cpEntry, filter)
         } {
           realFiles += file
           results += collectFile(file, relPath)
         }
-      } else {
+      else
         sys.error("Illegal classpath entry: " + cpEntry.getPath)
-      }
-    }
 
     Attributed
       .blank(results.result())
@@ -596,11 +593,10 @@ object ScalaJSPluginInternal {
          */
         val semantics = scalaJSLinker.value.semantics
         new RhinoJSEnv(semantics, withDOM = scalaJSRequestsDOM.value)
-      } else if (scalaJSRequestsDOM.value) {
+      } else if (scalaJSRequestsDOM.value)
         new PhantomJSEnv(jettyClassLoader = scalaJSPhantomJSClassLoader.value)
-      } else {
+      else
         new NodeJSEnv
-      }
     },
     scalaJSJavaSystemProperties ++= {
       val javaSysPropsPattern = "-D([^=]*)=(.*)".r
@@ -614,9 +610,9 @@ object ScalaJSPluginInternal {
     },
     scalaJSConfigurationLibs ++= {
       val javaSystemProperties = scalaJSJavaSystemProperties.value
-      if (javaSystemProperties.isEmpty) {
+      if (javaSystemProperties.isEmpty)
         Nil
-      } else {
+      else {
         val formattedProps = javaSystemProperties.map {
           case (propName, propValue) =>
             "\"" + escapeJS(propName) + "\": \"" + escapeJS(propValue) + "\""
@@ -693,12 +689,11 @@ object ScalaJSPluginInternal {
     }
   }
 
-  private val runMainParser = {
+  private val runMainParser =
     Defaults.loadForParser(discoveredMainClasses) { (_, names) =>
       val mainClasses = names.getOrElse(Nil).toSet
       Space ~> token(NotSpace examples mainClasses)
     }
-  }
 
   // These settings will be filtered by the stage dummy tasks
   val scalaJSRunSettings = Seq(

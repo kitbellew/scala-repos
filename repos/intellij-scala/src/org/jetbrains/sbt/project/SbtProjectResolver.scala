@@ -69,9 +69,8 @@ class SbtProjectResolver
       settings.resolveClassifiers,
       settings.resolveJavadocs,
       settings.resolveSbtClassifiers) { message =>
-      if (message.startsWith("[error] ") || message.startsWith("[warn] ")) {
+      if (message.startsWith("[error] ") || message.startsWith("[warn] "))
         warnings ++= message
-      }
 
       listener.onStatusChange(
         new ExternalSystemTaskNotificationEvent(id, message.trim))
@@ -84,9 +83,8 @@ class SbtProjectResolver
       case Right(node) => node
     }
 
-    if (warnings.nonEmpty) {
+    if (warnings.nonEmpty)
       listener.onTaskOutput(id, WarningMessage(warnings.toString), false)
-    }
 
     val data = xml.deserialize[sbtStructure.StructureData].right.get
 
@@ -364,12 +362,12 @@ class SbtProjectResolver
     def isRelevant(f: File): Boolean =
       !relevantDirectories.forall(_.isOutsideOf(f))
 
-    if (isRelevant(project.target)) {
+    if (isRelevant(project.target))
       // If we can't exclude the target directory, go one level deeper (which may hit resolution-cache and streams)
       Option(project.target.listFiles()).toList.flatten.filter { child =>
         child.isDirectory && !isRelevant(child)
       }
-    } else List(project.target)
+    else List(project.target)
   }
 
   private def createBuildModule(

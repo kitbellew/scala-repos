@@ -73,15 +73,14 @@ trait BinaryRegistry[A, B, Op, +R]
     val pair = (ac, bc)
 
     val firstLevelCached = l1cache.get()
-    if (firstLevelCached != null && pair == firstLevelCached._1) {
+    if (firstLevelCached != null && pair == firstLevelCached._1)
       firstLevelCached._2 match {
         case None => bindingMissing(a, b)
         case some @ Some(m) =>
           m.asInstanceOf[UImpl2[Op, A, B, R]].apply(a, b)
       }
-    } else {
+    else
       slowPath(a, b, ac, bc, pair)
-    }
 
   }
 
@@ -93,14 +92,14 @@ trait BinaryRegistry[A, B, Op, +R]
       pair: (Class[_ <: AnyRef], Class[_ <: AnyRef])): R = {
     val cached: Option[UImpl2[Op, _ <: A, _ <: B, _ <: R @uncheckedVariance]] =
       cache.get(pair)
-    if (cached != null) {
+    if (cached != null)
       cached match {
         case None => bindingMissing(a, b)
         case some @ Some(m) =>
           l1cache.set(pair -> some)
           m.asInstanceOf[UImpl2[Op, A, B, R]].apply(a, b)
       }
-    } else {
+    else {
       val options = resolve(ac, bc.asInstanceOf[Class[_ <: B]])
 
       options.size match {

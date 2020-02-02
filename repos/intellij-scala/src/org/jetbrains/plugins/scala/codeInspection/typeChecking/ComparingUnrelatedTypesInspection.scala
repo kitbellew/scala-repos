@@ -134,12 +134,10 @@ class ComparingUnrelatedTypesInspection
         t1 <- qualType
         t2 <- argType
         if cannotBeCompared(t1, t2)
-      } {
-        holder.registerProblem(
-          call,
-          inspectionName,
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
-      }
+      } holder.registerProblem(
+        call,
+        inspectionName,
+        ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
   }
 
   private def mayNeedHighlighting(fun: ScFunction): Boolean = {

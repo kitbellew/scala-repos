@@ -64,32 +64,24 @@ trait FutureSupport extends AsyncSupport {
         // Loop until we have a non-future result
         case Success(f2: Future[_])  => renderFutureResult(f2)
         case Success(r: AsyncResult) => renderFutureResult(r.is)
-        case t => {
-
-          if (gotResponseAlready.compareAndSet(false, true)) {
+        case t =>
+          if (gotResponseAlready.compareAndSet(false, true))
             withinAsyncContext(context) {
-              try {
-                t map { result =>
-                  renderResponse(result)
-                } recover {
-                  case e: HaltException =>
-                    renderHaltException(e)
-                  case e =>
-                    try {
-                      renderResponse(errorHandler(e))
-                    } catch {
-                      case e: Throwable =>
-                        ScalatraBase.runCallbacks(Failure(e))
-                        renderUncaughtException(e)
-                        ScalatraBase.runRenderCallbacks(Failure(e))
-                    }
-                }
-              } finally {
-                context.complete()
-              }
+              try t map { result =>
+                renderResponse(result)
+              } recover {
+                case e: HaltException =>
+                  renderHaltException(e)
+                case e =>
+                  try renderResponse(errorHandler(e))
+                  catch {
+                    case e: Throwable =>
+                      ScalatraBase.runCallbacks(Failure(e))
+                      renderUncaughtException(e)
+                      ScalatraBase.runRenderCallbacks(Failure(e))
+                  }
+              } finally context.complete()
             }
-          }
-        }
       }
 
     context addListener new AsyncListener {
@@ -107,20 +99,18 @@ trait FutureSupport extends AsyncSupport {
 
       def onError(event: AsyncEvent): Unit =
         onAsyncEvent(event) {
-          if (gotResponseAlready.compareAndSet(false, true)) {
+          if (gotResponseAlready.compareAndSet(false, true))
             event.getThrowable match {
               case e: HaltException => renderHaltException(e)
               case e =>
-                try {
-                  renderResponse(errorHandler(e))
-                } catch {
+                try renderResponse(errorHandler(e))
+                catch {
                   case e: Throwable =>
                     ScalatraBase.runCallbacks(Failure(e))
                     renderUncaughtException(e)
                     ScalatraBase.runRenderCallbacks(Failure(e))
                 }
             }
-          }
         }
 
       def onStartAsync(event: AsyncEvent): Unit = {}

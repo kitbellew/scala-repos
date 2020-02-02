@@ -36,15 +36,13 @@ class DataSource(val dsp: DataSourceParams)
       .map {
         case (entityId, properties) =>
           val user =
-            try {
-              User()
-            } catch {
-              case e: Exception => {
+            try User()
+            catch {
+              case e: Exception =>
                 logger.error(
                   s"Failed to get properties $properties of" +
                     s" user $entityId. Exception: $e.")
                 throw e
-              }
             }
           (entityId, user)
       }
@@ -58,16 +56,15 @@ class DataSource(val dsp: DataSourceParams)
       .map {
         case (entityId, properties) =>
           val item =
-            try {
-              // Assume categories is optional property of item.
-              Item(categories = properties.getOpt[List[String]]("categories"))
-            } catch {
-              case e: Exception => {
+            try
+            // Assume categories is optional property of item.
+            Item(categories = properties.getOpt[List[String]]("categories"))
+            catch {
+              case e: Exception =>
                 logger.error(
                   s"Failed to get properties $properties of" +
                     s" item $entityId. Exception: $e.")
                 throw e
-              }
             }
           (entityId, item)
       }
@@ -83,20 +80,17 @@ class DataSource(val dsp: DataSourceParams)
 
     val viewEventsRDD: RDD[ViewEvent] = eventsRDD.map { event =>
       val viewEvent =
-        try {
-          event.event match {
-            case "view" =>
-              ViewEvent(
-                user = event.entityId,
-                item = event.targetEntityId.get,
-                t = event.eventTime.getMillis)
-            case _ => throw new Exception(s"Unexpected event $event is read.")
-          }
+        try event.event match {
+          case "view" =>
+            ViewEvent(
+              user = event.entityId,
+              item = event.targetEntityId.get,
+              t = event.eventTime.getMillis)
+          case _ => throw new Exception(s"Unexpected event $event is read.")
         } catch {
-          case e: Exception => {
+          case e: Exception =>
             logger.error(s"Cannot convert $event to U2IEvent. Exception: $e.")
             throw e
-          }
         }
       viewEvent
     }

@@ -98,13 +98,11 @@ private object PeriodicRDDCheckpointerSuite {
     * @param iteration  Total number of rdds inserted into checkpointer.
     */
   def checkPersistence(rdd: RDD[_], gIndex: Int, iteration: Int): Unit =
-    try {
-      if (gIndex + 2 < iteration) {
-        assert(rdd.getStorageLevel == StorageLevel.NONE)
-      } else {
-        assert(rdd.getStorageLevel != StorageLevel.NONE)
-      }
-    } catch {
+    try if (gIndex + 2 < iteration)
+      assert(rdd.getStorageLevel == StorageLevel.NONE)
+    else
+      assert(rdd.getStorageLevel != StorageLevel.NONE)
+    catch {
       case _: AssertionError =>
         throw new Exception(
           s"PeriodicRDDCheckpointerSuite.checkPersistence failed with:\n" +
@@ -144,25 +142,22 @@ private object PeriodicRDDCheckpointerSuite {
       gIndex: Int,
       iteration: Int,
       checkpointInterval: Int): Unit =
-    try {
-      if (gIndex % checkpointInterval == 0) {
-        // We allow 2 checkpoint intervals since we perform an action (checkpointing a second rdd)
-        // only AFTER PeriodicRDDCheckpointer decides whether to remove the previous checkpoint.
-        if (iteration - 2 * checkpointInterval < gIndex && gIndex <= iteration) {
-          assert(rdd.isCheckpointed, "RDD should be checkpointed")
-          assert(
-            rdd.getCheckpointFile.nonEmpty,
-            "RDD should have 2 checkpoint files")
-        } else {
-          confirmCheckpointRemoved(rdd)
-        }
-      } else {
-        // RDD should never be checkpointed
-        assert(!rdd.isCheckpointed, "RDD should never have been checkpointed")
+    try if (gIndex % checkpointInterval == 0)
+      // We allow 2 checkpoint intervals since we perform an action (checkpointing a second rdd)
+      // only AFTER PeriodicRDDCheckpointer decides whether to remove the previous checkpoint.
+      if (iteration - 2 * checkpointInterval < gIndex && gIndex <= iteration) {
+        assert(rdd.isCheckpointed, "RDD should be checkpointed")
         assert(
-          rdd.getCheckpointFile.isEmpty,
-          "RDD should not have any checkpoint files")
-      }
+          rdd.getCheckpointFile.nonEmpty,
+          "RDD should have 2 checkpoint files")
+      } else
+        confirmCheckpointRemoved(rdd)
+    else {
+      // RDD should never be checkpointed
+      assert(!rdd.isCheckpointed, "RDD should never have been checkpointed")
+      assert(
+        rdd.getCheckpointFile.isEmpty,
+        "RDD should not have any checkpoint files")
     } catch {
       case e: AssertionError =>
         throw new Exception(

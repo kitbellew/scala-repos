@@ -55,9 +55,8 @@ private[fpm] class LocalPrefixSpan(
   private def genFreqPatterns(
       prefix: ReversedPrefix,
       postfixes: Array[Postfix]): Iterator[(ReversedPrefix, Long)] = {
-    if (maxPatternLength == prefix.length || postfixes.length < minCount) {
+    if (maxPatternLength == prefix.length || postfixes.length < minCount)
       return Iterator.empty
-    }
     // find frequent items
     val counts = mutable.Map.empty[Int, Long].withDefaultValue(0)
     postfixes.foreach { postfix =>
@@ -97,11 +96,10 @@ private object LocalPrefixSpan {
       */
     def :+(item: Int): ReversedPrefix = {
       require(item != 0)
-      if (item < 0) {
+      if (item < 0)
         new ReversedPrefix(-item :: items, length + 1)
-      } else {
+      else
         new ReversedPrefix(item :: 0 :: items, length + 1)
-      }
     }
 
     /**

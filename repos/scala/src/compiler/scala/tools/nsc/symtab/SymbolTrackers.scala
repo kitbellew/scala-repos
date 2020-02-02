@@ -143,13 +143,12 @@ trait SymbolTrackers {
       def indentString(indent: String): String =
         if (root == NoSymbol)
           children map (c => c.indentString(indent)) mkString "\n"
-        else {
+        else
           indicatorString + indent + symString(root) + (
             if (children.isEmpty) ""
             else
               children map (c => c.indentString(indent + "    ")) mkString ("\n", "\n", "")
           )
-        }
     }
 
     def snapshot(): Unit = {

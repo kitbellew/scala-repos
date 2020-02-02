@@ -123,13 +123,12 @@ trait GridFSFileStorage[M[+_]] extends FileStorage[M] {
           M.point {
             val buffer = new Array[Byte](chunkSize)
             val len = in.read(buffer)
-            if (len < 0) {
+            if (len < 0)
               None
-            } else if (len < buffer.length) {
+            else if (len < buffer.length)
               Some((java.util.Arrays.copyOf(buffer, len), in))
-            } else {
+            else
               Some((buffer, in))
-            }
           }
         }
       )

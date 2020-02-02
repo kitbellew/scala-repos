@@ -27,11 +27,10 @@ object Test extends InteractiveTest {
     val id = nextId()
     val tree = compiler.parseTree(sf)
     val id2 = nextId()
-    if (id2 == id + 1) {
+    if (id2 == id + 1)
       reporter.println("NoNewSymbolsEntered OK")
-    } else {
+    else
       reporter.println("NoNewSymbolsEntered FAILED")
-    }
   }
 
   /**
@@ -40,22 +39,20 @@ object Test extends InteractiveTest {
   private def uniqueParseTree(sf: SourceFile) {
     val parseTree1 = compiler.parseTree(sf)
     val parseTree2 = compiler.parseTree(sf)
-    if (parseTree1 != parseTree2) {
+    if (parseTree1 != parseTree2)
       reporter.println("Unique OK")
-    } else {
+    else
       reporter.println("Unique FAILED")
-    }
   }
 
   /**
     * A parseTree should never contain any symbols or types
     */
   private def unattributedParseTree(sf: SourceFile) {
-    if (noSymbolsOrTypes(compiler.parseTree(sf))) {
+    if (noSymbolsOrTypes(compiler.parseTree(sf)))
       reporter.println("Unattributed OK")
-    } else {
+    else
       reporter.println("Unattributed FAILED")
-    }
   }
 
   /**
@@ -64,11 +61,10 @@ object Test extends InteractiveTest {
   private def neverModifyParseTree(sf: SourceFile) {
     val parsedTree = compiler.parseTree(sf)
     loadSourceAndWaitUntilTypechecked(sf)
-    if (noSymbolsOrTypes(parsedTree)) {
+    if (noSymbolsOrTypes(parsedTree))
       reporter.println("NeverModify OK")
-    } else {
+    else
       reporter.println("NeverModify FAILED")
-    }
   }
 
   /**
@@ -76,11 +72,10 @@ object Test extends InteractiveTest {
     */
   private def shouldAlwaysReturnParseTree(sf: SourceFile) {
     loadSourceAndWaitUntilTypechecked(sf)
-    if (noSymbolsOrTypes(compiler.parseTree(sf))) {
+    if (noSymbolsOrTypes(compiler.parseTree(sf)))
       reporter.println("AlwaysParseTree OK")
-    } else {
+    else
       reporter.println("AlwaysParseTree FAILED")
-    }
   }
 
   /**

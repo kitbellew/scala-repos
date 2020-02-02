@@ -432,15 +432,14 @@ object ShapedValue {
         (
           q"({ case $pat => new $rTag(..${fields.map(_._3)}) } : ($rTypeAsHList => $rTag)): ($uTag => $rTag)",
           q"{ case v => $cons }: ($rTag => $uTag)")
-      } else if (fields.length == 1) { // Map from single value
+      } else if (fields.length == 1) // Map from single value
         (
           q"($rModule.apply _) : ($uTag => $rTag)",
           q"(($rModule.unapply _) : $rTag => Option[$uTag]).andThen(_.get)")
-      } else { // Map from tuple
+      else // Map from tuple
         (
           q"($rModule.tupled) : ($uTag => $rTag)",
           q"(($rModule.unapply _) : $rTag => Option[$uTag]).andThen(_.get)")
-      }
 
     val fpName = Constant(
       "Fast Path of (" + fields

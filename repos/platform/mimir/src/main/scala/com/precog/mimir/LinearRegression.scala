@@ -129,11 +129,11 @@ trait LinearRegressionLibModule[M[+_]]
             matrix.getArray.length == 1 && matrix.getArray.head.length == 0
 
           val matrixSum = {
-            if (isEmpty(t1.product)) {
+            if (isEmpty(t1.product))
               t2.product
-            } else if (isEmpty(t2.product)) {
+            else if (isEmpty(t2.product))
               t1.product
-            } else {
+            else {
               assert(
                 t1.product.getColumnDimension == t2.product.getColumnDimension &&
                   t1.product.getRowDimension == t2.product.getRowDimension)
@@ -168,9 +168,9 @@ trait LinearRegressionLibModule[M[+_]]
           (i >= 0) && (i < vlength + indices0.length)
         }
 
-        if (indices.isEmpty) {
+        if (indices.isEmpty)
           values
-        } else {
+        else {
           val zero = 0d
           val length = vlength + indices.length
           val bitset = BitSetUtil.create(indices)
@@ -198,9 +198,9 @@ trait LinearRegressionLibModule[M[+_]]
         val vlength = values.length
         val indices = indices0 filter { i => (i >= 0) && (i < vlength) }
 
-        if (indices.isEmpty) {
+        if (indices.isEmpty)
           values
-        } else {
+        else {
           val length = vlength - indices.length
           val bitset = BitSetUtil.create(indices)
           val acc = new Array[Double](length)
@@ -269,12 +269,11 @@ trait LinearRegressionLibModule[M[+_]]
           // FIXME ultimately we do not want to throw an IllegalArgumentException here
           // once the framework is in place, we will return the empty set and issue a warning to the user
           val matrixX1 = matrixX0 map { mx =>
-            if (mx.getRowDimension < mx.getColumnDimension) {
+            if (mx.getRowDimension < mx.getColumnDimension)
               throw new IllegalArgumentException(
                 "Matrix is rank deficient. Not enough rows to determine model.")
-            } else {
+            else
               mx
-            }
           }
 
           def removeColumn(matrix: Matrix, colDim: Int, idx: Int): Matrix = {
@@ -296,10 +295,10 @@ trait LinearRegressionLibModule[M[+_]]
                 idx: Int,
                 colDim: Int,
                 removed: Set[Int]): (Matrix, Set[Int]) =
-              if (idx <= colDim) {
-                if (matrixRank0 == colDim) {
+              if (idx <= colDim)
+                if (matrixRank0 == colDim)
                   (matrix, removed)
-                } else if (matrixRank0 < colDim) {
+                else if (matrixRank0 < colDim) {
                   val retained = removeColumn(matrix, colDim, idx)
                   val rank = retained.rank
 
@@ -313,14 +312,12 @@ trait LinearRegressionLibModule[M[+_]]
                     inner(matrix, idx + 1, colDim, removed)
                   else
                     sys.error("Rank cannot increase when a column is removed.")
-                } else {
+                } else
                   sys.error(
                     "Matrix cannot have rank larger than number of columns.")
-                }
-              } else {
+              else
                 sys.error(
                   "Failed to find dependent columns. Should never reach this case.")
-              }
 
             inner(matrix0, 1, colDim0, Set.empty[Int])
           }
@@ -334,9 +331,7 @@ trait LinearRegressionLibModule[M[+_]]
           val matrixX = for {
             (x, _) <- cleaned
             y <- matrixY
-          } yield {
-            x.solve(y.transpose)
-          }
+          } yield x.solve(y.transpose)
 
           val res = matrixX map { _.getArray flatten } getOrElse Array
             .empty[Double]
@@ -344,7 +339,7 @@ trait LinearRegressionLibModule[M[+_]]
           // We weight the results to handle slices of different sizes.
           // Even though we canonicalize the slices to bound their size,
           // but their sizes still may vary
-          val weightedRes0 = res map { _ * count }
+          val weightedRes0 = res map _ * count
 
           val removed = cleaned map { _._2 } getOrElse Set.empty[Int]
           val weightedRes = insertZeroAt(weightedRes0, removed.toArray)
@@ -389,7 +384,7 @@ trait LinearRegressionLibModule[M[+_]]
             }
 
             val retainedBeta = removeAt(acc.beta, acc.removed.toArray)
-            val weightedBeta = retainedBeta map { _ / acc.count }
+            val weightedBeta = retainedBeta map _ / acc.count
 
             val predictedY0 = matrixX map {
               _.times((new Matrix(Array(weightedBeta))).transpose())
@@ -427,7 +422,7 @@ trait LinearRegressionLibModule[M[+_]]
 
         val spec = TransSpec.concatChildren(tree)
 
-        val weightedBeta = coeffs.beta map { _ / coeffs.count }
+        val weightedBeta = coeffs.beta map _ / coeffs.count
 
         val colDim = errors.product.getColumnDimension
 
@@ -525,9 +520,7 @@ trait LinearRegressionLibModule[M[+_]]
           val tablesWithType: M[Seq[(Table, JType)]] = for {
             tbls <- tables
             jtypes <- schemas
-          } yield {
-            tbls zip jtypes
-          }
+          } yield tbls zip jtypes
 
           // important note: regression will explode if there are more than `sliceSize` columns due to rank-deficient matrix
           // this could be remedied in the future by smarter choice of `sliceSize`
@@ -546,9 +539,7 @@ trait LinearRegressionLibModule[M[+_]]
             for {
               coeffs <- coeffs0
               errors <- errors0
-            } yield {
-              extract(coeffs, errors, jtype)
-            }
+            } yield extract(coeffs, errors, jtype)
           }
 
           val reducedTables: M[Seq[Table]] = tablesWithType flatMap {

@@ -51,18 +51,15 @@ object ConfigCommand {
       30000,
       JaasUtils.isZkSecurityEnabled())
 
-    try {
-      if (opts.options.has(opts.alterOpt))
-        alterConfig(zkUtils, opts)
-      else if (opts.options.has(opts.describeOpt))
-        describeConfig(zkUtils, opts)
-    } catch {
+    try if (opts.options.has(opts.alterOpt))
+      alterConfig(zkUtils, opts)
+    else if (opts.options.has(opts.describeOpt))
+      describeConfig(zkUtils, opts)
+    catch {
       case e: Throwable =>
         println("Error while executing topic command " + e.getMessage)
         println(Utils.stackTrace(e))
-    } finally {
-      zkUtils.close()
-    }
+    } finally zkUtils.close()
   }
 
   private def alterConfig(zkUtils: ZkUtils, opts: ConfigCommandOptions) {
@@ -127,12 +124,11 @@ object ConfigCommand {
     val props = new Properties
     configsToBeAdded.foreach(pair =>
       props.setProperty(pair(0).trim, pair(1).trim))
-    if (props.containsKey(LogConfig.MessageFormatVersionProp)) {
+    if (props.containsKey(LogConfig.MessageFormatVersionProp))
       println(
         s"WARNING: The configuration ${LogConfig.MessageFormatVersionProp}=${props
           .getProperty(LogConfig.MessageFormatVersionProp)} is specified. " +
           s"This configuration will be ignored if the version is newer than the inter.broker.protocol.version specified in the broker.")
-    }
     props
   }
 
@@ -238,11 +234,10 @@ object ConfigCommand {
       }
       val entityTypeVal = options.valueOf(entityType)
       if (!entityTypeVal.equals(ConfigType.Topic) && !entityTypeVal.equals(
-            ConfigType.Client)) {
+            ConfigType.Client))
         throw new IllegalArgumentException(
           "--entity-type must be '%s' or '%s'"
             .format(ConfigType.Topic, ConfigType.Client))
-      }
     }
   }
 

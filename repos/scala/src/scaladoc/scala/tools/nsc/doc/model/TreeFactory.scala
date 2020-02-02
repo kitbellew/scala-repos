@@ -24,7 +24,7 @@ trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>
     var refs = new immutable.TreeMap[Int, (Entity, Int)] // start, (Entity to be linked to , end)
 
     rhs.pos match {
-      case pos: RangePosition => {
+      case pos: RangePosition =>
         val source: SourceFile = pos.source
         val firstIndex = pos.start
         val lastIndex = pos.end
@@ -86,7 +86,6 @@ trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>
           val expression = expr.toString
           val refEntity = refs
         }
-      }
       case _ =>
         new TreeEntity {
           val expression = rhs.toString

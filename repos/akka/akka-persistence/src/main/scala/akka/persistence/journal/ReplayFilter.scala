@@ -93,7 +93,7 @@ private[akka] class ReplayFilter(
           persistentActor.tell(msg, Actor.noSender)
         }
 
-        if (r.persistent.writerUuid == writerUuid) {
+        if (r.persistent.writerUuid == writerUuid)
           // from same writer
           if (r.persistent.sequenceNr < seqNo) {
             val errMsg =
@@ -112,8 +112,7 @@ private[akka] class ReplayFilter(
             buffer.add(r)
             seqNo = r.persistent.sequenceNr
           }
-
-        } else if (oldWriters.contains(r.persistent.writerUuid)) {
+        else if (oldWriters.contains(r.persistent.writerUuid)) {
           // from old writer
           val errMsg =
             s"Invalid replayed event [${r.persistent.sequenceNr}] from old " +

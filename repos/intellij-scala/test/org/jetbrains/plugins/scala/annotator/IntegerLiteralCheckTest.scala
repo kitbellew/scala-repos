@@ -56,28 +56,25 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
       .flatMap(expandIntegerLiteral)
       .flatMap(prependSign)
       .distinct
-    for (s <- intStrings) {
+    for (s <- intStrings)
       assertNothing(messages(s"val a = $s"))
-    }
     val longStrings = (intStrings flatMap appendL) ++
       (longValues ++ randomLongValues(numOfGenInteger))
         .flatMap(expandIntegerLiteral)
         .flatMap(prependSign)
         .flatMap(appendL)
         .distinct
-    for (s <- longStrings) {
+    for (s <- longStrings)
       assertNothing(messages(s"val a = $s"))
-    }
   }
 
   def testLiteralOverflowInt() {
     val longStrings = longValues.map(_.toString) ++ randomLongValues(
       numOfGenInteger).flatMap(expandIntegerLiteral).distinct
-    for (s <- longStrings ++ Seq("2147483648", "-2147483649")) {
+    for (s <- longStrings ++ Seq("2147483648", "-2147483649"))
       assertMatches(messages(s"val a = $s")) {
         case Error(s, OverflowIntPattern()) :: Nil =>
       }
-    }
   }
 
   def testLiteralOverflowLong() {
@@ -90,11 +87,10 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
     val overflowLongStringsWithL = overflowLongStrings.flatMap(appendL)
     for (s <- overflowLongStrings ++ overflowLongStringsWithL ++ Seq(
            "9223372036854775808l",
-           "-9223372036854775809l")) {
+           "-9223372036854775809l"))
       assertMatches(messages(s"val a = $s")) {
         case Error(s, OverflowLongPattern()) :: Nil =>
       }
-    }
   }
 
   def messages(@Language(value = "Scala", prefix = Header) code: String)

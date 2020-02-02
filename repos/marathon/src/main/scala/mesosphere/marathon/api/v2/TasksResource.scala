@@ -89,14 +89,12 @@ class TasksResource @Inject() (
         if isAuthorized(ViewApp, app)
         if statusSet.isEmpty || task.mesosStatus.exists(s =>
           statusSet(s.getState))
-      } yield {
-        EnrichedTask(
-          appId,
-          task,
-          health.getOrElse(task.taskId, Nil),
-          appToPorts.getOrElse(appId, Nil)
-        )
-      }
+      } yield EnrichedTask(
+        appId,
+        task,
+        health.getOrElse(task.taskId, Nil),
+        appToPorts.getOrElse(appId, Nil)
+      )
 
       ok(
         jsonObjString(
@@ -131,9 +129,8 @@ class TasksResource @Inject() (
     implicit identity =>
       val taskIds = (Json.parse(body) \ "ids").as[Set[String]]
       val tasksToAppId = taskIds.map { id =>
-        try {
-          id -> Task.Id.appId(id)
-        } catch {
+        try id -> Task.Id.appId(id)
+        catch {
           case e: MatchError =>
             throw new BadRequestException(s"Invalid task id '$id'.")
         }

@@ -158,13 +158,12 @@ abstract class CommonWriteAheadLogTests(
 
     writeAheadLog.clean(manualClock.getTimeMillis() / 2, waitForCompletion)
 
-    if (waitForCompletion) {
+    if (waitForCompletion)
       assert(getLogFilesInDirectory(testDir).size < logFiles.size)
-    } else {
+    else
       eventually(Eventually.timeout(1 second), interval(10 milliseconds)) {
         assert(getLogFilesInDirectory(testDir).size < logFiles.size)
       }
-    }
   }
 
   test(testPrefix + "handling file errors while reading rotating logs") {
@@ -221,11 +220,10 @@ abstract class CommonWriteAheadLogTests(
     assert(
       !nonexistentTempPath.exists(),
       "Directory created just by creating log object")
-    if (allowBatching) {
+    if (allowBatching)
       intercept[UnsupportedOperationException](wal.read(writtenSegment.head))
-    } else {
+    else
       wal.read(writtenSegment.head)
-    }
     assert(
       !nonexistentTempPath.exists(),
       "Directory created just by attempting to read segment")
@@ -245,13 +243,12 @@ abstract class CommonWriteAheadLogTests(
     // create iterator but don't materialize it
     val readData = wal.readAll().asScala.map(byteBufferToString)
     wal.close()
-    if (closeFileAfterWrite) {
+    if (closeFileAfterWrite)
       // the threadpool is shutdown by the wal.close call above, therefore we shouldn't be able
       // to materialize the iterator with parallel recovery
       intercept[RejectedExecutionException](readData.toArray)
-    } else {
+    else
       assert(readData.toSeq === writtenData)
-    }
   }
 }
 
@@ -315,9 +312,7 @@ class FileBasedWriteAheadLogSuite
       assert(collected === testSeq)
       // make sure we didn't open too many Iterators
       assert(counter.getMax() <= numThreads)
-    } finally {
-      fpool.shutdownNow()
-    }
+    } finally fpool.shutdownNow()
   }
 
   test("FileBasedWriteAheadLogWriter - writing data") {
@@ -504,13 +499,9 @@ class BatchedWriteAheadLogSuite
   }
 
   override def afterEach(): Unit =
-    try {
-      if (walBatchingExecutionContext != null) {
-        walBatchingExecutionContext.shutdownNow()
-      }
-    } finally {
-      super.afterEach()
-    }
+    try if (walBatchingExecutionContext != null)
+      walBatchingExecutionContext.shutdownNow()
+    finally super.afterEach()
 
   test("BatchedWriteAheadLog - serializing and deserializing batched records") {
     val events = Seq(
@@ -676,11 +667,10 @@ object WriteAheadLogSuite {
       writer.write(bytes)
       segments += FileBasedWriteAheadLogSegment(file, offset, bytes.size)
     }
-    if (allowBatching) {
+    if (allowBatching)
       writeToStream(wrapArrayArrayByte(data.toArray[String]).array())
-    } else {
+    else
       data.foreach { item => writeToStream(Utils.serialize(item)) }
-    }
     writer.close()
     segments
   }
@@ -732,28 +722,22 @@ object WriteAheadLogSuite {
         val data = Utils.deserialize[String](bytes)
         reader.close()
         data
-      } finally {
-        reader.close()
-      }
+      } finally reader.close()
     }
 
   /** Read all the data from a log file directly and return the list of byte buffers. */
   def readDataManually[T](file: String): Seq[T] = {
     val reader = HdfsUtils.getInputStream(file, hadoopConf)
     val buffer = new ArrayBuffer[T]
-    try {
-      while (true) {
-        // Read till EOF is thrown
-        val length = reader.readInt()
-        val bytes = new Array[Byte](length)
-        reader.read(bytes)
-        buffer += Utils.deserialize[T](bytes)
-      }
+    try while (true) {
+      // Read till EOF is thrown
+      val length = reader.readInt()
+      val bytes = new Array[Byte](length)
+      reader.read(bytes)
+      buffer += Utils.deserialize[T](bytes)
     } catch {
       case ex: EOFException =>
-    } finally {
-      reader.close()
-    }
+    } finally reader.close()
     buffer
   }
 
@@ -784,7 +768,7 @@ object WriteAheadLogSuite {
       HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
 
     if (fileSystem.exists(logDirectoryPath) &&
-        fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
+        fileSystem.getFileStatus(logDirectoryPath).isDirectory)
       fileSystem
         .listStatus(logDirectoryPath)
         .map { _.getPath() }
@@ -794,9 +778,8 @@ object WriteAheadLogSuite {
         .map {
           _.toString.stripPrefix("file:")
         }
-    } else {
+    else
       Seq.empty
-    }
   }
 
   def createWriteAheadLog(
@@ -820,14 +803,13 @@ object WriteAheadLogSuite {
   def readAndDeserializeDataManually(
       logFiles: Seq[String],
       allowBatching: Boolean): Seq[String] =
-    if (allowBatching) {
+    if (allowBatching)
       logFiles.flatMap { file =>
         val data = readDataManually[Array[Array[Byte]]](file)
         data.flatMap(byteArray => byteArray.map(Utils.deserialize[String]))
       }
-    } else {
+    else
       logFiles.flatMap { file => readDataManually[String](file) }
-    }
 
   implicit def stringToByteBuffer(str: String): ByteBuffer =
     ByteBuffer.wrap(Utils.serialize(str))

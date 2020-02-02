@@ -56,10 +56,9 @@ object hist extends UFunc {
 
       def apply(v: T, bins: Int, range: (Double, Double)): Histogram[S] = {
         val (minima, maxima) = range
-        if (maxima <= minima) {
+        if (maxima <= minima)
           throw new IllegalArgumentException(
             "Minima of a histogram must not be greater than the maxima")
-        }
         val result = DenseVector.zeros[S](bins)
 
         val visitor = new ValuesVisitor[S] {
@@ -67,19 +66,16 @@ object hist extends UFunc {
             val ad = a.toDouble
             val i: Int =
               math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
-            if ((i >= 0) && (i < bins)) {
+            if ((i >= 0) && (i < bins))
               result(i) += 1
-            }
-            if (ad == maxima) { //Include the endpoint
+            if (ad == maxima) //Include the endpoint
               result(bins - 1) += 1
-            }
           }
           def zeros(numZero: Int, zeroValue: S): Unit = {
             val i =
               math.floor(bins * ((zeroValue.toDouble - minima) / maxima)).toInt
-            if ((i >= 0) && (i < bins)) {
+            if ((i >= 0) && (i < bins))
               result(i) += numZero
-            }
           }
         }
         iter.traverse(v, visitor)
@@ -131,10 +127,9 @@ object hist extends UFunc {
           range: (Double, Double),
           weights: U): Histogram[S] = {
         val (minima, maxima) = range
-        if (maxima <= minima) {
+        if (maxima <= minima)
           throw new IllegalArgumentException(
             "Minima of a histogram must not be greater than the maxima")
-        }
         val result = DenseVector.zeros[S](bins)
 
         val visitor = new PairValuesVisitor[S, S] {
@@ -142,12 +137,10 @@ object hist extends UFunc {
             val ad = a.toDouble
             val i: Int =
               math.floor(bins * ((ad - minima) / (maxima - minima))).toInt
-            if ((i >= 0) && (i < bins)) {
+            if ((i >= 0) && (i < bins))
               result(i) += w
-            }
-            if (ad == maxima) { //Include the endpoint
+            if (ad == maxima) //Include the endpoint
               result(bins - 1) += w
-            }
           }
         }
         iter.traverse(v, weights, visitor)

@@ -74,9 +74,8 @@ object InfixType {
         val newMarker = builder.mark
         markerList = newMarker :: markerList
       }
-      if (builder.twoNewlinesBeforeCurrentToken) {
+      if (builder.twoNewlinesBeforeCurrentToken)
         builder.error(ScalaBundle.message("compound.type.expected"))
-      }
       builder.getTokenType match {
         case ScalaTokenTypes.tUNDER => //wildcard is possible for infix types, like for parameterized. No bounds possible
           val typeMarker = builder.mark()
@@ -93,21 +92,18 @@ object InfixType {
       }
     }
     //final ops closing
-    if (count > 0) {
-      if (assoc == 1) {
+    if (count > 0)
+      if (assoc == 1)
         infixTypeMarker.drop()
-      } else {
+      else {
         markerList.head.drop()
         for (x: PsiBuilder.Marker <- markerList.tail)
           x.done(ScalaElementTypes.INFIX_TYPE)
       }
-    } else {
-      if (assoc == 1) {
-        infixTypeMarker.drop()
-      } else {
-        for (x: PsiBuilder.Marker <- markerList) x.drop()
-      }
-    }
+    else if (assoc == 1)
+      infixTypeMarker.drop()
+    else
+      for (x: PsiBuilder.Marker <- markerList) x.drop()
     true
   }
 }

@@ -11,9 +11,7 @@ object Test extends App {
     println(code.eval)
   }
 
-  try {
-    new C { val T = Int }
-  } catch {
+  try new C { val T = Int } catch {
     case ex: Throwable =>
       println(ex)
   }

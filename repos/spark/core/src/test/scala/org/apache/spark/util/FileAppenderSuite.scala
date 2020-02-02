@@ -185,13 +185,12 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
         val rollingPolicy =
           appender.asInstanceOf[RollingFileAppender].rollingPolicy
         val policyParam =
-          if (rollingPolicy.isInstanceOf[TimeBasedRollingPolicy]) {
+          if (rollingPolicy.isInstanceOf[TimeBasedRollingPolicy])
             rollingPolicy
               .asInstanceOf[TimeBasedRollingPolicy]
               .rolloverIntervalMillis
-          } else {
+          else
             rollingPolicy.asInstanceOf[SizeBasedRollingPolicy].rolloverSizeBytes
-          }
         assert(policyParam === expectedRollingPolicyParam)
       }
       testOutputStream.close()

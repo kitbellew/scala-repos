@@ -146,12 +146,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
         mgr
       } getOrElse FakeJobQueryStateManager(
         yggConfig.clock.now() plus timeout.getOrElse(defaultTimeout).toMillis)
-    } yield {
-      new JobQueryTFMonad {
-        val jobId = job map (_.id)
-        val Q: JobQueryStateMonad = queryStateManager
-        val M: Monad[Future] = new blueeyes.bkka.FutureMonad(asyncContext)
-      }
+    } yield new JobQueryTFMonad {
+      val jobId = job map (_.id)
+      val Q: JobQueryStateMonad = queryStateManager
+      val M: Monad[Future] = new blueeyes.bkka.FutureMonad(asyncContext)
     }
   }
 
@@ -265,13 +263,12 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     private var poller: Option[Cancellable] = None
 
     def start(): Unit = lock.synchronized {
-      if (poller.isEmpty) {
+      if (poller.isEmpty)
         poller = Some(
           jobActorSystem.scheduler
             .schedule(yggConfig.jobPollFrequency, yggConfig.jobPollFrequency) {
               poll()
             })
-      }
     }
 
     def stop(): Unit = lock.synchronized {

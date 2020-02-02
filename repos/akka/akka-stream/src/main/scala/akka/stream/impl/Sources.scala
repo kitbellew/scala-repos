@@ -65,9 +65,9 @@ final private[stream] class QueueSource[T](
       }
 
       private def bufferElem(offer: Offer[T]): Unit =
-        if (!buffer.isFull) {
+        if (!buffer.isFull)
           enqueueAndSuccess(offer)
-        } else
+        else
           overflowStrategy match {
             case DropHead ⇒
               buffer.dropHead()
@@ -154,7 +154,7 @@ final private[stream] class QueueSource[T](
       }
 
       override def onPull(): Unit =
-        if (maxBuffer == 0) {
+        if (maxBuffer == 0)
           pendingOffer match {
             case Some(Offer(elem, promise)) ⇒
               push(out, elem)
@@ -166,7 +166,7 @@ final private[stream] class QueueSource[T](
               }
             case None ⇒
           }
-        } else if (buffer.nonEmpty) {
+        else if (buffer.nonEmpty) {
           push(out, buffer.dequeue())
           pendingOffer match {
             case Some(offer) ⇒

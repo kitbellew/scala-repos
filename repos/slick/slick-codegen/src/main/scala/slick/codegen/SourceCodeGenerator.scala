@@ -144,7 +144,7 @@ object SourceCodeGenerator {
           Some(user),
           Some(password),
           ignoreInvalidDefaults.toBoolean)
-      case _ => {
+      case _ =>
         println(
           """
             |Usage:
@@ -168,6 +168,5 @@ object SourceCodeGenerator {
             |"codegen.outputDir". The latter can be overridden on the command line.
           """.stripMargin.trim)
         System.exit(1)
-      }
     }
 }

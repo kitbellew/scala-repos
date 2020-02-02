@@ -29,7 +29,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
   def testBasicUnions = {
     val q1 =
-      for (m <- managers filter { _.department === "IT" }) yield (m.id, m.name)
+      for (m <- managers filter _.department === "IT") yield (m.id, m.name)
     val q2 =
       for (e <- employees filter { _.departmentIs("IT") }) yield (e.id, e.name)
     val q3 = (q1 union q2).sortBy(_._2.asc)
@@ -79,7 +79,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
   }
 
   def testUnionWithoutProjection = {
-    def f(s: String) = managers filter { _.name === s }
+    def f(s: String) = managers filter _.name === s
     val q = f("Peter") union f("Amy")
 
     seq(

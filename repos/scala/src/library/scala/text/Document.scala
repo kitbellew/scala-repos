@@ -77,9 +77,8 @@ abstract class Document {
       if (rem >= 2) {
         writer write "  "; rem -= 2
       }
-      if (rem == 1) {
+      if (rem == 1)
         writer write " "
-      }
     }
 
     def fmt(k: Int, state: List[FmtState]): Unit = state match {

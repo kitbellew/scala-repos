@@ -53,14 +53,18 @@ object ContentFactory {
     // Construct content of the samples dynamically
     val fullClassName = ExampleInfo.className(exampleName, groupName)
     var cache = Map[String, EnsembleExample]()
-    val sampleNode = if (cache.get(fullClassName).isDefined) {
-      cache(fullClassName).getContent
-    } else {
-      val inst =
-        Class.forName(fullClassName).newInstance().asInstanceOf[EnsembleExample]
-      cache = cache.+((fullClassName, inst))
-      inst.getContent
-    }
+    val sampleNode =
+      if (cache.get(fullClassName).isDefined)
+        cache(fullClassName).getContent
+      else {
+        val inst =
+          Class
+            .forName(fullClassName)
+            .newInstance()
+            .asInstanceOf[EnsembleExample]
+        cache = cache.+((fullClassName, inst))
+        inst.getContent
+      }
 
     val header = new Label(exampleName) {
       styleClass += "page-header"

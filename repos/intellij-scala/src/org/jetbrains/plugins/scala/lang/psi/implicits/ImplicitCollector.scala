@@ -201,9 +201,8 @@ class ImplicitCollector(
       for (obj <- ScalaPsiUtil.collectImplicitObjects(
              expandedTp,
              place.getProject,
-             place.getResolveScope)) {
+             place.getResolveScope))
         processor.processType(obj, place, ResolveState.initial())
-      }
 
       val secondCandidates = processor.candidatesS(fullInfo).toSeq
       result = if (secondCandidates.isEmpty) candidates else secondCandidates
@@ -303,14 +302,13 @@ class ImplicitCollector(
           placeCalculated = true
           if (isPredefPriority || (ScImplicitlyConvertible
                 .checkFucntionIsEligible(function, place) &&
-              ResolveUtils.isAccessible(function, getPlace))) {
+              ResolveUtils.isAccessible(function, getPlace)))
             addResult(
               new ScalaResolveResult(
                 named,
                 subst,
                 getImports(state),
                 implicitSearchState = Some(collectorState)))
-          }
         case _ =>
       }
       true
@@ -414,7 +412,7 @@ class ImplicitCollector(
             val oneImplicit =
               fun.effectiveParameterClauses.length == 1 && fun.effectiveParameterClauses.head.isImplicit
             //to avoid checking implicit functions in case of simple implicit parameter search
-            if (!oneImplicit && fun.effectiveParameterClauses.nonEmpty) {
+            if (!oneImplicit && fun.effectiveParameterClauses.nonEmpty)
               clazz match {
                 case Some(cl) =>
                   val clause = fun.paramClauses.clauses.head
@@ -422,7 +420,7 @@ class ImplicitCollector(
                   val qName = "scala.Function" + funNum
                   val classQualifiedName = cl.qualifiedName
                   if (classQualifiedName != qName && classQualifiedName != "java.lang.Object" &&
-                      classQualifiedName != "scala.ScalaObject") {
+                      classQualifiedName != "scala.ScalaObject")
                     if (fullInfo)
                       return Some(
                         c.copy(
@@ -430,10 +428,8 @@ class ImplicitCollector(
                           implicitReason = FunctionForParameterResult),
                         subst)
                     else return None
-                  }
                 case _ =>
               }
-            }
 
             def checkForFunctionType(noReturnType: Boolean)
                 : Option[(ScalaResolveResult, ScSubstitutor)] = {
@@ -472,7 +468,7 @@ class ImplicitCollector(
                           typeParameters.map(new TypeParameter(_))
                         def inferValueType(
                             tp: ScType): (ScType, Seq[TypeParameter]) =
-                          if (isExtensionConversion) {
+                          if (isExtensionConversion)
                             tp match {
                               case ScTypePolymorphicType(
                                   internalType,
@@ -494,7 +490,7 @@ class ImplicitCollector(
                                   typeParams)
                               case _ => (tp.inferValueType, Seq.empty)
                             }
-                          } else
+                          else
                             tp match {
                               case ScTypePolymorphicType(
                                   internalType,
@@ -521,16 +517,15 @@ class ImplicitCollector(
                           def updateImplicitParameters()
                               : Some[(ScalaResolveResult, ScSubstitutor)] = {
                             val expected = Some(tp)
-                            try {
-                              nonValueType =
-                                InferUtil.updateAccordingToExpectedType(
-                                  nonValueType,
-                                  fromImplicitParameters = true,
-                                  filterTypeParams = isImplicitConversion,
-                                  expected,
-                                  place,
-                                  check = true)
-                            } catch {
+                            try nonValueType =
+                              InferUtil.updateAccordingToExpectedType(
+                                nonValueType,
+                                fromImplicitParameters = true,
+                                filterTypeParams = isImplicitConversion,
+                                expected,
+                                place,
+                                check = true)
+                            catch {
                               case e: SafeCheckException =>
                                 return reportWrong(CantInferTypeParameterResult)
                             }
@@ -559,16 +554,15 @@ class ImplicitCollector(
                                 case _ =>
                               }
                               val (resType, results) =
-                                try {
-                                  InferUtil.updateTypeWithImplicitParameters(
-                                    nonValueType.getOrElse(
-                                      return reportWrong(BadTypeResult)),
-                                    place,
-                                    Some(fun),
-                                    check = !fullInfo,
-                                    searchImplicitsRecursively + 1,
-                                    fullInfo)
-                                } catch {
+                                try InferUtil.updateTypeWithImplicitParameters(
+                                  nonValueType.getOrElse(
+                                    return reportWrong(BadTypeResult)),
+                                  place,
+                                  Some(fun),
+                                  check = !fullInfo,
+                                  searchImplicitsRecursively + 1,
+                                  fullInfo)
+                                catch {
                                   case e: SafeCheckException =>
                                     return reportWrong(
                                       CantInferTypeParameterResult)
@@ -667,12 +661,13 @@ class ImplicitCollector(
                     }
                   }
 
-                  val funType = if (MacroInferUtil.isMacro(fun).isDefined) {
-                    MacroInferUtil.checkMacro(fun, Some(tp), place) match {
-                      case Some(newTp) => newTp
-                      case _           => _funType
-                    }
-                  } else _funType
+                  val funType =
+                    if (MacroInferUtil.isMacro(fun).isDefined)
+                      MacroInferUtil.checkMacro(fun, Some(tp), place) match {
+                        case Some(newTp) => newTp
+                        case _           => _funType
+                      }
+                    else _funType
                   var substedFunType: ScType = funType
 
                   if (fun.hasTypeParameters && noReturnType) {
@@ -694,18 +689,17 @@ class ImplicitCollector(
                       val inferredSubst = subst.followed(
                         ScalaPsiUtil.inferMethodTypesArgs(fun, subst))
                       substedFunType = inferredSubst.subst(funType)
-                    } else if (!withLocalTypeInference && !hasTypeParametersInType) {
+                    } else if (!withLocalTypeInference && !hasTypeParametersInType)
                       substedFunType = subst.subst(funType)
-                    } else return None
-                  } else {
+                    else return None
+                  } else
                     substedFunType = subst.subst(funType)
-                  }
 
-                  if (substedFunType conforms tp) {
+                  if (substedFunType conforms tp)
                     if (checkFast || noReturnType) Some(c, ScSubstitutor.empty)
                     else checkType(substedFunType)
-                  } else if (noReturnType) Some(c, ScSubstitutor.empty)
-                  else {
+                  else if (noReturnType) Some(c, ScSubstitutor.empty)
+                  else
                     substedFunType match {
                       case ScFunctionType(ret, params) if params.isEmpty =>
                         if (!ret.conforms(tp)) None
@@ -718,7 +712,6 @@ class ImplicitCollector(
                             subst)
                         else None
                     }
-                  }
                 case _ =>
                   if (fullInfo && !withLocalTypeInference)
                     Some(c.copy(implicitReason = BadTypeResult), subst)
@@ -726,12 +719,12 @@ class ImplicitCollector(
               }
             }
 
-            if (isExtensionConversion && !fullInfo) {
+            if (isExtensionConversion && !fullInfo)
               checkForFunctionType(noReturnType = true) match {
                 case None => None
                 case _    => checkForFunctionType(noReturnType = false)
               }
-            } else checkForFunctionType(noReturnType = false)
+            else checkForFunctionType(noReturnType = false)
           case _ => None
         }) match {
           case Some((result, resultSubst))

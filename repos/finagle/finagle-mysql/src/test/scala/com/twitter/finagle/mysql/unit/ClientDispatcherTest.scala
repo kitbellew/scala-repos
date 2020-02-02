@@ -159,9 +159,8 @@ class ClientDispatcherTest extends FunSuite {
     val valueSize = 7
     val bufferSize = numFields * valueSize
     val bw = BufferWriter(new Array[Byte](bufferSize))
-    for (i <- 1 to numFields) {
+    for (i <- 1 to numFields)
       bw.writeLengthCodedString("value" + i)
-    }
 
     Packet(0, bw)
   }

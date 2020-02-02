@@ -124,9 +124,10 @@ class ScClassImpl private (
       case _ =>
         for (p <- parameters) {
           ProgressManager.checkCanceled()
-          if (processor.isInstanceOf[BaseProcessor]) { // don't expose class parameters to Java.
+          if (processor.isInstanceOf[
+                BaseProcessor
+              ]) // don't expose class parameters to Java.
             if (!processor.execute(p, state)) return false
-          }
         }
     }
 
@@ -169,14 +170,13 @@ class ScClassImpl private (
         isInterface = isInterface)(res += _, names += _)
     }
 
-    for (synthetic <- syntheticMethodsNoOverride) {
+    for (synthetic <- syntheticMethodsNoOverride)
       this.processPsiMethodsForNode(
         new SignatureNodes.Node(
           new PhysicalSignature(synthetic, ScSubstitutor.empty),
           ScSubstitutor.empty),
         isStatic = false,
         isInterface = isInterface)(res += _, names += _)
-    }
 
     if (isCase) { //for Scala this is done in ScalaOIUtil.isProductAbstractMethod, for Java we do it here
       val caseClassGeneratedFunctions = Array(
@@ -197,9 +197,8 @@ class ScClassImpl private (
     ScalaPsiUtil.getCompanionModule(this) match {
       case Some(o: ScObject) =>
         def add(method: PsiMethod) {
-          if (!names.contains(method.getName)) {
+          if (!names.contains(method.getName))
             res += method
-          }
         }
         TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(o) { node =>
           this.processPsiMethodsForNode(
@@ -208,14 +207,13 @@ class ScClassImpl private (
             isInterface = false)(add)
         }
 
-        for (synthetic <- o.syntheticMethodsNoOverride) {
+        for (synthetic <- o.syntheticMethodsNoOverride)
           this.processPsiMethodsForNode(
             new SignatureNodes.Node(
               new PhysicalSignature(synthetic, ScSubstitutor.empty),
               ScSubstitutor.empty),
             isStatic = true,
             isInterface = false)(res += _, names += _)
-        }
       case _ =>
     }
     res.toArray
@@ -239,7 +237,7 @@ class ScClassImpl private (
 
   override protected def syntheticMethodsNoOverrideImpl: Seq[PsiMethod] = {
     val buf = new ArrayBuffer[PsiMethod]
-    if (isCase && !hasModifierProperty("abstract") && parameters.nonEmpty) {
+    if (isCase && !hasModifierProperty("abstract") && parameters.nonEmpty)
       constructor match {
         case Some(x: ScPrimaryConstructor) =>
           val hasCopy = !TypeDefinitionMembers
@@ -249,7 +247,7 @@ class ScClassImpl private (
             .isEmpty
           val addCopy = !hasCopy && !x.parameterList.clauses
             .exists(_.hasRepeatedParam)
-          if (addCopy) {
+          if (addCopy)
             try {
               val method = ScalaPsiElementFactory.createMethodWithContext(
                 copyMethodText,
@@ -261,10 +259,8 @@ class ScClassImpl private (
               case e: Exception =>
               //do not add methods if class has wrong signature.
             }
-          }
         case None =>
       }
-    }
     SyntheticMembersInjector.inject(this, withOverride = false) ++: buf.toSeq
   }
 
@@ -335,7 +331,7 @@ class ScClassImpl private (
 
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   def getSyntheticImplicitMethod: Option[ScFunction] =
-    if (hasModifierProperty("implicit")) {
+    if (hasModifierProperty("implicit"))
       constructor match {
         case Some(x: ScPrimaryConstructor) =>
           try {
@@ -350,7 +346,7 @@ class ScClassImpl private (
           }
         case None => None
       }
-    } else None
+    else None
 
   override def getFields: Array[PsiField] = {
     val fields = constructor match {

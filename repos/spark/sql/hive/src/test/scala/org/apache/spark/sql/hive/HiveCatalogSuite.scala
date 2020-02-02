@@ -30,7 +30,7 @@ import org.apache.spark.util.Utils
   */
 class HiveCatalogSuite extends CatalogTestCases {
 
-  private val client: HiveClient = {
+  private val client: HiveClient =
     IsolatedClientLoader
       .forVersion(
         hiveMetastoreVersion = HiveContext.hiveExecutionVersion,
@@ -38,7 +38,6 @@ class HiveCatalogSuite extends CatalogTestCases {
         sparkConf = new SparkConf(),
         hadoopConf = new Configuration())
       .createClient()
-  }
 
   protected override val utils: CatalogTestUtils = new CatalogTestUtils {
     override val tableInputFormat: String =

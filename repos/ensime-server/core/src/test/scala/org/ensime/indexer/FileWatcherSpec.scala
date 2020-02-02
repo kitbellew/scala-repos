@@ -139,18 +139,16 @@ abstract class FileWatcherSpec
         val parent = Files.createTempDir().canon
         val dir = parent / "base"
         dir.mkdirs()
-        try {
-          withClassWatcher(dir) { watcher =>
-            // would be better if this was atomic (not possible from JVM?)
-            parent.tree.reverse.foreach(_.delete())
+        try withClassWatcher(dir) { watcher =>
+          // would be better if this was atomic (not possible from JVM?)
+          parent.tree.reverse.foreach(_.delete())
 
-            val createOrDelete: Fish = {
-              case r: BaseRemoved => true
-              case a: BaseAdded   => true
-            }
-            tk.fishForMessage()(createOrDelete)
-            tk.fishForMessage()(createOrDelete)
+          val createOrDelete: Fish = {
+            case r: BaseRemoved => true
+            case a: BaseAdded   => true
           }
+          tk.fishForMessage()(createOrDelete)
+          tk.fishForMessage()(createOrDelete)
         } finally parent.tree.reverse.foreach(_.delete())
       }
     }
@@ -199,19 +197,17 @@ abstract class FileWatcherSpec
       withTestKit { implicit tk =>
         val dir = Files.createTempDir().canon
         dir.delete()
-        try {
-          withClassWatcher(dir) { watcher =>
-            val foo = (dir / "foo.class")
-            val bar = (dir / "b/bar.class")
+        try withClassWatcher(dir) { watcher =>
+          val foo = (dir / "foo.class")
+          val bar = (dir / "b/bar.class")
 
-            waitForLinus()
+          waitForLinus()
 
-            foo.createWithParents() shouldBe true
-            bar.createWithParents() shouldBe true
+          foo.createWithParents() shouldBe true
+          bar.createWithParents() shouldBe true
 
-            tk.expectMsgType[Added]
-            tk.expectMsgType[Added]
-          }
+          tk.expectMsgType[Added]
+          tk.expectMsgType[Added]
         } finally dir.tree.reverse.foreach(_.delete())
       }
     }
@@ -222,41 +218,39 @@ abstract class FileWatcherSpec
         val parent = Files.createTempDir().canon
         val dir = parent / "base"
         dir.mkdirs()
-        try {
-          withClassWatcher(dir) { watcher =>
-            val foo = (dir / "foo.class")
-            val bar = (dir / "b/bar.class")
+        try withClassWatcher(dir) { watcher =>
+          val foo = (dir / "foo.class")
+          val bar = (dir / "b/bar.class")
 
-            foo.createWithParents() shouldBe true
-            bar.createWithParents() shouldBe true
-            tk.expectMsgType[Added]
-            tk.expectMsgType[Added]
+          foo.createWithParents() shouldBe true
+          bar.createWithParents() shouldBe true
+          tk.expectMsgType[Added]
+          tk.expectMsgType[Added]
 
-            waitForLinus()
+          waitForLinus()
 
-            parent.tree.reverse.foreach(_.delete())
+          parent.tree.reverse.foreach(_.delete())
 
-            val createOrDelete: Fish = {
-              case r: BaseRemoved => true
-              case a: BaseAdded   => true
-              case r: Removed     => false
-            }
-            tk.fishForMessage()(createOrDelete)
-            tk.fishForMessage()(createOrDelete)
-
-            foo.createWithParents() shouldBe true
-            bar.createWithParents() shouldBe true
-
-            // non-deterministically receive zero, one or two more Removed
-            // and either Added or Changed for foo / bar.
-            val nonDeterministicAdd: Fish = {
-              case a: Added   => true
-              case c: Changed => true
-              case r: Removed => false
-            }
-            tk.fishForMessage()(nonDeterministicAdd)
-            tk.fishForMessage()(nonDeterministicAdd)
+          val createOrDelete: Fish = {
+            case r: BaseRemoved => true
+            case a: BaseAdded   => true
+            case r: Removed     => false
           }
+          tk.fishForMessage()(createOrDelete)
+          tk.fishForMessage()(createOrDelete)
+
+          foo.createWithParents() shouldBe true
+          bar.createWithParents() shouldBe true
+
+          // non-deterministically receive zero, one or two more Removed
+          // and either Added or Changed for foo / bar.
+          val nonDeterministicAdd: Fish = {
+            case a: Added   => true
+            case c: Changed => true
+            case r: Removed => false
+          }
+          tk.fishForMessage()(nonDeterministicAdd)
+          tk.fishForMessage()(nonDeterministicAdd)
         } finally dir.tree.reverse.foreach(_.delete())
       }
     }

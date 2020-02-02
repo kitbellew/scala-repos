@@ -65,9 +65,8 @@ abstract class MixinNodes {
     @volatile
     private var supersList: List[Map] = List.empty
     def setSupersMap(list: List[Map]) {
-      for (m <- list) {
+      for (m <- list)
         implicitNames ++= m.implicitNames
-      }
       supersList = list
     }
 
@@ -80,9 +79,8 @@ abstract class MixinNodes {
     def forName(name: String): (AllNodes, AllNodes) = {
       val convertedName = ScalaPsiUtil.convertMemberName(name)
       synchronized {
-        if (calculatedNames.contains(convertedName)) {
+        if (calculatedNames.contains(convertedName))
           return (calculated(convertedName), calculatedSupers(convertedName))
-        }
       }
       val thisMap: NodesMap = toNodesMap(
         getOrElse(convertedName, new ArrayBuffer))
@@ -113,9 +111,8 @@ abstract class MixinNodes {
       val res = new ArrayBuffer[(T, Node)]()
       for (name <- implicitNames) {
         val map = forName(name)._1
-        for (elem <- map) {
+        for (elem <- map)
           if (isImplicit(elem._1)) res += elem
-        }
       }
       forImplicitsCache = res.toList
       forImplicitsCache
@@ -308,14 +305,13 @@ abstract class MixinNodes {
         case p: PhysicalSignature =>
           val h = index(elemHashCode(key))
           var e = table(h).asInstanceOf[Entry]
-          if (e != null && e.next == null) {
+          if (e != null && e.next == null)
             e.value.info match {
               case p2: PhysicalSignature =>
                 if (p.method == p2.method) return Some(e.value)
                 else return None
               case _ => return None
             }
-          }
           while (e != null) {
             e.value.info match {
               case p2: PhysicalSignature =>
@@ -503,19 +499,17 @@ abstract class MixinNodes {
       derived: ScSubstitutor,
       superClass: PsiClass) = {
     var res: ScSubstitutor = ScSubstitutor.empty
-    for (tp <- superClass.getTypeParameters) {
+    for (tp <- superClass.getTypeParameters)
       res = res bindT ((tp.name, ScalaPsiUtil.getPsiElementId(tp)),
       derived.subst(superSubst.subst(ScalaPsiManager.typeVariable(tp))))
-    }
     superClass match {
       case td: ScTypeDefinition =>
         var aliasesMap = res.aliasesMap
-        for (alias <- td.aliases) {
+        for (alias <- td.aliases)
           derived.aliasesMap.get(alias.name) match {
             case Some(t) => aliasesMap = aliasesMap + ((alias.name, t))
             case None    =>
           }
-        }
         res = new ScSubstitutor(res.tvMap, aliasesMap, None)
       case _ => ()
     }

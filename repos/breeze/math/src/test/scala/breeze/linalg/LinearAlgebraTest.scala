@@ -227,9 +227,8 @@ class LinearAlgebraTest
     val QR(_Q, _R) = qr(A)
 
     assert(trace(_Q.t * _Q).closeTo(_Q.rows))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0)
-    }
 
     val reA: DenseMatrix[Double] = _Q * _R
     matricesNearlyEqual(reA, A)
@@ -247,9 +246,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (A.rows, A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0)
-    }
 
     val reA: DenseMatrix[Double] = _Q * _R
     matricesNearlyEqual(reA, A)
@@ -267,9 +265,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (A.rows, A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(max(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0)
-    }
 
     val reA: DenseMatrix[Double] = _Q * _R
     matricesNearlyEqual(reA, A)
@@ -294,9 +291,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (A.rows, A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0f)
-    }
 
     val reA: DenseMatrix[Float] = _Q * _R
     matricesNearlyEqual_Float(reA, A)
@@ -314,9 +310,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (A.rows, A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(max(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0f)
-    }
 
     val reA: DenseMatrix[Float] = _Q * _R
     matricesNearlyEqual_Float(reA, A)
@@ -349,9 +344,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (min(A.rows, A.cols), A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0)
-    }
 
     val reA: DenseMatrix[Double] = _Q * _R
     matricesNearlyEqual(reA, A)
@@ -365,9 +359,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (min(A.rows, A.cols), A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0)
-    }
 
     val reA: DenseMatrix[Double] = _Q * _R
     matricesNearlyEqual(reA, A)
@@ -385,9 +378,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (min(A.rows, A.cols), A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0)
-    }
 
     val reA: DenseMatrix[Double] = _Q * _R
     matricesNearlyEqual(reA, A)
@@ -412,9 +404,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (min(A.rows, A.cols), A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0f)
-    }
 
     val reA: DenseMatrix[Float] = _Q * _R
     matricesNearlyEqual_Float(reA, A)
@@ -429,9 +420,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (min(A.rows, A.cols), A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0f)
-    }
 
     val reA: DenseMatrix[Float] = _Q * _R
     matricesNearlyEqual_Float(reA, A)
@@ -449,9 +439,8 @@ class LinearAlgebraTest
     assert((_R.rows, _R.cols) == (min(A.rows, A.cols), A.cols))
 
     assert(trace(_Q.t * _Q).closeTo(min(A.rows, A.cols)))
-    for (i <- 0 until _R.rows; j <- 0 until i) {
+    for (i <- 0 until _R.rows; j <- 0 until i)
       assert(_R(i, j) === 0.0f)
-    }
 
     val reA: DenseMatrix[Float] = _Q * _R
     matricesNearlyEqual_Float(reA, A)

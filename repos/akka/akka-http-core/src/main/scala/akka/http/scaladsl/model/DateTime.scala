@@ -313,7 +313,7 @@ object DateTime {
         case _ ⇒ false
       }
     def mul10(i: Int) = (i << 3) + (i << 1)
-    if (check(string.length)) {
+    if (check(string.length))
       try {
         val year = i(0) * 1000 + i(1) * 100 + mul10(i(2)) + i(3)
         val month = mul10(i(5)) + i(6)
@@ -323,6 +323,6 @@ object DateTime {
         val sec = mul10(i(17)) + i(18)
         Some(DateTime(year, month, day, hour, min, sec))
       } catch { case _: IllegalArgumentException ⇒ None }
-    } else None
+    else None
   }
 }

@@ -229,21 +229,19 @@ private[persistence] trait Eventsourced
     try {
       internalStash.unstashAll()
       unstashAll(unstashFilterPredicate)
-    } finally {
-      message match {
-        case Some(WriteMessageSuccess(m, _)) ⇒
-          flushJournalBatch()
-          super.aroundPreRestart(reason, Some(m))
-        case Some(LoopMessageSuccess(m, _)) ⇒
-          flushJournalBatch()
-          super.aroundPreRestart(reason, Some(m))
-        case Some(ReplayedMessage(m)) ⇒
-          flushJournalBatch()
-          super.aroundPreRestart(reason, Some(m))
-        case mo ⇒
-          flushJournalBatch()
-          super.aroundPreRestart(reason, None)
-      }
+    } finally message match {
+      case Some(WriteMessageSuccess(m, _)) ⇒
+        flushJournalBatch()
+        super.aroundPreRestart(reason, Some(m))
+      case Some(LoopMessageSuccess(m, _)) ⇒
+        flushJournalBatch()
+        super.aroundPreRestart(reason, Some(m))
+      case Some(ReplayedMessage(m)) ⇒
+        flushJournalBatch()
+        super.aroundPreRestart(reason, Some(m))
+      case mo ⇒
+        flushJournalBatch()
+        super.aroundPreRestart(reason, None)
     }
 
   /** INTERNAL API. */
@@ -490,9 +488,9 @@ private[persistence] trait Eventsourced
     * @param handler handler for the given `event`
     */
   def deferAsync[A](event: A)(handler: A ⇒ Unit): Unit =
-    if (pendingInvocations.isEmpty) {
+    if (pendingInvocations.isEmpty)
       handler(event)
-    } else {
+    else {
       pendingInvocations addLast AsyncHandlerInvocation(
         event,
         handler.asInstanceOf[Any ⇒ Unit])
@@ -673,14 +671,13 @@ private[persistence] trait Eventsourced
       case LoopMessageSuccess(l, id) ⇒
         // instanceId mismatch can happen for persistAsync and defer in case of actor restart
         // while message is in flight, in that case we ignore the call to the handler
-        if (id == instanceId) {
+        if (id == instanceId)
           try {
             peekApplyHandler(l)
             onWriteMessageComplete(err = false)
           } catch {
             case NonFatal(e) ⇒ onWriteMessageComplete(err = true); throw e
           }
-        }
       case WriteMessagesSuccessful ⇒
         writeInProgress = false
         if (journalBatch.nonEmpty) flushJournalBatch()

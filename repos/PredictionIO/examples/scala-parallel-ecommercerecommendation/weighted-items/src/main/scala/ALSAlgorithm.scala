@@ -181,25 +181,21 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         timeout = 200.millis
       ) match {
         case Right(x) => x
-        case Left(e) => {
+        case Left(e) =>
           logger.error(s"Error when read seen events: $e")
           Iterator[Event]()
-        }
       }
 
       seenEvents.map { event =>
-        try {
-          event.targetEntityId.get
-        } catch {
-          case e => {
+        try event.targetEntityId.get
+        catch {
+          case e =>
             logger.error(s"Can't get targetEntityId of event $event.")
             throw e
-          }
         }
       }.toSet
-    } else {
+    } else
       Set[String]()
-    }
 
     // get the latest constraint unavailableItems $set event
     val unavailableItems: Set[String] = lEventsDb.findSingleEntity(
@@ -211,17 +207,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       latest = true,
       timeout = 200.millis
     ) match {
-      case Right(x) => {
-        if (x.hasNext) {
+      case Right(x) =>
+        if (x.hasNext)
           x.next.properties.get[Set[String]]("items")
-        } else {
+        else
           Set[String]()
-        }
-      }
-      case Left(e) => {
+      case Left(e) =>
         logger.error(s"Error when read set unavailableItems event: $e")
         Set[String]()
-      }
     }
 
     // Get the latest constraint weightedItems. This comes in the form of a sequence of WeightsGroup
@@ -347,20 +340,17 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       timeout = Duration(200, "millis")
     ) match {
       case Right(x) => x
-      case Left(e) => {
+      case Left(e) =>
         logger.error(s"Error when read recent events: $e")
         Iterator[Event]()
-      }
     }
 
     val recentItems: Set[String] = recentEvents.map { event =>
-      try {
-        event.targetEntityId.get
-      } catch {
-        case e => {
+      try event.targetEntityId.get
+      catch {
+        case e =>
           logger.error("Can't get targetEntityId of event ${event}.")
           throw e
-        }
       }
     }.toSet
 
@@ -374,7 +364,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val indexScores: Map[Int, Double] = if (recentFeatures.isEmpty) {
       logger.info(s"No productFeatures vector for recent items $recentItems.")
       Map[Int, Double]()
-    } else {
+    } else
       productFeatures.par // convert to parallel collection
         .filter {
           case (i, (item, feature)) =>
@@ -398,7 +388,6 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         }
         .filter(_._2 > 0) // keep items with score > 0
         .seq // convert back to sequential collection
-    }
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
     val topScores = getTopN(indexScores, query.num)(ord).toArray
@@ -411,17 +400,15 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     val q = PriorityQueue()
 
-    for (x <- s) {
+    for (x <- s)
       if (q.size < n)
         q.enqueue(x)
-      else {
-        // q is full
-        if (ord.compare(x, q.head) < 0) {
-          q.dequeue()
-          q.enqueue(x)
-        }
+      else
+      // q is full
+      if (ord.compare(x, q.head) < 0) {
+        q.dequeue()
+        q.enqueue(x)
       }
-    }
 
     q.dequeueAll.toSeq.reverse
   }

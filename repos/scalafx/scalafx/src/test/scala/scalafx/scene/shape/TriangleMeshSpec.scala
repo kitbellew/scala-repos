@@ -62,9 +62,8 @@ class TriangleMeshSpec
   def testIntArray(oa: ObservableIntegerArray, a: Array[Int]) {
     assert(oa.isEmpty === a.isEmpty)
     assert(oa.length === a.length)
-    for (i <- 0 until oa.length) {
+    for (i <- 0 until oa.length)
       assert(oa(i) === a(i))
-    }
     intercept[ArrayIndexOutOfBoundsException] {
       val invalid = oa(a.length)
     }
@@ -79,9 +78,8 @@ class TriangleMeshSpec
   def testFloatArray(oa: ObservableFloatArray, a: Array[Float]) {
     assert(oa.isEmpty === a.isEmpty)
     assert(oa.length === a.length)
-    for (i <- 0 until oa.length) {
+    for (i <- 0 until oa.length)
       assert(oa(i) === a(i))
-    }
     intercept[ArrayIndexOutOfBoundsException] {
       val invalid = oa(a.length)
     }

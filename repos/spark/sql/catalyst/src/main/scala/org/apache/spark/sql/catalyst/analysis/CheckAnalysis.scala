@@ -166,11 +166,10 @@ trait CheckAnalysis {
                       case other => // OK
                     }
 
-                    if (!child.deterministic) {
+                    if (!child.deterministic)
                       failAnalysis(
                         s"nondeterministic expression ${expr.sql} should not " +
                           s"appear in the arguments of an aggregate function.")
-                    }
                   }
                 case e: Attribute
                     if !groupingExprs.exists(_.semanticEquals(e)) =>
@@ -186,21 +185,19 @@ trait CheckAnalysis {
 
             def checkValidGroupingExprs(expr: Expression): Unit = {
               // Check if the data type of expr is orderable.
-              if (!RowOrdering.isOrderable(expr.dataType)) {
+              if (!RowOrdering.isOrderable(expr.dataType))
                 failAnalysis(
                   s"expression ${expr.sql} cannot be used as a grouping expression " +
                     s"because its data type ${expr.dataType.simpleString} is not a orderable " +
                     s"data type.")
-              }
 
-              if (!expr.deterministic) {
+              if (!expr.deterministic)
                 // This is just a sanity check, our analysis rule PullOutNondeterministic should
                 // already pull out those nondeterministic expressions and evaluate them in
                 // a Project node.
                 failAnalysis(
                   s"nondeterministic expression ${expr.sql} should not " +
                     s"appear in grouping expression.")
-              }
             }
 
             aggregateExprs.foreach(checkValidAggregateExpression)
@@ -208,10 +205,9 @@ trait CheckAnalysis {
 
           case Sort(orders, _, _) =>
             orders.foreach { order =>
-              if (!RowOrdering.isOrderable(order.dataType)) {
+              if (!RowOrdering.isOrderable(order.dataType))
                 failAnalysis(
                   s"sorting is not supported for columns of type ${order.dataType.simpleString}")
-              }
             }
 
           case s @ SetOperation(left, right)

@@ -39,11 +39,10 @@ object TestActorRefSpec {
     var replyTo: ActorRef = null
 
     def receiveT = {
-      case "complexRequest" ⇒ {
+      case "complexRequest" ⇒
         replyTo = sender()
         val worker = TestActorRef(Props[WorkerActor])
         worker ! "work"
-      }
       case "complexRequest2" ⇒
         val worker = TestActorRef(Props[WorkerActor])
         worker ! sender()
@@ -72,12 +71,10 @@ object TestActorRefSpec {
       case "complex" ⇒ replyActor ! "complexRequest"
       case "complex2" ⇒ replyActor ! "complexRequest2"
       case "simple" ⇒ replyActor ! "simpleRequest"
-      case "complexReply" ⇒ {
+      case "complexReply" ⇒
         counter -= 1
-      }
-      case "simpleReply" ⇒ {
+      case "simpleReply" ⇒
         counter -= 1
-      }
     }
   }
 

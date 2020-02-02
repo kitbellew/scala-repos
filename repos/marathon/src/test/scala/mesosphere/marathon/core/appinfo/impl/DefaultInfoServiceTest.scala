@@ -37,9 +37,8 @@ class DefaultInfoServiceTest
     appInfo.map(_.app.id).toSet should be(Set(app1.id))
 
     verify(f.appRepo, times(1)).currentVersion(app1.id)
-    for (app <- Set(app1)) {
+    for (app <- Set(app1))
       verify(f.baseData, times(1)).appInfoFuture(app, Set.empty)
-    }
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -61,9 +60,8 @@ class DefaultInfoServiceTest
       .futureValue
 
     Then("we get the baseData calls with the correct embed info")
-    for (app <- Set(app1)) {
+    for (app <- Set(app1))
       verify(f.baseData, times(1)).appInfoFuture(app, embed)
-    }
   }
 
   test("queryAll") {
@@ -84,9 +82,8 @@ class DefaultInfoServiceTest
     appInfos.map(_.app.id).toSet should be(someApps.map(_.id))
 
     verify(f.groupManager, times(1)).rootGroup()
-    for (app <- someApps) {
+    for (app <- someApps)
       verify(f.baseData, times(1)).appInfoFuture(app, Set.empty)
-    }
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -109,9 +106,8 @@ class DefaultInfoServiceTest
       .futureValue
 
     Then("we get the base data calls with the correct embed")
-    for (app <- someApps) {
+    for (app <- someApps)
       verify(f.baseData, times(1)).appInfoFuture(app, embed)
-    }
   }
 
   test("queryAll filters") {
@@ -152,9 +148,8 @@ class DefaultInfoServiceTest
     appInfos.map(_.app.id).toSet should be(someNestedApps.map(_.id))
 
     verify(f.groupManager, times(1)).group(PathId("/nested"))
-    for (app <- someNestedApps) {
+    for (app <- someNestedApps)
       verify(f.baseData, times(1)).appInfoFuture(app, Set.empty)
-    }
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -177,9 +172,8 @@ class DefaultInfoServiceTest
       .futureValue
 
     Then("baseData was called with the correct embed options")
-    for (app <- someNestedApps) {
+    for (app <- someNestedApps)
       verify(f.baseData, times(1)).appInfoFuture(app, embed)
-    }
   }
 
   test("query for extended group information") {

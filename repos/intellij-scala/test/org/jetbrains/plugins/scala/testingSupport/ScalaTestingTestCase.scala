@@ -85,10 +85,9 @@ abstract class ScalaTestingTestCase(
       status: Int,
       tests: String*) = {
     val structureViewRoot = buildFileStructure(testClassName + ".scala")
-    for (test <- tests) {
+    for (test <- tests)
       assert(
         checkTestNodeInFileStructure(structureViewRoot, test, None, status))
-    }
   }
 
   override protected def runFileStructureViewTest(

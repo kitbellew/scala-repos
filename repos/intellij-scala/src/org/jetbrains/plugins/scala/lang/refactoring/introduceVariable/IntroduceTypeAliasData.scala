@@ -17,9 +17,8 @@ class IntroduceTypeAliasData {
   var isCallModalDialogInProgress: Boolean = false
 
   def setTypeAlias(inTypeAlias: ScTypeAlias) =
-    if (inTypeAlias != null) {
+    if (inTypeAlias != null)
       typeAliasInfo = (inTypeAlias.getContainingFile, inTypeAlias.getTextRange)
-    }
 
   def clearData(): Unit = {
     currentScope = null
@@ -36,9 +35,8 @@ class IntroduceTypeAliasData {
     currentScope = item
 
   def setInintialInfo(textRange: TextRange): Unit =
-    if (initialTypeElement == null) {
+    if (initialTypeElement == null)
       initialTypeElement = textRange
-    }
 
   def setPossibleScopes(inPossibleScopes: Array[ScopeItem]): Unit =
     possibleScopes = inPossibleScopes

@@ -39,14 +39,13 @@ class Decoder extends AbstractDecoder with StateMachine {
 
   private[this] val awaitingResponseContinue: Seq[ChannelBuffer] => Decoding = {
     tokens =>
-      if (isEnd(tokens)) {
+      if (isEnd(tokens))
         EmptyValueLines
-      } else if (isStats(tokens)) {
+      else if (isStats(tokens)) {
         awaitStatsOrEnd(Seq(Tokens(tokens.map(ChannelBufferBuf.Owned(_)))))
         NeedMoreData
-      } else {
+      } else
         Tokens(tokens.map(ChannelBufferBuf.Owned(_)))
-      }
   }
 
   def decode(
@@ -59,15 +58,14 @@ class Decoder extends AbstractDecoder with StateMachine {
 
       case AwaitingStatsOrEnd(linesSoFar) =>
         decodeLine(buffer, needsData) { tokens =>
-          if (isEnd(tokens)) {
+          if (isEnd(tokens))
             StatLines(linesSoFar)
-          } else if (isStats(tokens)) {
+          else if (isStats(tokens)) {
             awaitStatsOrEnd(
               linesSoFar :+ Tokens(tokens.map(ChannelBufferBuf.Owned(_))))
             NeedMoreData
-          } else {
+          } else
             throw new ServerError("Invalid reply from STATS command")
-          }
         }
       case AwaitingData(valuesSoFar, tokens, bytesNeeded) =>
         decodeData(bytesNeeded, buffer) { data =>
@@ -81,9 +79,9 @@ class Decoder extends AbstractDecoder with StateMachine {
         }
       case AwaitingResponseOrEnd(valuesSoFar) =>
         decodeLine(buffer, needsData) { tokens =>
-          if (isEnd(tokens)) {
+          if (isEnd(tokens))
             ValueLines(valuesSoFar)
-          } else NeedMoreData
+          else NeedMoreData
         }
     }
 

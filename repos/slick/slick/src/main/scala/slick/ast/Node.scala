@@ -707,14 +707,13 @@ final case class Ref(sym: TermSymbol) extends PathElement with NullaryNode {
   type Self = Ref
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self =
     if (hasType) this
-    else {
+    else
       scope.get(sym) match {
         case Some(t) => this :@ t
         case _ =>
           throw new SlickException(
             "No type for symbol " + sym + " found for " + this)
       }
-    }
   def rebuild = copy()
   def pathString = sym.toString
   def untypedPath = untyped

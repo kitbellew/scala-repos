@@ -56,7 +56,7 @@ private[hive] class HiveSessionState(ctx: HiveContext)
   /**
     * An analyzer that uses the Hive metastore.
     */
-  override lazy val analyzer: Analyzer = {
+  override lazy val analyzer: Analyzer =
     new Analyzer(catalog, functionRegistry, conf) {
       override val extendedResolutionRules =
         catalog.ParquetConversions ::
@@ -69,7 +69,6 @@ private[hive] class HiveSessionState(ctx: HiveContext)
 
       override val extendedCheckRules = Seq(PreWriteCheck(catalog))
     }
-  }
 
   /**
     * Parser for HiveQl query texts.
@@ -79,7 +78,7 @@ private[hive] class HiveSessionState(ctx: HiveContext)
   /**
     * Planner that takes into account Hive-specific strategies.
     */
-  override lazy val planner: SparkPlanner = {
+  override lazy val planner: SparkPlanner =
     new SparkPlanner(ctx.sparkContext, conf, experimentalMethods)
       with HiveStrategies {
       override val hiveContext = ctx
@@ -105,6 +104,5 @@ private[hive] class HiveSessionState(ctx: HiveContext)
           DefaultJoin
         )
     }
-  }
 
 }

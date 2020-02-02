@@ -26,9 +26,8 @@ final class MatchError(obj: Any) extends RuntimeException {
     def ofClass = "of class " + obj.getClass.getName
     if (obj == null) "null"
     else
-      try {
-        obj.toString() + " (" + ofClass + ")"
-      } catch {
+      try obj.toString() + " (" + ofClass + ")"
+      catch {
         case _: Throwable => "an instance " + ofClass
       }
   }

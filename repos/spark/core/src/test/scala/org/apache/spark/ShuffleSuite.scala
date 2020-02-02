@@ -307,12 +307,10 @@ abstract class ShuffleSuite
       .getFile(new ShuffleDataBlockId(0, 0, 0))
     assert(hashFile.exists() || sortFile.exists())
 
-    if (hashFile.exists()) {
+    if (hashFile.exists())
       hashFile.delete()
-    }
-    if (sortFile.exists()) {
+    if (sortFile.exists())
       sortFile.delete()
-    }
 
     // This count should retry the execution of the previous stage and rerun shuffle.
     rdd.count()

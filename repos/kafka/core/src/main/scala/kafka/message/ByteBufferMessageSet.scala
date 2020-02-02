@@ -65,26 +65,22 @@ object ByteBufferMessageSet {
         magicValue = magicAndTimestamp.magic) { outputStream =>
         val output = new DataOutputStream(
           CompressionFactory(compressionCodec, outputStream))
-        try {
-          for (message <- messages) {
-            offset = offsetAssigner.nextAbsoluteOffset()
-            if (message.magic != magicAndTimestamp.magic)
-              throw new IllegalArgumentException(
-                "Messages in the message set must have same magic value")
-            // Use inner offset if magic value is greater than 0
-            if (magicAndTimestamp.magic > Message.MagicValue_V0)
-              output.writeLong(offsetAssigner.toInnerOffset(offset))
-            else
-              output.writeLong(offset)
-            output.writeInt(message.size)
-            output.write(
-              message.buffer.array,
-              message.buffer.arrayOffset,
-              message.buffer.limit)
-          }
-        } finally {
-          output.close()
-        }
+        try for (message <- messages) {
+          offset = offsetAssigner.nextAbsoluteOffset()
+          if (message.magic != magicAndTimestamp.magic)
+            throw new IllegalArgumentException(
+              "Messages in the message set must have same magic value")
+          // Use inner offset if magic value is greater than 0
+          if (magicAndTimestamp.magic > Message.MagicValue_V0)
+            output.writeLong(offsetAssigner.toInnerOffset(offset))
+          else
+            output.writeLong(offset)
+          output.writeInt(message.size)
+          output.write(
+            message.buffer.array,
+            message.buffer.arrayOffset,
+            message.buffer.limit)
+        } finally output.close()
       }
       val buffer =
         ByteBuffer.allocate(messageWriter.size + MessageSet.LogOverhead)
@@ -120,9 +116,8 @@ object ByteBufferMessageSet {
       val messageAndOffsets =
         if (wrapperMessageAndOffset.message.magic > MagicValue_V0) {
           val innerMessageAndOffsets = new ArrayDeque[MessageAndOffset]()
-          try {
-            while (true) innerMessageAndOffsets.add(readMessageFromStream())
-          } catch {
+          try while (true) innerMessageAndOffsets.add(readMessageFromStream())
+          catch {
             case eofe: EOFException =>
               compressed.close()
             case ioe: IOException =>
@@ -337,14 +332,13 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
   def getBuffer = buffer
 
   private def shallowValidBytes: Int = {
-    if (shallowValidByteCount < 0) {
+    if (shallowValidByteCount < 0)
       this.shallowValidByteCount = this
         .internalIterator(isShallow = true)
         .map { messageAndOffset =>
           MessageSet.entrySize(messageAndOffset.message)
         }
         .sum
-    }
     shallowValidByteCount
   }
 
@@ -360,10 +354,9 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
 
   override def isMagicValueInAllWrapperMessages(
       expectedMagicValue: Byte): Boolean = {
-    for (messageAndOffset <- shallowIterator) {
+    for (messageAndOffset <- shallowIterator)
       if (messageAndOffset.message.magic != expectedMagicValue)
         return false
-    }
     true
   }
 
@@ -401,9 +394,9 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
         message.limit(size)
         topIter.position(topIter.position + size)
         val newMessage = new Message(message)
-        if (isShallow) {
+        if (isShallow)
           new MessageAndOffset(newMessage, offset)
-        } else {
+        else
           newMessage.compressionCodec match {
             case NoCompressionCodec =>
               innerIter = null
@@ -415,18 +408,15 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
                 innerIter = null
               makeNext()
           }
-        }
       }
 
       override def makeNext(): MessageAndOffset =
-        if (isShallow) {
+        if (isShallow)
           makeNextOuter
-        } else {
-          if (innerDone())
-            makeNextOuter
-          else
-            innerIter.next()
-        }
+        else if (innerDone())
+          makeNextOuter
+        else
+          innerIter.next()
 
     }
 
@@ -455,9 +445,9 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       messageFormatVersion: Byte = Message.CurrentMagicValue,
       messageTimestampType: TimestampType,
       messageTimestampDiffMaxMs: Long): (ByteBufferMessageSet, Boolean) = {
-    if (sourceCodec == NoCompressionCodec && targetCodec == NoCompressionCodec) {
+    if (sourceCodec == NoCompressionCodec && targetCodec == NoCompressionCodec)
       // check the magic value
-      if (!isMagicValueInAllWrapperMessages(messageFormatVersion)) {
+      if (!isMagicValueInAllWrapperMessages(messageFormatVersion))
         // Message format conversion
         (
           convertNonCompressedMessages(
@@ -468,7 +458,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
             messageTimestampDiffMaxMs,
             messageFormatVersion),
           true)
-      } else {
+      else
         // Do in-place validation, offset assignment and maybe set timestamp
         (
           validateNonCompressedMessagesAndAssignOffsetInPlace(
@@ -478,8 +468,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
             messageTimestampType,
             messageTimestampDiffMaxMs),
           false)
-      }
-    } else {
+    else {
       // Deal with compressed messages
       // We cannot do in place assignment in one of the following situations:
       // 1. Source and target compression codec are different

@@ -48,11 +48,10 @@ object PlaySettings {
     externalizeResources := true,
     javacOptions in (Compile, doc) := List("-encoding", "utf8"),
     libraryDependencies <+= (playPlugin) { isPlugin =>
-      if (isPlugin) {
+      if (isPlugin)
         "com.typesafe.play" %% "play" % play.core.PlayVersion.current % "provided"
-      } else {
+      else
         "com.typesafe.play" %% "play-server" % play.core.PlayVersion.current
-      }
     },
     libraryDependencies += "com.typesafe.play" %% "play-test" % play.core.PlayVersion.current % "test",
     ivyConfigurations += DocsApplication,
@@ -175,14 +174,14 @@ object PlaySettings {
       } else Nil
     },
     scriptClasspath := {
-      if (externalizeResources.value) {
+      if (externalizeResources.value)
         "../conf/" +: scriptClasspath.value
-      } else scriptClasspath.value
+      else scriptClasspath.value
     },
     // taskDyn ensures we only build the sans externalised jar if we need to
     scriptClasspathOrdering <<= Def.taskDyn {
       val oldValue = scriptClasspathOrdering.value
-      if (externalizeResources.value) {
+      if (externalizeResources.value)
         Def.task {
           // Filter out the regular jar
           val jar = (packageBin in Runtime).value
@@ -201,9 +200,8 @@ object PlaySettings {
             case other => other
           }
         }
-      } else {
+      else
         Def.task(oldValue)
-      }
     },
     mappings in Universal ++= {
       val docDirectory = (doc in Compile).value

@@ -27,7 +27,7 @@ class RDDFunctionsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val data = 0 until 6
     for (numPartitions <- 1 to 8) {
       val rdd = sc.parallelize(data, numPartitions)
-      for (windowSize <- 1 to 6) {
+      for (windowSize <- 1 to 6)
         for (step <- 1 to 3) {
           val sliding =
             rdd.sliding(windowSize, step).collect().map(_.toList).toList
@@ -38,7 +38,6 @@ class RDDFunctionsSuite extends SparkFunSuite with MLlibTestSparkContext {
             .filter(l => l.size == windowSize)
           assert(sliding === expected)
         }
-      }
       assert(
         rdd.sliding(7).collect().isEmpty,
         "Should return an empty RDD if the window size is greater than the number of items.")

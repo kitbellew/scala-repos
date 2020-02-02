@@ -166,11 +166,10 @@ private[rest] abstract class RestServlet extends HttpServlet with Logging {
     * The returned submission ID cannot be empty. If the path is unexpected, return None.
     */
   protected def parseSubmissionId(path: String): Option[String] =
-    if (path == null || path.isEmpty) {
+    if (path == null || path.isEmpty)
       None
-    } else {
+    else
       path.stripPrefix("/").split("/").headOption.filter(_.nonEmpty)
-    }
 
   /**
     * Validate the response to ensure that it is correctly constructed.
@@ -317,9 +316,8 @@ private class ErrorServlet extends RestServlet {
     if (versionMismatch) {
       error.highestProtocolVersion = serverVersion
       response.setStatus(RestSubmissionServer.SC_UNKNOWN_PROTOCOL_VERSION)
-    } else {
+    } else
       response.setStatus(HttpServletResponse.SC_BAD_REQUEST)
-    }
     sendResponse(error, response)
   }
 }

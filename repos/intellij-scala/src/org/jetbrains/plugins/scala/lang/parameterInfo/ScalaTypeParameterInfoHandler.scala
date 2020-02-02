@@ -133,31 +133,28 @@ class ScalaTypeParameterInfoHandler
       substitutor: ScSubstitutor) {
     if (params.length == 0)
       buffer.append(CodeInsightBundle.message("parameter.info.no.parameters"))
-    else {
+    else
       buffer.append(
         params
           .map { (param: PsiTypeParameter) =>
             val isBold =
               if (params.indexOf(param) == index) true
-              else {
+              else
                 //todo: check type
                 false
-              }
             var paramText = param.name
             if (paramText == "?") paramText = "_"
             val refTypes = param.getExtendsList.getReferencedTypes
-            if (refTypes.nonEmpty) {
+            if (refTypes.nonEmpty)
               paramText = paramText + refTypes
                 .map { (typez: PsiType) =>
                   ScType.presentableText(
                     substitutor.subst(ScType.create(typez, param.getProject)))
                 }
                 .mkString(" <: ", " with ", "")
-            }
             if (isBold) "<b>" + paramText + "</b>" else paramText
           }
           .mkString(", "))
-    }
   }
 
   private def appendScTypeParams(
@@ -167,15 +164,14 @@ class ScalaTypeParameterInfoHandler
       substitutor: ScSubstitutor): StringBuilder =
     if (params.isEmpty)
       buffer.append(CodeInsightBundle.message("parameter.info.no.parameters"))
-    else {
+    else
       buffer.append(params
         .map { (param: ScTypeParam) =>
           val isBold =
             if (params.indexOf(param) == index) true
-            else {
+            else
               //todo: check type
               false
-            }
           var paramText = param.name
           if (param.isContravariant) paramText = "-" + paramText
           else if (param.isCovariant) paramText = "+" + paramText
@@ -202,7 +198,6 @@ class ScalaTypeParameterInfoHandler
           if (isBold) "<b>" + paramText + "</b>" else paramText
         }
         .mkString(", "))
-    }
 
   def showParameterInfo(
       element: ScTypeArgs,
@@ -236,7 +231,7 @@ class ScalaTypeParameterInfoHandler
     if (element == null) return null
     val args: ScTypeArgs =
       PsiTreeUtil.getParentOfType(element, getArgumentListClass)
-    if (args != null) {
+    if (args != null)
       context match {
         case context: CreateParameterInfoContext =>
           val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
@@ -294,7 +289,6 @@ class ScalaTypeParameterInfoHandler
           context.setHighlightedParameter(el)
         case _ =>
       }
-    }
     args
   }
 }

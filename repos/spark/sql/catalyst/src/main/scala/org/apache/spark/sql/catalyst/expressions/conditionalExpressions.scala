@@ -34,24 +34,22 @@ case class If(
   override def nullable: Boolean = trueValue.nullable || falseValue.nullable
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (predicate.dataType != BooleanType) {
+    if (predicate.dataType != BooleanType)
       TypeCheckResult.TypeCheckFailure(
         s"type of predicate expression in If should be boolean, not ${predicate.dataType}")
-    } else if (trueValue.dataType.asNullable != falseValue.dataType.asNullable) {
+    else if (trueValue.dataType.asNullable != falseValue.dataType.asNullable)
       TypeCheckResult.TypeCheckFailure(s"differing types in '$sql' " +
         s"(${trueValue.dataType.simpleString} and ${falseValue.dataType.simpleString}).")
-    } else {
+    else
       TypeCheckResult.TypeCheckSuccess
-    }
 
   override def dataType: DataType = trueValue.dataType
 
   override def eval(input: InternalRow): Any =
-    if (java.lang.Boolean.TRUE.equals(predicate.eval(input))) {
+    if (java.lang.Boolean.TRUE.equals(predicate.eval(input)))
       trueValue.eval(input)
-    } else {
+    else
       falseValue.eval(input)
-    }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val condEval = predicate.gen(ctx)
@@ -113,44 +111,40 @@ case class CaseWhen(
 
   override def checkInputDataTypes(): TypeCheckResult =
     // Make sure all branch conditions are boolean types.
-    if (valueTypesEqual) {
-      if (branches.forall(_._1.dataType == BooleanType)) {
+    if (valueTypesEqual)
+      if (branches.forall(_._1.dataType == BooleanType))
         TypeCheckResult.TypeCheckSuccess
-      } else {
+      else {
         val index = branches.indexWhere(_._1.dataType != BooleanType)
         TypeCheckResult.TypeCheckFailure(
           s"WHEN expressions in CaseWhen should all be boolean type, " +
             s"but the ${index + 1}th when expression's type is ${branches(index)._1}")
       }
-    } else {
+    else
       TypeCheckResult.TypeCheckFailure(
         "THEN and ELSE expressions should all be same type or coercible to a common type")
-    }
 
   override def eval(input: InternalRow): Any = {
     var i = 0
     while (i < branches.size) {
-      if (java.lang.Boolean.TRUE.equals(branches(i)._1.eval(input))) {
+      if (java.lang.Boolean.TRUE.equals(branches(i)._1.eval(input)))
         return branches(i)._2.eval(input)
-      }
       i += 1
     }
-    if (elseValue.isDefined) {
+    if (elseValue.isDefined)
       return elseValue.get.eval(input)
-    } else {
+    else
       return null
-    }
   }
 
   def shouldCodegen: Boolean =
     branches.length < CaseWhen.MAX_NUM_CASES_FOR_CODEGEN
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    if (!shouldCodegen) {
+    if (!shouldCodegen)
       // Fallback to interpreted mode if there are too many branches, as it may reach the
       // 64K limit (limit on bytecode size for a single function).
       return super[CodegenFallback].genCode(ctx, ev)
-    }
     // Generate code that looks like:
     //
     // condA = ...
@@ -278,26 +272,24 @@ case class Least(children: Seq[Expression]) extends Expression {
   private lazy val ordering = TypeUtils.getInterpretedOrdering(dataType)
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (children.length <= 1) {
+    if (children.length <= 1)
       TypeCheckResult.TypeCheckFailure(s"LEAST requires at least 2 arguments")
-    } else if (children.map(_.dataType).distinct.count(_ != NullType) > 1) {
+    else if (children.map(_.dataType).distinct.count(_ != NullType) > 1)
       TypeCheckResult.TypeCheckFailure(
         s"The expressions should all have the same type," +
           s" got LEAST (${children.map(_.dataType)}).")
-    } else {
+    else
       TypeUtils.checkForOrderingExpr(dataType, "function " + prettyName)
-    }
 
   override def dataType: DataType = children.head.dataType
 
   override def eval(input: InternalRow): Any =
     children.foldLeft[Any](null) { (r, c) =>
       val evalc = c.eval(input)
-      if (evalc != null) {
+      if (evalc != null)
         if (r == null || ordering.lt(evalc, r)) evalc else r
-      } else {
+      else
         r
-      }
     }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
@@ -334,27 +326,25 @@ case class Greatest(children: Seq[Expression]) extends Expression {
   private lazy val ordering = TypeUtils.getInterpretedOrdering(dataType)
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (children.length <= 1) {
+    if (children.length <= 1)
       TypeCheckResult.TypeCheckFailure(
         s"GREATEST requires at least 2 arguments")
-    } else if (children.map(_.dataType).distinct.count(_ != NullType) > 1) {
+    else if (children.map(_.dataType).distinct.count(_ != NullType) > 1)
       TypeCheckResult.TypeCheckFailure(
         s"The expressions should all have the same type," +
           s" got GREATEST (${children.map(_.dataType)}).")
-    } else {
+    else
       TypeUtils.checkForOrderingExpr(dataType, "function " + prettyName)
-    }
 
   override def dataType: DataType = children.head.dataType
 
   override def eval(input: InternalRow): Any =
     children.foldLeft[Any](null) { (r, c) =>
       val evalc = c.eval(input)
-      if (evalc != null) {
+      if (evalc != null)
         if (r == null || ordering.gt(evalc, r)) evalc else r
-      } else {
+      else
         r
-      }
     }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

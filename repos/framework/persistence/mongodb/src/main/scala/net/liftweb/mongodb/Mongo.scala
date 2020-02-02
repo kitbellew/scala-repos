@@ -163,12 +163,10 @@ object MongoDB {
 
     // start the request
     db.requestStart
-    try {
-      f(db)
-    } finally {
-      // end the request
-      db.requestDone
-    }
+    try f(db)
+    finally
+    // end the request
+    db.requestDone
   }
 
   /**
@@ -188,12 +186,10 @@ object MongoDB {
 
     // start the request
     db.requestStart
-    try {
-      f(db)
-    } finally {
-      // end the request
-      db.requestDone
-    }
+    try f(db)
+    finally
+    // end the request
+    db.requestDone
   }
 
   /**

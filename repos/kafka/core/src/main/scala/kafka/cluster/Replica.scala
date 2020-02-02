@@ -59,17 +59,16 @@ class Replica(
      * set the lastCaughtUpTimeMsUnderlying to the current time.
      * This means that the replica is fully caught up.
      */
-    if (logReadResult.isReadFromLogEnd) {
+    if (logReadResult.isReadFromLogEnd)
       lastCaughtUpTimeMsUnderlying.set(time.milliseconds)
-    }
   }
 
   private def logEndOffset_=(newLogEndOffset: LogOffsetMetadata) {
-    if (isLocal) {
+    if (isLocal)
       throw new KafkaException(
         "Should not set log end offset on partition [%s,%d]'s local replica %d"
           .format(topic, partitionId, brokerId))
-    } else {
+    else {
       logEndOffsetMetadata = newLogEndOffset
       trace(
         "Setting log end offset for replica %d for partition [%s,%d] to [%s]"
@@ -89,24 +88,22 @@ class Replica(
       trace(
         "Setting high watermark for replica %d partition [%s,%d] on broker %d to [%s]"
           .format(brokerId, topic, partitionId, brokerId, newHighWatermark))
-    } else {
+    } else
       throw new KafkaException(
         "Should not set high watermark on partition [%s,%d]'s non-local replica %d"
           .format(topic, partitionId, brokerId))
-    }
   }
 
   def highWatermark = highWatermarkMetadata
 
   def convertHWToLocalOffsetMetadata() =
-    if (isLocal) {
+    if (isLocal)
       highWatermarkMetadata =
         log.get.convertToOffsetMetadata(highWatermarkMetadata.messageOffset)
-    } else {
+    else
       throw new KafkaException(
         "Should not construct complete high watermark on partition [%s,%d]'s non-local replica %d"
           .format(topic, partitionId, brokerId))
-    }
 
   override def equals(that: Any): Boolean = {
     if (!(that.isInstanceOf[Replica]))

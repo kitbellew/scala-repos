@@ -84,9 +84,9 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
 
   private def formatResult(outData: Map[Key, (Seq[S], Value)])
       : TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])] =
-    if (outData.isEmpty) {
+    if (outData.isEmpty)
       noData
-    } else {
+    else {
       var mmMap = MMap[Int, (ListBuffer[S], MMap[Key, Value])]()
 
       outData.toIterator.foreach {
@@ -120,13 +120,12 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
               k -> (List(state), v)
           })
           .map(formatResult(_))
-      } else { // Here we handle mapping to nothing, option map et. al
+      } else // Here we handle mapping to nothing, option map et. al
         Future.value(
           List(
             (List(state), Future.value(Nil))
           )
         )
-      }
     } catch {
       case NonFatal(e) => Future.exception(e)
     }

@@ -119,28 +119,24 @@ private[python] class PythonMLLibAPI extends Serializable {
           lrModel.numClasses)
           .map(_.asInstanceOf[Object])
           .asJava
-      } else {
+      } else
         List(model.weights, model.intercept).map(_.asInstanceOf[Object]).asJava
-      }
-    } finally {
-      data.rdd.unpersist(blocking = false)
-    }
+    } finally data.rdd.unpersist(blocking = false)
 
   /**
     * Return the Updater from string
     */
   def getUpdaterFromString(regType: String): Updater =
-    if (regType == "l2") {
+    if (regType == "l2")
       new SquaredL2Updater
-    } else if (regType == "l1") {
+    else if (regType == "l1")
       new L1Updater
-    } else if (regType == null || regType == "none") {
+    else if (regType == null || regType == "none")
       new SimpleUpdater
-    } else {
+    else
       throw new IllegalArgumentException(
         "Invalid value for 'regType' parameter."
           + " Can only be initialized using the following string values: ['l1', 'l2', None].")
-    }
 
   /**
     * Java stub for Python mllib BisectingKMeans.run()
@@ -348,9 +344,7 @@ private[python] class PythonMLLibAPI extends Serializable {
     try {
       val model = isotonicRegressionAlg.run(input)
       List[AnyRef](model.boundaryVector, model.predictionVector).asJava
-    } finally {
-      data.rdd.unpersist(blocking = false)
-    }
+    } finally data.rdd.unpersist(blocking = false)
   }
 
   /**
@@ -378,11 +372,8 @@ private[python] class PythonMLLibAPI extends Serializable {
     if (!initialModel.isEmpty())
       kMeansAlg.setInitialModel(new KMeansModel(initialModel))
 
-    try {
-      kMeansAlg.run(data.rdd.persist(StorageLevel.MEMORY_AND_DISK))
-    } finally {
-      data.rdd.unpersist(blocking = false)
-    }
+    try kMeansAlg.run(data.rdd.persist(StorageLevel.MEMORY_AND_DISK))
+    finally data.rdd.unpersist(blocking = false)
   }
 
   /**
@@ -428,12 +419,9 @@ private[python] class PythonMLLibAPI extends Serializable {
 
     if (seed != null) gmmAlg.setSeed(seed)
 
-    try {
-      new GaussianMixtureModelWrapper(
-        gmmAlg.run(data.rdd.persist(StorageLevel.MEMORY_AND_DISK)))
-    } finally {
-      data.rdd.unpersist(blocking = false)
-    }
+    try new GaussianMixtureModelWrapper(
+      gmmAlg.run(data.rdd.persist(StorageLevel.MEMORY_AND_DISK)))
+    finally data.rdd.unpersist(blocking = false)
   }
 
   /**
@@ -708,9 +696,7 @@ private[python] class PythonMLLibAPI extends Serializable {
       val model =
         word2vec.fit(dataJRDD.rdd.persist(StorageLevel.MEMORY_AND_DISK_SER))
       new Word2VecModelWrapper(model)
-    } finally {
-      dataJRDD.rdd.unpersist(blocking = false)
-    }
+    } finally dataJRDD.rdd.unpersist(blocking = false)
   }
 
   /**
@@ -744,13 +730,10 @@ private[python] class PythonMLLibAPI extends Serializable {
       categoricalFeaturesInfo = categoricalFeaturesInfo.asScala.toMap,
       minInstancesPerNode = minInstancesPerNode,
       minInfoGain = minInfoGain)
-    try {
-      DecisionTree.train(
-        data.rdd.persist(StorageLevel.MEMORY_AND_DISK),
-        strategy)
-    } finally {
-      data.rdd.unpersist(blocking = false)
-    }
+    try DecisionTree.train(
+      data.rdd.persist(StorageLevel.MEMORY_AND_DISK),
+      strategy)
+    finally data.rdd.unpersist(blocking = false)
   }
 
   /**
@@ -781,25 +764,21 @@ private[python] class PythonMLLibAPI extends Serializable {
       maxBins = maxBins,
       categoricalFeaturesInfo = categoricalFeaturesInfo.asScala.toMap)
     val cached = data.rdd.persist(StorageLevel.MEMORY_AND_DISK)
-    try {
-      if (algo == Algo.Classification) {
-        RandomForest.trainClassifier(
-          cached,
-          strategy,
-          numTrees,
-          featureSubsetStrategy,
-          seed)
-      } else {
-        RandomForest.trainRegressor(
-          cached,
-          strategy,
-          numTrees,
-          featureSubsetStrategy,
-          seed)
-      }
-    } finally {
-      cached.unpersist(blocking = false)
-    }
+    try if (algo == Algo.Classification)
+      RandomForest.trainClassifier(
+        cached,
+        strategy,
+        numTrees,
+        featureSubsetStrategy,
+        seed)
+    else
+      RandomForest.trainRegressor(
+        cached,
+        strategy,
+        numTrees,
+        featureSubsetStrategy,
+        seed)
+    finally cached.unpersist(blocking = false)
   }
 
   /**
@@ -827,11 +806,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       categoricalFeaturesInfo.asScala.toMap
 
     val cached = data.rdd.persist(StorageLevel.MEMORY_AND_DISK)
-    try {
-      GradientBoostedTrees.train(cached, boostingStrategy)
-    } finally {
-      cached.unpersist(blocking = false)
-    }
+    try GradientBoostedTrees.train(cached, boostingStrategy)
+    finally cached.unpersist(blocking = false)
   }
 
   def elementwiseProductVector(scalingVector: Vector, vector: Vector): Vector =
@@ -867,11 +843,10 @@ private[python] class PythonMLLibAPI extends Serializable {
     * Java stub for mllib Statistics.chiSqTest()
     */
   def chiSqTest(observed: Vector, expected: Vector): ChiSqTestResult =
-    if (expected == null) {
+    if (expected == null)
       Statistics.chiSqTest(observed)
-    } else {
+    else
       Statistics.chiSqTest(observed, expected)
-    }
 
   /**
     * Java stub for mllib Statistics.chiSqTest(observed: Matrix)
@@ -897,11 +872,10 @@ private[python] class PythonMLLibAPI extends Serializable {
   private def getNumPartitionsOrDefault(
       numPartitions: java.lang.Integer,
       jsc: JavaSparkContext): Int =
-    if (numPartitions == null) {
+    if (numPartitions == null)
       jsc.sc.defaultParallelism
-    } else {
+    else
       numPartitions
-    }
 
   // Note: for the following methods, numPartitions and seed are boxed to allow nulls to be passed
   // in for either argument from pyspark
@@ -1298,9 +1272,8 @@ private[spark] object SerDe extends Serializable {
         out: OutputStream,
         pickler: Pickler,
         objects: Any*) = {
-      if (objects.length == 0 || objects.length > 3) {
+      if (objects.length == 0 || objects.length > 3)
         out.write(Opcodes.MARK)
-      }
       objects.foreach(pickler.save)
       val code = objects.length match {
         case 1 => Opcodes.TUPLE1
@@ -1312,12 +1285,11 @@ private[spark] object SerDe extends Serializable {
     }
 
     protected def getBytes(obj: Object): Array[Byte] =
-      if (obj.getClass.isArray) {
+      if (obj.getClass.isArray)
         obj.asInstanceOf[Array[Byte]]
-      } else {
+      else
         // This must be ISO 8859-1 / Latin 1, not UTF-8, to interoperate correctly
         obj.asInstanceOf[String].getBytes(StandardCharsets.ISO_8859_1)
-      }
 
     private[python] def saveState(
         obj: Object,
@@ -1344,9 +1316,8 @@ private[spark] object SerDe extends Serializable {
 
     def construct(args: Array[Object]): Object = {
       require(args.length == 1)
-      if (args.length != 1) {
+      if (args.length != 1)
         throw new PickleException("should be 1")
-      }
       val bytes = getBytes(args(0))
       val bb = ByteBuffer.wrap(bytes, 0, bytes.length)
       bb.order(ByteOrder.nativeOrder())
@@ -1381,9 +1352,8 @@ private[spark] object SerDe extends Serializable {
     }
 
     def construct(args: Array[Object]): Object = {
-      if (args.length != 4) {
+      if (args.length != 4)
         throw new PickleException("should be 4")
-      }
       val bytes = getBytes(args(2))
       val n = bytes.length / 8
       val values = new Array[Double](n)
@@ -1433,9 +1403,8 @@ private[spark] object SerDe extends Serializable {
     }
 
     def construct(args: Array[Object]): Object = {
-      if (args.length != 6) {
+      if (args.length != 6)
         throw new PickleException("should be 6")
-      }
       val order = ByteOrder.nativeOrder()
       val colPtrsBytes = getBytes(args(2))
       val indicesBytes = getBytes(args(3))
@@ -1481,9 +1450,8 @@ private[spark] object SerDe extends Serializable {
     }
 
     def construct(args: Array[Object]): Object = {
-      if (args.length != 3) {
+      if (args.length != 3)
         throw new PickleException("should be 3")
-      }
       val size = args(0).asInstanceOf[Int]
       val indiceBytes = getBytes(args(1))
       val valueBytes = getBytes(args(2))
@@ -1508,9 +1476,8 @@ private[spark] object SerDe extends Serializable {
     }
 
     def construct(args: Array[Object]): Object = {
-      if (args.length != 2) {
+      if (args.length != 2)
         throw new PickleException("should be 2")
-      }
       new LabeledPoint(
         args(0).asInstanceOf[Double],
         args(1).asInstanceOf[Vector])
@@ -1526,9 +1493,8 @@ private[spark] object SerDe extends Serializable {
     }
 
     def construct(args: Array[Object]): Object = {
-      if (args.length != 3) {
+      if (args.length != 3)
         throw new PickleException("should be 3")
-      }
       new Rating(
         ratingsIdCheckLong(args(0)),
         ratingsIdCheckLong(args(1)),
@@ -1536,9 +1502,8 @@ private[spark] object SerDe extends Serializable {
     }
 
     private def ratingsIdCheckLong(obj: Object): Int =
-      try {
-        obj.asInstanceOf[Int]
-      } catch {
+      try obj.asInstanceOf[Int]
+      catch {
         case ex: ClassCastException =>
           throw new PickleException(
             s"Ratings id ${obj.toString} exceeds " +
@@ -1607,14 +1572,13 @@ private[spark] object SerDe extends Serializable {
         val unpickle = new Unpickler
         iter.flatMap { row =>
           val obj = unpickle.loads(row)
-          if (batched) {
+          if (batched)
             obj match {
               case list: JArrayList[_] => list.asScala
               case arr: Array[_]       => arr
             }
-          } else {
+          else
             Seq(obj)
-          }
         }
       }
       .toJavaRDD()

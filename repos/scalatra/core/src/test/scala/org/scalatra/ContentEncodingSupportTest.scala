@@ -133,10 +133,9 @@ private object Helper {
     */
   private def convertStreamToString(is: InputStream): String = {
     val scanner = new java.util.Scanner(is, "UTF-8").useDelimiter("\\A")
-    if (scanner.hasNext) {
+    if (scanner.hasNext)
       scanner.next()
-    } else {
+    else
       ""
-    }
   }
 }

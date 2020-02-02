@@ -57,9 +57,8 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       registerCleanup(monCleanup)
       genLoad(args.head, expectedType /* toTypeKind(tree.tpe.resultType) */ )
       unregisterCleanup(monCleanup)
-      if (hasResult) {
+      if (hasResult)
         locals.store(monitorResult)
-      }
       nopIfNeeded(startProtected)
       val endProtected = currProgramPoint()
 
@@ -70,9 +69,8 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
        */
       locals.load(monitor)
       emit(asm.Opcodes.MONITOREXIT)
-      if (hasResult) {
+      if (hasResult)
         locals.load(monitorResult)
-      }
       val postHandler = new asm.Label
       bc goTo postHandler
 
@@ -117,9 +115,8 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
      */
     def nopIfNeeded(lbl: asm.Label) {
       val noInstructionEmitted = isAtProgramPoint(lbl)
-      if (noInstructionEmitted) {
+      if (noInstructionEmitted)
         emit(asm.Opcodes.NOP)
-      }
     }
 
     /*
@@ -189,13 +186,11 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       val kind = tpeTK(tree)
 
       val caseHandlers: List[EHClause] =
-        for (CaseDef(pat, _, caseBody) <- catches) yield {
-          pat match {
-            case Typed(Ident(nme.WILDCARD), tpt) =>
-              NamelessEH(tpeTK(tpt).asClassBType, caseBody)
-            case Ident(nme.WILDCARD) => NamelessEH(jlThrowableRef, caseBody)
-            case Bind(_, _)          => BoundEH(pat.symbol, caseBody)
-          }
+        for (CaseDef(pat, _, caseBody) <- catches) yield pat match {
+          case Typed(Ident(nme.WILDCARD), tpt) =>
+            NamelessEH(tpeTK(tpt).asClassBType, caseBody)
+          case Ident(nme.WILDCARD) => NamelessEH(jlThrowableRef, caseBody)
+          case Bind(_, _)          => BoundEH(pat.symbol, caseBody)
         }
 
       // ------ (0) locals used later ------
@@ -345,13 +340,12 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
        */
 
       markProgramPoint(postHandlers)
-      if (hasFinally) {
+      if (hasFinally)
         emitFinalizer(
           finalizer,
           tmp,
           isDuplicate = false
         ) // the only invocation of emitFinalizer with `isDuplicate == false`
-      }
 
       kind
     } // end of genLoadTry()
@@ -363,9 +357,8 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
           if (earlyReturnVar != null) {
             locals.load(earlyReturnVar)
             bc.emitRETURN(locals(earlyReturnVar).tk)
-          } else {
+          } else
             bc emitRETURN UNIT
-          }
           shouldEmitCleanup = false
 
         case nextCleanup :: _ =>
@@ -392,21 +385,17 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       var saved: immutable.Map[ /* LabelDef */ Symbol, asm.Label] = null
       if (isDuplicate) {
         saved = jumpDest
-        for (ldef <- labelDefsAtOrUnder(finalizer)) {
+        for (ldef <- labelDefsAtOrUnder(finalizer))
           jumpDest -= ldef.symbol
-        }
       }
       // when duplicating, the above guarantees new asm.Labels are used for LabelDefs contained in the finalizer (their vars are reused, that's ok)
-      if (tmp != null) {
+      if (tmp != null)
         locals.store(tmp)
-      }
       genLoad(finalizer, UNIT)
-      if (tmp != null) {
+      if (tmp != null)
         locals.load(tmp)
-      }
-      if (isDuplicate) {
+      if (isDuplicate)
         jumpDest = saved
-      }
     }
 
     /* Does this tree have a try-catch block? */

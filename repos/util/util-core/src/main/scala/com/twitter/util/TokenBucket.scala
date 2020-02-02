@@ -60,9 +60,8 @@ object TokenBucket {
       require(n >= 0)
       synchronized {
         val ok = counter >= n
-        if (ok) {
+        if (ok)
           counter -= n
-        }
         ok
       }
     }

@@ -123,19 +123,19 @@ class ConfigSSLContextBuilder(
     new AlgorithmChecker(signatureConstraints, keySizeConstraints)
 
   lazy val keyManagers: Seq[KeyManager] =
-    if (info.keyManagerConfig.keyStoreConfigs.nonEmpty) {
+    if (info.keyManagerConfig.keyStoreConfigs.nonEmpty)
       Seq(buildCompositeKeyManager(info.keyManagerConfig, algorithmChecker))
-    } else Nil
+    else Nil
 
   lazy val trustManagers: Seq[TrustManager] =
-    if (info.trustManagerConfig.trustStoreConfigs.nonEmpty) {
+    if (info.trustManagerConfig.trustStoreConfigs.nonEmpty)
       Seq(
         buildCompositeTrustManager(
           info.trustManagerConfig,
           info.checkRevocation.getOrElse(false),
           revocationLists,
           algorithmChecker))
-    } else Nil
+    else Nil
 
   def buildSSLContext(
       protocol: String,
@@ -218,9 +218,8 @@ class ConfigSSLContextBuilder(
       ksc: KeyStoreConfig,
       algorithmChecker: AlgorithmChecker): X509KeyManager = {
     val keyStore =
-      try {
-        keyStoreBuilder(ksc).build()
-      } catch {
+      try keyStoreBuilder(ksc).build()
+      catch {
         case e: java.lang.ArithmeticException =>
           // This bug only exists in 1.6: we'll only check on 1.6 and explain after the exception.
           val willExplodeOnEmptyPassword = foldVersion(
@@ -233,9 +232,8 @@ class ConfigSSLContextBuilder(
               |Please see: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6879539
             """.stripMargin
             throw new IllegalStateException(msg, e)
-          } else {
+          } else
             throw e
-          }
         case bpe: javax.crypto.BadPaddingException =>
           // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6415637
           // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6974037
@@ -246,19 +244,17 @@ class ConfigSSLContextBuilder(
             bpe)
       }
 
-    if (!validateStoreContainsPrivateKeys(ksc, keyStore)) {
+    if (!validateStoreContainsPrivateKeys(ksc, keyStore))
       logger.warn(
         s"Client authentication is not possible as there are no private keys found in ${ksc.filePath}")
-    }
 
     validateStore(keyStore, algorithmChecker)
 
     val password = ksc.password.map(_.toCharArray)
 
     val factory = keyManagerFactory
-    try {
-      factory.init(keyStore, password.orNull)
-    } catch {
+    try factory.init(keyStore, password.orNull)
+    catch {
       case e: UnrecoverableKeyException =>
         logger.error(s"Unrecoverable key in keystore $ksc")
         throw new IllegalStateException(e)
@@ -290,21 +286,15 @@ class ConfigSSLContextBuilder(
     connection.setDoInput(true)
     connection.setUseCaches(false)
     val inStream = new DataInputStream(connection.getInputStream)
-    try {
-      generateCRL(inStream)
-    } finally {
-      inStream.close()
-    }
+    try generateCRL(inStream)
+    finally inStream.close()
   }
 
   def generateCRLFromFile(file: File): CRL = {
     val fileStream = new BufferedInputStream(new FileInputStream(file))
     val inStream = new DataInputStream(fileStream)
-    try {
-      generateCRL(inStream)
-    } finally {
-      inStream.close()
-    }
+    try generateCRL(inStream)
+    finally inStream.close()
   }
 
   def buildTrustManagerParameters(
@@ -405,9 +395,8 @@ class ConfigSSLContextBuilder(
 
     store.aliases().asScala.foreach { alias =>
       Option(store.getCertificate(alias)).map { c =>
-        try {
-          algorithmChecker.checkKeyAlgorithms(c)
-        } catch {
+        try algorithmChecker.checkKeyAlgorithms(c)
+        catch {
           case e: CertPathValidatorException =>
             logger.warn(
               s"validateStore: Skipping certificate with weak key size in $alias: " + e.getMessage)

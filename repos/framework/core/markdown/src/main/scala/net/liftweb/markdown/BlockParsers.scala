@@ -233,11 +233,10 @@ trait BlockParsers extends Parsers {
         level: Int,
         out: StringBuilder,
         list: List[ListItem]): Unit = list match {
-      case last :: current :: rest => {
+      case last :: current :: rest =>
         current.addResult(level + 1, out, last.endsWithNewline)
         addResult(level, out, current :: rest)
-      }
-      case _ => {} //end of recursion, list with one item or less
+      case _ => //end of recursion, list with one item or less
     }
 
     /**
@@ -334,7 +333,7 @@ trait BlockParsers extends Parsers {
   /** parses a horizontal ruler
     */
   def ruler: Parser[MarkdownBlock] =
-    (line(classOf[RulerLine]) | line(classOf[SetExtHeaderLine])) ^^^ { Ruler }
+    (line(classOf[RulerLine]) | line(classOf[SetExtHeaderLine])) ^^^ Ruler
 
   /** parses a verbatim xml block
     */
@@ -451,9 +450,9 @@ trait BlockParsers extends Parsers {
     * speed up block processing by looking ahead
     */
   def fastBlock: Parser[MarkdownBlock] = Parser { in =>
-    if (in.atEnd) {
+    if (in.atEnd)
       Failure("End of Input.", in)
-    } else {
+    else
       in.first match {
         case l: AtxHeaderLine => atxHeader(in)
         case l: RulerLine     => ruler(in)
@@ -467,7 +466,6 @@ trait BlockParsers extends Parsers {
         case l: UItemStartLine     => uList(in)
         case _                     => paragraph(in)
       }
-    }
   }
 
   /**
@@ -504,11 +502,10 @@ trait BlockParsers extends Parsers {
     */
   def apply(in: MarkdownLineReader): String =
     phrase(markdown)(in) match {
-      case Success(bs, _) => {
+      case Success(bs, _) =>
         val builder = new StringBuilder()
         bs.foreach(block => block.addResult(0, builder))
         builder.toString
-      }
       case e: NoSuccess =>
         throw new IllegalArgumentException("Could not parse " + in + ": " + e)
     }

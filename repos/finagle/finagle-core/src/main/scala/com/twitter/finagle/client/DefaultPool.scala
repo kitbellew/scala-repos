@@ -84,23 +84,21 @@ object DefaultPool {
 
         val stack = new StackBuilder[ServiceFactory[Req, Rep]](next)
 
-        if (idleTime > 0.seconds && high > low) {
+        if (idleTime > 0.seconds && high > low)
           stack.push(
             Role.cachingPool,
             (sf: ServiceFactory[Req, Rep]) =>
               new CachingPool(sf, high - low, idleTime, timer, statsReceiver))
-        }
 
         stack.push(
           Role.watermarkPool,
           (sf: ServiceFactory[Req, Rep]) =>
             new WatermarkPool(sf, low, high, statsReceiver, maxWaiters))
 
-        if (bufferSize > 0) {
+        if (bufferSize > 0)
           stack.push(
             Role.bufferingPool,
             (sf: ServiceFactory[Req, Rep]) => new BufferingPool(sf, bufferSize))
-        }
 
         stack.result
       }

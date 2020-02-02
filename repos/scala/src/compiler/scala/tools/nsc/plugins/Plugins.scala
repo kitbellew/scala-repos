@@ -121,7 +121,6 @@ trait Plugins { global: Global =>
 
   /** Summary of the options for all loaded plugins */
   def pluginOptionsHelp: String =
-    (for (plug <- roughPluginsList; help <- plug.optionsHelp) yield {
-      "\nOptions for plugin '%s':\n%s\n".format(plug.name, help)
-    }).mkString
+    (for (plug <- roughPluginsList; help <- plug.optionsHelp)
+      yield "\nOptions for plugin '%s':\n%s\n".format(plug.name, help)).mkString
 }

@@ -100,7 +100,7 @@ object DataType {
 
   def fromJson(json: String): DataType = parseDataType(parse(json))
 
-  private val nonDecimalNameToType = {
+  private val nonDecimalNameToType =
     Seq(
       NullType,
       DateType,
@@ -117,7 +117,6 @@ object DataType {
       CalendarIntervalType)
       .map(t => t.typeName -> t)
       .toMap
-  }
 
   /** Given the string representation of a type, return its DataType */
   private def nameToType(name: String): DataType = {

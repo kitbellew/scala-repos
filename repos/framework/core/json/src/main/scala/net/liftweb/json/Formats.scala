@@ -214,11 +214,11 @@ private[json] object ClassDelta {
     if (class1 == class2) 0
     else if (class1.getInterfaces.contains(class2)) 0
     else if (class2.getInterfaces.contains(class1)) 0
-    else if (class1.isAssignableFrom(class2)) {
+    else if (class1.isAssignableFrom(class2))
       1 + delta(class1, class2.getSuperclass)
-    } else if (class2.isAssignableFrom(class1)) {
+    else if (class2.isAssignableFrom(class1))
       1 + delta(class1.getSuperclass, class2)
-    } else
+    else
       sys.error(
         "Don't call delta unless one class is assignable from the other")
 }
@@ -261,9 +261,8 @@ trait DefaultFormats extends Formats {
 
   val dateFormat = new DateFormat {
     def parse(s: String) =
-      try {
-        Some(formatter.parse(s))
-      } catch {
+      try Some(formatter.parse(s))
+      catch {
         case e: ParseException => None
       }
 

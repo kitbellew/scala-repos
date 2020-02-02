@@ -13,7 +13,7 @@ trait SerializableLogging extends Serializable {
 
   protected def logger: LazyLogger = {
     var logger = _the_logger
-    if (logger eq null) {
+    if (logger eq null)
       synchronized {
         logger = _the_logger
         if (logger eq null) {
@@ -22,7 +22,6 @@ trait SerializableLogging extends Serializable {
           logger = ll
         }
       }
-    }
     logger
   }
 

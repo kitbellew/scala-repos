@@ -32,10 +32,9 @@ object CommandLineUtils extends Logging {
       parser: OptionParser,
       options: OptionSet,
       required: OptionSpec[_]*) {
-    for (arg <- required) {
+    for (arg <- required)
       if (!options.has(arg))
         printUsageAndDie(parser, "Missing required argument \"" + arg + "\"")
-    }
   }
 
   /**
@@ -46,14 +45,12 @@ object CommandLineUtils extends Logging {
       options: OptionSet,
       usedOption: OptionSpec[_],
       invalidOptions: Set[OptionSpec[_]]) {
-    if (options.has(usedOption)) {
-      for (arg <- invalidOptions) {
+    if (options.has(usedOption))
+      for (arg <- invalidOptions)
         if (options.has(arg))
           printUsageAndDie(
             parser,
             "Option \"" + usedOption + "\" can't be used with option\"" + arg + "\"")
-      }
-    }
   }
 
   /**
@@ -74,18 +71,17 @@ object CommandLineUtils extends Logging {
     val splits = args.map(_ split "=").filterNot(_.length == 0)
 
     val props = new Properties
-    for (a <- splits) {
-      if (a.length == 1) {
+    for (a <- splits)
+      if (a.length == 1)
         if (acceptMissingValue) props.put(a(0), "")
         else
           throw new IllegalArgumentException(s"Missing value for key ${a(0)}")
-      } else if (a.length == 2) props.put(a(0), a(1))
+      else if (a.length == 2) props.put(a(0), a(1))
       else {
         System.err.println(
           "Invalid command line properties: " + args.mkString(" "))
         System.exit(1)
       }
-    }
     props
   }
 }

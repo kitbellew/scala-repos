@@ -64,7 +64,7 @@ class ReviveOffersActorTest
   for (reviveEvent <- Seq(
          SchedulerReregisteredEvent("somemaster"),
          SchedulerRegisteredEvent("frameworkid", "somemaster")
-       )) {
+       ))
     test(s"revive if offers wanted and we receive $reviveEvent") {
       val f = new Fixture()
       Given("a started actor that wants offers")
@@ -80,7 +80,6 @@ class ReviveOffersActorTest
       Mockito.verify(f.driver, Mockito.timeout(1000)).reviveOffers()
       f.verifyNoMoreInteractions()
     }
-  }
 
   test(s"NO revive if revivesWanted == 0 and we receive TimedCheck") {
     val f = new Fixture()
@@ -124,7 +123,7 @@ class ReviveOffersActorTest
          SchedulerReregisteredEvent("somemaster"),
          SchedulerRegisteredEvent("frameworkid", "somemaster"),
          ReviveOffersActor.TimedCheck
-       )) {
+       ))
     test(s"DO NOT revive if offers NOT wanted and we receive $reviveEvent") {
       val f = new Fixture()
       Given("a started actor that wants offers")
@@ -139,7 +138,6 @@ class ReviveOffersActorTest
       Then("reviveOffers is NOT called directly")
       f.verifyNoMoreInteractions()
     }
-  }
 
   test("only one revive for two fast consecutive trues") {
     val f = new Fixture()

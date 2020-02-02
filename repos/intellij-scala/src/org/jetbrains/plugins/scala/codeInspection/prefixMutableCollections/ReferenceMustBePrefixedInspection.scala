@@ -37,12 +37,11 @@ class ReferenceMustBePrefixedInspection
               val qualName = clazz.qualifiedName
               if (ScalaCodeStyleSettings
                     .getInstance(holder.getProject)
-                    .hasImportWithPrefix(qualName)) {
+                    .hasImportWithPrefix(qualName))
                 holder.registerProblem(
                   ref,
                   getDisplayName,
                   new AddPrefixFix(ref, clazz))
-              }
             case _ =>
           }
         case _ =>

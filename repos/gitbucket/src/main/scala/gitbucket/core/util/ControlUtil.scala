@@ -13,13 +13,10 @@ object ControlUtil {
 
   def using[A <% { def close(): Unit }, B](resource: A)(f: A => B): B =
     try f(resource)
-    finally {
-      if (resource != null) {
-        ignoring(classOf[Throwable]) {
-          resource.close()
-        }
+    finally if (resource != null)
+      ignoring(classOf[Throwable]) {
+        resource.close()
       }
-    }
 
   def using[T](git: Git)(f: Git => T): T =
     try f(git)
@@ -33,9 +30,8 @@ object ControlUtil {
     }
 
   def ignore[T](f: => Unit): Unit =
-    try {
-      f
-    } catch {
+    try f
+    catch {
       case e: Exception => ()
     }
 

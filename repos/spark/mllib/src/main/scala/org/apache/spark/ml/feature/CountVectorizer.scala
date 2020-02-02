@@ -150,11 +150,11 @@ class CountVectorizer(override val uid: String)
     transformSchema(dataset.schema, logging = true)
     val vocSize = $(vocabSize)
     val input = dataset.select($(inputCol)).rdd.map(_.getAs[Seq[String]](0))
-    val minDf = if ($(minDF) >= 1.0) {
-      $(minDF)
-    } else {
-      $(minDF) * input.cache().count()
-    }
+    val minDf =
+      if ($(minDF) >= 1.0)
+        $(minDF)
+      else
+        $(minDF) * input.cache().count()
     val wordCounts: RDD[(String, Long)] = input
       .flatMap {
         case (tokens) =>
@@ -177,13 +177,13 @@ class CountVectorizer(override val uid: String)
       .cache()
     val fullVocabSize = wordCounts.count()
     val vocab: Array[String] = {
-      val tmpSortedWC: Array[(String, Long)] = if (fullVocabSize <= vocSize) {
-        // Use all terms
-        wordCounts.collect().sortBy(-_._2)
-      } else {
-        // Sort terms to select vocab
-        wordCounts.sortBy(_._2, ascending = false).take(vocSize)
-      }
+      val tmpSortedWC: Array[(String, Long)] =
+        if (fullVocabSize <= vocSize)
+          // Use all terms
+          wordCounts.collect().sortBy(-_._2)
+        else
+          // Sort terms to select vocab
+          wordCounts.sortBy(_._2, ascending = false).take(vocSize)
       tmpSortedWC.map(_._1)
     }
 
@@ -280,11 +280,11 @@ class CountVectorizerModel(
         tokenCount += 1
       }
       val effectiveMinTF = if (minTf >= 1.0) minTf else tokenCount * minTf
-      val effectiveCounts = if ($(binary)) {
-        termCounts.filter(_._2 >= effectiveMinTF).map(p => (p._1, 1.0)).toSeq
-      } else {
-        termCounts.filter(_._2 >= effectiveMinTF).toSeq
-      }
+      val effectiveCounts =
+        if ($(binary))
+          termCounts.filter(_._2 >= effectiveMinTF).map(p => (p._1, 1.0)).toSeq
+        else
+          termCounts.filter(_._2 >= effectiveMinTF).toSeq
 
       Vectors.sparse(dictBr.value.size, effectiveCounts)
     }

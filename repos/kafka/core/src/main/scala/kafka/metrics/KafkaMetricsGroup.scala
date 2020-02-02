@@ -241,9 +241,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         .mkString(",")
 
       Some(tagsString)
-    } else {
+    } else
       None
-    }
   }
 
   private def toScope(tags: collection.Map[String, String]): Option[String] = {
@@ -259,9 +258,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         .mkString(".")
 
       Some(tagsString)
-    } else {
+    } else
       None
-    }
   }
 
   def removeAllConsumerMetrics(clientId: String) {
@@ -289,12 +287,12 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
       val pattern = (".*clientId=" + clientId + ".*").r
       val registeredMetrics = scala.collection.JavaConversions
         .asScalaSet(Metrics.defaultRegistry().allMetrics().keySet())
-      for (registeredMetric <- registeredMetrics) {
+      for (registeredMetric <- registeredMetrics)
         if (registeredMetric.getGroup == metric.getGroup &&
             registeredMetric.getName == metric.getName &&
-            registeredMetric.getType == metric.getType) {
+            registeredMetric.getType == metric.getType)
           pattern.findFirstIn(registeredMetric.getMBeanName) match {
-            case Some(_) => {
+            case Some(_) =>
               val beforeRemovalSize =
                 Metrics.defaultRegistry().allMetrics().keySet().size
               Metrics.defaultRegistry().removeMetric(registeredMetric)
@@ -302,11 +300,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
                 Metrics.defaultRegistry().allMetrics().keySet().size
               trace("Removing metric %s. Metrics registry size reduced from %d to %d"
                 .format(registeredMetric, beforeRemovalSize, afterRemovalSize))
-            }
             case _ =>
           }
-        }
-      }
     }
   }
 }

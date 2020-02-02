@@ -106,9 +106,8 @@ object ConfigurationSpec extends Specification {
         Map("item" -> "uhoh, it's gonna blow")
       );
       {
-        try {
-          conf.getStringList("item")
-        } catch {
+        try conf.getStringList("item")
+        catch {
           case NonFatal(e) => copyViaSerialize(e)
         }
       } must not(throwA[Exception])

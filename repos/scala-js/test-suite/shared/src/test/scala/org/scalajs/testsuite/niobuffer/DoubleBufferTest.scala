@@ -108,10 +108,9 @@ abstract class ReadOnlyDoubleViewOfByteBufferTest(
     order: ByteOrder)
     extends DoubleBufferTest {
 
-  val factory: BufferFactory.DoubleBufferFactory = {
+  val factory: BufferFactory.DoubleBufferFactory =
     new ByteBufferDoubleViewFactory(byteBufferFactory, order)
       with BufferFactory.ReadOnlyBufferFactory
-  }
 }
 
 class ReadOnlyDoubleViewOfAllocByteBufferBigEndianTest

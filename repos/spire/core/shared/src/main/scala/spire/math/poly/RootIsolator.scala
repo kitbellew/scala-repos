@@ -76,9 +76,8 @@ object RootIsolator {
         }
         val lRoots = TransformedPoly(l, b, a + b, d, c + d)
         lRoots :: rRoots :: Nil
-      } else {
+      } else
         rRoots :: Nil
-      }
     }
 
     // Isolate all positive roots in polynomial p.
@@ -92,7 +91,7 @@ object RootIsolator {
           rec(
             TransformedPoly(p0, a, b, c, d) :: rest,
             acc :+ Interval.point(Rational(b, d)))
-        } else {
+        } else
           p.signVariations match {
             case 0 => // No roots.
               rec(rest, acc)
@@ -130,16 +129,15 @@ object RootIsolator {
                 rec(more reverse_::: rest, acc)
               }
           }
-        }
 
       case Nil =>
         acc
     }
 
-    if (poly.isConstant) {
+    if (poly.isConstant)
       // A degenerate case we cannot handle.
       Vector.empty
-    } else {
+    else {
       val zeroInterval = Interval.point(Rational.zero)
       val posRoots = rec(TransformedPoly(poly, 1, 0, 0, 1) :: Nil)
       val negRoots = rec(TransformedPoly(poly.flip, 1, 0, 0, 1) :: Nil)

@@ -54,18 +54,16 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     if (!analyzed) {
       val afterRuleOnChildren =
         transformChildren(rule, (t, r) => t.resolveOperators(r))
-      if (this fastEquals afterRuleOnChildren) {
+      if (this fastEquals afterRuleOnChildren)
         CurrentOrigin.withOrigin(origin) {
           rule.applyOrElse(this, identity[LogicalPlan])
         }
-      } else {
+      else
         CurrentOrigin.withOrigin(origin) {
           rule.applyOrElse(afterRuleOnChildren, identity[LogicalPlan])
         }
-      }
-    } else {
+    } else
       this
-    }
 
   /**
     * Recursively transforms the expressions of a tree, skipping nodes that have already
@@ -85,10 +83,9 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * [[LeafNode]]s must override this.
     */
   def statistics: Statistics = {
-    if (children.size == 0) {
+    if (children.size == 0)
       throw new UnsupportedOperationException(
         s"LeafNode $nodeName must implement statistics.")
-    }
     Statistics(sizeInBytes = children.map(_.statistics.sizeInBytes).product)
   }
 
@@ -182,9 +179,8 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
       // At least one qualifier matches. See if remaining parts match.
       val remainingParts = nameParts.tail
       resolveAsColumn(remainingParts, resolver, attribute)
-    } else {
+    } else
       None
-    }
   }
 
   /**
@@ -197,11 +193,10 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
       nameParts: Seq[String],
       resolver: Resolver,
       attribute: Attribute): Option[(Attribute, List[String])] =
-    if (!attribute.isGenerated && resolver(attribute.name, nameParts.head)) {
+    if (!attribute.isGenerated && resolver(attribute.name, nameParts.head))
       Option((attribute.withName(nameParts.head), nameParts.tail.toList))
-    } else {
+    else
       None
-    }
 
   /** Performs attribute resolution given a name and a sequence of possible attributes. */
   protected def resolve(
@@ -217,21 +212,19 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     // and the second element will be List("c").
     var candidates: Seq[(Attribute, List[String])] = {
       // If the name has 2 or more parts, try to resolve it as `table.column` first.
-      if (nameParts.length > 1) {
+      if (nameParts.length > 1)
         input.flatMap { option =>
           resolveAsTableColumn(nameParts, resolver, option)
         }
-      } else {
+      else
         Seq.empty
-      }
     }
 
     // If none of attributes match `table.column` pattern, we try to resolve it as a column.
-    if (candidates.isEmpty) {
+    if (candidates.isEmpty)
       candidates = input.flatMap { candidate =>
         resolveAsColumn(nameParts, resolver, candidate)
       }
-    }
 
     def name = UnresolvedAttribute(nameParts).name
 
@@ -309,11 +302,10 @@ abstract class UnaryNode extends LogicalPlan {
     // Assume there will be the same number of rows as child has.
     var sizeInBytes =
       (child.statistics.sizeInBytes * outputRowSize) / childRowSize
-    if (sizeInBytes == 0) {
+    if (sizeInBytes == 0)
       // sizeInBytes can't be zero, or sizeInBytes of BinaryNode will also be zero
       // (product of children).
       sizeInBytes = 1
-    }
     Statistics(sizeInBytes = sizeInBytes)
   }
 }

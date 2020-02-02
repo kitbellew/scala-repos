@@ -123,11 +123,8 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
     val settings = ScalaApplicationSettings.getInstance()
     val moveCompanionOld = settings.MOVE_COMPANION
     settings.MOVE_COMPANION = moveCompanion
-    try {
-      performAction(classNames, newPackageName, mode)
-    } finally {
-      PsiTestUtil.removeSourceRoot(getModuleAdapter, rootDir)
-    }
+    try performAction(classNames, newPackageName, mode)
+    finally PsiTestUtil.removeSourceRoot(getModuleAdapter, rootDir)
     settings.MOVE_COMPANION = moveCompanionOld
     val rootAfter: String = root + "/after"
     val rootDir2: VirtualFile = LocalFileSystem.getInstance.findFileByPath(
@@ -146,7 +143,7 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
       newPackageName: String,
       mode: Kinds.Value) {
     val classes = new ArrayBuffer[PsiClass]()
-    for (name <- classNames) {
+    for (name <- classNames)
       classes ++= ScalaPsiManager
         .instance(getProjectAdapter)
         .getCachedClasses(GlobalSearchScope.allScope(getProjectAdapter), name)
@@ -156,7 +153,6 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
           case o: ScObject if mode == Kinds.onlyClasses => false
           case _                                        => true
         }
-    }
     val aPackage: PsiPackage =
       JavaPsiFacade.getInstance(getProjectAdapter).findPackage(newPackageName)
     val dirs: Array[PsiDirectory] =

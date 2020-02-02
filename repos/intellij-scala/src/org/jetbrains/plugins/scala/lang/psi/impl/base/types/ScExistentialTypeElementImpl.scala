@@ -38,7 +38,7 @@ class ScExistentialTypeElementImpl(node: ASTNode)
     problems += q
     val wildcards: List[ScExistentialArgument] = {
       var buff: ListBuffer[ScExistentialArgument] = new ListBuffer
-      for (decl <- clause.declarations) {
+      for (decl <- clause.declarations)
         decl match {
           case alias: ScTypeAliasDeclaration =>
             val lb = alias.lowerBound
@@ -60,14 +60,12 @@ class ScExistentialTypeElementImpl(node: ASTNode)
                   Seq(ttype.getOrAny, Singleton),
                   Map.empty,
                   Map.empty)
-                for (declared <- value.declaredElements) {
+                for (declared <- value.declaredElements)
                   buff += ScExistentialArgument(declared.name, Nil, Nothing, t)
-                }
               case None =>
             }
           case _ =>
         }
-      }
       buff.toList
     }
     q flatMap { t =>
@@ -87,8 +85,8 @@ class ScExistentialTypeElementImpl(node: ASTNode)
     if (lastParent == quantified || (lastParent.isInstanceOf[ScalaPsiElement] &&
         lastParent
           .asInstanceOf[ScalaPsiElement]
-          .getDeepSameElementInContext == quantified)) {
-      for (decl <- clause.declarations) {
+          .getDeepSameElementInContext == quantified))
+      for (decl <- clause.declarations)
         decl match {
           case alias: ScTypeAliasDeclaration =>
             if (!processor.execute(alias, state)) return false
@@ -96,8 +94,6 @@ class ScExistentialTypeElementImpl(node: ASTNode)
             for (declared <- valDecl.declaredElements)
               if (!processor.execute(declared, state)) return false
         }
-      }
-    }
     true
   }
 

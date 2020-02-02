@@ -48,15 +48,13 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   override def shortName(): String = "text"
 
   private def verifySchema(schema: StructType): Unit = {
-    if (schema.size != 1) {
+    if (schema.size != 1)
       throw new AnalysisException(
         s"Text data source supports only a single column, and you have ${schema.size} columns.")
-    }
     val tpe = schema(0).dataType
-    if (tpe != StringType) {
+    if (tpe != StringType)
       throw new AnalysisException(
         s"Text data source supports only a string column, but you have ${tpe.simpleString}.")
-    }
   }
 
   override def inferSchema(
@@ -85,9 +83,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
           bucketId: Option[Int],
           dataSchema: StructType,
           context: TaskAttemptContext): OutputWriter = {
-        if (bucketId.isDefined) {
+        if (bucketId.isDefined)
           throw new AnalysisException("Text doesn't support bucketing")
-        }
         new TextOutputWriter(path, dataSchema, context)
       }
     }
@@ -111,9 +108,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       .map(_.getPath)
       .sortBy(_.toUri)
 
-    if (paths.nonEmpty) {
+    if (paths.nonEmpty)
       FileInputFormat.setInputPaths(job, paths: _*)
-    }
 
     sqlContext.sparkContext
       .hadoopRDD(
@@ -146,7 +142,7 @@ class TextOutputWriter(
 
   private[this] val buffer = new Text()
 
-  private val recordWriter: RecordWriter[NullWritable, Text] = {
+  private val recordWriter: RecordWriter[NullWritable, Text] =
     new TextOutputFormat[NullWritable, Text]() {
       override def getDefaultWorkFile(
           context: TaskAttemptContext,
@@ -159,7 +155,6 @@ class TextOutputWriter(
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId.txt$extension")
       }
     }.getRecordWriter(context)
-  }
 
   override def write(row: Row): Unit =
     throw new UnsupportedOperationException("call writeInternal")

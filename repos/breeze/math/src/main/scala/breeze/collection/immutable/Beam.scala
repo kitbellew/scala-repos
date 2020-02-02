@@ -37,9 +37,8 @@ class Beam[T](val maxSize: Int, xs: T*)(implicit o: Ordering[T])
 
   private def trim(h2: BinomialHeap[T]) = {
     var h = h2
-    while (h.size > maxSize) {
+    while (h.size > maxSize)
       h = h.delMin
-    }
     h
   }
 

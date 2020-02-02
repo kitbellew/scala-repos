@@ -118,10 +118,10 @@ object Unmarshaller
     def forContentTypes(ranges: ContentTypeRange*): FromEntityUnmarshaller[A] =
       Unmarshaller.withMaterializer { implicit ec ⇒ implicit mat ⇒ entity ⇒
         if (entity.contentType == ContentTypes.NoContentType || ranges.exists(
-              _ matches entity.contentType)) {
+              _ matches entity.contentType))
           underlying(entity).fast.recover[A](
             barkAtUnsupportedContentTypeException(ranges, entity.contentType))
-        } else FastFuture.failed(UnsupportedContentTypeException(ranges: _*))
+        else FastFuture.failed(UnsupportedContentTypeException(ranges: _*))
       }
 
     // TODO: move back into the [[EnhancedFromEntityUnmarshaller]] value class after the upgrade to Scala 2.11,

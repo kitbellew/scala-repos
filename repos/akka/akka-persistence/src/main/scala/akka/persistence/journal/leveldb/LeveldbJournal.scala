@@ -40,7 +40,7 @@ private[persistence] class LeveldbJournal extends {
           val toSeqNr = math.min(toSequenceNr, highSeqNr)
           if (highSeqNr == 0L || fromSequenceNr > toSeqNr)
             Future.successful(highSeqNr)
-          else {
+          else
             asyncReplayTaggedMessages(tag, fromSequenceNr, toSeqNr, max) {
               case ReplayedTaggedMessage(p, tag, offset) ⇒
                 adaptFromJournal(p).foreach { adaptedPersistentRepr ⇒
@@ -49,7 +49,6 @@ private[persistence] class LeveldbJournal extends {
                     Actor.noSender)
                 }
             }.map(_ ⇒ highSeqNr)
-          }
         }
         .map { highSeqNr ⇒ RecoverySuccess(highSeqNr) }
         .recover {

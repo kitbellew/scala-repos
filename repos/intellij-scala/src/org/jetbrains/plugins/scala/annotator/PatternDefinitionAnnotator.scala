@@ -15,11 +15,10 @@ trait PatternDefinitionAnnotator {
       definition: ScPatternDefinition,
       holder: AnnotationHolder,
       highlightErrors: Boolean) {
-    if (highlightErrors && definition.pList.allPatternsSimple) {
+    if (highlightErrors && definition.pList.allPatternsSimple)
       for (expr <- definition.expr;
            element <- definition.children.findByType(
              classOf[ScSimpleTypeElement]))
         checkConformance(expr, element, holder)
-    }
   }
 }

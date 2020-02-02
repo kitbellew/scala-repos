@@ -80,9 +80,9 @@ private[twitter] object ServerAdmissionControl {
       ): ServiceFactory[Req, Rep] = {
         val Param(enabled) = _enabled
 
-        if (!enabled || acs.isEmpty) {
+        if (!enabled || acs.isEmpty)
           next
-        } else {
+        else {
           // assume the order of filters doesn't matter
           val typeAgnosticFilters =
             acs.values.asScala.foldLeft(Filter.TypeAgnostic.Identity) {

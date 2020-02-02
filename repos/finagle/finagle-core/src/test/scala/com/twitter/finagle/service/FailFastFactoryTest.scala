@@ -214,10 +214,9 @@ class FailFastFactoryTest
         val ctx = newCtx()
         ctx.p() = Throw(new Exception)
         ctx.failfast().poll match {
-          case Some(Throw(ex: FailedFastException)) => {
+          case Some(Throw(ex: FailedFastException)) =>
             ex.serviceName = "threadOne"
             assert(beat == 0)
-          }
           case _ => throw new Exception
         }
         threadCompletionCount.incrementAndGet()
@@ -228,9 +227,8 @@ class FailFastFactoryTest
         val ctx = newCtx()
         ctx.p() = Throw(new Exception)
         ctx.failfast().poll match {
-          case Some(Throw(ex: FailedFastException)) => {
+          case Some(Throw(ex: FailedFastException)) =>
             assert(ex.serviceName == SourcedException.UnspecifiedServiceName)
-          }
           case _ => throw new Exception
         }
         threadCompletionCount.incrementAndGet()

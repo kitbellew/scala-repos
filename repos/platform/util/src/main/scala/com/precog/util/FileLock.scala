@@ -47,17 +47,15 @@ object FileLock {
       val lockFile = new File(target, lockPrefix + ".lock")
       lockFile.createNewFile
       (lockFile, true)
-    } else {
+    } else
       (target, false)
-    }
 
     val channel = new RandomAccessFile(lockFile, "rw").getChannel
     val lock = channel.tryLock
 
-    if (lock == null) {
+    if (lock == null)
       throw new FileLockException(
         "Could not lock. Previous lock exists on " + target)
-    }
 
     LockHolder(channel, lock, if (removeFile) Some(lockFile) else None)
   }

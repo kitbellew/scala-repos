@@ -68,15 +68,13 @@ class ProducerFeatureTest
       val supervisor = system.actorOf(
         Props(new Actor {
           def receive = {
-            case p: Props ⇒ {
+            case p: Props ⇒
               val producer = context.actorOf(p)
               context.watch(producer)
               sender() ! producer
-            }
-            case Terminated(actorRef) ⇒ {
+            case Terminated(actorRef) ⇒
               deadActor = Some(actorRef)
               latch.countDown()
-            }
           }
           override val supervisorStrategy =
             OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {

@@ -112,7 +112,7 @@ object SBTConsole {
       val config = Configuration parse {
         Option(System.getProperty("precog.storage.root")) map {
           "precog.storage.root = " + _
-        } getOrElse { "" }
+        } getOrElse ""
       }
 
       val sortWorkDir = scratchDir
@@ -221,9 +221,8 @@ object SBTConsole {
         sys.error(strs mkString " | ")
       }
 
-      if (validForest.size > 1) {
+      if (validForest.size > 1)
         sys.error("ambiguous parse (good luck!)")
-      }
 
       val tree = validForest.head
       val Right(dag) = decorate(emit(tree))

@@ -28,7 +28,7 @@ import org.apache.spark.sql.types._
 class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
 
-  private lazy val booleanData = {
+  private lazy val booleanData =
     sqlContext.createDataFrame(
       sparkContext.parallelize(
         Row(false, false) ::
@@ -38,7 +38,6 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
       StructType(
         Seq(StructField("a", BooleanType), StructField("b", BooleanType)))
     )
-  }
 
   test("column names with space") {
     val df = Seq((1, "a")).toDF("name with space", "name.with.dot")

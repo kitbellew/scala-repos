@@ -376,28 +376,27 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
 
   override def eval(input: InternalRow): Any = {
     val t = left.eval(input)
-    if (t == null) {
+    if (t == null)
       null
-    } else {
+    else
       left.dataType match {
         case DateType =>
           DateTimeUtils.daysToMillis(t.asInstanceOf[Int]) / 1000L
         case TimestampType =>
           t.asInstanceOf[Long] / 1000000L
         case StringType if right.foldable =>
-          if (constFormat != null) {
+          if (constFormat != null)
             Try(
               new SimpleDateFormat(constFormat.toString)
                 .parse(t.asInstanceOf[UTF8String].toString)
                 .getTime / 1000L).getOrElse(null)
-          } else {
+          else
             null
-          }
         case StringType =>
           val f = right.eval(input)
-          if (f == null) {
+          if (f == null)
             null
-          } else {
+          else {
             val formatString = f.asInstanceOf[UTF8String].toString
             Try(
               new SimpleDateFormat(formatString)
@@ -405,7 +404,6 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
                 .getTime / 1000L).getOrElse(null)
           }
       }
-    }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
@@ -414,12 +412,12 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
         val sdf = classOf[SimpleDateFormat].getName
         val fString = if (constFormat == null) null else constFormat.toString
         val formatter = ctx.freshName("formatter")
-        if (fString == null) {
+        if (fString == null)
           s"""
             boolean ${ev.isNull} = true;
             ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
           """
-        } else {
+        else {
           val eval1 = left.gen(ctx)
           s"""
             ${eval1.code}
@@ -505,42 +503,38 @@ case class FromUnixTime(sec: Expression, format: Expression)
 
   override def eval(input: InternalRow): Any = {
     val time = left.eval(input)
-    if (time == null) {
+    if (time == null)
       null
-    } else {
-      if (format.foldable) {
-        if (constFormat == null) {
-          null
-        } else {
-          Try(
-            UTF8String.fromString(new SimpleDateFormat(constFormat.toString)
+    else if (format.foldable)
+      if (constFormat == null)
+        null
+      else
+        Try(
+          UTF8String.fromString(new SimpleDateFormat(constFormat.toString)
+            .format(new java.util.Date(time.asInstanceOf[Long] * 1000L))))
+          .getOrElse(null)
+    else {
+      val f = format.eval(input)
+      if (f == null)
+        null
+      else
+        Try(
+          UTF8String.fromString(
+            new SimpleDateFormat(f.asInstanceOf[UTF8String].toString)
               .format(new java.util.Date(time.asInstanceOf[Long] * 1000L))))
-            .getOrElse(null)
-        }
-      } else {
-        val f = format.eval(input)
-        if (f == null) {
-          null
-        } else {
-          Try(
-            UTF8String.fromString(
-              new SimpleDateFormat(f.asInstanceOf[UTF8String].toString)
-                .format(new java.util.Date(time.asInstanceOf[Long] * 1000L))))
-            .getOrElse(null)
-        }
-      }
+          .getOrElse(null)
     }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val sdf = classOf[SimpleDateFormat].getName
-    if (format.foldable) {
-      if (constFormat == null) {
+    if (format.foldable)
+      if (constFormat == null)
         s"""
           boolean ${ev.isNull} = true;
           ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
         """
-      } else {
+      else {
         val t = left.gen(ctx)
         s"""
           ${t.code}
@@ -556,7 +550,7 @@ case class FromUnixTime(sec: Expression, format: Expression)
           }
         """
       }
-    } else {
+    else
       nullSafeCodeGen(
         ctx,
         ev,
@@ -568,7 +562,6 @@ case class FromUnixTime(sec: Expression, format: Expression)
           ${ev.isNull} = true;
         }""".stripMargin
       )
-    }
   }
 }
 
@@ -617,9 +610,9 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
   override def nullSafeEval(start: Any, dayOfW: Any): Any = {
     val dow =
       DateTimeUtils.getDayOfWeekFromString(dayOfW.asInstanceOf[UTF8String])
-    if (dow == -1) {
+    if (dow == -1)
       null
-    } else {
+    else {
       val sd = start.asInstanceOf[Int]
       DateTimeUtils.getNextDateForDayOfWeek(sd, dow)
     }
@@ -635,17 +628,17 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
         if (dayOfWeek.foldable) {
           val input = dayOfWeek.eval().asInstanceOf[UTF8String]
           if ((input eq null) || DateTimeUtils
-                .getDayOfWeekFromString(input) == -1) {
+                .getDayOfWeekFromString(input) == -1)
             s"""
              |${ev.isNull} = true;
            """.stripMargin
-          } else {
+          else {
             val dayOfWeekValue = DateTimeUtils.getDayOfWeekFromString(input)
             s"""
              |${ev.value} = $dateTimeUtilClass.getNextDateForDayOfWeek($sd, $dayOfWeekValue);
            """.stripMargin
           }
-        } else {
+        } else
           s"""
            |int $dayOfWeekTerm = $dateTimeUtilClass.getDayOfWeekFromString($dowS);
            |if ($dayOfWeekTerm == -1) {
@@ -654,7 +647,6 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
            |  ${ev.value} = $dateTimeUtilClass.getNextDateForDayOfWeek($sd, $dayOfWeekTerm);
            |}
          """.stripMargin
-        }
       }
     )
 
@@ -716,12 +708,12 @@ case class FromUTCTimestamp(left: Expression, right: Expression)
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
     if (right.foldable) {
       val tz = right.eval()
-      if (tz == null) {
+      if (tz == null)
         s"""
            |boolean ${ev.isNull} = true;
            |long ${ev.value} = 0;
          """.stripMargin
-      } else {
+      else {
         val tzTerm = ctx.freshName("tz")
         val tzClass = classOf[TimeZone].getName
         ctx.addMutableState(
@@ -739,13 +731,12 @@ case class FromUTCTimestamp(left: Expression, right: Expression)
            |}
          """.stripMargin
       }
-    } else {
+    } else
       defineCodeGen(
         ctx,
         ev,
         (timestamp, format) =>
           s"""$dtu.fromUTCTime($timestamp, $format.toString())""")
-    }
   }
 }
 
@@ -857,12 +848,12 @@ case class ToUTCTimestamp(left: Expression, right: Expression)
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
     if (right.foldable) {
       val tz = right.eval()
-      if (tz == null) {
+      if (tz == null)
         s"""
            |boolean ${ev.isNull} = true;
            |long ${ev.value} = 0;
          """.stripMargin
-      } else {
+      else {
         val tzTerm = ctx.freshName("tz")
         val tzClass = classOf[TimeZone].getName
         ctx.addMutableState(
@@ -880,13 +871,12 @@ case class ToUTCTimestamp(left: Expression, right: Expression)
            |}
          """.stripMargin
       }
-    } else {
+    } else
       defineCodeGen(
         ctx,
         ev,
         (timestamp, format) =>
           s"""$dtu.toUTCTime($timestamp, $format.toString())""")
-    }
   }
 }
 
@@ -929,34 +919,33 @@ case class TruncDate(date: Expression, format: Expression)
     DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
 
   override def eval(input: InternalRow): Any = {
-    val level = if (format.foldable) {
-      truncLevel
-    } else {
-      DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
-    }
-    if (level == -1) {
+    val level =
+      if (format.foldable)
+        truncLevel
+      else
+        DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
+    if (level == -1)
       // unknown format
       null
-    } else {
+    else {
       val d = date.eval(input)
-      if (d == null) {
+      if (d == null)
         null
-      } else {
+      else
         DateTimeUtils.truncDate(d.asInstanceOf[Int], level)
-      }
     }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val dtu = DateTimeUtils.getClass.getName.stripSuffix("$")
 
-    if (format.foldable) {
-      if (truncLevel == -1) {
+    if (format.foldable)
+      if (truncLevel == -1)
         s"""
           boolean ${ev.isNull} = true;
           ${ctx.javaType(dataType)} ${ev.value} = ${ctx.defaultValue(dataType)};
         """
-      } else {
+      else {
         val d = date.gen(ctx)
         s"""
           ${d.code}
@@ -967,7 +956,7 @@ case class TruncDate(date: Expression, format: Expression)
           }
         """
       }
-    } else {
+    else
       nullSafeCodeGen(
         ctx,
         ev,
@@ -983,7 +972,6 @@ case class TruncDate(date: Expression, format: Expression)
         """
         }
       )
-    }
   }
 }
 

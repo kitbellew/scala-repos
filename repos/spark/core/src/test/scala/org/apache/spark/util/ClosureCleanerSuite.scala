@@ -77,9 +77,8 @@ class ClosureCleanerSuite extends SparkFunSuite {
     // We use return statements as an indication that a closure is actually being cleaned
     // We expect closure cleaner to find the return statements in the user provided closures
     def expectCorrectException(body: => Unit): Unit =
-      try {
-        body
-      } catch {
+      try body
+      catch {
         case rse: ReturnStatementInClosureException => // Success!
         case e @ (_: NotSerializableException | _: SparkException) =>
           fail(s"Expected ReturnStatementInClosureException, but got $e.\n" +

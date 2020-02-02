@@ -96,9 +96,8 @@ class ParametersAnnotatorTest extends SimpleTestCase {
       .get
 
     annotator.annotateParameters(owner.clauses.get, mock)
-    for (p <- owner.parameters) {
+    for (p <- owner.parameters)
       annotator.annotateParameter(p, mock)
-    }
     mock.annotations
   }
 }

@@ -46,9 +46,9 @@ object JUnitBaseRunner {
   object Done {
     def deserialize(str: String): Done = {
       val split = str.split(':')
-      if (split.length != 6) {
+      if (split.length != 6)
         throw new IllegalArgumentException(str)
-      } else {
+      else
         Done(
           split(0).toInt,
           split(1).toInt,
@@ -56,7 +56,6 @@ object JUnitBaseRunner {
           split(3).toInt,
           split(4).toInt,
           split(5).toInt)
-      }
     }
   }
 

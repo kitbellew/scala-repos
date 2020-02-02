@@ -663,9 +663,9 @@ class TaskReplaceActorTest
       def answer(invocation: InvocationOnMock): Status = {
         val taskId = Task.Id(invocation.getArguments()(0).asInstanceOf[TaskID])
 
-        if (taskId == taskB.taskId && firstKillForTaskB) {
+        if (taskId == taskB.taskId && firstKillForTaskB)
           firstKillForTaskB = false
-        } else {
+        else {
           val update = MesosStatusUpdateEvent(
             "",
             taskId,

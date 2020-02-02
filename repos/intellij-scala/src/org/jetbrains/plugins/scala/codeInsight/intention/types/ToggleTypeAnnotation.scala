@@ -23,9 +23,9 @@ class ToggleTypeAnnotation extends PsiElementBaseIntentionAction {
   def isAvailable(project: Project, editor: Editor, element: PsiElement) =
     if (element == null || !IntentionAvailabilityChecker.checkIntention(
           this,
-          element)) {
+          element))
       false
-    } else {
+    else {
       def message(key: String) {
         setText(ScalaBundle.message(key))
       }
@@ -94,28 +94,26 @@ object ToggleTypeAnnotation {
 
     for {
       param <- element.parentsInFile.findByType(classOf[ScParameter])
-    } {
-      param.parentsInFile.findByType(classOf[ScFunctionExpr]) match {
-        case Some(func) =>
-          if (param.typeElement.isDefined) {
-            strategy.removeFromParameter(param)
-            return true
-          } else {
-            val index = func.parameters.indexOf(param)
-            func.expectedType() match {
-              case Some(ScFunctionType(_, params)) =>
-                if (index >= 0 && index < params.length) {
-                  strategy.addToParameter(param)
-                  return true
-                }
-              case _ =>
-            }
+    } param.parentsInFile.findByType(classOf[ScFunctionExpr]) match {
+      case Some(func) =>
+        if (param.typeElement.isDefined) {
+          strategy.removeFromParameter(param)
+          return true
+        } else {
+          val index = func.parameters.indexOf(param)
+          func.expectedType() match {
+            case Some(ScFunctionType(_, params)) =>
+              if (index >= 0 && index < params.length) {
+                strategy.addToParameter(param)
+                return true
+              }
+            case _ =>
           }
-        case _ =>
-      }
+        }
+      case _ =>
     }
 
-    for (pattern <- element.parentsInFile.findByType(classOf[ScBindingPattern])) {
+    for (pattern <- element.parentsInFile.findByType(classOf[ScBindingPattern]))
       pattern match {
         case p: ScTypedPattern if p.typePattern.isDefined =>
           strategy.removeFromPattern(p)
@@ -125,7 +123,6 @@ object ToggleTypeAnnotation {
           return true
         case _ =>
       }
-    }
     for (pattern <- element.parentsInFile.findByType(
            classOf[ScWildcardPattern])) {
       strategy.addToWildcardPattern(pattern)

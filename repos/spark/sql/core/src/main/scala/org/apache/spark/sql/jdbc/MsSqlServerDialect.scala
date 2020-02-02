@@ -29,12 +29,11 @@ private object MsSqlServerDialect extends JdbcDialect {
       typeName: String,
       size: Int,
       md: MetadataBuilder): Option[DataType] =
-    if (typeName.contains("datetimeoffset")) {
+    if (typeName.contains("datetimeoffset"))
       // String is recommend by Microsoft SQL Server for datetimeoffset types in non-MS clients
       Option(StringType)
-    } else {
+    else
       None
-    }
 
   override def getJDBCType(dt: DataType): Option[JdbcType] = dt match {
     case TimestampType => Some(JdbcType("DATETIME", java.sql.Types.TIMESTAMP))

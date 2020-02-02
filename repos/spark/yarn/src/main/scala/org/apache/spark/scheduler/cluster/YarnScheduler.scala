@@ -28,9 +28,8 @@ private[spark] class YarnScheduler(sc: SparkContext)
     extends TaskSchedulerImpl(sc) {
 
   // RackResolver logs an INFO message whenever it resolves a rack, which is way too often.
-  if (Logger.getLogger(classOf[RackResolver]).getLevel == null) {
+  if (Logger.getLogger(classOf[RackResolver]).getLevel == null)
     Logger.getLogger(classOf[RackResolver]).setLevel(Level.WARN)
-  }
 
   // By default, rack is unknown
   override def getRackForHost(hostPort: String): Option[String] = {

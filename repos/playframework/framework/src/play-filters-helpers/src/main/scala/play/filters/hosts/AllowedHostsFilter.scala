@@ -31,15 +31,14 @@ case class AllowedHostsFilter @Inject() (
     config.allowed map HostMatcher.apply
 
   override def apply(next: EssentialAction) = EssentialAction { req =>
-    if (hostMatchers.exists(_(req.host))) {
+    if (hostMatchers.exists(_(req.host)))
       next(req)
-    } else {
+    else
       Accumulator.done(
         errorHandler.onClientError(
           req,
           Status.BAD_REQUEST,
           s"Host not allowed: ${req.host}"))
-    }
   }
 }
 

@@ -65,14 +65,14 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
                     val instance = ScalaPsiManager.instance(holder.getProject)
                     val cachedClass =
                       instance.getCachedClass(m.getResolveScope, clazz).orNull
-                    if (cachedClass != null && containingClass != null) {
+                    if (cachedClass != null && containingClass != null)
                       if (cachedClass == containingClass || instance
                             .cachedDeepIsInheritor(
                               cachedClass,
-                              containingClass)) {
+                              containingClass))
                         true
-                      } else false
-                    } else false
+                      else false
+                    else false
                 } match {
                   case Some(clazz) =>
                     var parent: PsiElement = ref.getParent

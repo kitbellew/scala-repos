@@ -40,20 +40,18 @@ class ScNamingPatternImpl(node: ASTNode)
     findChildByType[PsiElement](ScalaTokenTypes.tUNDER) != null
 
   override def getType(ctx: TypingContext): TypeResult[ScType] = {
-    if (getLastChild.isInstanceOf[ScSeqWildcard]) {
+    if (getLastChild.isInstanceOf[ScSeqWildcard])
       return expectedType match {
         case Some(x) => Success(x, Some(this))
         case _       => Failure("No expected type for wildcard naming", Some(this))
       }
-    }
     if (named == null) Failure("Cannot infer type", Some(this))
-    else {
+    else
       expectedType match {
         case Some(expectedType) =>
           named.getType(TypingContext.empty).map(Bounds.glb(expectedType, _))
         case _ => named.getType(ctx)
       }
-    }
   }
 
   override def processDeclarations(
@@ -61,14 +59,14 @@ class ScNamingPatternImpl(node: ASTNode)
       state: ResolveState,
       lastParent: PsiElement,
       place: PsiElement) =
-    if (isStable) {
+    if (isStable)
       ScalaPsiUtil.processImportLastParent(
         processor,
         state,
         place,
         lastParent,
         getType(TypingContext.empty))
-    } else true
+    else true
 
   override def getOriginalElement: PsiElement =
     super[ScNamingPattern].getOriginalElement

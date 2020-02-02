@@ -77,36 +77,31 @@ private[scalajs] object CoreJSLibs {
           skipDepth -= 1
           if (skipDepth == 0)
             skipping = false
-        } else if (line.startsWith("//!if ")) {
+        } else if (line.startsWith("//!if "))
           skipDepth += 1
-        }
         false
-      } else {
-        if (line.startsWith("//!")) {
-          if (line.startsWith("//!if ")) {
-            val Array(_, option, op, value) = line.split(" ")
-            val optionValue = getOption(option)
-            val success = op match {
-              case "==" => optionValue == value
-              case "!=" => optionValue != value
-            }
-            if (!success) {
-              skipping = true
-              skipDepth = 1
-            }
-          } else if (line == "//!else") {
+      } else if (line.startsWith("//!")) {
+        if (line.startsWith("//!if ")) {
+          val Array(_, option, op, value) = line.split(" ")
+          val optionValue = getOption(option)
+          val success = op match {
+            case "==" => optionValue == value
+            case "!=" => optionValue != value
+          }
+          if (!success) {
             skipping = true
             skipDepth = 1
-          } else if (line == "//!endif") {
-            // nothing to do
-          } else {
-            throw new MatchError(line)
           }
-          false
-        } else {
-          true
-        }
-      }
+        } else if (line == "//!else") {
+          skipping = true
+          skipDepth = 1
+        } else if (line == "//!endif") {
+          // nothing to do
+        } else
+          throw new MatchError(line)
+        false
+      } else
+        true
       if (includeThisLine) line
       else "" // blank line preserves line numbers in source maps
     }

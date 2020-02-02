@@ -146,12 +146,11 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
         .asInstanceOf[ReplicatedVertexView[VD2, ED]]
         .updateVertices(changedVerts)
       new GraphImpl(newVerts, newReplicatedVertexView)
-    } else {
+    } else
       // The map does not preserve type, so we must re-replicate all vertices
       GraphImpl(
         vertices.mapVertexPartitions(_.map(f)),
         replicatedVertexView.edges)
-    }
 
   override def mapEdges[ED2: ClassTag](
       f: (PartitionID, Iterator[Edge[ED]]) => Iterator[ED2]): Graph[VD, ED2] = {
@@ -239,19 +238,18 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
             .getOrElse(0) / edgePartition.indexSize.toFloat
           activeDirectionOpt match {
             case Some(EdgeDirection.Both) =>
-              if (activeFraction < 0.8) {
+              if (activeFraction < 0.8)
                 edgePartition.aggregateMessagesIndexScan(
                   sendMsg,
                   mergeMsg,
                   tripletFields,
                   EdgeActiveness.Both)
-              } else {
+              else
                 edgePartition.aggregateMessagesEdgeScan(
                   sendMsg,
                   mergeMsg,
                   tripletFields,
                   EdgeActiveness.Both)
-              }
             case Some(EdgeDirection.Either) =>
               // TODO: Because we only have a clustered index on the source vertex ID, we can't filter
               // the index here. Instead we have to scan all edges and then do the filter.
@@ -261,19 +259,18 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
                 tripletFields,
                 EdgeActiveness.Either)
             case Some(EdgeDirection.Out) =>
-              if (activeFraction < 0.8) {
+              if (activeFraction < 0.8)
                 edgePartition.aggregateMessagesIndexScan(
                   sendMsg,
                   mergeMsg,
                   tripletFields,
                   EdgeActiveness.SrcOnly)
-              } else {
+              else
                 edgePartition.aggregateMessagesEdgeScan(
                   sendMsg,
                   mergeMsg,
                   tripletFields,
                   EdgeActiveness.SrcOnly)
-              }
             case Some(EdgeDirection.In) =>
               edgePartition.aggregateMessagesEdgeScan(
                 sendMsg,
@@ -316,12 +313,11 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
 
   /** Test whether the closure accesses the attribute with name `attrName`. */
   private def accessesVertexAttr(closure: AnyRef, attrName: String): Boolean =
-    try {
-      BytecodeUtils.invokedMethod(
-        closure,
-        classOf[EdgeTriplet[VD, ED]],
-        attrName)
-    } catch {
+    try BytecodeUtils.invokedMethod(
+      closure,
+      classOf[EdgeTriplet[VD, ED]],
+      attrName)
+    catch {
       case _: ClassNotFoundException =>
         true // if we don't know, be conservative
     }

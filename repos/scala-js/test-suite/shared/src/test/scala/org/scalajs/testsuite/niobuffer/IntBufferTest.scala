@@ -108,10 +108,9 @@ abstract class ReadOnlyIntViewOfByteBufferTest(
     order: ByteOrder)
     extends IntBufferTest {
 
-  val factory: BufferFactory.IntBufferFactory = {
+  val factory: BufferFactory.IntBufferFactory =
     new ByteBufferIntViewFactory(byteBufferFactory, order)
       with BufferFactory.ReadOnlyBufferFactory
-  }
 }
 
 class ReadOnlyIntViewOfAllocByteBufferBigEndianTest

@@ -37,9 +37,8 @@ abstract class ExternalCatalog {
   import ExternalCatalog._
 
   protected def requireDbExists(db: String): Unit =
-    if (!databaseExists(db)) {
+    if (!databaseExists(db))
       throw new AnalysisException(s"Database $db does not exist")
-    }
 
   // --------------------------------------------------------------------------
   // Databases

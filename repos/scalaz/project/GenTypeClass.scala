@@ -327,19 +327,19 @@ object GenTypeClass {
                            "\n\n" + "import " + (tc.pack :+ tc.name)
                              .mkString("."))
     val syntaxPackString1 = tc.syntaxPack.mkString(".")
-    val syntaxMember = if (tc.createSyntax) {
-      if (kind.multipleParam) {
-        s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent, S] { def F = $typeClassName.this }"
-      } else {
-        s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent] { def F = $typeClassName.this }"
-      }
-    } else ""
+    val syntaxMember =
+      if (tc.createSyntax)
+        if (kind.multipleParam)
+          s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent, S] { def F = $typeClassName.this }"
+        else
+          s"  val ${Util.initLower(typeClassName)}Syntax = new $syntaxPackString1.${typeClassName}Syntax[$classifiedTypeIdent] { def F = $typeClassName.this }"
+      else ""
 
-    val applyMethod = if (kind.multipleParam) {
-      s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F, S]): $typeClassName[F, S] = F"""
-    } else {
-      s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F]): $typeClassName[F] = F"""
-    }
+    val applyMethod =
+      if (kind.multipleParam)
+        s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F, S]): $typeClassName[F, S] = F"""
+      else
+        s"""@inline def apply[$classifiedTypeF](implicit F: $typeClassName[F]): $typeClassName[F] = F"""
 
     val mainSource = s"""${tc.packageString0}
 
@@ -514,10 +514,14 @@ trait ${typeClassName}Syntax[F[_], S] ${extendsListText("Syntax", cti = "F")} {
 }
 """
     }
-    val syntaxSourceFile = if (tc.createSyntax) {
-      Some(
-        SourceFile(tc.syntaxPack, typeClassName + "Syntax.scala", syntaxSource))
-    } else None
+    val syntaxSourceFile =
+      if (tc.createSyntax)
+        Some(
+          SourceFile(
+            tc.syntaxPack,
+            typeClassName + "Syntax.scala",
+            syntaxSource))
+      else None
 
     TypeClassSource(mainSourceFile, syntaxSourceFile)
   }

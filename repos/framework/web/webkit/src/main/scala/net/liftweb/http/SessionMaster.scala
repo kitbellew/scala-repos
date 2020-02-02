@@ -69,7 +69,7 @@ object SessionMaster extends LiftActor with Loggable {
     ((ses: Map[String, SessionInfo], destroyer: SessionInfo => Unit) => {
       val now = millis
 
-      for ((id, info @ SessionInfo(session, _, _, _, _)) <- ses.iterator) {
+      for ((id, info @ SessionInfo(session, _, _, _, _)) <- ses.iterator)
         if (now - session.lastServiceTime > session.inactivityLength || session.markedForTermination) {
           logger.info(" Session " + id + " expired")
           destroyer(info)
@@ -77,7 +77,6 @@ object SessionMaster extends LiftActor with Loggable {
           session.doCometActorCleanup()
           session.cleanupUnseenFuncs()
         }
-      }
     }) :: Nil
 
   def getSession(req: Req, otherId: Box[String]): Box[LiftSession] = {
@@ -120,10 +119,9 @@ object SessionMaster extends LiftActor with Loggable {
         killedSessions.containsKey(_)) openOr false)
 
       if (dead)(Failure("Dead session", Empty, Empty))
-      else {
+      else
         otherId.flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(
           id))
-      }
     }
 
   /**
@@ -238,9 +236,8 @@ object SessionMaster extends LiftActor with Loggable {
             () =>
               try {
                 s.doShutDown
-                try {
-                  s.httpSession.foreach(_.unlink(s))
-                } catch {
+                try s.httpSession.foreach(_.unlink(s))
+                catch {
                   case e: Exception => // ignore... sometimes you can't do this and it's okay
                 }
               } catch {
@@ -270,31 +267,28 @@ object SessionMaster extends LiftActor with Loggable {
 
       for {
         f <- sessionCheckFuncs
-      } {
-        if (Props.inGAE) {
-          f(
-            ses,
-            shutDown =>
-              if (!shutDown.session.markedForShutDown_?) {
-                shutDown.session.markedForShutDown_? = true
-                this.sendMsg(RemoveSession(shutDown.session.underlyingId))
-              }
-          )
-        } else {
-          Schedule.schedule(
-            () =>
-              f(
-                ses,
-                shutDown =>
-                  if (!shutDown.session.markedForShutDown_?) {
-                    shutDown.session.markedForShutDown_? = true
+      } if (Props.inGAE)
+        f(
+          ses,
+          shutDown =>
+            if (!shutDown.session.markedForShutDown_?) {
+              shutDown.session.markedForShutDown_? = true
+              this.sendMsg(RemoveSession(shutDown.session.underlyingId))
+            }
+        )
+      else
+        Schedule.schedule(
+          () =>
+            f(
+              ses,
+              shutDown =>
+                if (!shutDown.session.markedForShutDown_?) {
+                  shutDown.session.markedForShutDown_? = true
 
-                    this ! RemoveSession(shutDown.session.underlyingId)
-                  }),
-            0.seconds
-          )
-        }
-      }
+                  this ! RemoveSession(shutDown.session.underlyingId)
+                }),
+          0.seconds
+        )
 
       if (!Props.inGAE) {
         sessionWatchers.foreach(_ ! SessionWatcherInfo(ses))
@@ -304,23 +298,20 @@ object SessionMaster extends LiftActor with Loggable {
 
   private[http] def sendMsg(in: Any): Unit =
     if (!Props.inGAE) this ! in
-    else {
+    else
       lockWrite {
         tryo {
           if (reaction.isDefinedAt(in)) reaction.apply(in)
         }
       }
-    }
 
   private def doPing() {
-    if (!Props.inGAE) {
-      try {
-        Schedule.schedule(this, CheckAndPurge, 10.seconds)
-      } catch {
+    if (!Props.inGAE)
+      try Schedule.schedule(this, CheckAndPurge, 10.seconds)
+      catch {
         case e: Exception =>
           logger.error("Couldn't start SessionMaster ping", e)
       }
-    }
   }
 
   doPing()

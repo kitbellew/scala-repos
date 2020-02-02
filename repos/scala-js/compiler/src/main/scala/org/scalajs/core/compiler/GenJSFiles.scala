@@ -31,9 +31,7 @@ trait GenJSFiles extends SubComponent { self: GenJSCode =>
     try {
       ir.InfoSerializers.serialize(output, Infos.generateClassInfo(tree))
       ir.Serializers.serialize(output, tree)
-    } finally {
-      output.close()
-    }
+    } finally output.close()
   }
 
   private def getFileFor(

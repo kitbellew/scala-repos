@@ -48,9 +48,8 @@ abstract class RunnableServiceConnector(activity: SActivity) {
 
   def onServiceConnected() {
     runOnUiThread(updateUI(ON_CONNECTED))
-    if (runnableService.running) {
+    if (runnableService.running)
       startTimer()
-    }
   }
 
   def updateUI(event: UpdateEvent)

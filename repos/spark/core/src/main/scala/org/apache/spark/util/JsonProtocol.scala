@@ -322,7 +322,7 @@ private[spark] object JsonProtocol {
       name: Option[String],
       value: Any): JValue = {
     import AccumulatorParam._
-    if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX))) {
+    if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX)))
       (value, InternalAccumulator.getParam(name.get)) match {
         case (v: Int, IntAccumulatorParam)       => JInt(v)
         case (v: Long, LongAccumulatorParam)     => JInt(v)
@@ -338,10 +338,9 @@ private[spark] object JsonProtocol {
             s"unexpected combination of accumulator value " +
               s"type (${v.getClass.getName}) and param (${p.getClass.getName}) in '${name.get}'")
       }
-    } else {
+    else
       // For all external accumulators, just use strings
       JString(value.toString)
-    }
   }
 
   def taskMetricsToJson(taskMetrics: TaskMetrics): JValue = {
@@ -768,9 +767,8 @@ private[spark] object JsonProtocol {
     stageInfo.submissionTime = submissionTime
     stageInfo.completionTime = completionTime
     stageInfo.failureReason = failureReason
-    for (accInfo <- accumulatedValues) {
+    for (accInfo <- accumulatedValues)
       stageInfo.accumulables(accInfo.id) = accInfo
-    }
     stageInfo
   }
 
@@ -844,7 +842,7 @@ private[spark] object JsonProtocol {
       name: Option[String],
       value: JValue): Any = {
     import AccumulatorParam._
-    if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX))) {
+    if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX)))
       (value, InternalAccumulator.getParam(name.get)) match {
         case (JInt(v), IntAccumulatorParam)       => v.toInt
         case (JInt(v), LongAccumulatorParam)      => v.toLong
@@ -860,15 +858,13 @@ private[spark] object JsonProtocol {
             s"unexpected combination of accumulator " +
               s"value in JSON ($v) and accumulator param (${p.getClass.getName}) in '${name.get}'")
       }
-    } else {
+    else
       value.extract[String]
-    }
   }
 
   def taskMetricsFromJson(json: JValue): TaskMetrics = {
-    if (json == JNothing) {
+    if (json == JNothing)
       return TaskMetrics.empty
-    }
     val metrics = new TaskMetrics
     metrics.setExecutorDeserializeTime(
       (json \ "Executor Deserialize Time").extract[Long])
@@ -1023,9 +1019,8 @@ private[spark] object JsonProtocol {
 
   def blockManagerIdFromJson(json: JValue): BlockManagerId = {
     // On metadata fetch fail, block manager ID can be null (SPARK-4471)
-    if (json == JNothing) {
+    if (json == JNothing)
       return null
-    }
     val executorId = (json \ "Executor ID").extract[String]
     val host = (json \ "Host").extract[String]
     val port = (json \ "Port").extract[Int]

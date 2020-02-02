@@ -73,9 +73,8 @@ class AdminClient(
   private def sendAnyNode(api: ApiKeys, request: AbstractRequest): Struct = {
     bootstrapBrokers.foreach {
       case broker =>
-        try {
-          return send(broker, api, request)
-        } catch {
+        try return send(broker, api, request)
+        catch {
           case e: Exception =>
             debug(s"Request $api failed against node $broker", e)
         }
@@ -116,9 +115,8 @@ class AdminClient(
     findAllBrokers.map {
       case broker =>
         broker -> {
-          try {
-            listGroups(broker)
-          } catch {
+          try listGroups(broker)
+          catch {
             case e: Exception =>
               debug(s"Failed to find groups from broker $broker", e)
               List[GroupOverview]()
@@ -186,7 +184,7 @@ class AdminClient(
       throw new IllegalArgumentException(
         s"Group $groupId with protocol type '${group.protocolType}' is not a valid consumer group")
 
-    if (group.state == "Stable") {
+    if (group.state == "Stable")
       group.members.map { member =>
         val assignment = ConsumerProtocol.deserializeAssignment(
           ByteBuffer.wrap(member.assignment))
@@ -196,9 +194,8 @@ class AdminClient(
           member.clientHost,
           assignment.partitions().asScala.toList)
       }
-    } else {
+    else
       List.empty
-    }
   }
 
   def close() {

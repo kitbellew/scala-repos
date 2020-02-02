@@ -111,9 +111,8 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
             val rightStart = rightDocument getLineNumber rightStartOffset
             val rightEnd = rightDocument getLineNumber rightEndOffset
 
-            for (k <- lastEnd until leftStart) {
+            for (k <- lastEnd until leftStart)
               append2Result(" ", " ", " ")
-            }
 
             for (i <- leftStart to leftEnd) {
               val txt = getFromLeft(i)

@@ -78,12 +78,11 @@ private[akkahttp] class ModelConversion(
       override def version = request.protocol.value
       override def queryString = request.uri.query().toMultiMap
       override val headers = convertRequestHeaders(request)
-      private lazy val remoteConnection: ConnectionInfo = {
+      private lazy val remoteConnection: ConnectionInfo =
         forwardedHeaderHandler.remoteConnection(
           remoteAddressArg.getAddress,
           secureProtocol,
           headers)
-      }
       override def remoteAddress = remoteConnection.address.getHostAddress
       override def secure = remoteConnection.secure
       override def clientCertificateChain =

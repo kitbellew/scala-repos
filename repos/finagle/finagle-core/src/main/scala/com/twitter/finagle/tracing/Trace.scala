@@ -74,9 +74,10 @@ object Trace {
       val flags64 = ByteArrays.get64be(bytes, 24)
 
       val flags = Flags(flags64)
-      val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
-        if (flags.isFlagSet(Flags.Sampled)) someTrue else someFalse
-      } else None
+      val sampled =
+        if (flags.isFlagSet(Flags.SamplingKnown))
+          if (flags.isFlagSet(Flags.Sampled)) someTrue else someFalse
+        else None
 
       val traceId = TraceId(
         if (trace64 == parent64) None else Some(SpanId(trace64)),
@@ -161,11 +162,11 @@ object Trace {
     */
   def letId[R](traceId: TraceId, terminal: Boolean = false)(f: => R): R =
     if (isTerminal) f
-    else if (terminal) {
+    else if (terminal)
       Contexts.local.let(traceCtx, ctx.withTerminal(terminal)) {
         Contexts.broadcast.let(idCtx, traceId)(f)
       }
-    } else Contexts.broadcast.let(idCtx, traceId)(f)
+    else Contexts.broadcast.let(idCtx, traceId)(f)
 
   /**
     * A version of [com.twitter.finagle.tracing.Trace.letId] providing an
@@ -206,9 +207,9 @@ object Trace {
     */
   def letTracerAndId[R](tracer: Tracer, id: TraceId, terminal: Boolean = false)(
       f: => R): R =
-    if (ctx.terminal) {
+    if (ctx.terminal)
       letTracer(tracer)(f)
-    } else {
+    else {
       val newCtx = ctx.withTracer(tracer).withTerminal(terminal)
       val newId = id.sampled match {
         case None    => id.copy(_sampled = tracer.sampleTrace(id))
@@ -246,9 +247,7 @@ object Trace {
       hostOpt.map { Trace.recordServerAddr(_) }
       Trace.record(Annotation.ServerRecv())
       try f
-      finally {
-        Trace.record(Annotation.ServerSend())
-      }
+      finally Trace.record(Annotation.ServerSend())
     }
 
   /**
@@ -351,9 +350,7 @@ object Trace {
     record(Annotation.BinaryAnnotation(key, value))
 
   def recordBinaries(annotations: Map[String, Any]): Unit =
-    if (isActivelyTracing) {
-      for ((key, value) <- annotations) {
+    if (isActivelyTracing)
+      for ((key, value) <- annotations)
         recordBinary(key, value)
-      }
-    }
 }

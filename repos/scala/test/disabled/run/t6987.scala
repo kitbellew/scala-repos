@@ -27,14 +27,14 @@ object Test extends App {
   // now make sure we got success and a verbose result
   val msg = baos.toString()
 
-  if (success) {
-    if (msg contains "Settings after normalizing paths") {
+  if (success)
+    if (msg contains "Settings after normalizing paths")
       println("got successful verbose results!")
-    } else {
+    else {
       println("did not get the string expected, full results were:")
       println(msg)
     }
-  } else {
+  else {
     println("got a failure. Full results were:")
     println(msg)
   }

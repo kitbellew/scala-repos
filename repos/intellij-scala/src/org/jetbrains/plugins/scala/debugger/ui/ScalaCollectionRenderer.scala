@@ -235,9 +235,8 @@ object ScalaCollectionRenderer {
         parentDescriptor: NodeDescriptor): Boolean = {
       val evaluationContext: EvaluationContext =
         context.createEvaluationContext(value)
-      try {
-        return nonEmpty(value, context) && hasDefiniteSize(value, context)
-      } catch {
+      try return nonEmpty(value, context) && hasDefiniteSize(value, context)
+      catch {
         case e: EvaluateException =>
       }
 

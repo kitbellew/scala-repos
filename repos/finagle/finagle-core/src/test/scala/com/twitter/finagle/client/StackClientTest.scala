@@ -310,7 +310,7 @@ class StackClientTest
     assert(budget == b - DefaultRequeues)
   })
 
-  for (status <- Seq(Status.Busy, Status.Closed)) {
+  for (status <- Seq(Status.Busy, Status.Closed))
     test(s"don't requeue failing requests when the stack is $status")(
       new RequeueCtx {
         // failing request and Busy | Closed load balancer => zero requeues
@@ -318,7 +318,6 @@ class StackClientTest
         Await.ready(cl().map(_("hi")), 5.seconds)
         assert(requeues.isEmpty)
       })
-  }
 
   test("dynamically stop requeuing")(new RequeueCtx {
     // load balancer begins Open, becomes Busy after 10 requeues => 10 requeues
@@ -540,9 +539,8 @@ class StackClientTest
             if (first) {
               first = false
               Future.value(endpoint1)
-            } else {
+            } else
               Future.value(endpoint2)
-            }
 
           def close(deadline: Time): Future[Unit] = Future.Done
         }

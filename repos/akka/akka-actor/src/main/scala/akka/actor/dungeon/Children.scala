@@ -253,14 +253,14 @@ private[akka] trait Children { this: ActorCell ⇒
     childrenRefs.stats
 
   override def getSingleChild(name: String): InternalActorRef =
-    if (name.indexOf('#') == -1) {
+    if (name.indexOf('#') == -1)
       // optimization for the non-uid case
       getChildByName(name) match {
         case Some(crs: ChildRestartStats) ⇒
           crs.child.asInstanceOf[InternalActorRef]
         case _ ⇒ getFunctionRefOrNobody(name)
       }
-    } else {
+    else {
       val (childName, uid) = ActorCell.splitNameAndUid(name)
       getChildByName(childName) match {
         case Some(crs: ChildRestartStats)

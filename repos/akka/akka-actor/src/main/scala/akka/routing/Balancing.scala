@@ -148,8 +148,7 @@ final case class BalancingPool(
     */
   override def withFallback(other: RouterConfig): RouterConfig =
     if (other == NoRouter) this // NoRouter is the default, hence “neutral”
-    else {
-
+    else
       other match {
         case p: Pool ⇒
           if ((this.supervisorStrategy eq Pool.defaultSupervisorStrategy)
@@ -159,7 +158,6 @@ final case class BalancingPool(
 
         case _ ⇒ this
       }
-    }
 
   /**
     * Resizer cannot be used together with BalancingPool

@@ -89,8 +89,7 @@ object ZipkinTracer {
   /**
     * The [[com.twitter.util.events.Event.Type Event.Type]] for trace events.
     */
-  val Trace: Event.Type = {
-
+  val Trace: Event.Type =
     new Event.Type {
       val id = "Trace"
 
@@ -131,7 +130,6 @@ object ZipkinTracer {
             spanIdVal = sid)
         }
     }
-  }
 
   /**
     * @param scribeHost Host to send trace data to
@@ -227,7 +225,7 @@ class SamplingTracer(
   def record(record: Record) {
     if (sampler.sampleRecord(record)) {
       underlyingTracer.record(record)
-      if (sink.recording) {
+      if (sink.recording)
         if (Trace.hasId) {
           val traceId = Trace.id
           sink.event(
@@ -235,10 +233,8 @@ class SamplingTracer(
             objectVal = record.annotation,
             traceIdVal = traceId.traceId.self,
             spanIdVal = traceId.spanId.self)
-        } else {
+        } else
           sink.event(ZipkinTracer.Trace, objectVal = record.annotation)
-        }
-      }
     }
   }
 }

@@ -169,9 +169,8 @@ package shapeless {
             s"Could not find an implicit value of type $tpe to cache"
         }
         c.abort(c.enclosingPosition, errorMsg)
-      } else {
+      } else
         best.tree.asInstanceOf[Tree]
-      }
     }
   }
 }

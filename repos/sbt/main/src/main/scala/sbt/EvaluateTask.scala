@@ -464,11 +464,8 @@ object EvaluateTask {
   def withStreams[T](structure: BuildStructure, state: State)(
       f: Streams => T): T = {
     val str = std.Streams.closeable(structure.streams(state))
-    try {
-      f(str)
-    } finally {
-      str.close()
-    }
+    try f(str)
+    finally str.close()
   }
 
   def getTask[T](
@@ -532,9 +529,8 @@ object EvaluateTask {
       shutdownThreads()
 
       // Now we run the gc cleanup to force finalizers to clear out file handles (yay GC!)
-      if (config.forceGarbageCollection) {
+      if (config.forceGarbageCollection)
         GCUtil.forceGcWithInterval(config.minForcegcInterval, log)
-      }
     }
     // propagate the defining key for reporting the origin
     def overwriteNode(i: Incomplete): Boolean = i.node match {

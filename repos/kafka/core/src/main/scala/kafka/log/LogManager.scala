@@ -135,70 +135,59 @@ class LogManager(
 
       val cleanShutdownFile = new File(dir, Log.CleanShutdownFile)
 
-      if (cleanShutdownFile.exists) {
+      if (cleanShutdownFile.exists)
         debug(
           "Found clean shutdown file. " +
             "Skipping recovery for all logs in data directory: " +
             dir.getAbsolutePath)
-      } else {
+      else
         // log recovery itself is being performed by `Log` class during initialization
         brokerState.newState(RecoveringFromUncleanShutdown)
-      }
 
       var recoveryPoints = Map[TopicAndPartition, Long]()
-      try {
-        recoveryPoints = this.recoveryPointCheckpoints(dir).read
-      } catch {
-        case e: Exception => {
+      try recoveryPoints = this.recoveryPointCheckpoints(dir).read
+      catch {
+        case e: Exception =>
           warn(
             "Error occured while reading recovery-point-offset-checkpoint file of directory " + dir,
             e)
           warn("Resetting the recovery checkpoint to 0")
-        }
       }
 
       val jobsForDir = for {
         dirContent <- Option(dir.listFiles).toList
         logDir <- dirContent if logDir.isDirectory
-      } yield {
-        CoreUtils.runnable {
-          debug("Loading log '" + logDir.getName + "'")
+      } yield CoreUtils.runnable {
+        debug("Loading log '" + logDir.getName + "'")
 
-          val topicPartition = Log.parseTopicPartitionName(logDir)
-          val config =
-            topicConfigs.getOrElse(topicPartition.topic, defaultConfig)
-          val logRecoveryPoint = recoveryPoints.getOrElse(topicPartition, 0L)
+        val topicPartition = Log.parseTopicPartitionName(logDir)
+        val config =
+          topicConfigs.getOrElse(topicPartition.topic, defaultConfig)
+        val logRecoveryPoint = recoveryPoints.getOrElse(topicPartition, 0L)
 
-          val current =
-            new Log(logDir, config, logRecoveryPoint, scheduler, time)
-          val previous = this.logs.put(topicPartition, current)
+        val current =
+          new Log(logDir, config, logRecoveryPoint, scheduler, time)
+        val previous = this.logs.put(topicPartition, current)
 
-          if (previous != null) {
-            throw new IllegalArgumentException(
-              "Duplicate log directories found: %s, %s!".format(
-                current.dir.getAbsolutePath,
-                previous.dir.getAbsolutePath))
-          }
-        }
+        if (previous != null)
+          throw new IllegalArgumentException(
+            "Duplicate log directories found: %s, %s!".format(
+              current.dir.getAbsolutePath,
+              previous.dir.getAbsolutePath))
       }
 
       jobs(cleanShutdownFile) = jobsForDir.map(pool.submit).toSeq
     }
 
-    try {
-      for ((cleanShutdownFile, dirJobs) <- jobs) {
-        dirJobs.foreach(_.get)
-        cleanShutdownFile.delete()
-      }
+    try for ((cleanShutdownFile, dirJobs) <- jobs) {
+      dirJobs.foreach(_.get)
+      cleanShutdownFile.delete()
     } catch {
-      case e: ExecutionException => {
+      case e: ExecutionException =>
         error(
           "There was an error in one of the threads during logs loading: " + e.getCause)
         throw e.getCause
-      }
-    } finally {
-      threadPools.foreach(_.shutdown())
-    }
+    } finally threadPools.foreach(_.shutdown())
 
     info("Logs loading complete.")
   }
@@ -247,9 +236,8 @@ class LogManager(
     val jobs = mutable.Map.empty[File, Seq[Future[_]]]
 
     // stop the cleaner first
-    if (cleaner != null) {
+    if (cleaner != null)
       CoreUtils.swallow(cleaner.shutdown())
-    }
 
     // close logs in each dir
     for (dir <- this.logDirs) {
@@ -271,24 +259,21 @@ class LogManager(
       jobs(dir) = jobsForDir.map(pool.submit).toSeq
     }
 
-    try {
-      for ((dir, dirJobs) <- jobs) {
-        dirJobs.foreach(_.get)
+    try for ((dir, dirJobs) <- jobs) {
+      dirJobs.foreach(_.get)
 
-        // update the last flush point
-        debug("Updating recovery points at " + dir)
-        checkpointLogsInDir(dir)
+      // update the last flush point
+      debug("Updating recovery points at " + dir)
+      checkpointLogsInDir(dir)
 
-        // mark that the shutdown was clean by creating marker file
-        debug("Writing clean shutdown marker at " + dir)
-        CoreUtils.swallow(new File(dir, Log.CleanShutdownFile).createNewFile())
-      }
+      // mark that the shutdown was clean by creating marker file
+      debug("Writing clean shutdown marker at " + dir)
+      CoreUtils.swallow(new File(dir, Log.CleanShutdownFile).createNewFile())
     } catch {
-      case e: ExecutionException => {
+      case e: ExecutionException =>
         error(
           "There was an error in one of the threads during LogManager shutdown: " + e.getCause)
         throw e.getCause
-      }
     } finally {
       threadPools.foreach(_.shutdown())
       // regardless of whether the close succeeded, we need to unlock the data directories
@@ -364,11 +349,10 @@ class LogManager(
     */
   private def checkpointLogsInDir(dir: File): Unit = {
     val recoveryPoints = this.logsByDir.get(dir.toString)
-    if (recoveryPoints.isDefined) {
+    if (recoveryPoints.isDefined)
       this
         .recoveryPointCheckpoints(dir)
         .write(recoveryPoints.get.mapValues(_.recoveryPoint))
-    }
   }
 
   /**
@@ -443,9 +427,9 @@ class LogManager(
     * data directory with the fewest partitions.
     */
   private def nextLogDir(): File =
-    if (logDirs.size == 1) {
+    if (logDirs.size == 1)
       logDirs(0)
-    } else {
+    else {
       // count the number of logs in each parent directory (including 0 for empty directories
       val logCounts = allLogs.groupBy(_.dir.getParent).mapValues(_.size)
       val zeros = logDirs.map(dir => (dir.getPath, 0)).toMap
@@ -478,9 +462,8 @@ class LogManager(
       if (diff - segment.size >= 0) {
         diff -= segment.size
         true
-      } else {
+      } else
         false
-      }
     log.deleteOldSegments(shouldDelete)
   }
 
@@ -524,7 +507,7 @@ class LogManager(
   private def flushDirtyLogs() = {
     debug("Checking for dirty logs to flush...")
 
-    for ((topicAndPartition, log) <- logs) {
+    for ((topicAndPartition, log) <- logs)
       try {
         val timeSinceLastFlush = time.milliseconds - log.lastFlushTime
         debug(
@@ -536,6 +519,5 @@ class LogManager(
         case e: Throwable =>
           error("Error flushing topic " + topicAndPartition.topic, e)
       }
-    }
   }
 }

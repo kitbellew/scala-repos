@@ -183,9 +183,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           // check that it has a topic assigned.
           doc.foreachActive((term, wcnt) =>
             assert(wcnt === 0 || inds.contains(term)))
-        } else {
+        } else
           assert(doc.numNonzeros === 0)
-        }
     }
   }
 

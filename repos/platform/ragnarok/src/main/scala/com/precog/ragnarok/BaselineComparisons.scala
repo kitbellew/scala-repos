@@ -47,15 +47,13 @@ object PerfDelta {
       // TODO Calculate DoF and use table lookup.
       // val df = (qsum * qsum) / ((q1 * q1) / (baseline.count - 1) + (q2 * q2) / (stats.count - 1))
 
-      if (t > 2.0) {
-        if (stats.mean > baseline.mean) {
+      if (t > 2.0)
+        if (stats.mean > baseline.mean)
           Slower(baseline, stats)
-        } else {
+        else
           Faster(baseline, stats)
-        }
-      } else {
+      else
         NoChange(baseline, stats)
-      }
 
     case (Some(baseline), None) =>
       MissingStats(baseline)

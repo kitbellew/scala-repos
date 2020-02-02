@@ -38,11 +38,8 @@ class AccumulatorSuite
   import AccumulatorParam._
 
   override def afterEach(): Unit =
-    try {
-      Accumulators.clear()
-    } finally {
-      super.afterEach()
-    }
+    try Accumulators.clear()
+    finally super.afterEach()
 
   implicit def setAccum[A]: AccumulableParam[mutable.Set[A], A] =
     new AccumulableParam[mutable.Set[A], A] {
@@ -91,9 +88,8 @@ class AccumulatorSuite
       val d = sc.parallelize(1 to maxI)
       d.foreach { x => acc += x }
       val v = acc.value.asInstanceOf[mutable.Set[Int]]
-      for (i <- 1 to maxI) {
+      for (i <- 1 to maxI)
         v should contain(i)
-      }
       resetSparkContext()
     }
   }
@@ -350,11 +346,10 @@ private[spark] object AccumulatorSuite {
       a.name == Some(PEAK_EXECUTION_MEMORY) && a.value.exists(
         _.asInstanceOf[Long] > 0L)
     }
-    if (!isSet) {
+    if (!isSet)
       throw new TestFailedException(
         s"peak execution memory accumulator not set in '$testName'",
         0)
-    }
   }
 }
 
@@ -404,17 +399,13 @@ private class SaveInfoListener extends SparkListener {
     jobCompletionCallback = callback
 
   override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit =
-    if (jobCompletionCallback != null) {
-      try {
-        jobCompletionCallback()
-      } catch {
+    if (jobCompletionCallback != null)
+      try jobCompletionCallback()
+      catch {
         // Store any exception thrown here so we can throw them later in the main thread.
         // Otherwise, if `jobCompletionCallback` threw something it wouldn't fail the test.
         case NonFatal(e) => exception = e
-      } finally {
-        jobCompletionSem.release()
-      }
-    }
+      } finally jobCompletionSem.release()
 
   override def onStageCompleted(
       stageCompleted: SparkListenerStageCompleted): Unit =

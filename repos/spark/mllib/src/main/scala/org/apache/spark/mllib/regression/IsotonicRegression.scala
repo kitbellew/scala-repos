@@ -142,20 +142,19 @@ class IsotonicRegressionModel @Since("1.3.0") (
 
     // Find if the index was lower than all values,
     // higher than all values, in between two values or exact match.
-    if (insertIndex == 0) {
+    if (insertIndex == 0)
       predictions.head
-    } else if (insertIndex == boundaries.length) {
+    else if (insertIndex == boundaries.length)
       predictions.last
-    } else if (foundIndex < 0) {
+    else if (foundIndex < 0)
       linearInterpolation(
         boundaries(insertIndex - 1),
         predictions(insertIndex - 1),
         boundaries(insertIndex),
         predictions(insertIndex),
         testData)
-    } else {
+    else
       predictions(foundIndex)
-    }
   }
 
   /** A convenient method for boundaries called by the Python API. */
@@ -303,11 +302,11 @@ class IsotonicRegression private (private var isotonic: Boolean)
     */
   @Since("1.3.0")
   def run(input: RDD[(Double, Double, Double)]): IsotonicRegressionModel = {
-    val preprocessedInput = if (isotonic) {
-      input
-    } else {
-      input.map(x => (-x._1, x._2, x._3))
-    }
+    val preprocessedInput =
+      if (isotonic)
+        input
+      else
+        input.map(x => (-x._1, x._2, x._3))
 
     val pooled = parallelPoolAdjacentViolators(preprocessedInput)
 
@@ -345,9 +344,8 @@ class IsotonicRegression private (private var isotonic: Boolean)
   private def poolAdjacentViolators(input: Array[(Double, Double, Double)])
       : Array[(Double, Double, Double)] = {
 
-    if (input.isEmpty) {
+    if (input.isEmpty)
       return Array.empty
-    }
 
     // Pools sub array within given bounds assigning weighted average value to all elements.
     def pool(
@@ -372,14 +370,13 @@ class IsotonicRegression private (private var isotonic: Boolean)
       var j = i
 
       // Find monotonicity violating sequence, if any.
-      while (j < len - 1 && input(j)._1 > input(j + 1)._1) {
+      while (j < len - 1 && input(j)._1 > input(j + 1)._1)
         j = j + 1
-      }
 
       // If monotonicity was not violated, move to next data point.
-      if (i == j) {
+      if (i == j)
         i = i + 1
-      } else {
+      else {
         // Otherwise pool the violating sequence
         // and check if pooling caused monotonicity violation in previously processed points.
         while (i >= 0 && input(i)._1 > input(i + 1)._1) {
@@ -398,9 +395,8 @@ class IsotonicRegression private (private var isotonic: Boolean)
     var rightBound = curFeature
     def merge(): Unit = {
       compressed += ((curLabel, curFeature, curWeight))
-      if (rightBound > curFeature) {
+      if (rightBound > curFeature)
         compressed += ((curLabel, rightBound, 0.0))
-      }
     }
     i = 1
     while (i < input.length) {

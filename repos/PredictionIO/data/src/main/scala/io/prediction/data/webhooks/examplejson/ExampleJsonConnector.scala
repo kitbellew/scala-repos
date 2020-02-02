@@ -62,9 +62,8 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
 
   override def toEventJson(data: JObject): JObject = {
     val common =
-      try {
-        data.extract[Common]
-      } catch {
+      try data.extract[Common]
+      catch {
         case e: Exception =>
           throw new ConnectorException(
             s"Cannot extract Common field from $data. ${e.getMessage()}",
@@ -72,18 +71,16 @@ private[prediction] object ExampleJsonConnector extends JsonConnector {
       }
 
     val json =
-      try {
-        common.`type` match {
-          case "userAction" =>
-            toEventJson(common = common, userAction = data.extract[UserAction])
-          case "userActionItem" =>
-            toEventJson(
-              common = common,
-              userActionItem = data.extract[UserActionItem])
-          case x: String =>
-            throw new ConnectorException(
-              s"Cannot convert unknown type '$x' to Event JSON.")
-        }
+      try common.`type` match {
+        case "userAction" =>
+          toEventJson(common = common, userAction = data.extract[UserAction])
+        case "userActionItem" =>
+          toEventJson(
+            common = common,
+            userActionItem = data.extract[UserActionItem])
+        case x: String =>
+          throw new ConnectorException(
+            s"Cannot convert unknown type '$x' to Event JSON.")
       } catch {
         case e: ConnectorException => throw e
         case e: Exception =>

@@ -84,7 +84,7 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
     def dup = newIterator(idx, until, totalsize, es)
 
     def split: Seq[IterableSplitter[T]] =
-      if (remaining > 1) {
+      if (remaining > 1)
         if (until > idx) {
           // there is at least one more slot for the next iterator
           // divide the rest of the table
@@ -118,7 +118,7 @@ trait ParHashTable[K, Entry >: Null <: HashEntry[K, Entry]]
             signalDelegate)
           arrpit.split
         }
-      } else Seq(this.asInstanceOf[IterRepr])
+      else Seq(this.asInstanceOf[IterRepr])
 
     private def convertToArrayBuffer(
         chainhead: Entry): mutable.ArrayBuffer[T] = {

@@ -114,10 +114,9 @@ abstract class LinkedHashMapTest extends HashMapTest {
         val keys = (2 until 42) ++ (43 until 52) ++ (53 until 98) ++
           List(99, 0, 100, 42, 52, 1, 98)
         keys.takeRight(withSizeLimit.getOrElse(keys.length))
-      } else {
-        if (withSizeLimit.isDefined) (55 until 100) ++ List(0, 100, 42, 52, 1)
-        else 0 to 100
-      }
+      } else if (withSizeLimit.isDefined)
+        (55 until 100) ++ List(0, 100, 42, 52, 1)
+      else 0 to 100
     }.toArray
 
     def expectedElem(index: Int): String = {
@@ -155,9 +154,9 @@ abstract class LinkedHashMapTest extends HashMapTest {
     lhm.get(5)
 
     def expectedKey(index: Int): Int =
-      if (accessOrder) {
+      if (accessOrder)
         // elements ordered by insertion order except for those accessed
-        if (withSizeLimit.isEmpty) {
+        if (withSizeLimit.isEmpty)
           if (index < 5) index // no elements removed in this range
           else if (index + 1 < 42) index + 1 // shifted by 1 removed element
           else if (index + 2 < 52) index + 2 // shifted by 2 removed element
@@ -166,18 +165,16 @@ abstract class LinkedHashMapTest extends HashMapTest {
           else if (index == 97) 42
           else if (index == 98) 52
           else 5
-        } else {
-          // note that 5 and 42 are not accessed because they where dropped
-          // due to the size limit
-          if (index < 2) index + 50 // no elements removed in this range
-          else if (index < 49) index + 51 // shifted by 1 removed element
-          // element reordered by accesses
-          else 52
-        }
-      } else {
+        else
+        // note that 5 and 42 are not accessed because they where dropped
+        // due to the size limit
+        if (index < 2) index + 50 // no elements removed in this range
+        else if (index < 49) index + 51 // shifted by 1 removed element
+        // element reordered by accesses
+        else 52
+      else
         // accesses shouldn't modify the order
         withSizeLimit.getOrElse(0) + index
-      }
 
     def expectedValue(index: Int): String =
       s"elem ${expectedKey(index)}"

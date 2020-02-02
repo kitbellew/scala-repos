@@ -134,9 +134,8 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
           None,
           Seq(null),
           false))
-    } else {
+    } else
       None
-    }
 
     val content =
       <h5>SQL Statistics</h5> ++
@@ -151,24 +150,24 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
 
   private def errorMessageCell(errorMessage: String): Seq[Node] = {
     val isMultiline = errorMessage.indexOf('\n') >= 0
-    val errorSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
-      errorMessage.substring(0, errorMessage.indexOf('\n'))
-    } else {
-      errorMessage
-    })
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val errorSummary = StringEscapeUtils.escapeHtml4(
+      if (isMultiline)
+        errorMessage.substring(0, errorMessage.indexOf('\n'))
+      else
+        errorMessage)
+    val details =
+      if (isMultiline)
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         + details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
         <pre>{errorMessage}</pre>
       </div>
       // scalastyle:on
-    } else {
-      ""
-    }
+      else
+        ""
     <td>{errorSummary}{details}</td>
   }
 
@@ -201,9 +200,8 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         "Duration",
         "Total Execute")
       Some(listingTable(headerRow, dataRows))
-    } else {
+    } else
       None
-    }
 
     val content =
       <h5>Session Statistics</h5> ++

@@ -141,9 +141,7 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
           result <- executor.execute(query, ctx, opts)
           httpResponse <- EitherT.right(
             extractResponse(request, result, opts.output))
-        } yield {
-          appendHeaders(opts) { httpResponse }
-        }
+        } yield appendHeaders(opts) { httpResponse }
 
         responseEither valueOr { handleErrors(query, _) }
     }
@@ -262,11 +260,11 @@ class SyncQueryServiceHandler(
       case (Right(Simple), Some(jobId), data) =>
         val errorsM = jobManager.listMessages(jobId, channels.Error, None)
         errorsM map { errors =>
-          if (errors.isEmpty) {
+          if (errors.isEmpty)
             HttpResponse[QueryResult](
               OK,
               content = Some(Right(ensureTermination(data))))
-          } else {
+          else {
             val json = JArray(errors.toList map (_.value))
             HttpResponse[QueryResult](BadRequest, content = Some(Left(json)))
           }

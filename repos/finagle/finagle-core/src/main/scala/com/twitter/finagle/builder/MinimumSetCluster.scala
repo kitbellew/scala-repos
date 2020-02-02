@@ -37,12 +37,11 @@ class MinimumSetCluster[T](
     val censoredUpdates = supplementaryUpdates flatMap { updates =>
       updates filter { update =>
         val ignore = minimum.contains(update.value)
-        if (ignore) {
+        if (ignore)
           update match {
             case Cluster.Add(_) => censoredAdd.incr()
             case Cluster.Rem(_) => censoredRem.incr()
           }
-        }
 
         !ignore
       }

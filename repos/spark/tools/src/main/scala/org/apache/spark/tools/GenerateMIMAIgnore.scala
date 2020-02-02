@@ -57,7 +57,7 @@ object GenerateMIMAIgnore {
     val ignoredClasses = mutable.HashSet[String]()
     val ignoredMembers = mutable.HashSet[String]()
 
-    for (className <- classes) {
+    for (className <- classes)
       try {
         val classSymbol =
           mirror.classSymbol(Class.forName(className, false, classLoader))
@@ -70,18 +70,16 @@ object GenerateMIMAIgnore {
          invisible, so we account for them as package private. */
         lazy val indirectlyPrivateSpark = {
           val maybeOuter = className.toString.takeWhile(_ != '$')
-          if (maybeOuter != className) {
+          if (maybeOuter != className)
             isPackagePrivate(
               mirror
                 .classSymbol(Class.forName(maybeOuter, false, classLoader))) ||
             isPackagePrivateModule(mirror.staticModule(maybeOuter))
-          } else {
+          else
             false
-          }
         }
-        if (directlyPrivateSpark || indirectlyPrivateSpark) {
+        if (directlyPrivateSpark || indirectlyPrivateSpark)
           ignoredClasses += className
-        }
         // check if this class has package-private/annotated members.
         ignoredMembers ++= getAnnotatedOrPackagePrivateMembers(classSymbol)
 
@@ -90,7 +88,6 @@ object GenerateMIMAIgnore {
         case _: Throwable => println("Error instrumenting class:" + className)
         // scalastyle:on println
       }
-    }
     (
       ignoredClasses.flatMap(c => Seq(c, c.replace("$", "#"))).toSet,
       ignoredMembers.toSet)
@@ -101,14 +98,13 @@ object GenerateMIMAIgnore {
     * functions with $$ in there name.
     */
   def getInnerFunctions(classSymbol: unv.ClassSymbol): Seq[String] =
-    try {
-      Class
-        .forName(classSymbol.fullName, false, classLoader)
-        .getMethods
-        .map(_.getName)
-        .filter(_.contains("$$"))
-        .map(classSymbol.fullName + "." + _)
-    } catch {
+    try Class
+      .forName(classSymbol.fullName, false, classLoader)
+      .getMethods
+      .map(_.getName)
+      .filter(_.contains("$$"))
+      .map(classSymbol.fullName + "." + _)
+    catch {
       case t: Throwable =>
         // scalastyle:off println
         println(

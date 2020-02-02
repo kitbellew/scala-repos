@@ -116,9 +116,8 @@ object Bounds {
               .cachedDeepIsInheritor(inheritor, base)
         case (base, inheritor: ScTypeAlias) =>
           if (ScEquivalenceUtil.smartEquivalence(base, inheritor)) return true
-          for (opt <- bClass.getSuperOptions) {
+          for (opt <- bClass.getSuperOptions)
             if (isInheritorOrSelf(opt)) return true
-          }
           false
         case _ => false //class can't be inheritor of type alias
       }
@@ -145,29 +144,27 @@ object Bounds {
           drvSubst: ScSubstitutor,
           visited: mutable.Set[PsiClass]): Option[ScSubstitutor] =
         if (base.getManager.areElementsEquivalent(base, drv)) Some(drvSubst)
+        else if (visited.contains(drv)) None
         else {
-          if (visited.contains(drv)) None
-          else {
-            visited += drv
-            val superTypes: Seq[ScType] = drv match {
-              case td: ScTemplateDefinition => td.superTypes
-              case _ =>
-                drv.getSuperTypes.map { t => ScType.create(t, drv.getProject) }
-            }
-            val iterator = superTypes.iterator
-            while (iterator.hasNext) {
-              val st = iterator.next()
-              ScType.extractClassType(st) match {
-                case None =>
-                case Some((c, s)) =>
-                  superSubstitutor(base, c, s, visited) match {
-                    case None        =>
-                    case Some(subst) => return Some(subst.followed(drvSubst))
-                  }
-              }
-            }
-            None
+          visited += drv
+          val superTypes: Seq[ScType] = drv match {
+            case td: ScTemplateDefinition => td.superTypes
+            case _ =>
+              drv.getSuperTypes.map { t => ScType.create(t, drv.getProject) }
           }
+          val iterator = superTypes.iterator
+          while (iterator.hasNext) {
+            val st = iterator.next()
+            ScType.extractClassType(st) match {
+              case None =>
+              case Some((c, s)) =>
+                superSubstitutor(base, c, s, visited) match {
+                  case None        =>
+                  case Some(subst) => return Some(subst.followed(drvSubst))
+                }
+            }
+          }
+          None
         }
       (getNamedElement, bClass.getNamedElement) match {
         case (base: PsiClass, drv: PsiClass) =>
@@ -177,7 +174,7 @@ object Bounds {
             bClass.typeNamedElement.get._2,
             mutable.Set.empty)
         case (base, inheritor: ScTypeAlias) =>
-          if (ScEquivalenceUtil.smartEquivalence(base, inheritor)) {
+          if (ScEquivalenceUtil.smartEquivalence(base, inheritor))
             bClass.tp match {
               case ScParameterizedType(_, typeArgs) =>
                 return Some(
@@ -191,13 +188,11 @@ object Bounds {
                     })
               case _ => return None
             }
-          }
-          for (opt <- bClass.getSuperOptions) {
+          for (opt <- bClass.getSuperOptions)
             this.superSubstitutor(opt) match {
               case Some(res) => return Some(res)
               case _         =>
             }
-          }
           None
         case _ => None //class can't be inheritor of type alias
       }
@@ -207,7 +202,7 @@ object Bounds {
   def glb(t1: ScType, t2: ScType, checkWeak: Boolean = false): ScType =
     if (t1.conforms(t2, checkWeak)) t1
     else if (t2.conforms(t1, checkWeak)) t2
-    else {
+    else
       (t1, t2) match {
         case (
             ScSkolemizedType(name, args, lower, upper),
@@ -235,14 +230,12 @@ object Bounds {
           glb(t1, ex.skolem, checkWeak).unpackedType
         case _ => ScCompoundType(Seq(t1, t2), Map.empty, Map.empty)
       }
-    }
 
   def glb(typez: Seq[ScType], checkWeak: Boolean): ScType = {
     if (typez.length == 1) typez(0)
     var res = typez(0)
-    for (i <- 1 until typez.length) {
+    for (i <- 1 until typez.length)
       res = glb(res, typez(i), checkWeak)
-    }
     res
   }
 
@@ -395,89 +388,71 @@ object Bounds {
       count: Int = 1)(implicit stopAddingUpperBound: Boolean)
       : (ScType, Option[ScExistentialArgument]) =
     if (substed1 equiv substed2) (substed1, None)
-    else {
-      if (substed1 conforms substed2) {
-        (
-          ScTypeVariable("_$" + count),
-          Some(
-            ScExistentialArgument(
-              "_$" + count,
-              List.empty,
-              substed1,
-              substed2)))
-      } else if (substed2 conforms substed1) {
-        (
-          ScTypeVariable("_$" + count),
-          Some(
-            ScExistentialArgument(
-              "_$" + count,
-              List.empty,
-              substed2,
-              substed1)))
-      } else {
-        (substed1, substed2) match {
-          case (
-              ScSkolemizedType(name, args, lower, upper),
-              ScSkolemizedType(name2, args2, lower2, upper2)) =>
+    else if (substed1 conforms substed2)
+      (
+        ScTypeVariable("_$" + count),
+        Some(
+          ScExistentialArgument("_$" + count, List.empty, substed1, substed2)))
+    else if (substed2 conforms substed1)
+      (
+        ScTypeVariable("_$" + count),
+        Some(
+          ScExistentialArgument("_$" + count, List.empty, substed2, substed1)))
+    else
+      (substed1, substed2) match {
+        case (
+            ScSkolemizedType(name, args, lower, upper),
+            ScSkolemizedType(name2, args2, lower2, upper2)) =>
+          val newLub =
+            if (stopAddingUpperBound) types.Any
+            else
+              lub(Seq(upper, upper2), checkWeak)(stopAddingUpperBound = true)
+          (
+            ScSkolemizedType(name, args, glb(lower, lower2, checkWeak), newLub),
+            None)
+        case (ScSkolemizedType(name, args, lower, upper), _) =>
+          val newLub =
+            if (stopAddingUpperBound) types.Any
+            else
+              lub(Seq(upper, substed2), checkWeak)(stopAddingUpperBound = true)
+          (ScSkolemizedType(name, args, glb(lower, substed2), newLub), None)
+        case (_, ScSkolemizedType(name, args, lower, upper)) =>
+          val newLub =
+            if (stopAddingUpperBound) types.Any
+            else
+              lub(Seq(upper, substed1), checkWeak)(stopAddingUpperBound = true)
+          (ScSkolemizedType(name, args, glb(lower, substed1), newLub), None)
+        case _ =>
+          val newGlb = Bounds.glb(substed1, substed2)
+          if (!stopAddingUpperBound) {
+            //don't calculate the lub of the types themselves, but of the components of their compound types (if existing)
+            // example: the lub of "_ >: Int with Double <: AnyVal" & Long we need here should be AnyVal, not Any
+            def getTypesForLubEvaluation(t: ScType) = Seq(t)
+            val typesToCover =
+              getTypesForLubEvaluation(substed1) ++ getTypesForLubEvaluation(
+                substed2)
             val newLub =
-              if (stopAddingUpperBound) types.Any
-              else
-                lub(Seq(upper, upper2), checkWeak)(stopAddingUpperBound = true)
+              Bounds.lub(typesToCover, checkWeak = false)(
+                stopAddingUpperBound = true)
             (
-              ScSkolemizedType(
-                name,
-                args,
-                glb(lower, lower2, checkWeak),
-                newLub),
-              None)
-          case (ScSkolemizedType(name, args, lower, upper), _) =>
-            val newLub =
-              if (stopAddingUpperBound) types.Any
-              else
-                lub(Seq(upper, substed2), checkWeak)(
-                  stopAddingUpperBound = true)
-            (ScSkolemizedType(name, args, glb(lower, substed2), newLub), None)
-          case (_, ScSkolemizedType(name, args, lower, upper)) =>
-            val newLub =
-              if (stopAddingUpperBound) types.Any
-              else
-                lub(Seq(upper, substed1), checkWeak)(
-                  stopAddingUpperBound = true)
-            (ScSkolemizedType(name, args, glb(lower, substed1), newLub), None)
-          case _ =>
-            val newGlb = Bounds.glb(substed1, substed2)
-            if (!stopAddingUpperBound) {
-              //don't calculate the lub of the types themselves, but of the components of their compound types (if existing)
-              // example: the lub of "_ >: Int with Double <: AnyVal" & Long we need here should be AnyVal, not Any
-              def getTypesForLubEvaluation(t: ScType) = Seq(t)
-              val typesToCover =
-                getTypesForLubEvaluation(substed1) ++ getTypesForLubEvaluation(
-                  substed2)
-              val newLub =
-                Bounds.lub(typesToCover, checkWeak = false)(
-                  stopAddingUpperBound = true)
-              (
-                ScTypeVariable("_$" + count),
-                Some(
-                  ScExistentialArgument(
-                    "_$" + count,
-                    List.empty,
-                    newGlb,
-                    newLub)))
-            } else {
-              //todo: this is wrong, actually we should pick lub, just without merging parameters in this method
-              (
-                ScTypeVariable("_$" + count),
-                Some(
-                  ScExistentialArgument(
-                    "_$" + count,
-                    List.empty,
-                    newGlb,
-                    types.Any)))
-            }
-        }
+              ScTypeVariable("_$" + count),
+              Some(
+                ScExistentialArgument(
+                  "_$" + count,
+                  List.empty,
+                  newGlb,
+                  newLub)))
+          } else
+            //todo: this is wrong, actually we should pick lub, just without merging parameters in this method
+            (
+              ScTypeVariable("_$" + count),
+              Some(
+                ScExistentialArgument(
+                  "_$" + count,
+                  List.empty,
+                  newGlb,
+                  types.Any)))
       }
-    }
 
   private def getTypeForAppending(
       clazz1: Options,
@@ -533,7 +508,7 @@ object Bounds {
       template: ScTemplateDefinition,
       s: ScSubstitutor): ScSubstitutor = {
     var run = s
-    for (alias <- template.aliases) {
+    for (alias <- template.aliases)
       alias match {
         case aliasDef: ScTypeAliasDefinition
             if s.aliasesMap.get(aliasDef.name) == None =>
@@ -542,7 +517,6 @@ object Bounds {
           })
         case _ =>
       }
-    }
     run
   }
 
@@ -555,17 +529,16 @@ object Bounds {
       var break = false
       while (!break && i < res.length) {
         val clazz = res(i)._1
-        if (aClass.isInheritorOrSelf(clazz)) {
+        if (aClass.isInheritorOrSelf(clazz))
           break = true //todo: join them somehow?
-        } else if (clazz.isInheritorOrSelf(aClass)) {
+        else if (clazz.isInheritorOrSelf(aClass)) {
           res(i) = (aClass, x, y)
           break = true
         }
         i = i + 1
       }
-      if (!break) {
+      if (!break)
         res += ((aClass, x, y))
-      }
     }
     def checkClasses(
         aClasses: Seq[Options],
@@ -586,12 +559,11 @@ object Bounds {
             break = true
           } else {
             val element = aClass.getNamedElement
-            if (!visited.contains(element)) {
+            if (!visited.contains(element))
               checkClasses(
                 aClass.getSuperOptions,
                 if (baseIndex == -1) i else baseIndex,
                 visited + element)
-            }
           }
           j += 1
         }

@@ -188,9 +188,9 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
       val opponentCanDoSomething = existsValidMove()
       currentPlayer = currentPlayer.opponent
 
-      if (opponentCanDoSomething) {
+      if (opponentCanDoSomething)
         passButton.prop("disabled", false)
-      } else {
+      else {
         // End of game
         val winnerText =
           if (scoreWhite > scoreBlack) "White won!"
@@ -224,14 +224,13 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
 
   def computeFlips(square: Square): List[Square] =
     if (square.owner != NoPlayer) Nil
-    else {
+    else
       for {
         i <- (-1 to 1).toList
         j <- -1 to 1
         if i != 0 || j != 0
         flip <- computeFlipsInDirection(square.x, square.y, i, j)
       } yield flip
-    }
 
   def computeFlipsInDirection(
       x: Int,

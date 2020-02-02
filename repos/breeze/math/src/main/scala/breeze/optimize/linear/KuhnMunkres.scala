@@ -37,13 +37,11 @@ object KuhnMunkres extends BipartiteMatching {
       if (costs.length > costs(0).length) {
         val newCosts = Array.fill(costs(0).length, costs.length)(0.0)
         for (i <- 0 until costs.length;
-             j <- 0 until costs(0).length) {
+             j <- 0 until costs(0).length)
           newCosts(j)(i) = costs(i)(j)
-        }
         (newCosts.map { row => row.toSeq }.toSeq, true)
-      } else {
+      } else
         (costs, false)
-      }
 
     val C: Array[Array[Double]] = padMatrix(costs2);
     val n = C.size;
@@ -87,9 +85,8 @@ object KuhnMunkres extends BipartiteMatching {
     }
 
     def erasePrimes() {
-      for (i <- 0 until n; j <- 0 until n if marked(i)(j) == 2) {
+      for (i <- 0 until n; j <- 0 until n if marked(i)(j) == 2)
         marked(i)(j) = 0;
-      }
     }
 
     def findStarInRow(row: Int) =
@@ -102,22 +99,18 @@ object KuhnMunkres extends BipartiteMatching {
       marked(row).indexWhere(2 == _)
 
     def convertPath(path: Array[Array[Int]], count: Int) =
-      for (i <- 0 to count) {
+      for (i <- 0 to count)
         if (marked(path(i)(0))(path(i)(1)) == 1)
           marked(path(i)(0))(path(i)(1)) = 0
-        else {
+        else
           marked(path(i)(0))(path(i)(1)) = 1
-        }
-      }
 
     def step1() = {
       for {
         i <- 0 until n;
         min = C(i).reduceLeft(_ min _);
         j <- 0 until n
-      } {
-        C(i)(j) -= min;
-      }
+      } C(i)(j) -= min;
 
       2;
     }
@@ -148,11 +141,10 @@ object KuhnMunkres extends BipartiteMatching {
         count += 1
       }
 
-      if (count >= n) {
+      if (count >= n)
         7
-      } else {
+      else
         4
-      }
     }
 
     def step4() = {
@@ -192,9 +184,8 @@ object KuhnMunkres extends BipartiteMatching {
           count += 1;
           path(count)(0) = row;
           path(count)(1) = path(count - 1)(1);
-        } else {
+        } else
           done = true;
-        }
 
         if (!done) {
           val col = findPrimeInRow(path(count)(0));
@@ -226,7 +217,7 @@ object KuhnMunkres extends BipartiteMatching {
     }
 
     var step = 1;
-    while (step < 7) {
+    while (step < 7)
       step = step match {
         case 1 => step1();
         case 2 => step2();
@@ -235,7 +226,6 @@ object KuhnMunkres extends BipartiteMatching {
         case 5 => step5();
         case 6 => step6();
       }
-    }
 
     var answers = Array.fill(costs2.length)(-1);
     var cost = 0.0;
@@ -252,9 +242,8 @@ object KuhnMunkres extends BipartiteMatching {
       val answers2 = Array.fill(costs2(0).length)(-1)
       for (i <- 0 until answers.length) {
         val j = answers(i)
-        if (j != -1) {
+        if (j != -1)
           answers2(j) = i
-        }
       }
       answers = answers2
     }

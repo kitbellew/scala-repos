@@ -162,9 +162,8 @@ class REMatcher(val str: String, val compiled: Pattern) {
     val ret = new ListBuffer[List[String]]
     matcher.reset
 
-    while (matcher.find) {
+    while (matcher.find)
       ret += (0 to matcher.groupCount).toList.map(i => matcher.group(i))
-    }
 
     ret.toList
   }

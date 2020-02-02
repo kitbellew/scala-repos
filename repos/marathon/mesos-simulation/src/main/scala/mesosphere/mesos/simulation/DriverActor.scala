@@ -176,14 +176,13 @@ class DriverActor(schedulerProps: Props) extends Actor {
       changeTaskStatus(status, create)
 
     case ReconcileTask(taskStatuses) =>
-      if (taskStatuses.isEmpty) {
+      if (taskStatuses.isEmpty)
         tasks.values.foreach(scheduler ! _)
-      } else {
+      else
         taskStatuses.iterator
           .map(_.getTaskId.getValue)
           .map(tasks)
           .foreach(scheduler ! _)
-      }
   }
   //scalastyle:on
 
@@ -207,22 +206,20 @@ class DriverActor(schedulerProps: Props) extends Actor {
           create = true)
       }
 
-      if (random.nextDouble() > 0.001) {
+      if (random.nextDouble() > 0.001)
         tasksToLaunch.map(_.getTaskId).foreach {
           scheduleStatusChange(
             toState = TaskState.TASK_RUNNING,
             afterDuration = 5.seconds)
         }
-      } else {
+      else
         tasksToLaunch.map(_.getTaskId).foreach {
           scheduleStatusChange(
             toState = TaskState.TASK_FAILED,
             afterDuration = 5.seconds)
         }
-      }
-    } else {
+    } else
       log.debug("simulating lost launch")
-    }
 
   private[this] def changeTaskStatus(
       status: TaskStatus,
@@ -237,13 +234,10 @@ class DriverActor(schedulerProps: Props) extends Actor {
       }
       log.debug(s"${tasks.size} tasks")
       scheduler ! status
-    } else {
-      if (status.getState == TaskState.TASK_LOST) {
-        scheduler ! status
-      } else {
-        log.debug(s"${status.getTaskId.getValue} does not exist anymore")
-      }
-    }
+    } else if (status.getState == TaskState.TASK_LOST)
+      scheduler ! status
+    else
+      log.debug(s"${status.getTaskId.getValue} does not exist anymore")
 
   private[this] def scheduleStatusChange(
       toState: TaskState,

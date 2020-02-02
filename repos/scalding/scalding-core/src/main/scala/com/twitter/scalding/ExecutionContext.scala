@@ -79,11 +79,10 @@ trait ExecutionContext {
       // identify the flowDef
       val configWithId = config.addUniqueId(UniqueID.getIDFor(flowDef))
       val flow = mode.newFlowConnector(configWithId).connect(flowDef)
-      if (config.getRequireOrderedSerialization) {
+      if (config.getRequireOrderedSerialization)
         // This will throw, but be caught by the outer try if
         // we have groupby/cogroupby not using OrderedSerializations
         CascadingBinaryComparator.checkForOrderedSerialization(flow).get
-      }
 
       flow match {
         case hadoopFlow: HadoopFlow =>

@@ -50,12 +50,10 @@ object GenerationUtil {
     for {
       anch <- anchor orElse findAnchor(aClass)
       parent <- Option(anch.getParent)
-    } {
-      members.foldLeft(anch) { (anchor, member) =>
-        val added = parent.addBefore(member, anchor)
-        addedMembers += added
-        added
-      }
+    } members.foldLeft(anch) { (anchor, member) =>
+      val added = parent.addBefore(member, anchor)
+      addedMembers += added
+      added
     }
 
     if (addedMembers.nonEmpty) {

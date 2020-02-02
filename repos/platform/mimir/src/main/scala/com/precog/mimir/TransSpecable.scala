@@ -245,11 +245,10 @@ trait TransSpecableModule[M[+_]]
             (l, al) = get(pl)
             pr <- rightParent
             (r, ar) = get(pr)
-            result <- if (al == ar) {
+            result <- if (al == ar)
               set(pl, (transFromBinOp(op, MorphContext(ctx, node))(l, r), al))
-            } else {
+            else
               init(Leaf(Source), node)
-            }
           } yield result
 
         def Filter(node: dag.Filter)(leftParent: N[S], rightParent: => N[S]) =
@@ -374,36 +373,33 @@ trait TransSpecableModule[M[+_]]
               left @ dag.Const(_: CValue),
               Cross(_),
               right,
-              IdentitySort | ValueSort(_)) => {
+              IdentitySort | ValueSort(_)) =>
           val predRes = loop(pred)
 
           alg.Cond(node)(predRes, alg.Const(left)(predRes), loop(right))
-        }
 
         case node @ dag.Cond(
               pred,
               left,
               IdentitySort | ValueSort(_),
               right @ dag.Const(_: CValue),
-              Cross(_)) => {
+              Cross(_)) =>
           val predRes = loop(pred)
 
           alg.Cond(node)(predRes, loop(left), alg.Const(right)(predRes))
-        }
 
         case node @ dag.Cond(
               pred,
               left @ dag.Const(_: CValue),
               Cross(_),
               right @ dag.Const(_: CValue),
-              Cross(_)) => {
+              Cross(_)) =>
           val predRes = loop(pred)
 
           alg.Cond(node)(
             predRes,
             alg.Const(left)(predRes),
             alg.Const(right)(predRes))
-        }
 
         case node @ dag.Cond(
               pred,

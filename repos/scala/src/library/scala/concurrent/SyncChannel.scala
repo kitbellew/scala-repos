@@ -35,10 +35,9 @@ class SyncChannel[A] {
 
         // resolve write request
         writeReq set true
-      } else {
+      } else
         // enqueue write request
         pendingWrites = pendingWrites ::: List((data, writeReq))
-      }
     }
 
     writeReq.get
@@ -60,10 +59,9 @@ class SyncChannel[A] {
 
         // resolve read request
         readReq set data
-      } else {
+      } else
         // enqueue read request
         pendingReads = pendingReads ::: List(readReq)
-      }
     }
 
     readReq.get

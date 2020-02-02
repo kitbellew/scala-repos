@@ -67,16 +67,14 @@ private[spark] class FileAppender(
         val buf = new Array[Byte](bufferSize)
         var n = 0
         while (!markedForStop && n != -1) {
-          try {
-            n = inputStream.read(buf)
-          } catch {
+          try n = inputStream.read(buf)
+          catch {
             // An InputStream can throw IOException during read if the stream is closed
             // asynchronously, so once appender has been flagged to stop these will be ignored
             case _: IOException if markedForStop => // do nothing and proceed to stop appending
           }
-          if (n > 0) {
+          if (n > 0)
             appendToFile(buf, n)
-          }
         }
       } {
         closeFile()
@@ -89,9 +87,8 @@ private[spark] class FileAppender(
 
   /** Append bytes to the file output stream */
   protected def appendToFile(bytes: Array[Byte], len: Int) {
-    if (outputStream == null) {
+    if (outputStream == null)
       openFile()
-    }
     outputStream.write(bytes, 0, len)
   }
 

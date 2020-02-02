@@ -396,10 +396,9 @@ class JsonFormatSpec extends FunSuite {
       .matcher(expectJson)
       .replaceAll("")
     val js2 =
-      try {
-        parse(json2)
-      } catch {
-        case e: com.fasterxml.jackson.core.JsonParseException => {
+      try parse(json2)
+      catch {
+        case e: com.fasterxml.jackson.core.JsonParseException =>
           val p =
             java.lang.Math.max(e.getLocation.getCharOffset() - 10, 0).toInt
           val message =
@@ -407,7 +406,6 @@ class JsonFormatSpec extends FunSuite {
           throw new com.fasterxml.jackson.core.JsonParseException(
             message + e.getMessage,
             e.getLocation)
-        }
       }
     val js1 = parse(resultJson)
     assert(js1 === js2)

@@ -30,9 +30,8 @@ class MarathonLeaderInfo @Inject() (
     metrics.getLeaderDataTimer {
       candidate.flatMap { c =>
         val maybeLeaderData: Option[Array[Byte]] =
-          try {
-            Option(c.getLeaderData.orNull())
-          } catch {
+          try Option(c.getLeaderData.orNull())
+          catch {
             case NonFatal(e) =>
               log.error("error while getting current leader", e)
               None

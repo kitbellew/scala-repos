@@ -60,10 +60,9 @@ private[akka] abstract class FanoutOutputs(
     exposedPublisher.takePendingSubscribers() foreach registerSubscriber
 
   override protected def shutdown(completed: Boolean): Unit = {
-    if (exposedPublisher ne null) {
+    if (exposedPublisher ne null)
       if (completed) exposedPublisher.shutdown(None)
       else exposedPublisher.shutdown(ActorPublisher.SomeNormalShutdownReason)
-    }
     afterShutdown()
   }
 

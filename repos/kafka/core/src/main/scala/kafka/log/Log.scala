@@ -162,18 +162,18 @@ class Log(
         throw new IOException("Could not read file " + file)
       val filename = file.getName
       if (filename.endsWith(DeletedFileSuffix) || filename.endsWith(
-            CleanedFileSuffix)) {
+            CleanedFileSuffix))
         // if the file ends in .deleted or .cleaned, delete it
         file.delete()
-      } else if (filename.endsWith(SwapFileSuffix)) {
+      else if (filename.endsWith(SwapFileSuffix)) {
         // we crashed in the middle of a swap operation, to recover:
         // if a log, delete the .index file, complete the swap operation later
         // if an index just delete it, it will be rebuilt
         val baseName = new File(
           CoreUtils.replaceSuffix(file.getPath, SwapFileSuffix, ""))
-        if (baseName.getPath.endsWith(IndexFileSuffix)) {
+        if (baseName.getPath.endsWith(IndexFileSuffix))
           file.delete()
-        } else if (baseName.getPath.endsWith(LogFileSuffix)) {
+        else if (baseName.getPath.endsWith(LogFileSuffix)) {
           // delete the index
           val index = new File(
             CoreUtils
@@ -211,10 +211,9 @@ class Log(
           time = time,
           fileAlreadyExists = true)
 
-        if (indexFile.exists()) {
-          try {
-            segment.index.sanityCheck()
-          } catch {
+        if (indexFile.exists())
+          try segment.index.sanityCheck()
+          catch {
             case e: java.lang.IllegalArgumentException =>
               warn(
                 "Found a corrupted index file, %s, deleting and rebuilding index..."
@@ -222,7 +221,7 @@ class Log(
               indexFile.delete()
               segment.recover(config.maxMessageSize)
           }
-        } else {
+        else {
           error(
             "Could not find index file corresponding to log file %s, rebuilding index..."
               .format(segment.log.file.getAbsolutePath))
@@ -268,7 +267,7 @@ class Log(
         isRecoveredSwapFile = true)
     }
 
-    if (logSegments.size == 0) {
+    if (logSegments.size == 0)
       // no existing segments, create a new mutable segment beginning at offset 0
       segments.put(
         0L,
@@ -283,7 +282,7 @@ class Log(
           initFileSize = this.initFileSize(),
           preallocate = config.preallocate)
       )
-    } else {
+    else {
       recoverLog()
       // reset the index size of the currently active log segment to allow more entries
       activeSegment.index.resize(config.maxIndexSize)
@@ -313,9 +312,8 @@ class Log(
         "Recovering unflushed segment %d in log %s."
           .format(curr.baseOffset, name))
       val truncatedBytes =
-        try {
-          curr.recover(config.maxMessageSize)
-        } catch {
+        try curr.recover(config.maxMessageSize)
+        catch {
           case e: InvalidOffsetException =>
             val startOffset = curr.baseOffset
             warn(
@@ -381,97 +379,91 @@ class Log(
     // trim any invalid bytes or partial messages before appending it to the on-disk log
     var validMessages = trimInvalidBytes(messages, appendInfo)
 
-    try {
-      // they are valid, insert them in the log
-      lock synchronized {
+    try
+    // they are valid, insert them in the log
+    lock synchronized {
 
-        if (assignOffsets) {
-          // assign offsets to the message set
-          val offset = new LongRef(nextOffsetMetadata.messageOffset)
-          appendInfo.firstOffset = offset.value
-          val now = time.milliseconds
-          val (validatedMessages, messageSizesMaybeChanged) =
-            try {
-              validMessages.validateMessagesAndAssignOffsets(
-                offset,
-                now,
-                appendInfo.sourceCodec,
-                appendInfo.targetCodec,
-                config.compact,
-                config.messageFormatVersion.messageFormatVersion,
-                config.messageTimestampType,
-                config.messageTimestampDifferenceMaxMs
-              )
-            } catch {
-              case e: IOException =>
-                throw new KafkaException(
-                  "Error in validating messages while appending to log '%s'"
-                    .format(name),
-                  e)
-            }
-          validMessages = validatedMessages
-          appendInfo.lastOffset = offset.value - 1
-          if (config.messageTimestampType == TimestampType.LOG_APPEND_TIME)
-            appendInfo.timestamp = now
-
-          // re-validate message sizes if there's a possibility that they have changed (due to re-compression or message
-          // format conversion)
-          if (messageSizesMaybeChanged) {
-            for (messageAndOffset <- validMessages.shallowIterator) {
-              if (MessageSet.entrySize(messageAndOffset.message) > config.maxMessageSize) {
-                // we record the original message set size instead of the trimmed size
-                // to be consistent with pre-compression bytesRejectedRate recording
-                BrokerTopicStats
-                  .getBrokerTopicStats(topicAndPartition.topic)
-                  .bytesRejectedRate
-                  .mark(messages.sizeInBytes)
-                BrokerTopicStats.getBrokerAllTopicsStats.bytesRejectedRate
-                  .mark(messages.sizeInBytes)
-                throw new RecordTooLargeException(
-                  "Message size is %d bytes which exceeds the maximum configured message size of %d."
-                    .format(
-                      MessageSet.entrySize(messageAndOffset.message),
-                      config.maxMessageSize))
-              }
-            }
+      if (assignOffsets) {
+        // assign offsets to the message set
+        val offset = new LongRef(nextOffsetMetadata.messageOffset)
+        appendInfo.firstOffset = offset.value
+        val now = time.milliseconds
+        val (validatedMessages, messageSizesMaybeChanged) =
+          try validMessages.validateMessagesAndAssignOffsets(
+            offset,
+            now,
+            appendInfo.sourceCodec,
+            appendInfo.targetCodec,
+            config.compact,
+            config.messageFormatVersion.messageFormatVersion,
+            config.messageTimestampType,
+            config.messageTimestampDifferenceMaxMs
+          )
+          catch {
+            case e: IOException =>
+              throw new KafkaException(
+                "Error in validating messages while appending to log '%s'"
+                  .format(name),
+                e)
           }
+        validMessages = validatedMessages
+        appendInfo.lastOffset = offset.value - 1
+        if (config.messageTimestampType == TimestampType.LOG_APPEND_TIME)
+          appendInfo.timestamp = now
 
-        } else {
-          // we are taking the offsets we are given
-          if (!appendInfo.offsetsMonotonic || appendInfo.firstOffset < nextOffsetMetadata.messageOffset)
-            throw new IllegalArgumentException(
-              "Out of order offsets found in " + messages)
-        }
+        // re-validate message sizes if there's a possibility that they have changed (due to re-compression or message
+        // format conversion)
+        if (messageSizesMaybeChanged)
+          for (messageAndOffset <- validMessages.shallowIterator)
+            if (MessageSet.entrySize(messageAndOffset.message) > config.maxMessageSize) {
+              // we record the original message set size instead of the trimmed size
+              // to be consistent with pre-compression bytesRejectedRate recording
+              BrokerTopicStats
+                .getBrokerTopicStats(topicAndPartition.topic)
+                .bytesRejectedRate
+                .mark(messages.sizeInBytes)
+              BrokerTopicStats.getBrokerAllTopicsStats.bytesRejectedRate
+                .mark(messages.sizeInBytes)
+              throw new RecordTooLargeException(
+                "Message size is %d bytes which exceeds the maximum configured message size of %d."
+                  .format(
+                    MessageSet.entrySize(messageAndOffset.message),
+                    config.maxMessageSize))
+            }
 
-        // check messages set size may be exceed config.segmentSize
-        if (validMessages.sizeInBytes > config.segmentSize) {
-          throw new RecordBatchTooLargeException(
-            "Message set size is %d bytes which exceeds the maximum configured segment size of %d."
-              .format(validMessages.sizeInBytes, config.segmentSize))
-        }
+      } else
+      // we are taking the offsets we are given
+      if (!appendInfo.offsetsMonotonic || appendInfo.firstOffset < nextOffsetMetadata.messageOffset)
+        throw new IllegalArgumentException(
+          "Out of order offsets found in " + messages)
 
-        // maybe roll the log if this segment is full
-        val segment = maybeRoll(validMessages.sizeInBytes)
+      // check messages set size may be exceed config.segmentSize
+      if (validMessages.sizeInBytes > config.segmentSize)
+        throw new RecordBatchTooLargeException(
+          "Message set size is %d bytes which exceeds the maximum configured segment size of %d."
+            .format(validMessages.sizeInBytes, config.segmentSize))
 
-        // now append to the log
-        segment.append(appendInfo.firstOffset, validMessages)
+      // maybe roll the log if this segment is full
+      val segment = maybeRoll(validMessages.sizeInBytes)
 
-        // increment the log end offset
-        updateLogEndOffset(appendInfo.lastOffset + 1)
+      // now append to the log
+      segment.append(appendInfo.firstOffset, validMessages)
 
-        trace(
-          "Appended message set to log %s with first offset: %d, next offset: %d, and messages: %s"
-            .format(
-              this.name,
-              appendInfo.firstOffset,
-              nextOffsetMetadata.messageOffset,
-              validMessages))
+      // increment the log end offset
+      updateLogEndOffset(appendInfo.lastOffset + 1)
 
-        if (unflushedMessages >= config.flushInterval)
-          flush()
+      trace(
+        "Appended message set to log %s with first offset: %d, next offset: %d, and messages: %s"
+          .format(
+            this.name,
+            appendInfo.firstOffset,
+            nextOffsetMetadata.messageOffset,
+            validMessages))
 
-        appendInfo
-      }
+      if (unflushedMessages >= config.flushInterval)
+        flush()
+
+      appendInfo
     } catch {
       case e: IOException =>
         throw new KafkaStorageException(
@@ -570,9 +562,9 @@ class Log(
     if (messageSetValidBytes < 0)
       throw new CorruptRecordException(
         "Illegal length of message set " + messageSetValidBytes + " Message set cannot be appended to log. Possible causes are corrupted produce requests")
-    if (messageSetValidBytes == messages.sizeInBytes) {
+    if (messageSetValidBytes == messages.sizeInBytes)
       messages
-    } else {
+    else {
       // trim invalid bytes
       val validByteBuffer = messages.buffer.duplicate()
       validByteBuffer.limit(messageSetValidBytes)
@@ -630,17 +622,15 @@ class Log(
             entry.getValue.size
           else
             exposedPos
-        } else {
+        } else
           entry.getValue.size
-        }
       }
       val fetchInfo =
         entry.getValue.read(startOffset, maxOffset, maxLength, maxPosition)
-      if (fetchInfo == null) {
+      if (fetchInfo == null)
         entry = segments.higherEntry(entry.getKey)
-      } else {
+      else
         return fetchInfo
-      }
     }
 
     // okay we are beyond the end of the last segment with no data fetched although the start offset is in range,
@@ -675,7 +665,7 @@ class Log(
     val deletable = logSegments.takeWhile(s =>
       predicate(s) && (s.baseOffset != lastSegment.baseOffset || s.size > 0))
     val numToDelete = deletable.size
-    if (numToDelete > 0) {
+    if (numToDelete > 0)
       lock synchronized {
         // we must always have at least one segment, so if we are going to delete all the segments, create a new one first
         if (segments.size == numToDelete)
@@ -683,7 +673,6 @@ class Log(
         // remove the segments for lookups
         deletable.foreach(deleteSegment(_))
       }
-    }
     numToDelete
   }
 
@@ -736,9 +725,8 @@ class Log(
             config.segmentMs - segment.rollJitterMs
           ))
       roll()
-    } else {
+    } else
       segment
-    }
   }
 
   /**
@@ -760,10 +748,9 @@ class Log(
 
       segments.lastEntry() match {
         case null =>
-        case entry => {
+        case entry =>
           entry.getValue.index.trimToValidSize()
           entry.getValue.log.trim()
-        }
       }
       val segment = new LogSegment(
         dir,
@@ -852,9 +839,9 @@ class Log(
       return
     }
     lock synchronized {
-      if (segments.firstEntry.getValue.baseOffset > targetOffset) {
+      if (segments.firstEntry.getValue.baseOffset > targetOffset)
         truncateFullyAndStartAt(targetOffset)
-      } else {
+      else {
         val deletable =
           logSegments.filter(segment => segment.baseOffset > targetOffset)
         deletable.foreach(deleteSegment(_))
@@ -1090,15 +1077,13 @@ object Log {
     */
   def parseTopicPartitionName(dir: File): TopicAndPartition = {
     val name: String = dir.getName
-    if (name == null || name.isEmpty || !name.contains('-')) {
+    if (name == null || name.isEmpty || !name.contains('-'))
       throwException(dir)
-    }
     val index = name.lastIndexOf('-')
     val topic: String = name.substring(0, index)
     val partition: String = name.substring(index + 1)
-    if (topic.length < 1 || partition.length < 1) {
+    if (topic.length < 1 || partition.length < 1)
       throwException(dir)
-    }
     TopicAndPartition(topic, partition.toInt)
   }
 

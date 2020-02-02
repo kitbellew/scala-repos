@@ -54,42 +54,37 @@ class MetadataSpec
           case (
               BooleanValueStats(c1, t1),
               BooleanValueStats(c2, t2),
-              Some(BooleanValueStats(c3, t3))) => {
+              Some(BooleanValueStats(c3, t3))) =>
             c3 must_== c1 + c2
             t3 must_== t1 + t2
-          }
           case (
               LongValueStats(c1, mn1, mx1),
               LongValueStats(c2, mn2, mx2),
-              Some(LongValueStats(c3, mn3, mx3))) => {
+              Some(LongValueStats(c3, mn3, mx3))) =>
             c3 must_== c1 + c2
             mn3 must_== (mn1 min mn2)
             mx3 must_== (mx1 max mx2)
-          }
           case (
               DoubleValueStats(c1, mn1, mx1),
               DoubleValueStats(c2, mn2, mx2),
-              Some(DoubleValueStats(c3, mn3, mx3))) => {
+              Some(DoubleValueStats(c3, mn3, mx3))) =>
             c3 must_== c1 + c2
             mn3 must_== (mn1 min mn2)
             mx3 must_== (mx1 max mx2)
-          }
           case (
               BigDecimalValueStats(c1, mn1, mx1),
               BigDecimalValueStats(c2, mn2, mx2),
-              Some(BigDecimalValueStats(c3, mn3, mx3))) => {
+              Some(BigDecimalValueStats(c3, mn3, mx3))) =>
             c3 must_== c1 + c2
             mn3 must_== (mn1 min mn2)
             mx3 must_== (mx1 max mx2)
-          }
           case (
               StringValueStats(c1, mn1, mx1),
               StringValueStats(c2, mn2, mx2),
-              Some(StringValueStats(c3, mn3, mx3))) => {
+              Some(StringValueStats(c3, mn3, mx3))) =>
             c3 must_== c1 + c2
             mn3 must_== Order[String].min(mn1, mn2)
             mx3 must_== Order[String].max(mx1, mx2)
-          }
           case (e1, e2, r) => r must beNone
         }
     }
@@ -115,7 +110,7 @@ class MetadataSpec
         }
 
         forall(prepared) {
-          case (s1, s2, r) => {
+          case (s1, s2, r) =>
             val keys = s1.keys ++ s2.keys
 
             forall(keys) { k =>
@@ -125,7 +120,6 @@ class MetadataSpec
                 case (_, Some(b))       => r(k) must_== b
               }
             }
-          }
         }
     }
   }
@@ -147,7 +141,7 @@ trait MetadataGenerators extends util.ArbitraryJValue {
     genStringMetadata)
 
   def genMetadataList: Gen[List[Metadata]] =
-    for (cnt <- choose(0, 10); l <- listOfN(cnt, genMetadata)) yield { l }
+    for (cnt <- choose(0, 10); l <- listOfN(cnt, genMetadata)) yield l
 
   def genMetadataMap: Gen[Map[MetadataType, Metadata]] = genMetadataList map {
     l => Map(l.map(m => (m.metadataType, m)): _*)

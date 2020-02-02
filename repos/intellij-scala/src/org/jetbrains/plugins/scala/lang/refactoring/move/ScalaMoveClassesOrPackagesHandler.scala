@@ -82,9 +82,8 @@ class ScalaMoveClassesOrPackagesHandler
     if (!CommonRefactoringUtil.checkReadOnlyStatusRecursively(
           project,
           adjustedElements.toSeq,
-          true)) {
+          true))
       return
-    }
     val initialTargetPackageName: String = MoveClassesOrPackagesImpl
       .getInitialTargetPackageName(initialTargetElement, adjustedElements)
     val initialTargetDirectory: PsiDirectory = MoveClassesOrPackagesImpl

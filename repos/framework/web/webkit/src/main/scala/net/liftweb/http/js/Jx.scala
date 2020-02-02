@@ -59,16 +59,14 @@ trait JxBase {
               JsRaw(varName + "." + m.key + " = " + AnonFunc(cmd).toJsCmd).cmd
 
             case x =>
-              if (m.key == "class") {
+              if (m.key == "class")
                 // JsRaw(varName+".setAttribute('className',"+x.text.encJs+");").cmd
-
                 JsRaw(varName + ".className = " + x.text.encJs).cmd &
                   JsRaw(
                     varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
-              } else {
+              else
                 JsRaw(
                   varName + ".setAttribute(" + m.key.encJs + "," + x.text.encJs + ");").cmd
-              }
           }
           .foldLeft(Noop)(_ & _)
       }

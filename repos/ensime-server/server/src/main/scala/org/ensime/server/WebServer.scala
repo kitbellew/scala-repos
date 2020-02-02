@@ -75,9 +75,8 @@ trait WebServer {
           for {
             media <- MediaTypes.forExtension(Files.getFileExtension(entry))
             content <- docJarContent(filename, entry)
-          } yield {
-            HttpResponse(entity = HttpEntity(ContentType(media, None), content))
-          }
+          } yield HttpResponse(entity =
+            HttpEntity(ContentType(media, None), content))
         }
       }
     } ~ path("jerky") {

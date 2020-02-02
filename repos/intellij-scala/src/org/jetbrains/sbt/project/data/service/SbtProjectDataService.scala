@@ -121,17 +121,14 @@ object SbtProjectDataService {
           .filterNot(-1 == _)
           .flatMap(i => options.lift(i + 1))
 
-      if (contains("-g:none")) {
+      if (contains("-g:none"))
         settings.DEBUGGING_INFO = false
-      }
 
-      if (contains("-nowarn", "-Xlint:none")) {
+      if (contains("-nowarn", "-Xlint:none"))
         settings.GENERATE_NO_WARNINGS = true
-      }
 
-      if (contains("-deprecation", "-Xlint:deprecation")) {
+      if (contains("-deprecation", "-Xlint:deprecation"))
         settings.DEPRECATION = true
-      }
 
       valueOf("-target").foreach { target =>
         val compilerSettings = CompilerConfiguration

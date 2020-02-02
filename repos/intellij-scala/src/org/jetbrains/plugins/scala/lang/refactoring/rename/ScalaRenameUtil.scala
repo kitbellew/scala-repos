@@ -74,7 +74,7 @@ object ScalaRenameUtil {
         if (isInImport && ref.resolve() == null) {
           val multiResolve = ref.multiResolve(false)
           if (multiResolve.length > 1 && multiResolve.forall(
-                _.getElement.isInstanceOf[ScTypeDefinition])) {
+                _.getElement.isInstanceOf[ScTypeDefinition]))
             new PsiReference {
               def getVariants: Array[AnyRef] = ref.getVariants
 
@@ -97,7 +97,7 @@ object ScalaRenameUtil {
 
               def resolve(): PsiElement = multiResolve.apply(0).getElement
             }
-          } else ref
+          else ref
         } else ref
       case ref: PsiReference => ref
     }

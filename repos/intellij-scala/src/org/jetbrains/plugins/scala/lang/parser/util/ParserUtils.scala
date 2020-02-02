@@ -23,9 +23,8 @@ object ParserUtils extends ParserUtilsBase {
 
   //Write element node
   def eatElement(builder: PsiBuilder, elem: IElementType) {
-    if (!builder.eof()) {
+    if (!builder.eof())
       builder.advanceLexer() // Ate something
-    }
     ()
 
   }
@@ -79,9 +78,8 @@ object ParserUtils extends ParserUtilsBase {
 
   //Defines priority
   def priority(id: String, assignments: Boolean = false): Int = {
-    if (assignments && isAssignmentOperator(id)) {
+    if (assignments && isAssignmentOperator(id))
       return 10
-    }
     id.charAt(0) match {
       case '~' | '#' | '@' | '?' | '\\' => 0 //todo: other special characters?
       case '*' | '/' | '%'              => 1
@@ -138,9 +136,8 @@ object ParserUtils extends ParserUtilsBase {
           br = true
         }
         builder.advanceLexer()
-        if (builder.eof) {
+        if (builder.eof)
           return
-        }
     }
     parseLoopUntilRBrace(builder, fun, br)
   }

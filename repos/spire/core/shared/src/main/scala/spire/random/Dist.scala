@@ -363,17 +363,16 @@ object Dist extends DistInstances8 {
   }
 
   def safelong(maxBytes: Int): Dist[SafeLong] =
-    if (maxBytes <= 0) {
+    if (maxBytes <= 0)
       throw new IllegalArgumentException(
         "need positive maxBytes, got %s" format maxBytes)
-    } else if (maxBytes < 8) {
+    else if (maxBytes < 8) {
       val n = (8 - maxBytes) * 8
       new DistFromGen(g => SafeLong(g.nextLong >>> n))
-    } else if (maxBytes == 8) {
+    } else if (maxBytes == 8)
       new DistFromGen(g => SafeLong(g.nextLong))
-    } else {
+    else
       bigint(maxBytes).map(SafeLong(_))
-    }
 
   def bigint(maxBytes: Int): Dist[BigInt] = new Dist[BigInt] {
     def apply(gen: Generator): BigInt =

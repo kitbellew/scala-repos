@@ -55,15 +55,13 @@ object NameSuggester {
     expr.getTypeIgnoreBaseType(TypingContext.empty).foreach(types += _)
     if (typez != null && typez == Unit) types += typez
 
-    for (tpe <- types.reverse) { generateNamesByType(tpe)(names, validator) }
+    for (tpe <- types.reverse) generateNamesByType(tpe)(names, validator)
     generateNamesByExpr(expr)(names, validator)
 
     val result =
       (for (name <- names
             if name != "" && ScalaNamesUtil.isIdentifier(name) || name == "class")
-        yield {
-          if (name != "class") name else "clazz"
-        }).toList.reverse.toArray
+        yield if (name != "class") name else "clazz").toList.reverse.toArray
     if (result.size > 0) result
     else Array(validator.validateName("value", increaseNumber = true))
   }
@@ -79,9 +77,9 @@ object NameSuggester {
         case s       => s
       }
       .filter(name => name != "" && ScalaNamesUtil.isIdentifier(name))
-    if (result.length == 0) {
+    if (result.length == 0)
       Array("value")
-    } else result.reverse.toArray
+    else result.reverse.toArray
   }
 
   private def add(s: String)(
@@ -110,13 +108,12 @@ object NameSuggester {
     def addPlurals(arg: ScType) {
       def addPlural(s: String) {
         if (!withPlurals) add(s)
-        else {
+        else
           s match {
             case "x"     => add("xs")
             case "index" => add("indices")
             case _       => add(English.plural(s))
           }
-        }
       }
       arg match {
         case ValType(name)        => addPlural(name.toLowerCase)
@@ -135,9 +132,7 @@ object NameSuggester {
       for {
         leftName <- namesByType(tp1, shortVersion = false)
         rightName <- namesByType(tp2, shortVersion = false)
-      } {
-        add(s"$leftName$separator${rightName.capitalize}")
-      }
+      } add(s"$leftName$separator${rightName.capitalize}")
     }
 
     def addForFunctionType(ret: ScType, params: Seq[ScType]) = params match {
@@ -195,9 +190,7 @@ object NameSuggester {
             for {
               s <- namesByType(args(0), shortVersion = false)
               prefix = needPrefix(c.qualifiedName)
-            } {
-              add(prefix + s.capitalize)
-            }
+            } add(prefix + s.capitalize)
           case c if c.qualifiedName == eitherClassName && args.size == 2 =>
             addFromTwoTypes(args(0), args(1), "Or")
           case c
@@ -218,13 +211,12 @@ object NameSuggester {
     }
 
     def addForNamedElementString(name: String) =
-      if (name != null && name.toUpperCase == name) {
+      if (name != null && name.toUpperCase == name)
         add(deleteNonLetterFromString(name).toLowerCase)
-      } else if (name == "String") {
+      else if (name == "String")
         add(if (shortVersion) "s" else "string")
-      } else {
+      else
         generateCamelNames(name)
-      }
 
     def addForNamedElement(named: PsiNamedElement) = {
       val name = named.name
@@ -269,11 +261,10 @@ object NameSuggester {
       case _: ScSuperReference => add("superInstance")
       case x: ScReferenceElement if x.refName != null =>
         val name = x.refName
-        if (name != null && name.toUpperCase == name) {
+        if (name != null && name.toUpperCase == name)
           add(name.toLowerCase)
-        } else {
+        else
           generateCamelNames(name)
-        }
       case x: ScMethodCall =>
         generateNamesByExpr(x.getEffectiveInvokedExpr)
       case l: ScLiteral if l.isString =>
@@ -306,7 +297,7 @@ object NameSuggester {
           case _         => name.substring(2, name.length)
         }
       else name
-    for (i <- 0 to s.length - 1) {
+    for (i <- 0 to s.length - 1)
       if (i == 0) {
         val candidate = s.substring(0, 1).toLowerCase + s.substring(1)
         add(deleteNonLetterFromStringFromTheEnd(candidate))
@@ -314,7 +305,6 @@ object NameSuggester {
         val candidate = s.substring(i, i + 1).toLowerCase + s.substring(i + 1)
         add(deleteNonLetterFromStringFromTheEnd(candidate))
       }
-    }
   }
 
   private def getCamelNames(name: String): Seq[String] = {
@@ -327,7 +317,7 @@ object NameSuggester {
           case _         => name.substring(2, name.length)
         }
       else name
-    for (i <- 0 to s.length - 1) {
+    for (i <- 0 to s.length - 1)
       if (i == 0) {
         val candidate = s.substring(0, 1).toLowerCase + s.substring(1)
         names += deleteNonLetterFromStringFromTheEnd(candidate)
@@ -335,7 +325,6 @@ object NameSuggester {
         val candidate = s.substring(i, i + 1).toLowerCase + s.substring(i + 1)
         names += deleteNonLetterFromStringFromTheEnd(candidate)
       }
-    }
     names.toSeq
   }
 

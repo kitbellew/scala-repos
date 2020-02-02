@@ -47,7 +47,7 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
   }
 
   def find(resolver: SbtResolver): Option[SbtResolverIndex] =
-    indexes find { _.root == resolver.root }
+    indexes find _.root == resolver.root
 
   def dispose() =
     indexes foreach { _.close() }
@@ -72,9 +72,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
             index =>
               progressIndicator.setFraction(0.0)
               progressIndicator.setText(index.root)
-              try {
-                index.update(Some(progressIndicator))
-              } catch {
+              try index.update(Some(progressIndicator))
+              catch {
                 case exc: ResolverException =>
                   notifyWarning(exc.getMessage)
                 case exc: LockReleaseFailedException =>
@@ -82,10 +81,8 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
                     SbtBundle(
                       "sbt.resolverIndexer.luceneLockException",
                       exc.getMessage))
-              } finally {
-                updatingIndexes synchronized {
-                  updatingIndexes -= index
-                }
+              } finally updatingIndexes synchronized {
+                updatingIndexes -= index
               }
           }
       })
@@ -104,7 +101,7 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
     val indices = indexesDir.listFiles()
     if (indices == null) return
     indices foreach { indexDir =>
-      if (indexDir.isDirectory) {
+      if (indexDir.isDirectory)
         try {
           val index = SbtResolverIndex.load(indexDir)
           indexes.add(index)
@@ -115,7 +112,6 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
               _: IOException =>
             cleanUpCorruptedIndex(indexDir)
         }
-      }
     }
   }
 

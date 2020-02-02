@@ -356,12 +356,12 @@ case class UnsortedIdentityReduce[K, V1](
     * few keys and n is relatively small.
     */
   override def bufferedTake(n: Int) =
-    if (n < 1) {
+    if (n < 1)
       // This means don't take anything, which is legal, but strange
       filterKeys(_ => false)
-    } else if (n == 1) {
+    else if (n == 1)
       head
-    } else {
+    else {
       // By default, there is no ordering. This method is overridden
       // in IdentityValueSortedReduce
       // Note, this is going to bias toward low hashcode items.
@@ -498,10 +498,10 @@ case class IdentityValueSortedReduce[K, V1](
     * few keys and n is relatively small.
     */
   override def bufferedTake(n: Int): SortedGrouped[K, V1] =
-    if (n <= 0) {
+    if (n <= 0)
       // This means don't take anything, which is legal, but strange
       filterKeys(_ => false)
-    } else {
+    else {
       implicit val mon =
         new PriorityQueueMonoid[V1](n)(valueSort.asInstanceOf[Ordering[V1]])
       // Do the heap-sort on the mappers:

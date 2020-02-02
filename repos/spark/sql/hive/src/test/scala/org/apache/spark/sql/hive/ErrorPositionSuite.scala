@@ -34,9 +34,8 @@ class ErrorPositionSuite
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    if (sqlContext.tableNames().contains("src")) {
+    if (sqlContext.tableNames().contains("src"))
       sqlContext.dropTempTable("src")
-    }
     Seq((1, "")).toDF("key", "value").registerTempTable("src")
     Seq((1, 1, 1)).toDF("a", "a", "b").registerTempTable("dupAttributes")
   }
@@ -45,9 +44,7 @@ class ErrorPositionSuite
     try {
       sqlContext.dropTempTable("src")
       sqlContext.dropTempTable("dupAttributes")
-    } finally {
-      super.afterEach()
-    }
+    } finally super.afterEach()
 
   positionTest(
     "ambiguous attribute reference 1",

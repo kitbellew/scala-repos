@@ -45,17 +45,16 @@ object MacroUtil {
   def resultToScExpr(
       result: Result,
       context: ExpressionContext): Option[ScExpression] =
-    try {
-      Option(
-        PsiDocumentManager
-          .getInstance(context.getProject)
-          .getPsiFile(context.getEditor.getDocument))
-        .map(_.findElementAt(context.getStartOffset))
-        .filter(_ != null)
-        .map(ScalaPsiElementFactory
-          .createExpressionFromText(result.toString, _)
-          .asInstanceOf[ScExpression])
-    } catch {
+    try Option(
+      PsiDocumentManager
+        .getInstance(context.getProject)
+        .getPsiFile(context.getEditor.getDocument))
+      .map(_.findElementAt(context.getStartOffset))
+      .filter(_ != null)
+      .map(ScalaPsiElementFactory
+        .createExpressionFromText(result.toString, _)
+        .asInstanceOf[ScExpression])
+    catch {
       case _: IncorrectOperationException => None
     }
 

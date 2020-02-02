@@ -117,7 +117,7 @@ sealed trait CPath { self =>
         head match {
           case x @ CPathIndex(index) =>
             expand0(current :+ x, tail, jvalue(index))
-          case x @ CPathField(name) if (isRegex(name)) => {
+          case x @ CPathField(name) if (isRegex(name)) =>
             val R = name.r
             jvalue match {
               case JObject(fields) =>
@@ -131,7 +131,6 @@ sealed trait CPath { self =>
 
               case _ => Nil
             }
-          }
 
           case x @ CPathField(name) =>
             expand0(current :+ x, tail, jvalue \ name)
@@ -269,9 +268,9 @@ object CPath {
 
   def makeStructuredTree[A](pathsAndValues: Seq[(CPath, A)]) = {
     def inner[A](paths: Seq[PathWithLeaf[A]]): Seq[CPathTree[A]] =
-      if (paths.size == 1 && paths.head.size == 0) {
+      if (paths.size == 1 && paths.head.size == 0)
         List(LeafNode(paths.head.value))
-      } else {
+      else {
         val filtered = paths filterNot {
           case PathWithLeaf(path, _) => path.isEmpty
         }

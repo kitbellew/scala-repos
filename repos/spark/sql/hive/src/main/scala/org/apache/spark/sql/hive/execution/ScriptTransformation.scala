@@ -117,9 +117,8 @@ private[hive] case class ScriptTransformation(
 
       // This nullability is a performance optimization in order to avoid an Option.foreach() call
       // inside of a loop
-      @Nullable val (outputSerde, outputSoi) = {
+      @Nullable val (outputSerde, outputSoi) =
         ioschema.initOutputSerDe(output).getOrElse((null, null))
-      }
 
       val reader = new BufferedReader(
         new InputStreamReader(inputStream, StandardCharsets.UTF_8))
@@ -132,74 +131,65 @@ private[hive] case class ScriptTransformation(
           ioschema.recordReader(scriptOutputStream, localHiveConf).orNull
 
         var scriptOutputWritable: Writable = null
-        val reusedWritableObject: Writable = if (null != outputSerde) {
-          outputSerde.getSerializedClass().newInstance
-        } else {
-          null
-        }
+        val reusedWritableObject: Writable =
+          if (null != outputSerde)
+            outputSerde.getSerializedClass().newInstance
+          else
+            null
         val mutableRow = new SpecificMutableRow(output.map(_.dataType))
 
         override def hasNext: Boolean =
-          if (outputSerde == null) {
+          if (outputSerde == null)
             if (curLine == null) {
               curLine = reader.readLine()
               if (curLine == null) {
-                if (writerThread.exception.isDefined) {
+                if (writerThread.exception.isDefined)
                   throw writerThread.exception.get
-                }
                 false
-              } else {
+              } else
                 true
-              }
-            } else {
+            } else
               true
-            }
-          } else if (scriptOutputWritable == null) {
+          else if (scriptOutputWritable == null) {
             scriptOutputWritable = reusedWritableObject
 
-            if (scriptOutputReader != null) {
+            if (scriptOutputReader != null)
               if (scriptOutputReader.next(scriptOutputWritable) <= 0) {
                 writerThread.exception.foreach(throw _)
                 false
-              } else {
+              } else
                 true
-              }
-            } else {
+            else
               try {
                 scriptOutputWritable.readFields(scriptOutputStream)
                 true
               } catch {
                 case _: EOFException =>
-                  if (writerThread.exception.isDefined) {
+                  if (writerThread.exception.isDefined)
                     throw writerThread.exception.get
-                  }
                   false
               }
-            }
-          } else {
+          } else
             true
-          }
 
         override def next(): InternalRow = {
-          if (!hasNext) {
+          if (!hasNext)
             throw new NoSuchElementException
-          }
           if (outputSerde == null) {
             val prevLine = curLine
             curLine = reader.readLine()
-            if (!ioschema.schemaLess) {
+            if (!ioschema.schemaLess)
               new GenericInternalRow(
                 prevLine
                   .split(ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
                   .map(CatalystTypeConverters.convertToCatalyst))
-            } else {
+            else
               new GenericInternalRow(
                 prevLine
                   .split(
                     ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
                     2)
                   .map(CatalystTypeConverters.convertToCatalyst))
-            }
           } else {
             val raw = outputSerde.deserialize(scriptOutputWritable)
             scriptOutputWritable = null
@@ -207,13 +197,12 @@ private[hive] case class ScriptTransformation(
             val fieldList = outputSoi.getAllStructFieldRefs()
             var i = 0
             while (i < dataList.size()) {
-              if (dataList.get(i) == null) {
+              if (dataList.get(i) == null)
                 mutableRow.setNullAt(i)
-              } else {
+              else
                 mutableRow(i) = unwrap(
                   dataList.get(i),
                   fieldList.get(i).getFieldObjectInspector)
-              }
               i += 1
             }
             mutableRow
@@ -230,10 +219,9 @@ private[hive] case class ScriptTransformation(
       if (iter.hasNext) {
         val proj = UnsafeProjection.create(schema)
         processIterator(iter).map(proj)
-      } else {
+      } else
         // If the input iterator has no rows then do not launch the external script.
         Iterator.empty
-      }
     }
   }
 }
@@ -274,31 +262,31 @@ private class ScriptTransformationWriterThread(
     try {
       iter.map(outputProjection).foreach { row =>
         if (inputSerde == null) {
-          val data = if (len == 0) {
-            ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
-          } else {
-            val sb = new StringBuilder
-            sb.append(row.get(0, inputSchema(0)))
-            var i = 1
-            while (i < len) {
-              sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
-              sb.append(row.get(i, inputSchema(i)))
-              i += 1
+          val data =
+            if (len == 0)
+              ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
+            else {
+              val sb = new StringBuilder
+              sb.append(row.get(0, inputSchema(0)))
+              var i = 1
+              while (i < len) {
+                sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
+                sb.append(row.get(i, inputSchema(i)))
+                i += 1
+              }
+              sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
+              sb.toString()
             }
-            sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
-            sb.toString()
-          }
           outputStream.write(data.getBytes(StandardCharsets.UTF_8))
         } else {
           val writable = inputSerde
             .serialize(row.asInstanceOf[GenericInternalRow].values, inputSoi)
 
-          if (scriptInputWriter != null) {
+          if (scriptInputWriter != null)
             scriptInputWriter.write(writable)
-          } else {
+          else
             prepareWritable(writable, ioschema.outputSerdeProps)
               .write(dataOutputStream)
-          }
         }
       }
       outputStream.close()
@@ -310,19 +298,14 @@ private class ScriptTransformationWriterThread(
         _exception = e
         proc.destroy()
         throw e
-    } finally {
-      try {
-        if (proc.waitFor() != 0) {
-          logError(stderrBuffer.toString) // log the stderr circular buffer
-        }
-      } catch {
-        case NonFatal(exceptionFromFinallyBlock) =>
-          if (!threwException) {
-            throw exceptionFromFinallyBlock
-          } else {
-            log.error("Exception in finally block", exceptionFromFinallyBlock)
-          }
-      }
+    } finally try if (proc.waitFor() != 0)
+      logError(stderrBuffer.toString) // log the stderr circular buffer
+    catch {
+      case NonFatal(exceptionFromFinallyBlock) =>
+        if (!threwException)
+          throw exceptionFromFinallyBlock
+        else
+          log.error("Exception in finally block", exceptionFromFinallyBlock)
     }
   }
 }
@@ -469,13 +452,11 @@ private[hive] case class HiveScriptIOSchema(
           .map { p => s"'${p._1}' = '${p._2}'" }
           .mkString(", ")
         if (props.nonEmpty) " WITH SERDEPROPERTIES(" + props + ")" else ""
-      } else {
+      } else
         ""
-      }
-    if (rowFormat.nonEmpty) {
+    if (rowFormat.nonEmpty)
       Some("ROW FORMAT DELIMITED " + rowFormatDelimited.mkString(" "))
-    } else {
+    else
       Some("ROW FORMAT SERDE " + serdeClassSQL + serdePropsSQL)
-    }
   }
 }

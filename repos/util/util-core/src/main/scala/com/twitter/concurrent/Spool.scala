@@ -75,7 +75,7 @@ sealed trait Spool[+A] {
     * {{None}}.
     */
   def foreachElem[B](f: Option[A] => B): Future[Unit] =
-    if (!isEmpty) {
+    if (!isEmpty)
       Future { f(Some(head)) } flatMap { _ =>
         tail transform {
           case Return(s)              => s.foreachElem(f)
@@ -83,23 +83,20 @@ sealed trait Spool[+A] {
           case Throw(cause)           => Future.exception(cause)
         }
       }
-    } else {
+    else
       Future { f(None) }
-    }
 
   def foldLeft[B](z: B)(f: (B, A) => B): Future[B] =
-    if (isEmpty) {
+    if (isEmpty)
       Future.value(z)
-    } else {
+    else
       tail.flatMap(s => s.foldLeft(f(z, head))(f))
-    }
 
   def reduceLeft[B >: A](f: (B, A) => B): Future[B] =
-    if (isEmpty) {
+    if (isEmpty)
       Future.exception(new UnsupportedOperationException("empty.reduceLeft"))
-    } else {
+    else
       tail.flatMap(s => s.foldLeft[B](head)(f))
-    }
 
   /**
     * Zips two [[Spool Spools]] returning a Spool of Tuple2s.
@@ -159,9 +156,8 @@ sealed trait Spool[+A] {
     */
   def mapFuture[B](f: A => Future[B]): Future[Spool[B]] =
     if (isEmpty) Future.value(empty[B])
-    else {
+    else
       f(head) map { h => new LazyCons(h, tail flatMap (_ mapFuture f)) }
-    }
 
   def filter(f: A => Boolean): Future[Spool[A]] = collect {
     case x if f(x) => x
@@ -171,25 +167,23 @@ sealed trait Spool[+A] {
     * Take elements from the head of the Spool (lazily), while the given condition is true.
     */
   def takeWhile(f: A => Boolean): Spool[A] =
-    if (isEmpty) {
+    if (isEmpty)
       this
-    } else if (f(head)) {
+    else if (f(head))
       new LazyCons(head, tail map (_ takeWhile f))
-    } else {
+    else
       empty[A]
-    }
 
   /**
     * Take the first n elements of the Spool as another Spool (adapted from Stream.take)
     */
   def take(n: Int): Spool[A] =
-    if (n <= 0 || isEmpty) {
+    if (n <= 0 || isEmpty)
       empty[A]
-    } else if (n == 1) {
+    else if (n == 1)
       new LazyCons(head, Future.value(empty[A]))
-    } else {
+    else
       new LazyCons(head, tail map (_ take (n - 1)))
-    }
 
   /**
     * Concatenates two spools.

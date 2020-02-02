@@ -103,31 +103,24 @@ class StandardImageExtractor(
 
   override def getBestImage(doc: Document, topNode: Element): Image = {
     this.doc = doc
-    if (logger.isDebugEnabled) {
+    if (logger.isDebugEnabled)
       logger.debug("Starting to Look for the Most Relavent Image")
-    }
-    if (image.getImageSrc == "") {
+    if (image.getImageSrc == "")
       this.checkForKnownElements()
-    }
-    if (image.getImageSrc == "") {
+    if (image.getImageSrc == "")
       this.checkForLargeImages(topNode, 0, 0)
-    }
-    if (image.getImageSrc == "") {
+    if (image.getImageSrc == "")
       this.checkForMetaTag
-    }
     image
   }
 
   private def checkForMetaTag: Boolean = {
-    if (this.checkForLinkTag) {
+    if (this.checkForLinkTag)
       return true
-    }
-    if (this.checkForOpenGraphTag) {
+    if (this.checkForOpenGraphTag)
       return true
-    }
-    if (logger.isDebugEnabled) {
+    if (logger.isDebugEnabled)
       logger.debug("unable to find meta image")
-    }
     false
   }
 
@@ -141,9 +134,8 @@ class StandardImageExtractor(
       val meta: Elements = doc.select("meta[property~=og:image]")
       import scala.collection.JavaConversions._
       for (item <- meta) {
-        if (item.attr("content").length < 1) {
+        if (item.attr("content").length < 1)
           return false
-        }
         val imagePath: String = this.buildImagePath(item.attr("content"))
         this.image.imageSrc = imagePath
         this.image.imageExtractionType = "opengraph"
@@ -155,10 +147,9 @@ class StandardImageExtractor(
       }
       false
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         e.printStackTrace()
         return false
-      }
     }
 
   /**
@@ -171,9 +162,8 @@ class StandardImageExtractor(
       val meta: Elements = doc.select("link[rel~=image_src]")
       import scala.collection.JavaConversions._
       for (item <- meta) {
-        if (item.attr("href").length < 1) {
+        if (item.attr("href").length < 1)
           return false
-        }
         this.image.imageSrc = this.buildImagePath(item.attr("href"))
         this.image.imageExtractionType = "linktag"
         this.image.confidenceScore = 100
@@ -184,10 +174,9 @@ class StandardImageExtractor(
       }
       false
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         logger.error(e.toString, e)
         false
-      }
     }
 
   def getAllImages: ArrayList[Element] =
@@ -196,11 +185,10 @@ class StandardImageExtractor(
   def getImagesFromNode(node: Element): Option[Elements] = {
     val images: Elements = node.select("img")
 
-    if (images == null || images.size < 1) {
+    if (images == null || images.size < 1)
       None
-    } else {
+    else
       Some(images)
-    }
   }
 
   def getImageCandidates(node: Element): Option[ArrayList[Element]] = {
@@ -210,9 +198,7 @@ class StandardImageExtractor(
       images <- getImagesFromNode(node)
       filteredImages <- filterBadNames(images)
       goodImages <- findImagesThatPassByteSizeTest(filteredImages)
-    } {
-      return Some(goodImages)
-    }
+    } return Some(goodImages)
     None
 
   }
@@ -227,22 +213,19 @@ class StandardImageExtractor(
         logPrefix + "ParentDepth is greater than %d, aborting depth traversal"
           .format(MAX_PARENT_DEPTH))
       None
-    } else {
+    } else
       try {
         val siblingNode = node.previousElementSibling()
         if (siblingNode == null) throw new NullPointerException
         Some(DepthTraversal(siblingNode, parentDepth, siblingDepth + 1))
       } catch {
-        case e: NullPointerException => {
-          if (node != null) {
+        case e: NullPointerException =>
+          if (node != null)
             Some(DepthTraversal(node.parent, parentDepth + 1, 0))
-          } else {
+          else
             None
-          }
 
-        }
       }
-    }
   }
 
   /**
@@ -265,22 +248,18 @@ class StandardImageExtractor(
         .format(parentDepthLevel, siblingDepthLevel))
 
     getImageCandidates(node) match {
-      case Some(goodImages) => {
+      case Some(goodImages) =>
         trace(
           logPrefix + "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages.size + " at parent depth: " + parentDepthLevel)
         val scoredImages =
           downloadImagesAndGetResults(goodImages, parentDepthLevel)
         var highScoreImage: Element = null
         scoredImages.foreach {
-          case (key, value) => {
-            if (highScoreImage == null) {
+          case (key, value) =>
+            if (highScoreImage == null)
               highScoreImage = key
-            } else {
-              if (value > scoredImages.get(highScoreImage).get) {
-                highScoreImage = key
-              }
-            }
-          }
+            else if (value > scoredImages.get(highScoreImage).get)
+              highScoreImage = key
         }
 
         if (highScoreImage != null) {
@@ -289,38 +268,31 @@ class StandardImageExtractor(
           this.image.imageSrc = buildImagePath(highScoreImage.attr("src"))
           this.image.imageExtractionType = "bigimage"
           this.image.bytes = f.length.asInstanceOf[Int]
-          if (scoredImages.size > 0) {
+          if (scoredImages.size > 0)
             this.image.confidenceScore = (100 / scoredImages.size)
-          } else {
+          else
             this.image.confidenceScore = 0
-          }
           trace(
             logPrefix + "High Score Image is: " + buildImagePath(
               highScoreImage.attr("src")))
-        } else {
+        } else
           getDepthLevel(node, parentDepthLevel, siblingDepthLevel) match {
-            case Some(depthObj) => {
+            case Some(depthObj) =>
               checkForLargeImages(
                 depthObj.node,
                 depthObj.parentDepth,
                 depthObj.siblingDepth)
-            }
             case None => trace("Image iteration is over!")
           }
-        }
-      }
-      case None => {
-
+      case None =>
         getDepthLevel(node, parentDepthLevel, siblingDepthLevel) match {
-          case Some(depthObj) => {
+          case Some(depthObj) =>
             checkForLargeImages(
               depthObj.node,
               depthObj.parentDepth,
               depthObj.siblingDepth)
-          }
           case None => trace("Image iteration is over!")
         }
-      }
     }
   }
 
@@ -375,13 +347,11 @@ class StandardImageExtractor(
     */
   private def filterBadNames(images: Elements): Option[ArrayList[Element]] = {
     val goodImages: ArrayList[Element] = new ArrayList[Element]
-    for (image <- images) {
-      if (this.isOkImageFileName(image)) {
+    for (image <- images)
+      if (this.isOkImageFileName(image))
         goodImages.add(image)
-      } else {
+      else
         image.remove()
-      }
-    }
     if (goodImages != null && goodImages.size > 0) Some(goodImages) else None
   }
 
@@ -392,14 +362,12 @@ class StandardImageExtractor(
     */
   private def isOkImageFileName(imageNode: Element): Boolean = {
     var imgSrc: String = imageNode.attr("src")
-    if (string.isNullOrEmpty(imgSrc)) {
+    if (string.isNullOrEmpty(imgSrc))
       return false
-    }
     matchBadImageNames.reset(imgSrc)
     if (matchBadImageNames.find) {
-      if (logger.isDebugEnabled) {
+      if (logger.isDebugEnabled)
         logger.debug("Found bad filename for image: " + imgSrc)
-      }
       return false
     }
     true
@@ -415,42 +383,33 @@ class StandardImageExtractor(
     var knownImage: Element = null
     trace(logPrefix + "Checking for known images from large sites")
 
-    for (knownName <- KNOWN_IMG_DOM_NAMES) {
-
+    for (knownName <- KNOWN_IMG_DOM_NAMES)
       try {
         var known: Element = article.rawDoc.getElementById(knownName)
-        if (known == null) {
+        if (known == null)
           known = article.rawDoc.getElementsByClass(knownName).first
-        }
         if (known != null) {
           val mainImage: Element = known.getElementsByTag("img").first
           if (mainImage != null) {
             knownImage = mainImage
-            if (logger.isDebugEnabled) {
+            if (logger.isDebugEnabled)
               logger.debug("Got Image: " + mainImage.attr("src"))
-            }
           }
         }
 
       } catch {
-        case e: NullPointerException => {
-          if (logger.isDebugEnabled) {
+        case e: NullPointerException =>
+          if (logger.isDebugEnabled)
             logger.debug(e.toString, e)
-          }
-        }
       }
-    }
     if (knownImage != null) {
       val knownImgSrc: String = knownImage.attr("src")
       this.image.imageSrc = this.buildImagePath(knownImgSrc)
       this.image.imageExtractionType = "known"
       this.image.confidenceScore = 90
       this.image.bytes = this.getBytesForImage(knownImgSrc)
-    } else {
-      if (logger.isDebugEnabled) {
-        logger.debug("No known images found")
-      }
-    }
+    } else if (logger.isDebugEnabled)
+      logger.debug("No known images found")
 
   }
 
@@ -469,9 +428,8 @@ class StandardImageExtractor(
       var imageURL: URL = new URL(pageURL, image)
       newImage = imageURL.toString
     } catch {
-      case e: MalformedURLException => {
+      case e: MalformedURLException =>
         logger.error("Unable to get Image Path: " + image)
-      }
     }
     newImage
   }
@@ -500,28 +458,21 @@ class StandardImageExtractor(
       try {
         val currentBytes: Int = entity.getContentLength.asInstanceOf[Int]
         val contentType: Header = entity.getContentType
-        if (contentType.getValue.contains("image")) {
+        if (contentType.getValue.contains("image"))
           bytes = currentBytes
-        }
       } catch {
-        case e: NullPointerException => {
+        case e: NullPointerException =>
           warn(e, "SRC: " + src + " " + e.toString)
 
-        }
       }
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         warn(e, "BIG SRC: " + src + " " + e.toString)
 
-      }
-    } finally {
-      try {
-        httpget.abort()
-      } catch {
-        case e: NullPointerException => {
-          logger.error("HttpGet is null, can't abortz")
-        }
-      }
+    } finally try httpget.abort()
+    catch {
+      case e: NullPointerException =>
+        logger.error("HttpGet is null, can't abortz")
     }
     bytes
   }
@@ -547,9 +498,8 @@ class StandardImageExtractor(
     for (image <- images) {
       var continueVar = true // major haxor during java to scala conversion -> this whole section needs a rewrite
       if (cnt > 30) {
-        if (logger.isDebugEnabled) {
+        if (logger.isDebugEnabled)
           logger.debug("over 30 images attempted, that's enough for now")
-        }
         return imageResults
       }
       try {
@@ -560,16 +510,14 @@ class StandardImageExtractor(
           imageSource,
           config)
         if (localSrcPath == null) {
-          if (logger.isDebugEnabled) {
+          if (logger.isDebugEnabled)
             logger.debug(
               "unable to store this image locally: IMGSRC: " + image
                 .attr("src") + " BUILD SRC: " + imageSource)
-          }
           continueVar = false
         }
-        if (logger.isDebugEnabled) {
+        if (logger.isDebugEnabled)
           logger.debug("Starting image: " + localSrcPath)
-        }
         var width: Int = 0
         var height: Int = 0
         if (continueVar) {
@@ -580,41 +528,34 @@ class StandardImageExtractor(
               localSrcPath)
             width = imageDims.getWidth
             height = imageDims.getHeight
-            if (depthLevel > 1) {
+            if (depthLevel > 1)
               if (width < 300) {
-                if (logger.isDebugEnabled) {
+                if (logger.isDebugEnabled)
                   logger.debug(
                     "going depthlevel: " + depthLevel + " and img was only: " + width + " wide: " + localSrcPath)
-                }
                 continueVar = false
               }
-            }
           } catch {
-            case e: IOException => {
+            case e: IOException =>
               throw e
-            }
           }
         }
-        if (continueVar) {
+        if (continueVar)
           if (this.isBannerDimensions(width, height)) {
-            if (logger.isDebugEnabled) {
+            if (logger.isDebugEnabled)
               logger.debug(
                 image.attr("src") + " seems like a fishy image dimension wise, skipping it")
-            }
             image.remove()
             continueVar = false
           }
-        }
-        if (continueVar) {
+        if (continueVar)
           if (width < 50) {
-            if (logger.isDebugEnabled) {
+            if (logger.isDebugEnabled)
               logger.debug(image
                 .attr("src") + " is too small width: " + width + " removing..")
-            }
             image.remove()
             continueVar = false
           }
-        }
         if (continueVar) {
           val sequenceScore: Float = (1).asInstanceOf[Float] / cnt
           val area: Int = width * height
@@ -634,11 +575,10 @@ class StandardImageExtractor(
           imageResults.put(image, totalScore)
         }
       } catch {
-        case e: SecretGifException => {}
-        case e: Exception => {
+        case e: SecretGifException =>
+        case e: Exception =>
           warn(e, e.toString)
 
-        }
       }
     }
     imageResults
@@ -652,20 +592,17 @@ class StandardImageExtractor(
     * @param height
     */
   private def isBannerDimensions(width: Int, height: Int): Boolean = {
-    if (width == height) {
+    if (width == height)
       return false
-    }
     if (width > height) {
       val diff: Float = (width.asInstanceOf[Float] / height.asInstanceOf[Float])
-      if (diff > 5) {
+      if (diff > 5)
         return true
-      }
     }
     if (height > width) {
       val diff: Float = height.asInstanceOf[Float] / width.asInstanceOf[Float]
-      if (diff > 5) {
+      if (diff > 5)
         return true
-      }
     }
     false
   }

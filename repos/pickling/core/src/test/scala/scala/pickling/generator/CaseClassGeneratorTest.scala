@@ -123,9 +123,8 @@ class CaseClassGeneratorTest extends FunSuite {
     import generator.opts.ignoreCaseClassSubclasses
     import static._
     case class Other(x: Int)
-    implicit val pu = {
+    implicit val pu =
       PicklingMacros.genPicklerUnpickler[OpenCaseClass]
-    }
     implicit val pu2 = PicklingMacros.genPicklerUnpickler[Other]
     val x = OpenCaseClass(1)
     // Because we ignore subclasses, we shouldn't freak about subclass tags, because we ignore them. Only the

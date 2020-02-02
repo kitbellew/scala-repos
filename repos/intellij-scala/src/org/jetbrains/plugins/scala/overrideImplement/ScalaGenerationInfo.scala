@@ -130,20 +130,19 @@ object ScalaGenerationInfo {
 
     val offset = member.getTextRange.getStartOffset
     val point = editor.visualPositionToXY(editor.offsetToVisualPosition(offset))
-    if (!editor.getScrollingModel.getVisibleArea.contains(point)) {
+    if (!editor.getScrollingModel.getVisibleArea.contains(point))
       member match {
         case n: Navigatable => n.navigate(true)
         case _              =>
       }
-    }
 
     body match {
       case e: ScBlockExpr =>
         val statements = e.statements
-        if (statements.length == 0) {
+        if (statements.length == 0)
           editor.getCaretModel.moveToOffset(
             body.getTextRange.getStartOffset + 1)
-        } else {
+        else {
           val range = new TextRange(
             statements(0).getTextRange.getStartOffset,
             statements(statements.length - 1).getTextRange.getEndOffset)

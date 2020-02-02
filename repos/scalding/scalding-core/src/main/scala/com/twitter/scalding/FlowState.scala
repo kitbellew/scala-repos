@@ -71,11 +71,11 @@ object FlowStateMap {
      * We don't need to validate if there are no sources, this comes up for
      * cases of no-op jobs
      */
-    if (!flowDef.getSources.isEmpty) {
+    if (!flowDef.getSources.isEmpty)
       get(flowDef)
         .getOrElse(
           sys.error(
             "Could not find a flowState for flowDef: %s".format(flowDef)))
         .validateSources(mode)
-    } else ()
+    else ()
 }

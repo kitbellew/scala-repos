@@ -39,11 +39,10 @@ abstract class RecordedTest {
     val check = {
       val f = new File(basename + ".check")
       if (f.isFile) Some(read(f))
-      else {
+      else
         // Disabled because now we have doctests without a check file:
         // Console.err.println("Warning: "+f+" not found")
         None
-      }
     }
 
     val out = new FileOutputStream(new File(basename + "-run.log"))

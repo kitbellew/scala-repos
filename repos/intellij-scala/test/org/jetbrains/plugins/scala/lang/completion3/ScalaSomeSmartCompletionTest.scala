@@ -113,9 +113,8 @@ class TUI {
 }
 """.replaceAll("\r", "").trim()
 
-    if (activeLookup != null) {
+    if (activeLookup != null)
       completeLookupItem(activeLookup.find(le => le.getLookupString == "z").get)
-    }
 
     checkResultByText(resultText)
   }
@@ -143,9 +142,8 @@ class TUI {
 }
 """.replaceAll("\r", "").trim()
 
-    if (activeLookup != null) {
+    if (activeLookup != null)
       completeLookupItem(activeLookup.find(le => le.getLookupString == "z").get)
-    }
 
     checkResultByText(resultText)
   }

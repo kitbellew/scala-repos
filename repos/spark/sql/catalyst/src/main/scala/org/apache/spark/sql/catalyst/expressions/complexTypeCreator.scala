@@ -168,21 +168,20 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
   override def nullable: Boolean = false
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (children.size % 2 != 0) {
+    if (children.size % 2 != 0)
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName expects an even number of arguments.")
-    } else {
+    else {
       val invalidNames =
         nameExprs.filterNot(e => e.foldable && e.dataType == StringType)
-      if (invalidNames.nonEmpty) {
+      if (invalidNames.nonEmpty)
         TypeCheckResult.TypeCheckFailure(
           s"Only foldable StringType expressions are allowed to appear at odd position , got :" +
             s" ${invalidNames.mkString(",")}")
-      } else if (!names.contains(null)) {
+      else if (!names.contains(null))
         TypeCheckResult.TypeCheckSuccess
-      } else {
+      else
         TypeCheckResult.TypeCheckFailure("Field name should not be null")
-      }
     }
 
   override def eval(input: InternalRow): Any =

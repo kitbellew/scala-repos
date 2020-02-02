@@ -268,12 +268,10 @@ object forAllTimeZones extends Around {
           }
       val tzBefore = TimeZone.getDefault
       val dtzBefore = DateTimeZone.getDefault
-      try {
-        forall(commonJavaAndJodaTimeZones) { timeZoneId =>
-          TimeZone.setDefault(TimeZone.getTimeZone(timeZoneId))
-          DateTimeZone.setDefault(DateTimeZone.forID(timeZoneId))
-          f
-        }
+      try forall(commonJavaAndJodaTimeZones) { timeZoneId =>
+        TimeZone.setDefault(TimeZone.getTimeZone(timeZoneId))
+        DateTimeZone.setDefault(DateTimeZone.forID(timeZoneId))
+        f
       } finally {
         TimeZone.setDefault(tzBefore)
         DateTimeZone.setDefault(dtzBefore)

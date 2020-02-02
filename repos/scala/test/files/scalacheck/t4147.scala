@@ -19,18 +19,16 @@ object Test extends Properties("Mutable TreeSet") {
   property("Verification of size method validity") = forAll(generator) {
     (s: List[Int]) =>
       val t = mutable.TreeSet[Int](s: _*)
-      for (a <- s) {
+      for (a <- s)
         t -= a
-      }
       t.size == 0
   }
 
   property("All inserted elements are removed") = forAll(generator) {
     (s: List[Int]) =>
       val t = mutable.TreeSet[Int](s: _*)
-      for (a <- s) {
+      for (a <- s)
         t -= a
-      }
       t == Set()
   }
 

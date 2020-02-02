@@ -43,10 +43,9 @@ class IngestStress(settings: Settings) extends Task(settings) {
       val actualSize = sd.data.length
       val str = sd.data map { _.renderCompact } mkString "\n"
 
-      try {
-        ingestString(account.apiKey, account, str, "application/json")(
-          _ / account.bareRootPath / "foo")
-      } catch {
+      try ingestString(account.apiKey, account, str, "application/json")(
+        _ / account.bareRootPath / "foo")
+      catch {
         case t => println(t)
       }
 
@@ -65,7 +64,7 @@ class IngestStress(settings: Settings) extends Task(settings) {
   val throttles = new AtomicReferenceArray[Double](clients)
 
   val threads = accountSet.zipWithIndex map {
-    case (account, i) => {
+    case (account, i) =>
       new Thread(new Runnable {
         def run() {
           val generator = sample(schema)
@@ -82,7 +81,6 @@ class IngestStress(settings: Settings) extends Task(settings) {
           }
         }
       })
-    }
   }
 
   println("Starting ingestion; batton down the hatches! (Ctrl-C to abort)")
@@ -107,8 +105,6 @@ object IngestStress {
       val path = args.headOption.getOrElse("bifrost.out")
       val settings = Settings.fromFile(new java.io.File(path))
       new IngestStress(settings)
-    } finally {
-      Http.shutdown()
-    }
+    } finally Http.shutdown()
   }
 }

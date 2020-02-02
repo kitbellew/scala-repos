@@ -51,9 +51,8 @@ class SafeHttpServerCodec(
     // this only catches Codec exceptions -- when a handler calls sendUpStream(), it
     // rescues exceptions from the upstream handlers and calls notifyHandlerException(),
     // which doesn't throw exceptions.
-    try {
-      super.handleUpstream(ctx, e)
-    } catch {
+    try super.handleUpstream(ctx, e)
+    catch {
       case ex: Exception =>
         val channel = ctx.getChannel()
         ctx.sendUpstream(
@@ -226,11 +225,10 @@ case class Http(
       def pipelineFactory = new ChannelPipelineFactory {
         def getPipeline() = {
           val pipeline = Channels.pipeline()
-          if (_channelBufferUsageTracker.isDefined) {
+          if (_channelBufferUsageTracker.isDefined)
             pipeline.addLast(
               "channelBufferManager",
               new ChannelBufferManager(_channelBufferUsageTracker.get))
-          }
 
           val maxRequestSizeInBytes = _maxRequestSize.inBytes.toInt
           val maxInitialLineLengthInBytes = _maxInitialLineLength.inBytes.toInt
@@ -242,13 +240,12 @@ case class Http(
               maxHeaderSizeInBytes,
               maxRequestSizeInBytes))
 
-          if (_compressionLevel > 0) {
+          if (_compressionLevel > 0)
             pipeline.addLast(
               "httpCompressor",
               new HttpContentCompressor(_compressionLevel))
-          } else if (_compressionLevel == -1) {
+          else if (_compressionLevel == -1)
             pipeline.addLast("httpCompressor", new TextualContentCompressor)
-          }
 
           // The payload size handler should come before the RespondToExpectContinue handler so that we don't
           // send a 100 CONTINUE for oversize requests we have no intention of handling.
@@ -357,14 +354,13 @@ private object TraceInfo {
         val flags = getFlags(request)
         TraceId(traceId, parentSpanId, sid, sampled, flags)
       }
-    } else if (request.headers.contains(Header.Flags)) {
+    } else if (request.headers.contains(Header.Flags))
       // even if there are no id headers we want to get the debug flag
       // this is to allow developers to just set the debug flag to ensure their
       // trace is collected
       Some(Trace.nextId.copy(flags = getFlags(request)))
-    } else {
+    else
       Some(Trace.nextId)
-    }
 
     // remove so the header is not visible to users
     Header.All foreach { request.headers.remove(_) }
@@ -409,10 +405,9 @@ private object TraceInfo {
     * Safely extract the flags from the header, if they exist. Otherwise return empty flag.
     */
   def getFlags(request: Request): Flags =
-    try {
-      Flags(
-        Option(request.headers.get(Header.Flags)).map(_.toLong).getOrElse(0L))
-    } catch {
+    try Flags(
+      Option(request.headers.get(Header.Flags)).map(_.toLong).getOrElse(0L))
+    catch {
       case _: Throwable => Flags()
     }
 }

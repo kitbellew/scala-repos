@@ -69,15 +69,9 @@ abstract class ScalaPsiTestCase extends PsiTestCase {
             rootModel.commit()
           }
         })
-      } finally {
-        if (!Disposer.isDisposed(libModel)) {
-          Disposer.dispose(libModel)
-        }
-      }
-    } finally {
-      if (!rootModel.isDisposed) {
-        rootModel.dispose()
-      }
-    }
+      } finally if (!Disposer.isDisposed(libModel))
+        Disposer.dispose(libModel)
+    } finally if (!rootModel.isDisposed)
+      rootModel.dispose()
   }
 }

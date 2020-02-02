@@ -150,7 +150,7 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     }
 
     private def enterAllInHash(e: ScopeEntry, n: Int = 0) {
-      if (e ne null) {
+      if (e ne null)
         if (n < maxRecursions) {
           enterAllInHash(e.next, n + 1)
           enterInHash(e)
@@ -163,7 +163,6 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
           }
           entries foreach enterInHash
         }
-      }
     }
 
     def rehash(sym: Symbol, newname: Name) {
@@ -171,7 +170,7 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
         val index = sym.name.start & HASHMASK
         var e1 = hashtable(index)
         var e: ScopeEntry = null
-        if (e1 != null) {
+        if (e1 != null)
           if (e1.sym == sym) {
             hashtable(index) = e1.tail
             e = e1
@@ -182,7 +181,6 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
               e1.tail = e.tail
             }
           }
-        }
         if (e != null) {
           val newindex = newname.start & HASHMASK
           e.tail = hashtable(newindex)
@@ -194,9 +192,9 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     /** remove entry
       */
     def unlink(e: ScopeEntry) {
-      if (elems == e) {
+      if (elems == e)
         elems = e.next
-      } else {
+      else {
         var e1 = elems
         while (e1.next != e) e1 = e1.next
         e1.next = e.next
@@ -204,9 +202,9 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
       if (hashtable ne null) {
         val index = e.sym.name.start & HASHMASK
         var e1 = hashtable(index)
-        if (e1 == e) {
+        if (e1 == e)
           hashtable(index) = e.tail
-        } else {
+        else {
           while (e1.tail != e) e1 = e1.tail
           e1.tail = e.tail
         }
@@ -305,14 +303,12 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
       var e: ScopeEntry = null
       if (hashtable ne null) {
         e = hashtable(name.start & HASHMASK)
-        while ((e ne null) && e.sym.name != name) {
+        while ((e ne null) && e.sym.name != name)
           e = e.tail
-        }
       } else {
         e = elems
-        while ((e ne null) && e.sym.name != name) {
+        while ((e ne null) && e.sym.name != name)
           e = e.next
-        }
       }
       e
     }
@@ -325,9 +321,9 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     def lookupNextEntry(entry: ScopeEntry): ScopeEntry = {
       var e = entry
       if (hashtable ne null)
-        do { e = e.tail } while ((e ne null) && e.sym.name != entry.sym.name)
+        do e = e.tail while ((e ne null) && e.sym.name != entry.sym.name)
       else
-        do { e = e.next } while ((e ne null) && e.sym.name != entry.sym.name)
+        do e = e.next while ((e ne null) && e.sym.name != entry.sym.name)
       e
     }
 

@@ -203,28 +203,28 @@ class TopicDeletionManager(
   }
 
   def isTopicIneligibleForDeletion(topic: String): Boolean =
-    if (isDeleteTopicEnabled) {
+    if (isDeleteTopicEnabled)
       topicsIneligibleForDeletion.contains(topic)
-    } else
+    else
       true
 
   def isTopicDeletionInProgress(topic: String): Boolean =
-    if (isDeleteTopicEnabled) {
+    if (isDeleteTopicEnabled)
       controller.replicaStateMachine.isAtLeastOneReplicaInDeletionStartedState(
         topic)
-    } else
+    else
       false
 
   def isPartitionToBeDeleted(topicAndPartition: TopicAndPartition) =
-    if (isDeleteTopicEnabled) {
+    if (isDeleteTopicEnabled)
       partitionsToBeDeleted.contains(topicAndPartition)
-    } else
+    else
       false
 
   def isTopicQueuedUpForDeletion(topic: String): Boolean =
-    if (isDeleteTopicEnabled) {
+    if (isDeleteTopicEnabled)
       topicsToBeDeleted.contains(topic)
-    } else
+    else
       false
 
   /**
@@ -474,44 +474,39 @@ class TopicDeletionManager(
             // clear up all state for this topic from controller cache and zookeeper
             completeDeleteTopic(topic)
             info("Deletion of topic %s successfully completed".format(topic))
-          } else {
-            if (controller.replicaStateMachine
-                  .isAtLeastOneReplicaInDeletionStartedState(topic)) {
-              // ignore since topic deletion is in progress
-              val replicasInDeletionStartedState =
-                controller.replicaStateMachine
-                  .replicasInState(topic, ReplicaDeletionStarted)
-              val replicaIds = replicasInDeletionStartedState.map(_.replica)
-              val partitions = replicasInDeletionStartedState.map(r =>
-                TopicAndPartition(r.topic, r.partition))
-              info(
-                "Deletion for replicas %s for partition %s of topic %s in progress"
-                  .format(
-                    replicaIds.mkString(","),
-                    partitions.mkString(","),
-                    topic))
-            } else {
-              // if you come here, then no replica is in TopicDeletionStarted and all replicas are not in
-              // TopicDeletionSuccessful. That means, that either given topic haven't initiated deletion
-              // or there is at least one failed replica (which means topic deletion should be retried).
-              if (controller.replicaStateMachine.isAnyReplicaInState(
-                    topic,
-                    ReplicaDeletionIneligible)) {
-                // mark topic for deletion retry
-                markTopicForDeletionRetry(topic)
-              }
-            }
-          }
+          } else if (controller.replicaStateMachine
+                       .isAtLeastOneReplicaInDeletionStartedState(topic)) {
+            // ignore since topic deletion is in progress
+            val replicasInDeletionStartedState =
+              controller.replicaStateMachine
+                .replicasInState(topic, ReplicaDeletionStarted)
+            val replicaIds = replicasInDeletionStartedState.map(_.replica)
+            val partitions = replicasInDeletionStartedState.map(r =>
+              TopicAndPartition(r.topic, r.partition))
+            info(
+              "Deletion for replicas %s for partition %s of topic %s in progress"
+                .format(
+                  replicaIds.mkString(","),
+                  partitions.mkString(","),
+                  topic))
+          } else
+          // if you come here, then no replica is in TopicDeletionStarted and all replicas are not in
+          // TopicDeletionSuccessful. That means, that either given topic haven't initiated deletion
+          // or there is at least one failed replica (which means topic deletion should be retried).
+          if (controller.replicaStateMachine.isAnyReplicaInState(
+                topic,
+                ReplicaDeletionIneligible))
+            // mark topic for deletion retry
+            markTopicForDeletionRetry(topic)
           // Try delete topic if it is eligible for deletion.
           if (isTopicEligibleForDeletion(topic)) {
             info("Deletion of topic %s (re)started".format(topic))
             // topic deletion will be kicked off
             onTopicDeletion(Set(topic))
-          } else if (isTopicIneligibleForDeletion(topic)) {
+          } else if (isTopicIneligibleForDeletion(topic))
             info(
               "Not retrying deletion of topic %s at this time since it is marked ineligible for deletion"
                 .format(topic))
-          }
         }
       }
     }

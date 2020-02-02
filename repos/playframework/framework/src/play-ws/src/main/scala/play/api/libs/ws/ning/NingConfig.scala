@@ -172,12 +172,10 @@ class NingAsyncHttpClientConfigBuilder(
 
     if (!sslConfig.loose.allowWeakProtocols) {
       val deprecatedProtocols = Protocols.deprecatedProtocols
-      for (deprecatedProtocol <- deprecatedProtocols) {
-        if (definedProtocols.contains(deprecatedProtocol)) {
+      for (deprecatedProtocol <- deprecatedProtocols)
+        if (definedProtocols.contains(deprecatedProtocol))
           throw new IllegalStateException(
             s"Weak protocol $deprecatedProtocol found in ws.ssl.protocols!")
-        }
-      }
     }
     definedProtocols
   }
@@ -196,12 +194,10 @@ class NingAsyncHttpClientConfigBuilder(
 
     if (!sslConfig.loose.allowWeakCiphers) {
       val deprecatedCiphers = Ciphers.deprecatedCiphers
-      for (deprecatedCipher <- deprecatedCiphers) {
-        if (definedCiphers.contains(deprecatedCipher)) {
+      for (deprecatedCipher <- deprecatedCiphers)
+        if (definedCiphers.contains(deprecatedCipher))
           throw new IllegalStateException(
             s"Weak cipher $deprecatedCipher found in ws.ssl.ciphers!")
-        }
-      }
     }
     definedCiphers
   }
@@ -279,16 +275,14 @@ class NingAsyncHttpClientConfigBuilder(
     val algorithmChecker = new AlgorithmChecker(
       keyConstraints = constraints,
       signatureConstraints = Set())
-    for (cert <- trustManager.getAcceptedIssuers) {
-      try {
-        algorithmChecker.checkKeyAlgorithms(cert)
-      } catch {
+    for (cert <- trustManager.getAcceptedIssuers)
+      try algorithmChecker.checkKeyAlgorithms(cert)
+      catch {
         case e: CertPathValidatorException =>
           logger.warn(
             "You are using ws.ssl.default=true and have a weak certificate in your default trust store!  (You can modify ws.ssl.disabledKeyAlgorithms to remove this message.)",
             e
           )
       }
-    }
   }
 }

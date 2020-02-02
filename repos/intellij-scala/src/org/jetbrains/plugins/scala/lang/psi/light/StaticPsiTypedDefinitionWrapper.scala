@@ -30,9 +30,8 @@ class StaticPsiTypedDefinitionWrapper(
     role,
     containingClass)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try elementFactory.createMethodFromText(methodText, containingClass)
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",
@@ -98,9 +97,9 @@ object StaticPsiTypedDefinitionWrapper {
     }
     builder.append(name)
 
-    if (role != SETTER && role != EQ) {
+    if (role != SETTER && role != EQ)
       builder.append("(" + paramText + ")")
-    } else {
+    else {
       builder.append("(").append(paramText).append(", ")
       result match {
         case Success(tp, _) =>
@@ -112,9 +111,8 @@ object StaticPsiTypedDefinitionWrapper {
     }
 
     val holder = PsiTreeUtil.getContextOfType(b, classOf[ScAnnotationsHolder])
-    if (holder != null) {
+    if (holder != null)
       builder.append(LightUtil.getThrowsSection(holder))
-    }
 
     builder.append(" {}")
 

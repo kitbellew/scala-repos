@@ -55,9 +55,8 @@ case class ScalaMethodEvaluator(
   def evaluate(context: EvaluationContextImpl): AnyRef = {
     val debugProcess: DebugProcessImpl = context.getDebugProcess
     if (!debugProcess.isAttached) return null
-    if (debugProcess != prevProcess) {
+    if (debugProcess != prevProcess)
       initCache(debugProcess)
-    }
     val requiresSuperObject: Boolean = objectEvaluator
       .isInstanceOf[ScSuperEvaluator] ||
       (objectEvaluator.isInstanceOf[DisableGC] &&
@@ -68,14 +67,12 @@ case class ScalaMethodEvaluator(
     val obj: AnyRef = DebuggerUtil.unwrapScalaRuntimeObjectRef {
       objectEvaluator.evaluate(context)
     }
-    if (obj == null) {
+    if (obj == null)
       throw EvaluationException(new NullPointerException)
-    }
-    if (!(obj.isInstanceOf[ObjectReference] || obj.isInstanceOf[ClassType])) {
+    if (!(obj.isInstanceOf[ObjectReference] || obj.isInstanceOf[ClassType]))
       throw EvaluationException(
         DebuggerBundle
           .message("evaluation.error.evaluating.method", methodName))
-    }
     val args = argumentEvaluators.flatMap { ev =>
       val result = ev.evaluate(context)
       if (result == FromLocalArgEvaluator.skipMarker) None
@@ -128,12 +125,11 @@ case class ScalaMethodEvaluator(
         }
         var jdiMethod: Method = null
         if (signature != null) {
-          if (!localMethod) {
+          if (!localMethod)
             jdiMethod = referenceType
               .asInstanceOf[ClassType]
               .concreteMethodByName(methodName, signature.getName(debugProcess))
-          }
-          if (jdiMethod == null && localMethod) {
+          if (jdiMethod == null && localMethod)
             for (method <- sortedMethodCandidates if jdiMethod == null) {
               mName = DebuggerUtilsEx.methodName(
                 referenceType.name,
@@ -144,15 +140,13 @@ case class ScalaMethodEvaluator(
                 .concreteMethodByName(mName, signature.getName(debugProcess))
               if (jdiMethod != null) return jdiMethod
             }
-          }
         }
-        if (jdiMethod == null) {
+        if (jdiMethod == null)
           if (sortedMethodCandidates.length > 1) {
             val filtered = sortedMethodCandidates.filter { m =>
-              try {
-                if (m.isVarArgs) args.length >= m.argumentTypeNames().size()
-                else args.length == m.argumentTypeNames().size()
-              } catch {
+              try if (m.isVarArgs) args.length >= m.argumentTypeNames().size()
+              else args.length == m.argumentTypeNames().size()
+              catch {
                 case a: AbsentInformationException => true
               }
             }
@@ -183,7 +177,6 @@ case class ScalaMethodEvaluator(
             }
           } else if (sortedMethodCandidates.length == 1)
             jdiMethod = sortedMethodCandidates.head
-        }
         jdiMethod
       }
       if (obj.isInstanceOf[ClassType]) {
@@ -213,11 +206,11 @@ case class ScalaMethodEvaluator(
       }
       val objRef: ObjectReference = obj.asInstanceOf[ObjectReference]
       var _refType: ReferenceType = referenceType
-      if (requiresSuperObject && referenceType.isInstanceOf[ClassType]) {
+      if (requiresSuperObject && referenceType.isInstanceOf[ClassType])
         traitImplementation match {
           case Some(tr) =>
             val className: String = tr.getName(context.getDebugProcess)
-            if (className != null) {
+            if (className != null)
               context.getDebugProcess.findClass(
                 context,
                 className,
@@ -226,22 +219,20 @@ case class ScalaMethodEvaluator(
                 case _ =>
                   _refType = referenceType.asInstanceOf[ClassType].superclass
               }
-            } else _refType = referenceType.asInstanceOf[ClassType].superclass
+            else _refType = referenceType.asInstanceOf[ClassType].superclass
           case _ =>
             _refType = referenceType.asInstanceOf[ClassType].superclass
         }
-      }
       val jdiMethod: Method = getOrUpdateMethod(_refType, findMethod).orNull
-      if (jdiMethod == null) {
+      if (jdiMethod == null)
         throw EvaluationException(
           DebuggerBundle.message("evaluation.error.no.instance.method", mName))
-      }
       import scala.collection.JavaConversions._
       if (requiresSuperObject) {
         traitImplementation match {
           case Some(tr) =>
             val className: String = tr.getName(context.getDebugProcess)
-            if (className != null) {
+            if (className != null)
               context.getDebugProcess.findClass(
                 context,
                 className,
@@ -254,7 +245,6 @@ case class ScalaMethodEvaluator(
                     unwrappedArgs(obj +: args, jdiMethod))
                 case _ =>
               }
-            }
           case None =>
         }
         return debugProcess.invokeInstanceMethod(

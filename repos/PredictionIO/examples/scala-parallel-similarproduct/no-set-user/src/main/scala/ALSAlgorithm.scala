@@ -147,7 +147,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val indexScores: Array[(Int, Double)] = if (queryFeatures.isEmpty) {
       logger.info(s"No productFeatures vector for query items ${query.items}.")
       Array[(Int, Double)]()
-    } else {
+    } else
       productFeatures.par // convert to parallel collection
         .mapValues { f =>
           queryFeatures
@@ -157,7 +157,6 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .filter(_._2 > 0) // keep items with score > 0
         .seq // convert back to sequential collection
         .toArray
-    }
 
     val filteredScore = indexScores.view.filter {
       case (i, v) =>
@@ -189,17 +188,15 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     val q = PriorityQueue()
 
-    for (x <- s) {
+    for (x <- s)
       if (q.size < n)
         q.enqueue(x)
-      else {
-        // q is full
-        if (ord.compare(x, q.head) < 0) {
-          q.dequeue()
-          q.enqueue(x)
-        }
+      else
+      // q is full
+      if (ord.compare(x, q.head) < 0) {
+        q.dequeue()
+        q.enqueue(x)
       }
-    }
 
     q.dequeueAll.toSeq.reverse
   }

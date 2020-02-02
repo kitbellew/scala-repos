@@ -75,10 +75,9 @@ private[server] class ForwardedHeaderHandler(
     @tailrec
     def scan(prev: ConnectionInfo): ConnectionInfo =
       // Check if there's a forwarded header for us to scan.
-      if (headerEntries.hasNext) {
+      if (headerEntries.hasNext)
         // There is a forwarded header from 'prev', so lets check if 'prev' is trusted.
         // If it's a trusted proxy then process the header, otherwise just use 'prev'.
-
         if (configuration.isTrustedProxy(prev)) {
           // 'prev' is a trusted proxy, so we process the next entry.
           val entry = headerEntries.next()
@@ -91,15 +90,13 @@ private[server] class ForwardedHeaderHandler(
             case Right(connection) =>
               scan(connection)
           }
-        } else {
+        } else
           // 'prev' is not a trusted proxy, so we don't scan ahead in the list of
           // forwards, we just return 'prev'.
           prev
-        }
-      } else {
+      else
         // No more headers to process, so just use its address.
         prev
-      }
 
     // Start scanning through connections starting at the rawConnection that
     // was made the the Play server.
@@ -140,9 +137,9 @@ private[server] object ForwardedHeaderHandler {
       * Not RFC compliant. To be compliant we need proper header field parsing.
       */
     private def unquote(s: String): String =
-      if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(s.length - 1) == '"') {
+      if (s.length >= 2 && s.charAt(0) == '"' && s.charAt(s.length - 1) == '"')
         s.substring(1, s.length - 1)
-      } else s
+      else s
 
     /**
       * Parse any Forward or X-Forwarded-* headers into a sequence of ForwardedEntry
@@ -174,18 +171,17 @@ private[server] object ForwardedHeaderHandler {
             h.getAll(key).flatMap(s => s.split(",\\s*")).map(unquote)
           val forHeaders = h(headers, "X-Forwarded-For")
           val protoHeaders = h(headers, "X-Forwarded-Proto")
-          if (forHeaders.length == protoHeaders.length) {
+          if (forHeaders.length == protoHeaders.length)
             forHeaders.zip(protoHeaders).map {
               case (f, p) => ForwardedEntry(Some(f), Some(p))
             }
-          } else {
+          else
             // If the lengths vary, then discard the protoHeaders because we can't tell which
             // proto matches which header. The connections will all appear to be insecure by
             // default.
             forHeaders.map {
               case f => ForwardedEntry(Some(f), None)
             }
-          }
       }
 
     /**

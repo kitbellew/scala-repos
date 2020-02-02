@@ -50,7 +50,7 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
     stringUnmarshaller.forContentTypes(ranges: _*).mapWithInput {
       (entity, string) ⇒
         if (entity.isKnownEmpty) FormData.Empty
-        else {
+        else
           try FormData(
             Uri.Query(
               string,
@@ -60,7 +60,6 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
               throw new IllegalArgumentException(
                 info.formatPretty.replace("Query,", "form content,"))
           }
-        }
     }
 }
 

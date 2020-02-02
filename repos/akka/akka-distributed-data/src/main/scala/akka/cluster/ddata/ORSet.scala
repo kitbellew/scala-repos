@@ -64,7 +64,7 @@ object ORSet {
 
     if (dot.isEmpty)
       VersionVector.empty
-    else {
+    else
       dot match {
         case OneVersionVector(node, v1) ⇒
           // if dot is dominated by version vector, drop it
@@ -76,7 +76,6 @@ object ORSet {
           val newDots = dropDots(remaining, Nil)
           VersionVector(newDots)
       }
-    }
   }
 
   /**

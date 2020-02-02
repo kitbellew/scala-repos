@@ -187,7 +187,7 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
       params: Double*): KolmogorovSmirnovTestResult = {
     val distObj =
       distName match {
-        case "norm" => {
+        case "norm" =>
           if (params.nonEmpty) {
             // parameters are passed, then can only be 2
             require(
@@ -202,7 +202,6 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
                 "initialized to standard normal (i.e. N(0, 1))")
             new NormalDistribution(0, 1)
           }
-        }
         case _ =>
           throw new UnsupportedOperationException(
             s"$distName not yet supported through" +

@@ -55,17 +55,15 @@ object JsonParser {
   /** Return parsed JSON.
     */
   def parseOpt(s: String): Option[JValue] =
-    try {
-      parse(s).toOpt
-    } catch { case e: Exception => None }
+    try parse(s).toOpt
+    catch { case e: Exception => None }
 
   /** Return parsed JSON.
     * @param closeAutomatically true (default) if the Reader is automatically closed on EOF
     */
   def parseOpt(s: Reader, closeAutomatically: Boolean = true): Option[JValue] =
-    try {
-      parse(s, closeAutomatically).toOpt
-    } catch { case e: Exception => None }
+    try parse(s, closeAutomatically).toOpt
+    catch { case e: Exception => None }
 
   /** Parse in pull parsing style.
     * Use <code>p.nextToken</code> to parse tokens one by one from a string.
@@ -82,14 +80,11 @@ object JsonParser {
     p(new Parser(new Buffer(s, false)))
 
   private def parse(buf: Buffer): JValue =
-    try {
-      astParser(new Parser(buf))
-    } catch {
+    try astParser(new Parser(buf))
+    catch {
       case e: ParseException => throw e
       case e: Exception      => throw new ParseException("parsing failed", e)
-    } finally {
-      buf.release
-    }
+    } finally buf.release
 
   private[json] def unquote(string: String): String =
     unquote(new JsonParser.Buffer(new java.io.StringReader(string), false))
@@ -99,7 +94,7 @@ object JsonParser {
       val s = new java.lang.StringBuilder(base)
       var c = '\\'
       while (c != '"') {
-        if (c == '\\') {
+        if (c == '\\')
           buf.next match {
             case '"'  => s.append('"')
             case '\\' => s.append('\\')
@@ -115,7 +110,7 @@ object JsonParser {
               s.appendCodePoint(codePoint)
             case _ => s.append('\\')
           }
-        } else s.append(c)
+        else s.append(c)
         c = buf.next
       }
       s.toString
@@ -229,9 +224,8 @@ object JsonParser {
 
     private def convert[A](x: Any, expectedType: Class[A]): A = {
       if (x == null) parser.fail("expected object or array")
-      try {
-        x.asInstanceOf[A]
-      } catch { case _: ClassCastException => parser.fail("unexpected " + x) }
+      try x.asInstanceOf[A]
+      catch { case _: ClassCastException => parser.fail("unexpected " + x) }
     }
 
     def peekOption = if (stack.isEmpty) None else Some(stack.peek)
@@ -254,9 +248,8 @@ object JsonParser {
         c == ' ' || c == '\n' || c == ',' || c == '\r' || c == '\t' || c == '}' || c == ']'
 
       def parseString: String =
-        try {
-          unquote(buf)
-        } catch {
+        try unquote(buf)
+        catch {
           case p: ParseException => throw p
           case _: Exception      => fail("unexpected string end")
         }
@@ -268,9 +261,9 @@ object JsonParser {
         s.append(first)
         while (wasInt) {
           val c = buf.next
-          if (c == EOF) {
+          if (c == EOF)
             wasInt = false
-          } else if (c == '.' || c == 'e' || c == 'E') {
+          else if (c == '.' || c == 'e' || c == 'E') {
             doubleVal = true
             s.append(c)
           } else if (!(Character.isDigit(c) || c == '.' || c == 'e' || c == 'E' || c == '-' || c == '+')) {
@@ -283,7 +276,7 @@ object JsonParser {
         else IntVal(BigInt(value))
       }
 
-      while (true) {
+      while (true)
         buf.next match {
           case c if EOF == c =>
             buf.automaticClose
@@ -304,21 +297,18 @@ object JsonParser {
             }
           case 't' =>
             fieldNameMode = true
-            if (buf.next == 'r' && buf.next == 'u' && buf.next == 'e') {
+            if (buf.next == 'r' && buf.next == 'u' && buf.next == 'e')
               return BoolVal(true)
-            }
             fail("expected boolean")
           case 'f' =>
             fieldNameMode = true
-            if (buf.next == 'a' && buf.next == 'l' && buf.next == 's' && buf.next == 'e') {
+            if (buf.next == 'a' && buf.next == 'l' && buf.next == 's' && buf.next == 'e')
               return BoolVal(false)
-            }
             fail("expected boolean")
           case 'n' =>
             fieldNameMode = true
-            if (buf.next == 'u' && buf.next == 'l' && buf.next == 'l') {
+            if (buf.next == 'u' && buf.next == 'l' && buf.next == 'l')
               return NullVal
-            }
             fail("expected null")
           case ':' =>
             if (blocks.peek == ARRAY) fail("Colon in an invalid position")
@@ -336,7 +326,6 @@ object JsonParser {
           case c if isDelimiter(c) =>
           case c                   => fail("unknown token " + c)
         }
-      }
       buf.automaticClose
       End
     }
@@ -363,10 +352,10 @@ object JsonParser {
     def back = cur = cur - 1
 
     def next: Char =
-      if (cur >= offset && read < 0) {
+      if (cur >= offset && read < 0)
         if (eofIsFailure) throw new ParseException("unexpected eof", null)
         else EOF
-      } else {
+      else {
         val c = segment(cur)
         cur += 1
         c

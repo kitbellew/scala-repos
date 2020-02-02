@@ -40,11 +40,9 @@ object GzipSpec extends Specification {
       os.close()
       val baosResult = baos.toByteArray
 
-      for (i <- 0 until result.length) {
-        if (result(i) != baosResult(i)) {
+      for (i <- 0 until result.length)
+        if (result(i) != baosResult(i))
           result(i) must_== baosResult(i)
-        }
-      }
 
       result must_== baos.toByteArray
 
@@ -99,11 +97,8 @@ object GzipSpec extends Specification {
 
     def read(resource: String): Array[Byte] = {
       val is = GzipSpec.getClass.getClassLoader.getResourceAsStream(resource)
-      try {
-        IOUtils.toByteArray(is)
-      } finally {
-        is.close()
-      }
+      try IOUtils.toByteArray(is)
+      finally is.close()
     }
 
     def test(

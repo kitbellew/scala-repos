@@ -65,11 +65,10 @@ private[spark] abstract class RDDCheckpointData[T: ClassTag](
     // Guard against multiple threads checkpointing the same RDD by
     // atomically flipping the state of this RDDCheckpointData
     RDDCheckpointData.synchronized {
-      if (cpState == Initialized) {
+      if (cpState == Initialized)
         cpState = CheckpointingInProgress
-      } else {
+      else
         return
-      }
     }
 
     val newRDD = doCheckpoint()

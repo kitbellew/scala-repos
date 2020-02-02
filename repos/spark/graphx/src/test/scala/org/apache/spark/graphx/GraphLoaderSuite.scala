@@ -41,9 +41,7 @@ class GraphLoaderSuite extends SparkFunSuite with LocalSparkContext {
         val neighborAttrSums =
           graph.aggregateMessages[Int](ctx => ctx.sendToDst(ctx.srcAttr), _ + _)
         assert(neighborAttrSums.collect.toSet === Set((0: VertexId, 100)))
-      } finally {
-        Utils.deleteRecursively(tmpDir)
-      }
+      } finally Utils.deleteRecursively(tmpDir)
     }
   }
 }

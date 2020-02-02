@@ -53,10 +53,9 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
       val paths = req.getRequestURI.substring(0, index).split("/")
       res.sendRedirect(
         baseUrl(req) + "/" + paths.dropRight(1).last + "/" + paths.last)
-    } else {
+    } else
       // response for git client
       super.service(req, res)
-    }
   }
 }
 
@@ -109,13 +108,12 @@ class GitBucketReceivePackFactory
 
         logger.debug("repository:" + owner + "/" + repository)
 
-        if (!repository.endsWith(".wiki")) {
+        if (!repository.endsWith(".wiki"))
           defining(request) { implicit r =>
             val hook = new CommitLogHook(owner, repository, pusher, baseUrl)
             receivePack.setPreReceiveHook(hook)
             receivePack.setPostReceiveHook(hook)
           }
-        }
       }
     }
 
@@ -164,10 +162,9 @@ class CommitLogHook(
         existIds = JGitUtil.getAllCommitIds(git)
       }
     } catch {
-      case ex: Exception => {
+      case ex: Exception =>
         logger.error(ex.toString, ex)
         throw ex
-      }
     }
 
   def onPostReceive(
@@ -182,18 +179,18 @@ class CommitLogHook(
           implicit val apiContext = api.JsonFormat.Context(baseUrl)
           val refName = command.getRefName.split("/")
           val branchName = refName.drop(2).mkString("/")
-          val commits = if (refName(1) == "tags") {
-            Nil
-          } else {
-            command.getType match {
-              case ReceiveCommand.Type.DELETE => Nil
-              case _ =>
-                JGitUtil.getCommitLog(
-                  git,
-                  command.getOldId.name,
-                  command.getNewId.name)
-            }
-          }
+          val commits =
+            if (refName(1) == "tags")
+              Nil
+            else
+              command.getType match {
+                case ReceiveCommand.Type.DELETE => Nil
+                case _ =>
+                  JGitUtil.getCommitLog(
+                    git,
+                    command.getOldId.name,
+                    command.getNewId.name)
+              }
 
           // Retrieve all issue count in the repository
           val issueCount =
@@ -216,20 +213,19 @@ class CommitLogHook(
                 pushedIds.add(commit.id)
                 createIssueComment(owner, repository, commit)
                 // close issues
-                if (refName(1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE) {
+                if (refName(1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE)
                   closeIssuesFromMessage(
                     commit.fullMessage,
                     pusher,
                     owner,
                     repository)
-                }
               }
               Some(commit)
             } else None
           }
 
           // record activity
-          if (refName(1) == "heads") {
+          if (refName(1) == "heads")
             command.getType match {
               case ReceiveCommand.Type.CREATE =>
                 recordCreateBranchActivity(
@@ -252,7 +248,7 @@ class CommitLogHook(
                   branchName)
               case _ =>
             }
-          } else if (refName(1) == "tags") {
+          else if (refName(1) == "tags")
             command.getType match {
               case ReceiveCommand.Type.CREATE =>
                 recordCreateTagActivity(
@@ -270,9 +266,8 @@ class CommitLogHook(
                   newCommits)
               case _ =>
             }
-          }
 
-          if (refName(1) == "heads") {
+          if (refName(1) == "heads")
             command.getType match {
               case ReceiveCommand.Type.CREATE | ReceiveCommand.Type.UPDATE |
                   ReceiveCommand.Type.UPDATE_NONFASTFORWARD =>
@@ -287,13 +282,12 @@ class CommitLogHook(
                 }
               case _ =>
             }
-          }
 
           // call web hook
           callWebHookOf(owner, repository, WebHook.Push) {
             for (pusherAccount <- getAccountByUserName(pusher);
-                 ownerAccount <- getAccountByUserName(owner)) yield {
-              WebHookPushPayload(
+                 ownerAccount <- getAccountByUserName(owner))
+              yield WebHookPushPayload(
                 git,
                 pusherAccount,
                 command.getRefName,
@@ -302,7 +296,6 @@ class CommitLogHook(
                 ownerAccount,
                 newId = command.getNewId(),
                 oldId = command.getOldId())
-            }
           }
 
           // call post-commit hook
@@ -313,10 +306,9 @@ class CommitLogHook(
       // update repository last modified time.
       updateLastActivityDate(owner, repository)
     } catch {
-      case ex: Exception => {
+      case ex: Exception =>
         logger.error(ex.toString, ex)
         throw ex
-      }
     }
   }
 

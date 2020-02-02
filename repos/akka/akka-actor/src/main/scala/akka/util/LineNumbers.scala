@@ -179,12 +179,10 @@ object LineNumbers {
 
     } catch {
       case NonFatal(ex) ⇒ UnknownSourceFormat(s"parse error: ${ex.getMessage}")
-    } finally {
-      try dis.close()
-      catch {
-        case ex: InterruptedException ⇒ throw ex
-        case NonFatal(ex) ⇒ // ignore
-      }
+    } finally try dis.close()
+    catch {
+      case ex: InterruptedException ⇒ throw ex
+      case NonFatal(ex) ⇒ // ignore
     }
   }
 
@@ -280,7 +278,7 @@ object LineNumbers {
       implicit c: Constants): Option[(Int, Int)] = {
     val count = d.readUnsignedShort()
     if (debug) println(s"LNB: reading $count methods")
-    if (c.contains("Code") && c.contains("LineNumberTable")) {
+    if (c.contains("Code") && c.contains("LineNumberTable"))
       (1 to count)
         .map(_ ⇒ readMethod(d, c("Code"), c("LineNumberTable"), filter))
         .flatten
@@ -291,7 +289,7 @@ object LineNumbers {
         case (Int.MaxValue, 0) ⇒ None
         case other ⇒ Some(other)
       }
-    } else {
+    else {
       if (debug) println(s"LNB:   (skipped)")
       for (_ ← 1 to count) skipMethodOrField(d)
       None

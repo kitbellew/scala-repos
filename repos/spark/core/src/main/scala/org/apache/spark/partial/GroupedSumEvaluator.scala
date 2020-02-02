@@ -44,11 +44,10 @@ private[spark] class GroupedSumEvaluator[T](
     while (iter.hasNext) {
       val entry = iter.next()
       val old = sums.get(entry.getKey)
-      if (old != null) {
+      if (old != null)
         old.merge(entry.getValue)
-      } else {
+      else
         sums.put(entry.getKey, entry.getValue)
-      }
     }
   }
 
@@ -62,9 +61,9 @@ private[spark] class GroupedSumEvaluator[T](
         result.put(entry.getKey, new BoundedDouble(sum, 1.0, sum, sum))
       }
       result.asScala
-    } else if (outputsMerged == 0) {
+    } else if (outputsMerged == 0)
       new HashMap[T, BoundedDouble]
-    } else {
+    else {
       val p = outputsMerged.toDouble / totalOutputs
       val studentTCacher = new StudentTCacher(confidence)
       val result = new JHashMap[T, BoundedDouble](sums.size)

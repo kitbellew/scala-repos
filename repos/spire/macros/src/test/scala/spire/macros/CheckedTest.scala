@@ -21,18 +21,16 @@ class CheckedTest
     Arbitrary(arbitrary[Int] filter (_ != 0L) map (NotZero(_)))
 
   def checkForLongOverflow(value: BigInt, check: => Long) =
-    if (value.isValidLong) {
+    if (value.isValidLong)
       check should equal(value.toLong)
-    } else {
-      an[ArithmeticException] should be thrownBy { check }
-    }
+    else
+      an[ArithmeticException] should be thrownBy check
 
   def checkForIntOverflow(value: BigInt, check: => Int) =
-    if (value.isValidInt) {
+    if (value.isValidInt)
       check should equal(value.toInt)
-    } else {
-      an[ArithmeticException] should be thrownBy { check }
-    }
+    else
+      an[ArithmeticException] should be thrownBy check
 
   test("Negate of Int.MinValue overflows") {
     val x = Int.MinValue

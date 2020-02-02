@@ -93,15 +93,13 @@ private[akka] class RemoteSystemDaemon(
       case null ⇒ false // no-op
       case children ⇒
         val next = children - child
-        if (next.isEmpty) {
+        if (next.isEmpty)
           if (!parent2children.remove(parent, children))
             removeChildParentNeedsUnwatch(parent, child)
           else true
-        } else {
-          if (!parent2children.replace(parent, children, next))
-            removeChildParentNeedsUnwatch(parent, child)
-          else false
-        }
+        else if (!parent2children.replace(parent, children, next))
+          removeChildParentNeedsUnwatch(parent, child)
+        else false
     }
 
   /**
@@ -221,7 +219,7 @@ private[akka] class RemoteSystemDaemon(
           @tailrec def rec(acc: List[String]): (List[String], Any) =
             if (iter.isEmpty)
               (acc.reverse, sel.msg)
-            else {
+            else
               iter.next() match {
                 case SelectChildName(name) ⇒ rec(name :: acc)
                 case SelectParent if acc.isEmpty ⇒ rec(acc)
@@ -229,7 +227,6 @@ private[akka] class RemoteSystemDaemon(
                 case pat: SelectChildPattern ⇒
                   (acc.reverse, sel.copy(elements = pat +: iter.toVector))
               }
-            }
           rec(Nil)
         }
         getChild(concatenatedChildNames.iterator) match {

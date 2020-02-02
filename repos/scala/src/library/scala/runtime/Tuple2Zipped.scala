@@ -44,12 +44,11 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     b.sizeHint(colls._1)
     val elems2 = colls._2.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext)
         b += f(el1, elems2.next())
       else
         return b.result()
-    }
 
     b.result()
   }
@@ -59,12 +58,11 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     val b = cbf(colls._1.repr)
     val elems2 = colls._2.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext)
         b ++= f(el1, elems2.next())
       else
         return b.result()
-    }
 
     b.result()
   }
@@ -76,7 +74,7 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
     val b2 = cbf2(colls._2.repr)
     val elems2 = colls._2.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext) {
         val el2 = elems2.next()
         if (f(el1, el2)) {
@@ -84,7 +82,6 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
           b2 += el2
         }
       } else return (b1.result(), b2.result())
-    }
 
     (b1.result(), b2.result())
   }
@@ -92,12 +89,11 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
   def exists(@deprecatedName('f) p: (El1, El2) => Boolean): Boolean = {
     val elems2 = colls._2.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext) {
         if (p(el1, elems2.next()))
           return true
       } else return false
-    }
     false
   }
 
@@ -107,12 +103,11 @@ final class Tuple2Zipped[El1, Repr1, El2, Repr2](
   def foreach[U](f: (El1, El2) => U): Unit = {
     val elems2 = colls._2.iterator
 
-    for (el1 <- colls._1) {
+    for (el1 <- colls._1)
       if (elems2.hasNext)
         f(el1, elems2.next())
       else
         return
-    }
   }
 
   override def toString =

@@ -154,7 +154,7 @@ private[akka] class RepointableActorRef(
   def getParent: InternalActorRef = underlying.parent
 
   def getChild(name: Iterator[String]): InternalActorRef =
-    if (name.hasNext) {
+    if (name.hasNext)
       name.next match {
         case ".." ⇒ getParent.getChild(name)
         case "" ⇒ getChild(name)
@@ -171,7 +171,7 @@ private[akka] class RepointableActorRef(
               }
           }
       }
-    } else this
+    else this
 
   /**
     * Method for looking up a single child beneath this actor.
@@ -236,9 +236,7 @@ private[akka] class UnstartedCell(
         // drain sysmsgQueue in case a msg enqueues a sys msg
         drainSysmsgQueue()
       }
-    } finally {
-      self.swapCell(cell)
-    }
+    } finally self.swapCell(cell)
   }
 
   def system: ActorSystem = systemImpl
@@ -258,12 +256,12 @@ private[akka] class UnstartedCell(
   override def getSingleChild(name: String): InternalActorRef = Nobody
 
   def sendMessage(msg: Envelope): Unit =
-    if (lock.tryLock(timeout.length, timeout.unit)) {
+    if (lock.tryLock(timeout.length, timeout.unit))
       try {
         val cell = self.underlying
-        if (cellIsReady(cell)) {
+        if (cellIsReady(cell))
           cell.sendMessage(msg)
-        } else if (!queue.offer(msg)) {
+        else if (!queue.offer(msg)) {
           system.eventStream.publish(
             Warning(
               self.path.toString,
@@ -274,7 +272,7 @@ private[akka] class UnstartedCell(
         } else if (Mailbox.debug)
           println(s"$self temp queueing ${msg.message} from ${msg.sender}")
       } finally lock.unlock()
-    } else {
+    else {
       system.eventStream.publish(
         Warning(
           self.path.toString,

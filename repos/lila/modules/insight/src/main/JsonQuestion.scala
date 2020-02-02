@@ -13,7 +13,7 @@ case class JsonQuestion(
       realMetric <- Metric.byKey get metric
       realFilters = filters
         .map {
-          case (filterKey, valueKeys) => {
+          case (filterKey, valueKeys) =>
             def build[X](dimension: Dimension[X]) =
               Filter[X](dimension, valueKeys.flatMap {
                 Dimension.valueByKey(dimension, _)
@@ -34,7 +34,6 @@ case class JsonQuestion(
               case MaterialRange.key    => build(MaterialRange)
               case _                    => none
             }
-          }
         }
         .flatten
         .filterNot(_.isEmpty)

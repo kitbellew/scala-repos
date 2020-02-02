@@ -92,9 +92,8 @@ object FailureAccrualPolicy {
         val duration = nextMarkDeadFor.head
         nextMarkDeadFor = nextMarkDeadFor.tail
         Some(duration)
-      } else {
+      } else
         None
-      }
     }
 
     def revived(): Unit = synchronized {
@@ -139,9 +138,8 @@ object FailureAccrualPolicy {
         val duration = nextMarkDeadFor.head
         nextMarkDeadFor = nextMarkDeadFor.tail
         Some(duration)
-      } else {
+      } else
         None
-      }
     }
 
     def revived(): Unit = synchronized {

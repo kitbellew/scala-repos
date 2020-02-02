@@ -42,17 +42,16 @@ object WorksheetViewerInfo {
     val i = allViewers.values().iterator()
     val factory = EditorFactory.getInstance()
 
-    while (i.hasNext) {
+    while (i.hasNext)
       i.next().foreach {
         case e: EditorImpl =>
-          if (!e.isDisposed) try {
-            factory.releaseEditor(e)
-          } catch {
-            case _: Exception => //ignore
-          }
+          if (!e.isDisposed)
+            try factory.releaseEditor(e)
+            catch {
+              case _: Exception => //ignore
+            }
         case _ =>
       }
-    }
   }
 
   private def get(editor: Editor): Editor =

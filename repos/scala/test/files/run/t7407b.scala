@@ -6,13 +6,10 @@ object Test {
   }
 
   def foo(b: Boolean): String =
-    try {
-      if (b)
-        return "Hello"
-      else
-        "abc"
-    } finally {
-      10 match { case x => () }
-    }
+    try if (b)
+      return "Hello"
+    else
+      "abc"
+    finally 10 match { case x => () }
 
 }

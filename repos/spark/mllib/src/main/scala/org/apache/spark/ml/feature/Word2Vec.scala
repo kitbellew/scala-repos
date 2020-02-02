@@ -248,9 +248,9 @@ class Word2VecModel private[ml] (
     val bVectors = dataset.sqlContext.sparkContext.broadcast(vectors)
     val d = $(vectorSize)
     val word2Vec = udf { sentence: Seq[String] =>
-      if (sentence.size == 0) {
+      if (sentence.size == 0)
         Vectors.sparse(d, Array.empty[Int], Array.empty[Double])
-      } else {
+      else {
         val sum = Vectors.zeros(d)
         sentence.foreach { word =>
           bVectors.value.get(word).foreach { v => BLAS.axpy(1.0, v, sum) }

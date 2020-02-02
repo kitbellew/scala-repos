@@ -46,12 +46,12 @@ object SimpleTreeTableView extends JFXApp {
         columns ++= List(
           new TreeTableColumn[Person, String] {
             text = "First Name"
-            cellValueFactory = { _.value.getValue.firstName }
+            cellValueFactory = _.value.getValue.firstName
             prefWidth = 180
           },
           new TreeTableColumn[Person, String]() {
             text = "Last Name"
-            cellValueFactory = { _.value.getValue.lastName }
+            cellValueFactory = _.value.getValue.lastName
             prefWidth = 180
           }
         )

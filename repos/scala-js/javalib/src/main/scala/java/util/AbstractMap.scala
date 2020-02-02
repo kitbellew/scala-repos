@@ -155,14 +155,13 @@ abstract class AbstractMap[K, V] protected () extends java.util.Map[K, V] {
 
   override def equals(o: Any): Boolean =
     if (o.asInstanceOf[AnyRef] eq this) true
-    else {
+    else
       o match {
         case m: Map[_, _] =>
           (self.size == m.size &&
             entrySet.forall(item => m.get(item.getKey) === item.getValue))
         case _ => false
       }
-    }
 
   override def hashCode(): Int =
     entrySet.foldLeft(0)((prev, item) => item.hashCode + prev)

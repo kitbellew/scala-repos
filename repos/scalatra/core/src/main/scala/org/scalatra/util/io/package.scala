@@ -67,9 +67,7 @@ package object io {
         out.flush()
       }
       f(tmp)
-    } finally {
-      tmp.delete()
-    }
+    } finally tmp.delete()
   }
 
 }

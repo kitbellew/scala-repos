@@ -25,11 +25,10 @@ class WorksheetFoldingBuilder extends FoldingBuilder {
     element match {
       case comment: PsiComment =>
         val text = comment.getText
-        if (text.startsWith(WorksheetFoldingBuilder.FIRST_LINE_PREFIX)) {
+        if (text.startsWith(WorksheetFoldingBuilder.FIRST_LINE_PREFIX))
           return WorksheetFoldingBuilder.FIRST_LINE_PREFIX
-        } else if (text.startsWith(WorksheetFoldingBuilder.LINE_PREFIX)) {
+        else if (text.startsWith(WorksheetFoldingBuilder.LINE_PREFIX))
           return WorksheetFoldingBuilder.LINE_PREFIX
-        }
       case _ =>
     }
     "/../"
@@ -71,9 +70,8 @@ class WorksheetFoldingBuilder extends FoldingBuilder {
         true))
     }
 
-    for (child <- node.getChildren(null)) {
+    for (child <- node.getChildren(null))
       appendDescriptors(child, document, descriptors, processedComments)
-    }
   }
 }
 

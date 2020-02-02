@@ -38,30 +38,24 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
   var propertiesFile: String = null
 
   // Check for settings in environment variables
-  if (System.getenv("SPARK_WORKER_PORT") != null) {
+  if (System.getenv("SPARK_WORKER_PORT") != null)
     port = System.getenv("SPARK_WORKER_PORT").toInt
-  }
-  if (System.getenv("SPARK_WORKER_CORES") != null) {
+  if (System.getenv("SPARK_WORKER_CORES") != null)
     cores = System.getenv("SPARK_WORKER_CORES").toInt
-  }
-  if (conf.getenv("SPARK_WORKER_MEMORY") != null) {
+  if (conf.getenv("SPARK_WORKER_MEMORY") != null)
     memory = Utils.memoryStringToMb(conf.getenv("SPARK_WORKER_MEMORY"))
-  }
-  if (System.getenv("SPARK_WORKER_WEBUI_PORT") != null) {
+  if (System.getenv("SPARK_WORKER_WEBUI_PORT") != null)
     webUiPort = System.getenv("SPARK_WORKER_WEBUI_PORT").toInt
-  }
-  if (System.getenv("SPARK_WORKER_DIR") != null) {
+  if (System.getenv("SPARK_WORKER_DIR") != null)
     workDir = System.getenv("SPARK_WORKER_DIR")
-  }
 
   parse(args.toList)
 
   // This mutates the SparkConf, so all accesses to it must be made after this line
   propertiesFile = Utils.loadDefaultSparkProperties(conf, propertiesFile)
 
-  if (conf.contains("spark.worker.ui.port")) {
+  if (conf.contains("spark.worker.ui.port"))
     webUiPort = conf.get("spark.worker.ui.port").toInt
-  }
 
   checkWorkerMemory()
 
@@ -107,16 +101,14 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
       printUsageAndExit(0)
 
     case value :: tail =>
-      if (masters != null) { // Two positional arguments were given
+      if (masters != null) // Two positional arguments were given
         printUsageAndExit(1)
-      }
       masters = Utils.parseStandaloneMasterUrls(value)
       parse(tail)
 
     case Nil =>
-      if (masters == null) { // No positional argument was given
+      if (masters == null) // No positional argument was given
         printUsageAndExit(1)
-      }
 
     case _ =>
       printUsageAndExit(1)
@@ -167,13 +159,12 @@ private[worker] class WorkerArguments(args: Array[String], conf: SparkConf) {
       }
       // scalastyle:on classforname
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         totalMb = 2 * 1024
         // scalastyle:off println
         System.out.println(
           "Failed to get total physical memory. Using " + totalMb + " MB")
-        // scalastyle:on println
-      }
+      // scalastyle:on println
     }
     // Leave out 1 GB for the operating system, but don't return a negative memory size
     math.max(totalMb - 1024, Utils.DEFAULT_DRIVER_MEM_MB)

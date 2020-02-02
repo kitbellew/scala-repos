@@ -49,9 +49,9 @@ class SeriesCheck extends Specification with ScalaCheck {
     "head works" in {
       forAll { (s: Series[Int, Double]) =>
         s.head(0) must_== Series.empty[Int, Double]
-        if (s.length == 1) {
+        if (s.length == 1)
           s.head(1) must_== s(0)
-        } else {
+        else {
           val exp = s(0) concat s(1)
           s.head(2) must_== exp
         }
@@ -61,9 +61,9 @@ class SeriesCheck extends Specification with ScalaCheck {
     "tail works" in {
       forAll { (s: Series[Int, Double]) =>
         s.tail(0) must_== Series.empty[Int, Double]
-        if (s.length == 1) {
+        if (s.length == 1)
           s.tail(1) must_== s(0)
-        } else {
+        else {
           val exp = s(s.length - 2) concat s(s.length - 1)
           s.tail(2) must_== exp
         }
@@ -204,9 +204,7 @@ class SeriesCheck extends Specification with ScalaCheck {
         val proxied = s1.proxyWith(s2)
         val all =
           for (i <- 0 until proxied.length if s1.at(i).isNA && i < s2.length)
-            yield {
-              proxied.at(i) must_== s2.at(i)
-            }
+            yield proxied.at(i) must_== s2.at(i)
         all.foldLeft(true)((acc, v) => acc && v.isSuccess)
       }
     }
@@ -360,9 +358,7 @@ class SeriesCheck extends Specification with ScalaCheck {
         val proxied = s1.proxyWith(s2)
         val all =
           for (i <- 0 until proxied.length if s1.at(i).isNA && i < s2.length)
-            yield {
-              proxied.at(i) must_== s2.at(i)
-            }
+            yield proxied.at(i) must_== s2.at(i)
         all.foldLeft(true)((acc, v) => acc && v.isSuccess)
       }
     }

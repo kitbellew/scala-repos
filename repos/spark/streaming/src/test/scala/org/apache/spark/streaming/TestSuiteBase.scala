@@ -83,9 +83,8 @@ class TestInputStream[T: ClassTag](
     val selectedInput = if (index < input.size) input(index) else Seq[T]()
 
     // lets us test cases where RDDs are not created
-    if (selectedInput == null) {
+    if (selectedInput == null)
       return None
-    }
 
     // Report the input data's information to InputInfoTracker for testing
     val inputInfo = StreamInputInfo(id, selectedInput.length.toLong)
@@ -301,15 +300,11 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     */
   def withStreamingContext[R](ssc: StreamingContext)(
       block: StreamingContext => R): R =
-    try {
-      block(ssc)
-    } finally {
-      try {
-        ssc.stop(stopSparkContext = true)
-      } catch {
-        case e: Exception =>
-          logError("Error stopping StreamingContext", e)
-      }
+    try block(ssc)
+    finally try ssc.stop(stopSparkContext = true)
+    catch {
+      case e: Exception =>
+        logError("Error stopping StreamingContext", e)
     }
 
   /**
@@ -317,15 +312,11 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     * stop the server when the block completes or when an exception is thrown.
     */
   def withTestServer[R](testServer: TestServer)(block: TestServer => R): R =
-    try {
-      block(testServer)
-    } finally {
-      try {
-        testServer.stop()
-      } catch {
-        case e: Exception =>
-          logError("Error stopping TestServer", e)
-      }
+    try block(testServer)
+    finally try testServer.stop()
+    catch {
+      case e: Exception =>
+        logError("Error stopping TestServer", e)
     }
 
   /**
@@ -339,9 +330,8 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   ): StreamingContext = {
     // Create StreamingContext
     val ssc = new StreamingContext(conf, batchDuration)
-    if (checkpointDir != null) {
+    if (checkpointDir != null)
       ssc.checkpoint(checkpointDir)
-    }
 
     // Setup the stream computation
     val inputStream = new TestInputStream(ssc, input, numPartitions)
@@ -364,9 +354,8 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   ): StreamingContext = {
     // Create StreamingContext
     val ssc = new StreamingContext(conf, batchDuration)
-    if (checkpointDir != null) {
+    if (checkpointDir != null)
       ssc.checkpoint(checkpointDir)
-    }
 
     // Setup the stream computation
     val inputStream1 = new TestInputStream(ssc, input1, numInputPartitions)
@@ -431,15 +420,14 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       // Advance manual clock
       val clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
       logInfo("Manual clock before advancing = " + clock.getTimeMillis())
-      if (actuallyWait) {
+      if (actuallyWait)
         for (i <- 1 to numBatches) {
           logInfo("Actually waiting for " + batchDuration)
           clock.advance(batchDuration.milliseconds)
           Thread.sleep(batchDuration.milliseconds)
         }
-      } else {
+      else
         clock.advance(numBatches * batchDuration.milliseconds)
-      }
       logInfo("Manual clock after advancing = " + clock.getTimeMillis())
 
       // Wait until expected number of output items have been generated
@@ -463,9 +451,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       Thread.sleep(
         100
       ) // Give some time for the forgetting old RDDs to complete
-    } finally {
-      ssc.stop(stopSparkContext = true)
-    }
+    } finally ssc.stop(stopSparkContext = true)
     output.asScala.toSeq
   }
 
@@ -489,23 +475,21 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
     logInfo("--------------------------------")
 
     // Match the output with the expected output
-    for (i <- 0 until output.size) {
-      if (useSet) {
+    for (i <- 0 until output.size)
+      if (useSet)
         assert(
           output(i).toSet === expectedOutput(i).toSet,
           s"Set comparison failed\n" +
             s"Expected output (${expectedOutput.size} items):\n${expectedOutput.mkString("\n")}\n" +
             s"Generated output (${output.size} items): ${output.mkString("\n")}"
         )
-      } else {
+      else
         assert(
           output(i).toList === expectedOutput(i).toList,
           s"Ordered list comparison failed\n" +
             s"Expected output (${expectedOutput.size} items):\n${expectedOutput.mkString("\n")}\n" +
             s"Generated output (${output.size} items): ${output.mkString("\n")}"
         )
-      }
-    }
     logInfo("Output verified successfully")
   }
 

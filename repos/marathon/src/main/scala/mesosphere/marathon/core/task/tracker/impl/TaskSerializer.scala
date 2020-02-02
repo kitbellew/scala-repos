@@ -22,11 +22,10 @@ object TaskSerializer {
     def opt[T](
         hasAttribute: Protos.MarathonTask => Boolean,
         getAttribute: Protos.MarathonTask => T): Option[T] =
-      if (hasAttribute(proto)) {
+      if (hasAttribute(proto))
         Some(getAttribute(proto))
-      } else {
+      else
         None
-      }
 
     def agentInfo: Task.AgentInfo =
       Task.AgentInfo(
@@ -36,9 +35,9 @@ object TaskSerializer {
       )
 
     def reservation: Option[Task.Reservation] =
-      if (proto.hasReservation) {
+      if (proto.hasReservation)
         Some(ReservationSerializer.fromProto(proto.getReservation))
-      } else None
+      else None
 
     def appVersion = Timestamp(proto.getVersion)
 
@@ -50,17 +49,16 @@ object TaskSerializer {
     )
 
     def networking =
-      if (proto.getPortsCount != 0) {
+      if (proto.getPortsCount != 0)
         Task.HostPorts(
           proto.getPortsList.iterator().asScala.map(_.intValue()).toVector)
-      } else if (proto.getNetworksCount != 0) {
+      else if (proto.getNetworksCount != 0)
         Task.NetworkInfoList(proto.getNetworksList.asScala)
-      } else {
+      else
         Task.NoNetworking
-      }
 
     def launchedTask: Option[Task.Launched] =
-      if (proto.hasStagedAt) {
+      if (proto.hasStagedAt)
         Some(
           Task.Launched(
             appVersion = appVersion,
@@ -68,9 +66,8 @@ object TaskSerializer {
             networking = networking
           )
         )
-      } else {
+      else
         None
-      }
 
     constructTask(
       taskId = Task.Id(proto.getId),

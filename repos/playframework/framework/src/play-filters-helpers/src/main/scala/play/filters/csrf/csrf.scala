@@ -108,14 +108,12 @@ object CSRFConfig {
     val methodWhiteList = config.get[Seq[String]]("method.whiteList").toSet
     val methodBlackList = config.get[Seq[String]]("method.blackList").toSet
 
-    val checkMethod: String => Boolean = if (methodWhiteList.nonEmpty) {
-      !methodWhiteList.contains(_)
-    } else {
-      if (methodBlackList.isEmpty) { _ => true }
-      else {
+    val checkMethod: String => Boolean =
+      if (methodWhiteList.nonEmpty)
+        !methodWhiteList.contains(_)
+      else if (methodBlackList.isEmpty) { _ => true }
+      else
         methodBlackList.contains
-      }
-    }
 
     val contentTypeWhiteList =
       config.get[Seq[String]]("contentType.whiteList").toSet
@@ -123,14 +121,11 @@ object CSRFConfig {
       config.get[Seq[String]]("contentType.blackList").toSet
 
     val checkContentType: Option[String] => Boolean =
-      if (contentTypeWhiteList.nonEmpty) {
+      if (contentTypeWhiteList.nonEmpty)
         _.forall(!contentTypeWhiteList.contains(_))
-      } else {
-        if (contentTypeBlackList.isEmpty) { _ => true }
-        else {
-          _.exists(contentTypeBlackList.contains)
-        }
-      }
+      else if (contentTypeBlackList.isEmpty) { _ => true }
+      else
+        _.exists(contentTypeBlackList.contains)
 
     val protectHeaders = config
       .get[Option[Map[String, String]]]("header.protectHeaders")

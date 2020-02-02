@@ -451,11 +451,10 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
       referenceTracking: Boolean): Unit = {
     val conf = new SparkConf(loadDefaults = false)
       .set("spark.kryo.referenceTracking", referenceTracking.toString)
-    if (!autoReset) {
+    if (!autoReset)
       conf.set(
         "spark.kryo.registrator",
         classOf[RegistratorWithoutAutoReset].getName)
-    }
     val ser = new KryoSerializer(conf)
     val serInstance = ser.newInstance().asInstanceOf[KryoSerializerInstance]
     assert(serInstance.getAutoReset() === autoReset)
@@ -475,14 +474,13 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   // Regression test for SPARK-7766, an issue where disabling auto-reset and enabling
   // reference-tracking would lead to corrupted output when serializer instances are re-used
-  for (referenceTracking <- Set(true, false); autoReset <- Set(true, false)) {
+  for (referenceTracking <- Set(true, false); autoReset <- Set(true, false))
     test(
       s"instance reuse with autoReset = $autoReset, referenceTracking = $referenceTracking") {
       testSerializerInstanceReuse(
         autoReset = autoReset,
         referenceTracking = referenceTracking)
     }
-  }
 }
 
 class KryoSerializerAutoResetDisabledSuite

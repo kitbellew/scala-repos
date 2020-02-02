@@ -84,9 +84,8 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getLowerTypeElement: Option[ScTypeElement] = {
     if (lowerElement != null) {
       val lowerTypeElement = lowerElement.get
-      if (lowerTypeElement != null && (lowerTypeElement.isEmpty || (lowerTypeElement.get.getContext eq getPsi))) {
+      if (lowerTypeElement != null && (lowerTypeElement.isEmpty || (lowerTypeElement.get.getContext eq getPsi)))
         return lowerTypeElement
-      }
     }
     val res: Option[ScTypeElement] =
       if (getLowerText != "")
@@ -101,9 +100,8 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
   def getUpperTypeElement: Option[ScTypeElement] = {
     if (upperElement != null) {
       val upperTypeElement = upperElement.get
-      if (upperTypeElement != null && (upperTypeElement.isEmpty || (upperTypeElement.get.getContext eq getPsi))) {
+      if (upperTypeElement != null && (upperTypeElement.isEmpty || (upperTypeElement.get.getContext eq getPsi)))
         return upperTypeElement
-      }
     }
     val res: Option[ScTypeElement] =
       if (getUpperText != "")

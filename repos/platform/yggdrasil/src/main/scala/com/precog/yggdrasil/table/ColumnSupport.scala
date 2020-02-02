@@ -143,9 +143,9 @@ class NConcatColumn[T <: Column](offsets: Array[Int], columns: Array[T]) {
   /** Returns the index info `offsets` and `columns` for row. */
   protected def indexOf(row: Int): Int = {
     val lastIdx = lastIndex
-    if (inBound(row, lastIdx)) {
+    if (inBound(row, lastIdx))
       lastIdx
-    } else {
+    else {
       var idx = java.util.Arrays.binarySearch(offsets, row)
       idx = if (idx < 0) -idx - 2 else idx
       lastIndex = idx
@@ -193,10 +193,9 @@ class SparsenColumn[T <: Column](delegate: T, idx: Array[Int], toSize: Int) {
   this: T =>
   @inline @tailrec private def fill(a: Array[Int], i: Int): Array[Int] =
     if (i < toSize && i < idx.length) {
-      if (a(idx(i)) == -1) {
+      if (a(idx(i)) == -1)
         // We can only update indices that aren't already mapped
         a(idx(i)) = i
-      }
       fill(a, i + 1)
     } else a
 
@@ -225,7 +224,7 @@ abstract class ArraySetColumn[T <: Column](
     protected val backing: Array[T]) { this: T =>
   protected def firstDefinedIndexAt(row: Int): Int = {
     var i = 0
-    while (i < backing.length && !backing(i).isDefinedAt(row)) { i += 1 }
+    while (i < backing.length && !backing(i).isDefinedAt(row)) i += 1
     if (i != backing.length) i else -1
   }
   def isDefinedAt(row: Int) = firstDefinedIndexAt(row) != -1

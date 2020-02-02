@@ -46,9 +46,9 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
       configuration: AbstractTestRunConfiguration,
       context: ConfigurationContext,
       sourceElement: Ref[PsiElement]): Boolean =
-    if (sourceElement.isNull) {
+    if (sourceElement.isNull)
       false
-    } else {
+    else
       createConfigurationByElement(context.getLocation, context) match {
         case Some((testElement, resConfig))
             if testElement != null && resConfig != null =>
@@ -76,7 +76,6 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
         case _ =>
           false
       }
-    }
 
   override def isConfigurationFromContext(
       configuration: AbstractTestRunConfiguration,
@@ -87,9 +86,9 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
     if (runnerClassName != null && runnerClassName == configuration.mainClass) {
       val configurationModule: Module =
         configuration.getConfigurationModule.getModule
-      if (context.getLocation != null) {
+      if (context.getLocation != null)
         isConfigurationByLocation(configuration, context.getLocation)
-      } else {
+      else
         (context.getModule == configurationModule ||
         context.getRunManager
           .getConfigurationTemplate(getConfigurationFactory)
@@ -97,7 +96,6 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
           .asInstanceOf[AbstractTestRunConfiguration]
           .getConfigurationModule
           .getModule == configurationModule) && configuration.getTestClassPath == null && configuration.getTestName == null
-      }
     } else false
   }
 }

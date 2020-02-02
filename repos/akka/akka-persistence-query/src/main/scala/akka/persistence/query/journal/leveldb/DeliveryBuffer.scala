@@ -13,7 +13,7 @@ private[akka] trait DeliveryBuffer[T] { _: ActorPublisher[T] ⇒
   var buf = Vector.empty[T]
 
   def deliverBuf(): Unit =
-    if (buf.nonEmpty && totalDemand > 0) {
+    if (buf.nonEmpty && totalDemand > 0)
       if (buf.size == 1) {
         // optimize for this common case
         onNext(buf.head)
@@ -26,6 +26,5 @@ private[akka] trait DeliveryBuffer[T] { _: ActorPublisher[T] ⇒
         buf foreach onNext
         buf = Vector.empty
       }
-    }
 
 }

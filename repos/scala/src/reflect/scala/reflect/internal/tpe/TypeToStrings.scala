@@ -42,8 +42,7 @@ private[internal] trait TypeToStrings {
         //   when we generate error messages, including, importantly, errors issued during silent mode that are never issued.
         // toStringSubjects += tpe
         tpe.safeToString
-      } finally {
-        // toStringSubjects -= tpe
-        toStringRecursions -= 1
-      }
+      } finally
+      // toStringSubjects -= tpe
+      toStringRecursions -= 1
 }

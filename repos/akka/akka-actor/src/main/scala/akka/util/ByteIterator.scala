@@ -77,12 +77,12 @@ object ByteIterator {
       new ByteArrayIterator(array, from, until)
 
     final override def take(n: Int): this.type = {
-      if (n < len) until = { if (n > 0) (from + n) else from }
+      if (n < len) until = if (n > 0) (from + n) else from
       this
     }
 
     final override def drop(n: Int): this.type = {
-      if (n > 0) from = { if (n < len) (from + n) else until }
+      if (n > 0) from = if (n < len) (from + n) else until
       this
     }
 
@@ -95,13 +95,11 @@ object ByteIterator {
 
     final override def dropWhile(p: Byte ⇒ Boolean): this.type = {
       var stop = false
-      while (!stop && hasNext) {
-        if (p(array(from))) {
+      while (!stop && hasNext)
+        if (p(array(from)))
           from = from + 1
-        } else {
+        else
           stop = true
-        }
-      }
       this
     }
 
@@ -256,7 +254,7 @@ object ByteIterator {
         case that: ByteIterator ⇒
           if (that.isEmpty) this
           else if (this.isEmpty) that
-          else {
+          else
             that match {
               case that: ByteArrayIterator ⇒
                 iterators = this.iterators :+ that
@@ -267,7 +265,6 @@ object ByteIterator {
                 that.clear()
                 this
             }
-          }
         case _ ⇒ super.++(that)
       }
 
@@ -428,7 +425,7 @@ object ByteIterator {
 
       override def skip(n: Long): Long = {
         @tailrec def skipImpl(n: Long, skipped: Long): Long =
-          if (n > 0) {
+          if (n > 0)
             if (!isEmpty) {
               val m = current.asInputStream.skip(n)
               normalize()
@@ -437,7 +434,7 @@ object ByteIterator {
               if (newN > 0) skipImpl(newN, newSkipped)
               else newSkipped
             } else 0
-          } else 0
+          else 0
 
         skipImpl(n, 0)
       }
@@ -511,11 +508,11 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   override def indexWhere(p: Byte ⇒ Boolean): Int = {
     var index = 0
     var found = false
-    while (!found && hasNext) if (p(next())) {
-      found = true
-    } else {
-      index += 1
-    }
+    while (!found && hasNext)
+      if (p(next()))
+        found = true
+      else
+        index += 1
     if (found) index else -1
   }
 

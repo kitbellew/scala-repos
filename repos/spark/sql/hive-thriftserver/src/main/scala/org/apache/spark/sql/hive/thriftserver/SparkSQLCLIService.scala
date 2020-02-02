@@ -51,7 +51,7 @@ private[hive] class SparkSQLCLIService(
     addService(sparkSqlSessionManager)
     var sparkServiceUGI: UserGroupInformation = null
 
-    if (UserGroupInformation.isSecurityEnabled) {
+    if (UserGroupInformation.isSecurityEnabled)
       try {
         HiveAuthFactory.loginFromKeytab(hiveConf)
         sparkServiceUGI = Utils.getUGI()
@@ -62,7 +62,6 @@ private[hive] class SparkSQLCLIService(
             "Unable to login to kerberos with given principal/keytab",
             e)
       }
-    }
 
     initCompositeService(hiveConf)
   }

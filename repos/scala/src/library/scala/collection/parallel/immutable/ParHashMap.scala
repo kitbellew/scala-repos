@@ -177,10 +177,9 @@ private[parallel] abstract class HashMapCombiner[K, V]
     sz += 1
     val hc = emptyTrie.computeHash(elem._1)
     val pos = hc & 0x1f
-    if (buckets(pos) eq null) {
+    if (buckets(pos) eq null)
       // initialize bucket
       buckets(pos) = new UnrolledBuffer[(K, V)]
-    }
     // add to bucket
     buckets(pos) += elem
     this

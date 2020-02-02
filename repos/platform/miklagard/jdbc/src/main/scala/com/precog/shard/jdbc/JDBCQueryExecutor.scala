@@ -133,14 +133,11 @@ class JDBCQueryExecutor(
 
                       val result = stmt.executeQuery(query)
 
-                      if (result.next) {
+                      if (result.next)
                         JNum(result.getLong("count"))
-                      } else {
+                      else
                         JNum(0)
-                      }
-                    } finally {
-                      conn.close()
-                    }
+                    } finally conn.close()
                   }
                   .bimap({ t =>
                     logger.error("Error enumerating tables", t); t.getMessage
@@ -186,14 +183,11 @@ class JDBCQueryExecutor(
 
                       var tables = List.empty[String]
 
-                      while (results.next) {
+                      while (results.next)
                         tables ::= results.getString("TABLE_NAME") + "/"
-                      }
 
                       tables.serialize.asInstanceOf[JArray]
-                    } finally {
-                      conn.close()
-                    }
+                    } finally conn.close()
                   }
                   .bimap({ t =>
                     logger.error("Error enumerating tables", t); t.getMessage

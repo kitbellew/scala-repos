@@ -268,12 +268,11 @@ private[scala] trait JavaMirrors
       } else if (sym.owner == AnyValClass) {
         if (!owner.isPrimitiveValueClass && !owner.isDerivedValueClass)
           ErrorNotMember(sym, owner)
-      } else {
+      } else
         ensuringNotFree(sym) {
           if (!(owner.info.baseClasses contains sym.owner))
             ErrorNotMember(sym, owner)
         }
-      }
     }
 
     private def checkConstructorOf(sym: Symbol, owner: ClassSymbol) {
@@ -411,7 +410,7 @@ private[scala] trait JavaMirrors
         new BytecodelessMethodMirror(receiver, symbol)
       else if (existsParam(isByNameParam) || existsParam(isValueClassParam))
         new JavaTransformingMethodMirror(receiver, symbol)
-      else {
+      else
         symbol.paramss.flatten.length match {
           case 0 => new JavaVanillaMethodMirror0(receiver, symbol)
           case 1 => new JavaVanillaMethodMirror1(receiver, symbol)
@@ -420,7 +419,6 @@ private[scala] trait JavaMirrors
           case 4 => new JavaVanillaMethodMirror4(receiver, symbol)
           case _ => new JavaVanillaMethodMirror(receiver, symbol)
         }
-      }
     }
 
     private abstract class JavaMethodMirror(
@@ -1010,18 +1008,15 @@ private[scala] trait JavaMirrors
               ObjectTpe :: ifaces // interfaces have Object as superclass in the classfile (see jvm spec), but getGenericSuperclass seems to return null
             else
               (if (jsuperclazz == null) AnyTpe else typeToScala(jsuperclazz)) :: ifaces
-          } finally {
-            parentsLevel -= 1
-          }
+          } finally parentsLevel -= 1
         clazz setInfo GenPolyType(
           tparams,
           new ClassInfoType(parents, newScope, clazz))
-        if (module != NoSymbol) {
+        if (module != NoSymbol)
           module.moduleClass setInfo new ClassInfoType(
             List(),
             newScope,
             module.moduleClass)
-        }
 
         def enter(sym: Symbol, mods: JavaAccFlags) =
           followStatic(clazz, module, mods).info.decls enter sym
@@ -1030,10 +1025,9 @@ private[scala] trait JavaMirrors
           if (jclazz.getConstructors.isEmpty)
             clazz.info.decls.enter(clazz.newClassConstructor(NoPosition))
 
-        for (jinner <- jclazz.getDeclaredClasses) {
+        for (jinner <- jclazz.getDeclaredClasses)
           jclassAsScala(jinner) // inner class is entered as a side-effect
-          // no need to call enter explicitly
-        }
+        // no need to call enter explicitly
 
         pendingLoadActions ::= { () =>
           jclazz.getDeclaredFields foreach (f =>
@@ -1045,13 +1039,12 @@ private[scala] trait JavaMirrors
           enterEmptyCtorIfNecessary()
         }
 
-        if (parentsLevel == 0) {
+        if (parentsLevel == 0)
           while (pendingLoadActions.nonEmpty) {
             val item = pendingLoadActions.head
             pendingLoadActions = pendingLoadActions.tail
             item()
           }
-        }
       }
 
       class LazyPolyType(override val typeParams: List[Symbol])

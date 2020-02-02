@@ -348,11 +348,10 @@ object NumericOps {
       new OpAdd.Impl2[Array[V], Array[V], Array[V]] {
         def apply(a: Array[V], b: Array[V]): Array[V] = {
           val r = op(DenseVector(a), DenseVector[V](b))
-          if (r.offset != 0 || r.stride != 1) {
+          if (r.offset != 0 || r.stride != 1)
             r.copy.data
-          } else {
+          else
             r.data
-          }
         }
       }
 
@@ -361,11 +360,10 @@ object NumericOps {
       new OpAdd.Impl2[Array[V], V, Array[V]] {
         def apply(a: Array[V], b: V): Array[V] = {
           val r = op(DenseVector(a), b)
-          if (r.offset != 0 || r.stride != 1) {
+          if (r.offset != 0 || r.stride != 1)
             r.copy.data
-          } else {
+          else
             r.data
-          }
         }
       }
 
@@ -378,11 +376,10 @@ object NumericOps {
       new UFunc.UImpl2[Op, Array[V], Array[V], Array[V]] {
         def apply(a: Array[V], b: Array[V]): Array[V] = {
           val r = op(DenseVector(a), DenseVector[V](b))
-          if (r.offset != 0 || r.stride != 1) {
+          if (r.offset != 0 || r.stride != 1)
             r.copy.data
-          } else {
+          else
             r.data
-          }
         }
       }
 
@@ -399,11 +396,10 @@ object NumericOps {
       new UFunc.UImpl2[Op, Array[V], V, Array[V]] {
         def apply(a: Array[V], b: V): Array[V] = {
           val r = op(DenseVector(a), b)
-          if (r.offset != 0 || r.stride != 1) {
+          if (r.offset != 0 || r.stride != 1)
             r.copy.data
-          } else {
+          else
             r.data
-          }
         }
       }
 
@@ -430,9 +426,8 @@ object NumericOps {
             val z = DenseVector.zeros[U](r.length)
             z := r
             z.data
-          } else {
+          } else
             r.data
-          }
         }
       }
   }

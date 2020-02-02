@@ -109,12 +109,11 @@ class QuaternionCheck
   }
 
   def inexactEq(x: H, y: H): Unit =
-    if (x != y) {
+    if (x != y)
       //dumpDiff("ouch", x, y)
       (x - y).abs should be < tolerance // sadface
-    } else {
+    else
       x shouldBe y
-    }
 
   property("q.sqrt.pow(2) = q") {
     forAll { (q: H) =>

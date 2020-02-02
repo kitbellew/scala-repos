@@ -119,9 +119,8 @@ object Macros {
 
   def handleInt(c: Context, name: String, sep: String): c.Expr[Int] = {
     import c.universe._
-    try {
-      c.Expr[Int](Literal(Constant(formatWhole(c, sep).toInt)))
-    } catch {
+    try c.Expr[Int](Literal(Constant(formatWhole(c, sep).toInt)))
+    catch {
       case e: Exception =>
         throw new NumberFormatException("illegal %s Int constant" format name)
     }
@@ -129,9 +128,8 @@ object Macros {
 
   def handleLong(c: Context, name: String, sep: String): c.Expr[Long] = {
     import c.universe._
-    try {
-      c.Expr[Long](Literal(Constant(formatWhole(c, sep).toLong)))
-    } catch {
+    try c.Expr[Long](Literal(Constant(formatWhole(c, sep).toLong)))
+    catch {
       case e: Exception =>
         throw new NumberFormatException("illegal %s Long constant" format name)
     }

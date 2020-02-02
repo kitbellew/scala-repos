@@ -232,9 +232,8 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
           _sc.stop()
           throw e
       }
-    } else {
+    } else
       new SparkContext("local", "test")
-    }
     val blockManagerMaster = sc.env.blockManager.master
     val list = List[Int](1, 2, 3, 4)
 
@@ -255,11 +254,10 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     afterUsingBroadcast(broadcast.id, blockManagerMaster)
 
     // Unpersist broadcast
-    if (removeFromDriver) {
+    if (removeFromDriver)
       broadcast.destroy(blocking = true)
-    } else {
+    else
       broadcast.unpersist(blocking = true)
-    }
     afterUnpersist(broadcast.id, blockManagerMaster)
 
     // If the broadcast is removed from driver, all subsequent uses of the broadcast variable

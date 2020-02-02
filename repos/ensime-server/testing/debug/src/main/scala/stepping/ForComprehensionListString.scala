@@ -6,9 +6,8 @@ object ForComprehensionListString {
 
     val l = List("un", "deux", "quatre", "huit")
 
-    for (n <- l) {
+    for (n <- l)
       n.size
-    }
 
     foo(l)
     new ForComprehensionListString(l).bar
@@ -16,9 +15,8 @@ object ForComprehensionListString {
 
   def foo(l: List[String]) {
 
-    for (n <- l) {
+    for (n <- l)
       n.size
-    }
 
   }
 
@@ -26,15 +24,13 @@ object ForComprehensionListString {
 
 class ForComprehensionListString(l: List[String]) {
 
-  for (n <- l) {
+  for (n <- l)
     n.size
-  }
 
   def bar() {
 
-    for (n <- l) {
+    for (n <- l)
       n.size
-    }
 
   }
 

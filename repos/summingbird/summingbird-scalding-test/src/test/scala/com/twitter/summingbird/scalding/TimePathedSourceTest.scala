@@ -83,9 +83,9 @@ object TimePathSourceLaws extends Properties("Time path source") {
       if (rangeWithEmbgginContained(
             data.requestedRange,
             data.embiggen,
-            data.availableRange)) {
+            data.availableRange))
         retData == Some(data.requestedRange)
-      } else true // not tested here
+      else true // not tested here
     }
 
   property(

@@ -199,11 +199,10 @@ class SVMSuite extends SparkFunSuite with MLlibTestSparkContext {
     val testRDD = sc.parallelize(testData, 2)
 
     val testRDDInvalid = testRDD.map { lp =>
-      if (lp.label == 0.0) {
+      if (lp.label == 0.0)
         LabeledPoint(-1.0, lp.features)
-      } else {
+      else
         lp
-      }
     }
 
     intercept[SparkException] {
@@ -231,9 +230,7 @@ class SVMSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(model.weights == sameModel.weights)
       assert(model.intercept == sameModel.intercept)
       assert(sameModel.getThreshold.isEmpty)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
 
     // Save model with threshold.
     try {
@@ -241,9 +238,7 @@ class SVMSuite extends SparkFunSuite with MLlibTestSparkContext {
       model.save(sc, path)
       val sameModel2 = SVMModel.load(sc, path)
       assert(model.getThreshold.get == sameModel2.getThreshold.get)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 }
 

@@ -47,15 +47,15 @@ private[history] class HistoryPage(parent: HistoryServer)
       }
             </ul>
             {
-        if (allAppsSize > 0) {
+        if (allAppsSize > 0)
           <script src={
             UIUtils.prependBaseUri("/static/dataTables.rowsGroup.js")
           }></script> ++
             <div id="history-summary" class="span12 pagination"></div> ++
             <script src={UIUtils.prependBaseUri("/static/historypage.js")}> </script>
-        } else if (requestedIncomplete) {
+        else if (requestedIncomplete)
           <h4>No incomplete applications found!</h4>
-        } else {
+        else
           <h4>No completed applications found!</h4> ++
             <p>Did you specify the correct logging directory?
                   Please verify your setting of <span style="font-style:italic">
@@ -63,16 +63,14 @@ private[history] class HistoryPage(parent: HistoryServer)
                   access it.<br /> It is also possible that your application did not run to
                   completion or did not stop the SparkContext.
                 </p>
-        }
       }
 
             <a href={makePageLink(!requestedIncomplete)}>
               {
-        if (requestedIncomplete) {
+        if (requestedIncomplete)
           "Back to completed applications"
-        } else {
+        else
           "Show incomplete applications"
-        }
       }
             </a>
           </div>

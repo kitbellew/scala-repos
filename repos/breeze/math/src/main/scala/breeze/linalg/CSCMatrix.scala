@@ -93,21 +93,20 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
       if (used > data.length) {
         // need to grow array
         val newLength = {
-          if (data.length == 0) {
+          if (data.length == 0)
             4
-          } else if (data.length < 0x0400) {
+          else if (data.length < 0x0400)
             data.length * 2
-          } else if (data.length < 0x0800) {
+          else if (data.length < 0x0800)
             data.length + 0x0400
-          } else if (data.length < 0x1000) {
+          else if (data.length < 0x1000)
             data.length + 0x0800
-          } else if (data.length < 0x2000) {
+          else if (data.length < 0x2000)
             data.length + 0x1000
-          } else if (data.length < 0x4000) {
+          else if (data.length < 0x4000)
             data.length + 0x2000
-          } else {
+          else
             data.length + 0x4000
-          }
         }
 
         // allocate new arrays
@@ -150,9 +149,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
       // assign new value
       rowIndices(insertPos) = row
       data(insertPos) = v
-      for (c <- (col + 1) to cols) {
+      for (c <- (col + 1) to cols)
         colPtrs(c) += 1
-      }
     }
   }
 
@@ -293,9 +291,9 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
 
   override def equals(p1: Any): Boolean = p1 match {
     case y: CSCMatrix[_] =>
-      if (this.rows != y.rows || this.cols != y.cols) {
+      if (this.rows != y.rows || this.cols != y.cols)
         return false
-      } else {
+      else {
         val xIter = this.activeIterator
         val yIter = y.activeIterator
 
@@ -306,13 +304,11 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
           while (ykeyval._2 == 0 && yIter.hasNext) ykeyval = yIter.next()
           if (xkeyval != ykeyval) return false
         }
-        if (xIter.hasNext && !yIter.hasNext) {
+        if (xIter.hasNext && !yIter.hasNext)
           while (xIter.hasNext) if (xIter.next()._2 != 0) return false
-        }
 
-        if (!xIter.hasNext && yIter.hasNext) {
+        if (!xIter.hasNext && yIter.hasNext)
           while (yIter.hasNext) if (yIter.next()._2 != 0) return false
-        }
       }
       return true
     case y: Matrix[_] =>
@@ -355,9 +351,8 @@ object CSCMatrix
     for (c <- 0 until cols; r <- 0 until rows) {
       val v = data(i)
       i += 1
-      if (v != z) {
+      if (v != z)
         res(r, c) = v
-      }
     }
     // TODO: res.compact()
     res
@@ -400,9 +395,8 @@ object CSCMatrix
             lastI += 1
             val v = from.data(ip)
             val r = fn(v)
-            if (r != z) {
+            if (r != z)
               builder.add(i, j, r)
-            }
             ip += 1
           }
 
@@ -571,15 +565,14 @@ object CSCMatrix
 
       val outCols = new Array[Int](_cols + 1)
 
-      if (nnz == 0) {
+      if (nnz == 0)
         return new CSCMatrix(vs, _rows, _cols, outCols, 0, Array())
-      }
 
-      val order: Array[Int] = if (keysAlreadySorted) {
-        VectorBuilder.range(nnz)
-      } else {
-        sortedIndices(indices)
-      }
+      val order: Array[Int] =
+        if (keysAlreadySorted)
+          VectorBuilder.range(nnz)
+        else
+          sortedIndices(indices)
 
       val outRows = new Array[Int](nnz)
       val outData = new Array[T](nnz)
@@ -606,20 +599,18 @@ object CSCMatrix
         }
 
         // we need to pad the outCols array with zeros until we reach the next non-zero column
-        if (!colsEqual) {
+        if (!colsEqual)
           while (lastCol < col) {
             outCols(lastCol + 1) = outDataIndex
             lastCol += 1
           }
-        }
 
         i += 1
       }
       outDataIndex += 1
 
-      if (keysAlreadyUnique) {
+      if (keysAlreadyUnique)
         assert(outDataIndex == nnz)
-      }
 
       while (lastCol < _cols) {
         outCols(lastCol + 1) = outDataIndex

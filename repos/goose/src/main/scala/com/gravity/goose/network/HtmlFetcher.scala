@@ -138,76 +138,58 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
         var encodingType: String = "UTF-8"
         try {
           encodingType = EntityUtils.getContentCharSet(entity)
-          if (encodingType == null) {
+          if (encodingType == null)
             encodingType = "UTF-8"
-          }
         } catch {
-          case e: Exception => {
+          case e: Exception =>
             if (logger.isDebugEnabled) {
               trace("Unable to get charset for: " + cleanUrl)
               trace("Encoding Type is: " + encodingType)
             }
-          }
         }
-        try {
-          htmlResult = HtmlFetcher
-            .convertStreamToString(instream, 15728640, encodingType)
-            .trim
-        } finally {
-          EntityUtils.consume(entity)
-        }
-      } else {
+        try htmlResult = HtmlFetcher
+          .convertStreamToString(instream, 15728640, encodingType)
+          .trim
+        finally EntityUtils.consume(entity)
+      } else
         trace("Unable to fetch URL Properly: " + cleanUrl)
-      }
     } catch {
-      case e: NullPointerException => {
+      case e: NullPointerException =>
         logger.warn(
           e.toString + " " + e.getMessage + " Caught for URL: " + cleanUrl)
-      }
-      case e: MaxBytesException => {
+      case e: MaxBytesException =>
         trace("GRVBIGFAIL: " + cleanUrl + " Reached max bytes size")
         throw e
-      }
-      case e: SocketException => {
+      case e: SocketException =>
         logger.warn(e.getMessage + " Caught for URL: " + cleanUrl)
-      }
-      case e: SocketTimeoutException => {
+      case e: SocketTimeoutException =>
         trace(e.toString)
-      }
-      case e: LoggableException => {
+      case e: LoggableException =>
         logger.warn(e.getMessage)
         return None
-      }
-      case e: Exception => {
+      case e: Exception =>
         trace("FAILURE FOR LINK: " + cleanUrl + " " + e.toString)
         return None
-      }
     } finally {
-      if (instream != null) {
-        try {
-          instream.close()
-        } catch {
-          case e: Exception => {
+      if (instream != null)
+        try instream.close()
+        catch {
+          case e: Exception =>
             logger.warn(e.getMessage + " Caught for URL: " + cleanUrl)
-          }
         }
-      }
-      if (httpget != null) {
+      if (httpget != null)
         try {
           httpget.abort()
           entity = null
         } catch {
-          case e: Exception => {}
+          case e: Exception =>
         }
-      }
     }
-    if (logger.isDebugEnabled) {
+    if (logger.isDebugEnabled)
       logger.debug("starting...")
-    }
     if (htmlResult == null || htmlResult.length < 1) {
-      if (logger.isDebugEnabled) {
+      if (logger.isDebugEnabled)
         logger.debug("HTMLRESULT is empty or null")
-      }
       throw new NotHtmlException(cleanUrl)
     }
     var is: InputStream = null
@@ -215,27 +197,23 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
     try {
       is = new ByteArrayInputStream(htmlResult.getBytes("UTF-8"))
       mimeType = URLConnection.guessContentTypeFromStream(is)
-      if (mimeType != null) {
-        if ((mimeType == "text/html") == true || (mimeType == "application/xml") == true) {
+      if (mimeType != null)
+        if ((mimeType == "text/html") == true || (mimeType == "application/xml") == true)
           return Some(htmlResult)
-        } else {
+        else {
           if (htmlResult.contains("<title>") == true && htmlResult.contains(
-                "<p>") == true) {
+                "<p>") == true)
             return Some(htmlResult)
-          }
           trace("GRVBIGFAIL: " + mimeType + " - " + cleanUrl)
           throw new NotHtmlException(cleanUrl)
         }
-      } else {
+      else
         throw new NotHtmlException(cleanUrl)
-      }
     } catch {
-      case e: UnsupportedEncodingException => {
+      case e: UnsupportedEncodingException =>
         logger.warn(e.getMessage + " Caught for URL: " + cleanUrl)
-      }
-      case e: IOException => {
+      case e: IOException =>
         logger.warn(e.getMessage + " Caught for URL: " + cleanUrl)
-      }
     }
     None
   }
@@ -310,9 +288,8 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       var bytesRead: Int = 2048
       var inLoop = true
       while (inLoop) {
-        if (bytesRead >= maxBytes) {
+        if (bytesRead >= maxBytes)
           throw new MaxBytesException
-        }
         var n: Int = r.read(buf)
         bytesRead += 2048
 
@@ -321,24 +298,17 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       }
       return s.toString()
     } catch {
-      case e: SocketTimeoutException => {
+      case e: SocketTimeoutException =>
         logger.warn(e.toString + " " + e.getMessage)
-      }
-      case e: UnsupportedEncodingException => {
+      case e: UnsupportedEncodingException =>
         logger.warn(e.toString + " Encoding: " + encodingType)
-      }
-      case e: IOException => {
+      case e: IOException =>
         logger.warn(e.toString + " " + e.getMessage)
+    } finally if (r != null)
+      try r.close()
+      catch {
+        case e: Exception =>
       }
-    } finally {
-      if (r != null) {
-        try {
-          r.close()
-        } catch {
-          case e: Exception => {}
-        }
-      }
-    }
     null
   }
 

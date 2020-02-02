@@ -62,12 +62,9 @@ object Router {
     val className = PlayConfig(configuration)
       .getDeprecated[Option[String]]("play.http.router", "application.router")
 
-    try {
-      Some(
-        Reflect.getClass[Router](
-          className.getOrElse("router.Routes"),
-          env.classLoader))
-    } catch {
+    try Some(Reflect
+      .getClass[Router](className.getOrElse("router.Routes"), env.classLoader))
+    catch {
       case e: ClassNotFoundException =>
         // Only throw an exception if a router was explicitly configured, but not found.
         // Otherwise, it just means this application has no router, and that's ok.
@@ -124,9 +121,9 @@ object Router {
 trait SimpleRouter extends Router { self =>
   def documentation: Seq[(String, String, String)] = Seq.empty
   def withPrefix(prefix: String): Router =
-    if (prefix == "/") {
+    if (prefix == "/")
       self
-    } else {
+    else
       new Router {
         def routes = {
           val p = if (prefix.endsWith("/")) prefix else prefix + "/"
@@ -139,7 +136,6 @@ trait SimpleRouter extends Router { self =>
         def withPrefix(prefix: String) = self.withPrefix(prefix)
         def documentation = self.documentation
       }
-    }
 }
 
 object SimpleRouter {

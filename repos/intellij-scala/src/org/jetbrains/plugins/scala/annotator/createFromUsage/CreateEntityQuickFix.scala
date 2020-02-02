@@ -122,9 +122,8 @@ abstract class CreateEntityQuickFix(
 
       for (aType <- entityType;
            typeElement <- entity.children.findByType(
-             classOf[ScSimpleTypeElement])) {
+             classOf[ScSimpleTypeElement]))
         builder.replaceElement(typeElement, aType)
-      }
 
       addTypeParametersToTemplate(entity, builder)
       addParametersToTemplate(entity, builder)

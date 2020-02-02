@@ -44,9 +44,8 @@ abstract class BaseDescription extends Description {
   }
 
   private def descriptionOf(value: AnyRef): String =
-    try {
-      String.valueOf(value)
-    } catch {
+    try String.valueOf(value)
+    catch {
       case _: Exception =>
         s"${value.getClass.getName}@${Integer.toHexString(value.hashCode)}"
     }

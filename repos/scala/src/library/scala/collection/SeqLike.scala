@@ -119,10 +119,9 @@ trait SeqLike[+A, +Repr]
   def indexWhere(p: A => Boolean, from: Int): Int = {
     var i = from
     val it = iterator.drop(from)
-    while (it.hasNext) {
+    while (it.hasNext)
       if (p(it.next())) return i
       else i += 1
-    }
 
     -1
   }
@@ -523,12 +522,11 @@ trait SeqLike[+A, +Repr]
   def distinct: Repr = {
     val b = newBuilder
     val seen = mutable.HashSet[A]()
-    for (x <- this) {
+    for (x <- this)
       if (!seen(x)) {
         b += x
         seen += x
       }
-    }
     b.result()
   }
 
@@ -772,18 +770,17 @@ object SeqLike {
     var cnd = 0
     arr(0) = -1
     arr(1) = 0
-    while (pos < wlen) {
+    while (pos < wlen)
       if (Wopt(pos - 1) == Wopt(cnd)) {
         arr(pos) = cnd + 1
         pos += 1
         cnd += 1
-      } else if (cnd > 0) {
+      } else if (cnd > 0)
         cnd = arr(cnd)
-      } else {
+      else {
         arr(pos) = 0
         pos += 1
       }
-    }
     arr
   }
 
@@ -813,19 +810,17 @@ object SeqLike {
     def clipR(x: Int, y: Int) = if (x < y) x else -1
     def clipL(x: Int, y: Int) = if (x > y) x else -1
 
-    if (n1 == n0 + 1) {
+    if (n1 == n0 + 1)
       if (forward)
         clipR(S.indexOf(W(n0), m0), m1)
       else
         clipL(S.lastIndexOf(W(n0), m1 - 1), m0 - 1)
-    }
 
     // Check for redundant case when both sequences are same size
-    else if (m1 - m0 == n1 - n0) {
+    else if (m1 - m0 == n1 - n0)
       // Accepting a little slowness for the uncommon case.
       if (S.view.slice(m0, m1) == W.view.slice(n0, n1)) m0
       else -1
-    }
     // Now we know we actually need KMP search, so do it
     else
       S match {
@@ -836,7 +831,7 @@ object SeqLike {
           var i, m = 0
           val zero = if (forward) m0 else m1 - 1
           val delta = if (forward) 1 else -1
-          while (i + m < m1 - m0) {
+          while (i + m < m1 - m0)
             if (Wopt(i) == S(zero + delta * (i + m))) {
               i += 1
               if (i == n1 - n0) return (if (forward) m + m0 else m1 - m - i)
@@ -845,7 +840,6 @@ object SeqLike {
               m += i - ti
               if (i > 0) i = ti
             }
-          }
           -1
         case _ =>
           // We had better not index into S directly!
@@ -863,7 +857,7 @@ object SeqLike {
             }
             if (Wopt(i) == cache((i + m) % (n1 - n0))) {
               i += 1
-              if (i == n1 - n0) {
+              if (i == n1 - n0)
                 if (forward) return m + m0
                 else {
                   i -= 1
@@ -872,7 +866,6 @@ object SeqLike {
                   m += i - ti
                   if (i > 0) i = ti
                 }
-              }
             } else {
               val ti = T(i)
               m += i - ti

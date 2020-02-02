@@ -66,9 +66,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         exp <- jsInterop.registeredExportsOf(ctor)
       } yield (exp, ctor)
 
-      if (ctorExports.isEmpty) {
+      if (ctorExports.isEmpty)
         Nil
-      } else {
+      else {
         val exports = for {
           (jsName, specs) <- ctorExports.groupBy(
             _._1.jsName
@@ -150,11 +150,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     private def genNamedExporterBody(trgSym: Symbol, inArg: js.Tree)(
         implicit pos: Position) = {
 
-      if (hasRepeatedParam(trgSym)) {
+      if (hasRepeatedParam(trgSym))
         reporter.error(
           pos,
           "You may not name-export a method with a *-parameter")
-      }
 
       val jsArgs = for {
         (pSym, index) <- trgSym.info.params.zipWithIndex
@@ -232,14 +231,13 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           alts.head.pos,
           s"Conflicting properties and methods for ${classSym.fullName}::$name.")
         js.EmptyTree
-      } else {
+      } else
         genMemberExportOrDispatcher(
           classSym,
           name,
           isProp,
           alts,
           isDispatcher = true)
-      }
     }
 
     def genMemberExportOrDispatcher(
@@ -470,7 +468,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
             typeTestForTpe(ex.params(paramIndex))
         }
 
-        if (altsByTypeTest.size == 1) {
+        if (altsByTypeTest.size == 1)
           // Testing this parameter is not doing any us good
           genExportSameArgc(
             minArgc,
@@ -478,7 +476,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
             alts,
             paramIndex + 1,
             maxArgc)
-        } else {
+        else {
           // Sort them so that, e.g., isInstanceOf[String]
           // comes before isInstanceOf[Object]
           val sortedAltsByTypeTest =
@@ -524,13 +522,12 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
               } { cond =>
                 val condOrUndef =
                   if (!hasDefaultParam) cond
-                  else {
+                  else
                     js.If(
                       cond,
                       js.BooleanLiteral(true),
                       js.BinaryOp(js.BinaryOp.===, paramRef, js.Undefined()))(
                       jstpe.BooleanType)
-                  }
                 js.If(condOrUndef, genSubAlts, elsep)(jstpe.AnyType)
               }
           }
@@ -554,16 +551,15 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           paramsPosterasure.apply(paramIndex).tpe
         }
 
-        if (!alt.isClassConstructor) {
+        if (!alt.isClassConstructor)
           // get parameter type while resolving repeated params
           if (paramsTypesUncurry.size <= paramIndex || isRepeatedUncurry(
                 paramIndex)) {
             assert(isRepeatedUncurry.last)
             repeatedToSingle(paramsTypesUncurry.last)
-          } else {
+          } else
             paramTypePosterasure
-          }
-        } else {
+        else {
           // Compute the number of captured parameters that are added to the front
           val paramsNamesUncurry = paramsUncurry.map(_.name)
           val numCapturesFront = enteringPhase(currentRun.posterasurePhase) {
@@ -571,18 +567,17 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
             else paramsPosterasure.map(_.name).indexOfSlice(paramsNamesUncurry)
           }
           // get parameter type while resolving repeated params
-          if (paramIndex < numCapturesFront) {
+          if (paramIndex < numCapturesFront)
             // Type of a parameter that represents a captured outer context
             paramTypePosterasure
-          } else {
+          else {
             val paramIndexNoCaptures = paramIndex - numCapturesFront
             if (paramsTypesUncurry.size <= paramIndexNoCaptures ||
                 isRepeatedUncurry(paramIndexNoCaptures)) {
               assert(isRepeatedUncurry.last)
               repeatedToSingle(paramsTypesUncurry.last)
-            } else {
+            } else
               paramsTypesUncurry(paramIndexNoCaptures)
-            }
           }
         }
       }
@@ -597,11 +592,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         hasRestParam: Boolean,
         sym: Symbol): js.Tree =
       if (isScalaJSDefinedJSClass(currentClassSym) &&
-          sym.owner != currentClassSym.get) {
+          sym.owner != currentClassSym.get)
         genApplyForSymJSSuperCall(minArgc, hasRestParam, sym)
-      } else {
+      else
         genApplyForSymNonJSSuperCall(minArgc, sym)
-      }
 
     private def genApplyForSymJSSuperCall(
         minArgc: Int,
@@ -628,9 +622,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         js.Assign(
           js.JSSuperBracketSelect(cls, receiver, nameString),
           allArgs.head)
-      } else {
+      } else
         js.JSSuperBracketCall(cls, receiver, nameString, allArgs)
-      }
     }
 
     private def genApplyForSymNonJSSuperCall(
@@ -696,55 +689,56 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           fromAny(jsArg, enteringPhase(currentRun.posterasurePhase)(param.tpe))
 
         // If argument is undefined and there is a default getter, call it
-        val verifiedOrDefault = if (param.hasFlag(Flags.DEFAULTPARAM)) {
-          js.If(
-            js.BinaryOp(js.BinaryOp.===, jsArg, js.Undefined()), {
-              val trgSym = {
-                if (sym.isClassConstructor) {
-                  /* Get the companion module class.
-                   * For inner classes the sym.owner.companionModule can be broken,
-                   * therefore companionModule is fetched at uncurryPhase.
-                   */
-                  val companionModule = enteringPhase(currentRun.namerPhase) {
-                    sym.owner.companionModule
-                  }
-                  companionModule.moduleClass
-                } else {
-                  sym.owner
+        val verifiedOrDefault =
+          if (param.hasFlag(Flags.DEFAULTPARAM))
+            js.If(
+              js.BinaryOp(js.BinaryOp.===, jsArg, js.Undefined()), {
+                val trgSym = {
+                  if (sym.isClassConstructor) {
+                    /* Get the companion module class.
+                     * For inner classes the sym.owner.companionModule can be broken,
+                     * therefore companionModule is fetched at uncurryPhase.
+                     */
+                    val companionModule = enteringPhase(currentRun.namerPhase) {
+                      sym.owner.companionModule
+                    }
+                    companionModule.moduleClass
+                  } else
+                    sym.owner
                 }
+                val defaultGetter =
+                  trgSym.tpe.member(nme.defaultGetterName(sym.name, i + 1))
+
+                assert(
+                  defaultGetter.exists,
+                  s"need default getter for method ${sym.fullName}")
+                assert(!defaultGetter.isOverloaded)
+
+                val trgTree = {
+                  if (sym.isClassConstructor) genLoadModule(trgSym)
+                  else js.This()(encodeClassType(trgSym))
+                }
+
+                // Pass previous arguments to defaultGetter
+                val defaultGetterArgs =
+                  result.take(defaultGetter.tpe.params.size).toList.map(_.ref)
+
+                if (isRawJSType(trgSym.toTypeConstructor)) {
+                  assert(isScalaJSDefinedJSClass(defaultGetter.owner))
+                  genApplyJSClassMethod(
+                    trgTree,
+                    defaultGetter,
+                    defaultGetterArgs)
+                } else
+                  genApplyMethod(trgTree, defaultGetter, defaultGetterArgs)
+              }, {
+                // Otherwise, unbox the argument
+                unboxedArg
               }
-              val defaultGetter =
-                trgSym.tpe.member(nme.defaultGetterName(sym.name, i + 1))
-
-              assert(
-                defaultGetter.exists,
-                s"need default getter for method ${sym.fullName}")
-              assert(!defaultGetter.isOverloaded)
-
-              val trgTree = {
-                if (sym.isClassConstructor) genLoadModule(trgSym)
-                else js.This()(encodeClassType(trgSym))
-              }
-
-              // Pass previous arguments to defaultGetter
-              val defaultGetterArgs =
-                result.take(defaultGetter.tpe.params.size).toList.map(_.ref)
-
-              if (isRawJSType(trgSym.toTypeConstructor)) {
-                assert(isScalaJSDefinedJSClass(defaultGetter.owner))
-                genApplyJSClassMethod(trgTree, defaultGetter, defaultGetterArgs)
-              } else {
-                genApplyMethod(trgTree, defaultGetter, defaultGetterArgs)
-              }
-            }, {
-              // Otherwise, unbox the argument
-              unboxedArg
-            }
-          )(unboxedArg.tpe)
-        } else {
-          // Otherwise, it is always the unboxed argument
-          unboxedArg
-        }
+            )(unboxedArg.tpe)
+          else
+            // Otherwise, it is always the unboxed argument
+            unboxedArg
 
         result +=
           js.VarDef(
@@ -772,12 +766,10 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         if (isScalaJSDefinedJSClass(currentClassSym)) {
           assert(sym.owner == currentClassSym.get, sym.fullName)
           genApplyJSClassMethod(receiver, sym, args)
-        } else {
-          if (sym.isClassConstructor)
-            genApplyMethodStatically(receiver, sym, args)
-          else
-            genApplyMethod(receiver, sym, args)
-        }
+        } else if (sym.isClassConstructor)
+          genApplyMethodStatically(receiver, sym, args)
+        else
+          genApplyMethod(receiver, sym, args)
       }
       ensureBoxed(
         call,
@@ -971,12 +963,11 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     val restParam = genRestArgRef()
     assert(fixedParamCount >= minArgc)
     if (fixedParamCount == minArgc) restParam
-    else {
+    else
       js.JSBracketMethodApply(
         restParam,
         js.StringLiteral("slice"),
         List(js.IntLiteral(fixedParamCount - minArgc)))
-    }
   }
 
   private def genRestArgRef()(implicit pos: Position): js.Tree =

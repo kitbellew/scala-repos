@@ -35,11 +35,10 @@ object GroupedIterator {
       keyExpressions: Seq[Expression],
       inputSchema: Seq[Attribute])
       : Iterator[(InternalRow, Iterator[InternalRow])] =
-    if (input.hasNext) {
+    if (input.hasNext)
       new GroupedIterator(input.buffered, keyExpressions, inputSchema)
-    } else {
+    else
       Iterator.empty
-    }
 }
 
 /**
@@ -115,24 +114,22 @@ class GroupedIterator private (
   private def fetchNextGroupIterator(): Boolean = {
     assert(currentIterator == null)
 
-    if (currentRow == null && input.hasNext) {
+    if (currentRow == null && input.hasNext)
       currentRow = input.next()
-    }
 
-    if (currentRow == null) {
+    if (currentRow == null)
       // These is no data left, return false.
       false
-    } else {
+    else {
       // Skip to next group.
       // currentRow may be overwritten by `hasNext`, so we should compare them first.
-      while (keyOrdering.compare(currentGroup, currentRow) == 0 && input.hasNext) {
+      while (keyOrdering.compare(currentGroup, currentRow) == 0 && input.hasNext)
         currentRow = input.next()
-      }
 
-      if (keyOrdering.compare(currentGroup, currentRow) == 0) {
+      if (keyOrdering.compare(currentGroup, currentRow) == 0)
         // We are in the last group, there is no more groups, return false.
         false
-      } else {
+      else {
         // Now the `currentRow` is the first row of next group.
         currentGroup = currentRow.copy()
         currentIterator = createGroupValuesIterator()
@@ -155,21 +152,19 @@ class GroupedIterator private (
       private def fetchNextRowInGroup(): Boolean = {
         assert(currentRow == null)
 
-        if (input.hasNext) {
+        if (input.hasNext)
           // The inner iterator should NOT consume the input into next group, here we use `head` to
           // peek the next input, to see if we should continue to process it.
           if (keyOrdering.compare(currentGroup, input.head) == 0) {
             // Next input is in the current group.  Continue the inner iterator.
             currentRow = input.next()
             true
-          } else {
+          } else
             // Next input is not in the right group.  End this inner iterator.
             false
-          }
-        } else {
+        else
           // There is no more data, return false.
           false
-        }
       }
     }
 }

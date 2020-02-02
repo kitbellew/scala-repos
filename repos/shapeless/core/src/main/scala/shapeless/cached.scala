@@ -116,9 +116,7 @@ class CachedMacros(override val c: whitebox.Context)
           CachedMacros.cache = (tpe -> tree) :: CachedMacros.cache
           tree
         }
-      } finally {
-        CachedMacros.deriving = false
-      }
+      } finally CachedMacros.deriving = false
     }
   }
 

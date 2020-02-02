@@ -108,9 +108,9 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         val dispatcheeNames = x.subClasses.map(_.className).mkString(", ")
         val otherTermName = newTermName("other")
         val throwUnknownTag =
-          if (x.subClasses.isEmpty) {
+          if (x.subClasses.isEmpty)
             q"""throw _root_.scala.pickling.PicklingException("Class " + clazz + " not recognized by pickler")"""
-          } else
+          else
             q"""throw _root_.scala.pickling.PicklingException("Class " + clazz + " not recognized by pickler, looking for one of: " + $dispatcheeNames)"""
         CaseDef(Bind(otherTermName, Ident(nme.WILDCARD)), throwUnknownTag)
       }
@@ -267,12 +267,9 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     // TODO - Handle reflective case.
     if (cons.requiresReflection)
       sys.error(s"Unable to reflectively call constructors, currently.")
-    else {
-      if (cons.constructor.parameterNames.isEmpty) q"""new $tpe"""
-      else {
-        q"new $tpe(...$argss)"
-      }
-    }
+    else if (cons.constructor.parameterNames.isEmpty) q"""new $tpe"""
+    else
+      q"new $tpe(...$argss)"
   }
   def genCallModuleFactory(cons: CallModuleFactory): c.Tree = {
     // Note, this is a bit ugly.
@@ -292,13 +289,10 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     val result =
       if (cons.requiresReflection)
         sys.error(s"Unable to reflectively call factory methods, currently.")
-      else {
-        if (cons.factoryMethod.parameterNames.isEmpty)
-          q"$tpe.${newTermName(cons.factoryMethod.methodName)}()"
-        else {
-          q"$tpe.${newTermName(cons.factoryMethod.methodName)}(...$argss)"
-        }
-      }
+      else if (cons.factoryMethod.parameterNames.isEmpty)
+        q"$tpe.${newTermName(cons.factoryMethod.methodName)}()"
+      else
+        q"$tpe.${newTermName(cons.factoryMethod.methodName)}(...$argss)"
     result
   }
 
@@ -312,11 +306,11 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         x.parameterTypes[c.universe.type](c.universe) match {
           case List(List(tpe)) =>
             val read = readField(s.name, tpe)
-            if (x.isPublic) {
+            if (x.isPublic)
               q"""
                  result.${newTermName(x.methodName)}($read)
                """
-            } else reflectivelySet(newTermName("result"), x, read)
+            else reflectivelySet(newTermName("result"), x, read)
           case x =>
             sys.error(
               s"Cannot handle a setting method that does not take exactly one parameter, found parameters: $x")
@@ -327,9 +321,9 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         val read = readField(s.name, tpe)
         val staticallyElided =
           tpe.isEffectivelyFinal || tpe.isEffectivelyPrimitive
-        if (x.isScala || !x.isPublic || x.isFinal) {
+        if (x.isScala || !x.isPublic || x.isFinal)
           reflectivelySet(newTermName("result"), x, read)
-        } else q"""result.${newTermName(x.fieldName)} = $read"""
+        else q"""result.${newTermName(x.fieldName)} = $read"""
     }
 
   val ShortType = typeOf[Short]

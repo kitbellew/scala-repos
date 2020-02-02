@@ -56,21 +56,21 @@ private[spark] object TestUtils {
       classNamesWithBase: Seq[(String, String)] = Seq(),
       classpathUrls: Seq[URL] = Seq()): URL = {
     val tempDir = Utils.createTempDir()
-    val files1 = for (name <- classNames) yield {
-      createCompiledClass(
-        name,
-        tempDir,
-        toStringValue,
-        classpathUrls = classpathUrls)
-    }
-    val files2 = for ((childName, baseName) <- classNamesWithBase) yield {
-      createCompiledClass(
-        childName,
-        tempDir,
-        toStringValue,
-        baseName,
-        classpathUrls)
-    }
+    val files1 =
+      for (name <- classNames)
+        yield createCompiledClass(
+          name,
+          tempDir,
+          toStringValue,
+          classpathUrls = classpathUrls)
+    val files2 =
+      for ((childName, baseName) <- classNamesWithBase)
+        yield createCompiledClass(
+          childName,
+          tempDir,
+          toStringValue,
+          baseName,
+          classpathUrls)
     val jarFile =
       new File(tempDir, "testJar-%s.jar".format(System.currentTimeMillis()))
     createJar(files1 ++ files2, jarFile)
@@ -143,13 +143,13 @@ private[spark] object TestUtils {
 
     // Calling this outputs a class file in pwd. It's easier to just rename the files than
     // build a custom FileManager that controls the output location.
-    val options = if (classpathUrls.nonEmpty) {
-      Seq(
-        "-classpath",
-        classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
-    } else {
-      Seq()
-    }
+    val options =
+      if (classpathUrls.nonEmpty)
+        Seq(
+          "-classpath",
+          classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
+      else
+        Seq()
     compiler
       .getTask(
         null,
@@ -241,8 +241,7 @@ private class SpillListener extends SparkListener {
     val stageId = stageComplete.stageInfo.stageId
     val metrics = stageIdToTaskMetrics.remove(stageId).toSeq.flatten
     val spilled = metrics.map(_.memoryBytesSpilled).sum > 0
-    if (spilled) {
+    if (spilled)
       spilledStageIds += stageId
-    }
   }
 }

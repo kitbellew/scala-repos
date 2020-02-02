@@ -42,9 +42,8 @@ private[memory] class StorageMemoryPool(lock: Object)
 
   private var _memoryStore: MemoryStore = _
   def memoryStore: MemoryStore = {
-    if (_memoryStore == null) {
+    if (_memoryStore == null)
       throw new IllegalStateException("memory store not initialized yet")
-    }
     _memoryStore
   }
 
@@ -81,16 +80,14 @@ private[memory] class StorageMemoryPool(lock: Object)
     assert(numBytesToAcquire >= 0)
     assert(numBytesToFree >= 0)
     assert(memoryUsed <= poolSize)
-    if (numBytesToFree > 0) {
+    if (numBytesToFree > 0)
       memoryStore.evictBlocksToFreeSpace(Some(blockId), numBytesToFree)
-    }
     // NOTE: If the memory store evicts blocks, then those evictions will synchronously call
     // back into this StorageMemoryPool in order to free memory. Therefore, these variables
     // should have been updated.
     val enoughMemory = numBytesToAcquire <= memoryFree
-    if (enoughMemory) {
+    if (enoughMemory)
       _memoryUsed += numBytesToAcquire
-    }
     enoughMemory
   }
 
@@ -100,9 +97,8 @@ private[memory] class StorageMemoryPool(lock: Object)
         s"Attempted to release $size bytes of storage " +
           s"memory when we only have ${_memoryUsed} bytes")
       _memoryUsed = 0
-    } else {
+    } else
       _memoryUsed -= size
-    }
   }
 
   def releaseAllMemory(): Unit = lock.synchronized {
@@ -126,8 +122,7 @@ private[memory] class StorageMemoryPool(lock: Object)
       // not need to decrement _memoryUsed here. However, we do need to decrement the pool size.
       decrementPoolSize(spaceFreedByEviction)
       spaceFreedByReleasingUnusedMemory + spaceFreedByEviction
-    } else {
+    } else
       spaceFreedByReleasingUnusedMemory
-    }
   }
 }

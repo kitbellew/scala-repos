@@ -109,9 +109,8 @@ private[ml] class IterativelyReweightedLeastSquares(
       logInfo(s"Iteration $iter : relative tolerance = $maxTol")
       iter = iter + 1
 
-      if (iter == maxIter) {
+      if (iter == maxIter)
         logInfo(s"IRLS reached the max number of iterations: $maxIter.")
-      }
 
     }
 

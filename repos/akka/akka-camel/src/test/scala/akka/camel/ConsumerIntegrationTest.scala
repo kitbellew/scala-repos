@@ -65,7 +65,7 @@ class ConsumerIntegrationTest
           override def replyTimeout = SHORT_TIMEOUT
           def endpointUri = "direct:a3"
           def receive = {
-            case _ ⇒ { Thread.sleep(LONG_WAIT.toMillis); sender() ! "done" }
+            case _ ⇒ Thread.sleep(LONG_WAIT.toMillis); sender() ! "done"
           }
         },
         name = "ignore-this-deadletter-timeout-consumer-reply"

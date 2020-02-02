@@ -41,9 +41,9 @@ object CValueGenerators {
   type JSchema = Seq[(JPath, CType)]
 
   def inferSchema(data: Seq[JValue]): JSchema =
-    if (data.isEmpty) {
+    if (data.isEmpty)
       Seq.empty
-    } else {
+    else {
       val current = data.head.flattenWithPath flatMap {
         case (path, jv) =>
           CType.forJValue(jv) map { ct => (path, ct) }
@@ -70,27 +70,19 @@ trait CValueGenerators extends ArbitraryBigDecimal {
       size <- sizeGen
       names <- containerOfN[Set, String](size, identifier)
       subschemas <- listOfN(size, schema(depth - 1))
-    } yield {
-      for {
-        (name, subschema) <- names.toList zip subschemas
-        (jpath, ctype) <- subschema
-      } yield {
-        (JPathField(name) \ jpath, ctype)
-      }
-    }
+    } yield for {
+      (name, subschema) <- names.toList zip subschemas
+      (jpath, ctype) <- subschema
+    } yield (JPathField(name) \ jpath, ctype)
 
   def arraySchema(depth: Int, sizeGen: Gen[Int]): Gen[JSchema] =
     for {
       size <- sizeGen
       subschemas <- listOfN(size, schema(depth - 1))
-    } yield {
-      for {
-        (idx, subschema) <- (0 until size) zip subschemas
-        (jpath, ctype) <- subschema
-      } yield {
-        (JPathIndex(idx) \ jpath, ctype)
-      }
-    }
+    } yield for {
+      (idx, subschema) <- (0 until size) zip subschemas
+      (jpath, ctype) <- subschema
+    } yield (JPathIndex(idx) \ jpath, ctype)
 
   def leafSchema: Gen[JSchema] = ctype map { t => (JPath.Identity -> t) :: Nil }
 
@@ -127,9 +119,7 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         for {
           acc <- gen
           jv <- jvalue(ctype)
-        } yield {
-          acc.unsafeInsert(jpath, jv)
-        }
+        } yield acc.unsafeInsert(jpath, jv)
     }
 
   def genEventColumns(jschema: JSchema)
@@ -159,12 +149,10 @@ trait CValueGenerators extends ArbitraryBigDecimal {
         }))
 
       falseIds2 = falseIds -- ids // distinct ids
-    } yield {
-      (
-        idCount,
-        (ids.map(_.toArray) zip values).toStream ++ (falseIds2
-          .map(_.toArray) zip falseValues).toStream)
-    }
+    } yield (
+      idCount,
+      (ids.map(_.toArray) zip values).toStream ++ (falseIds2
+        .map(_.toArray) zip falseValues).toStream)
 
   def assemble(parts: Seq[(JPath, JValue)]): JValue = {
     val result = parts.foldLeft[JValue](JUndefined) {
@@ -191,9 +179,7 @@ trait SValueGenerators extends ArbitraryBigDecimal {
       size <- choose(0, 3)
       names <- containerOfN[Set, String](size, identifier)
       values <- listOfN(size, svalue(depth - 1))
-    } yield {
-      SObject((names zip values).toMap)
-    }
+    } yield SObject((names zip values).toMap)
 
   def sarray(depth: Int): Gen[SValue] =
     for {

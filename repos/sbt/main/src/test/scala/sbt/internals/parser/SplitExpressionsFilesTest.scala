@@ -85,20 +85,20 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
         if (openSlashAsteriskIndex == -1 || statement
               .substring(0, openSlashAsteriskIndex)
               .trim
-              .nonEmpty) {
+              .nonEmpty)
           Some((statements, lineRange))
-        } else {
+        else {
           val closeSlashAsteriskLine =
             statements.indexWhere(s => s.contains(END_COMMENT))
-          if (closeSlashAsteriskLine == -1) {
+          if (closeSlashAsteriskLine == -1)
             Some((statements, lineRange))
-          } else {
-            val newLineRange = if (reverted) {
-              lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
-            } else {
-              lineRange
-                .copy(start = lineRange.start + closeSlashAsteriskLine + 1)
-            }
+          else {
+            val newLineRange =
+              if (reverted)
+                lineRange.copy(end = lineRange.end - closeSlashAsteriskLine - 1)
+              else
+                lineRange
+                  .copy(start = lineRange.start + closeSlashAsteriskLine + 1)
             removeSlashAsterisk(
               statements.drop(closeSlashAsteriskLine + 1),
               newLineRange,
@@ -129,7 +129,7 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
           if (doubleSlashIndex == -1 || statement
                 .substring(0, doubleSlashIndex)
                 .trim
-                .nonEmpty) {
+                .nonEmpty)
             removeSlashAsterisk(lines, lineRange, REVERTED_LINES) match {
               case some @ Some((s, ln)) if ln == lineRange =>
                 some
@@ -137,12 +137,10 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
                 removeDoubleSlashReversed(s, ln)
               case _ => None
             }
-
-          } else {
+          else
             removeDoubleSlashReversed(
               lines.tail,
               lineRange.copy(end = lineRange.end - 1))
-          }
         case _ =>
           None
       }
@@ -185,13 +183,12 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
         case SplitterComparison(
             scala.util.Success(resultOld),
             scala.util.Success(resultNew)) =>
-          if (resultOld != resultNew) {
+          if (resultOld != resultNew)
             println(s"""In file: $fileName, results differ:
                  |resultOld:
                  |$resultOld
                  |resultNew:
                  |$resultNew""".stripMargin)
-          }
       }
 
     }

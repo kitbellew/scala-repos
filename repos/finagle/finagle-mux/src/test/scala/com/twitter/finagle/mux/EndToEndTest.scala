@@ -225,9 +225,7 @@ class EndToEndTest
     try {
       s.bind(new InetSocketAddress(0))
       s.getLocalPort()
-    } finally {
-      s.close()
-    }
+    } finally s.close()
   }
 
   // This is marked FLAKY because it allocates a nonephemeral port;

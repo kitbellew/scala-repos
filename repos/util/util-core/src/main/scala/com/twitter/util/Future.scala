@@ -147,9 +147,8 @@ object Future {
     *       some care must be taken with blocking code.
     */
   def apply[A](a: => A): Future[A] =
-    try {
-      const(Try(a))
-    } catch {
+    try const(Try(a))
+    catch {
       case nlrc: NonLocalReturnControl[_] =>
         Future.exception(new FutureNonLocalReturnControl(nlrc))
     }
@@ -197,9 +196,9 @@ object Future {
 
     def handle(exc: Throwable): Boolean = {
       val prev = getAndSetNull()
-      if (prev == null) {
+      if (prev == null)
         false
-      } else {
+      else {
         prev.raise(exc)
         prev.setException(exc)
         true
@@ -230,7 +229,7 @@ object Future {
     else {
       val count = new AtomicInteger(fs.size)
       val p = Promise.interrupts[Unit](fs: _*)
-      for (f <- fs) {
+      for (f <- fs)
         f respond {
           case Return(_) =>
             if (count.decrementAndGet() == 0)
@@ -238,7 +237,6 @@ object Future {
           case Throw(cause) =>
             p.updateIfEmpty(Throw(cause))
         }
-      }
       p
     }
 
@@ -1030,14 +1028,14 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     *     `Futures`, only when they are complete.
     */
   def collect[A](fs: Seq[Future[A]]): Future[Seq[A]] =
-    if (fs.isEmpty) {
+    if (fs.isEmpty)
       Future(Seq[A]())
-    } else {
+    else {
       val fsSize = fs.size
       val results = new AtomicReferenceArray[A](fsSize)
       val count = new AtomicInteger(fsSize)
       val p = Promise.interrupts[Seq[A]](fs: _*)
-      for ((f, i) <- fs.iterator.zipWithIndex) {
+      for ((f, i) <- fs.iterator.zipWithIndex)
         f respond {
           case Return(x) =>
             results.set(i, x)
@@ -1053,7 +1051,6 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
           case Throw(cause) =>
             p.updateIfEmpty(Throw(cause))
         }
-      }
       p
     }
 
@@ -1118,9 +1115,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * @see [[selectIndex]] which can be more performant in some situations.
     */
   def select[A](fs: Seq[Future[A]]): Future[(Try[A], Seq[Future[A]])] =
-    if (fs.isEmpty) {
+    if (fs.isEmpty)
       Future.exception(new IllegalArgumentException("empty future list"))
-    } else {
+    else {
       val p = Promise.interrupts[(Try[A], Seq[Future[A]])](fs: _*)
       val as = fs.map(f => (Promise.attached(f), f))
       for ((a, f) <- as) a respond { t =>
@@ -1140,9 +1137,9 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * @see [[select]] which can be an easier API to use.
     */
   def selectIndex[A](fs: IndexedSeq[Future[A]]): Future[Int] =
-    if (fs.isEmpty) {
+    if (fs.isEmpty)
       Future.exception(new IllegalArgumentException("empty future list"))
-    } else {
+    else {
       val p = Promise.interrupts[Int](fs: _*)
       val as = fs.map(Promise.attached)
       var i = 0
@@ -1459,9 +1456,8 @@ abstract class Future[+A] extends Awaitable[A] {
     */
   @deprecated("Use Await.result(future.liftToTry)", "6.2.x")
   final def get(timeout: Duration): Try[A] =
-    try {
-      Return(Await.result(this, timeout))
-    } catch {
+    try Return(Await.result(this, timeout))
+    catch {
       // For legacy reasons, we catch even
       // fatal exceptions.
       case e: Throwable => Throw(e)
@@ -1831,10 +1827,9 @@ abstract class Future[+A] extends Awaitable[A] {
     * @see [[com.twitter.util.Promise.become]]
     */
   def proxyTo[B >: A](other: Promise[B]) {
-    if (other.isDefined) {
+    if (other.isDefined)
       throw new IllegalStateException(
         s"Cannot call proxyTo on an already satisfied Promise: ${Await.result(other.liftToTry)}")
-    }
     respond { other() = _ }
   }
 

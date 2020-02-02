@@ -334,7 +334,7 @@ final class ClusterClient(settings: ClusterClientSettings)
       case Contacts(contactPoints) ⇒
         if (contactPoints.nonEmpty) {
           contacts = contactPoints.map(context.actorSelection)
-          contacts foreach { _ ! Identify(None) }
+          contacts foreach _ ! Identify(None)
         }
       case ActorIdentity(_, Some(receptionist)) ⇒
         log.info("Connected to [{}]", receptionist.path)

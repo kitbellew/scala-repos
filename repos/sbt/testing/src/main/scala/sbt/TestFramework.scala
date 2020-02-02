@@ -41,13 +41,12 @@ case class TestFramework(implClassNames: String*) {
       frameworkClassNames: List[String]): Option[Framework] =
     frameworkClassNames match {
       case head :: tail =>
-        try {
-          Some(Class.forName(head, true, loader).newInstance match {
-            case newFramework: Framework => newFramework
-            case oldFramework: OldFramework =>
-              new FrameworkWrapper(oldFramework)
-          })
-        } catch {
+        try Some(Class.forName(head, true, loader).newInstance match {
+          case newFramework: Framework => newFramework
+          case oldFramework: OldFramework =>
+            new FrameworkWrapper(oldFramework)
+        })
+        catch {
           case e: ClassNotFoundException =>
             log.debug("Framework implementation '" + head + "' not present.");
             createFramework(loader, log, tail)
@@ -247,11 +246,8 @@ object TestFramework {
   private[this] def withContextLoader[T](loader: ClassLoader)(eval: => T): T = {
     val oldLoader = Thread.currentThread.getContextClassLoader
     Thread.currentThread.setContextClassLoader(loader)
-    try {
-      eval
-    } finally {
-      Thread.currentThread.setContextClassLoader(oldLoader)
-    }
+    try eval
+    finally Thread.currentThread.setContextClassLoader(oldLoader)
   }
   def createTestLoader(
       classpath: Seq[File],

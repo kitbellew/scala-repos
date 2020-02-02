@@ -59,11 +59,10 @@ class InputFormatInfo(
   // Since we are not doing canonicalization of path, this can be wrong : like relative vs
   // absolute path .. which is fine, this is best case effort to remove duplicates - right ?
   override def equals(other: Any): Boolean = other match {
-    case that: InputFormatInfo => {
+    case that: InputFormatInfo =>
       // not checking config - that should be fine, right ?
       this.inputFormatClazz == that.inputFormatClazz &&
-      this.path == that.path
-    }
+        this.path == that.path
     case _ => false
   }
 
@@ -71,28 +70,25 @@ class InputFormatInfo(
     logDebug(
       "validate InputFormatInfo : " + inputFormatClazz + ", path  " + path)
 
-    try {
-      if (classOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
-            .isAssignableFrom(inputFormatClazz)) {
-        logDebug("inputformat is from mapreduce package")
-        mapreduceInputFormat = true
-      } else if (classOf[org.apache.hadoop.mapred.InputFormat[_, _]]
-                   .isAssignableFrom(inputFormatClazz)) {
-        logDebug("inputformat is from mapred package")
-        mapredInputFormat = true
-      } else {
-        throw new IllegalArgumentException(
-          "Specified inputformat " + inputFormatClazz +
-            " is NOT a supported input format ? does not implement either of the supported hadoop " +
-            "api's")
-      }
-    } catch {
-      case e: ClassNotFoundException => {
+    try if (classOf[org.apache.hadoop.mapreduce.InputFormat[_, _]]
+              .isAssignableFrom(inputFormatClazz)) {
+      logDebug("inputformat is from mapreduce package")
+      mapreduceInputFormat = true
+    } else if (classOf[org.apache.hadoop.mapred.InputFormat[_, _]]
+                 .isAssignableFrom(inputFormatClazz)) {
+      logDebug("inputformat is from mapred package")
+      mapredInputFormat = true
+    } else
+      throw new IllegalArgumentException(
+        "Specified inputformat " + inputFormatClazz +
+          " is NOT a supported input format ? does not implement either of the supported hadoop " +
+          "api's")
+    catch {
+      case e: ClassNotFoundException =>
         throw new IllegalArgumentException(
           "Specified inputformat " + inputFormatClazz +
             " cannot be found ?",
           e)
-      }
     }
   }
 
@@ -110,9 +106,8 @@ class InputFormatInfo(
 
     val retval = new ArrayBuffer[SplitInfo]()
     val list = instance.getSplits(job)
-    for (split <- list.asScala) {
+    for (split <- list.asScala)
       retval ++= SplitInfo.toSplitInfo(inputFormatClazz, path, split)
-    }
 
     retval.toSet
   }
@@ -141,9 +136,9 @@ class InputFormatInfo(
     logDebug(
       "mapreduceInputFormat : " + mapreduceInputFormat + ", mapredInputFormat : " +
         mapredInputFormat + ", inputFormatClazz : " + inputFormatClazz)
-    if (mapreduceInputFormat) {
+    if (mapreduceInputFormat)
       prefLocsFromMapreduceInputFormat()
-    } else {
+    else {
       assert(mapredInputFormat)
       prefLocsFromMapredInputFormat()
     }

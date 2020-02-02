@@ -114,10 +114,9 @@ final case class GuiceApplicationBuilder(
       _.configure(environment)
     }
 
-    if (shouldDisplayLoggerDeprecationMessage(appConfiguration)) {
+    if (shouldDisplayLoggerDeprecationMessage(appConfiguration))
       Logger.warn(
         "Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.")
-    }
 
     val loadedModules = loadModules(environment, appConfiguration)
 
@@ -209,7 +208,7 @@ final case class GuiceApplicationBuilder(
           false
       }
 
-    if (appConfiguration.underlying.hasPath("logger")) {
+    if (appConfiguration.underlying.hasPath("logger"))
       appConfiguration.underlying.getAnyRef("logger") match {
         case value: String =>
           hasDeprecatedValue(mutable.Map("logger" -> value))
@@ -218,9 +217,8 @@ final case class GuiceApplicationBuilder(
         case _ =>
           false
       }
-    } else {
+    else
       false
-    }
   }
 }
 

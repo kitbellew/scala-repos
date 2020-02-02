@@ -78,7 +78,7 @@ class ScNewTemplateDefinitionImpl private (
       case _ => true
     }
 
-    if (superTypes.length > 1 || holders.nonEmpty || aliases.nonEmpty) {
+    if (superTypes.length > 1 || holders.nonEmpty || aliases.nonEmpty)
       new Success(
         ScCompoundType.fromPsi(
           superTypes,
@@ -86,7 +86,7 @@ class ScNewTemplateDefinitionImpl private (
           aliases.toList,
           ScSubstitutor.empty),
         Some(this))
-    } else {
+    else
       extendsBlock.templateParents match {
         case Some(tp) if tp.allTypeElements.length == 1 =>
           tp.allTypeElements.head.getNonValueType(ctx)
@@ -96,7 +96,6 @@ class ScNewTemplateDefinitionImpl private (
             case None        => Success(AnyRef, Some(this)) //this is new {} case
           }
       }
-    }
   }
 
   override def processDeclarationsForTemplateBody(

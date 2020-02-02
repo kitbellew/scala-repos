@@ -97,16 +97,15 @@ private[deploy] class DriverRunner(
         }
 
         val state =
-          if (killed) {
+          if (killed)
             DriverState.KILLED
-          } else if (finalException.isDefined) {
+          else if (finalException.isDefined)
             DriverState.ERROR
-          } else {
+          else
             finalExitCode match {
               case Some(0) => DriverState.FINISHED
               case _       => DriverState.FAILED
             }
-          }
 
         finalState = Some(state)
 
@@ -128,9 +127,8 @@ private[deploy] class DriverRunner(
     */
   private def createWorkingDirectory(): File = {
     val driverDir = new File(workDir, driverId)
-    if (!driverDir.exists() && !driverDir.mkdirs()) {
+    if (!driverDir.exists() && !driverDir.mkdirs())
       throw new IOException("Failed to create directory " + driverDir)
-    }
     driverDir
   }
 
@@ -160,10 +158,9 @@ private[deploy] class DriverRunner(
         useCache = false)
     }
 
-    if (!localJarFile.exists()) { // Verify copy succeeded
+    if (!localJarFile.exists()) // Verify copy succeeded
       throw new Exception(
         s"Did not see expected jar $jarFileName in $driverDir")
-    }
 
     localJarFilename
   }
@@ -205,18 +202,16 @@ private[deploy] class DriverRunner(
         "Launch Command: " + command.command.mkString("\"", "\" \"", "\""))
 
       synchronized {
-        if (killed) {
+        if (killed)
           return
-        }
         process = Some(command.start())
         initialize(process.get)
       }
 
       val processStart = clock.getTimeMillis()
       val exitCode = process.get.waitFor()
-      if (clock.getTimeMillis() - processStart > successfulRunDuration * 1000) {
+      if (clock.getTimeMillis() - processStart > successfulRunDuration * 1000)
         waitSeconds = 1
-      }
 
       if (supervise && exitCode != 0 && !killed) {
         logInfo(

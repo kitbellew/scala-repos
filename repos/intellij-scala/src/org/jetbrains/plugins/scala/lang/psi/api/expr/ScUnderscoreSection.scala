@@ -124,11 +124,10 @@ object ScUnderScoreSectionUtil {
           var i = 0
           while (i < children.length) {
             val in = inner(children(i))
-            if (in.length > 1) {
+            if (in.length > 1)
               res ++= in
-            } else if (in.length == 1) {
+            else if (in.length == 1)
               res += in(0)
-            }
             i += 1
           }
           res.toSeq

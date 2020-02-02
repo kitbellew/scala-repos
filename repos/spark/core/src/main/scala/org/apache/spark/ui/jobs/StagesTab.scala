@@ -45,9 +45,8 @@ private[ui] class StagesTab(parent: SparkUI)
         Option(request.getParameter("terminate")).getOrElse("false").toBoolean
       val stageId = Option(request.getParameter("id")).getOrElse("-1").toInt
       if (stageId >= 0 && killFlag && progressListener.activeStages.contains(
-            stageId)) {
+            stageId))
         sc.get.cancelStage(stageId)
-      }
       // Do a quick pause here to give Spark time to kill the stage so it shows up as
       // killed after the refresh. Note that this will block the serving thread so the
       // time should be limited in duration.

@@ -92,7 +92,7 @@ private[ui] class LogPage(parent: WorkerWebUI)
     }</span>
 
     val backButton =
-      if (startByte > 0) {
+      if (startByte > 0)
         <a href={
           "?%s&logType=%s&offset=%s&byteLength=%s"
             .format(
@@ -105,14 +105,13 @@ private[ui] class LogPage(parent: WorkerWebUI)
             Previous {Utils.bytesToString(math.min(byteLength, startByte))}
           </button>
         </a>
-      } else {
+      else
         <button type="button" class="btn btn-default" disabled="disabled">
           Previous 0 B
         </button>
-      }
 
     val nextButton =
-      if (endByte < logLength) {
+      if (endByte < logLength)
         <a href={
           "?%s&logType=%s&offset=%s&byteLength=%s".format(
             params,
@@ -126,11 +125,10 @@ private[ui] class LogPage(parent: WorkerWebUI)
         }
           </button>
         </a>
-      } else {
+      else
         <button type="button" class="btn btn-default" disabled="disabled">
           Next 0 B
         </button>
-      }
 
     val content =
       <html>
@@ -158,20 +156,18 @@ private[ui] class LogPage(parent: WorkerWebUI)
       byteLength: Int
   ): (String, Long, Long, Long) = {
 
-    if (!supportedLogTypes.contains(logType)) {
+    if (!supportedLogTypes.contains(logType))
       return (
         "Error: Log type must be one of " + supportedLogTypes.mkString(", "),
         0,
         0,
         0)
-    }
 
     // Verify that the normalized path of the log directory is in the working directory
     val normalizedUri = new File(logDirectory).toURI.normalize()
     val normalizedLogDir = new File(normalizedUri.getPath)
-    if (!Utils.isInDirectory(workDir, normalizedLogDir)) {
+    if (!Utils.isInDirectory(workDir, normalizedLogDir))
       return ("Error: invalid log directory " + logDirectory, 0, 0, 0)
-    }
 
     try {
       val files =
@@ -182,13 +178,12 @@ private[ui] class LogPage(parent: WorkerWebUI)
       val totalLength = files.map { _.length }.sum
       val offset = offsetOption.getOrElse(totalLength - byteLength)
       val startIndex = {
-        if (offset < 0) {
+        if (offset < 0)
           0L
-        } else if (offset > totalLength) {
+        else if (offset > totalLength)
           totalLength
-        } else {
+        else
           offset
-        }
       }
       val endIndex = math.min(startIndex + byteLength, totalLength)
       logDebug(s"Getting log from $startIndex to $endIndex")

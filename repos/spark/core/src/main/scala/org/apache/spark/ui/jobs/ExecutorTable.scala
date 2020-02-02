@@ -61,40 +61,35 @@ private[ui] class ExecutorTable(
         <th>Failed Tasks</th>
         <th>Succeeded Tasks</th>
         {
-      if (hasInput) {
+      if (hasInput)
         <th>
             <span data-toggle="tooltip" title={ToolTips.INPUT}>Input Size / Records</span>
           </th>
-      }
     }
         {
-      if (hasOutput) {
+      if (hasOutput)
         <th>
             <span data-toggle="tooltip" title={ToolTips.OUTPUT}>Output Size / Records</span>
           </th>
-      }
     }
         {
-      if (hasShuffleRead) {
+      if (hasShuffleRead)
         <th>
             <span data-toggle="tooltip" title={ToolTips.SHUFFLE_READ}>
             Shuffle Read Size / Records</span>
           </th>
-      }
     }
         {
-      if (hasShuffleWrite) {
+      if (hasShuffleWrite)
         <th>
             <span data-toggle="tooltip" title={ToolTips.SHUFFLE_WRITE}>
             Shuffle Write Size / Records</span>
           </th>
-      }
     }
         {
-      if (hasBytesSpilled) {
+      if (hasBytesSpilled)
         <th>Shuffle Spill (Memory)</th>
           <th>Shuffle Spill (Disk)</th>
-      }
     }
       </thead>
       <tbody>
@@ -137,46 +132,41 @@ private[ui] class ExecutorTable(
             <td>{v.failedTasks}</td>
             <td>{v.succeededTasks}</td>
             {
-              if (stageData.hasInput) {
+              if (stageData.hasInput)
                 <td sorttable_customkey={v.inputBytes.toString}>
                 {s"${Utils.bytesToString(v.inputBytes)} / ${v.inputRecords}"}
               </td>
-              }
             }
             {
-              if (stageData.hasOutput) {
+              if (stageData.hasOutput)
                 <td sorttable_customkey={v.outputBytes.toString}>
                 {s"${Utils.bytesToString(v.outputBytes)} / ${v.outputRecords}"}
               </td>
-              }
             }
             {
-              if (stageData.hasShuffleRead) {
+              if (stageData.hasShuffleRead)
                 <td sorttable_customkey={v.shuffleRead.toString}>
                 {
                   s"${Utils.bytesToString(v.shuffleRead)} / ${v.shuffleReadRecords}"
                 }
               </td>
-              }
             }
             {
-              if (stageData.hasShuffleWrite) {
+              if (stageData.hasShuffleWrite)
                 <td sorttable_customkey={v.shuffleWrite.toString}>
                 {
                   s"${Utils.bytesToString(v.shuffleWrite)} / ${v.shuffleWriteRecords}"
                 }
               </td>
-              }
             }
             {
-              if (stageData.hasBytesSpilled) {
+              if (stageData.hasBytesSpilled)
                 <td sorttable_customkey={v.memoryBytesSpilled.toString}>
                 {Utils.bytesToString(v.memoryBytesSpilled)}
               </td>
               <td sorttable_customkey={v.diskBytesSpilled.toString}>
                 {Utils.bytesToString(v.diskBytesSpilled)}
               </td>
-              }
             }
           </tr>
         }

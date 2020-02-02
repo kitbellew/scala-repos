@@ -65,9 +65,8 @@ private[v1] class OneStageResource(ui: SparkUI) {
       : TaskMetricDistributions =
     withStageAttempt(stageId, stageAttemptId) { stage =>
       val quantiles = quantileString.split(",").map { s =>
-        try {
-          s.toDouble
-        } catch {
+        try s.toDouble
+        catch {
           case nfe: NumberFormatException =>
             throw new BadParameterException("quantiles", "double", s)
         }
@@ -101,11 +100,10 @@ private[v1] class OneStageResource(ui: SparkUI) {
 
   private def withStage[T](stageId: Int)(f: Seq[StageStatusInfoUi] => T): T = {
     val stageAttempts = findStageStatusUIData(ui.jobProgressListener, stageId)
-    if (stageAttempts.isEmpty) {
+    if (stageAttempts.isEmpty)
       throw new NotFoundException("unknown stage: " + stageId)
-    } else {
+    else
       f(stageAttempts)
-    }
   }
 
   private def findStageStatusUIData(

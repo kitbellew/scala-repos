@@ -69,15 +69,13 @@ object SoftReferenceCache {
     terminated = true;
 
   private def processQueue {
-    while (!terminated) {
+    while (!terminated)
       tryo {
         // Wait 30 seconds for something to appear in the queue.
         val sftVal = refQueue.remove(30000).asInstanceOf[SoftValue[_, _]];
-        if (sftVal != null) {
+        if (sftVal != null)
           sftVal.cache.remove(sftVal.key);
-        }
       }
-    }
   }
 }
 
@@ -103,11 +101,8 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
   private def lock[T](l: Lock)(block: => T): T = {
     l.lock
 
-    try {
-      block
-    } finally {
-      l.unlock
-    }
+    try block
+    finally l.unlock
   }
 
   /**
@@ -150,11 +145,10 @@ class SoftReferenceCache[K, V](cacheSize: Int) {
     */
   def +=(tuple: (K, V)*) = {
     lock(writeLock) {
-      for (t <- tuple) yield {
-        cache.put(
+      for (t <- tuple)
+        yield cache.put(
           t._1,
           new SoftValue(t._1, t._2, this, SoftReferenceCache.refQueue));
-      }
     }
     this
   }

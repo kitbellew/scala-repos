@@ -65,20 +65,12 @@ object SqlToSlick extends App {
         try {
 
           val rs = stmt.executeQuery("select ID, NAME, AGE from PERSON")
-          try {
-            while (rs.next()) {
-              people += ((rs.getInt(1), rs.getString(2), rs.getInt(3)))
-            }
-          } finally {
-            rs.close()
-          }
+          try while (rs.next())
+            people += ((rs.getInt(1), rs.getString(2), rs.getInt(3)))
+          finally rs.close()
 
-        } finally {
-          stmt.close()
-        }
-      } finally {
-        conn.close()
-      }
+        } finally stmt.close()
+      } finally conn.close()
       //#jdbc
       people
     }
@@ -391,11 +383,10 @@ object SqlToSlick extends App {
           """.as[Person]
           //#sqlQueryInSet
         }
-        val slick = {
+        val slick =
           //#slickQueryInSet
           people.filter(_.id inSet Set(1, 2)).result
-          //#slickQueryInSet
-        }
+        //#slickQueryInSet
         val (sqlRes, slickRes) =
           Await.result(db.run(sql zip slick), Duration.Inf)
         assert(sqlRes == slickRes)
@@ -452,19 +443,17 @@ object SqlToSlick extends App {
           people.map(p => (p.name, p.age, p.addressId)) += ("M Odersky", 12345, 1)
           //#slickQueryInsert
         }
-        val slickUpdate = {
+        val slickUpdate =
           //#slickQueryUpdate
           people
             .filter(_.name === "M Odersky")
             .map(p => (p.name, p.age))
             .update(("M. Odersky", 54321))
-          //#slickQueryUpdate
-        }
-        val slickDelete = {
+        //#slickQueryUpdate
+        val slickDelete =
           //#slickQueryDelete
           people.filter(p => p.name === "M. Odersky").delete
-          //#slickQueryDelete
-        }
+        //#slickQueryDelete
         val (sqlInsertRes, slickInsertRes) =
           Await.result(db.run(sqlInsert zip slickInsert), Duration.Inf)
         assert(sqlInsertRes == slickInsertRes)

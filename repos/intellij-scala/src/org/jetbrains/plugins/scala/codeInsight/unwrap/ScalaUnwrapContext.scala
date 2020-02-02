@@ -26,20 +26,18 @@ class ScalaUnwrapContext extends AbstractUnwrapper.AbstractContext {
   def insertNewLine() {
     val lastExtracted = myElementsToExtract.get(myElementsToExtract.size() - 1)
     val newLine = ScalaPsiElementFactory.createNewLine(lastExtracted.getManager)
-    if (myIsEffective && lastExtracted.isValid) {
+    if (myIsEffective && lastExtracted.isValid)
       lastExtracted.getParent.addAfter(newLine, lastExtracted)
-    }
   }
 
   def setElseBranch(ifStmt: ScIfStmt, expr: ScExpression) {
-    if (myIsEffective) {
+    if (myIsEffective)
       ifStmt.elseBranch match {
         case Some(oldExpr) =>
           val replaced = oldExpr.replace(expr.copy())
           addElementToExtract(replaced)
         case _ =>
       }
-    }
   }
 
   def setIsEffective(value: Boolean): Unit =

@@ -253,10 +253,9 @@ private[changeSignature] case class OldArgsInfo(
     args: Seq[ScExpression],
     namedElement: PsiNamedElement) {
 
-  val byOldParameterIndex = {
+  val byOldParameterIndex =
     args
       .groupBy(a => ScalaPsiUtil.parameterOf(a).fold(-1)(_.index))
       .updated(-1, Seq.empty)
-  }
 
 }

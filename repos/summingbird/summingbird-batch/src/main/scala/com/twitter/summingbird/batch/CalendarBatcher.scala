@@ -52,12 +52,11 @@ object CalendarBatcher {
       while (toCnt != 0L) {
         // the biggest part of this that fits in an Int
         def next(v: Long): Long =
-          if (v < 0) {
+          if (v < 0)
             // max is towards zero
             Int.MinValue.toLong max v
-          } else {
+          else
             Int.MaxValue.toLong min v
-          }
         val thisCnt = next(toCnt)
         toCnt -= thisCnt
         start.add(javaIntValue, thisCnt.toInt)

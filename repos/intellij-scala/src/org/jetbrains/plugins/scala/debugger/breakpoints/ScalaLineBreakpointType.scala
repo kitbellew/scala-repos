@@ -59,9 +59,8 @@ class ScalaLineBreakpointType
       line: Int,
       @NotNull project: Project): Boolean = {
     val psiFile: PsiFile = PsiManager.getInstance(project).findFile(file)
-    if (psiFile == null || !psiFile.getLanguage.is(ScalaLanguage.Instance)) {
+    if (psiFile == null || !psiFile.getLanguage.is(ScalaLanguage.Instance))
       return false
-    }
     val document: Document = FileDocumentManager.getInstance.getDocument(file)
     if (document == null) return false
 
@@ -173,11 +172,10 @@ class ScalaLineBreakpointType
             case breakpointImpl: XLineBreakpointImpl[_] =>
               dumbService.smartInvokeLater {
                 executeOnPooledThread {
-                  if (lineBp.isValid) {
+                  if (lineBp.isValid)
                     inReadAction(
                       getContainingMethod(lineBp)
                     ) //populating caches outside edt
-                  }
                   invokeLater {
                     if (breakpointImpl.isValid) {
                       breakpointImpl.getHighlighter.dispose()
@@ -195,12 +193,12 @@ class ScalaLineBreakpointType
 
   private def lambdaOrdinal(breakpoint: LineBreakpoint[_]): Integer = {
     val xBreakpoint = breakpoint.getXBreakpoint
-    if (xBreakpoint != null) {
+    if (xBreakpoint != null)
       xBreakpoint.getProperties match {
         case jp: JavaLineBreakpointProperties => jp.getLambdaOrdinal
         case _                                => null
       }
-    } else null
+    else null
   }
 
   override def getPriority: Int = super.getPriority + 1
@@ -223,7 +221,7 @@ class ScalaLineBreakpointType
 
     override def getText: String =
       if (isLambda) super.getText
-      else {
+      else
         element match {
           case c: ScClass => s"constructor of ${c.name}"
           case ed: ScEarlyDefinitions =>
@@ -236,7 +234,6 @@ class ScalaLineBreakpointType
           case f: ScalaFile => "line in containing file"
           case _            => "line in containing block"
         }
-      }
 
   }
 }

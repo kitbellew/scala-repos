@@ -67,24 +67,20 @@ class DensePolynomialTest extends FunSuite {
     val x = DenseMatrix.zeros[Double](M, M)
     cfor(0)(i => i < M, i => i + 1) { i => //   x is matrix with 1's just below the diagonal
       cfor(0)(j => j < M, j => j + 1) { j => // so x*x is matrix with row of 1's 2 below the diagonal, etc
-        if (j == i - 1) {
+        if (j == i - 1)
           x.update(i, j, 1.0)
-        }
       }
     }
 
     val expectedResult = DenseMatrix.zeros[Double](M, M) // expected result easy to compute
     cfor(0)(i => i < M, i => i + 1) { i =>
       cfor(0)(j => j < M, j => j + 1) { j =>
-        if (j == i) {
+        if (j == i)
           expectedResult.update(i, j, 1.0)
-        }
-        if (j == i - 1) {
+        if (j == i - 1)
           expectedResult.update(i, j, 2.0)
-        }
-        if (j == i - 2) {
+        if (j == i - 2)
           expectedResult.update(i, j, 4.0)
-        }
       }
     }
     val diff = p(x) - expectedResult

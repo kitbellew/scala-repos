@@ -236,9 +236,8 @@ class StringTest {
     "asdf_foo".getChars(2, 6, trg, 3)
     val exp = Array(0, 0, 0, 'd', 'f', '_', 'f', 0, 0, 0)
 
-    for ((i, e) <- trg zip exp) {
+    for ((i, e) <- trg zip exp)
       assertEquals(e, i.toInt)
-    }
   }
   @Test def concat(): Unit =
     assertEquals("asdffdsa", "asdf".concat("fdsa"))

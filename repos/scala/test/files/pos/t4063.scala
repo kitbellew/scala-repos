@@ -31,11 +31,10 @@ object Test {
     //map.synchronized[CIterableLike[Any, _] with Parallelizable[PIterableLike[Any, _]]] {
 
     map.synchronized {
-      if (x == 0) {
+      if (x == 0)
         map
-      } else {
+      else
         set
-      }
     }
 
   }

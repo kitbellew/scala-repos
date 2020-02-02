@@ -226,15 +226,13 @@ trait Emitter
         dispatches: Set[ast.Dispatch]): EmitterState = {
       val optState =
         for (const <- expr.constrainingExpr if !(const equalsIgnoreLoc expr))
-          yield {
-            if (expr.children exists { _.constrainingExpr == Some(const) })
+          yield
+            if (expr.children exists _.constrainingExpr == Some(const))
               None
-            else {
+            else
               Some(
                 emitExpr(const, dispatches) >> emitInstr(Dup) >> emitInstr(
                   Map2Match(Eq)) >> emitInstr(FilterMatch))
-            }
-          }
 
       optState flatMap identity getOrElse mzero[EmitterState]
     }
@@ -320,9 +318,8 @@ trait Emitter
         val state = if (e.groups contains where) {
           val id = e.groups(where)
           emitOrDup(MarkGroup(where))(emitInstr(PushGroup(id)))
-        } else {
+        } else
           emitFilter(left, right, dispatches)
-        }
 
         state(e)
       }
@@ -346,7 +343,7 @@ trait Emitter
           contextualDispatches,
           dispatches) >> emitInstr(MergeBuckets(true))
 
-      case buckets.Group(origin, target, forest, dtrace) => {
+      case buckets.Group(origin, target, forest, dtrace) =>
         nextId { id =>
           val context = generateContext(target, contextualDispatches, dtrace)
 
@@ -357,9 +354,8 @@ trait Emitter
             (origin map { labelGroup(_, id) } getOrElse mzero[EmitterState]) >>
             emitInstr(Group(id))
         }
-      }
 
-      case buckets.UnfixedSolution(name, solution, dtrace) => {
+      case buckets.UnfixedSolution(name, solution, dtrace) =>
         val context = generateContext(solution, contextualDispatches, dtrace)
 
         def state(id: Int) =
@@ -373,34 +369,30 @@ trait Emitter
           val s =
             if (e.keyParts contains (solve -> name))
               state(e.keyParts(solve -> name))
-            else {
+            else
               nextId { id =>
                 state(id) >>
                   (StateT.apply[Id, Emission, Unit] { e =>
                     (e.copy(keyParts = e.keyParts + ((solve, name) -> id)), ())
                   })
               }
-            }
 
           s(e)
         }
-      }
 
-      case buckets.FixedSolution(_, solution, expr, dtrace) => {
+      case buckets.FixedSolution(_, solution, expr, dtrace) =>
         val context = generateContext(solution, contextualDispatches, dtrace)
 
         prepareContext(context, dispatches) { dispatches =>
           emitMap(solution, expr, Eq, dispatches)
         } >> emitInstr(Extra)
-      }
 
-      case buckets.Extra(expr, dtrace) => {
+      case buckets.Extra(expr, dtrace) =>
         val context = generateContext(expr, contextualDispatches, dtrace)
 
         prepareContext(context, dispatches) { dispatches =>
           emitExpr(expr, dispatches)
         } >> emitInstr(Extra)
-      }
     }
 
     def generateContext(
@@ -410,30 +402,27 @@ trait Emitter
       val candidates: Set[List[ast.Dispatch]] = contextualDispatches(target)
       val dtracePrefix = dtrace.reverse
 
-      if (!(candidates forall { _.isEmpty })) {
+      if (!(candidates forall { _.isEmpty }))
         candidates map { _.reverse } find { c =>
           (c zip dtracePrefix takeWhile { case (a, b) => a == b } map { _._2 }) == dtracePrefix
         } getOrElse Nil
-      } else {
+      else
         Nil
-      }
     }
 
     def prepareContext(
         context: List[ast.Dispatch],
         dispatches: Set[ast.Dispatch])(
         f: Set[ast.Dispatch] => EmitterState): EmitterState = context match {
-      case d :: tail => {
+      case d :: tail =>
         d.binding match {
-          case LetBinding(let) => {
+          case LetBinding(let) =>
             emitDispatch(d, let, dispatches) { dispatches =>
               prepareContext(tail, dispatches)(f)
             }
-          }
 
           case _ => prepareContext(tail, dispatches)(f)
         }
-      }
 
       case Nil => f(dispatches)
     }
@@ -444,7 +433,7 @@ trait Emitter
       // if `provs` has size one, we should not emit a join instruction
       provs.tail.foldLeft(
         (provs.head.possibilities, Vector.empty[EmitterState])) {
-        case ((provAcc, instrAcc), prov) => {
+        case ((provAcc, instrAcc), prov) =>
           val joinInstr = StateT.apply[Id, Emission, Unit] { e =>
             val resolvedProv = e.subResolve(prov)
             val resolvedProvAcc = provAcc.map(e.subResolve)
@@ -461,7 +450,6 @@ trait Emitter
 
           val resultProv = provAcc ++ prov.possibilities
           (resultProv, instrAcc :+ joinInstr)
-        }
       }
 
     def emitDispatch(
@@ -520,7 +508,7 @@ trait Emitter
 
             val contextualDispatches: Map[Expr, Set[List[ast.Dispatch]]] =
               btraces map {
-                case (key, pairPaths) => {
+                case (key, pairPaths) =>
                   val paths: List[List[Expr]] = pairPaths map { pairs =>
                     pairs map { _._2 }
                   }
@@ -535,7 +523,6 @@ trait Emitter
                   } toSet
 
                   key -> innerDispatches
-                }
               }
 
             emitBucketSpec(expr, spec, contextualDispatches, dispatches) >>
@@ -560,9 +547,9 @@ trait Emitter
           case ast.Relate(_, _, _, in) =>
             emitExpr(in, dispatches)
 
-          case t @ ast.TicVar(_, name) => {
+          case t @ ast.TicVar(_, name) =>
             t.binding match {
-              case SolveBinding(solve) => {
+              case SolveBinding(solve) =>
                 emitOrDup(MarkTicVar(solve, name)) {
                   StateT.apply[Id, Emission, Unit] { e =>
                     e.ticVars((solve, name))(
@@ -570,11 +557,9 @@ trait Emitter
                     ) // assert: this will work iff lexical scoping is working
                   }
                 }
-              }
 
               case _ => notImpl(expr)
             }
-          }
 
           case ast.StrLit(_, value) =>
             emitInstr(PushString(value))
@@ -597,7 +582,7 @@ trait Emitter
           case ast.ObjectDef(_, Vector()) =>
             emitInstr(PushObject)
 
-          case ast.ObjectDef(_, props) => {
+          case ast.ObjectDef(_, props) =>
             def fieldToObjInstr(t: (String, Expr)) =
               emitInstr(PushString(t._1)) >> emitExpr(t._2, dispatches) >> emitInstr(
                 Map2Cross(WrapObject))
@@ -628,12 +613,11 @@ trait Emitter
               createJoins(NEL(provs.head, provs.tail: _*), JoinObject)
 
             reduce(groups ++ joins)
-          }
 
           case ast.ArrayDef(_, Vector()) =>
             emitInstr(PushArray)
 
-          case ast.ArrayDef(_, values) => {
+          case ast.ArrayDef(_, values) =>
             val indexedValues = values.zipWithIndex
 
             val provToElements = indexedValues
@@ -644,7 +628,7 @@ trait Emitter
 
             val (groups, indices) = provToElements.foldLeft(
               (Vector.empty[EmitterState], Vector.empty[Int])) {
-              case ((allStates, allIndices), (provenance, elements)) => {
+              case ((allStates, allIndices), (provenance, elements)) =>
                 val singles = elements.map {
                   case (expr, _) =>
                     emitExpr(expr, dispatches) >> emitInstr(Map1(WrapArray))
@@ -661,7 +645,6 @@ trait Emitter
                 val joins = Vector.fill(singles.length - 1)(joinInstr)
 
                 (allStates ++ (singles ++ joins), allIndices ++ indices)
-              }
             }
 
             val (_, joins) =
@@ -674,7 +657,7 @@ trait Emitter
 
             val (_, swaps) = indices.zipWithIndex.foldLeft(
               (Map[Int, Int](), mzero[EmitterState])) {
-              case ((remap, state), (j, i)) if resolve(remap)(i) != j => {
+              case ((remap, state), (j, i)) if resolve(remap)(i) != j =>
                 // swap(i')
                 // swap(j)
                 // swap(i')
@@ -682,29 +665,27 @@ trait Emitter
                 val i2 = resolve(remap)(i)
 
                 val state2 = {
-                  if (j == 0) { //required for correctness
+                  if (j == 0) //required for correctness
                     emitInstr(PushNum(i2.toString)) >> emitInstr(
                       Map2Cross(ArraySwap))
-                  } else if (i2 == 0) { //not required for correctness, but nice simplification
+                  else if (i2 == 0) //not required for correctness, but nice simplification
                     emitInstr(PushNum(j.toString)) >> emitInstr(
                       Map2Cross(ArraySwap))
-                  } else {
+                  else {
                     val swps = (i2 :: j :: i2 :: Nil)
                     swps map { idx =>
                       emitInstr(PushNum(idx.toString)) >> emitInstr(
                         Map2Cross(ArraySwap))
-                    } reduce { _ >> _ }
+                    } reduce _ >> _
                   }
                 }
 
                 (remap + (j -> i2), state >> state2)
-              }
 
               case (pair, _) => pair
             }
 
             joined >> swaps
-          }
 
           case ast.Descent(_, child, property) =>
             emitMapState(
@@ -725,7 +706,7 @@ trait Emitter
           case ast.Deref(_, left, right) =>
             emitMap(left, right, DerefArray, dispatches)
 
-          case d @ ast.Dispatch(_, name, actuals) => {
+          case d @ ast.Dispatch(_, name, actuals) =>
             d.binding match {
               case LoadBinding =>
                 emitExpr(actuals.head, dispatches) >> emitInstr(AbsoluteLoad)
@@ -771,7 +752,7 @@ trait Emitter
                   dispatches)
 
               case LetBinding(let @ ast.Let(_, id, params, left, right)) =>
-                if (params.length > 0) {
+                if (params.length > 0)
                   emitOrDup(MarkDispatch(let, actuals)) {
                     // Don't let dispatch add marks inside the function - could mark expressions that include formals
                     // Run the StateT and preserve its marks
@@ -783,14 +764,12 @@ trait Emitter
                       (e2.copy(marks = e.marks), ())
                     }
                   }
-                } else {
+                else
                   emitOrDup(MarkExpr(left))(emitExpr(left, dispatches + d))
-                }
 
               case NullBinding =>
                 notImpl(expr)
             }
-          }
 
           case ast.Cond(_, pred, left, right) =>
             // if a then b else c

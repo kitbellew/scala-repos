@@ -41,15 +41,14 @@ object Scheduler {
       initialDelay: Long,
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
-    try {
-      service
-        .scheduleAtFixedRate(
-          new Runnable { def run = receiver ! message },
-          initialDelay,
-          delay,
-          timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
-    } catch {
+    try service
+      .scheduleAtFixedRate(
+        new Runnable { def run = receiver ! message },
+        initialDelay,
+        delay,
+        timeUnit)
+      .asInstanceOf[ScheduledFuture[AnyRef]]
+    catch {
       case e: Exception =>
         val error = SchedulerException(
           message + " could not be scheduled on " + receiver,
@@ -78,11 +77,10 @@ object Scheduler {
       initialDelay: Long,
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
-    try {
-      service
-        .scheduleAtFixedRate(runnable, initialDelay, delay, timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
-    } catch {
+    try service
+      .scheduleAtFixedRate(runnable, initialDelay, delay, timeUnit)
+      .asInstanceOf[ScheduledFuture[AnyRef]]
+    catch {
       case e: Exception =>
         val error = SchedulerException("Failed to schedule a Runnable", e)
         EventHandler.error(error, this, error.getMessage)
@@ -97,14 +95,10 @@ object Scheduler {
       message: AnyRef,
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
-    try {
-      service
-        .schedule(
-          new Runnable { def run = receiver ! message },
-          delay,
-          timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
-    } catch {
+    try service
+      .schedule(new Runnable { def run = receiver ! message }, delay, timeUnit)
+      .asInstanceOf[ScheduledFuture[AnyRef]]
+    catch {
       case e: Exception =>
         val error = SchedulerException(
           message + " could not be scheduleOnce'd on " + receiver,
@@ -131,11 +125,10 @@ object Scheduler {
       runnable: Runnable,
       delay: Long,
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] =
-    try {
-      service
-        .schedule(runnable, delay, timeUnit)
-        .asInstanceOf[ScheduledFuture[AnyRef]]
-    } catch {
+    try service
+      .schedule(runnable, delay, timeUnit)
+      .asInstanceOf[ScheduledFuture[AnyRef]]
+    catch {
       case e: Exception =>
         val error = SchedulerException("Failed to scheduleOnce a Runnable", e)
         EventHandler.error(e, this, error.getMessage)

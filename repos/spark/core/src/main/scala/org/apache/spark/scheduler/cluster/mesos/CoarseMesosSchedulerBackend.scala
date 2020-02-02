@@ -93,11 +93,10 @@ private[spark] class CoarseMesosSchedulerBackend(
     * the real initial limit later.
     */
   private var executorLimitOption: Option[Int] = {
-    if (Utils.isDynamicAllocationEnabled(conf)) {
+    if (Utils.isDynamicAllocationEnabled(conf))
       Some(0)
-    } else {
+    else
       None
-    }
   }
 
   /**
@@ -123,11 +122,10 @@ private[spark] class CoarseMesosSchedulerBackend(
 
   // A client for talking to the external shuffle service
   private val mesosExternalShuffleClient: Option[MesosExternalShuffleClient] = {
-    if (shuffleServiceEnabled) {
+    if (shuffleServiceEnabled)
       Some(getShuffleClient())
-    } else {
+    else
       None
-    }
   }
 
   // This method is factored out for testability
@@ -248,14 +246,13 @@ private[spark] class CoarseMesosSchedulerBackend(
   }
 
   protected def driverURL: String =
-    if (conf.contains("spark.testing")) {
+    if (conf.contains("spark.testing"))
       "driverURL"
-    } else {
+    else
       RpcEndpointAddress(
         conf.get("spark.driver.host"),
         conf.get("spark.driver.port").toInt,
         CoarseGrainedSchedulerBackend.ENDPOINT_NAME).toString
-    }
 
   override def offerRescinded(d: SchedulerDriver, o: OfferID) {}
 
@@ -513,11 +510,10 @@ private[spark] class CoarseMesosSchedulerBackend(
         if (TaskState.isFailed(state)) {
           slave.taskFailures += 1
 
-          if (slave.taskFailures >= MAX_SLAVE_FAILURES) {
+          if (slave.taskFailures >= MAX_SLAVE_FAILURES)
             logInfo(
               s"Blacklisting Mesos slave $slaveId due to too many failures; " +
                 "is Spark installed on it?")
-          }
         }
         executorTerminated(
           d,
@@ -552,23 +548,20 @@ private[spark] class CoarseMesosSchedulerBackend(
 
     // slaveIdsWithExecutors has no memory barrier, so this is eventually consistent
     while (numExecutors() > 0 &&
-           System.nanoTime() - startTime < shutdownTimeoutMS * 1000L * 1000L) {
+           System.nanoTime() - startTime < shutdownTimeoutMS * 1000L * 1000L)
       Thread.sleep(100)
-    }
 
-    if (numExecutors() > 0) {
+    if (numExecutors() > 0)
       logWarning(
         s"Timed out waiting for ${numExecutors()} remaining executors "
           + s"to terminate within $shutdownTimeoutMS ms. This may leave temporary files "
           + "on the mesos nodes.")
-    }
 
     // Close the mesos external shuffle client if used
     mesosExternalShuffleClient.foreach(_.close())
 
-    if (mesosDriver != null) {
+    if (mesosDriver != null)
       mesosDriver.stop()
-    }
   }
 
   override def frameworkMessage(

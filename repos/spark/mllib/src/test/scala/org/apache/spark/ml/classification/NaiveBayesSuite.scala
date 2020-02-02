@@ -104,7 +104,7 @@ class NaiveBayesSuite
       model: NaiveBayesModel,
       modelType: String): Unit =
     featureAndProbabilities.collect().foreach {
-      case Row(features: Vector, probability: Vector) => {
+      case Row(features: Vector, probability: Vector) =>
         assert(probability.toArray.sum ~== 1.0 relTol 1.0e-10)
         val expected = modelType match {
           case Multinomial =>
@@ -115,7 +115,6 @@ class NaiveBayesSuite
             throw new UnknownError(s"Invalid modelType: $modelType.")
         }
         assert(probability ~== expected relTol 1.0e-10)
-      }
     }
 
   test("params") {

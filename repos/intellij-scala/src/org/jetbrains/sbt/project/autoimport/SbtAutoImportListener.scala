@@ -33,7 +33,7 @@ class SbtAutoImportListener(project: Project) extends VirtualFileAdapter {
         .getInstance(project)
         .getLinkedProjectSettings(project.getBasePath))
 
-    if (settings.fold(false)(_.useOurOwnAutoImport) && isBuildFile(file)) {
+    if (settings.fold(false)(_.useOurOwnAutoImport) && isBuildFile(file))
       ApplicationManager.getApplication.invokeLater(new Runnable() {
         override def run(): Unit =
           ExternalSystemUtil.refreshProjects(
@@ -42,7 +42,6 @@ class SbtAutoImportListener(project: Project) extends VirtualFileAdapter {
               .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC)
           )
       })
-    }
   }
 
   private def isBuildFile(file: VirtualFile): Boolean =

@@ -79,10 +79,10 @@ object DataFlow {
       self.timeout = timeoutMs
       def receive = {
         case s @ Set(v) =>
-          if (dataFlow.value.compareAndSet(None, Some(v.asInstanceOf[T]))) {
+          if (dataFlow.value.compareAndSet(None, Some(v.asInstanceOf[T])))
             while (dataFlow.blockedReaders.peek ne null)
               dataFlow.blockedReaders.poll ! s
-          } else
+          else
             throw new DataFlowVariableException(
               "Attempt to change data flow variable (from [" + dataFlow.value.get + "] to [" + v + "])")
         case Exit => self.stop()

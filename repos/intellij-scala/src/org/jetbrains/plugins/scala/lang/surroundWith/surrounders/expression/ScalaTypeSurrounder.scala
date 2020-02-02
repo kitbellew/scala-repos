@@ -42,12 +42,11 @@ class ScalaTypeSurrounder extends ScalaExpressionSurrounder {
         x.expr match {
           case Some(y: ScTypedStmt) =>
             y.typeElement match {
-              case Some(te: ScTypeElement) => {
+              case Some(te: ScTypeElement) =>
                 if (te.getText() == "Any")
                   te.getTextRange
                 else
                   defaultRange
-              }
               case _ => defaultRange
             }
           case _ => defaultRange

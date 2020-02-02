@@ -67,16 +67,15 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
 
     def toRow(d: Any) = new GenericInternalRow(Array[Any](d))
     val encoder = supportedScheme.encoder(tpe)
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       encoder.gatherCompressibilityStats(toRow(tpe.extract(input)), 0)
-    }
     input.rewind()
 
-    val compressedSize = if (encoder.compressedSize == 0) {
-      input.remaining()
-    } else {
-      encoder.compressedSize
-    }
+    val compressedSize =
+      if (encoder.compressedSize == 0)
+        input.remaining()
+      else
+        encoder.compressedSize
 
     (
       encoder.compress,
@@ -132,9 +131,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
         for (n <- 0L until iters) {
           compressedBuf.rewind.position(4)
           val decoder = scheme.decoder(compressedBuf, tpe)
-          while (decoder.hasNext) {
+          while (decoder.hasNext)
             decoder.next(rowBuf, 0)
-          }
         }
       })
     }
@@ -150,9 +148,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
       val rng = genLowerSkewData()
       () => (rng().toInt % 2).toByte
     }
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       testData.put(i * BOOLEAN.defaultSize, g())
-    }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // BOOLEAN Encode:                     Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
@@ -176,9 +173,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     val testData = allocateLocal(count * SHORT.defaultSize)
 
     val g1 = genLowerSkewData()
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       testData.putShort(i * SHORT.defaultSize, g1().toShort)
-    }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // SHORT Encode (Lower Skew):          Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
@@ -205,9 +201,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
       testData)
 
     val g2 = genHigherSkewData()
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       testData.putShort(i * SHORT.defaultSize, g2().toShort)
-    }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // SHORT Encode (Higher Skew):         Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
@@ -239,9 +234,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     val testData = allocateLocal(count * INT.defaultSize)
 
     val g1 = genLowerSkewData()
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       testData.putInt(i * INT.defaultSize, g1().toInt)
-    }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // INT Encode (Lower Skew):            Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
@@ -262,9 +256,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     runDecodeBenchmark("INT Decode (Lower Skew)", iters, count, INT, testData)
 
     val g2 = genHigherSkewData()
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       testData.putInt(i * INT.defaultSize, g2().toInt)
-    }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // INT Encode (Higher Skew):           Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
@@ -290,9 +283,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     val testData = allocateLocal(count * LONG.defaultSize)
 
     val g1 = genLowerSkewData()
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       testData.putLong(i * LONG.defaultSize, g1().toLong)
-    }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // LONG Encode (Lower Skew):           Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
@@ -313,9 +305,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     runDecodeBenchmark("LONG Decode (Lower Skew)", iters, count, LONG, testData)
 
     val g2 = genHigherSkewData()
-    for (i <- 0 until count) {
+    for (i <- 0 until count)
       testData.putLong(i * LONG.defaultSize, g2().toLong)
-    }
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // LONG Encode (Higher Skew):          Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative

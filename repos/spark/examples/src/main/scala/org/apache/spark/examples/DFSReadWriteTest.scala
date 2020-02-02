@@ -126,15 +126,14 @@ object DFSReadWriteTest {
 
     sc.stop()
 
-    if (localWordCount == dfsWordCount) {
+    if (localWordCount == dfsWordCount)
       println(
         s"Success! Local Word Count ($localWordCount) " +
           s"and DFS Word Count ($dfsWordCount) agree.")
-    } else {
+    else
       println(
         s"Failure! Local Word Count ($localWordCount) " +
           s"and DFS Word Count ($dfsWordCount) disagree.")
-    }
 
   }
 }

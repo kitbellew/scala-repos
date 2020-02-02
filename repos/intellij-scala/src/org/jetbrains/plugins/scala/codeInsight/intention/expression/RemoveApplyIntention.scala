@@ -71,11 +71,10 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       }
 
     def showErrorHint(hint: String) {
-      if (ApplicationManager.getApplication.isUnitTestMode) {
+      if (ApplicationManager.getApplication.isUnitTestMode)
         throw new RuntimeException(hint)
-      } else {
+      else
         HintManager.getInstance().showErrorHint(editor, hint)
-      }
     }
 
     val expr: ScMethodCall =
@@ -124,29 +123,26 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
             if (clazz.isDefined) {
               val signs = clazz.get.allSignatures
 
-              for (sign <- signs if !flag) {
+              for (sign <- signs if !flag)
                 sign.namedElement match {
                   case function: ScFunction =>
-                    if (function.name == name && resolved != function) {
+                    if (function.name == name && resolved != function)
                       flag = true
-                    } else if (resolved == function) {
+                    else if (resolved == function)
                       if (function.getParameterList.getParameters.length == 0) {
                         buf.append("()")
                         start = start + 2
                       }
-                    }
                   case method: PsiMethod =>
-                    if (method.name == name && resolved != method) {
+                    if (method.name == name && resolved != method)
                       flag = true
-                    } else if (resolved == method) {
+                    else if (resolved == method)
                       if (method.getParameterList.getParameters.isEmpty) {
                         buf.append("()")
                         start = start + 2
                       }
-                    }
                   case _ =>
                 }
-              }
             }
 
             if (flag) {

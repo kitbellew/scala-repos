@@ -168,9 +168,8 @@ class ScalaIntroduceParameterDialog(
     typeLabel.setLabelFor(typeCombobox)
     typeMap =
       ScalaRefactoringUtil.getCompatibleTypeNames(introduceData.possibleTypes)
-    for (typeName <- typeMap.keySet.asScala) {
+    for (typeName <- typeMap.keySet.asScala)
       JListCompatibility.addItem(typeCombobox, typeName)
-    }
     typeLabel.setDisplayedMnemonic('T')
     typeCombobox.addItemListener(new ItemListener {
       override def itemStateChanged(e: ItemEvent): Unit = {

@@ -433,11 +433,10 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     assertResolves(
       "hdfs:/jar1,file:/jar2,jar3,jar4#jar5,path to/jar6",
       s"hdfs:/jar1,file:/jar2,file:$cwd/jar3,file:$cwd/jar4#jar5,file:$cwd/path%20to/jar6")
-    if (Utils.isWindows) {
+    if (Utils.isWindows)
       assertResolves(
         """hdfs:/jar1,file:/jar2,jar3,C:\pi.py#py.pi,C:\path to\jar4""",
         s"hdfs:/jar1,file:/jar2,file:$cwd/jar3,file:/C:/pi.py#py.pi,file:/C:/path%20to/jar4")
-    }
   }
 
   test("nonLocalPaths") {
@@ -541,10 +540,9 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
       Utils.setLogLevel(org.apache.log4j.Level.ERROR)
       assert(!log.isInfoEnabled())
       assert(log.isErrorEnabled())
-    } finally {
-      // Best effort at undoing changes this test made.
-      Utils.setLogLevel(current)
-    }
+    } finally
+    // Best effort at undoing changes this test made.
+    Utils.setLogLevel(current)
   }
 
   test("deleteRecursively") {
@@ -589,9 +587,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
       val sparkConf = new SparkConf
       assert(sparkConf.getBoolean("spark.test.fileNameLoadA", false) === true)
       assert(sparkConf.getInt("spark.test.fileNameLoadB", 1) === 2)
-    } finally {
-      Utils.deleteRecursively(tmpDir)
-    }
+    } finally Utils.deleteRecursively(tmpDir)
   }
 
   test("timeIt with prepare") {
@@ -615,11 +611,10 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     Files.write("some text", sourceFile, StandardCharsets.UTF_8)
 
     val path =
-      if (Utils.isWindows) {
+      if (Utils.isWindows)
         new Path("file:/" + sourceDir.getAbsolutePath.replace("\\", "/"))
-      } else {
+      else
         new Path("file://" + sourceDir.getAbsolutePath)
-      }
     val conf = new Configuration()
     val fs = Utils.getHadoopFileSystem(path.toString, conf)
 
@@ -640,11 +635,10 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     assert(destInnerFile.isFile())
 
     val filePath =
-      if (Utils.isWindows) {
+      if (Utils.isWindows)
         new Path("file:/" + sourceFile.getAbsolutePath.replace("\\", "/"))
-      } else {
+      else
         new Path("file://" + sourceFile.getAbsolutePath)
-      }
     val testFileDir = new File(tempDir, "test-filename")
     val testFileName = "testFName"
     val testFilefs = Utils.getHadoopFileSystem(filePath.toString, conf)
@@ -855,10 +849,9 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
         val durationMs = System.currentTimeMillis() - startTimeMs
         assert(durationMs < 5000)
         assert(!pidExists(pid))
-      } finally {
-        // Forcibly kill the test process just in case.
-        signal(pid, "SIGKILL")
-      }
+      } finally
+      // Forcibly kill the test process just in case.
+      signal(pid, "SIGKILL")
 
       val versionParts = System.getProperty("java.version").split("[+.\\-]+", 3)
       var majorVersion = versionParts(0).toInt
@@ -889,9 +882,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
           val duration = System.currentTimeMillis() - start
           assert(duration < 5000)
           assert(!pidExists(pid))
-        } finally {
-          signal(pid, "SIGKILL")
-        }
+        } finally signal(pid, "SIGKILL")
       }
     }
   }

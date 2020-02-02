@@ -26,34 +26,24 @@ object ExportGraphics {
       height: Int,
       dpi: Int = 72) = {
     lazy val fos = new FileOutputStream(file)
-    if (file.getName.toLowerCase.endsWith(".png")) {
-      try {
-        writePNG(fos, draw, width, height, dpi)
-      } finally {
-        fos.close()
-      }
-    } else if (file.getName.toLowerCase.endsWith(".eps")) {
-      try {
-        writeEPS(fos, draw, width, height)
-      } finally {
-        fos.close()
-      }
-    } else if (file.getName.toLowerCase.endsWith(".pdf")) {
-      try {
-        writePDF(fos, draw, width, height)
-      } finally {
-        fos.close()
-      }
-//    } else if (file.getName.toLowerCase.endsWith(".svg")) {
+    if (file.getName.toLowerCase.endsWith(".png"))
+      try writePNG(fos, draw, width, height, dpi)
+      finally fos.close()
+    else if (file.getName.toLowerCase.endsWith(".eps"))
+      try writeEPS(fos, draw, width, height)
+      finally fos.close()
+    else if (file.getName.toLowerCase.endsWith(".pdf"))
+      try writePDF(fos, draw, width, height)
+      finally fos.close()
+    //    } else if (file.getName.toLowerCase.endsWith(".svg")) {
 //      try {
 //        writeSVG(fos,draw,width,height)
 //      } finally {
 //        fos.close()
 //      }
-    } else {
+    else
       throw new IOException(
         "Unrecognized file extension: should be png, svg, eps, or pdf")
-    }
   }
 
   /**
@@ -122,9 +112,7 @@ object ExportGraphics {
       g2d.dispose()
 
       cb.addTemplate(tp, 1, 0, 0, 1, 0, 0)
-    } finally {
-      document.close()
-    }
+    } finally document.close()
   }
 
 //  /**

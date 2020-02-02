@@ -47,11 +47,10 @@ object Comet extends DispatchSnippet with LazyLoggable {
   def containerForCometActor(
       cometActor: LiftCometActor,
       cometHtml: Box[NodeSeq] = Empty): NodeSeq = {
-    if (Props.devMode) {
+    if (Props.devMode)
       cometHtml.map { updatedHtml =>
         cometActor ! UpdateDefaultHtml(updatedHtml)
       }
-    }
 
     cometActor !? (cometActor.cometRenderTimeout, AskRender) match {
       case Full(AnswerRender(response, _, _, _)) if cometActor.hasOuter =>
@@ -102,28 +101,26 @@ object Comet extends DispatchSnippet with LazyLoggable {
         S.currentAttr("metaname").flatMap(S.param) or
         S.currentAttr("randomname").map(_ => Helpers.nextFuncName)
 
-    try {
-      theType match {
-        case Full(cometType) =>
-          S.findOrCreateComet(
-              cometType,
-              cometName,
-              cometHtml,
-              S.attrsFlattenToMap,
-              true)
-            .map { foundComet =>
-              containerForCometActor(foundComet, Full(cometHtml))
-            } match {
-            case Full(cometContainer) => cometContainer
+    try theType match {
+      case Full(cometType) =>
+        S.findOrCreateComet(
+            cometType,
+            cometName,
+            cometHtml,
+            S.attrsFlattenToMap,
+            true)
+          .map { foundComet =>
+            containerForCometActor(foundComet, Full(cometHtml))
+          } match {
+          case Full(cometContainer) => cometContainer
 
-            case failedResult =>
-              throw new CometNotFoundException(
-                s"Type: $cometType, name: $cometName; result was: $failedResult")
-          }
+          case failedResult =>
+            throw new CometNotFoundException(
+              s"Type: $cometType, name: $cometName; result was: $failedResult")
+        }
 
-        case _ =>
-          throw NoCometTypeException
-      }
+      case _ =>
+        throw NoCometTypeException
     } catch {
       case _: StateInStatelessException =>
         throw new StateInStatelessException(

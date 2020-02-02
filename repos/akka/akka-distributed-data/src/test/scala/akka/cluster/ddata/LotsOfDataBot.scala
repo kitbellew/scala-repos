@@ -107,13 +107,12 @@ class LotsOfDataBot extends Actor with ActorLogging {
         if (count <= 100)
           replicator ! Subscribe(key, self)
         val s = ThreadLocalRandom.current().nextInt(97, 123).toChar.toString
-        if (count <= maxEntries || ThreadLocalRandom.current().nextBoolean()) {
+        if (count <= maxEntries || ThreadLocalRandom.current().nextBoolean())
           // add
           replicator ! Update(key, ORSet(), WriteLocal)(_ + s)
-        } else {
+        else
           // remove
           replicator ! Update(key, ORSet(), WriteLocal)(_ - s)
-        }
       }
 
     case _: UpdateResponse[_] ⇒ // ignore

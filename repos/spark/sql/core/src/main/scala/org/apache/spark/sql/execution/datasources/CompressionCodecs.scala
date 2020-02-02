@@ -48,9 +48,8 @@ private[datasources] object CompressionCodecs {
     val codecName = shortCompressionCodecNames.getOrElse(name.toLowerCase, name)
     try {
       // Validate the codec name
-      if (codecName != null) {
+      if (codecName != null)
         Utils.classForName(codecName)
-      }
       codecName
     } catch {
       case e: ClassNotFoundException =>

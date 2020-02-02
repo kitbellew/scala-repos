@@ -27,18 +27,16 @@ abstract class Comment {
       i match {
         case Chain(list) =>
           list foreach scan
-        case tag: HtmlTag => {
-          if (stack.length > 0 && tag.canClose(stack.last)) {
+        case tag: HtmlTag =>
+          if (stack.length > 0 && tag.canClose(stack.last))
             stack.remove(stack.length - 1)
-          } else {
+          else
             tag.close match {
               case Some(t) =>
                 stack += t
               case None =>
                 ;
             }
-          }
-        }
         case _ =>
           ;
       }

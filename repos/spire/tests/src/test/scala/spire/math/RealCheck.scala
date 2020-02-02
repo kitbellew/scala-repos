@@ -129,11 +129,10 @@ class RealCheck
   property("x.round = (((x * 2).floor + 1) / 2).floor") {
     forAll { (x0: Rational) =>
       val x = Real(x0)
-      if (x.signum >= 0) {
+      if (x.signum >= 0)
         x.round shouldBe (((x * 2).floor + 1) / 2).floor
-      } else {
+      else
         x.round shouldBe (((x * 2).ceil - 1) / 2).ceil
-      }
     }
   }
 

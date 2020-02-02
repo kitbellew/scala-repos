@@ -39,9 +39,7 @@ object revcomp {
           lines = new Stack
         }
         desc = line
-      } else {
-        if (c != ';') lines += line.getBytes
-      }
+      } else if (c != ';') lines += line.getBytes
       line = r.readLine
     }
     r.close
@@ -80,13 +78,13 @@ object revcomp {
       val line = lines.pop
       inplaceComplementReverse(line)
 
-      if (isSplitLine) {
+      if (isSplitLine)
         if (isFirstLine) {
           w.write(line); isFirstLine = false
         } else {
           w.write(line, 0, n - k); w.write(nl); w.write(line, n - k, k)
         }
-      } else {
+      else {
         w.write(line); w.write(nl)
       }
     }

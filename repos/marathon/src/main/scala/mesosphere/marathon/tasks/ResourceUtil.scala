@@ -41,9 +41,9 @@ object ResourceUtil {
     def consumeScalarResource: Option[MesosProtos.Resource] = {
       val leftOver: Double =
         resource.getScalar.getValue - usedResource.getScalar.getValue
-      if (leftOver <= 0) {
+      if (leftOver <= 0)
         None
-      } else {
+      else
         Some(
           resource.toBuilder
             .setScalar(
@@ -51,17 +51,16 @@ object ResourceUtil {
                 .newBuilder()
                 .setValue(leftOver))
             .build())
-      }
     }
 
     def deductRange(
         baseRange: MesosProtos.Value.Range,
         usedRange: MesosProtos.Value.Range): Seq[MesosProtos.Value.Range] =
-      if (baseRange.getEnd < usedRange.getBegin) { // baseRange completely before usedRange
+      if (baseRange.getEnd < usedRange.getBegin) // baseRange completely before usedRange
         Seq(baseRange)
-      } else if (baseRange.getBegin > usedRange.getEnd) { // baseRange completely after usedRange
+      else if (baseRange.getBegin > usedRange.getEnd) // baseRange completely after usedRange
         Seq(baseRange)
-      } else {
+      else {
         val rangeBefore: Option[MesosProtos.Value.Range] =
           if (baseRange.getBegin < usedRange.getBegin)
             Some(baseRange.toBuilder.setEnd(usedRange.getBegin - 1).build())

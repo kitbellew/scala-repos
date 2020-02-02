@@ -59,11 +59,11 @@ private[netty4] class ChannelTransport[In, Out](ch: Channel)
   def write(msg: In): Future[Unit] =
     // We support Netty's channel-level backpressure thereby respecting
     // slow receivers on the other side.
-    if (!ch.isWritable) {
+    if (!ch.isWritable)
       // Note: It's up to the layer above a transport to decided whether or
       // not to requeue a canceled write.
       Future.exception(new DroppedWriteException)
-    } else {
+    else {
       val op = ch.writeAndFlush(msg)
 
       val p = new Promise[Unit]

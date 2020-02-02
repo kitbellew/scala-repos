@@ -67,15 +67,17 @@ private[hive] case class CreateTableAsSelect(
             .orElse(Some(classOf[LazySimpleSerDe].getName))
         )
 
-      val withSchema = if (withFormat.schema.isEmpty) {
-        // Hive doesn't support specifying the column list for target table in CTAS
-        // However we don't think SparkSQL should follow that.
-        tableDesc.copy(schema = query.output.map { c =>
-          CatalogColumn(c.name, HiveMetastoreTypes.toMetastoreType(c.dataType))
-        })
-      } else {
-        withFormat
-      }
+      val withSchema =
+        if (withFormat.schema.isEmpty)
+          // Hive doesn't support specifying the column list for target table in CTAS
+          // However we don't think SparkSQL should follow that.
+          tableDesc.copy(schema = query.output.map { c =>
+            CatalogColumn(
+              c.name,
+              HiveMetastoreTypes.toMetastoreType(c.dataType))
+          })
+        else
+          withFormat
 
       hiveContext.sessionState.catalog.client
         .createTable(withSchema, ignoreIfExists = false)
@@ -89,18 +91,16 @@ private[hive] case class CreateTableAsSelect(
     // TODO ideally, we should get the output data ready first and then
     // add the relation into catalog, just in case of failure occurs while data
     // processing.
-    if (hiveContext.sessionState.catalog.tableExists(tableIdentifier)) {
+    if (hiveContext.sessionState.catalog.tableExists(tableIdentifier))
       if (allowExisting) {
         // table already exists, will do nothing, to keep consistent with Hive
-      } else {
+      } else
         throw new AnalysisException(s"$tableIdentifier already exists.")
-      }
-    } else {
+    else
       hiveContext
         .executePlan(
           InsertIntoTable(metastoreRelation, Map(), query, true, false))
         .toRdd
-    }
 
     Seq.empty[Row]
   }

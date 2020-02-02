@@ -38,9 +38,8 @@ object ImplicitParamClause {
         builder.restoreNewlinesState
         return false
     }
-    if (!Params.parse(builder)) {
+    if (!Params.parse(builder))
       builder error ScalaBundle.message("implicit.params.excepted")
-    }
     builder.getTokenType match {
       case ScalaTokenTypes.tRPARENTHESIS =>
         builder.advanceLexer() //Ate )

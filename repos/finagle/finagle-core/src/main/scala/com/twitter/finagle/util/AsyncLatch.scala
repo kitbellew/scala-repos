@@ -55,9 +55,8 @@ class AsyncLatch(initialCount: Int = 0) {
         val pending = waiters
         waiters = new ArrayBuffer[() => Unit]
         Left(pending)
-      } else {
+      } else
         Right(count)
-      }
     }
 
     pendingTasks match {

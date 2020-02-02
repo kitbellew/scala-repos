@@ -138,39 +138,34 @@ object ProductLike {
         q"$prev + $t"
     }
 
-    if (noLength > 0) {
+    if (noLength > 0)
       NoLengthCalculationAvailable(c)
-    } else {
-      if (maybeLength.isEmpty && dynamicFunctions.isEmpty) {
-        ConstantLengthCalculation(c)(constSize)
-      } else {
-        if (maybeLength.isEmpty) {
-          FastLengthCalculation(c)(combinedDynamic)
-        } else {
+    else if (maybeLength.isEmpty && dynamicFunctions.isEmpty)
+      ConstantLengthCalculation(c)(constSize)
+    else if (maybeLength.isEmpty)
+      FastLengthCalculation(c)(combinedDynamic)
+    else {
 
-          val const =
-            q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.ConstLen"
-          val dyn =
-            q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen"
-          val noLen =
-            q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.NoLengthCalculation"
-          // Contains an MaybeLength
-          val combinedMaybe: Tree = maybeLength.reduce { (hOpt, nxtOpt) =>
-            q"""$hOpt + $nxtOpt"""
-          }
-          if (dynamicFunctions.nonEmpty || constSize != 0) {
-            MaybeLengthCalculation(c)(q"""
+      val const =
+        q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.ConstLen"
+      val dyn =
+        q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen"
+      val noLen =
+        q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.NoLengthCalculation"
+      // Contains an MaybeLength
+      val combinedMaybe: Tree = maybeLength.reduce { (hOpt, nxtOpt) =>
+        q"""$hOpt + $nxtOpt"""
+      }
+      if (dynamicFunctions.nonEmpty || constSize != 0)
+        MaybeLengthCalculation(c)(q"""
             $combinedMaybe match {
               case $const(l) => $dyn(l + $combinedDynamic)
               case $dyn(l) => $dyn(l + $combinedDynamic)
               case $noLen => $noLen
             }
           """)
-          } else {
-            MaybeLengthCalculation(c)(combinedMaybe)
-          }
-        }
-      }
+      else
+        MaybeLengthCalculation(c)(combinedMaybe)
     }
   }
 

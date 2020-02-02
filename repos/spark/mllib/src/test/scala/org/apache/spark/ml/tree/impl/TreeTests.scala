@@ -51,21 +51,20 @@ private[ml] object TreeTests extends SparkFunSuite {
     val df = data.toDF()
     val numFeatures = data.first().features.size
     val featuresAttributes = Range(0, numFeatures).map { feature =>
-      if (categoricalFeatures.contains(feature)) {
+      if (categoricalFeatures.contains(feature))
         NominalAttribute.defaultAttr
           .withIndex(feature)
           .withNumValues(categoricalFeatures(feature))
-      } else {
+      else
         NumericAttribute.defaultAttr.withIndex(feature)
-      }
     }.toArray
     val featuresMetadata =
       new AttributeGroup("features", featuresAttributes).toMetadata()
-    val labelAttribute = if (numClasses == 0) {
-      NumericAttribute.defaultAttr.withName("label")
-    } else {
-      NominalAttribute.defaultAttr.withName("label").withNumValues(numClasses)
-    }
+    val labelAttribute =
+      if (numClasses == 0)
+        NumericAttribute.defaultAttr.withName("label")
+      else
+        NominalAttribute.defaultAttr.withName("label").withNumValues(numClasses)
     val labelMetadata = labelAttribute.toMetadata()
     df.select(
       df("features").as("features", featuresMetadata),
@@ -89,9 +88,8 @@ private[ml] object TreeTests extends SparkFunSuite {
     * If the trees are not equal, this prints the two trees and throws an exception.
     */
   def checkEqual(a: DecisionTreeModel, b: DecisionTreeModel): Unit =
-    try {
-      checkEqual(a.rootNode, b.rootNode)
-    } catch {
+    try checkEqual(a.rootNode, b.rootNode)
+    catch {
       case ex: Exception =>
         throw new AssertionError(
           "checkEqual failed since the two trees were not identical.\n" +

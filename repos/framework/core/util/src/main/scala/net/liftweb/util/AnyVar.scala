@@ -55,11 +55,10 @@ trait MemoizeVar[K, V] {
   def get(key: K): Box[V] = coreVar.doSync {
     coreVar.is.get(key) match {
       case Full(x) => x
-      case _ => {
+      case _ =>
         val ret = defaultFunction(key)
         coreVar.is.update(key, ret)
         ret
-      }
     }
   }
 
@@ -194,9 +193,8 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
   }
 
   private def testInitialized: Unit = doSync {
-    if (!wasInitialized(name, initedKey)) {
+    if (!wasInitialized(name, initedKey))
       registerCleanupFunc(_onShutdown _)
-    }
   }
 
   /**
@@ -218,9 +216,8 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
     * Set the Var if it has not been calculated
     */
   def setIfUnset(value: => T): T = doSync {
-    if (!set_?) {
+    if (!set_?)
       set(value)
-    }
     this.is
   }
 
@@ -275,13 +272,10 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
   def doWith[F](newVal: T)(f: => F): F = {
     val old = findFunc(name)
     _setFunc(name, newVal)
-    try {
-      f
-    } finally {
-      old match {
-        case Full(t) => _setFunc(name, t)
-        case _       => _clearFunc(name)
-      }
+    try f
+    finally old match {
+      case Full(t) => _setFunc(name, t)
+      case _       => _clearFunc(name)
     }
   }
 }

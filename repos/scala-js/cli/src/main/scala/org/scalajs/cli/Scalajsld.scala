@@ -140,20 +140,18 @@ object Scalajsld {
       val irContainers = IRFileCache.IRContainer.fromClasspath(classpath)
 
       // Warn if writing JS dependencies was requested.
-      if (options.jsoutput) {
+      if (options.jsoutput)
         Console.err.println(
           "Support for the --jsoutput flag has been dropped. " +
             "JS dependencies will not be written to disk. " +
             "Comment on https://github.com/scala-js/scala-js/issues/2163 " +
             "if you rely on this feature.")
-      }
 
       // Warn if bypassing linking errors was requested.
-      if (options.bypassLinkingErrors) {
+      if (options.bypassLinkingErrors)
         Console.err.println(
           "Support for bypassing linking errors with -b or " +
             "--bypassLinkingErrors will be dropped in the next major version.")
-      }
 
       val semantics =
         if (options.fullOpt) options.semantics.optimized

@@ -61,11 +61,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     assert(classSym.isClass, s"not a class: $classSym")
     val r =
       exitingPickler(classSym.isAnonymousClass) || !classSym.originalOwner.isClass
-    if (r) {
+    if (r)
       // phase travel necessary: after flatten, the name includes the name of outer classes.
       // if some outer name contains $lambda, a non-lambda class is considered lambda.
       assert(exitingPickler(!classSym.isDelambdafyFunction), classSym.name)
-    }
     r
   }
 
@@ -77,7 +76,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     val origOwner = sym.originalOwner
     // phase travel necessary: after flatten, the name includes the name of outer classes.
     // if some outer name contains $anon, a non-anon class is considered anon.
-    if (delambdafyInline() && sym.rawowner.isAnonymousFunction) {
+    if (delambdafyInline() && sym.rawowner.isAnonymousFunction)
       // SI-9105: special handling for anonymous functions under delambdafy:inline.
       //
       //   class C { def t = () => { def f { class Z } } }
@@ -107,9 +106,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       // not into the anonymous function class. The originalOwner chain is Z - f - C.
       if (sym.originalOwner.rawowner == sym.rawowner) sym.originalOwner
       else sym.rawowner
-    } else {
+    else
       origOwner
-    }
   }
 
   def nextEnclosingClass(sym: Symbol): Symbol =
@@ -159,9 +157,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
     def enclosingMethod(sym: Symbol): Option[Symbol] =
       if (sym.isClass || sym == NoSymbol) None
-      else if (sym.isMethod) {
+      else if (sym.isMethod)
         if (doesNotExist(sym)) None else Some(sym)
-      } else enclosingMethod(nextEnclosing(sym))
+      else enclosingMethod(nextEnclosing(sym))
     enclosingMethod(nextEnclosing(classSym))
   }
 
@@ -218,9 +216,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           classDesc(enclosingClass),
           methodOpt.map(_.javaSimpleName.toString).orNull,
           methodOpt.map(methodDesc).orNull))
-    } else {
+    } else
       None
-    }
 
   /**
     * This is basically a re-implementation of sym.isStaticOwner, but using the originalOwner chain.
@@ -247,11 +244,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       val originalReporter = global.reporter
       val storeReporter = new reporters.StoreReporter()
       global.reporter = storeReporter
-      try {
-        sym.info
-      } finally {
-        global.reporter = originalReporter
-      }
+      try sym.info
+      finally global.reporter = originalReporter
       sym.isErroneous
     }
 
@@ -266,9 +260,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
       val selfSym = classSym.typeOfThis.typeSymbol
       if (selfSym != classSym) Some(classSymToInternalName(selfSym)) else None
-    } else {
+    } else
       None
-    }
 
     val isEffectivelyFinal = classSym.isEffectivelyFinal
 
@@ -471,7 +464,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       case Some(f) if f hasExtension "jar" =>
         // If no main class was specified, see if there's only one
         // entry point among the classes going into the jar.
-        if (settings.mainClass.isDefault) {
+        if (settings.mainClass.isDefault)
           entryPoints map (_.fullName('.')) match {
             case Nil =>
               log("No Main-Class designated or discovered.")
@@ -482,7 +475,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
               log(
                 s"No Main-Class due to multiple entry points:\n  ${names.mkString("\n  ")}")
           }
-        } else log(s"Main-Class was specified: ${settings.mainClass.value}")
+        else log(s"Main-Class was specified: ${settings.mainClass.value}")
 
         new DirectToJarfileWriter(f.file)
 
@@ -780,9 +773,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       (arg: @unchecked) match {
 
         case LiteralAnnotArg(const) =>
-          if (const.isNonUnitAnyVal) {
+          if (const.isNonUnitAnyVal)
             av.visit(name, const.value)
-          } else {
+          else
             const.tag match {
               case StringTag =>
                 assert(
@@ -800,22 +793,21 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
                 val evalue = const.symbolValue.name.toString // value the actual enumeration value.
                 av.visitEnum(name, edesc, evalue)
             }
-          }
 
         case sb @ ScalaSigBytes(bytes) =>
           // see http://www.scala-lang.org/sid/10 (Storage of pickled Scala signatures in class files)
           // also JVMS Sec. 4.7.16.1 The element_value structure and JVMS Sec. 4.4.7 The CONSTANT_Utf8_info Structure.
-          if (sb.fitsInOneString) {
+          if (sb.fitsInOneString)
             av.visit(name, strEncode(sb))
-          } else {
+          else {
             val arrAnnotV: asm.AnnotationVisitor = av.visitArray(name)
-            for (arg <- arrEncode(sb)) { arrAnnotV.visit(name, arg) }
+            for (arg <- arrEncode(sb)) arrAnnotV.visit(name, arg)
             arrAnnotV.visitEnd()
           } // for the lazy val in ScalaSigBytes to be GC'ed, the invoker of emitAnnotations() should hold the ScalaSigBytes in a method-local var that doesn't escape.
 
         case ArrayAnnotArg(args) =>
           val arrAnnotV: asm.AnnotationVisitor = av.visitArray(name)
-          for (arg <- args) { emitArgument(arrAnnotV, null, arg) }
+          for (arg <- args) emitArgument(arrAnnotV, null, arg)
           arrAnnotV.visitEnd()
 
         case NestedAnnotArg(annInfo) =>
@@ -835,9 +827,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     def emitAssocs(
         av: asm.AnnotationVisitor,
         assocs: List[(Name, ClassfileAnnotArg)]) {
-      for ((name, value) <- assocs) {
+      for ((name, value) <- assocs)
         emitArgument(av, name.toString(), value)
-      }
       av.visitEnd()
     }
 
@@ -948,14 +939,12 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         sym: Symbol,
         owner: Symbol,
         memberTpe: Type): String = {
-      if (!needsGenericSignature(sym)) {
+      if (!needsGenericSignature(sym))
         return null
-      }
 
       val jsOpt: Option[String] = erasure.javaSig(sym, memberTpe)
-      if (jsOpt.isEmpty) {
+      if (jsOpt.isEmpty)
         return null
-      }
 
       val sig = jsOpt.get
       log(sig) // This seems useful enough in the general case.
@@ -970,14 +959,13 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         val isValidSignature = wrap {
           // Alternative: scala.tools.reflect.SigParser (frontend to sun.reflect.generics.parser.SignatureParser)
           import scala.tools.asm.util.CheckClassAdapter
-          if (sym.isMethod) {
+          if (sym.isMethod)
             CheckClassAdapter checkMethodSignature sig
-          } // requires asm-util.jar
-          else if (sym.isTerm) {
+          // requires asm-util.jar
+          else if (sym.isTerm)
             CheckClassAdapter checkFieldSignature sig
-          } else {
+          else
             CheckClassAdapter checkClassSignature sig
-          }
         }
 
         if (!isValidSignature) {
@@ -1160,17 +1148,16 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       debuglog(s"Dumping mirror class for object: $moduleClass")
 
       val linkedClass = moduleClass.companionClass
-      lazy val conflictingNames: Set[Name] = {
+      lazy val conflictingNames: Set[Name] =
         (linkedClass.info.members collect {
           case sym if sym.name.isTermName => sym.name
         }).toSet
-      }
       debuglog(
         s"Potentially conflicting names for forwarders: $conflictingNames")
 
       for (m <- moduleClass.info.membersBasedOnFlags(
              BCodeHelpers.ExcludedForwarderFlags,
-             symtab.Flags.METHOD)) {
+             symtab.Flags.METHOD))
         if (m.isType || m.isDeferred || (m.owner eq definitions.ObjectClass) || m.isConstructor)
           debuglog(
             s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m.isType} || ${m.isDeferred} || ${m.owner eq definitions.ObjectClass} || ${m.isConstructor}")
@@ -1184,7 +1171,6 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             s"Adding static forwarder for '$m' from $jclassName to '$moduleClass'")
           addForwarder(isRemoteClass, jclass, moduleClass, m)
         }
-      }
     }
 
     /*
@@ -1332,14 +1318,13 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       for (f <- fieldSymbols if f.hasGetter;
            g = f.getterIn(cls);
            s = f.setterIn(cls);
-           if g.isPublic && !(f.name startsWith "$")) {
+           if g.isPublic && !(f.name startsWith "$"))
         // inserting $outer breaks the bean
         fieldList =
           javaSimpleName(f) :: javaSimpleName(g) :: (if (s != NoSymbol)
                                                        javaSimpleName(s)
                                                      else
                                                        null) :: fieldList
-      }
 
       val methodList: List[String] =
         for (m <- methodSymbols
@@ -1369,11 +1354,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         for (f <- lst) {
           constructor.visitInsn(asm.Opcodes.DUP)
           constructor.visitLdcInsn(new java.lang.Integer(fi))
-          if (f == null) {
+          if (f == null)
             constructor.visitInsn(asm.Opcodes.ACONST_NULL)
-          } else {
+          else
             constructor.visitLdcInsn(f)
-          }
           constructor.visitInsn(StringRef.typedOpcode(asm.Opcodes.IASTORE))
           fi += 1
         }

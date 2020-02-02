@@ -131,11 +131,10 @@ class DefaultEventHandler[K, V](
       case Some(partitionedData) =>
         val failedProduceRequests = new ArrayBuffer[KeyedMessage[K, Message]]
         for ((brokerid, messagesPerBrokerMap) <- partitionedData) {
-          if (logger.isTraceEnabled) {
+          if (logger.isTraceEnabled)
             messagesPerBrokerMap.foreach(partitionAndEvent =>
               trace("Handling event for Topic: %s, Broker: %d, Partitions: %s"
                 .format(partitionAndEvent._1, brokerid, partitionAndEvent._2)))
-          }
           val messageSetPerBrokerOpt = groupMessagesToSet(messagesPerBrokerMap)
           messageSetPerBrokerOpt match {
             case Some(messageSetPerBroker) =>
@@ -162,36 +161,34 @@ class DefaultEventHandler[K, V](
     val serializedMessages =
       new ArrayBuffer[KeyedMessage[K, Message]](events.size)
     events.foreach { e =>
-      try {
-        if (e.hasKey)
-          serializedMessages += new KeyedMessage[K, Message](
-            topic = e.topic,
-            key = e.key,
-            partKey = e.partKey,
-            message = new Message(
-              key = keyEncoder.toBytes(e.key),
-              bytes = encoder.toBytes(e.message),
-              timestamp = time.milliseconds,
-              magicValue = Message.MagicValue_V1))
-        else
-          serializedMessages += new KeyedMessage[K, Message](
-            topic = e.topic,
-            key = e.key,
-            partKey = e.partKey,
-            message = new Message(
-              bytes = encoder.toBytes(e.message),
-              timestamp = time.milliseconds,
-              magicValue = Message.MagicValue_V1))
-      } catch {
+      try if (e.hasKey)
+        serializedMessages += new KeyedMessage[K, Message](
+          topic = e.topic,
+          key = e.key,
+          partKey = e.partKey,
+          message = new Message(
+            key = keyEncoder.toBytes(e.key),
+            bytes = encoder.toBytes(e.message),
+            timestamp = time.milliseconds,
+            magicValue = Message.MagicValue_V1))
+      else
+        serializedMessages += new KeyedMessage[K, Message](
+          topic = e.topic,
+          key = e.key,
+          partKey = e.partKey,
+          message = new Message(
+            bytes = encoder.toBytes(e.message),
+            timestamp = time.milliseconds,
+            magicValue = Message.MagicValue_V1))
+      catch {
         case t: Throwable =>
           producerStats.serializationErrorRate.mark()
-          if (isSync) {
+          if (isSync)
             throw t
-          } else {
+          else
             // currently, if in async mode, we just log the serialization error. We need to revisit
             // this when doing kafka-496
             error("Error serializing message for topic %s".format(e.topic), t)
-          }
       }
     }
     serializedMessages
@@ -405,9 +402,8 @@ class DefaultEventHandler[K, V](
                 .format(currentCorrelationId, errorString))
           }
           failedTopicPartitions
-        } else {
+        } else
           Seq.empty[TopicAndPartition]
-        }
       } catch {
         case t: Throwable =>
           warn(
@@ -420,9 +416,8 @@ class DefaultEventHandler[K, V](
           )
           messagesPerTopic.keys.toSeq
       }
-    } else {
+    } else
       List.empty
-    }
 
   private def groupMessagesToSet(
       messagesPerTopicAndPartition: collection.mutable.Map[

@@ -75,7 +75,7 @@ private[finagle] class RequeueFilter[Req, Rep](
         if (!canRetry()) {
           canNotRetryCounter.incr()
           responseFuture(attempt, t)
-        } else if (retriesRemaining > 0 && retryBudget.tryWithdraw()) {
+        } else if (retriesRemaining > 0 && retryBudget.tryWithdraw())
           backoffs match {
             case Duration.Zero #:: rest =>
               // no delay between retries. Retry immediately.
@@ -104,7 +104,7 @@ private[finagle] class RequeueFilter[Req, Rep](
               budgetExhaustCounter.incr()
               responseFuture(attempt, t)
           }
-        } else {
+        else {
           if (retriesRemaining > 0)
             budgetExhaustCounter.incr()
           else

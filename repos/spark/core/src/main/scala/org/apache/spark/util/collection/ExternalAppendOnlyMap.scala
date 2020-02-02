@@ -65,10 +65,9 @@ class ExternalAppendOnlyMap[K, V, C](
     with Logging
     with Spillable[SizeTracker] {
 
-  if (context == null) {
+  if (context == null)
     throw new IllegalStateException(
       "Spillable collections should not be instantiated outside of tasks")
-  }
 
   // Backwards-compatibility constructor for binary compatibility
   def this(
@@ -146,10 +145,9 @@ class ExternalAppendOnlyMap[K, V, C](
     * The shuffle memory usage of the first trackMemoryThreshold entries is not tracked.
     */
   def insertAll(entries: Iterator[Product2[K, V]]): Unit = {
-    if (currentMap == null) {
+    if (currentMap == null)
       throw new IllegalStateException(
         "Cannot insert new elements into a map after calling iterator")
-    }
     // An update function for the map that we reuse across entries to avoid allocating
     // a new closure each time
     var curEntry: Product2[K, V] = null
@@ -161,12 +159,10 @@ class ExternalAppendOnlyMap[K, V, C](
     while (entries.hasNext) {
       curEntry = entries.next()
       val estimatedSize = currentMap.estimateSize()
-      if (estimatedSize > _peakMemoryUsedBytes) {
+      if (estimatedSize > _peakMemoryUsedBytes)
         _peakMemoryUsedBytes = estimatedSize
-      }
-      if (maybeSpill(currentMap, estimatedSize)) {
+      if (maybeSpill(currentMap, estimatedSize))
         currentMap = new SizeTrackingAppendOnlyMap[K, C]
-      }
       currentMap.changeValue(curEntry._1, update)
       addElementsRead()
     }
@@ -230,27 +226,22 @@ class ExternalAppendOnlyMap[K, V, C](
             curWriteMetrics)
         }
       }
-      if (objectsWritten > 0) {
+      if (objectsWritten > 0)
         flush()
-      } else if (writer != null) {
+      else if (writer != null) {
         val w = writer
         writer = null
         w.revertPartialWritesAndClose()
       }
       success = true
-    } finally {
-      if (!success) {
-        // This code path only happens if an exception was thrown above before we set success;
-        // close our stuff and let the exception be thrown further
-        if (writer != null) {
-          writer.revertPartialWritesAndClose()
-        }
-        if (file.exists()) {
-          if (!file.delete()) {
-            logWarning(s"Error deleting $file")
-          }
-        }
-      }
+    } finally if (!success) {
+      // This code path only happens if an exception was thrown above before we set success;
+      // close our stuff and let the exception be thrown further
+      if (writer != null)
+        writer.revertPartialWritesAndClose()
+      if (file.exists())
+        if (!file.delete())
+          logWarning(s"Error deleting $file")
     }
 
     spilledMaps.append(new DiskMapIterator(file, blockId, batchSizes))
@@ -261,17 +252,15 @@ class ExternalAppendOnlyMap[K, V, C](
     * If no spill has occurred, simply return the in-memory map's iterator.
     */
   override def iterator: Iterator[(K, C)] = {
-    if (currentMap == null) {
+    if (currentMap == null)
       throw new IllegalStateException(
         "ExternalAppendOnlyMap.iterator is destructive and should only be called once.")
-    }
-    if (spilledMaps.isEmpty) {
+    if (spilledMaps.isEmpty)
       CompletionIterator[(K, C), Iterator[(K, C)]](
         currentMap.iterator,
         freeCurrentMap())
-    } else {
+    else
       new ExternalIterator()
-    }
   }
 
   private def freeCurrentMap(): Unit = {
@@ -299,9 +288,8 @@ class ExternalAppendOnlyMap[K, V, C](
     inputStreams.foreach { it =>
       val kcPairs = new ArrayBuffer[(K, C)]
       readNextHashCode(it, kcPairs)
-      if (kcPairs.length > 0) {
+      if (kcPairs.length > 0)
         mergeHeap.enqueue(new StreamBuffer(it, kcPairs))
-      }
     }
 
     /**
@@ -371,9 +359,8 @@ class ExternalAppendOnlyMap[K, V, C](
       * input streams.
       */
     override def next(): (K, C) = {
-      if (mergeHeap.length == 0) {
+      if (mergeHeap.length == 0)
         throw new NoSuchElementException
-      }
       // Select a key from the StreamBuffer that holds the lowest key hash
       val minBuffer = mergeHeap.dequeue()
       val minPairs = minBuffer.pairs
@@ -394,12 +381,10 @@ class ExternalAppendOnlyMap[K, V, C](
 
       // Repopulate each visited stream buffer and add it back to the queue if it is non-empty
       mergedBuffers.foreach { buffer =>
-        if (buffer.isEmpty) {
+        if (buffer.isEmpty)
           readNextHashCode(buffer.iterator, buffer.pairs)
-        }
-        if (!buffer.isEmpty) {
+        if (!buffer.isEmpty)
           mergeHeap.enqueue(buffer)
-        }
       }
 
       (minKey, minCombiner)
@@ -524,9 +509,8 @@ class ExternalAppendOnlyMap[K, V, C](
 
     override def hasNext: Boolean = {
       if (nextItem == null) {
-        if (deserializeStream == null) {
+        if (deserializeStream == null)
           return false
-        }
         nextItem = readNextItem()
       }
       nextItem != null
@@ -534,9 +518,8 @@ class ExternalAppendOnlyMap[K, V, C](
 
     override def next(): (K, C) = {
       val item = if (nextItem == null) readNextItem() else nextItem
-      if (item == null) {
+      if (item == null)
         throw new NoSuchElementException
-      }
       nextItem = null
       item
     }
@@ -552,11 +535,9 @@ class ExternalAppendOnlyMap[K, V, C](
         fileStream.close()
         fileStream = null
       }
-      if (file.exists()) {
-        if (!file.delete()) {
+      if (file.exists())
+        if (!file.delete())
           logWarning(s"Error deleting $file")
-        }
-      }
     }
 
     context.addTaskCompletionListener(context => cleanup())

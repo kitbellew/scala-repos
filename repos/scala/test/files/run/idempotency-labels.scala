@@ -6,7 +6,7 @@ import scala.tools.reflect.Eval
 object Test extends App {
   val label = reify {
     var x = 0
-    while (x < 2) { x += 1 }
+    while (x < 2) x += 1
     x
   }
   println(label.eval)
@@ -14,9 +14,8 @@ object Test extends App {
   val tlabel = tb.typecheck(label.tree)
   println(tlabel)
   val rtlabel = tb.untypecheck(tlabel)
-  try {
-    println(tb.eval(rtlabel))
-  } catch {
+  try println(tb.eval(rtlabel))
+  catch {
     case _: ToolBoxError => println("error!")
   }
 }

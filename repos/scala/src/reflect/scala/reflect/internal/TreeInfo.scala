@@ -267,10 +267,10 @@ abstract class TreeInfo {
     else if (params.isEmpty) return fail()
     else if (isVarArgsList(params)) {
       val plenInit = plen - 1
-      if (alen == plenInit) {
+      if (alen == plenInit)
         if (alen == 0) Nil // avoid calling mismatched zip
         else foreach2(params.init, args)(f)
-      } else if (alen < plenInit) return fail()
+      else if (alen < plenInit) return fail()
       else {
         foreach2(params.init, args take plenInit)(f)
         val remainingArgs = args drop plenInit
@@ -491,9 +491,9 @@ abstract class TreeInfo {
       case tr => tr
     }
 
-    if (detectTypecheckedTree(tree)) {
+    if (detectTypecheckedTree(tree))
       recoverBody(filterBody(tbody))
-    } else tbody
+    else tbody
   }
 
   /** The first constructor definitions in `stats` */
@@ -951,7 +951,7 @@ abstract class TreeInfo {
     }
 
     def unapply(tree: Tree) = refPart(tree) match {
-      case ref: RefTree => {
+      case ref: RefTree =>
         val qual = ref.qualifier
         val isBundle = definitions.isMacroBundleType(qual.tpe)
         val isBlackbox =
@@ -969,7 +969,6 @@ abstract class TreeInfo {
           }
         Some(
           (isBundle, isBlackbox, owner, ref.symbol, dissectApplied(tree).targs))
-      }
       case _ => None
     }
   }

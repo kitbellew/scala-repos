@@ -16,7 +16,7 @@ final class LinkingUnit(
 
   import LinkingUnit._
 
-  lazy val globalInfo: GlobalInfo = {
+  lazy val globalInfo: GlobalInfo =
     classDefs
       .find(_.encodedName == Definitions.ClassClass)
       .fold {
@@ -27,7 +27,6 @@ final class LinkingUnit(
         GlobalInfo(isParentDataAccessed =
           methodNames.contains("getSuperclass__jl_Class"))
       }
-  }
 
   def updated(
       classDefs: List[LinkedClass],

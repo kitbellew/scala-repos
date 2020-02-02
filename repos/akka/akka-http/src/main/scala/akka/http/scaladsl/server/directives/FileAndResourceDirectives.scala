@@ -50,7 +50,7 @@ trait FileAndResourceDirectives {
     get {
       if (file.isFile && file.canRead)
         conditionalFor(file.length, file.lastModified) {
-          if (file.length > 0) {
+          if (file.length > 0)
             withRangeSupportAndPrecompressedMediaTypeSupportAndExtractSettings {
               settings ⇒
                 complete {
@@ -63,7 +63,7 @@ trait FileAndResourceDirectives {
                         ActorAttributes.dispatcher(settings.fileIODispatcher)))
                 }
             }
-          } else complete(HttpEntity.Empty)
+          else complete(HttpEntity.Empty)
         }
       else reject
     }
@@ -99,7 +99,7 @@ trait FileAndResourceDirectives {
         Option(classLoader.getResource(resourceName)) flatMap ResourceFile.apply match {
           case Some(ResourceFile(url, length, lastModified)) ⇒
             conditionalFor(length, lastModified) {
-              if (length > 0) {
+              if (length > 0)
                 withRangeSupportAndPrecompressedMediaTypeSupportAndExtractSettings {
                   settings ⇒
                     complete {
@@ -113,7 +113,7 @@ trait FileAndResourceDirectives {
                       ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
                     }
                 }
-              } else complete(HttpEntity.Empty)
+              else complete(HttpEntity.Empty)
             }
           case _ ⇒ reject // not found or directory
         }
@@ -326,19 +326,20 @@ object ContentTypeResolver {
     new ContentTypeResolver {
       def apply(fileName: String) = {
         val lastDotIx = fileName.lastIndexOf('.')
-        val mediaType = if (lastDotIx >= 0) {
-          fileName.substring(lastDotIx + 1) match {
-            case "gz" ⇒
-              fileName.lastIndexOf('.', lastDotIx - 1) match {
-                case -1 ⇒ MediaTypes.`application/octet-stream`
-                case x ⇒
-                  MediaTypes
-                    .forExtension(fileName.substring(x + 1, lastDotIx))
-                    .withComp(MediaType.Gzipped)
-              }
-            case ext ⇒ MediaTypes.forExtension(ext)
-          }
-        } else MediaTypes.`application/octet-stream`
+        val mediaType =
+          if (lastDotIx >= 0)
+            fileName.substring(lastDotIx + 1) match {
+              case "gz" ⇒
+                fileName.lastIndexOf('.', lastDotIx - 1) match {
+                  case -1 ⇒ MediaTypes.`application/octet-stream`
+                  case x ⇒
+                    MediaTypes
+                      .forExtension(fileName.substring(x + 1, lastDotIx))
+                      .withComp(MediaType.Gzipped)
+                }
+              case ext ⇒ MediaTypes.forExtension(ext)
+            }
+          else MediaTypes.`application/octet-stream`
         ContentType(mediaType, () ⇒ charset)
       }
     }

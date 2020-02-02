@@ -42,9 +42,8 @@ final case class ChildRestartStats(
       retriesWindow: (Option[Int], Option[Int])): Boolean =
     retriesWindow match {
       case (Some(retries), _) if retries < 1 ⇒ false
-      case (Some(retries), None) ⇒ {
+      case (Some(retries), None) ⇒
         maxNrOfRetriesCount += 1; maxNrOfRetriesCount <= retries
-      }
       case (x, Some(window)) ⇒
         retriesInWindowOkay(if (x.isDefined) x.get else 1, window)
       case (None, _) ⇒ true
@@ -173,9 +172,8 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
     * is used by default. OneForOneStrategy with decider defined in
     * [[#defaultDecider]].
     */
-  final val defaultStrategy: SupervisorStrategy = {
+  final val defaultStrategy: SupervisorStrategy =
     OneForOneStrategy()(defaultDecider)
-  }
 
   /**
     * This strategy resembles Erlang in that failing children are always
@@ -513,13 +511,12 @@ case class AllForOneStrategy(
       cause: Throwable,
       stats: ChildRestartStats,
       children: Iterable[ChildRestartStats]): Unit =
-    if (children.nonEmpty) {
+    if (children.nonEmpty)
       if (restart && children.forall(_.requestRestartPermission(retriesWindow)))
         children foreach (crs ⇒
           restartChild(crs.child, cause, suspendFirst = (crs.child != child)))
       else
         for (c ← children) context.stop(c.child)
-    }
 }
 
 /**

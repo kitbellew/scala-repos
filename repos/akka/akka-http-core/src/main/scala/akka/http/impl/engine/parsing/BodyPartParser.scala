@@ -93,12 +93,12 @@ private[http] final class BodyPartParser(
   override def onPull(ctx: Context[Output]): SyncDirective =
     if (output.nonEmpty)
       ctx.push(dequeue())
-    else if (ctx.isFinishing) {
+    else if (ctx.isFinishing)
       if (terminated) ctx.finish()
       else
         ctx.pushAndFinish(
           ParseError(ErrorInfo("Unexpected end of multipart entity")))
-    } else
+    else
       ctx.pull()
 
   override def onUpstreamFinish(ctx: Context[Output]): TerminationDirective =
@@ -107,14 +107,13 @@ private[http] final class BodyPartParser(
   def tryParseInitialBoundary(input: ByteString): StateResult =
     // we don't use boyerMoore here because we are testing for the boundary *without* a
     // preceding CRLF and at a known location (the very beginning of the entity)
-    try {
-      if (boundary(input, 0)) {
-        val ix = boundaryLength
-        if (crlf(input, ix)) parseHeaderLines(input, ix + 2)
-        else if (doubleDash(input, ix)) terminate()
-        else parsePreamble(input, 0)
-      } else parsePreamble(input, 0)
-    } catch {
+    try if (boundary(input, 0)) {
+      val ix = boundaryLength
+      if (crlf(input, ix)) parseHeaderLines(input, ix + 2)
+      else if (doubleDash(input, ix)) terminate()
+      else parsePreamble(input, 0)
+    } else parsePreamble(input, 0)
+    catch {
       case NotEnoughDataException ⇒
         continue(input, 0)((newInput, _) ⇒ tryParseInitialBoundary(newInput))
     }
@@ -147,12 +146,11 @@ private[http] final class BodyPartParser(
 
     var lineEnd = 0
     val resultHeader =
-      try {
-        if (!boundary(input, lineStart)) {
-          lineEnd = headerParser.parseHeaderLine(input, lineStart)()
-          headerParser.resultHeader
-        } else BoundaryHeader
-      } catch {
+      try if (!boundary(input, lineStart)) {
+        lineEnd = headerParser.parseHeaderLine(input, lineStart)()
+        headerParser.resultHeader
+      } else BoundaryHeader
+      catch {
         case NotEnoughDataException ⇒ null
       }
     resultHeader match {

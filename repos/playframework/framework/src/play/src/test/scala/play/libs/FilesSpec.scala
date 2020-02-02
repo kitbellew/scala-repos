@@ -78,9 +78,7 @@ object FilesSpec extends Specification with After {
             val tempFile = TemporaryFile()
             tempFile.file.exists must beTrue
             tempFile.file
-          } finally {
-            Play.stop(app)
-          }
+          } finally Play.stop(app)
         tempFile.exists must beFalse
       }
 
@@ -124,9 +122,8 @@ object FilesSpec extends Specification with After {
 
   private def retry[T](block: => T): T = {
     def step(attempt: Int): T =
-      try {
-        block
-      } catch {
+      try block
+      catch {
         case t if attempt < 10 =>
           Thread.sleep(10)
           step(attempt + 1)

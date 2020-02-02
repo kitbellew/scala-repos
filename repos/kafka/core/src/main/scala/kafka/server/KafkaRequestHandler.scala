@@ -39,7 +39,7 @@ class KafkaRequestHandler(
     "[Kafka Request Handler " + id + " on Broker " + brokerId + "], "
 
   def run() {
-    while (true) {
+    while (true)
       try {
         var req: RequestChannel.Request = null
         while (req == null) {
@@ -67,7 +67,6 @@ class KafkaRequestHandler(
       } catch {
         case e: Throwable => error("Exception when handling request", e)
       }
-    }
   }
 
   def shutdown(): Unit = requestChannel.sendRequest(RequestChannel.AllDone)

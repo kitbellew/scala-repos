@@ -108,10 +108,9 @@ abstract class ReadOnlyLongViewOfByteBufferTest(
     order: ByteOrder)
     extends LongBufferTest {
 
-  val factory: BufferFactory.LongBufferFactory = {
+  val factory: BufferFactory.LongBufferFactory =
     new ByteBufferLongViewFactory(byteBufferFactory, order)
       with BufferFactory.ReadOnlyBufferFactory
-  }
 }
 
 class ReadOnlyLongViewOfAllocByteBufferBigEndianTest

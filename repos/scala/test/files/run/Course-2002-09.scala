@@ -103,9 +103,8 @@ class Quantity() {
       if (v != v1) sys.error("Error! contradiction: " + v + " and " + v1);
     case None =>
       informant = setter; value = Some(v);
-      for (c <- constraints; if !(c == informant)) {
+      for (c <- constraints; if !(c == informant))
         c.newValue;
-      }
   }
   def setValue(v: Double): Unit = setValue(v, NoConstraint);
 

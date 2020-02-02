@@ -40,9 +40,8 @@ class StackTest extends FunSuite {
             "client")
 
       // marked busy by FailureAccrualFactory
-      for (_ <- 0 until 6) {
+      for (_ <- 0 until 6)
         intercept[Exception](Await.result(client("hello\n")))
-      }
 
       assert(client.status == Status.Busy)
     }
@@ -64,9 +63,8 @@ class StackTest extends FunSuite {
         .build()
 
       // marked busy by FailureAccrualFactory
-      for (_ <- 0 until 6) {
+      for (_ <- 0 until 6)
         intercept[Exception](Await.result(client("hello\n")))
-      }
 
       assert(client.status == Status.Busy)
     }

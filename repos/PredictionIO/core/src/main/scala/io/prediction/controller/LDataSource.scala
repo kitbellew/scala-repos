@@ -44,11 +44,10 @@ abstract class LDataSource[TD: ClassTag, EI, Q, A]
     val localEvalData: Seq[(TD, EI, Seq[(Q, A)])] = readEval()
 
     localEvalData.map {
-      case (td, ei, qaSeq) => {
+      case (td, ei, qaSeq) =>
         val tdRDD = sc.parallelize(Seq(None)).map(_ => td)
         val qaRDD = sc.parallelize(qaSeq)
         (tdRDD, ei, qaRDD)
-      }
     }
   }
 

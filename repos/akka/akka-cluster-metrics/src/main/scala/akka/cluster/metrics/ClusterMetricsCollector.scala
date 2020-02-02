@@ -60,13 +60,12 @@ private[metrics] class ClusterMetricsSupervisor
   def collectorName = s"collector-$collectorInstance"
 
   override def preStart() =
-    if (CollectorEnabled) {
+    if (CollectorEnabled)
       self ! CollectionStartMessage
-    } else {
+    else
       log.warning(
         s"Metrics collection is disabled in configuration. Use subtypes of ${classOf[
           CollectionControlMessage].getName} to manage collection at runtime.")
-    }
 
   override def receive = {
     case CollectionStartMessage ⇒

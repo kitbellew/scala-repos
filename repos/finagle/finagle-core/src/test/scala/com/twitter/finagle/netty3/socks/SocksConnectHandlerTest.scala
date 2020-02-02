@@ -183,10 +183,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(!connectFuture.isDone)
     verify(ctx, times(0)).sendUpstream(any[ChannelEvent])
 
-    {
-      // on connect send init
-      sendBytesToServer(0x05, 0x01, 0x00)
-    }
+    // on connect send init
+    sendBytesToServer(0x05, 0x01, 0x00)
 
     {
       // when init response is received send connect request
@@ -266,10 +264,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(!connectFuture.isDone)
     verify(ctx, times(0)).sendUpstream(any[ChannelEvent])
 
-    {
-      // on connect send init
-      sendBytesToServer(0x05, 0x01, 0x02)
-    }
+    // on connect send init
+    sendBytesToServer(0x05, 0x01, 0x02)
 
     {
       // when init response is received send user name and pass
@@ -337,10 +333,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(!connectFuture.isDone)
     verify(ctx, times(0)).sendUpstream(any[ChannelEvent])
 
-    {
-      // on connect send init
-      sendBytesToServer(0x05, 0x01, 0x02)
-    }
+    // on connect send init
+    sendBytesToServer(0x05, 0x01, 0x02)
 
     {
       // when init response is received send user name and pass

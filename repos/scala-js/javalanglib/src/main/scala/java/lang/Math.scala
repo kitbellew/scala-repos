@@ -35,13 +35,12 @@ object Math {
     val rounded = js.Math.round(a)
     val mod = a % 1.0
     // The following test is also false for specials (0's, Infinities and NaN)
-    if (mod == 0.5 || mod == -0.5) {
+    if (mod == 0.5 || mod == -0.5)
       // js.Math.round(a) rounds up but we have to round to even
       if (rounded % 2.0 == 0.0) rounded
       else rounded - 1.0
-    } else {
+    else
       rounded
-    }
   }
 
   @inline def round(a: scala.Float): scala.Int = js.Math.round(a).toInt
@@ -81,9 +80,9 @@ object Math {
     else a
 
   def cbrt(a: scala.Double): scala.Double =
-    if (a == 0 || a.isNaN) {
+    if (a == 0 || a.isNaN)
       a
-    } else {
+    else {
       val sign = if (a < 0.0) -1.0 else 1.0
       val value = sign * a
 

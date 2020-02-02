@@ -70,13 +70,12 @@ class ScalaClassNameCompletionContributor extends ScalaCompletionContributor {
         if (shouldRunClassNameCompletion(
               positionFromParameters(parameters),
               parameters,
-              result.getPrefixMatcher)) {
+              result.getPrefixMatcher))
           completeClassName(
             positionFromParameters(parameters),
             parameters,
             context,
             result)
-        }
         result.stopHere()
       }
     }
@@ -95,13 +94,12 @@ class ScalaClassNameCompletionContributor extends ScalaCompletionContributor {
             if (shouldRunClassNameCompletion(
                   positionFromParameters(parameters),
                   parameters,
-                  result.getPrefixMatcher)) {
+                  result.getPrefixMatcher))
               completeClassName(
                 positionFromParameters(parameters),
                 parameters,
                 context,
                 result)
-            }
           case _ =>
         }
       }
@@ -226,21 +224,18 @@ object ScalaClassNameCompletionContributor {
           isInStableCodeReference = stableRefElement != null,
           isInSimpleString = inString
         )
-      } {
-        if (!afterNewPattern.accepts(dummyPosition, context))
-          result.addElement(el)
-        else {
-          typeToImport match {
-            case ClassTypeToImport(clazz) =>
-              result.addElement(
-                getLookupElementFromClass(
-                  expectedTypesAfterNew,
-                  clazz,
-                  renamesMap))
-            case _ =>
-          }
+      } if (!afterNewPattern.accepts(dummyPosition, context))
+        result.addElement(el)
+      else
+        typeToImport match {
+          case ClassTypeToImport(clazz) =>
+            result.addElement(
+              getLookupElementFromClass(
+                expectedTypesAfterNew,
+                clazz,
+                renamesMap))
+          case _ =>
         }
-      }
     }
 
     val project = position.getProject
@@ -279,20 +274,16 @@ object ScalaClassNameCompletionContributor {
       alias <- ScalaPsiManager
         .instance(project)
         .getStableAliasesByName(name, position.getResolveScope)
-    } {
-      addTypeForCompletion(TypeAliasToImport(alias))
-    }
+    } addTypeForCompletion(TypeAliasToImport(alias))
 
     for {
       (name, elem: PsiNamedElement) <- reverseRenamesMap
       if prefixMatcher.prefixMatches(name)
       if !prefixMatcher.prefixMatches(elem.name)
-    } {
-      elem match {
-        case clazz: PsiClass => addTypeForCompletion(ClassTypeToImport(clazz))
-        case ta: ScTypeAlias => addTypeForCompletion(TypeAliasToImport(ta))
-        case _               =>
-      }
+    } elem match {
+      case clazz: PsiClass => addTypeForCompletion(ClassTypeToImport(clazz))
+      case ta: ScTypeAlias => addTypeForCompletion(TypeAliasToImport(ta))
+      case _               =>
     }
 
     if (inString) result.stopHere()

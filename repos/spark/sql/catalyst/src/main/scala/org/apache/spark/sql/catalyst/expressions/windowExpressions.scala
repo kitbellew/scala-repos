@@ -61,18 +61,17 @@ case class WindowSpecDefinition(
     case frame: SpecifiedWindowFrame =>
       frame.validate.orElse {
         def checkValueBasedBoundaryForRangeFrame(): Option[String] =
-          if (orderSpec.length > 1) {
+          if (orderSpec.length > 1)
             // It is not allowed to have a value-based PRECEDING and FOLLOWING
             // as the boundary of a Range Window Frame.
             Some(
               "This Range Window Frame only accepts at most one ORDER BY expression.")
-          } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
-                       .isInstanceOf[NumericType]) {
+          else if (orderSpec.nonEmpty && !orderSpec.head.dataType
+                     .isInstanceOf[NumericType])
             Some(
               "The data type of the expression in the ORDER BY clause should be a numeric type.")
-          } else {
+          else
             None
-          }
 
         (frame.frameType, frame.frameStart, frame.frameEnd) match {
           case (RangeFrame, vp: ValuePreceding, _) =>
@@ -99,17 +98,17 @@ case class WindowSpecDefinition(
   override def dataType: DataType = throw new UnsupportedOperationException
 
   override def sql: String = {
-    val partition = if (partitionSpec.isEmpty) {
-      ""
-    } else {
-      "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ")
-    }
+    val partition =
+      if (partitionSpec.isEmpty)
+        ""
+      else
+        "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ")
 
-    val order = if (orderSpec.isEmpty) {
-      ""
-    } else {
-      "ORDER BY " + orderSpec.map(_.sql).mkString(", ")
-    }
+    val order =
+      if (orderSpec.isEmpty)
+        ""
+      else
+        "ORDER BY " + orderSpec.map(_.sql).mkString(", ")
 
     s"($partition $order ${frameSpecification.toString})"
   }
@@ -259,9 +258,9 @@ case class SpecifiedWindowFrame(
     // case (RowFrame, start, end) => ??? RowFrame specific rule
     // case (RangeFrame, start, end) => ??? RangeFrame specific rule
     case (_, start, end) =>
-      if (start.notFollows(end)) {
+      if (start.notFollows(end))
         None
-      } else {
+      else {
         val reason =
           s"The end of this Window Frame $end is smaller than the start of " +
             s"this Window Frame $start."
@@ -286,15 +285,14 @@ object SpecifiedWindowFrame {
   def defaultWindowFrame(
       hasOrderSpecification: Boolean,
       acceptWindowFrame: Boolean): SpecifiedWindowFrame =
-    if (hasOrderSpecification && acceptWindowFrame) {
+    if (hasOrderSpecification && acceptWindowFrame)
       // If order spec is defined and the window function supports user specified window frames,
       // the default frame is RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW.
       SpecifiedWindowFrame(RangeFrame, UnboundedPreceding, CurrentRow)
-    } else {
+    else
       // Otherwise, the default frame is
       // ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING.
       SpecifiedWindowFrame(RowFrame, UnboundedPreceding, UnboundedFollowing)
-    }
 }
 
 case class UnresolvedWindowExpression(
@@ -578,22 +576,19 @@ case class NTile(buckets: Expression)
   // Validate buckets. Note that this could be relaxed, the bucket value only needs to constant
   // for each partition.
   override def checkInputDataTypes(): TypeCheckResult = {
-    if (!buckets.foldable) {
+    if (!buckets.foldable)
       return TypeCheckFailure(
         s"Buckets expression must be foldable, but got $buckets")
-    }
 
-    if (buckets.dataType != IntegerType) {
+    if (buckets.dataType != IntegerType)
       return TypeCheckFailure(
         s"Buckets expression must be integer type, but got $buckets")
-    }
 
     val i = buckets.eval().asInstanceOf[Int]
-    if (i > 0) {
+    if (i > 0)
       TypeCheckSuccess
-    } else {
+    else
       TypeCheckFailure(s"Buckets expression must be positive, but got: $i")
-    }
   }
 
   private val bucket =

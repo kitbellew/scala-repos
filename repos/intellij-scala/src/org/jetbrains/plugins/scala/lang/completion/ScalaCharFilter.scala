@@ -12,7 +12,7 @@ class ScalaCharFilter extends CharFilter {
     if (lookup == null || lookup.getPsiElement == null) return null
     val file = lookup.getPsiFile
     if (!file.isInstanceOf[ScalaFile]) return null
-    if (c == '[' || c == '{' || c == ')' || c == ']' || c == '}') {
+    if (c == '[' || c == '{' || c == ')' || c == ']' || c == '}')
       lookup.getPsiElement match {
         case Parent(importExpr: ScImportExpr) =>
           // import a.<caret/>
@@ -20,7 +20,6 @@ class ScalaCharFilter extends CharFilter {
         case _ =>
           return Result.SELECT_ITEM_AND_FINISH_LOOKUP
       }
-    }
     if (c == '`') return Result.ADD_TO_PREFIX
     if (c == ':') return Result.HIDE_LOOKUP
     null

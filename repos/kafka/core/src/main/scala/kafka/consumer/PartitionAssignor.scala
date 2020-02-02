@@ -187,7 +187,7 @@ class RangeAssignor() extends PartitionAssignor with Logging {
         if (nParts <= 0)
           warn(
             "No broker partitions consumed by consumer thread " + consumerThreadId + " for topic " + topic)
-        else {
+        else
           for (i <- startPart until startPart + nParts) {
             val partition = curPartitions(i)
             info(
@@ -197,7 +197,6 @@ class RangeAssignor() extends PartitionAssignor with Logging {
               partitionAssignment.getAndMaybePut(consumerThreadId.consumer)
             assignmentForConsumer += (TopicAndPartition(topic, partition) -> consumerThreadId)
           }
-        }
       }
     }
 

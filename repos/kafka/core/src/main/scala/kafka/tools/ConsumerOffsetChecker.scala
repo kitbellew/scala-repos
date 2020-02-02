@@ -38,29 +38,27 @@ object ConsumerOffsetChecker extends Logging {
   private var topicPidMap: immutable.Map[String, Seq[Int]] = immutable.Map()
 
   private def getConsumer(zkUtils: ZkUtils, bid: Int): Option[SimpleConsumer] =
-    try {
-      zkUtils.readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + bid)._1 match {
-        case Some(brokerInfoString) =>
-          Json.parseFull(brokerInfoString) match {
-            case Some(m) =>
-              val brokerInfo = m.asInstanceOf[Map[String, Any]]
-              val host = brokerInfo.get("host").get.asInstanceOf[String]
-              val port = brokerInfo.get("port").get.asInstanceOf[Int]
-              Some(
-                new SimpleConsumer(
-                  host,
-                  port,
-                  10000,
-                  100000,
-                  "ConsumerOffsetChecker"))
-            case None =>
-              throw new BrokerNotAvailableException(
-                "Broker id %d does not exist".format(bid))
-          }
-        case None =>
-          throw new BrokerNotAvailableException(
-            "Broker id %d does not exist".format(bid))
-      }
+    try zkUtils.readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + bid)._1 match {
+      case Some(brokerInfoString) =>
+        Json.parseFull(brokerInfoString) match {
+          case Some(m) =>
+            val brokerInfo = m.asInstanceOf[Map[String, Any]]
+            val host = brokerInfo.get("host").get.asInstanceOf[String]
+            val port = brokerInfo.get("port").get.asInstanceOf[Int]
+            Some(
+              new SimpleConsumer(
+                host,
+                port,
+                10000,
+                100000,
+                "ConsumerOffsetChecker"))
+          case None =>
+            throw new BrokerNotAvailableException(
+              "Broker id %d does not exist".format(bid))
+        }
+      case None =>
+        throw new BrokerNotAvailableException(
+          "Broker id %d does not exist".format(bid))
     } catch {
       case t: Throwable =>
         println("Could not parse broker info due to " + t.getCause)
@@ -259,12 +257,11 @@ object ConsumerOffsetChecker extends Logging {
             }
           } else if (offsetAndMetadata.error == Errors.NONE.code)
             offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
-          else {
+          else
             println(
               "Could not fetch offset for %s due to %s.".format(
                 topicAndPartition,
                 Errors.forCode(offsetAndMetadata.error).exception))
-          }
       }
       channel.disconnect()
 
@@ -285,12 +282,11 @@ object ConsumerOffsetChecker extends Logging {
       case t: Throwable =>
         println("Exiting due to: %s.".format(t.getMessage))
     } finally {
-      for (consumerOpt <- consumerMap.values) {
+      for (consumerOpt <- consumerMap.values)
         consumerOpt match {
           case Some(consumer) => consumer.close()
           case None           => // ignore
         }
-      }
       if (zkUtils != null)
         zkUtils.close()
 

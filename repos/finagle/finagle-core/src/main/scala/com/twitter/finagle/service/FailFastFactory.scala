@@ -234,13 +234,12 @@ private[finagle] class FailFastFactory[Req, Rep](
 
   override def apply(conn: ClientConnection): Future[Service[Req, Rep]] =
     if (state != Ok) futureExc
-    else {
+    else
       underlying(conn).respond {
         case Throw(_)                 => update(Observation.Fail)
         case Return(_) if state != Ok => update(Observation.Success)
         case _                        =>
       }
-    }
   override def status = state match {
     case Ok          => underlying.status
     case _: Retrying => Status.Busy

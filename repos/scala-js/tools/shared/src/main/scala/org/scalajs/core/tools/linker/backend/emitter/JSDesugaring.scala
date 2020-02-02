@@ -406,25 +406,24 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
            * evaluation of the condition out of the loop.
            */
           val newLabel = label.map(transformIdent)
-          if (isExpression(cond)) {
+          if (isExpression(cond))
             js.While(transformExpr(cond), transformStat(body), newLabel)
-          } else {
+          else
             js.While(js.BooleanLiteral(true), {
               unnest(cond) { (newCond, env0) =>
                 implicit val env = env0
                 js.If(transformExpr(newCond), transformStat(body), js.Break())
               }
             }, newLabel)
-          }
 
         case DoWhile(body, cond, label) =>
           /* We cannot simply unnest(cond) here, because that would eject the
            * evaluation of the condition out of the loop.
            */
           val newLabel = label.map(transformIdent)
-          if (isExpression(cond)) {
+          if (isExpression(cond))
             js.DoWhile(transformStat(body), transformExpr(cond), newLabel)
-          } else {
+          else
             /* This breaks 'continue' statements for this loop, but we don't
              * care because we never emit continue statements for do..while
              * loops.
@@ -440,7 +439,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               },
               newLabel
             )
-          }
 
         case Debugger() =>
           js.Debugger()
@@ -463,11 +461,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     js.Apply(
                       genIdentBracketSelect(superCtor, "apply"),
                       List(js.This(), transformExpr(argArray)))
-                  } else {
+                  } else
                     js.Apply(
                       genIdentBracketSelect(superCtor, "call"),
                       js.This() :: newArgs.map(transformExpr))
-                  }
 
                 case OutputMode.ECMAScript6 =>
                   js.Apply(js.Super(), newArgs.map(transformExpr))
@@ -500,11 +497,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                * which has all the same semantics as the assignment, except
                * it disregards the prototype chain.
                */
-              val defineProperties = {
+              val defineProperties =
                 genIdentBracketSelect(
                   genIdentBracketSelect(envField("g"), "Object"),
                   "defineProperties")
-              }
               val transformedName = name match {
                 case name: Ident      => transformIdent(name)
                 case StringLiteral(s) => js.StringLiteral(s)
@@ -592,14 +588,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     private object RecordVarRef {
       def unapply(tree: Tree): Option[VarRef] =
         if (!tree.tpe.isInstanceOf[RecordType]) None
-        else {
+        else
           tree match {
             case tree: VarRef => Some(tree)
             case Select(RecordVarRef(VarRef(recIdent)), fieldIdent) =>
               implicit val pos = tree.pos
               Some(VarRef(makeRecordFieldIdent(recIdent, fieldIdent))(tree.tpe))
           }
-        }
     }
 
     /** Same as `unnest`, but allows (and preserves) [[JSSpread]]s at the
@@ -662,9 +657,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         def rec(arg: Tree)(implicit env: Env): Tree = {
           def noExtractYet = extractedStatements.isEmpty
 
-          if (if (noExtractYet) isExpression(arg) else isPureExpression(arg)) {
+          if (if (noExtractYet) isExpression(arg) else isPureExpression(arg))
             arg
-          } else {
+          else {
             implicit val pos = arg.pos
             arg match {
               case Block(stats :+ expr) =>
@@ -930,13 +925,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           }
           js.Block(for {
             (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <- fields zip elems
-          } yield {
-            doVarDef(
-              makeRecordFieldIdent(ident, fName, fOrigName),
-              fTpe,
-              mutable || fMutable,
-              fRhs)
-          })
+          } yield doVarDef(
+            makeRecordFieldIdent(ident, fName, fOrigName),
+            fTpe,
+            mutable || fMutable,
+            fRhs))
 
         case _ =>
           genLet(ident, mutable, transformExpr(rhs))
@@ -948,11 +941,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         env: Env): js.Tree =
       tpe match {
         case RecordType(fields) =>
-          js.Block(for {
-            RecordType.Field(fName, fOrigName, fTpe, fMutable) <- fields
-          } yield {
-            doEmptyVarDef(makeRecordFieldIdent(ident, fName, fOrigName), fTpe)
-          })
+          js.Block(
+            for {
+              RecordType.Field(fName, fOrigName, fTpe, fMutable) <- fields
+            } yield doEmptyVarDef(
+              makeRecordFieldIdent(ident, fName, fOrigName),
+              fTpe))
 
         case _ =>
           genLet(ident, mutable = true, js.EmptyTree)
@@ -971,11 +965,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           }
           js.Block(for {
             (RecordType.Field(fName, fOrigName, fTpe, fMutable), fRhs) <- fields zip elems
-          } yield {
-            doAssign(
-              VarRef(makeRecordFieldIdent(ident, fName, fOrigName))(fTpe),
-              fRhs)
-          })
+          } yield doAssign(
+            VarRef(makeRecordFieldIdent(ident, fName, fOrigName))(fTpe),
+            fRhs))
 
         case _ =>
           js.Assign(transformExpr(lhs), transformExpr(rhs))
@@ -1099,14 +1091,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             extractLet { newLhs =>
               val savedMap = labeledExprLHSes
               labeledExprLHSes = labeledExprLHSes + (label -> newLhs)
-              try {
-                newLhs match {
-                  case Return(_, _) => redo(body)
-                  case _            => js.Labeled(label, pushLhsInto(newLhs, body))
-                }
-              } finally {
-                labeledExprLHSes = savedMap
-              }
+              try newLhs match {
+                case Return(_, _) => redo(body)
+                case _            => js.Labeled(label, pushLhsInto(newLhs, body))
+              } finally labeledExprLHSes = savedMap
             }
 
           case Return(expr, _) =>
@@ -1137,7 +1125,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 if (finalizer == EmptyTree) js.EmptyTree
                 else transformStat(finalizer)
 
-              if (newHandler != js.EmptyTree && newFinalizer != js.EmptyTree) {
+              if (newHandler != js.EmptyTree && newFinalizer != js.EmptyTree)
                 /* The Google Closure Compiler wrongly eliminates finally blocks, if
                  * the catch block throws an exception.
                  * Issues: #563, google/closure-compiler#186
@@ -1155,9 +1143,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   errVar,
                   js.EmptyTree,
                   newFinalizer)
-              } else {
+              else
                 js.Try(newBlock, errVar, newHandler, newFinalizer)
-              }
             }
 
           // TODO Treat throw as an LHS?
@@ -1189,9 +1176,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
                     // desugar alternatives into several cases falling through
                     caze <- (newValues.init map (v => (v, js.Skip()))) :+ (newValues.last, newBody)
-                  } yield {
-                    caze
-                  }
+                  } yield caze
                 }
                 val newDefault =
                   if (default == EmptyTree) js.EmptyTree
@@ -1262,13 +1247,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           case AsInstanceOf(expr, cls) =>
-            if (semantics.asInstanceOfs == Unchecked) {
+            if (semantics.asInstanceOfs == Unchecked)
               redo(expr)
-            } else {
+            else
               unnest(expr) { (newExpr, env) =>
                 redo(AsInstanceOf(newExpr, cls))(env)
               }
-            }
 
           case Unbox(expr, charCode) =>
             unnest(expr) { (newExpr, env) =>
@@ -1286,36 +1270,34 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           // JavaScript expressions (if we reach here their arguments are not expressions)
 
           case JSNew(ctor, args) =>
-            if (containsAnySpread(args)) {
+            if (containsAnySpread(args))
               redo {
                 CallHelper(
                   "newJSObjectWithVarargs",
                   List(ctor, spreadToArgArray(args)))(AnyType)
               }
-            } else {
+            else
               unnest(ctor :: args) { (newCtorAndArgs, env) =>
                 val newCtor :: newArgs = newCtorAndArgs
                 redo(JSNew(newCtor, newArgs))(env)
               }
-            }
 
           case JSFunctionApply(fun, args) =>
-            if (containsAnySpread(args)) {
+            if (containsAnySpread(args))
               redo {
                 JSBracketMethodApply(
                   fun,
                   StringLiteral("apply"),
                   List(Undefined(), spreadToArgArray(args)))
               }
-            } else {
+            else
               unnest(fun :: args) { (newFunAndArgs, env) =>
                 val newFun :: newArgs = newFunAndArgs
                 redo(JSFunctionApply(newFun, newArgs))(env)
               }
-            }
 
           case JSDotMethodApply(receiver, method, args) =>
-            if (containsAnySpread(args)) {
+            if (containsAnySpread(args))
               withTempVar(receiver) { (newReceiver, env0) =>
                 implicit val env = env0
                 redo {
@@ -1325,15 +1307,14 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     List(newReceiver, spreadToArgArray(args)))
                 }
               }
-            } else {
+            else
               unnest(receiver :: args) { (newReceiverAndArgs, env) =>
                 val newReceiver :: newArgs = newReceiverAndArgs
                 redo(JSDotMethodApply(newReceiver, method, newArgs))(env)
               }
-            }
 
           case JSBracketMethodApply(receiver, method, args) =>
-            if (containsAnySpread(args)) {
+            if (containsAnySpread(args))
               withTempVar(receiver) { (newReceiver, env0) =>
                 implicit val env = env0
                 redo {
@@ -1343,12 +1324,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     List(newReceiver, spreadToArgArray(args)))
                 }
               }
-            } else {
+            else
               unnest(receiver :: method :: args) { (newReceiverAndArgs, env) =>
                 val newReceiver :: newMethod :: newArgs = newReceiverAndArgs
                 redo(JSBracketMethodApply(newReceiver, newMethod, newArgs))(env)
               }
-            }
 
           case JSSuperBracketSelect(cls, qualifier, item) =>
             unnest(qualifier, item) { (newQualifier, newItem, env) =>
@@ -1384,22 +1364,20 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             unnest(lhs) { (newLhs, env) => redo(JSUnaryOp(op, newLhs))(env) }
 
           case JSBinaryOp(JSBinaryOp.&&, lhs, rhs) =>
-            if (lhs.tpe == BooleanType) {
+            if (lhs.tpe == BooleanType)
               redo(If(lhs, rhs, BooleanLiteral(false))(AnyType))
-            } else {
+            else
               unnest(lhs) { (newLhs, env) =>
                 redo(If(newLhs, rhs, newLhs)(AnyType))(env)
               }
-            }
 
           case JSBinaryOp(JSBinaryOp.||, lhs, rhs) =>
-            if (lhs.tpe == BooleanType) {
+            if (lhs.tpe == BooleanType)
               redo(If(lhs, BooleanLiteral(true), rhs)(AnyType))
-            } else {
+            else
               unnest(lhs) { (newLhs, env) =>
                 redo(If(newLhs, newLhs, rhs)(AnyType))(env)
               }
-            }
 
           case JSBinaryOp(op, lhs, rhs) =>
             unnest(lhs, rhs) { (newLhs, newRhs, env) =>
@@ -1407,15 +1385,14 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           case JSArrayConstr(items) =>
-            if (containsAnySpread(items)) {
+            if (containsAnySpread(items))
               redo {
                 spreadToArgArray(items)
               }
-            } else {
+            else
               unnest(items) { (newItems, env) =>
                 redo(JSArrayConstr(newItems))(env)
               }
-            }
 
           case rhs @ JSObjectConstr(fields) =>
             if (doesObjectConstrRequireDesugaring(rhs)) {
@@ -1462,7 +1439,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
             }
 
           case _ =>
-            if (lhs == EmptyTree) {
+            if (lhs == EmptyTree)
               /* Go "back" to transformStat() after having dived into
                * expression statements. Remember that (lhs == EmptyTree)
                * is a trick that we use to "add" all the code of pushLhsInto()
@@ -1479,12 +1456,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                       "lhs = " + lhs + "\n" + "rhs = " + rhs +
                       " of class " + rhs.getClass)
               }
-            } else {
+            else
               sys.error(
                 "Illegal tree in JSDesugar.pushLhsInto():\n" +
                   "lhs = " + lhs + "\n" + "rhs = " + rhs +
                   " of class " + rhs.getClass)
-            }
         })
     }
 
@@ -1503,7 +1479,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           reversedPartUnderConstruction = Nil
         }
 
-      for (arg <- args) {
+      for (arg <- args)
         arg match {
           case JSSpread(spreadArray) =>
             closeReversedPartUnderConstruction()
@@ -1511,7 +1487,6 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case _ =>
             reversedPartUnderConstruction ::= arg
         }
-      }
       closeReversedPartUnderConstruction()
 
       reversedParts match {
@@ -1598,9 +1573,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               !Definitions.isReflProxyName(method.name)) {
             val helperName = hijackedClassMethodToHelperName(method.name)
             genCallHelper(helperName, newReceiver :: newArgs: _*)
-          } else {
+          } else
             js.Apply(newReceiver DOT method, newArgs)
-          }
 
         case ApplyStatically(receiver, cls, method, args) =>
           val className = cls.className
@@ -1664,14 +1638,13 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               js.BinaryOp(JSBinaryOp.!==, newLhs, newRhs)
 
             case String_+ =>
-              if (lhs.tpe == StringType || rhs.tpe == StringType) {
+              if (lhs.tpe == StringType || rhs.tpe == StringType)
                 js.BinaryOp(JSBinaryOp.+, newLhs, newRhs)
-              } else {
+              else
                 js.BinaryOp(
                   JSBinaryOp.+,
                   js.BinaryOp(JSBinaryOp.+, js.StringLiteral(""), newLhs),
                   newRhs)
-              }
 
             case Int_+ => or0(js.BinaryOp(JSBinaryOp.+, newLhs, newRhs))
             case Int_- =>
@@ -1786,7 +1759,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
         case Unbox(expr, charCode) =>
           val newExpr = transformExpr(expr)
 
-          if (semantics.asInstanceOfs == Unchecked) {
+          if (semantics.asInstanceOfs == Unchecked)
             (charCode: @switch) match {
               case 'Z'             => !(!newExpr)
               case 'B' | 'S' | 'I' => or0(newExpr)
@@ -1799,9 +1772,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 else
                   js.UnaryOp(JSUnaryOp.+, newExpr)
             }
-          } else {
+          else
             genCallHelper("u" + charCode, newExpr)
-          }
 
         case GetClass(expr) =>
           genCallHelper("objectGetClass", transformExpr(expr))
@@ -1969,13 +1941,12 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               isStat = false,
               Env.empty.withParams(captureParams ++ params))
 
-          if (captureParams.isEmpty) {
+          if (captureParams.isEmpty)
             innerFunction
-          } else {
+          else
             js.Apply(js.Function(captureParams.map(transformParamDef), {
               js.Return(innerFunction)
             }), captureValues.map(transformExpr))
-          }
 
         // Invalid trees
 
@@ -2158,8 +2129,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           if (className0 == BoxedLongClass) LongImpl.RuntimeLongClass
           else className0
 
-        if (HijackedBoxedClasses.contains(className)) {
-          if (test) {
+        if (HijackedBoxedClasses.contains(className))
+          if (test)
             className match {
               case BoxedUnitClass    => expr === js.Undefined()
               case BoxedBooleanClass => typeof(expr) === "boolean"
@@ -2169,7 +2140,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               case BoxedFloatClass   => genCallHelper("isFloat", expr)
               case BoxedDoubleClass  => typeof(expr) === "number"
             }
-          } else {
+          else
             className match {
               case BoxedUnitClass    => genCallHelper("asUnit", expr)
               case BoxedBooleanClass => genCallHelper("asBoolean", expr)
@@ -2179,10 +2150,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               case BoxedFloatClass   => genCallHelper("asFloat", expr)
               case BoxedDoubleClass  => genCallHelper("asDouble", expr)
             }
-          }
-        } else {
+        else
           js.Apply(envField(if (test) "is" else "as", className), List(expr))
-        }
 
       case ArrayType(base, depth) =>
         js.Apply(
@@ -2204,9 +2173,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
   private[emitter] def genRawJSClassConstructor(linkedClass: LinkedClass)(
       implicit outputMode: OutputMode,
       pos: Position): js.Tree =
-    if (linkedClass.kind == ClassKind.JSClass) {
+    if (linkedClass.kind == ClassKind.JSClass)
       encodeClassVar(linkedClass.encodedName)
-    } else {
+    else {
       require(linkedClass.jsName.isDefined)
       linkedClass.jsName.get.split("\\.").foldLeft(envField("g")) {
         (prev, part) => genBracketSelect(prev, js.StringLiteral(part))

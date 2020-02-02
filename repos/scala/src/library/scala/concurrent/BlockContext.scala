@@ -81,8 +81,6 @@ object BlockContext {
     try {
       contextLocal.set(blockContext)
       body
-    } finally {
-      contextLocal.set(old)
-    }
+    } finally contextLocal.set(old)
   }
 }

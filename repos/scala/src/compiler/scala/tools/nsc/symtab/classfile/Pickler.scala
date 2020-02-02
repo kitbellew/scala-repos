@@ -55,11 +55,10 @@ abstract class Pickler extends SubComponent {
         }
       }
 
-      try {
-        pickle(unit.body)
-      } catch {
+      try pickle(unit.body)
+      catch {
         case e: FatalError =>
-          for (t <- unit.body) {
+          for (t <- unit.body)
             // If there are any erroneous types in the tree, then we will crash
             // when we pickle it: so let's report an error instead.  We know next
             // to nothing about what happened, but our supposition is a lot better
@@ -71,7 +70,6 @@ abstract class Pickler extends SubComponent {
               reporter.error(t.pos, "erroneous or inaccessible type")
               return
             }
-          }
           throw e
       }
     }
@@ -175,7 +173,7 @@ abstract class Pickler extends SubComponent {
     def putSymbol(sym0: Symbol) {
       val sym = deskolemize(sym0)
 
-      if (putEntry(sym)) {
+      if (putEntry(sym))
         if (isLocalToPickle(sym)) {
           putEntry(sym.name)
           putSymbol(sym.owner)
@@ -213,7 +211,6 @@ abstract class Pickler extends SubComponent {
           putEntry(if (sym.isModuleClass) sym.name.toTermName else sym.name)
           if (!sym.owner.isRoot) putSymbol(sym.owner)
         }
-      }
     }
 
     private def putSymbols(syms: List[Symbol]) =
@@ -221,49 +218,49 @@ abstract class Pickler extends SubComponent {
 
     /** Store type and everything it refers to in map index.
       */
-    private def putType(tp: Type): Unit = if (putEntry(tp)) {
-      tp match {
-        case NoType | NoPrefix =>
-          ;
-        case ThisType(sym) =>
-          putSymbol(sym)
-        case SingleType(pre, sym) =>
-          putType(pre)
-          putSymbol(sym)
-        case SuperType(thistpe, supertpe) =>
-          putType(thistpe)
-          putType(supertpe)
-        case ConstantType(value) =>
-          putConstant(value)
-        case TypeRef(pre, sym, args) =>
-          putType(pre)
-          putSymbol(sym)
-          putTypes(args)
-        case TypeBounds(lo, hi) =>
-          putType(lo)
-          putType(hi)
-        case tp: CompoundType =>
-          putSymbol(tp.typeSymbol)
-          putTypes(tp.parents)
-          putSymbols(tp.decls.toList)
-        case MethodType(params, restpe) =>
-          putType(restpe)
-          putSymbols(params)
-        case NullaryMethodType(restpe) =>
-          putType(restpe)
-        case PolyType(tparams, restpe) =>
-          putType(restpe)
-          putSymbols(tparams)
-        case ExistentialType(tparams, restpe) =>
-          putType(restpe)
-          putSymbols(tparams)
-        case AnnotatedType(_, underlying) =>
-          putType(underlying)
-          tp.staticAnnotations foreach putAnnotation
-        case _ =>
-          throw new FatalError("bad type: " + tp + "(" + tp.getClass + ")")
-      }
-    }
+    private def putType(tp: Type): Unit =
+      if (putEntry(tp))
+        tp match {
+          case NoType | NoPrefix =>
+            ;
+          case ThisType(sym) =>
+            putSymbol(sym)
+          case SingleType(pre, sym) =>
+            putType(pre)
+            putSymbol(sym)
+          case SuperType(thistpe, supertpe) =>
+            putType(thistpe)
+            putType(supertpe)
+          case ConstantType(value) =>
+            putConstant(value)
+          case TypeRef(pre, sym, args) =>
+            putType(pre)
+            putSymbol(sym)
+            putTypes(args)
+          case TypeBounds(lo, hi) =>
+            putType(lo)
+            putType(hi)
+          case tp: CompoundType =>
+            putSymbol(tp.typeSymbol)
+            putTypes(tp.parents)
+            putSymbols(tp.decls.toList)
+          case MethodType(params, restpe) =>
+            putType(restpe)
+            putSymbols(params)
+          case NullaryMethodType(restpe) =>
+            putType(restpe)
+          case PolyType(tparams, restpe) =>
+            putType(restpe)
+            putSymbols(tparams)
+          case ExistentialType(tparams, restpe) =>
+            putType(restpe)
+            putSymbols(tparams)
+          case AnnotatedType(_, underlying) =>
+            putType(underlying)
+            tp.staticAnnotations foreach putAnnotation
+          case _ =>
+            throw new FatalError("bad type: " + tp + "(" + tp.getClass + ")")
+        }
     private def putTypes(tps: List[Type]) { tps foreach putType }
 
     private object putTreeTraverser extends Traverser {
@@ -292,11 +289,10 @@ abstract class Pickler extends SubComponent {
     /** Store a constant in map index, along with anything it references.
       */
     private def putConstant(c: Constant) {
-      if (putEntry(c)) {
+      if (putEntry(c))
         if (c.tag == StringTag) putEntry(newTermName(c.stringValue))
         else if (c.tag == ClazzTag) putType(c.typeValue)
         else if (c.tag == EnumTag) putSymbol(c.symbolValue)
-      }
     }
 
     private def putChildren(sym: Symbol, children: List[Symbol]) {
@@ -452,12 +448,11 @@ abstract class Pickler extends SubComponent {
           writeRef(sym.owner)
       }
       def writeSymbolBody(sym: Symbol) {
-        if (sym ne NoSymbol) {
+        if (sym ne NoSymbol)
           if (isLocalToPickle(sym))
             writeLocalSymbolBody(sym)
           else
             writeExtSymbolBody(sym)
-        }
       }
 
       // NullaryMethodType reuses POLYtpe since those can never have an empty list of tparams.

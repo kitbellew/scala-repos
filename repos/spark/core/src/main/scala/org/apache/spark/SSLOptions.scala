@@ -78,23 +78,21 @@ private[spark] case class SSLOptions(
         trustStoreType.foreach(sslContextFactory.setTrustStoreType)
       }
       protocol.foreach(sslContextFactory.setProtocol)
-      if (supportedAlgorithms.nonEmpty) {
+      if (supportedAlgorithms.nonEmpty)
         sslContextFactory.setIncludeCipherSuites(supportedAlgorithms.toSeq: _*)
-      }
 
       Some(sslContextFactory)
-    } else {
+    } else
       None
-    }
 
   /*
    * The supportedAlgorithms set is a subset of the enabledAlgorithms that
    * are supported by the current Java security provider for this protocol.
    */
   private val supportedAlgorithms: Set[String] =
-    if (enabledAlgorithms.isEmpty) {
+    if (enabledAlgorithms.isEmpty)
       Set()
-    } else {
+    else {
       var context: SSLContext = null
       try {
         context = SSLContext.getInstance(protocol.orNull)

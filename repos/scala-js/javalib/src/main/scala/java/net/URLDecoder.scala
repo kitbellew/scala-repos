@@ -35,7 +35,7 @@ object URLDecoder {
         "URLDecoder: Illegal hex characters in escape (%) pattern")
 
     var i = 0
-    while (i < len) {
+    while (i < len)
       s.charAt(i) match {
         case '+' =>
           charBuffer.append(' ')
@@ -72,7 +72,6 @@ object URLDecoder {
           charBuffer.append(c)
           i += 1
       }
-    }
 
     charBuffer.flip()
     charBuffer.toString

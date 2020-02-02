@@ -66,13 +66,13 @@ abstract class ScalaRuntimeTypeEvaluator(
         }
       )
     val value: Value = evaluator.evaluate(evaluationContext)
-    if (value != null) {
+    if (value != null)
       inReadAction {
         Option(getCastableRuntimeType(project, value))
           .map(new PsiImmediateClassType(_, PsiSubstitutor.EMPTY))
           .orNull
       }
-    } else
+    else
       throw EvaluationException(
         DebuggerBundle.message("evaluation.error.surrounded.expression.null"))
   }
@@ -87,9 +87,8 @@ object ScalaRuntimeTypeEvaluator {
     val unwrapped = DebuggerUtil.unwrapScalaRuntimeObjectRef(value)
     val jdiType: Type = unwrapped.asInstanceOf[Value].`type`
     var psiClass: PsiClass = findPsiClass(project, jdiType)
-    if (psiClass != null) {
+    if (psiClass != null)
       return psiClass
-    }
     jdiType match {
       case classType: ClassType =>
         val superclass: ClassType = classType.superclass
@@ -97,9 +96,8 @@ object ScalaRuntimeTypeEvaluator {
           Seq("java.lang.Object", "scala.Any", "scala.AnyRef", "scala.AnyVal")
         if (superclass != null && !stdTypeNames.contains(superclass.name)) {
           psiClass = findPsiClass(project, superclass)
-          if (psiClass != null) {
+          if (psiClass != null)
             return psiClass
-          }
         }
         import scala.collection.JavaConversions._
         classType.interfaces
@@ -112,14 +110,11 @@ object ScalaRuntimeTypeEvaluator {
 
   private def findPsiClass(project: Project, jdiType: Type): PsiClass = {
     val token: AccessToken = ReadAction.start
-    try {
-      ScalaPsiManager
-        .instance(project)
-        .getCachedClass(GlobalSearchScope.allScope(project), jdiType.name())
-        .orNull
-    } finally {
-      token.finish()
-    }
+    try ScalaPsiManager
+      .instance(project)
+      .getCachedClass(GlobalSearchScope.allScope(project), jdiType.name())
+      .orNull
+    finally token.finish()
   }
 
   def isSubtypeable(scType: ScType): Boolean =

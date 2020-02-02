@@ -55,9 +55,9 @@ private[hashing] class MurmurHash3 {
     // Case objects have the hashCode inlined directly into the
     // synthetic hashCode method, but this method should still give
     // a correct result if passed a case object.
-    if (arr == 0) {
+    if (arr == 0)
       x.productPrefix.hashCode
-    } else {
+    else {
       var h = seed
       var i = 0
       while (i < arr) {

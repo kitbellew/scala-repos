@@ -75,12 +75,10 @@ class DirectKafkaStreamSuite
       ssc.stop()
       sc = null
     }
-    if (sc != null) {
+    if (sc != null)
       sc.stop()
-    }
-    if (testDir != null) {
+    if (testDir != null)
       Utils.deleteRecursively(testDir)
-    }
   }
 
   test(
@@ -118,9 +116,8 @@ class DirectKafkaStreamSuite
         rdd
       }
       .foreachRDD { rdd =>
-        for (o <- offsetRanges) {
+        for (o <- offsetRanges)
           logInfo(s"${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset}")
-        }
         val collected = rdd.mapPartitionsWithIndex { (i, iter) =>
           // For each partition, get size of the range in the partition,
           // and the number of items in the partition
@@ -311,9 +308,8 @@ class DirectKafkaStreamSuite
     ssc.start()
 
     // Send some data and wait for them to be received
-    for (i <- (1 to 10).grouped(4)) {
+    for (i <- (1 to 10).grouped(4))
       sendDataAndWaitForReceive(i)
-    }
 
     // Verify that offset ranges were generated
     val offsetRangesBeforeStop = getOffsetRanges(kafkaStream)

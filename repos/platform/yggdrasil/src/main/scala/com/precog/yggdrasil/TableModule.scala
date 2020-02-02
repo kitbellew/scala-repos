@@ -341,9 +341,7 @@ trait TableModule[M[+_]] extends TransSpecModule {
       for {
         t <- table.sort(
           trans.DerefObjectStatic(trans.Leaf(trans.Source), CPathField("key")))
-      } yield {
-        GroupingSource(t, idTrans, targetTrans, groupId, groupKeySpec)
-      }
+      } yield GroupingSource(t, idTrans, targetTrans, groupId, groupKeySpec)
   }
 
   final case class GroupingAlignment(

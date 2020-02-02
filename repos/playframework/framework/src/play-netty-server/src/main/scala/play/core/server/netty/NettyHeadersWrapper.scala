@@ -17,9 +17,8 @@ private[server] class NettyHeadersWrapper(nettyHeaders: HttpHeaders)
   override def headers: Seq[(String, String)] = {
     // Lazily initialize the header sequence using the Netty headers. It's OK
     // if we do this operation concurrently because the operation is idempotent.
-    if (_headers == null) {
+    if (_headers == null)
       _headers = nettyHeaders.entries.asScala.map(h => h.getKey -> h.getValue)
-    }
     _headers
   }
 

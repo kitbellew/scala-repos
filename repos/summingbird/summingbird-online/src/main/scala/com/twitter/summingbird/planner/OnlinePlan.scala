@@ -104,9 +104,9 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
       previousBolt: CNode,
       nodeSet: List[CNode],
       visited: VisitedStore): (List[CNode], VisitedStore) =
-    if (visited.contains(dependantProducer)) {
+    if (visited.contains(dependantProducer))
       (distinctAddToList(nodeSet, previousBolt), visited)
-    } else {
+    else {
       val currentBolt = previousBolt.add(dependantProducer)
       val visitedWithN = visited + dependantProducer
 
@@ -181,15 +181,14 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
           case _ => false
         }
         // Note the currentProducer is *ALREADY* a part of activeBolt
-        if (doSplit) {
+        if (doSplit)
           // Note that FlatMapNode is used as the default empty node
           recurse(
             dep,
             updatedBolt = FlatMapNode(),
             updatedRegistry = distinctAddToList(nodeSet, activeBolt))
-        } else {
+        else
           recurse(dep, updatedBolt = activeBolt)
-        }
       }
 
       /*

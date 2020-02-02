@@ -65,10 +65,9 @@ trait LinearRegressionTestSupport[M[+_]]
 
     val testSeqY = {
       testSeqX map {
-        case xs => {
+        case xs =>
           val yvalue = dotProduct(actualThetas, 1.0 +: xs)
           yvalue + Random.nextGaussian
-        }
       }
     }
 

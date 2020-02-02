@@ -87,26 +87,25 @@ class AsyncRDDActions[T: ClassTag](self: RDD[T])
      */
     def continue(partsScanned: Int)(
         implicit jobSubmitter: JobSubmitter): Future[Seq[T]] =
-      if (results.size >= num || partsScanned >= totalParts) {
+      if (results.size >= num || partsScanned >= totalParts)
         Future.successful(results.toSeq)
-      } else {
+      else {
         // The number of partitions to try in this iteration. It is ok for this number to be
         // greater than totalParts because we actually cap it at totalParts in runJob.
         var numPartsToTry = 1L
-        if (partsScanned > 0) {
+        if (partsScanned > 0)
           // If we didn't find any rows after the previous iteration, quadruple and retry.
           // Otherwise, interpolate the number of partitions we need to try, but overestimate it
           // by 50%. We also cap the estimation in the end.
-          if (results.size == 0) {
+          if (results.size == 0)
             numPartsToTry = partsScanned * 4
-          } else {
+          else {
             // the left side of max is >=1 whenever partsScanned >= 2
             numPartsToTry = Math.max(
               1,
               (1.5 * num * partsScanned / results.size).toInt - partsScanned)
             numPartsToTry = Math.min(numPartsToTry, partsScanned * 4)
           }
-        }
 
         val left = num - results.size
         val p = partsScanned.until(

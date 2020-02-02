@@ -329,14 +329,12 @@ trait PersistentView
       case other ⇒
         if (await)
           internalStash.stash()
-        else {
-          try {
-            PersistentView.super.aroundReceive(receive, other)
-          } catch {
+        else
+          try PersistentView.super.aroundReceive(receive, other)
+          catch {
             case NonFatal(t) ⇒
               changeState(ignoreRemainingReplay(t))
           }
-        }
     }
 
     /**

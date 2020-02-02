@@ -45,13 +45,12 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       decls enter member
       member
     } else {
-      if (member.sourceFile != null) {
+      if (member.sourceFile != null)
         if (existing.sourceFile != member.sourceFile)
           error(
             member + "is defined twice," +
               "\n in " + existing.sourceFile +
               "\n and also in " + member.sourceFile)
-      }
       existing
     }
   }
@@ -128,14 +127,13 @@ abstract class BrowsingLoaders extends GlobalSymbolLoaders {
       root: Symbol,
       name: String,
       src: AbstractFile) {
-    try {
-      if (root.isEffectiveRoot || !src.name.endsWith(
-            ".scala"
-          )) // RootClass or EmptyPackageClass
-        super.enterToplevelsFromSource(root, name, src)
-      else
-        browseTopLevel(root, src)
-    } catch {
+    try if (root.isEffectiveRoot || !src.name.endsWith(
+              ".scala"
+            )) // RootClass or EmptyPackageClass
+      super.enterToplevelsFromSource(root, name, src)
+    else
+      browseTopLevel(root, src)
+    catch {
       case ex: syntaxAnalyzer.MalformedInput =>
         println(
           "[%s] caught malformed input exception at offset %d: %s"

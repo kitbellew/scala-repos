@@ -168,9 +168,7 @@ class TestTransport(
     */
   val writeBehavior =
     new SwitchableLoggedBehavior[(TestAssociationHandle, ByteString), Boolean](
-      defaultBehavior = {
-        defaultWrite _
-      },
+      defaultBehavior = defaultWrite _,
       logCallback = {
         case (handle, payload) ⇒
           registry.logActivity(
@@ -183,9 +181,7 @@ class TestTransport(
     */
   val disassociateBehavior =
     new SwitchableLoggedBehavior[TestAssociationHandle, Unit](
-      defaultBehavior = {
-        defaultDisassociate _
-      },
+      defaultBehavior = defaultDisassociate _,
       logCallback = { (handle) ⇒
         registry.logActivity(
           DisassociateAttempt(handle.localAddress, handle.remoteAddress))
@@ -283,9 +279,8 @@ object TestTransport {
       * Restores the previous behavior.
       */
     def pop(): Unit =
-      if (behaviorStack.size > 1) {
+      if (behaviorStack.size > 1)
         behaviorStack.remove(0)
-      }
 
     private def currentBehavior = behaviorStack.get(0)
 

@@ -1,7 +1,6 @@
 class Directory(var dir_ : String) {
-  if (!dir_.startsWith("/")) {
+  if (!dir_.startsWith("/"))
     throw new RuntimeException("Invalid directory")
-  }
   dir_ = dir_.replaceAll("/{2,}", "/")
 
   def this(serialized: Array[Byte]) = {

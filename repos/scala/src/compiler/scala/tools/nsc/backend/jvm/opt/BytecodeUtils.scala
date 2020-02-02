@@ -155,15 +155,14 @@ object BytecodeUtils {
   def removeJumpAndAdjustStack(method: MethodNode, jump: JumpInsnNode) {
     val instructions = method.instructions
     val op = jump.getOpcode
-    if ((op >= IFEQ && op <= IFLE) || op == IFNULL || op == IFNONNULL) {
+    if ((op >= IFEQ && op <= IFLE) || op == IFNULL || op == IFNONNULL)
       instructions.insert(jump, getPop(1))
-    } else if ((op >= IF_ICMPEQ && op <= IF_ICMPLE) || op == IF_ACMPEQ || op == IF_ACMPNE) {
+    else if ((op >= IF_ICMPEQ && op <= IF_ICMPLE) || op == IF_ACMPEQ || op == IF_ACMPNE) {
       instructions.insert(jump, getPop(1))
       instructions.insert(jump, getPop(1))
-    } else {
+    } else
       // we can't remove JSR: its execution does not only jump, it also adds a return address to the stack
       assert(jump.getOpcode == GOTO)
-    }
     instructions.remove(jump)
   }
 
@@ -252,18 +251,16 @@ object BytecodeUtils {
         switch.labels.asScala.foreach(add(_, switch)); add(switch.dflt, switch)
       case _ =>
     }
-    if (method.localVariables != null) {
+    if (method.localVariables != null)
       method.localVariables
         .iterator()
         .asScala
         .foreach(l => { add(l.start, l); add(l.end, l) })
-    }
-    if (method.tryCatchBlocks != null) {
+    if (method.tryCatchBlocks != null)
       method.tryCatchBlocks
         .iterator()
         .asScala
         .foreach(l => { add(l.start, l); add(l.handler, l); add(l.end, l) })
-    }
 
     res.toMap
   }
@@ -398,9 +395,9 @@ object BytecodeUtils {
       loadInstr: AbstractInsnNode,
       methodNode: MethodNode,
       bTypes: BTypes): Unit =
-    if (loadedType == bTypes.coreBTypes.srNothingRef.toASMType) {
+    if (loadedType == bTypes.coreBTypes.srNothingRef.toASMType)
       methodNode.instructions.insert(loadInstr, new InsnNode(ATHROW))
-    } else if (loadedType == bTypes.coreBTypes.srNullRef.toASMType) {
+    else if (loadedType == bTypes.coreBTypes.srNullRef.toASMType) {
       methodNode.instructions.insert(loadInstr, new InsnNode(ACONST_NULL))
       methodNode.instructions.insert(loadInstr, new InsnNode(POP))
     }

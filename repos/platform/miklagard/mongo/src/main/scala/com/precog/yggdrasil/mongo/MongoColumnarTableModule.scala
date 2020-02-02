@@ -109,11 +109,11 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         fields
           .map {
             case (name, childType) =>
-              val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
+              val newPaths =
+                if (current.nonEmpty)
+                  current.map { s => s + "." + name }
+                else
+                  Set(name)
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -131,9 +131,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         extends LoadState
 
     def safeOp[A](nullMessage: String)(v: => A): Option[A] =
-      try {
-        Option(v) orElse { logger.error(nullMessage); None }
-      } catch {
+      try Option(v) orElse { logger.error(nullMessage); None } catch {
         case t: Throwable =>
           logger.error(
             "Failure during Mongo query: %s(%s)"
@@ -143,97 +141,92 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] =
       for {
         paths <- pathsM(table)
-      } yield {
-        Table(
-          StreamT
-            .unfoldM[Future, Slice, LoadState](InitialLoad(paths.toList)) {
-              case InLoad(cursorGen, skip, remaining) =>
-                M.point {
-                  val (slice, nextSkip) = makeSlice(cursorGen, skip)
-                  logger.trace(
-                    "Running InLoad: fetched %d rows, next skip = %s"
-                      .format(slice.size, nextSkip))
-                  Some(
-                    slice,
-                    nextSkip
-                      .map(InLoad(cursorGen, _, remaining))
-                      .getOrElse(InitialLoad(remaining)))
-                }
+      } yield Table(
+        StreamT
+          .unfoldM[Future, Slice, LoadState](InitialLoad(paths.toList)) {
+            case InLoad(cursorGen, skip, remaining) =>
+              M.point {
+                val (slice, nextSkip) = makeSlice(cursorGen, skip)
+                logger.trace(
+                  "Running InLoad: fetched %d rows, next skip = %s"
+                    .format(slice.size, nextSkip))
+                Some(
+                  slice,
+                  nextSkip
+                    .map(InLoad(cursorGen, _, remaining))
+                    .getOrElse(InitialLoad(remaining)))
+              }
 
-              case InitialLoad(path :: xs) =>
-                path.elements.toList match {
-                  case dbName :: collectionName :: Nil =>
-                    logger.trace("Running InitialLoad")
-                    M.point {
-                      for {
-                        db <- safeOp("Database " + dbName + " does not exist")(
-                          mongo.getDB(dbName)).flatMap {
-                          d =>
-                            if (!d.isAuthenticated && dbAuthParams.contains(
-                                  dbName)) {
-                              logger.trace("Running auth setup for " + dbName)
-                              dbAuthParams
-                                .get(dbName)
-                                .map(_.split(':')) flatMap {
-                                case Array(user, password) =>
-                                  if (d.authenticate(
-                                        user,
-                                        password.toCharArray)) {
-                                    Some(d)
-                                  } else {
-                                    logger.error(
-                                      "Authentication failed for database " + dbName);
-                                    None
-                                  }
-
-                                case invalid =>
+            case InitialLoad(path :: xs) =>
+              path.elements.toList match {
+                case dbName :: collectionName :: Nil =>
+                  logger.trace("Running InitialLoad")
+                  M.point {
+                    for {
+                      db <- safeOp("Database " + dbName + " does not exist")(
+                        mongo.getDB(dbName)).flatMap {
+                        d =>
+                          if (!d.isAuthenticated && dbAuthParams.contains(
+                                dbName)) {
+                            logger.trace("Running auth setup for " + dbName)
+                            dbAuthParams
+                              .get(dbName)
+                              .map(_.split(':')) flatMap {
+                              case Array(user, password) =>
+                                if (d.authenticate(user, password.toCharArray))
+                                  Some(d)
+                                else {
                                   logger.error(
-                                    "Invalid user:password for %s: \"%s\""
-                                      .format(dbName, invalid.mkString(":")));
+                                    "Authentication failed for database " + dbName);
                                   None
-                              }
-                            } else {
-                              Some(d)
+                                }
+
+                              case invalid =>
+                                logger.error(
+                                  "Invalid user:password for %s: \"%s\""
+                                    .format(dbName, invalid.mkString(":")));
+                                None
                             }
-                        }
-                        coll <- safeOp(
-                          "Collection " + collectionName + " does not exist") {
-                          logger.trace("Fetching collection: " + collectionName)
-                          db.getCollection(collectionName)
-                        }
-                        slice <- safeOp("Invalid result in query") {
-                          logger.trace("Getting data from " + coll)
-                          val selector = jTypeToProperties(tpe, Set())
-                            .foldLeft(new BasicDBObject()) {
-                              case (obj, path) => obj.append(path, 1)
-                            }
+                          } else
+                            Some(d)
+                      }
+                      coll <- safeOp(
+                        "Collection " + collectionName + " does not exist") {
+                        logger.trace("Fetching collection: " + collectionName)
+                        db.getCollection(collectionName)
+                      }
+                      slice <- safeOp("Invalid result in query") {
+                        logger.trace("Getting data from " + coll)
+                        val selector = jTypeToProperties(tpe, Set())
+                          .foldLeft(new BasicDBObject()) {
+                            case (obj, path) => obj.append(path, 1)
+                          }
 
-                          val cursorGen =
-                            () => coll.find(new BasicDBObject(), selector)
+                        val cursorGen =
+                          () => coll.find(new BasicDBObject(), selector)
 
-                          val (slice, nextSkip) = makeSlice(cursorGen, 0)
+                        val (slice, nextSkip) = makeSlice(cursorGen, 0)
 
-                          logger.debug("Gen slice of size " + slice.size)
-                          (
-                            slice,
-                            nextSkip
-                              .map(InLoad(cursorGen, _, xs))
-                              .getOrElse(InitialLoad(xs)))
-                        }
-                      } yield slice
-                    }
+                        logger.debug("Gen slice of size " + slice.size)
+                        (
+                          slice,
+                          nextSkip
+                            .map(InLoad(cursorGen, _, xs))
+                            .getOrElse(InitialLoad(xs)))
+                      }
+                    } yield slice
+                  }
 
-                  case err =>
-                    sys.error(
-                      "MongoDB path " + path.path + " does not have the form /dbName/collectionName; rollups not yet supported.")
-                }
+                case err =>
+                  sys.error(
+                    "MongoDB path " + path.path + " does not have the form /dbName/collectionName; rollups not yet supported.")
+              }
 
-              case InitialLoad(Nil) =>
-                M.point(None)
-            },
-          UnknownSize
-        )
-      }
+            case InitialLoad(Nil) =>
+              M.point(None)
+          },
+        UnknownSize
+      )
 
     def makeSlice(
         cursorGen: () => DBCursor,
@@ -252,22 +245,23 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
       val slice = new Slice {
         val size = size0
-        val columns = if (includeIdField) {
-          columns0 get ColumnRef(Key \ 0, CString) map { idCol =>
-            columns0 + (ColumnRef(Value \ CPathField("_id"), CString) -> idCol)
-          } getOrElse columns0
-        } else columns0
+        val columns =
+          if (includeIdField)
+            columns0 get ColumnRef(Key \ 0, CString) map { idCol =>
+              columns0 + (ColumnRef(Value \ CPathField("_id"), CString) -> idCol)
+            } getOrElse columns0
+          else columns0
       }
 
       // FIXME: If cursor is empty the generated columns won't satisfy
       // sampleData.schema. This will cause the subsumption test in Slice#typed
       // to fail unless it allows for vacuous success
 
-      val nextSkip = if (hasMore) {
-        Some(skip + slice.size)
-      } else {
-        None
-      }
+      val nextSkip =
+        if (hasMore)
+          Some(skip + slice.size)
+        else
+          None
 
       (slice, nextSkip)
     }
@@ -365,14 +359,14 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
           case dbObj: DBObject =>
             val keys = dbObj.keySet()
-            if (keys.isEmpty) {
+            if (keys.isEmpty)
               acc
                 .getOrElseUpdate((rprefix, CEmptyObject), {
                   MutableEmptyObjectColumn.empty()
                 })
                 .asInstanceOf[MutableEmptyObjectColumn]
                 .unsafeTap(_.update(row, true))
-            } else {
+            else {
               val keys = dbObj.keySet().iterator()
               while (keys.hasNext) {
                 val k = keys.next()
@@ -393,9 +387,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       def insert(dbObj: DBObject, row: Int) = {
         import TransSpecModule.paths._
 
-        if (dbObj.containsField("_id")) {
+        if (dbObj.containsField("_id"))
           insertValue(CPathIndex(0) :: Key :: Nil, row, dbObj.get("_id"))
-        }
 
         val keys = dbObj.keySet().iterator()
         val valuePrefix = Value :: Nil

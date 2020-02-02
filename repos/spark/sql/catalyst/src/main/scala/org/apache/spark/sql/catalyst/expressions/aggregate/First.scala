@@ -66,20 +66,19 @@ case class First(child: Expression, ignoreNullsExpr: Expression)
   )
 
   override lazy val updateExpressions: Seq[Expression] = {
-    if (ignoreNulls) {
+    if (ignoreNulls)
       Seq(
         /* first = */ If(Or(valueSet, IsNull(child)), first, child),
         /* valueSet = */ Or(valueSet, IsNotNull(child))
       )
-    } else {
+    else
       Seq(
         /* first = */ If(valueSet, first, child),
         /* valueSet = */ Literal.create(true, BooleanType)
       )
-    }
   }
 
-  override lazy val mergeExpressions: Seq[Expression] = {
+  override lazy val mergeExpressions: Seq[Expression] =
     // For first, we can just check if valueSet.left is set to true. If it is set
     // to true, we use first.right. If not, we use first.right (even if valueSet.right is
     // false, we are safe to do so because first.right will be null in this case).
@@ -87,7 +86,6 @@ case class First(child: Expression, ignoreNullsExpr: Expression)
       /* first = */ If(valueSet.left, first.left, first.right),
       /* valueSet = */ Or(valueSet.left, valueSet.right)
     )
-  }
 
   override lazy val evaluateExpression: AttributeReference = first
 

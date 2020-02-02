@@ -178,49 +178,47 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
       val buff = subIter.toBuffer
       subIter = null
       ((buff.iterator, buff.length), this)
-    } else {
-      // otherwise find the topmost array stack element
-      if (depth > 0) {
-        // 2) topmost comes before (is not) arrayD
-        //    steal a portion of top to create a new iterator
-        if (posStack(0) == arrayStack(0).length - 1) {
-          // 2a) only a single entry left on top
-          // this means we have to modify this iterator - pop topmost
-          val snd = Array[Iterable[T]](arrayStack(0).last)
-          val szsnd = snd(0).size
-          // modify this - pop
-          depth -= 1
-          1 until arrayStack.length foreach (i =>
-            arrayStack(i - 1) = arrayStack(i))
-          arrayStack(arrayStack.length - 1) = Array[Iterable[T]](null)
-          posStack = posStack.tail ++ Array[Int](0)
-          // we know that `this` is not empty, since it had something on the arrayStack and arrayStack elements are always non-empty
-          ((newIterator(snd), szsnd), this)
-        } else {
-          // 2b) more than a single entry left on top
-          val (fst, snd) = arrayStack(0).splitAt(
-            arrayStack(0).length - (arrayStack(0).length - posStack(0) + 1) / 2)
-          arrayStack(0) = fst
-          (iteratorWithSize(snd), this)
-        }
+    } else
+    // otherwise find the topmost array stack element
+    if (depth > 0)
+      // 2) topmost comes before (is not) arrayD
+      //    steal a portion of top to create a new iterator
+      if (posStack(0) == arrayStack(0).length - 1) {
+        // 2a) only a single entry left on top
+        // this means we have to modify this iterator - pop topmost
+        val snd = Array[Iterable[T]](arrayStack(0).last)
+        val szsnd = snd(0).size
+        // modify this - pop
+        depth -= 1
+        1 until arrayStack.length foreach (i =>
+          arrayStack(i - 1) = arrayStack(i))
+        arrayStack(arrayStack.length - 1) = Array[Iterable[T]](null)
+        posStack = posStack.tail ++ Array[Int](0)
+        // we know that `this` is not empty, since it had something on the arrayStack and arrayStack elements are always non-empty
+        ((newIterator(snd), szsnd), this)
       } else {
-        // 3) no topmost element (arrayD is at the top)
-        //    steal a portion of it and update this iterator
-        if (posD == arrayD.length - 1) {
-          // 3a) positioned at the last element of arrayD
-          val m = arrayD(posD)
-          arrayToIterators(
-            if (isTrie(m)) getElems(m)
-            else collisionToArray(m)
-          )
-        } else {
-          // 3b) arrayD has more free elements
-          val (fst, snd) =
-            arrayD.splitAt(arrayD.length - (arrayD.length - posD + 1) / 2)
-          arrayD = fst
-          (iteratorWithSize(snd), this)
-        }
+        // 2b) more than a single entry left on top
+        val (fst, snd) = arrayStack(0).splitAt(
+          arrayStack(0).length - (arrayStack(0).length - posStack(0) + 1) / 2)
+        arrayStack(0) = fst
+        (iteratorWithSize(snd), this)
       }
+    else
+    // 3) no topmost element (arrayD is at the top)
+    //    steal a portion of it and update this iterator
+    if (posD == arrayD.length - 1) {
+      // 3a) positioned at the last element of arrayD
+      val m = arrayD(posD)
+      arrayToIterators(
+        if (isTrie(m)) getElems(m)
+        else collisionToArray(m)
+      )
+    } else {
+      // 3b) arrayD has more free elements
+      val (fst, snd) =
+        arrayD.splitAt(arrayD.length - (arrayD.length - posD + 1) / 2)
+      arrayD = fst
+      (iteratorWithSize(snd), this)
     }
   }
 }

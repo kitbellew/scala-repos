@@ -15,9 +15,9 @@ object ComparisonFailure {
     private val DIFF_START: String = "["
 
     def compact(message: String): String =
-      if (expected == null || actual == null || expected.equals(actual)) {
+      if (expected == null || actual == null || expected.equals(actual))
         Assert.format(message, expected, actual)
-      } else {
+      else {
         val extractor = new DiffExtractor()
         val compactedPrefix = extractor.compactPrefix()
         val compactedSuffix = extractor.compactSuffix()
@@ -41,9 +41,8 @@ object ComparisonFailure {
         actual.length() - prefix.length()) - 1
       while (suffixLength <= maxSuffixLength) {
         if (expected.charAt(expected.length() - 1 - suffixLength)
-              != actual.charAt(actual.length() - 1 - suffixLength)) {
+              != actual.charAt(actual.length() - 1 - suffixLength))
           maxSuffixLength = suffixLength - 1 // break
-        }
         suffixLength += 1
       }
       expected.substring(expected.length() - suffixLength)

@@ -38,9 +38,8 @@ class ScModifierListImpl private (
 
   def hasModifierProperty(name: String): Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScModifiersStub].getModifiers.contains(name)
-    }
     name match {
       case "override"  => has(ScalaTokenTypes.kOVERRIDE)
       case "private"   => has(ScalaTokenTypes.kPRIVATE)
@@ -75,9 +74,9 @@ class ScModifierListImpl private (
     val stub = getStub
     if (stub != null) {
       val am = stub.findChildStubByType(ScalaElementTypes.ACCESS_MODIFIER)
-      if (am != null) {
+      if (am != null)
         return Some(am.getPsi)
-      } else return None
+      else return None
     }
     findChild(classOf[ScAccessModifier])
   }
@@ -87,9 +86,8 @@ class ScModifierListImpl private (
 
   def hasExplicitModifiers: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScModifiersStub].hasExplicitModifiers
-    }
 
     val access = getStubOrPsiChild(ScalaElementTypes.ACCESS_MODIFIER)
     access != null || findChildrenByType(TokenSets.MODIFIERS).size > 0
@@ -145,7 +143,7 @@ class ScModifierListImpl private (
           val node =
             ScalaPsiElementFactory.createModifierFromText("private", getManager)
           addBefore(node)
-        } else {
+        } else
           for (child <- getChildren
                if child.isInstanceOf[ScAccessModifier] && child
                  .asInstanceOf[ScAccessModifier]
@@ -153,14 +151,13 @@ class ScModifierListImpl private (
             getNode.removeChild(child.getNode)
             return
           }
-        }
       case "protected" =>
         if (value) {
           val node = ScalaPsiElementFactory.createModifierFromText(
             "protected",
             getManager)
           addBefore(node)
-        } else {
+        } else
           for (child <- getChildren
                if child.isInstanceOf[ScAccessModifier] && child
                  .asInstanceOf[ScAccessModifier]
@@ -168,7 +165,6 @@ class ScModifierListImpl private (
             getNode.removeChild(child.getNode)
             return
           }
-        }
       case "final" =>
         if (value) {
           val node =
@@ -234,12 +230,12 @@ class ScModifierListImpl private (
         stub.getParentStub.getChildrenByType(
           ScalaElementTypes.ANNOTATIONS,
           JavaArrayFactoryUtil.ScAnnotationsFactory)
-      if (annotations.length > 0) {
+      if (annotations.length > 0)
         return annotations
           .apply(0)
           .getAnnotations
           .map(_.asInstanceOf[PsiAnnotation])
-      } else return PsiAnnotation.EMPTY_ARRAY
+      else return PsiAnnotation.EMPTY_ARRAY
     }
     getParent.getNode.findChildByType(ScalaElementTypes.ANNOTATIONS) match {
       case null => PsiAnnotation.EMPTY_ARRAY

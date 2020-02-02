@@ -44,11 +44,11 @@ object Configuration {
       // Iterating through the system properties is prone to ConcurrentModificationExceptions (especially in our tests)
       // Typesafe config maintains a cache for this purpose.  So, if the passed in properties *are* the system
       // properties, use the Typesafe config cache, otherwise it should be safe to parse it ourselves.
-      val systemPropertyConfig = if (properties eq System.getProperties) {
-        ConfigImpl.systemPropertiesAsConfig()
-      } else {
-        ConfigFactory.parseProperties(properties)
-      }
+      val systemPropertyConfig =
+        if (properties eq System.getProperties)
+          ConfigImpl.systemPropertiesAsConfig()
+        else
+          ConfigFactory.parseProperties(properties)
 
       // Inject our direct settings into the config.
       val directConfig: Config = ConfigFactory.parseMap(directSettings.asJava)
@@ -204,9 +204,8 @@ case class Configuration(underlying: Config) {
     * Does not check neither for incorrect type nor null value, but catches and wraps the error.
     */
   private def readValue[T](path: String, v: => T): Option[T] =
-    try {
-      if (underlying.hasPathOrNull(path)) Some(v) else None
-    } catch {
+    try if (underlying.hasPathOrNull(path)) Some(v) else None
+    catch {
       case NonFatal(e) => throw reportError(path, e.getMessage, Some(e))
     }
 
@@ -1013,11 +1012,11 @@ private[play] class PlayConfig(val underlying: Config) {
   def getPrototypedMap(
       path: String,
       prototypePath: String = "prototype.$path"): Map[String, PlayConfig] = {
-    val prototype = if (prototypePath.isEmpty) {
-      underlying
-    } else {
-      underlying.getConfig(prototypePath.replace("$path", path))
-    }
+    val prototype =
+      if (prototypePath.isEmpty)
+        underlying
+      else
+        underlying.getConfig(prototypePath.replace("$path", path))
     get[Map[String, Config]](path).map {
       case (key, config) =>
         key -> new PlayConfig(config.withFallback(prototype))

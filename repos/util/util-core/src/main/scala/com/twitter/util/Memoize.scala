@@ -103,9 +103,8 @@ object Memoize {
           case Left(latch) =>
             // Compute the value outside of the synchronized block.
             val b =
-              try {
-                f(a)
-              } catch {
+              try f(a)
+              catch {
                 case t: Throwable =>
                   // If there was an exception running the
                   // computation, then we need to make sure we do not

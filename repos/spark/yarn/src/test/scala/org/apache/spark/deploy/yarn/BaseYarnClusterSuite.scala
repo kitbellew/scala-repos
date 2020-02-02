@@ -110,9 +110,8 @@ abstract class BaseYarnClusterSuite
     val config = yarnCluster.getConfig()
     val deadline = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(10)
     while (config.get(YarnConfiguration.RM_ADDRESS).split(":")(1) == "0") {
-      if (System.currentTimeMillis() > deadline) {
+      if (System.currentTimeMillis() > deadline)
         throw new IllegalStateException("Timed out waiting for RM to come up.")
-      }
       logDebug("RM address still not set in configuration, waiting...")
       TimeUnit.MILLISECONDS.sleep(100)
     }
@@ -127,9 +126,8 @@ abstract class BaseYarnClusterSuite
   }
 
   override def afterAll() {
-    try {
-      yarnCluster.stop()
-    } finally {
+    try yarnCluster.stop()
+    finally {
       System.setProperties(oldSystemProperties)
       super.afterAll()
     }
@@ -151,9 +149,9 @@ abstract class BaseYarnClusterSuite
       Map("YARN_CONF_DIR" -> hadoopConfDir.getAbsolutePath()) ++ extraEnv
 
     val launcher = new SparkLauncher(env.asJava)
-    if (klass.endsWith(".py")) {
+    if (klass.endsWith(".py"))
       launcher.setAppResource(klass)
-    } else {
+    else {
       launcher.setMainClass(klass)
       launcher.setAppResource(fakeSparkJar.getAbsolutePath())
     }
@@ -167,22 +165,17 @@ abstract class BaseYarnClusterSuite
 
     sparkArgs.foreach {
       case (name, value) =>
-        if (value != null) {
+        if (value != null)
           launcher.addSparkArg(name, value)
-        } else {
+        else
           launcher.addSparkArg(name)
-        }
     }
     extraJars.foreach(launcher.addJar)
 
     val handle = launcher.startApplication()
-    try {
-      eventually(timeout(2 minutes), interval(1 second)) {
-        assert(handle.getState().isFinal())
-      }
-    } finally {
-      handle.kill()
-    }
+    try eventually(timeout(2 minutes), interval(1 second)) {
+      assert(handle.getState().isFinal())
+    } finally handle.kill()
 
     handle.getState()
   }
@@ -240,9 +233,8 @@ abstract class BaseYarnClusterSuite
     }
     sys.props.foreach {
       case (k, v) =>
-        if (k.startsWith("spark.")) {
+        if (k.startsWith("spark."))
           props.setProperty(k, v)
-        }
     }
     extraConf.foreach { case (k, v) => props.setProperty(k, v) }
 

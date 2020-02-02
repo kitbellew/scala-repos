@@ -165,8 +165,7 @@ private[akka] object AskPromiseRef {
         "unknown",
         provider.deadLetters)
       new AskPromiseRef(promiseActorRef)
-    } else {
+    } else
       throw new IllegalArgumentException(
         s"Timeout length must not be negative, was: $timeout")
-    }
 }

@@ -75,9 +75,8 @@ object ActorCreationPerfSpec {
       case IsAlive ⇒
         sender() ! Alive
       case Create(number, propsCreator) ⇒
-        for (i ← 1 to number) {
+        for (i ← 1 to number)
           context.actorOf(propsCreator.apply())
-        }
         sender() ! Created
       case WaitForChildren ⇒
         context.children.foreach(_ ! IsAlive)
@@ -187,9 +186,8 @@ class ActorCreationPerfSpec
     val scenarioName = name.replaceAll("""[^\w]""", "")
 
     s"warm-up before: $name" taggedAs PerformanceTest in {
-      if (warmUp > 0) {
+      if (warmUp > 0)
         runWithoutCounter(s"${scenarioName}_warmup", warmUp, propsCreator)
-      }
 
       clearMetrics()
     }
@@ -197,13 +195,12 @@ class ActorCreationPerfSpec
     s"measure synchronous blocked time for $name" taggedAs PerformanceTest in {
       // note: measuring per-actor-memory-use in this scenario is skewed as the Actor contains references to counters etc!
       //       for measuring actor size use refer to the `runWithoutCounter` method
-      for (i ← 1 to nrOfRepeats) {
+      for (i ← 1 to nrOfRepeats)
         runWithCounterInside(
           name,
           s"${scenarioName}_driver_inside_$i",
           nrOfActors,
           propsCreator)
-      }
 
       reportAndClearMetrics()
     }

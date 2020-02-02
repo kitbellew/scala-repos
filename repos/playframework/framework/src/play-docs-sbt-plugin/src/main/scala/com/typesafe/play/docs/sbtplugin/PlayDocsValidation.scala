@@ -111,11 +111,10 @@ object PlayDocsValidation {
     val externalLinks = mutable.ListBuffer[LinkRef]()
 
     def stripFragment(path: String) =
-      if (path.contains("#")) {
+      if (path.contains("#"))
         path.dropRight(path.length - path.indexOf('#'))
-      } else {
+      else
         path
-      }
 
     def parseMarkdownFile(markdownFile: File): String = {
 
@@ -197,8 +196,7 @@ object PlayDocsValidation {
 
       val codeReferenceSerializer = new ToHtmlSerializerPlugin() {
         def visit(node: Node, visitor: Visitor, printer: Printer) = node match {
-          case code: CodeReferenceNode => {
-
+          case code: CodeReferenceNode =>
             // Label is after the #, or if no #, then is the link label
             val (source, label) = code.getSource.split("#", 2) match {
               case Array(source, label) => (source, label)
@@ -206,20 +204,20 @@ object PlayDocsValidation {
             }
 
             // The file is either relative to current page page or absolute, under the root
-            val sourceFile = if (source.startsWith("/")) {
-              source.drop(1)
-            } else {
-              markdownFile.getParentFile.getCanonicalPath
-                .stripPrefix(base.getCanonicalPath)
-                .stripPrefix("/") + "/" + source
-            }
+            val sourceFile =
+              if (source.startsWith("/"))
+                source.drop(1)
+              else
+                markdownFile.getParentFile.getCanonicalPath
+                  .stripPrefix(base.getCanonicalPath)
+                  .stripPrefix("/") + "/" + source
 
             val sourcePos = code.getStartIndex + code.getLabel.length + 4
-            val labelPos = if (code.getSource.contains("#")) {
-              sourcePos + source.length + 1
-            } else {
-              code.getStartIndex + 2
-            }
+            val labelPos =
+              if (code.getSource.contains("#"))
+                sourcePos + source.length + 1
+              else
+                code.getStartIndex + 2
 
             codeSamples += CodeSampleRef(
               sourceFile,
@@ -228,7 +226,6 @@ object PlayDocsValidation {
               sourcePos,
               labelPos)
             true
-          }
           case _ => false
         }
       }
@@ -267,8 +264,7 @@ object PlayDocsValidation {
 
     val codeReferenceSerializer = new ToHtmlSerializerPlugin() {
       def visit(node: Node, visitor: Visitor, printer: Printer) = node match {
-        case code: CodeReferenceNode => {
-
+        case code: CodeReferenceNode =>
           // Label is after the #, or if no #, then is the link label
           val (source, label) = code.getSource.split("#", 2) match {
             case Array(source, label) => (source, label)
@@ -276,23 +272,22 @@ object PlayDocsValidation {
           }
 
           // The file is either relative to current page page or absolute, under the root
-          val sourceFile = if (source.startsWith("/")) {
-            source.drop(1)
-          } else {
-            filename
-              .dropRight(filename.length - filename.lastIndexOf('/') + 1) + source
-          }
+          val sourceFile =
+            if (source.startsWith("/"))
+              source.drop(1)
+            else
+              filename
+                .dropRight(filename.length - filename.lastIndexOf('/') + 1) + source
 
           val sourcePos = code.getStartIndex + code.getLabel.length + 4
-          val labelPos = if (code.getSource.contains("#")) {
-            sourcePos + source.length + 1
-          } else {
-            code.getStartIndex + 2
-          }
+          val labelPos =
+            if (code.getSource.contains("#"))
+              sourcePos + source.length + 1
+            else
+              code.getStartIndex + 2
 
           codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
           true
-        }
         case _ => false
       }
     }
@@ -403,9 +398,8 @@ object PlayDocsValidation {
         .fold(
           { incomplete => throw incomplete.directCause.get },
           result => result)
-    } else {
+    } else
       file
-    }
   }
 
   val validateDocsTask = Def.task {
@@ -433,9 +427,9 @@ object PlayDocsValidation {
     var failed = false
 
     def doAssertion(desc: String, errors: Seq[_])(onFail: => Unit): Unit =
-      if (errors.isEmpty) {
+      if (errors.isEmpty)
         log.info("[" + Colors.green("pass") + "] " + desc)
-      } else {
+      else {
         failed = true
         onFail
         log.info(
@@ -532,9 +526,8 @@ object PlayDocsValidation {
         val segment =
           sourceCode dropWhile (notLabel) drop (1) takeWhile (notLabel)
         !segment.isEmpty
-      } else {
+      } else
         true
-      }
 
     assertLinksNotMissing(
       "Missing source segments test",
@@ -562,9 +555,8 @@ object PlayDocsValidation {
       case _                      => ()
     }
 
-    if (failed) {
+    if (failed)
       throw new RuntimeException("Documentation validation failed")
-    }
   }
 
   val validateExternalLinksTask = Def.task {
@@ -598,7 +590,7 @@ object PlayDocsValidation {
             case 403
                 if "GitHub.com".equals(connection.getHeaderField("Server")) =>
               Nil
-            case bad if bad >= 300 => {
+            case bad if bad >= 300 =>
               refs.foreach { link =>
                 logErrorAtLocation(
                   log,
@@ -607,7 +599,6 @@ object PlayDocsValidation {
                   connection.getResponseCode + " response for external link " + link.link)
               }
               refs
-            }
             case ok => Nil
           }
         } catch {
@@ -620,9 +611,7 @@ object PlayDocsValidation {
                 e.getClass.getName + ": " + e.getMessage + " for external link " + link.link)
             }
             refs
-        } finally {
-          connection.disconnect()
-        }
+        } finally connection.disconnect()
       }
     }
 
@@ -631,9 +620,9 @@ object PlayDocsValidation {
 
     ec.shutdownNow()
 
-    if (invalidRefs.isEmpty) {
+    if (invalidRefs.isEmpty)
       log.info("[" + Colors.green("pass") + "] External links test")
-    } else {
+    else {
       log.info("[" + Colors
         .red("fail") + "] External links test (" + invalidRefs.size + " errors)")
       throw new RuntimeException("External links validation failed")
@@ -655,13 +644,11 @@ object PlayDocsValidation {
       lines.foldLeft((0, 0, 0, None: Option[String])) { (state, line) =>
         state match {
           case (_, _, _, Some(_)) => state
-          case (total, l, c, None) => {
-            if (total + line.length < position) {
+          case (total, l, c, None) =>
+            if (total + line.length < position)
               (total + line.length + 1, l + 1, c, None)
-            } else {
+            else
               (0, l + 1, position - total + 1, Some(line))
-            }
-          }
         }
       }
     log.error(errorMessage + " at " + file.getAbsolutePath + ":" + lineNo)

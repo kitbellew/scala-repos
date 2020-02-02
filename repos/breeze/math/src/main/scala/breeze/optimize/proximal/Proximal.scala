@@ -77,15 +77,14 @@ case class ProjectSoc() extends Proximal {
     cforRange(1 until n) { i => nx += x(i) * x(i) }
     nx = sqrt(nx)
 
-    if (nx > x(0)) {
-      if (nx <= -x(0)) {
+    if (nx > x(0))
+      if (nx <= -x(0))
         cforRange(0 until n) { i => x(i) = 0 }
-      } else {
+      else {
         val alpha = 0.5 * (1 + x(0) / nx)
         x.update(0, alpha * nx)
         cforRange(1 until n) { i => x.update(i, alpha * x(i)) }
       }
-    }
   }
 }
 
@@ -205,9 +204,9 @@ case class ProximalHuber() extends Proximal {
   }
 
   def subgradHuber(x: Double): Double =
-    if (abs(x) <= 1) {
+    if (abs(x) <= 1)
       2 * x
-    } else {
+    else {
       val projx = if (x > 0) x else -x
       2 * projx
     }

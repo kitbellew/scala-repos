@@ -103,9 +103,8 @@ private[spark] abstract class RpcEndpointRef(conf: SparkConf)
       try {
         val future = ask[T](message, timeout)
         val result = timeout.awaitResult(future)
-        if (result == null) {
+        if (result == null)
           throw new SparkException("RpcEndpoint returned null")
-        }
         return result
       } catch {
         case ie: InterruptedException => throw ie
@@ -116,9 +115,8 @@ private[spark] abstract class RpcEndpointRef(conf: SparkConf)
             e)
       }
 
-      if (attempts < maxRetries) {
+      if (attempts < maxRetries)
         Thread.sleep(retryWaitMs)
-      }
     }
 
     throw new SparkException(

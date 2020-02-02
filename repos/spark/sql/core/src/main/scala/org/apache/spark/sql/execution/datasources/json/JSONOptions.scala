@@ -61,10 +61,9 @@ private[sql] class JSONOptions(
   private val parseMode = parameters.getOrElse("mode", "PERMISSIVE")
 
   // Parse mode flags
-  if (!ParseModes.isValidMode(parseMode)) {
+  if (!ParseModes.isValidMode(parseMode))
     logWarning(
       s"$parseMode is not a valid parse mode. Using ${ParseModes.DEFAULT}.")
-  }
 
   val failFast = ParseModes.isFailFastMode(parseMode)
   val dropMalformed = ParseModes.isDropMalformedMode(parseMode)

@@ -137,9 +137,8 @@ trait App extends Closable with CloseAwaitably {
   }
 
   final def main(args: Array[String]): Unit =
-    try {
-      nonExitingMain(args)
-    } catch {
+    try nonExitingMain(args)
+    catch {
       case FlagUsageError(reason) =>
         exitOnError(reason)
       case FlagParseException(reason, _) =>

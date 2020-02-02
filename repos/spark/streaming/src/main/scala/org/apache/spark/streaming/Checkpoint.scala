@@ -76,9 +76,8 @@ private[streaming] class Checkpoint(
     val filterPrefix = s"spark.$filter.param."
     newReloadConf.getAll.foreach {
       case (k, v) =>
-        if (k.startsWith(filterPrefix) && k.length > filterPrefix.length) {
+        if (k.startsWith(filterPrefix) && k.length > filterPrefix.length)
           newSparkConf.set(k, v)
-        }
     }
 
     newSparkConf
@@ -171,9 +170,8 @@ private[streaming] object Checkpoint extends Logging {
       cp.validate()
       cp
     } {
-      if (ois != null) {
+      if (ois != null)
         ois.close()
-      }
     }
   }
 }
@@ -201,9 +199,8 @@ private[streaming] class CheckpointWriter(
       clearCheckpointDataLater: Boolean)
       extends Runnable {
     def run() {
-      if (latestCheckpointTime == null || latestCheckpointTime < checkpointTime) {
+      if (latestCheckpointTime == null || latestCheckpointTime < checkpointTime)
         latestCheckpointTime = checkpointTime
-      }
       var attempts = 0
       val startTime = System.currentTimeMillis()
       val tempFile = new Path(checkpointDir, "temp")
@@ -229,9 +226,8 @@ private[streaming] class CheckpointWriter(
               + "'")
 
           // Write checkpoint to temp file
-          if (fs.exists(tempFile)) {
+          if (fs.exists(tempFile))
             fs.delete(tempFile, true) // just in case it exists
-          }
           val fos = fs.create(tempFile)
           Utils.tryWithSafeFinally {
             fos.write(bytes)
@@ -242,31 +238,27 @@ private[streaming] class CheckpointWriter(
           // If the checkpoint file exists, back it up
           // If the backup exists as well, just delete it, otherwise rename will fail
           if (fs.exists(checkpointFile)) {
-            if (fs.exists(backupFile)) {
+            if (fs.exists(backupFile))
               fs.delete(backupFile, true) // just in case it exists
-            }
-            if (!fs.rename(checkpointFile, backupFile)) {
+            if (!fs.rename(checkpointFile, backupFile))
               logWarning(
                 "Could not rename " + checkpointFile + " to " + backupFile)
-            }
           }
 
           // Rename temp file to the final checkpoint file
-          if (!fs.rename(tempFile, checkpointFile)) {
+          if (!fs.rename(tempFile, checkpointFile))
             logWarning("Could not rename " + tempFile + " to " + checkpointFile)
-          }
 
           // Delete old checkpoint files
           val allCheckpointFiles =
             Checkpoint.getCheckpointFiles(checkpointDir, Some(fs))
-          if (allCheckpointFiles.size > 10) {
+          if (allCheckpointFiles.size > 10)
             allCheckpointFiles
               .take(allCheckpointFiles.size - 10)
               .foreach { file =>
                 logInfo("Deleting " + file)
                 fs.delete(file, true)
               }
-          }
 
           // All done, print success
           val finishTime = System.currentTimeMillis()
@@ -316,9 +308,8 @@ private[streaming] class CheckpointWriter(
     val startTime = System.currentTimeMillis()
     val terminated =
       executor.awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS)
-    if (!terminated) {
+    if (!terminated)
       executor.shutdownNow()
-    }
     val endTime = System.currentTimeMillis()
     logInfo(
       "CheckpointWriter executor terminated ? " + terminated +
@@ -369,9 +360,8 @@ private[streaming] object CheckpointReader extends Logging {
     // Try to find the checkpoint files
     val checkpointFiles =
       Checkpoint.getCheckpointFiles(checkpointDir, Some(fs)).reverse
-    if (checkpointFiles.isEmpty) {
+    if (checkpointFiles.isEmpty)
       return None
-    }
 
     // Try to read the checkpoint files in the order
     logInfo("Checkpoint files found: " + checkpointFiles.mkString(","))
@@ -392,11 +382,10 @@ private[streaming] object CheckpointReader extends Logging {
     }
 
     // If none of checkpoint files could be read, then throw exception
-    if (!ignoreReadError) {
+    if (!ignoreReadError)
       throw new SparkException(
         s"Failed to read checkpoint from directory $checkpointPath",
         readError)
-    }
     None
   }
 }
@@ -407,11 +396,11 @@ private[streaming] class ObjectInputStreamWithLoader(
     extends ObjectInputStream(_inputStream) {
 
   override def resolveClass(desc: ObjectStreamClass): Class[_] = {
-    try {
-      // scalastyle:off classforname
-      return Class.forName(desc.getName(), false, loader)
-      // scalastyle:on classforname
-    } catch {
+    try
+    // scalastyle:off classforname
+    return Class.forName(desc.getName(), false, loader)
+    // scalastyle:on classforname
+    catch {
       case e: Exception =>
     }
     super.resolveClass(desc)

@@ -24,9 +24,8 @@ object Generators {
             |}
           """.stripMargin.format(version, scalaVersion, sbtVersion)
 
-    if (!file.exists() || IO.read(file) != scalaSource) {
+    if (!file.exists() || IO.read(file) != scalaSource)
       IO.write(file, scalaSource)
-    }
 
     Seq(file)
   }
@@ -55,11 +54,10 @@ object Commands {
       }
     }
 
-    if (toggle) {
+    if (toggle)
       state.log.info("Turning off quick publish")
-    } else {
+    else
       state.log.info("Turning on quick publish")
-    }
 
     val newStructure = Load.reapply(
       filtered ++ Seq(

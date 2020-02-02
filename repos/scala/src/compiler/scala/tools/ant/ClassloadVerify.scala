@@ -40,15 +40,14 @@ class ClassloadVerify extends ScalaMatchingTask {
     results foreach (r => log("Checking: " + r, Project.MSG_DEBUG))
     val errors =
       for ((name, error) <- results; if error != null) yield (name, error)
-    if (errors.isEmpty) {
+    if (errors.isEmpty)
       // TODO - Log success
       log(
         "Classload verification succeeded with " + results.size + " classes.",
         Project.MSG_INFO)
-    } else {
-      for ((name, error) <- errors) {
+    else {
+      for ((name, error) <- errors)
         log(name + " failed verification with: " + error, Project.MSG_ERR)
-      }
       buildError(
         errors.size + " classload verification errors on " + results.size + " classes.")
     }

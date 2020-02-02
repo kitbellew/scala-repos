@@ -106,11 +106,10 @@ abstract class TemplateEmailer(
           multi.addBodyPart(bodyPart)
       }
       msg.setContent(multi)
-    } else {
+    } else
       transformed.foreach {
         case (content, mimetype) => msg.setContent(content, mimetype)
       }
-    }
 
     Transport.send(msg)
 

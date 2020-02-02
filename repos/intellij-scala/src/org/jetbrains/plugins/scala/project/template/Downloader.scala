@@ -48,9 +48,8 @@ trait Downloader {
         handler.startNotify()
         handler.waitFor()
 
-        if (process.exitValue != 0) {
+        if (process.exitValue != 0)
           throw new DownloadException(buffer.toString)
-        }
       }
     }
   }
@@ -59,7 +58,7 @@ trait Downloader {
     val launcher =
       jarWith[this.type].getParentFile.getParentFile / "launcher" / "sbt-launch.jar"
 
-    if (launcher.exists()) {
+    if (launcher.exists())
       Seq(
         "java",
         "-Djline.terminal=jline.UnsupportedTerminal",
@@ -67,9 +66,8 @@ trait Downloader {
         "-jar",
         launcher.getAbsolutePath,
         "< " + file.getAbsolutePath)
-    } else {
+    else
       throw new FileNotFoundException(launcher.getPath)
-    }
   }
 }
 

@@ -70,9 +70,9 @@ object AnnotatorHighlighter {
       el: StubBasedPsiElement[_ <: StubElement[_ <: PsiElement]])
       : PsiElement = {
     val stub: StubElement[_ <: PsiElement] = el.getStub
-    if (stub != null) {
+    if (stub != null)
       stub.getParentStub.getPsi
-    } else el.getParent
+    else el.getParent
   }
 
   private def getParentByStub(x: PsiElement): PsiElement =
@@ -120,9 +120,8 @@ object AnnotatorHighlighter {
       def simpleAnnotate(
           annotationText: String,
           annotationAttributes: TextAttributesKey) {
-        if (SCALA_FACTORY_METHODS_NAMES.contains(refElement.nameId.getText)) {
+        if (SCALA_FACTORY_METHODS_NAMES.contains(refElement.nameId.getText))
           return
-        }
         val annotation =
           holder.createInfoAnnotation(refElement.nameId, annotationText)
         annotation.setTextAttributes(annotationAttributes)
@@ -132,40 +131,38 @@ object AnnotatorHighlighter {
       if (text == null) return
 
       if (text.startsWith(SCALA_COLLECTION_IMMUTABLE_BASE) || SCALA_PREDEF_IMMUTABLE_BASES
-            .contains(text)) {
+            .contains(text))
         simpleAnnotate(
           ScalaBundle.message("scala.immutable.collection"),
           DefaultHighlighter.IMMUTABLE_COLLECTION)
-      } else if (text.startsWith(SCALA_COLLECTION_MUTABLE_BASE)) {
+      else if (text.startsWith(SCALA_COLLECTION_MUTABLE_BASE))
         simpleAnnotate(
           ScalaBundle.message("scala.mutable.collection"),
           DefaultHighlighter.MUTABLE_COLLECTION)
-      } else if (conformsByNames(resolvedType, JAVA_COLLECTIONS_BASES)) {
+      else if (conformsByNames(resolvedType, JAVA_COLLECTIONS_BASES))
         simpleAnnotate(
           ScalaBundle.message("java.collection"),
           DefaultHighlighter.JAVA_COLLECTION)
-      } else if (resolvedType.canonicalText.startsWith(
-                   SCALA_COLLECTION_GENERIC_BASE) && refElement
-                   .isInstanceOf[ScReferenceExpression]) {
+      else if (resolvedType.canonicalText.startsWith(
+                 SCALA_COLLECTION_GENERIC_BASE) && refElement
+                 .isInstanceOf[ScReferenceExpression])
         refElement
           .asInstanceOf[ScReferenceExpression]
           .getType(TypingContext.empty)
           .foreach {
             case f @ ScFunctionType(returnType, params) =>
               Option(returnType).foreach(a =>
-                if (a.canonicalText.startsWith(SCALA_COLLECTION_MUTABLE_BASE)) {
+                if (a.canonicalText.startsWith(SCALA_COLLECTION_MUTABLE_BASE))
                   simpleAnnotate(
                     ScalaBundle.message("scala.mutable.collection"),
                     DefaultHighlighter.MUTABLE_COLLECTION)
-                } else if (a.canonicalText.startsWith(
-                             SCALA_COLLECTION_IMMUTABLE_BASE)) {
+                else if (a.canonicalText.startsWith(
+                           SCALA_COLLECTION_IMMUTABLE_BASE))
                   simpleAnnotate(
                     ScalaBundle.message("scala.immutable.collection"),
-                    DefaultHighlighter.IMMUTABLE_COLLECTION)
-                })
+                    DefaultHighlighter.IMMUTABLE_COLLECTION))
             case _ =>
           }
-      }
     }
 
     def annotateCollection(resolvedClazz: PsiClass) {
@@ -190,9 +187,8 @@ object AnnotatorHighlighter {
 
     val resolvedElement = refElement.resolve()
     if (PsiTreeUtil.getParentOfType(refElement, classOf[ScImportExpr]) == null && resolvedElement
-          .isInstanceOf[PsiClass]) {
+          .isInstanceOf[PsiClass])
       annotateCollection(resolvedElement.asInstanceOf[PsiClass])
-    }
 
     val annotation = holder.createInfoAnnotation(refElement.nameId, null)
     resolvedElement match {
@@ -236,9 +232,9 @@ object AnnotatorHighlighter {
         parent match {
           case r @ (_: ScValue | _: ScVariable) =>
             Option(x.containingClass).foreach(a =>
-              if (SCALA_PREDEFINED_OBJECTS.contains(a.qualifiedName)) {
-                x.getType(TypingContext.empty).foreach(annotateCollectionByType)
-              })
+              if (SCALA_PREDEFINED_OBJECTS.contains(a.qualifiedName))
+                x.getType(TypingContext.empty)
+                  .foreach(annotateCollectionByType))
 
             getParentByStub(parent) match {
               case _: ScTemplateBody | _: ScEarlyDefinitions =>
@@ -290,13 +286,12 @@ object AnnotatorHighlighter {
               .asInstanceOf[PsiMethod]
               .isConstructor) {
           val clazz = PsiTreeUtil.getParentOfType(x, classOf[PsiClass])
-          if (clazz != null) {
+          if (clazz != null)
             annotateCollection(clazz)
-          }
         }
-        if (isHighlightableScalaTestKeyword(x.asInstanceOf[ScFunction])) {
+        if (isHighlightableScalaTestKeyword(x.asInstanceOf[ScFunction]))
           annotation.setTextAttributes(DefaultHighlighter.SCALATEST_KEYWORD)
-        } else {
+        else {
           val fun = x.asInstanceOf[ScFunction]
           val clazz = fun.containingClass
           clazz match {
@@ -327,11 +322,10 @@ object AnnotatorHighlighter {
           if (clazz != null) annotateCollection(clazz)
         }
         if (x.getModifierList != null && x.getModifierList.hasModifierProperty(
-              "static")) {
+              "static"))
           annotation.setTextAttributes(DefaultHighlighter.OBJECT_METHOD_CALL)
-        } else {
+        else
           annotation.setTextAttributes(DefaultHighlighter.METHOD_CALL)
-        }
       case x => //println("" + x + " " + x.getText)
     }
   }

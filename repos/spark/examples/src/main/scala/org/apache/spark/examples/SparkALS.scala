@@ -48,9 +48,8 @@ object SparkALS {
       ms: Array[RealVector],
       us: Array[RealVector]): Double = {
     val r = new Array2DRowRealMatrix(M, U)
-    for (i <- 0 until M; j <- 0 until U) {
+    for (i <- 0 until M; j <- 0 until U)
       r.setEntry(i, j, ms(i).dotProduct(us(j)))
-    }
     val diffs = r.subtract(targetR)
     var sumSqs = 0.0
     for (i <- 0 until M; j <- 0 until U) {
@@ -78,9 +77,8 @@ object SparkALS {
       Xty = Xty.add(u.mapMultiply(R.getEntry(i, j)))
     }
     // Add regularization coefs to diagonal terms
-    for (d <- 0 until F) {
+    for (d <- 0 until F)
       XtX.addToEntry(d, d, LAMBDA * U)
-    }
     // Solve it with Cholesky
     new CholeskyDecomposition(XtX).getSolver.solve(Xty)
   }

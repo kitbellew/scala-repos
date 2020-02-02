@@ -30,18 +30,16 @@ object ClassParam {
     //parse modifiers
     val modifierMarker = builder.mark
     var isModifier = false
-    while (Modifier.parse(builder)) {
+    while (Modifier.parse(builder))
       isModifier = true
-    }
     modifierMarker.done(ScalaElementTypes.MODIFIERS)
     //Look for var or val
     builder.getTokenType match {
       case ScalaTokenTypes.kVAR | ScalaTokenTypes.kVAL =>
         builder.advanceLexer() //Let's ate this!
       case _ =>
-        if (isModifier) {
+        if (isModifier)
           builder error ScalaBundle.message("val.var.expected")
-        }
     }
     //Look for identifier
     builder.getTokenType match {
@@ -55,9 +53,8 @@ object ClassParam {
     builder.getTokenType match {
       case ScalaTokenTypes.tCOLON =>
         builder.advanceLexer() //Ate ':'
-        if (!ParamType.parse(builder)) {
+        if (!ParamType.parse(builder))
           builder.error(ScalaBundle.message("parameter.type.expected"))
-        }
       case _ =>
         builder.error(ScalaBundle.message("colon.expected"))
     }
@@ -66,9 +63,8 @@ object ClassParam {
     builder.getTokenType match {
       case ScalaTokenTypes.tASSIGN =>
         builder.advanceLexer() //Ate '='
-        if (!Expr.parse(builder)) {
+        if (!Expr.parse(builder))
           builder error ScalaBundle.message("wrong.expression")
-        }
       case _ =>
     }
     classParamMarker.done(ScalaElementTypes.CLASS_PARAM)

@@ -79,17 +79,15 @@ class HBLEvents(
         info(s"Removing table ${tableName.getNameAsString()}...")
         client.admin.disableTable(tableName)
         client.admin.deleteTable(tableName)
-      } else {
+      } else
         info(
           s"Table ${tableName.getNameAsString()} doesn't exist." +
             s" Nothing is deleted.")
-      }
       true
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         error(s"Fail to remove table for appId $appId. Exception: $e")
         false
-      }
     }
   }
 
@@ -122,9 +120,8 @@ class HBLEvents(
       if (!result.isEmpty()) {
         val event = resultToEvent(result, appId)
         Some(event)
-      } else {
+      } else
         None
-      }
     }
 
   override def futureDelete(

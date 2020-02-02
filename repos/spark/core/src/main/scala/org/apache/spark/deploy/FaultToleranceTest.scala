@@ -221,9 +221,8 @@ private object FaultToleranceTest extends App with Logging {
   /** Creates a SparkContext, which constructs a Client to interact with our cluster. */
   private def createClient() = {
     logInfo(">>>>> CREATE CLIENT <<<<<")
-    if (sc != null) {
+    if (sc != null)
       sc.stop()
-    }
     // Counter-hack: Because of a hack in SparkEnv#create() that changes this
     // property, we need to reset it.
     System.setProperty("spark.driver.port", "0")
@@ -327,9 +326,8 @@ private object FaultToleranceTest extends App with Logging {
       }
     }
 
-    try {
-      assertTrue(Await.result(f, 120 seconds))
-    } catch {
+    try assertTrue(Await.result(f, 120 seconds))
+    catch {
       case e: TimeoutException =>
         logError("Master states: " + masters.map(_.state))
         logError("Num apps: " + numLiveApps)
@@ -342,9 +340,8 @@ private object FaultToleranceTest extends App with Logging {
   }
 
   private def assertTrue(bool: Boolean, message: String = "") {
-    if (!bool) {
+    if (!bool)
       throw new IllegalStateException("Assertion failed: " + message)
-    }
   }
 
   logInfo(
@@ -470,9 +467,10 @@ private object Docker extends Logging {
       imageTag: String,
       args: String = "",
       mountDir: String = ""): ProcessBuilder = {
-    val mountCmd = if (mountDir != "") {
-      " -v " + mountDir
-    } else ""
+    val mountCmd =
+      if (mountDir != "")
+        " -v " + mountDir
+      else ""
 
     val cmd = "docker run -privileged %s %s %s".format(mountCmd, imageTag, args)
     logDebug("Run command: " + cmd)

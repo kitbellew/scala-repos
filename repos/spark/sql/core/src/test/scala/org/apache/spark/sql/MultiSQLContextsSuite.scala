@@ -64,21 +64,16 @@ class MultiSQLContextsSuite extends SparkFunSuite with BeforeAndAfterAll {
           allowsMultipleContexts.toString)
     val sparkContext = new SparkContext(conf)
 
-    try {
-      if (allowsMultipleContexts) {
+    try if (allowsMultipleContexts) {
+      new SQLContext(sparkContext)
+      SQLContext.clearActive()
+    } else {
+      // If allowsMultipleContexts is false, make sure we can get the error.
+      val message = intercept[SparkException] {
         new SQLContext(sparkContext)
-        SQLContext.clearActive()
-      } else {
-        // If allowsMultipleContexts is false, make sure we can get the error.
-        val message = intercept[SparkException] {
-          new SQLContext(sparkContext)
-        }.getMessage
-        assert(
-          message.contains("Only one SQLContext/HiveContext may be running"))
-      }
-    } finally {
-      sparkContext.stop()
-    }
+      }.getMessage
+      assert(message.contains("Only one SQLContext/HiveContext may be running"))
+    } finally sparkContext.stop()
   }
 
   test("test the flag to disallow creating multiple root SQLContext") {

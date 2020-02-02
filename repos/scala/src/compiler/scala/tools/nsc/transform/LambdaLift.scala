@@ -32,16 +32,14 @@ abstract class LambdaLift extends InfoTransform {
   }
 
   /** Each scala.runtime.*Ref class has a static method `create(value)` that simply instantiates the Ref to carry that value. */
-  private lazy val refCreateMethod: Map[Symbol, Symbol] = {
+  private lazy val refCreateMethod: Map[Symbol, Symbol] =
     mapFrom(allRefClasses.toList)(x =>
       getMemberMethod(x.companionModule, nme.create))
-  }
 
   /** Quite frequently a *Ref is initialized with its zero (e.g., null, 0.toByte, etc.) Method `zero()` of *Ref class encapsulates that pattern. */
-  private lazy val refZeroMethod: Map[Symbol, Symbol] = {
+  private lazy val refZeroMethod: Map[Symbol, Symbol] =
     mapFrom(allRefClasses.toList)(x =>
       getMemberMethod(x.companionModule, nme.zero))
-  }
 
   def transformInfo(sym: Symbol, tp: Type): Type =
     if (sym.isCapturedVariable)
@@ -176,20 +174,18 @@ abstract class LambdaLift extends InfoTransform {
         tree match {
           case ClassDef(_, _, _, _) =>
             liftedDefs(tree.symbol) = Nil
-            if (sym.isLocalToBlock) {
+            if (sym.isLocalToBlock)
               renamable += sym
-            }
           case DefDef(_, _, _, _, _, _) =>
             if (sym.isLocalToBlock) {
               renamable += sym
               sym setFlag (PrivateLocal | FINAL)
-            } else if (sym.isPrimaryConstructor) {
+            } else if (sym.isPrimaryConstructor)
               symSet(called, sym) += sym.owner
-            }
           case Ident(name) =>
-            if (sym == NoSymbol) {
+            if (sym == NoSymbol)
               assert(name == nme.WILDCARD)
-            } else if (sym.isLocalToBlock) {
+            else if (sym.isLocalToBlock) {
               val owner = currentOwner.logicallyEnclosingMember
               if (sym.isTerm && !sym.isMethod) markFree(sym, owner)
               else if (sym.isMethod) markCalled(sym, owner)
@@ -243,9 +239,9 @@ abstract class LambdaLift extends InfoTransform {
           else unit.freshTermName(prefix)
 
         val join = nme.NAME_JOIN_STRING
-        if (sym.isAnonymousFunction && sym.owner.isMethod) {
+        if (sym.isAnonymousFunction && sym.owner.isMethod)
           freshen(sym.name + join + nonAnon(sym.owner.name.toString) + join)
-        } else {
+        else {
           val name = freshen(sym.name + join)
           // SI-5652 If the lifted symbol is accessed from an inner class, it will be made public. (where?)
           //         Generating a unique name, mangled with the enclosing full class name (including
@@ -261,10 +257,9 @@ abstract class LambdaLift extends InfoTransform {
 
       val allFree: Set[Symbol] = free.values.flatMap(_.iterator).toSet
 
-      for (sym <- renamable) {
+      for (sym <- renamable)
         if (allFree(sym)) proxyNames(sym) = newName(sym)
         else renameSym(sym)
-      }
 
       afterOwnPhase {
         for ((owner, freeValues) <- free.toList) {
@@ -433,7 +428,7 @@ abstract class LambdaLift extends InfoTransform {
     private def liftDef(tree: Tree): Tree = {
       val sym = tree.symbol
       val oldOwner = sym.owner
-      if (sym.isMethod && isUnderConstruction(sym.owner.owner)) { // # bug 1909
+      if (sym.isMethod && isUnderConstruction(sym.owner.owner)) // # bug 1909
         if (sym.isModule) { // Yes, it can be a module and a method, see comments on `isModuleNotMethod`!
           // TODO promote to an implementation restriction if we can reason that this *always* leads to VerifyError.
           // See neg/t1909-object.scala
@@ -441,7 +436,6 @@ abstract class LambdaLift extends InfoTransform {
             s"SI-1909 Unable to STATICally lift $sym, which is defined in the self- or super-constructor call of ${sym.owner.owner}. A VerifyError is likely."
           devWarning(tree.pos, msg)
         } else sym setFlag STATIC
-      }
 
       sym.owner = sym.owner.enclClass
       if (sym.isMethod) sym setFlag LIFTED

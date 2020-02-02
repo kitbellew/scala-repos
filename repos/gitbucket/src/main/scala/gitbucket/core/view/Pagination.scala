@@ -30,19 +30,19 @@ case class Pagination(page: Int, count: Int, limit: Int, width: Int) {
     * Returns true if given page number is visible.
     */
   def visibleFor(i: Int): Boolean =
-    if (i == 1 || i == max) {
+    if (i == 1 || i == max)
       true
-    } else {
+    else {
       val leftRange = page - width / 2 + (if (omitLeft) 2 else 0)
       val rightRange = page + width / 2 - (if (omitRight) 2 else 0)
 
-      val fixedRange = if (leftRange < 1) {
-        (1, rightRange + (leftRange * -1) + 1)
-      } else if (rightRange > max) {
-        (leftRange - (rightRange - max), max)
-      } else {
-        (leftRange, rightRange)
-      }
+      val fixedRange =
+        if (leftRange < 1)
+          (1, rightRange + (leftRange * -1) + 1)
+        else if (rightRange > max)
+          (leftRange - (rightRange - max), max)
+        else
+          (leftRange, rightRange)
 
       (i >= fixedRange._1 && i <= fixedRange._2)
     }

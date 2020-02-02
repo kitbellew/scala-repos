@@ -51,9 +51,9 @@ class ScPatternDefinitionImpl private (
     val plist = this.pList
     if (plist != null) {
       val patterns = plist.patterns
-      if (patterns.length == 1) {
+      if (patterns.length == 1)
         patterns(0).bindings
-      } else patterns.flatMap((p: ScPattern) => p.bindings)
+      else patterns.flatMap((p: ScPattern) => p.bindings)
     } else Seq.empty
   }
 
@@ -71,30 +71,29 @@ class ScPatternDefinitionImpl private (
 
   def expr: Option[ScExpression] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub
         .asInstanceOf[ScValueStub]
         .getBodyExpr
         .orElse(Option(findChildByClassScala(classOf[ScExpression])))
-    }
     Option(findChildByClassScala(classOf[ScExpression]))
   }
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.asInstanceOf[ScValueStub].getTypeElement
-    } else findChild(classOf[ScTypeElement])
+    else findChild(classOf[ScTypeElement])
   }
 
   def pList: ScPatternList = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub
         .getChildrenByType(
           ScalaElementTypes.PATTERN_LIST,
           JavaArrayFactoryUtil.ScPatternListFactory)
         .apply(0)
-    } else findChildByClass(classOf[ScPatternList])
+    else findChildByClass(classOf[ScPatternList])
   }
 }

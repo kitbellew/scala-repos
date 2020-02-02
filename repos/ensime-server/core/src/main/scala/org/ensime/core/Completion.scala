@@ -119,9 +119,8 @@ trait CompletionControl {
         val src = new BatchSourceFile(inputP.source.file, contents)
 
         (src, inputP.withSource(src).withShift(1), true)
-      } else {
+      } else
         (inputP.source, inputP, false)
-      }
       askReloadFile(src)
       val x = new Response[Tree]
       askTypeAt(p, x)
@@ -181,21 +180,20 @@ trait CompletionControl {
             case Import(expr, _) =>
               val topLevel =
                 ImportTopLevelRegexp.findFirstMatchIn(preceding).isDefined
-              if (topLevel) {
+              if (topLevel)
                 Some(
                   ScopeContext(
                     src,
                     expr.pos.endOrCursor,
                     defaultPrefix,
                     constructing = false))
-              } else {
+              else
                 Some(
                   MemberContext(
                     src,
                     expr.pos.endOrCursor,
                     defaultPrefix,
                     constructing = false))
-              }
             case other =>
               Some(ScopeContext(src, p.point, defaultPrefix, constructing))
           }
@@ -267,9 +265,9 @@ trait CompletionControl {
     // proceed concurrently.
     val typeSearch = context match {
       case ScopeContext(_, _, prefix, _) =>
-        if (TypeNameRegex.findFirstMatchIn(prefix).isDefined) {
+        if (TypeNameRegex.findFirstMatchIn(prefix).isDefined)
           Some(fetchTypeSearchCompletions(prefix, maxResults, indexer))
-        } else None
+        else None
       case _ => None
     }
 
@@ -281,11 +279,9 @@ trait CompletionControl {
       case MemberContext(src, offset, _, _) =>
         askTypeCompletion(rangePos(src, offset, offset, offset), x)
     }
-    do {
-      x.get match {
-        case Left(mems) => members ++= mems
-        case _          =>
-      }
+    do x.get match {
+      case Left(mems) => members ++= mems
+      case _          =>
     } while (!x.isComplete)
 
     logger.info("Found " + members.size + " members.")
@@ -302,35 +298,32 @@ trait CompletionControl {
           caseSens = caseSens) && !s.contains("$")
       }
       logger.info("Filtered down to " + filtered.size + ".")
-      for (m <- filtered) {
+      for (m <- filtered)
         m match {
           case m @ ScopeMember(sym, tpe, accessible, viaView) =>
             val p = sym.pos
             val inSymbol =
               p.isRange && (context.offset >= p.startOrCursor && context.offset <= p.endOrCursor)
-            if (!sym.isConstructor && !inSymbol) {
+            if (!sym.isConstructor && !inSymbol)
               buff ++= toCompletionInfo(
                 context,
                 sym,
                 tpe,
                 inherited = false,
                 NoSymbol)
-            }
           case m @ TypeMember(sym, tpe, accessible, inherited, viaView) =>
-            if (!sym.isConstructor) {
+            if (!sym.isConstructor)
               buff ++= toCompletionInfo(context, sym, tpe, inherited, viaView)
-            }
           case _ =>
         }
-      }
     }
 
     val typeSearchResults = typeSearch.flatMap(Await.result(_, Duration.Inf))
 
     def keywordCompletions(prefix: String): Seq[CompletionInfo] =
-      if (prefix.length > 0) {
+      if (prefix.length > 0)
         Keywords.keywordCompletions.filter(_.name.startsWith(prefix))
-      } else
+      else
         Seq()
 
     buff.toList ++ typeSearchResults.getOrElse(Nil) ++ keywordCompletions(
@@ -406,11 +399,11 @@ trait Completion { self: RichPresentationCompiler =>
         }
         memberSyms
           .flatMap { s =>
-            val name = if (s.hasPackageFlag) {
-              s.nameString
-            } else {
-              typeShortName(s)
-            }
+            val name =
+              if (s.hasPackageFlag)
+                s.nameString
+              else
+                typeShortName(s)
             if (name.startsWith(prefix))
               Some(
                 CompletionInfo(

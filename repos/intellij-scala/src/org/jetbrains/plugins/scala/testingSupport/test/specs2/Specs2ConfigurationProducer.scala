@@ -92,9 +92,8 @@ with AbstractTestConfigurationProducer {
     }
     try {
       val module = ScalaPsiUtil.getModule(element)
-      if (module != null) {
+      if (module != null)
         runConfiguration.setModule(module)
-      }
     } catch {
       case e: Exception =>
     }

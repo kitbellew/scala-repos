@@ -80,10 +80,10 @@ private[akka] class GroupByProcessorImpl(
 
   def openSubstream(elem: Any, key: Any): TransferPhase =
     TransferPhase(primaryOutputs.NeedsDemandOrCancel) { () ⇒
-      if (primaryOutputs.isClosed) {
+      if (primaryOutputs.isClosed)
         // Just drop, we do not open any more substreams
         nextPhase(waitNext)
-      } else {
+      else {
         if (keyToSubstreamOutput.size == maxSubstreams)
           throw new IllegalStateException(
             s"cannot open substream for key '$key': too many substreams open")

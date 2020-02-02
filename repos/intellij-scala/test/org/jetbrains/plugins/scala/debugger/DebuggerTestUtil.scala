@@ -42,9 +42,8 @@ object DebuggerTestUtil {
 
   def forceJdk8ForBuildProcess(): Unit = {
     val jdk8 = findJdk8()
-    if (jdk8.getHomeDirectory == null) {
+    if (jdk8.getHomeDirectory == null)
       throw new RuntimeException(s"Failed to set up JDK, got: ${jdk8.toString}")
-    }
     val jdkHome = jdk8.getHomeDirectory.getParent.getCanonicalPath
     Registry.get("compiler.process.jdk").setValue(jdkHome)
   }
@@ -104,16 +103,15 @@ object DebuggerTestUtil {
           sys.env.getOrElse(s"JDK_1$versionMajor", null)))
         .map(_ + "/jre") // teamcity style
     )
-    if (priorityPaths.exists(_.isDefined)) {
+    if (priorityPaths.exists(_.isDefined))
       priorityPaths.flatten.headOption
-    } else {
+    else {
       val fullSearchPaths = paths flatMap { p => versionStrings.map((p, _)) }
-      for ((path, ver) <- fullSearchPaths) {
+      for ((path, ver) <- fullSearchPaths)
         inJvm(path, ver) match {
           case x @ Some(p) => return x
           case _           => None
         }
-      }
       None
     }
   }

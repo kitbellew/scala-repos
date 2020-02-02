@@ -154,9 +154,9 @@ object QuantileDiscretizer
     val valueCounts =
       valueCountMap.toSeq.sortBy(_._1).toArray ++ Array((Double.MaxValue, 1))
     val possibleSplits = valueCounts.length - 1
-    if (possibleSplits <= numSplits) {
+    if (possibleSplits <= numSplits)
       valueCounts.dropRight(1).map(_._1)
-    } else {
+    else {
       val stride: Double = math.ceil(samples.length.toDouble / (numSplits + 1))
       val splitsBuilder = mutable.ArrayBuilder.make[Double]
       var index = 1
@@ -188,27 +188,25 @@ object QuantileDiscretizer
     * needed, and adding a default split value of 0 if no good candidates are found.
     */
   private[feature] def getSplits(candidates: Array[Double]): Array[Double] = {
-    val effectiveValues = if (candidates.nonEmpty) {
-      if (candidates.head == Double.NegativeInfinity
-          && candidates.last == Double.PositiveInfinity) {
-        candidates.drop(1).dropRight(1)
-      } else if (candidates.head == Double.NegativeInfinity) {
-        candidates.drop(1)
-      } else if (candidates.last == Double.PositiveInfinity) {
-        candidates.dropRight(1)
-      } else {
+    val effectiveValues =
+      if (candidates.nonEmpty)
+        if (candidates.head == Double.NegativeInfinity
+            && candidates.last == Double.PositiveInfinity)
+          candidates.drop(1).dropRight(1)
+        else if (candidates.head == Double.NegativeInfinity)
+          candidates.drop(1)
+        else if (candidates.last == Double.PositiveInfinity)
+          candidates.dropRight(1)
+        else
+          candidates
+      else
         candidates
-      }
-    } else {
-      candidates
-    }
 
-    if (effectiveValues.isEmpty) {
+    if (effectiveValues.isEmpty)
       Array(Double.NegativeInfinity, 0, Double.PositiveInfinity)
-    } else {
+    else
       Array(Double.NegativeInfinity) ++ effectiveValues ++ Array(
         Double.PositiveInfinity)
-    }
   }
 
   @Since("1.6.0")

@@ -143,18 +143,17 @@ object LiftSession {
       }
     }
 
-    (if (Props.devMode) {
+    (if (Props.devMode)
        // no caching in dev mode
        calcConstructor()
-     } else {
+     else {
        val key = (clz -> pp.map(_.clz))
        constructorCache.get(key) match {
          case Some(v) => v
-         case _ => {
+         case _ =>
            val nv = calcConstructor()
            constructorCache += (key -> nv)
            nv
-         }
        }
      }).map {
       case uc: UnitConstructor => uc.makeOne
@@ -175,16 +174,16 @@ object LiftSession {
    * so that we can instantiate it via reflection.
    */
   def findSnippetClass(name: String): Box[Class[AnyRef]] =
-    if (name == null) {
+    if (name == null)
       Empty
-    } else {
+    else {
       // putIfAbsent isn't lazy, so we pay the price of checking for the
       // absence twice when the snippet hasn't been initialized to avoid
       // the cost of computing the snippet class every time.
       //
       // We're using ConcurrentHashMap, so no `getOrElseUpdate` here (and
       // `getOrElseUpdate` isn't atomic anyway).
-      if (!snippetClassMap.contains(name)) {
+      if (!snippetClassMap.contains(name))
         snippetClassMap.putIfAbsent(
           name, {
             // Name might contain some relative packages, so split them out and put them in the proper argument of findClass
@@ -199,7 +198,6 @@ object LiftSession {
             )
           }
         )
-      }
 
       // We don't test for null because we never remove an item from the
       // map. If I'm wrong about this and you're seeing null pointers,
@@ -457,7 +455,7 @@ class LiftSession(
 
   private[http] def startSession(): Unit = {
     _running_? = true
-    for (sess <- httpSession) {
+    for (sess <- httpSession)
       // calculate the inactivity length.  If the length is
       // defined in LiftRules and it's less than the container's length
       // then use the Lift length.  Why not use it if the Lift length is
@@ -469,7 +467,6 @@ class LiftSession(
         case (container, Full(lift)) if lift < container => lift
         case (container, _)                              => container
       }
-    }
 
     lastServiceTime = millis
     LiftSession.onSetupSession.foreach(_(this))
@@ -507,12 +504,11 @@ class LiftSession(
         (soFar, current) =>
           (soFar, current) match {
             case ((valid, invalid), pair @ (_, r)) =>
-              try {
-                if (r.hostAndPath == hostAndPath)
-                  (valid :+ pair, invalid)
-                else
-                  soFar
-              } catch {
+              try if (r.hostAndPath == hostAndPath)
+                (valid :+ pair, invalid)
+              else
+                soFar
+              catch {
                 case exception: Exception =>
                   (valid, invalid :+ pair)
               }
@@ -541,9 +537,8 @@ class LiftSession(
   }
 
   def terminateHint {
-    if (_running_?) {
+    if (_running_?)
       markedForTermination = true;
-    }
   }
 
   /**
@@ -558,7 +553,7 @@ class LiftSession(
     */
   def runParams(state: Req): List[Any] = {
 
-    val toRun = {
+    val toRun =
       // get all the commands, sorted by owner,
       (state.uploadedFiles.map(_.name) ::: state.paramNames).distinct
         .flatMap { parameterName =>
@@ -587,7 +582,6 @@ class LiftSession(
           case (RunnerHolder(a, _, _), RunnerHolder(b, _, _)) => a < b
           case _                                              => false
         }
-    }
 
     def buildFunc(i: RunnerHolder): () => Any = i.func match {
       case bfh if bfh.supportsFileParams_? =>
@@ -662,9 +656,8 @@ class LiftSession(
     }
 
     val fullyRemovedOwners = removedOwners diff availableOwners
-    if (fullyRemovedOwners.nonEmpty) {
+    if (fullyRemovedOwners.nonEmpty)
       functionOwnerRemovalListeners.foreach(_(fullyRemovedOwners))
-    }
   }
 
   /**
@@ -699,9 +692,8 @@ class LiftSession(
       // if we're within 2 minutes of session timeout and
       // the Servlet session doesn't seem to have been updated,
       // extends the lifespan of the HttpSession
-      if (diff > 1000L && togo < 120) {
+      if (diff > 1000L && togo < 120)
         httpSession.setMaxInactiveInterval(maxInactive + 120)
-      }
     }
   }
 
@@ -761,9 +753,8 @@ class LiftSession(
         for {
           (key, pageInfo) <- postPageFunctions
         } if (!pageInfo.longLife &&
-              (now - pageInfo.lastSeen) > LiftRules.unusedFunctionsLifeTime) {
+              (now - pageInfo.lastSeen) > LiftRules.unusedFunctionsLifeTime)
           postPageFunctions -= key
-        }
       }
 
       withAjaxRequests { currentAjaxRequests =>
@@ -859,9 +850,8 @@ class LiftSession(
 
         // if the function table is updated, make sure to get
         // the additional functions
-        if (diff > 0) {
+        if (diff > 0)
           run(latest.functionCount, latest.functions.take(diff))
-        }
       }
     }
 
@@ -1057,10 +1047,9 @@ class LiftSession(
         // run the continuation in the new session
         // if there is a continuation
         continuation match {
-          case Full(func) => {
+          case Full(func) =>
             func()
             S.redirectTo("/")
-          }
           case _ => // do nothing
         }
 
@@ -1070,14 +1059,10 @@ class LiftSession(
         NamedPF.applyBox(toMatch, sessionDispatch) match {
           case Full(f) =>
             runParams(request)
-            try {
-              f() match {
-                case Full(r) => Full(checkRedirect(r))
-                case _       => LiftRules.notFoundOrIgnore(request, Full(this))
-              }
-            } finally {
-              notices = S.getAllNotices
-            }
+            try f() match {
+              case Full(r) => Full(checkRedirect(r))
+              case _       => LiftRules.notFoundOrIgnore(request, Full(this))
+            } finally notices = S.getAllNotices
 
           case _ =>
             RenderVersion.get // touch this early
@@ -1394,14 +1379,12 @@ class LiftSession(
   }
 
   private def instantiateOrRedirect[T](c: Class[T]): Box[T] =
-    try {
-      LiftSession.constructFrom(
-        this,
-        S.location.flatMap(_.currentValue.map(v =>
-          ParamPair(v, v.asInstanceOf[Object].getClass))),
-        c)
-
-    } catch {
+    try LiftSession.constructFrom(
+      this,
+      S.location.flatMap(_.currentValue.map(v =>
+        ParamPair(v, v.asInstanceOf[Object].getClass))),
+      c)
+    catch {
       case e: IllegalAccessException => Empty
     }
 
@@ -1443,9 +1426,9 @@ class LiftSession(
       var x = 0
       while (x < len) {
         val c = in.charAt(x)
-        if (c == '/') {
+        if (c == '/')
           ret.append('.')
-        } else ret.append(c)
+        else ret.append(c)
         x += 1
       }
       ret.toString
@@ -1486,10 +1469,10 @@ class LiftSession(
 
   private def processAttributes(in: MetaData, allow: Boolean): MetaData =
     if (!allow) in
-    else {
+    else
       in match {
         case Null => Null
-        case mine: PrefixedAttribute if (mine.pre == "lift") => {
+        case mine: PrefixedAttribute if (mine.pre == "lift") =>
           mine.key match {
             case s if s.indexOf('.') > -1 =>
               findAttributeSnippet(s, processAttributes(in.next, allow), mine)
@@ -1499,10 +1482,8 @@ class LiftSession(
                 processAttributes(in.next, allow))
             case _ => mine.copy(processAttributes(in.next, allow))
           }
-        }
         case notMine => notMine.copy(processAttributes(in.next, allow))
       }
-    }
 
   /**
     * See if there's a object singleton with the right name
@@ -1558,13 +1539,10 @@ class LiftSession(
 
       for {
         f <- LiftRules.snippetFailedFunc.toList
-      } {
-        f(LiftRules.SnippetFailure(page, snippetName, why))
-      }
+      } f(LiftRules.SnippetFailure(page, snippetName, why))
 
-      if (Props.devMode || Props.testMode) {
+      if (Props.devMode || Props.testMode)
         overrideResponseCode.set(LiftRules.devModeFailureResponseCodeOverride)
-      }
 
       Helpers.errorDiv(<div>Error processing snippet:
         <b>
@@ -1641,10 +1619,9 @@ class LiftSession(
     val renderVersion = RenderVersion.get
     val requestVarFunc = RequestVarHandler.generateSnapshotRestorer[T]()
 
-    () => {
+    () =>
       requestVarFunc(() =>
         executeInScope(currentReq, renderVersion)(deferredFunction()))
-    }
   }
 
   /**
@@ -1659,22 +1636,18 @@ class LiftSession(
     val renderVersion = RenderVersion.get
     val requestVarFunc = RequestVarHandler.generateSnapshotRestorer[T]()
 
-    (in: A) => {
+    (in: A) =>
       requestVarFunc(() =>
         executeInScope(currentReq, renderVersion)(deferredFunction(in)))
-    }
   }
 
   def executeInScope[T](req: Box[Req], renderVersion: String)(f: => T): T = {
     def doExec(): T =
       RenderVersion.doWith(renderVersion) {
-        try {
-          f
-        } finally {
-          if (S.functionMap.size > 0) {
-            this.updateFunctionMap(S.functionMap, renderVersion, millis)
-            S.clearFunctionMap
-          }
+        try f
+        finally if (S.functionMap.size > 0) {
+          this.updateFunctionMap(S.functionMap, renderVersion, millis)
+          S.clearFunctionMap
         }
       }
 
@@ -1792,7 +1765,7 @@ class LiftSession(
                           NodeSeq.Empty,
                           wholeTag)
 
-                    case Full(inst) => {
+                    case Full(inst) =>
                       def gotIt: Box[NodeSeq] =
                         for {
                           meth <- tryo(inst.getClass.getMethod(method))
@@ -1900,7 +1873,6 @@ class LiftSession(
                             )
                         }
                       }
-                    }
                     case Failure(_, Full(exception), _) =>
                       logger.warn("Snippet instantiation error", exception)
                       reportSnippetError(
@@ -2346,13 +2318,12 @@ class LiftSession(
                 case jsExp: JsExp =>
                   partialUpdate(
                     JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
-                case jv: JsonAST.JValue => {
+                case jv: JsonAST.JValue =>
                   val s: String = json.prettyRender(jv)
                   partialUpdate(
                     JsCmds.JsSchedule(
                       JsCmds.JsTry(JsRaw(toCall + "(" + s + ")").cmd, false)))
-                }
-                case x: AnyRef => {
+                case x: AnyRef =>
                   import json._
                   implicit val formats = Serialization.formats(NoTypeHints)
 
@@ -2361,8 +2332,6 @@ class LiftSession(
                   ser.foreach(s =>
                     partialUpdate(JsCmds.JsSchedule(
                       JsCmds.JsTry(JsRaw(toCall + "(" + s + ")").cmd, false))))
-
-                }
 
                 case _ => // this will never happen because the message is boxed
 
@@ -2395,71 +2364,67 @@ class LiftSession(
     * @param in the DOM to process
     */
   def processSurroundAndInclude(page: String, in: NodeSeq): NodeSeq =
-    try {
-      in.flatMap {
-        case Group(nodes) =>
-          Group(processSurroundAndInclude(page, nodes))
+    try in.flatMap {
+      case Group(nodes) =>
+        Group(processSurroundAndInclude(page, nodes))
 
-        case elem @ DataAttrNode(toDo) =>
-          toDo match {
-            case DataAttributeProcessorAnswerNodes(nodes) =>
-              processSurroundAndInclude(page, nodes)
+      case elem @ DataAttrNode(toDo) =>
+        toDo match {
+          case DataAttributeProcessorAnswerNodes(nodes) =>
+            processSurroundAndInclude(page, nodes)
 
-            case DataAttributeProcessorAnswerFork(nodeFunc) =>
-              processOrDefer(true)(processSurroundAndInclude(page, nodeFunc()))
-            case DataAttributeProcessorAnswerFuture(nodeFuture) =>
-              processOrDefer(true)(
+          case DataAttributeProcessorAnswerFork(nodeFunc) =>
+            processOrDefer(true)(processSurroundAndInclude(page, nodeFunc()))
+          case DataAttributeProcessorAnswerFuture(nodeFuture) =>
+            processOrDefer(true)(
+              processSurroundAndInclude(
+                page,
+                nodeFuture.get(15000).openOr(NodeSeq.Empty)))
+        }
+
+      case elem @ SnippetNode(element, kids, isLazy, attrs, snippetName)
+          if snippetName != _lastFoundSnippet.value =>
+        processOrDefer(isLazy) {
+          S.withCurrentSnippetNodeSeq(elem) {
+            S.doSnippet(snippetName) {
+              S.withAttrs(attrs) {
                 processSurroundAndInclude(
                   page,
-                  nodeFuture.get(15000).openOr(NodeSeq.Empty)))
-          }
-
-        case elem @ SnippetNode(element, kids, isLazy, attrs, snippetName)
-            if snippetName != _lastFoundSnippet.value =>
-          processOrDefer(isLazy) {
-            S.withCurrentSnippetNodeSeq(elem) {
-              S.doSnippet(snippetName) {
-                S.withAttrs(attrs) {
-                  processSurroundAndInclude(
-                    page,
-                    NamedPF(
-                      (snippetName, element, attrs, kids, page),
-                      liftTagProcessing))
-                }
+                  NamedPF(
+                    (snippetName, element, attrs, kids, page),
+                    liftTagProcessing))
               }
             }
           }
+        }
 
-        case elem @ TagProcessingNode(toDo) =>
-          toDo match {
-            case DataAttributeProcessorAnswerNodes(nodes) => nodes
-            case DataAttributeProcessorAnswerFork(nodeFunc) =>
-              processOrDefer(true)(nodeFunc())
-            case DataAttributeProcessorAnswerFuture(nodeFuture) =>
-              processOrDefer(true)(nodeFuture.get(15000).openOr(NodeSeq.Empty))
-          }
+      case elem @ TagProcessingNode(toDo) =>
+        toDo match {
+          case DataAttributeProcessorAnswerNodes(nodes) => nodes
+          case DataAttributeProcessorAnswerFork(nodeFunc) =>
+            processOrDefer(true)(nodeFunc())
+          case DataAttributeProcessorAnswerFuture(nodeFuture) =>
+            processOrDefer(true)(nodeFuture.get(15000).openOr(NodeSeq.Empty))
+        }
 
-        case v: Elem =>
-          Elem(
-            v.prefix,
-            v.label,
-            processAttributes(v.attributes, this.allowAttributeProcessing.is),
-            v.scope,
-            v.minimizeEmpty,
-            processSurroundAndInclude(page, v.child): _*)
+      case v: Elem =>
+        Elem(
+          v.prefix,
+          v.label,
+          processAttributes(v.attributes, this.allowAttributeProcessing.is),
+          v.scope,
+          v.minimizeEmpty,
+          processSurroundAndInclude(page, v.child): _*)
 
-        case pcd: scala.xml.PCData => pcd
-        case text: Text            => text
-        case unparsed: Unparsed    => unparsed
+      case pcd: scala.xml.PCData => pcd
+      case text: Text            => text
+      case unparsed: Unparsed    => unparsed
 
-        case a: Atom[Any] if (a.getClass == classOf[Atom[Any]]) =>
-          new Text(a.data.toString)
+      case a: Atom[Any] if (a.getClass == classOf[Atom[Any]]) =>
+        new Text(a.data.toString)
 
-        case v => v
-      }
-    } finally {
-      _lastFoundSnippet.set(null)
-    }
+      case v => v
+    } finally _lastFoundSnippet.set(null)
 
   /**
     * A nicely named proxy for processSurroundAndInclude.  This method processes
@@ -2896,10 +2861,9 @@ class LiftSession(
             func <- map.get(name)
             payload = in \ "payload"
             reified <- if (func.manifest == jvmanifest) Some(payload)
-            else {
-              try {
-                Some(payload.extract(defaultFormats, func.manifest))
-              } catch {
+            else
+              try Some(payload.extract(defaultFormats, func.manifest))
+              catch {
                 case e: Exception =>
                   logger.error(
                     "Failed to extract " + payload + " as " + func.manifest,
@@ -2910,86 +2874,78 @@ class LiftSession(
                   None
 
               }
-            }
-          } {
-            func match {
-              case StreamRoundTrip(_, func) =>
-                try {
-                  for (v <- func.asInstanceOf[Function1[Any, Stream[Any]]](
-                         reified)) {
-                    v match {
-                      case jsCmd: JsCmd => ca ! jsCmd
-                      case jsExp: JsExp => ca ! jsExp
-                      case v            => ca ! ItemMsg(guid, fixIt(v))
-                    }
-                  }
-                  ca ! DoneMsg(guid)
-                } catch {
-                  case e: Exception => ca ! FailMsg(guid, e.getMessage)
-                }
-
-              case SimpleRoundTrip(_, func) =>
-                try {
-                  func.asInstanceOf[Function1[Any, Any]](reified) match {
+          } func match {
+            case StreamRoundTrip(_, func) =>
+              try {
+                for (v <- func.asInstanceOf[Function1[Any, Stream[Any]]](
+                       reified))
+                  v match {
                     case jsCmd: JsCmd => ca ! jsCmd
                     case jsExp: JsExp => ca ! jsExp
                     case v            => ca ! ItemMsg(guid, fixIt(v))
                   }
-                  ca ! DoneMsg(guid)
-                } catch {
-                  case e: Exception => ca ! FailMsg(guid, e.getMessage)
+                ca ! DoneMsg(guid)
+              } catch {
+                case e: Exception => ca ! FailMsg(guid, e.getMessage)
+              }
+
+            case SimpleRoundTrip(_, func) =>
+              try {
+                func.asInstanceOf[Function1[Any, Any]](reified) match {
+                  case jsCmd: JsCmd => ca ! jsCmd
+                  case jsExp: JsExp => ca ! jsExp
+                  case v            => ca ! ItemMsg(guid, fixIt(v))
                 }
+                ca ! DoneMsg(guid)
+              } catch {
+                case e: Exception => ca ! FailMsg(guid, e.getMessage)
+              }
 
-              case HandledRoundTrip(_, func) =>
-                try {
-                  func.asInstanceOf[Function2[Any, RoundTripHandlerFunc, Unit]](
-                    reified,
-                    new RoundTripHandlerFunc {
-                      @volatile private var done_? = false
-                      def done() {
-                        if (!done_?) {
-                          done_? = true
-                          ca ! DoneMsg(guid)
-                        }
-                      }
-
-                      def failure(msg: String) {
-                        if (!done_?) {
-                          done_? = true
-                          ca ! FailMsg(guid, msg)
-                        }
-                      }
-
-                      /**
-                        * Send some JavaScript to execute on the client side
-                        * @param value
-                        */
-                      def send(value: JsCmd): Unit =
-                        if (!done_?) {
-                          ca ! value
-                        }
-
-                      /**
-                        * Send some javascript to execute on the client side
-                        * @param value
-                        */
-                      def send(value: JsExp): Unit =
-                        if (!done_?) {
-                          ca ! value
-                        }
-
-                      def send(value: JValue) {
-                        if (!done_?) {
-                          ca ! ItemMsg(guid, value)
-                        }
-                      }
+            case HandledRoundTrip(_, func) =>
+              try func.asInstanceOf[Function2[Any, RoundTripHandlerFunc, Unit]](
+                reified,
+                new RoundTripHandlerFunc {
+                  @volatile private var done_? = false
+                  def done() {
+                    if (!done_?) {
+                      done_? = true
+                      ca ! DoneMsg(guid)
                     }
-                  )
-                } catch {
-                  case e: Exception => ca ! FailMsg(guid, e.getMessage)
-                }
+                  }
 
-            }
+                  def failure(msg: String) {
+                    if (!done_?) {
+                      done_? = true
+                      ca ! FailMsg(guid, msg)
+                    }
+                  }
+
+                  /**
+                    * Send some JavaScript to execute on the client side
+                    * @param value
+                    */
+                  def send(value: JsCmd): Unit =
+                    if (!done_?)
+                      ca ! value
+
+                  /**
+                    * Send some javascript to execute on the client side
+                    * @param value
+                    */
+                  def send(value: JsExp): Unit =
+                    if (!done_?)
+                      ca ! value
+
+                  def send(value: JValue) {
+                    if (!done_?)
+                      ca ! ItemMsg(guid, value)
+                  }
+                }
+              )
+              catch {
+                case e: Exception => ca ! FailMsg(guid, e.getMessage)
+              }
+
           })
         }
 
@@ -3059,9 +3015,7 @@ private object SnippetNode {
       for {
         cls <- in.attribute("class")
         snip <- cls.text.charSplit(' ').find(isLiftClass)
-      } yield {
-        snip
-      }
+      } yield snip
     } orElse in.attribute("lift").map(_.text)
 
     snippetInvocation.map { snip =>
@@ -3117,14 +3071,13 @@ private object SnippetNode {
   def unapply(
       baseNode: Node): Option[(Elem, NodeSeq, Boolean, MetaData, String)] =
     baseNode match {
-      case elm: Elem if elm.prefix == "lift" || elm.prefix == "l" => {
+      case elm: Elem if elm.prefix == "lift" || elm.prefix == "l" =>
         Some((elm, elm.child, elm.attributes.find {
           case p: PrefixedAttribute => p.pre == "lift" && (p.key == "parallel")
           case _                    => false
         }.isDefined, elm.attributes, elm.label))
-      }
 
-      case elm: Elem => {
+      case elm: Elem =>
         for {
           SnippetInformation(snippetName, lift) <- snippetInformationForElement(
             elm)
@@ -3152,11 +3105,9 @@ private object SnippetNode {
             snippetName)
 
         }
-      }
 
-      case _ => {
+      case _ =>
         None
-      }
     }
 }
 

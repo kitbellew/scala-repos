@@ -18,7 +18,7 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
       case tree: Tree =>
         printPosition(tree)
         printTree(
-          if (tree.isDef && tree.symbol != NoSymbol && tree.symbol.isInitialized) {
+          if (tree.isDef && tree.symbol != NoSymbol && tree.symbol.isInitialized)
             tree match {
               case ClassDef(_, _, _, impl @ Template(ps, noSelfType, body))
                   if (tree.symbol.thisSym != tree.symbol) =>
@@ -33,7 +33,7 @@ trait Printers extends scala.reflect.internal.Printers { this: Global =>
               case TypeDef(_, _, _, rhs) => TypeDef(tree.symbol, rhs)
               case _                     => tree
             }
-          } else tree)
+          else tree)
       case unit: CompilationUnit =>
         print("// Scala source: " + unit.source + "\n")
         if (unit.body == null) print("<null>")

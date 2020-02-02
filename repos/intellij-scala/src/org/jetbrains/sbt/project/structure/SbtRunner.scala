@@ -58,9 +58,8 @@ class SbtRunner(
       val message =
         s"SBT $SinceSbtVersion+ required. Please update the project definition"
       Left(new UnsupportedOperationException(message))
-    } else {
+    } else
       read1(directory, majorSbtVersion, options, listener)
-    }
   }
 
   private def checkFilePresence: Option[String] = {
@@ -161,9 +160,8 @@ class SbtRunner(
       handler.setShouldDestroyProcessRecursively(false)
       handler.destroyProcess()
       None
-    } else {
+    } else
       Some(output.toString)
-    }
   }
 
   private def path(file: File): String = file.getAbsolutePath.replace('\\', '/')
@@ -208,16 +206,12 @@ object SbtRunner {
       file: File,
       name: String): Option[String] = {
     val jar = new JarFile(file)
-    try {
-      Option(jar.getJarEntry("META-INF/MANIFEST.MF")).flatMap { entry =>
-        val input = new BufferedInputStream(jar.getInputStream(entry))
-        val manifest = new java.util.jar.Manifest(input)
-        val attributes = manifest.getMainAttributes
-        Option(attributes.getValue(name))
-      }
-    } finally {
-      jar.close()
-    }
+    try Option(jar.getJarEntry("META-INF/MANIFEST.MF")).flatMap { entry =>
+      val input = new BufferedInputStream(jar.getInputStream(entry))
+      val manifest = new java.util.jar.Manifest(input)
+      val attributes = manifest.getMainAttributes
+      Option(attributes.getValue(name))
+    } finally jar.close()
   }
 
   private def sbtVersionInBootPropertiesOf(jar: File): Option[String] = {
@@ -243,21 +237,17 @@ object SbtRunner {
       }
 
     val jar = new JarFile(launcherFile)
-    try {
-      Option(jar.getEntry("sbt/sbt.boot.properties"))
-        .fold(Map.empty[String, String]) { entry =>
-          val lines = scala.io.Source
-            .fromInputStream(jar.getInputStream(entry))
-            .getLines()
-          val sectionLines = lines
-            .dropWhile(_.trim != s"[$sectionName]")
-            .drop(1)
-            .takeWhile(!_.trim.startsWith("["))
-          sectionLines.flatMap(findProperty).toMap
-        }
-    } finally {
-      jar.close()
-    }
+    try Option(jar.getEntry("sbt/sbt.boot.properties"))
+      .fold(Map.empty[String, String]) { entry =>
+        val lines = scala.io.Source
+          .fromInputStream(jar.getInputStream(entry))
+          .getLines()
+        val sectionLines = lines
+          .dropWhile(_.trim != s"[$sectionName]")
+          .drop(1)
+          .takeWhile(!_.trim.startsWith("["))
+        sectionLines.flatMap(findProperty).toMap
+      } finally jar.close()
   }
 
   private def sbtVersionIn(directory: File): Option[String] = {

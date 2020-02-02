@@ -23,12 +23,10 @@ class ScalaPackagingStructureViewElement(private val element: ScPackaging)
 
   def getChildren: Array[TreeElement] = {
     val children = new ArrayBuffer[ScalaStructureViewElement]
-    for (td <- element.immediateTypeDefinitions) {
+    for (td <- element.immediateTypeDefinitions)
       children += new ScalaTypeDefinitionStructureViewElement(td)
-    }
-    for (p <- element.packagings) {
+    for (p <- element.packagings)
       children += new ScalaPackagingStructureViewElement(p)
-    }
 
     children.toArray
   }

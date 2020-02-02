@@ -51,9 +51,9 @@ private[util] class NavigableView[E](
       }
 
       def remove(): Unit =
-        if (last.isEmpty) {
+        if (last.isEmpty)
           throw new IllegalStateException()
-        } else {
+        else {
           last.foreach(original.remove(_))
           last = None
         }

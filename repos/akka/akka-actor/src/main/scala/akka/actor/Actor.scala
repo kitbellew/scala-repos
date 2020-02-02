@@ -369,9 +369,7 @@ trait DiagnosticActorLogging extends Actor {
     try {
       log.mdc(mdc(msg))
       super.aroundReceive(receive, msg)
-    } finally {
-      log.clearMDC()
-    }
+    } finally log.clearMDC()
 }
 
 object Actor {

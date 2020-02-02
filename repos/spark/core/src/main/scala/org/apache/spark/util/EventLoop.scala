@@ -41,20 +41,15 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
     setDaemon(true)
 
     override def run(): Unit =
-      try {
-        while (!stopped.get) {
-          val event = eventQueue.take()
-          try {
-            onReceive(event)
-          } catch {
-            case NonFatal(e) => {
-              try {
-                onError(e)
-              } catch {
-                case NonFatal(e) => logError("Unexpected error in " + name, e)
-              }
+      try while (!stopped.get) {
+        val event = eventQueue.take()
+        try onReceive(event)
+        catch {
+          case NonFatal(e) =>
+            try onError(e)
+            catch {
+              case NonFatal(e) => logError("Unexpected error in " + name, e)
             }
-          }
         }
       } catch {
         case ie: InterruptedException => // exit even if eventQueue is not empty
@@ -64,9 +59,8 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
   }
 
   def start(): Unit = {
-    if (stopped.get) {
+    if (stopped.get)
       throw new IllegalStateException(name + " has already been stopped")
-    }
     // Call onStart before starting the event thread to make sure it happens before onReceive
     onStart()
     eventThread.start()
@@ -84,11 +78,10 @@ private[spark] abstract class EventLoop[E](name: String) extends Logging {
       } catch {
         case ie: InterruptedException =>
           Thread.currentThread().interrupt()
-          if (!onStopCalled) {
+          if (!onStopCalled)
             // ie is thrown from `eventThread.join()`. Otherwise, we should not call `onStop` since
             // it's already called.
             onStop()
-          }
       }
     } else {
       // Keep quiet to allow calling `stop` multiple times.

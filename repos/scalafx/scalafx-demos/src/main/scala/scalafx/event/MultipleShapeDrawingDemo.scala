@@ -209,7 +209,7 @@ object MultipleShapeDrawingDemo extends JFXApp {
       me.eventType match {
         case MouseEvent.MousePressed => start = new Point2D(me.x, me.y)
         case MouseEvent.MouseDragged => end = new Point2D(me.x, me.y)
-        case _                       => {}
+        case _                       =>
       }
     }
   }

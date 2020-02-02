@@ -131,13 +131,11 @@ class KMeans private (
   // Internal version of setRuns for Python API, this should be removed at the same time as setRuns
   // this is done to avoid deprecation warnings in our build.
   private[mllib] def internalSetRuns(runs: Int): this.type = {
-    if (runs <= 0) {
+    if (runs <= 0)
       throw new IllegalArgumentException("Number of runs must be positive")
-    }
-    if (runs != 1) {
+    if (runs != 1)
       logWarning(
         "Setting number of runs is deprecated and will have no effect in 2.0.0")
-    }
     this.runs = runs
     this
   }
@@ -154,10 +152,9 @@ class KMeans private (
     */
   @Since("0.8.0")
   def setInitializationSteps(initializationSteps: Int): this.type = {
-    if (initializationSteps <= 0) {
+    if (initializationSteps <= 0)
       throw new IllegalArgumentException(
         "Number of initialization steps must be positive")
-    }
     this.initializationSteps = initializationSteps
     this
   }
@@ -216,11 +213,10 @@ class KMeans private (
   @Since("0.8.0")
   def run(data: RDD[Vector]): KMeansModel = {
 
-    if (data.getStorageLevel == StorageLevel.NONE) {
+    if (data.getStorageLevel == StorageLevel.NONE)
       logWarning(
         "The input data is not directly cached, which may hurt performance if its"
           + " parent RDDs are also uncached.")
-    }
 
     // Compute squared norms and cache them.
     val norms = data.map(Vectors.norm(_, 2.0))
@@ -233,11 +229,10 @@ class KMeans private (
     norms.unpersist()
 
     // Warn at the end of the run as well, for increased visibility.
-    if (data.getStorageLevel == StorageLevel.NONE) {
+    if (data.getStorageLevel == StorageLevel.NONE)
       logWarning(
         "The input data was not directly cached, which may hurt performance if its"
           + " parent RDDs are also uncached.")
-    }
     model
   }
 
@@ -256,21 +251,17 @@ class KMeans private (
         logWarning(
           "Ignoring runs; one run is allowed when initialModel is given.")
       1
-    } else {
+    } else
       runs
-    }
 
     val centers = initialModel match {
-      case Some(kMeansCenters) => {
+      case Some(kMeansCenters) =>
         Array(kMeansCenters.clusterCenters.map(s => new VectorWithNorm(s)))
-      }
-      case None => {
-        if (initializationMode == KMeans.RANDOM) {
+      case None =>
+        if (initializationMode == KMeans.RANDOM)
           initRandom(data)
-        } else {
+        else
           initKMeansParallel(data)
-        }
-      }
     }
     val initTimeInSeconds = (System.nanoTime() - initStartTime) / 1e9
     logInfo(
@@ -321,9 +312,9 @@ class KMeans private (
             }
           }
 
-          val contribs = for (i <- 0 until runs; j <- 0 until k) yield {
-            ((i, j), (sums(i)(j), counts(i)(j)))
-          }
+          val contribs =
+            for (i <- 0 until runs; j <- 0 until k)
+              yield ((i, j), (sums(i)(j), counts(i)(j)))
           contribs.iterator
         }
         .reduceByKey(mergeContribs)
@@ -340,9 +331,8 @@ class KMeans private (
           if (count != 0) {
             scal(1.0 / count, sum)
             val newCenter = new VectorWithNorm(sum)
-            if (KMeans.fastSquaredDistance(newCenter, centers(run)(j)) > epsilon * epsilon) {
+            if (KMeans.fastSquaredDistance(newCenter, centers(run)(j)) > epsilon * epsilon)
               changed = true
-            }
             centers(run)(j) = newCenter
           }
           j += 1
@@ -363,11 +353,10 @@ class KMeans private (
     logInfo(
       s"Iterations took " + "%.3f".format(iterationTimeInSeconds) + " seconds.")
 
-    if (iteration == maxIterations) {
+    if (iteration == maxIterations)
       logInfo(s"KMeans reached the max number of iterations: $maxIterations.")
-    } else {
+    else
       logInfo(s"KMeans converged in $iteration iterations.")
-    }
 
     val (minCost, bestRun) = costs.zipWithIndex.min
 

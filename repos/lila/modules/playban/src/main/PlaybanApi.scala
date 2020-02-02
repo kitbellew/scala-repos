@@ -83,7 +83,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
       .map {
         _.flatMap { obj =>
           obj.getAs[String]("_id") flatMap { id =>
-            obj.getAs[BSONArray]("b") map { id -> _.stream.size }
+            obj.getAs[BSONArray]("b") map id -> _.stream.size
           }
         }.toMap
       }

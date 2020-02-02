@@ -64,9 +64,8 @@ class PartitionTopicInfo(
       debug("updated fetch offset of (%s) to %d".format(this, next))
       consumerTopicStats.getConsumerTopicStats(topic).byteRate.mark(size)
       consumerTopicStats.getConsumerAllTopicStats().byteRate.mark(size)
-    } else if (messages.sizeInBytes > 0) {
+    } else if (messages.sizeInBytes > 0)
       chunkQueue.put(new FetchedDataChunk(messages, this, fetchedOffset.get))
-    }
   }
 
   override def toString(): String =

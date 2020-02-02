@@ -43,13 +43,12 @@ class ScalaXmlUnmatchedTagInspection extends LocalInspectionTool {
             fixes: _*)
         }
 
-        if (endTag == null) {
+        if (endTag == null)
           register(new DeleteUnmatchedTagQuickFix(s))
-        } else if (endTag.getTagName != s.getTagName) {
+        else if (endTag.getTagName != s.getTagName)
           register(
             new DeleteUnmatchedTagQuickFix(s),
             new RenameClosingTagQuickFix(s))
-        }
       }
 
       override def visitXmlEndTag(s: ScXmlEndTag) {
@@ -61,13 +60,12 @@ class ScalaXmlUnmatchedTagInspection extends LocalInspectionTool {
             fixes: _*)
         }
 
-        if (startTag == null) {
+        if (startTag == null)
           register(new DeleteUnmatchedTagQuickFix(s))
-        } else if (startTag.getTagName != s.getTagName) {
+        else if (startTag.getTagName != s.getTagName)
           register(
             new DeleteUnmatchedTagQuickFix(s),
             new RenameOpeningTagQuickFix(s))
-        }
       }
     }
 }

@@ -99,9 +99,9 @@ object TypeDescriptorProviderImpl {
   }
 
   def optionInner(c: Context)(opt: c.universe.Type): Option[c.universe.Type] =
-    if (opt.erasure =:= c.universe.typeOf[Option[Any]]) {
+    if (opt.erasure =:= c.universe.typeOf[Option[Any]])
       Some(opt.asInstanceOf[c.universe.TypeRefApi].args.head)
-    } else None
+    else None
 
   def isTuple[T](c: Context)(implicit T: c.WeakTypeTag[T]): Boolean = {
     import c.universe._

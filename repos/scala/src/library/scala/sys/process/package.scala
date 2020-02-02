@@ -262,9 +262,9 @@ package scala.sys {
         case e: IOException => handler(e)
       }
 
-      def dbg(msgs: Any*) = if (processDebug) {
-        Console.println("[process] " + (msgs mkString " "))
-      }
+      def dbg(msgs: Any*) =
+        if (processDebug)
+          Console.println("[process] " + (msgs mkString " "))
     }
   }
 }

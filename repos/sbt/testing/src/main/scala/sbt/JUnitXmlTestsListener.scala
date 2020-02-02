@@ -91,9 +91,8 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
             e.throwable.get.printStackTrace(writer)
             writer.flush()
             stringWriter.toString
-          } else {
+          } else
             ""
-          }
           e.status match {
             case TStatus.Error if (e.throwable.isDefined) =>
               <error message={e.throwable.get.getMessage} type={
@@ -108,7 +107,7 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
             case TStatus.Failure =>
               <failure message={"No Exception or message provided"}/>
             case TStatus.Skipped => <skipped/>
-            case _               => {}
+            case _               =>
           }
         }
                                                </testcase>
@@ -137,9 +136,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   /**
     * Adds all details for the given even to the current suite.
     */
-  override def testEvent(event: TestEvent): Unit = for (e <- event.detail) {
-    testSuite.value.addEvent(e)
-  }
+  override def testEvent(event: TestEvent): Unit =
+    for (e <- event.detail)
+      testSuite.value.addEvent(e)
 
   /**
     * called for each class or equivalent grouping

@@ -37,13 +37,13 @@ object Templates {
       part: List[String],
       last: String,
       what: LiftRules.ViewDispatchPF): Box[NodeSeq] =
-    if (what.isDefinedAt(part)) {
+    if (what.isDefinedAt(part))
       what(part) match {
         case Right(lv) =>
           if (lv.dispatch.isDefinedAt(last)) lv.dispatch(last)() else Empty
         case _ => Empty
       }
-    } else Empty
+    else Empty
 
   private def checkForFunc(
       whole: List[String],
@@ -122,7 +122,7 @@ object Templates {
       in.flatMap {
           case e: Elem if e.label == "html" =>
             e.child.flatMap {
-              case e: Elem if e.label == "body" => {
+              case e: Elem if e.label == "body" =>
                 e.attribute("data-lift-content-id")
                   .headOption
                   .map(_.text) orElse
@@ -135,7 +135,6 @@ object Templates {
                     }.headOption
 
                   }
-              }
 
               case _ => None
             }
@@ -172,9 +171,9 @@ object Templates {
     val resolver = LiftRules.externalTemplateResolver.vend()
     val key = (locale, places)
 
-    if (resolver.isDefinedAt(key)) {
+    if (resolver.isDefinedAt(key))
       resolver(key)
-    } else {
+    else {
       val lrCache = LiftRules.templateCache
       val cache =
         if (lrCache.isDefined) lrCache.openOrThrowException("passes isDefined")
@@ -209,11 +208,9 @@ object Templates {
                                       else "")
                 import scala.xml.dtd.ValidationException
                 val xmlb =
-                  try {
-                    LiftRules.doWithResource(name)(parser.parse) match {
-                      case Full(seq) => seq
-                      case _         => Empty
-                    }
+                  try LiftRules.doWithResource(name)(parser.parse) match {
+                    case Full(seq) => seq
+                    case _         => Empty
                   } catch {
                     case e: ValidationException
                         if Props.devMode | Props.testMode =>
@@ -278,29 +275,27 @@ object Templates {
         .map(_ + "." + f(controller)))
 
     first(toTry) { clsName =>
-      try {
-        tryo(List(classOf[ClassNotFoundException]), Empty)(
-          Class.forName(clsName).asInstanceOf[Class[AnyRef]]).flatMap { c =>
-          (c.newInstance match {
-            case inst: InsecureLiftView => c.getMethod(action).invoke(inst)
-            case inst: LiftView if inst.dispatch.isDefinedAt(action) =>
-              inst.dispatch(action)()
-            case _ => Empty
-          }) match {
-            case null | Empty | None  => Empty
-            case n: Group             => Full(n)
-            case n: Elem              => Full(n)
-            case s: NodeSeq           => Full(s)
-            case Some(n: Group)       => Full(n)
-            case Some(n: Elem)        => Full(n)
-            case Some(n: NodeSeq)     => Full(n)
-            case Some(SafeNodeSeq(n)) => Full(n)
-            case Full(n: Group)       => Full(n)
-            case Full(n: Elem)        => Full(n)
-            case Full(n: NodeSeq)     => Full(n)
-            case Full(SafeNodeSeq(n)) => Full(n)
-            case _                    => Empty
-          }
+      try tryo(List(classOf[ClassNotFoundException]), Empty)(
+        Class.forName(clsName).asInstanceOf[Class[AnyRef]]).flatMap { c =>
+        (c.newInstance match {
+          case inst: InsecureLiftView => c.getMethod(action).invoke(inst)
+          case inst: LiftView if inst.dispatch.isDefinedAt(action) =>
+            inst.dispatch(action)()
+          case _ => Empty
+        }) match {
+          case null | Empty | None  => Empty
+          case n: Group             => Full(n)
+          case n: Elem              => Full(n)
+          case s: NodeSeq           => Full(s)
+          case Some(n: Group)       => Full(n)
+          case Some(n: Elem)        => Full(n)
+          case Some(n: NodeSeq)     => Full(n)
+          case Some(SafeNodeSeq(n)) => Full(n)
+          case Full(n: Group)       => Full(n)
+          case Full(n: Elem)        => Full(n)
+          case Full(n: NodeSeq)     => Full(n)
+          case Full(SafeNodeSeq(n)) => Full(n)
+          case _                    => Empty
         }
       } catch {
         case ite: java.lang.reflect.InvocationTargetException =>

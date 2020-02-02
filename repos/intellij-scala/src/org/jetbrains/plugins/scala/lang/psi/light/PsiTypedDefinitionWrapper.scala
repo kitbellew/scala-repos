@@ -38,12 +38,12 @@ class PsiTypedDefinitionWrapper(
         typedDefinition.nameContext match {
           case s: ScMember =>
             val res = s.containingClass
-            if (isStatic) {
+            if (isStatic)
               res match {
                 case o: ScObject => o.fakeCompanionClassOrCompanionClass
                 case _           => res
               }
-            } else res
+            else res
           case _ => null
         }
     if (result == null) {
@@ -60,9 +60,8 @@ class PsiTypedDefinitionWrapper(
     isInterface,
     role)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try elementFactory.createMethodFromText(methodText, containingClass)
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",
@@ -147,9 +146,9 @@ object PsiTypedDefinitionWrapper {
       case EQ          => b.getName + "_$eq"
     }
     builder.append(name)
-    if (role != SETTER && role != EQ) {
+    if (role != SETTER && role != EQ)
       builder.append("()")
-    } else {
+    else {
       builder.append("(")
       result match {
         case Success(tp, _) =>
@@ -161,9 +160,8 @@ object PsiTypedDefinitionWrapper {
     }
 
     val holder = PsiTreeUtil.getContextOfType(b, classOf[ScAnnotationsHolder])
-    if (holder != null) {
+    if (holder != null)
       builder.append(LightUtil.getThrowsSection(holder))
-    }
 
     if (!isInterface)
       builder.append(" {}")

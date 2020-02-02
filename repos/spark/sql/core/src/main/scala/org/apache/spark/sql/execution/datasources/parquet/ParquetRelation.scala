@@ -75,11 +75,10 @@ private[sql] class DefaultSource
     // SPARK-9849 DirectParquetOutputCommitter qualified name should be backward compatible
     val committerClassName =
       conf.get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key)
-    if (committerClassName == "org.apache.spark.sql.parquet.DirectParquetOutputCommitter") {
+    if (committerClassName == "org.apache.spark.sql.parquet.DirectParquetOutputCommitter")
       conf.set(
         SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key,
         classOf[DirectParquetOutputCommitter].getCanonicalName)
-    }
 
     val committerClass =
       conf.getClass(
@@ -87,14 +86,13 @@ private[sql] class DefaultSource
         classOf[ParquetOutputCommitter],
         classOf[ParquetOutputCommitter])
 
-    if (conf.get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key) == null) {
+    if (conf.get(SQLConf.PARQUET_OUTPUT_COMMITTER_CLASS.key) == null)
       logInfo(
         "Using default output committer for Parquet: " +
           classOf[ParquetOutputCommitter].getCanonicalName)
-    } else {
+    else
       logInfo(
         "Using user defined output committer for Parquet: " + committerClass.getCanonicalName)
-    }
 
     val compressionCodec: Option[String] = options
       .get("compression")
@@ -232,13 +230,12 @@ private[sql] class DefaultSource
         //     shouldMergeSchemas means (assumes) all the files have the same schemas.
 
         val needMerged: Seq[FileStatus] =
-          if (mergeRespectSummaries) {
+          if (mergeRespectSummaries)
             Seq()
-          } else {
+          else
             filesByType.data
-          }
         needMerged ++ filesByType.metadata ++ filesByType.commonMetadata
-      } else {
+      } else
         // Tries any "_common_metadata" first. Parquet files written by old versions or Parquet
         // don't have this.
         filesByType.commonMetadata.headOption
@@ -250,7 +247,6 @@ private[sql] class DefaultSource
           // first part-file, and just assume all schemas are consistent.
           .orElse(filesByType.data.headOption)
           .toSeq
-      }
     ParquetRelation.mergeSchemasInParallel(filesToTouch, sqlContext)
   }
 
@@ -395,7 +391,7 @@ private[sql] class ParquetOutputWriter(
     extends OutputWriter {
 
   private val recordWriter: RecordWriter[Void, InternalRow] = {
-    val outputFormat = {
+    val outputFormat =
       new ParquetOutputFormat[InternalRow]() {
         // Here we override `getDefaultWorkFile` for two reasons:
         //
@@ -424,7 +420,6 @@ private[sql] class ParquetOutputWriter(
             f"part-r-$split%05d-$uniqueWriteJobId$bucketString$extension")
         }
       }
-    }
 
     outputFormat.getRecordWriter(context)
   }
@@ -493,7 +488,7 @@ private[sql] object ParquetRelation extends Logging {
       classOf[CatalystReadSupport].getName)
 
     // Try to push down filters when filter push-down is enabled.
-    if (parquetFilterPushDown) {
+    if (parquetFilterPushDown)
       filters
       // Collects all converted Parquet filter predicates. Notice that not all predicates can be
       // converted (`ParquetFilters.createFilter` returns an `Option`). That's why a `flatMap`
@@ -501,7 +496,6 @@ private[sql] object ParquetRelation extends Logging {
         .flatMap(ParquetFilters.createFilter(dataSchema, _))
         .reduceOption(FilterApi.and)
         .foreach(ParquetInputFormat.setFilterPredicate(conf, _))
-    }
 
     conf.set(
       CatalystReadSupport.SPARK_ROW_REQUESTED_SCHEMA, {
@@ -533,9 +527,8 @@ private[sql] object ParquetRelation extends Logging {
     // We side the input paths at the driver side.
     logInfo(
       s"Reading Parquet file(s) from ${inputFiles.map(_.getPath).mkString(", ")}")
-    if (inputFiles.nonEmpty) {
+    if (inputFiles.nonEmpty)
       FileInputFormat.setInputPaths(job, inputFiles.map(_.getPath): _*)
-    }
 
     overrideMinSplitSize(parquetBlockSize, job.getConfiguration)
   }
@@ -558,10 +551,10 @@ private[sql] object ParquetRelation extends Logging {
       val metadata = footer.getParquetMetadata.getFileMetaData
       val serializedSchema = metadata.getKeyValueMetaData.asScala.toMap
         .get(CatalystReadSupport.SPARK_METADATA_KEY)
-      if (serializedSchema.isEmpty) {
+      if (serializedSchema.isEmpty)
         // Falls back to Parquet schema if no Spark SQL schema found.
         Some(parseParquetSchema(metadata.getSchema))
-      } else if (!seen.contains(serializedSchema.get)) {
+      else if (!seen.contains(serializedSchema.get)) {
         seen += serializedSchema.get
 
         // Don't throw even if we failed to parse the serialized Spark schema. Just fallback to
@@ -587,9 +580,8 @@ private[sql] object ParquetRelation extends Logging {
             // Falls back to Parquet schema if Spark SQL schema can't be parsed.
             parseParquetSchema(metadata.getSchema)
           })
-      } else {
+      } else
         None
-      }
     }
 
     finalSchemas.reduceOption { (left, right) =>
@@ -749,17 +741,16 @@ private[sql] object ParquetRelation extends Logging {
               assumeInt96IsTimestamp = assumeInt96IsTimestamp,
               writeLegacyParquetFormat = writeLegacyParquetFormat)
 
-          if (footers.isEmpty) {
+          if (footers.isEmpty)
             Iterator.empty
-          } else {
+          else {
             var mergedSchema =
               ParquetRelation.readSchemaFromFooter(footers.head, converter)
             footers.tail.foreach { footer =>
               val schema =
                 ParquetRelation.readSchemaFromFooter(footer, converter)
-              try {
-                mergedSchema = mergedSchema.merge(schema)
-              } catch {
+              try mergedSchema = mergedSchema.merge(schema)
+              catch {
                 case cause: SparkException =>
                   throw new SparkException(
                     s"Failed merging schema of file ${footer.getFile}:\n${schema.treeString}",
@@ -771,14 +762,13 @@ private[sql] object ParquetRelation extends Logging {
         }
         .collect()
 
-    if (partiallyMergedSchemas.isEmpty) {
+    if (partiallyMergedSchemas.isEmpty)
       None
-    } else {
+    else {
       var finalSchema = partiallyMergedSchemas.head
       partiallyMergedSchemas.tail.foreach { schema =>
-        try {
-          finalSchema = finalSchema.merge(schema)
-        } catch {
+        try finalSchema = finalSchema.merge(schema)
+        catch {
           case cause: SparkException =>
             throw new SparkException(
               s"Failed merging schema:\n${schema.treeString}",

@@ -85,7 +85,7 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
     externalClient.release()
   }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("stats is supported") {
       Await.result(externalClient.delete("foo"))
       assert(Await.result(externalClient.get("foo")) == None)
@@ -98,9 +98,8 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
       }
       externalClient.release()
     }
-  }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("stats (cachedump) is supported") {
       Await.result(externalClient.delete("foo"))
       assert(Await.result(externalClient.get("foo")) == None)
@@ -117,7 +116,6 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
       assert(stats.find { stat => stat.contains("foo") }.isDefined)
       externalClient.release()
     }
-  }
 
   test("quit is supported") {
     Await.result(externalClient.get("foo")) // do nothing

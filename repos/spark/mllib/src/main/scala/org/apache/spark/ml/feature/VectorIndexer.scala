@@ -229,9 +229,8 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
               featureValues.iterator.filter(_ != 0.0).toArray.sorted
             val zeroExists =
               sortedFeatureValues.length + 1 == featureValues.size
-            if (zeroExists) {
+            if (zeroExists)
               sortedFeatureValues = 0.0 +: sortedFeatureValues
-            }
             val categoryMap: Map[Double, Int] =
               sortedFeatureValues.zipWithIndex.toMap
             (featureIndex, categoryMap)
@@ -242,9 +241,8 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
       var i = 0
       val size = dv.size
       while (i < size) {
-        if (featureValueSets(i).size <= maxCategories) {
+        if (featureValueSets(i).size <= maxCategories)
           featureValueSets(i).add(dv(i))
-        }
         i += 1
       }
     }
@@ -259,12 +257,10 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
           if (k < sv.indices.length && vecIndex == sv.indices(k)) {
             k += 1
             sv.values(k - 1)
-          } else {
+          } else
             0.0
-          }
-        if (featureValueSets(vecIndex).size <= maxCategories) {
+        if (featureValueSets(vecIndex).size <= maxCategories)
           featureValueSets(vecIndex).add(featureValue)
-        }
         vecIndex += 1
       }
     }
@@ -321,21 +317,19 @@ class VectorIndexerModel private[ml] (
             .sortBy(_._1)
             .map(_._1)
             .map(_.toString)
-        if (featureValues.length == 2) {
+        if (featureValues.length == 2)
           attrs(featureIndex) = new BinaryAttribute(
             index = Some(featureIndex),
             values = Some(featureValues))
-        } else {
+        else
           attrs(featureIndex) = new NominalAttribute(
             index = Some(featureIndex),
             isOrdinal = Some(false),
             values = Some(featureValues))
-        }
         categoricalFeatureCount += 1
-      } else {
+      } else
         // continuous feature
         attrs(featureIndex) = new NumericAttribute(index = Some(featureIndex))
-      }
       featureIndex += 1
     }
     require(
@@ -373,11 +367,11 @@ class VectorIndexerModel private[ml] (
           var k = 0 // index into non-zero elements of sparse vector
           while (catFeatureIdx < sortedCatFeatureIndices.length && k < tmpv.indices.length) {
             val featureIndex = sortedCatFeatureIndices(catFeatureIdx)
-            if (featureIndex < tmpv.indices(k)) {
+            if (featureIndex < tmpv.indices(k))
               catFeatureIdx += 1
-            } else if (featureIndex > tmpv.indices(k)) {
+            else if (featureIndex > tmpv.indices(k))
               k += 1
-            } else {
+            else {
               tmpv.values(k) = localVectorMap(featureIndex)(tmpv.values(k))
               catFeatureIdx += 1
               k += 1
@@ -415,11 +409,11 @@ class VectorIndexerModel private[ml] (
 
     // If the input metadata specifies numFeatures, compare with expected numFeatures.
     val origAttrGroup = AttributeGroup.fromStructField(schema($(inputCol)))
-    val origNumFeatures: Option[Int] = if (origAttrGroup.attributes.nonEmpty) {
-      Some(origAttrGroup.attributes.get.length)
-    } else {
-      origAttrGroup.numAttributes
-    }
+    val origNumFeatures: Option[Int] =
+      if (origAttrGroup.attributes.nonEmpty)
+        Some(origAttrGroup.attributes.get.length)
+      else
+        origAttrGroup.numAttributes
     require(
       origNumFeatures.forall(_ == numFeatures),
       "VectorIndexerModel expected" +
@@ -445,25 +439,22 @@ class VectorIndexerModel private[ml] (
         val origAttrs: Array[Attribute] = origAttrGroup.attributes.get
         origAttrs.zip(partialFeatureAttributes).map {
           case (origAttr: Attribute, featAttr: BinaryAttribute) =>
-            if (origAttr.name.nonEmpty) {
+            if (origAttr.name.nonEmpty)
               featAttr.withName(origAttr.name.get)
-            } else {
+            else
               featAttr
-            }
           case (origAttr: Attribute, featAttr: NominalAttribute) =>
-            if (origAttr.name.nonEmpty) {
+            if (origAttr.name.nonEmpty)
               featAttr.withName(origAttr.name.get)
-            } else {
+            else
               featAttr
-            }
           case (origAttr: Attribute, featAttr: NumericAttribute) =>
             origAttr.withIndex(featAttr.index.get)
           case (origAttr: Attribute, _) =>
             origAttr
         }
-      } else {
+      } else
         partialFeatureAttributes
-      }
     val newAttributeGroup = new AttributeGroup($(outputCol), featureAttributes)
     newAttributeGroup.toStructField()
   }

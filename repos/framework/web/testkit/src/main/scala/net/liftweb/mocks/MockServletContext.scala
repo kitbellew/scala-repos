@@ -83,11 +83,10 @@ class MockServletContext(var target: String) extends ServletContext {
   def getResource(path: String): java.net.URL = null
   def getResourceAsStream(path: String): java.io.InputStream = {
     val file = new File(target + path)
-    if (file.exists) {
+    if (file.exists)
       new FileInputStream(file)
-    } else {
+    else
       null
-    }
   }
 
   def getResourcePaths(path: String): java.util.Set[String] = null

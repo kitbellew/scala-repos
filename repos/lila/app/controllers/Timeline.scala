@@ -15,7 +15,7 @@ object Timeline extends LilaController {
     val nb = getInt("nb").fold(100)(_ min 100)
     me =>
       negotiate(
-        html = {
+        html =
           if (HTTPRequest.isXhr(ctx.req))
             Env.timeline.entryRepo.userEntries(me.id) map {
               html.timeline.entries(_)
@@ -23,8 +23,7 @@ object Timeline extends LilaController {
           else {
             val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
             entries map { html.timeline.more(_) }
-          }
-        },
+          },
         _ => {
           val entries = Env.timeline.entryRepo.moreUserEntries(me.id, nb)
           entries map { es => Ok(Json.obj("entries" -> es)) }

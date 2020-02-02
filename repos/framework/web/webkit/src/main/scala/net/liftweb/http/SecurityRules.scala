@@ -46,31 +46,28 @@ final case class HttpsRules(
       */
     includeSubDomains: Boolean = false
 ) {
-  lazy val headers: List[(String, String)] = {
+  lazy val headers: List[(String, String)] =
     requiredTime.toList.map { duration =>
       val age = s"max-age=${duration.toSeconds}"
 
       val header =
-        if (includeSubDomains) {
+        if (includeSubDomains)
           s"$age ; includeSubDomains"
-        } else {
+        else
           age
-        }
 
       ("Strict-Transport-Security" -> header)
     }
-  }
 
   /**
     * Returns the headers implied by this set of HTTPS rules. If `enforce` is
     * false, returns nothing.
     */
   def headers(enforce: Boolean): List[(String, String)] =
-    if (enforce) {
+    if (enforce)
       headers
-    } else {
+    else
       Nil
-    }
 }
 object HttpsRules {
 
@@ -289,18 +286,16 @@ final case class ContentSecurityPolicy(
     }
   }
 
-  private[this] lazy val reportOnlyHeaders = {
+  private[this] lazy val reportOnlyHeaders =
     List(
       "Content-Security-Policy-Report-Only" -> contentSecurityPolicyString,
       "X-Content-Security-Policy-Report-Only" -> contentSecurityPolicyString
     )
-  }
-  private[this] lazy val enforcedHeaders = {
+  private[this] lazy val enforcedHeaders =
     List(
       "Content-Security-Policy" -> contentSecurityPolicyString,
       "X-Content-Security-Policy" -> contentSecurityPolicyString
     )
-  }
 
   /**
     * Returns the headers implied by this content security policy.
@@ -308,13 +303,12 @@ final case class ContentSecurityPolicy(
   def headers(
       enforce: Boolean = true,
       logViolations: Boolean = true): List[(String, String)] =
-    if (enforce) {
+    if (enforce)
       enforcedHeaders
-    } else if (logViolations) {
+    else if (logViolations)
       reportOnlyHeaders
-    } else {
+    else
       Nil
-    }
 }
 object ContentSecurityPolicy {
 
@@ -372,11 +366,9 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
           violationJson = camelCasedJson \ "csp-report"
           extractedViolation <- tryo(
             violationJson.extract[ContentSecurityPolicyViolation])
-        } yield {
-          extractedViolation
-        }
+        } yield extractedViolation
 
-      () => {
+      () =>
         violation match {
           case Full(violation) =>
             LiftRules.contentSecurityPolicyViolationReport(violation) or
@@ -392,7 +384,6 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
               BadRequestResponse(
                 "Unrecognized format for content security policy report."))
         }
-      }
   }
 }
 
@@ -409,11 +400,10 @@ sealed trait FrameRestrictions {
     * off, no headers are generated.
     */
   def headers(enforce: Boolean = false): List[(String, String)] =
-    if (enforce) {
+    if (enforce)
       headers
-    } else {
+    else
       Nil
-    }
 }
 object FrameRestrictions {
 
@@ -462,18 +452,16 @@ final case class SecurityRules(
     logInDevMode: Boolean = true
 ) {
   private val enforce_? = {
-    if (Props.devMode) {
+    if (Props.devMode)
       enforceInDevMode
-    } else {
+    else
       enforceInOtherModes
-    }
   }
   private val logViolations_? = {
-    if (Props.devMode) {
+    if (Props.devMode)
       logInDevMode
-    } else {
+    else
       logInOtherModes
-    }
   }
 
   /**

@@ -88,15 +88,12 @@ abstract class BaseMetropolisHastings[T](
       last = maybeNext
       acceptanceAboveOne += 1
       maybeNext
-    } else {
-      if (nextDouble < acceptanceRatio) {
-        last = maybeNext
-        acceptances += 1
-        maybeNext
-      } else {
-        last
-      }
-    }
+    } else if (nextDouble < acceptanceRatio) {
+      last = maybeNext
+      acceptances += 1
+      maybeNext
+    } else
+      last
   }
 
   // Burn in
@@ -104,9 +101,9 @@ abstract class BaseMetropolisHastings[T](
   // end burn in
 
   def draw(): T =
-    if (dropCount == 0) {
+    if (dropCount == 0)
       getNext()
-    } else {
+    else {
       cfor(0)(i => i < dropCount, i => i + 1) { i => getNext() }
       getNext()
     }

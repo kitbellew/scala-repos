@@ -47,14 +47,13 @@ object ReassignPartitionsCommand extends Logging {
     val zkConnect = opts.options.valueOf(opts.zkConnectOpt)
     val zkUtils =
       ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
-    try {
-      if (opts.options.has(opts.verifyOpt))
-        verifyAssignment(zkUtils, opts)
-      else if (opts.options.has(opts.generateOpt))
-        generateAssignment(zkUtils, opts)
-      else if (opts.options.has(opts.executeOpt))
-        executeAssignment(zkUtils, opts)
-    } catch {
+    try if (opts.options.has(opts.verifyOpt))
+      verifyAssignment(zkUtils, opts)
+    else if (opts.options.has(opts.generateOpt))
+      generateAssignment(zkUtils, opts)
+    else if (opts.options.has(opts.executeOpt))
+      executeAssignment(zkUtils, opts)
+    catch {
       case e: Throwable =>
         println("Partitions reassignment failed due to " + e.getMessage)
         println(Utils.stackTrace(e))
@@ -346,9 +345,9 @@ class ReassignPartitionsCommand(
     try {
       val validPartitions = partitions.filter(p =>
         validatePartition(zkUtils, p._1.topic, p._1.partition))
-      if (validPartitions.isEmpty) {
+      if (validPartitions.isEmpty)
         false
-      } else {
+      else {
         val jsonReassignmentData =
           zkUtils.getPartitionReassignmentZkData(validPartitions)
         zkUtils.createPersistentPath(
@@ -374,9 +373,9 @@ class ReassignPartitionsCommand(
     val partitionsOpt = zkUtils.getPartitionsForTopics(List(topic)).get(topic)
     partitionsOpt match {
       case Some(partitions) =>
-        if (partitions.contains(partition)) {
+        if (partitions.contains(partition))
           true
-        } else {
+        else {
           error(
             "Skipping reassignment of partition [%s,%d] "
               .format(topic, partition) +

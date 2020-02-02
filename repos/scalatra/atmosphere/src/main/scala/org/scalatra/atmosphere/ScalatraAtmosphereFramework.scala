@@ -12,31 +12,26 @@ class ScalatraAtmosphereFramework(
 
   private[this] val logger = Logger[ScalatraAtmosphereFramework]
   def setupTomcat7() {
-    if (!getAsyncSupport.supportWebSocket) {
-      if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(true)) {
+    if (!getAsyncSupport.supportWebSocket)
+      if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(true))
         asyncSupport.synchronized {
           asyncSupport = new Tomcat7CometSupport(config)
         }
-      }
-    }
   }
 
   def setupTomcat() {
-    if (!getAsyncSupport.supportWebSocket) {
-      if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(true)) {
+    if (!getAsyncSupport.supportWebSocket)
+      if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(true))
         asyncSupport.synchronized {
           asyncSupport = new TomcatCometSupport(config)
         }
-      }
-    }
   }
 
   def setupJBoss() {
-    if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(true)) {
+    if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(true))
       asyncSupport.synchronized {
         asyncSupport = new JBossWebCometSupport(config)
       }
-    }
   }
 
   def enableSessionSupport() = sessionSupport(true)

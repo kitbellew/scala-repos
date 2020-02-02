@@ -27,9 +27,8 @@ class OpenHashSetSuite extends SparkFunSuite with Matchers {
   test("size for specialized, primitive int") {
     val loadFactor = 0.7
     val set = new OpenHashSet[Int](64, loadFactor)
-    for (i <- 0 until 1024) {
+    for (i <- 0 until 1024)
       set.add(i)
-    }
     assert(set.size === 1024)
     assert(set.capacity > 1024)
     val actualSize = SizeEstimator.estimate(set)
@@ -151,28 +150,24 @@ class OpenHashSetSuite extends SparkFunSuite with Matchers {
 
   test("non-primitive set growth") {
     val set = new OpenHashSet[String]
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       set.add(i.toString)
-    }
     assert(set.size === 1000)
     assert(set.capacity > 1000)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       set.add(i.toString)
-    }
     assert(set.size === 1000)
     assert(set.capacity > 1000)
   }
 
   test("primitive set growth") {
     val set = new OpenHashSet[Long]
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       set.add(i.toLong)
-    }
     assert(set.size === 1000)
     assert(set.capacity > 1000)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       set.add(i.toLong)
-    }
     assert(set.size === 1000)
     assert(set.capacity > 1000)
   }

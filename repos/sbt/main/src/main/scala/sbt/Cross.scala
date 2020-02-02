@@ -73,9 +73,9 @@ object Cross {
               settings,
               excludeKeys(
                 Set(scalaVersion.key, scalaHome.key, scalaInstance.key)))
-          } else if (!resolveVersion.isEmpty) {
+          } else if (!resolveVersion.isEmpty)
             sys.error("Scala home directory did not exist: " + home)
-          } else {
+          else {
             state.log.info("Setting version to " + arg)
             val settings = Seq(
               scalaVersion in GlobalScope :== arg,
@@ -88,9 +88,8 @@ object Cross {
           getOpt(Keys.forcegc in Global) getOrElse GCUtil.defaultForceGarbageCollection
         // This is how to get the interval, but ignore it, and just forcegc
         // val gcInterval = getOpt(Keys.minForcegcInterval in Global) getOrElse GCUtil.defaultMinForcegcInterval
-        if (isForceGc) {
+        if (isForceGc)
           GCUtil.forceGc(state.log)
-        }
 
         // TODO - Track delegates and avoid regenerating.
         val delegates: Seq[Setting[_]] = session.mergeSettings collect {
@@ -131,9 +130,8 @@ object Cross {
       val current =
         scalaVersion in currentRef get structure.data map (SwitchCommand + " " + _) toList;
       if (versions.isEmpty) command :: state
-      else {
+      else
         versions.map(v => s"$SwitchCommand $v $command") ::: current ::: state
-      }
   }
   def crossVersions(state: State): Seq[String] = {
     val x = Project.extract(state)

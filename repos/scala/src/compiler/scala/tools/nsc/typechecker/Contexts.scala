@@ -382,7 +382,7 @@ trait Contexts { self: Analyzer =>
       final def apply(): Unit = {
         val doLastTry =
           // do first try if implicits are enabled
-          if (implicitsEnabled) {
+          if (implicitsEnabled)
             // We create a new BufferingReporter to
             // distinguish errors that occurred before entering tryTwice
             // and our first attempt in 'withImplicitsDisabled'. If the
@@ -401,7 +401,7 @@ trait Contexts { self: Analyzer =>
                 case ex: TypeError       => true // recoverable cyclic references?
               }
             }
-          } else true
+          else true
 
         // do last try if try with implicits enabled failed
         // (or if it was not attempted because they were disabled)
@@ -956,11 +956,10 @@ trait Contexts { self: Analyzer =>
           collectImplicits(qual.tpe.implicitMembers, pre, imported = true)
         case ImportSelector(from, _, to, _) :: sels1 =>
           var impls = collect(sels1) filter (info => info.name != from)
-          if (to != nme.WILDCARD) {
+          if (to != nme.WILDCARD)
             withQualifyingImplicitAlternatives(imp, to, pre) { sym =>
               impls = new ImplicitInfo(to, pre, sym) :: impls
             }
-          }
           impls
       }
       //debuglog("collect implicit imports " + imp + "=" + collect(imp.tree.selectors))//DEBUG
@@ -1003,7 +1002,7 @@ trait Contexts { self: Analyzer =>
     /** @return None if a cycle is detected, or Some(infos) containing the in-scope implicits at this context */
     private def implicits(nextOuter: Context): Option[List[ImplicitInfo]] = {
       val imports = this.imports
-      if (owner != nextOuter.owner && owner.isClass && !owner.isPackageClass && !inSelfSuperCall) {
+      if (owner != nextOuter.owner && owner.isClass && !owner.isPackageClass && !inSelfSuperCall)
         if (!owner.isInitialized) None
         else
           savingEnclClass(this) {
@@ -1013,7 +1012,7 @@ trait Contexts { self: Analyzer =>
             Some(
               collectImplicits(owner.thisType.implicitMembers, owner.thisType))
           }
-      } else if (scope != nextOuter.scope && !owner.isPackageClass) {
+      else if (scope != nextOuter.scope && !owner.isPackageClass) {
         debuglog("collect local implicits " + scope.toList) //DEBUG
         Some(collectImplicits(scope, NoPrefix))
       } else if (firstImport != nextOuter.firstImport) {
@@ -1246,7 +1245,7 @@ trait Contexts { self: Analyzer =>
           imports = imports.tail
       }
 
-      if (defSym.exists && impSym.exists) {
+      if (defSym.exists && impSym.exists)
         // imported symbols take precedence over package-owned symbols in different compilation units.
         if (isPackageOwnedInDifferentUnit(defSym))
           defSym = NoSymbol
@@ -1256,7 +1255,6 @@ trait Contexts { self: Analyzer =>
         // Otherwise they are irreconcilably ambiguous
         else
           return ambiguousDefnAndImport(defSym.alternatives.head.owner, imp1)
-      }
 
       // At this point only one or the other of defSym and impSym might be set.
       if (defSym.exists)

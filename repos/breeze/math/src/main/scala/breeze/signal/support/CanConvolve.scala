@@ -108,8 +108,7 @@ object CanConvolve extends SerializableLogging {
 
           //Overhangs on both sides will sum to kernel.length - 1, thereby giving the same output length as input length
           //Handy for FIR filtering
-          case OptOverhang.PreserveLength => {
-
+          case OptOverhang.PreserveLength =>
             val leftPadding: Int =
               if (isOdd(kernel.length)) (kernel.length - 1) / 2
               else (kernel.length / 2 - 1)
@@ -142,7 +141,6 @@ object CanConvolve extends SerializableLogging {
                   DenseVector[T]()
               }
             )
-          }
           case oc =>
             require(false, "cannot handle OptOverhang value " + oc); data
         }

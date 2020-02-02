@@ -54,14 +54,13 @@ class HDFSStateLaws extends WordSpec {
       val nextState = HDFSState(path, startTime = None, numBatches = numBatches)
       val nextPrepareState = nextState.begin
       nextPrepareState.requested match {
-        case intersection @ Intersection(low, high) => {
+        case intersection @ Intersection(low, high) =>
           val startBatchTime: Timestamp =
             batcher.earliestTimeOf(batcher.batchOf(startDate))
           val expectedNextRunStartMillis: Long = startBatchTime
             .incrementMinutes(numBatches * batchLength)
             .milliSinceEpoch
           assert(low.least.get.milliSinceEpoch == expectedNextRunStartMillis)
-        }
         case _ => fail("requested interval should be an interseciton")
       }
       shouldCheckpointInterval(
@@ -135,7 +134,7 @@ class HDFSStateLaws extends WordSpec {
       path: String) = {
     completeState(state.begin.willAccept(interval))
     interval match {
-      case intersection @ Intersection(low, high) => {
+      case intersection @ Intersection(low, high) =>
         BatchID
           .range(
             batcher.batchOf(low.least.get),
@@ -146,17 +145,13 @@ class HDFSStateLaws extends WordSpec {
               .milliSinceEpoch + ".version")
             assert(new java.io.File(totPath).exists)
           }
-      }
       case _ => sys.error("interval should be an intersection")
     }
   }
 
   def withTmpDir(doWithTmpFolder: String => Unit) = {
     val path = "/tmp/" + UUID.randomUUID
-    try {
-      doWithTmpFolder(path)
-    } finally {
-      FileSystem.get(new Configuration()).delete(new Path(path), true)
-    }
+    try doWithTmpFolder(path)
+    finally FileSystem.get(new Configuration()).delete(new Path(path), true)
   }
 }

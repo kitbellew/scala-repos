@@ -218,22 +218,19 @@ private[reflect] object ScalaSigReader {
         sys.error(
           "resolveClass: expected 1+ classloaders but received empty list")
       case List(cl) => Some(Class.forName(c, true, cl).asInstanceOf[Class[X]])
-      case many => {
+      case many =>
         try {
           var clazz: Class[_] = null
           val iter = many.iterator
-          while (clazz == null && iter.hasNext) {
-            try {
-              clazz = Class.forName(c, true, iter.next())
-            } catch {
+          while (clazz == null && iter.hasNext)
+            try clazz = Class.forName(c, true, iter.next())
+            catch {
               case e: ClassNotFoundException => // keep going, maybe it's in the next one
             }
-          }
 
           if (clazz != null) Some(clazz.asInstanceOf[Class[X]]) else None
         } catch {
           case _: Throwable => None
         }
-      }
     }
 }

@@ -24,10 +24,9 @@ object DummyParentsTest extends JasmineTest {
 
       val x = "1".toInt
 
-      if (x + x < 0) {
+      if (x + x < 0)
         // Ensure DummyFuture is not DCEd, but never instantiated
         new DummyFJWorkerThread()
-      }
     }
 
   }

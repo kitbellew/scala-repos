@@ -36,17 +36,16 @@ class CombinedBatcher(
   val afterBatchDelta: BatchID = after.batchOf(beforeBound.upper)
 
   def batchOf(d: Timestamp): BatchID =
-    if (!beforeBound.contains(d)) {
+    if (!beforeBound.contains(d))
       (after.batchOf(d) - afterBatchDelta.id) + batchAtBound.id
-    } else {
+    else
       before.batchOf(d)
-    }
 
   def earliestTimeOf(b: BatchID): Timestamp =
-    if (b > batchAtBound) {
+    if (b > batchAtBound)
       after.earliestTimeOf((b - batchAtBound.id) + afterBatchDelta.id)
-    } else if (b == batchAtBound) {
+    else if (b == batchAtBound)
       beforeBound.upper
-    } else
+    else
       before.earliestTimeOf(b)
 }

@@ -206,9 +206,9 @@ trait IntroduceExpressions {
           override def getOccurrenceRange(occurrence: TextRange) = occurrence
         }
 
-        if (occurrences.isEmpty) {
+        if (occurrences.isEmpty)
           callback.pass(OccurrencesChooser.ReplaceChoice.NO)
-        } else {
+        else {
           import scala.collection.JavaConverters._
           chooser.showChooser(
             new TextRange(startOffset, endOffset),
@@ -328,9 +328,8 @@ trait IntroduceExpressions {
         offsets.forall(document.getLineNumber(_) == lineNumber)
       }
       while (parent != null && !parent.isInstanceOf[PsiFile] && atSameLine(
-               parent)) {
+               parent))
         parent = parent.getParent
-      }
       val insideExpression = parent match {
         case null | _: ScBlock | _: ScTemplateBody | _: ScEarlyDefinitions |
             _: PsiFile =>
@@ -350,9 +349,10 @@ trait IntroduceExpressions {
 
     val isFunExpr = expression.isInstanceOf[ScFunctionExpr]
     val mainRange = new TextRange(startOffset, endOffset)
-    val occurrences: Array[TextRange] = if (!replaceAllOccurrences) {
-      Array[TextRange](mainRange)
-    } else occurrences_
+    val occurrences: Array[TextRange] =
+      if (!replaceAllOccurrences)
+        Array[TextRange](mainRange)
+      else occurrences_
     val occCount = occurrences.length
 
     val mainOcc = occurrences.indexWhere(range =>
@@ -411,24 +411,22 @@ trait IntroduceExpressions {
             elem)
           result =
             parent.addBefore(created, semicolon).asInstanceOf[ScEnumerator]
-          if (needSemicolon) {
+          if (needSemicolon)
             parent.addBefore(
               ScalaPsiElementFactory.createSemicolon(parent.getManager),
               result)
-          }
         } else {
           if (sibling.getText.indexOf('\n') != -1) needSemicolon = false
           result = parent.addBefore(created, elem).asInstanceOf[ScEnumerator]
           parent.addBefore(
             ScalaPsiElementFactory.createNewLineNode(elem.getManager).getPsi,
             elem)
-          if (needSemicolon) {
+          if (needSemicolon)
             parent.addBefore(
               ScalaPsiElementFactory
                 .createNewLineNode(parent.getManager)
                 .getPsi,
               result)
-          }
         }
       }
       result
@@ -442,9 +440,9 @@ trait IntroduceExpressions {
         ScalaRefactoringUtil.unparExpr(expression),
         file.getManager)
       var result: PsiElement = null
-      if (fastDefinition) {
+      if (fastDefinition)
         result = replaceRangeByDeclaration(replacedOccurences(0), created)
-      } else {
+      else {
         var needFormatting = false
         val parent = commonParent match {
           case inExtendsBlock(extBl) =>
@@ -581,14 +579,12 @@ trait IntroduceExpressions {
       validator,
       possibleNames)
     dialog.show()
-    if (!dialog.isOK) {
-      if (occurrences.length > 1) {
+    if (!dialog.isOK)
+      if (occurrences.length > 1)
         WindowManager.getInstance
           .getStatusBar(project)
           .setInfo(
             ScalaBundle.message("press.escape.to.remove.the.highlighting"))
-      }
-    }
 
     dialog
   }

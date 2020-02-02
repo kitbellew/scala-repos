@@ -204,9 +204,8 @@ object ScalaRefactoringUtil {
     typeElement.breadthFirst.foreach {
       case x: ScTypeElement if x.calcType.isInstanceOf[ScTypeParameterType] =>
         val owner = getOwner(x)
-        if (owner != null) {
+        if (owner != null)
           ownersArray += owner
-        }
       case _ =>
     }
     ownersArray.toSeq
@@ -234,9 +233,8 @@ object ScalaRefactoringUtil {
         val ta = getTypeAlias(te)
         if (ta != null) {
           val owner = getOwner(ta)
-          if (owner != null) {
+          if (owner != null)
             ownersArray += owner
-          }
         }
 
       case _ => false
@@ -285,10 +283,9 @@ object ScalaRefactoringUtil {
                     case inf: ScInfixExpr =>
                       val op2 = inf.operation
                       import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils.priority
-                      if (priority(op1.getText) == priority(op2.getText)) {
+                      if (priority(op1.getText) == priority(op2.getText))
                         res = Some(
                           (expression.copy.asInstanceOf[ScExpression], typez))
-                      }
                     case _ =>
                   }
                 case None =>
@@ -338,9 +335,8 @@ object ScalaRefactoringUtil {
       endOffset,
       classOf[ScExpression])
 
-    if (element == null || element.getTextRange.getEndOffset != endOffset) {
+    if (element == null || element.getTextRange.getEndOffset != endOffset)
       return selectedInfixExpr() orElse partOfStringLiteral()
-    }
 
     val cachedType = element.getType(TypingContext.empty).getOrAny
 
@@ -422,7 +418,7 @@ object ScalaRefactoringUtil {
         enclosingContainer: PsiElement,
         filter: ScLiteral => Boolean): Array[TextRange] = {
       val result = ArrayBuffer[TextRange]()
-      for (child <- enclosingContainer.getChildren) {
+      for (child <- enclosingContainer.getChildren)
         child match {
           case toCheck: ScLiteral
               if PsiEquivalenceUtil.areElementsEquivalent(element, toCheck) =>
@@ -431,7 +427,6 @@ object ScalaRefactoringUtil {
             collectOccurrencesInLiteral(lit, text, result)
           case _ => result ++= getTextOccurrenceInLiterals(text, child, filter)
         }
-      }
       result.toArray
     }
     element match {
@@ -478,8 +473,8 @@ object ScalaRefactoringUtil {
     if (enclosingContainer == element)
       occurrences += enclosingContainer.asInstanceOf[ScExpression]
     else
-      for (child <- enclosingContainer.getChildren) {
-        if (PsiEquivalenceUtil.areElementsEquivalent(child, element)) {
+      for (child <- enclosingContainer.getChildren)
+        if (PsiEquivalenceUtil.areElementsEquivalent(child, element))
           child match {
             case x: ScExpression =>
               x.getParent match {
@@ -488,10 +483,8 @@ object ScalaRefactoringUtil {
               }
             case _ =>
           }
-        } else {
+        else
           occurrences ++= getExprOccurrences(element, child)
-        }
-      }
     occurrences.toArray
   }
 
@@ -503,18 +496,16 @@ object ScalaRefactoringUtil {
     if (enclosingContainer == element)
       occurrences += enclosingContainer.asInstanceOf[ScTypeElement]
     else
-      for (child <- enclosingContainer.getChildren) {
-        if (PsiEquivalenceUtil.areElementsEquivalent(child, element)) {
+      for (child <- enclosingContainer.getChildren)
+        if (PsiEquivalenceUtil.areElementsEquivalent(child, element))
           child match {
             case typeElement: ScTypeElement
                 if !inTemplateParents(typeElement) =>
               occurrences += typeElement
             case _ =>
           }
-        } else {
+        else
           occurrences ++= getTypeElementOccurrences(element, child)
-        }
-      }
     occurrences.toArray
   }
 
@@ -639,14 +630,14 @@ object ScalaRefactoringUtil {
       var selectionHighlighter: RangeHighlighter = null
       val markupModel = editor.getMarkupModel
 
-      def addHighlighter() = if (selectionHighlighter == null) {
-        selectionHighlighter = markupModel.addRangeHighlighter(
-          start,
-          end,
-          HighlighterLayer.SELECTION + 1,
-          textAttributes,
-          HighlighterTargetArea.EXACT_RANGE)
-      }
+      def addHighlighter() =
+        if (selectionHighlighter == null)
+          selectionHighlighter = markupModel.addRangeHighlighter(
+            start,
+            end,
+            HighlighterLayer.SELECTION + 1,
+            textAttributes,
+            HighlighterTargetArea.EXACT_RANGE)
 
       def removeHighlighter() =
         if (selectionHighlighter != null)
@@ -656,9 +647,8 @@ object ScalaRefactoringUtil {
     val selection = new Selection
     val highlighter: ScopeHighlighter = new ScopeHighlighter(editor)
     val model = JListCompatibility.createDefaultListModel()
-    for (element <- elements) {
+    for (element <- elements)
       JListCompatibility.addElement(model, element)
-    }
     val list = JListCompatibility.createJListFromModel(model)
     JListCompatibility.setCellRenderer(
       list,
@@ -676,9 +666,8 @@ object ScalaRefactoringUtil {
             isSelected,
             cellHasFocus)
           val element: T = value.asInstanceOf[T]
-          if (element.isValid) {
+          if (element.isValid)
             setText(elementName(element))
-          }
           rendererComponent
         }
       }
@@ -938,9 +927,8 @@ object ScalaRefactoringUtil {
             case typeInParenthesis: ScParenthesisedTypeElement =>
               val inType = typeInParenthesis.typeElement
               if (inType.isDefined && !res.contains(
-                    typeInParenthesis.typeElement.get)) {
+                    typeInParenthesis.typeElement.get))
                 res += typeInParenthesis.typeElement.get
-              }
             case typeElement: ScTypeElement =>
               res += typeElement
             case _ =>
@@ -958,9 +946,9 @@ object ScalaRefactoringUtil {
           typeElement.getTextRange.getEndOffset)
         invokesNext(typeElement)
       }
-      if (typeElement.length == 0) {
+      if (typeElement.length == 0)
         editor.getSelectionModel.selectLineAtCaret()
-      } else if (typeElement.length == 1) {
+      else if (typeElement.length == 1) {
         chooseTypeElement(typeElement(0))
         return
       } else {
@@ -1003,12 +991,11 @@ object ScalaRefactoringUtil {
         elem,
         classOf[ScExtendsBlock],
         classOf[PsiFile])
-      if (result == null) {
+      if (result == null)
         for (child <- file.getChildren) {
           val textRange: TextRange = child.getTextRange
           if (textRange.contains(startOffset)) return child
         }
-      }
       result
     }
 
@@ -1451,9 +1438,7 @@ object ScalaRefactoringUtil {
       for {
         ref <- refs.asScala
         if !elements.exists(PsiTreeUtil.isAncestor(_, ref.getElement, false))
-      } {
-        return true
-      }
+      } return true
       false
     }
 

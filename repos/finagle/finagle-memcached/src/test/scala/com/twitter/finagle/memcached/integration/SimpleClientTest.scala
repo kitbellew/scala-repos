@@ -70,7 +70,7 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
       ))
   }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("gets") {
       Await.result(client.set("foos", Buf.Utf8("xyz")))
       Await.result(client.set("bazs", Buf.Utf8("xyz")))
@@ -93,9 +93,8 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
           "bazs" -> (("zyx", "3"))
         ))
     }
-  }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("cas") {
       Await.result(client.set("x", Buf.Utf8("y")))
       val Some((value, casUnique)) = Await.result(client.gets("x"))
@@ -108,7 +107,6 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
       assert(res.isDefined)
       assert(res.get == Buf.Utf8("z"))
     }
-  }
 
   test("append & prepend") {
     Await.result(client.set("foo", Buf.Utf8("bar")))
@@ -135,14 +133,13 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
     assert(Await.result(client.decr("foo", l)) == Some(0L))
   }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("stats") {
       val stats = Await.result(client.stats())
       assert(stats != null)
       assert(!stats.isEmpty)
       stats.foreach { stat => assert(stat.startsWith("STAT")) }
     }
-  }
 
   test("send malformed keys") {
     // test key validation trait
@@ -158,9 +155,8 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
     }
     intercept[ClientError] { Await.result(client.set("    ", Buf.Utf8("bar"))) }
 
-    try {
-      Await.result(client.set("\t", Buf.Utf8("bar")))
-    } catch { case _: ClientError => fail("\t is allowed") }
+    try Await.result(client.set("\t", Buf.Utf8("bar")))
+    catch { case _: ClientError => fail("\t is allowed") }
 
     intercept[ClientError] { Await.result(client.set("\r", Buf.Utf8("bar"))) }
     intercept[ClientError] { Await.result(client.set("\n", Buf.Utf8("bar"))) }

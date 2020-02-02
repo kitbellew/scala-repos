@@ -22,7 +22,7 @@ abstract class ScalaStructureViewElement(
     extends StructureViewTreeElement {
 
   def getValue: Object =
-    if (myElement.isValid) {
+    if (myElement.isValid)
       /*
         code for right positioning for caret in case such:
         val x, y = {
@@ -37,12 +37,10 @@ abstract class ScalaStructureViewElement(
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable])
         if (myElement.textMatches(v.declaredElements.apply(0))) v
         else myElement
-      } else {
+      } else
         myElement
-      }
-    } else {
+    else
       null;
-    }
 
   def navigate(b: Boolean) {
     myElement.asInstanceOf[Navigatable].navigate(b);

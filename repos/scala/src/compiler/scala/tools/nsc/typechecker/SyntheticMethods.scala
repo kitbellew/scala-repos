@@ -51,11 +51,11 @@ trait SyntheticMethods extends ast.TreeDSL {
     Any_toString :: valueSymbols ::: productSymbols
   private lazy val caseObjectSymbols = Object_equals :: caseSymbols
   private def symbolsToSynthesize(clazz: Symbol): List[Symbol] =
-    if (clazz.isCase) {
+    if (clazz.isCase)
       if (clazz.isDerivedValueClass) caseValueSymbols
       else if (clazz.isModuleClass) caseSymbols
       else caseObjectSymbols
-    } else if (clazz.isDerivedValueClass) valueSymbols
+    else if (clazz.isDerivedValueClass) valueSymbols
     else Nil
   private lazy val renamedCaseAccessors =
     perRunCaches.newMap[Symbol, mutable.Map[TermName, TermName]]()
@@ -90,14 +90,13 @@ trait SyntheticMethods extends ast.TreeDSL {
     )
     import synthesizer._
 
-    if (clazz0 == AnyValClass || isPrimitiveValueClass(clazz0)) return {
-      if ((clazz0.info member nme.getClass_).isDeferred) {
-        // XXX dummy implementation for now
-        val getClassMethod =
-          createMethod(nme.getClass_, getClassReturnType(clazz.tpe))(_ => NULL)
-        deriveTemplate(templ)(_ :+ getClassMethod)
-      } else templ
-    }
+    if (clazz0 == AnyValClass || isPrimitiveValueClass(clazz0)) return
+    if ((clazz0.info member nme.getClass_).isDeferred) {
+      // XXX dummy implementation for now
+      val getClassMethod =
+        createMethod(nme.getClass_, getClassReturnType(clazz.tpe))(_ => NULL)
+      deriveTemplate(templ)(_ :+ getClassMethod)
+    } else templ
 
     def accessors = clazz.caseFieldAccessors
     val arity = accessors.size
@@ -365,7 +364,7 @@ trait SyntheticMethods extends ast.TreeDSL {
           !hasOverridingImplementation(m) || {
             clazz.isDerivedValueClass && (m == Any_hashCode || m == Any_equals) && {
               // Without a means to suppress this warning, I've thought better of it.
-              if (settings.warnValueOverrides) {
+              if (settings.warnValueOverrides)
                 (clazz.info nonPrivateMember m.name) filter (m =>
                   (m.owner != AnyClass) && (m.owner != clazz) && !m.isDeferred) andAlso {
                   m =>
@@ -373,14 +372,13 @@ trait SyntheticMethods extends ast.TreeDSL {
                       clazz.pos,
                       s"Implementation of ${m.name} inherited from ${m.owner} overridden in $clazz to enforce value class semantics")
                 }
-              }
               true
             }
           }
         for ((m, impl) <- methods; if shouldGenerate(m)) yield impl()
       }
       def extras =
-        if (needsReadResolve) {
+        if (needsReadResolve)
           // Aha, I finally decoded the original comment.
           // This method should be generated as private, but apparently if it is, then
           // it is name mangled afterward.  (Wonder why that is.) So it's only protected.
@@ -388,7 +386,7 @@ trait SyntheticMethods extends ast.TreeDSL {
           List(createMethod(nme.readResolve, Nil, ObjectTpe) { m =>
             m setFlag PRIVATE; REF(clazz.sourceModule)
           })
-        } else Nil
+        else Nil
 
       try impls ++ extras
       catch { case _: TypeError if reporter.hasErrors => Nil }

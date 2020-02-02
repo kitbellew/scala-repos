@@ -46,9 +46,8 @@ class GenerateUnsafeRowJoinerSuite extends SparkFunSuite {
   }
 
   test("randomized fix width types") {
-    for (i <- 0 until 20) {
+    for (i <- 0 until 20)
       testConcatOnce(Random.nextInt(100), Random.nextInt(100), fixed)
-    }
   }
 
   test("simple variable width types") {
@@ -61,18 +60,16 @@ class GenerateUnsafeRowJoinerSuite extends SparkFunSuite {
   }
 
   test("randomized variable width types") {
-    for (i <- 0 until 10) {
+    for (i <- 0 until 10)
       testConcatOnce(Random.nextInt(100), Random.nextInt(100), variable)
-    }
   }
 
   private def testConcat(
       numFields1: Int,
       numFields2: Int,
       candidateTypes: Seq[DataType]): Unit =
-    for (i <- 0 until 10) {
+    for (i <- 0 until 10)
       testConcatOnce(numFields1, numFields2, candidateTypes)
-    }
 
   private def testConcatOnce(
       numFields1: Int,
@@ -109,23 +106,20 @@ class GenerateUnsafeRowJoinerSuite extends SparkFunSuite {
     val output = concater.join(row1, row2)
 
     // Test everything equals ...
-    for (i <- mergedSchema.indices) {
+    for (i <- mergedSchema.indices)
       if (i < schema1.size) {
         assert(output.isNullAt(i) === row1.isNullAt(i))
-        if (!output.isNullAt(i)) {
+        if (!output.isNullAt(i))
           assert(
             output.get(i, mergedSchema(i).dataType) === row1
               .get(i, mergedSchema(i).dataType))
-        }
       } else {
         assert(output.isNullAt(i) === row2.isNullAt(i - schema1.size))
-        if (!output.isNullAt(i)) {
+        if (!output.isNullAt(i))
           assert(
             output.get(i, mergedSchema(i).dataType) ===
               row2.get(i - schema1.size, mergedSchema(i).dataType))
-        }
       }
-    }
   }
 
 }

@@ -177,7 +177,7 @@ abstract class RefChecks
         if (haveDefaults.lengthCompare(1) > 0) {
           val owners = haveDefaults map (_.owner)
           // constructors of different classes are allowed to have defaults
-          if (haveDefaults.exists(x => !x.isConstructor) || owners.distinct.size < haveDefaults.size) {
+          if (haveDefaults.exists(x => !x.isConstructor) || owners.distinct.size < haveDefaults.size)
             reporter.error(
               clazz.pos,
               "in " + clazz +
@@ -190,22 +190,19 @@ abstract class RefChecks
                     .mkString("", " and ", ".")
               )
             )
-          }
         }
       }
 
       // Check for doomed attempt to overload applyDynamic
-      if (clazz isSubClass DynamicClass) {
-        for ((_, m1 :: m2 :: _) <- (clazz.info member nme.applyDynamic).alternatives groupBy (_.typeParams.length)) {
+      if (clazz isSubClass DynamicClass)
+        for ((_, m1 :: m2 :: _) <- (clazz.info member nme.applyDynamic).alternatives groupBy (_.typeParams.length))
           reporter.error(
             m1.pos,
             "implementation restriction: applyDynamic cannot be overloaded except by methods with different numbers of type parameters, e.g. applyDynamic[T1](method: String)(arg: T1) and applyDynamic[T1, T2](method: String)(arg1: T1, arg2: T2)"
           )
-        }
-      }
 
       // This has become noisy with implicit classes.
-      if (settings.warnPolyImplicitOverload && settings.developer) {
+      if (settings.warnPolyImplicitOverload && settings.developer)
         clazz.info.decls filter (x => x.isImplicit && x.typeParams.nonEmpty) foreach {
           sym =>
             // implicit classes leave both a module symbol and a method symbol as residue
@@ -218,7 +215,6 @@ abstract class RefChecks
                   x.pos,
                   "parameterized overloaded implicit methods are not visible as view bounds"))
         }
-      }
     }
 
 // Override checking ------------------------------------------------------------
@@ -416,12 +412,11 @@ abstract class RefChecks
         }
 
         def overrideTypeError() {
-          if (noErrorType) {
+          if (noErrorType)
             emitOverrideError(
               if (member.isModule && other.isModule) objectOverrideErrorMsg
               else overrideErrorMsg("has incompatible type")
             )
-          }
         }
 
         def overrideAccessError() {
@@ -441,19 +436,16 @@ abstract class RefChecks
           def subOther(s: Symbol) = s isSubClass other.owner
           def subMember(s: Symbol) = s isSubClass member.owner
 
-          if (subOther(member.owner) && deferredCheck) {
+          if (subOther(member.owner) && deferredCheck)
             //Console.println(infoString(member) + " shadows1 " + infoString(other) " in " + clazz);//DEBUG
             return
-          }
           if (clazz.parentSymbols exists (p =>
-                subOther(p) && subMember(p) && deferredCheck)) {
+                subOther(p) && subMember(p) && deferredCheck))
             //Console.println(infoString(member) + " shadows2 " + infoString(other) + " in " + clazz);//DEBUG
             return
-          }
-          if (clazz.parentSymbols forall (p => subOther(p) == subMember(p))) {
+          if (clazz.parentSymbols forall (p => subOther(p) == subMember(p)))
             //Console.println(infoString(member) + " shadows " + infoString(other) + " in " + clazz);//DEBUG
             return
-          }
         }
 
         /* Is the intersection between given two lists of overridden symbols empty? */
@@ -479,18 +471,18 @@ abstract class RefChecks
               ((!isRootOrNone(ob) && ob.hasTransOwner(mb)) || // m relaxes o's access boundary
               other.isJavaDefined) // overriding a protected java member, see #3946
             }
-          if (!isOverrideAccessOK) {
+          if (!isOverrideAccessOK)
             overrideAccessError()
-          } else if (other.isClass) {
+          else if (other.isClass)
             overrideError(
               "cannot be used here - class definitions cannot be overridden")
-          } else if (!other.isDeferred && member.isClass) {
+          else if (!other.isDeferred && member.isClass)
             overrideError(
               "cannot be used here - classes can only override abstract types")
-          } else if (other.isEffectivelyFinal) { // (1.2)
+          else if (other.isEffectivelyFinal) // (1.2)
             overrideError("cannot override final member")
-          } else if (!other.isDeferredOrJavaDefault && !other.hasFlag(
-                       JAVA_DEFAULTMETHOD) && !member.isAnyOverride && !member.isSynthetic) { // (*)
+          else if (!other.isDeferredOrJavaDefault && !other.hasFlag(
+                     JAVA_DEFAULTMETHOD) && !member.isAnyOverride && !member.isSynthetic) // (*)
             // (*) Synthetic exclusion for (at least) default getters, fixes SI-5178. We cannot assign the OVERRIDE flag to
             // the default getter: one default getter might sometimes override, sometimes not. Example in comment on ticket.
             if (isNeitherInClass && !(other.owner isSubClass member.owner))
@@ -502,9 +494,9 @@ abstract class RefChecks
               )
             else
               overrideError("needs `override' modifier")
-          } else if (other.isAbstractOverride && other.isIncompleteIn(clazz) && !member.isAbstractOverride) {
+          else if (other.isAbstractOverride && other.isIncompleteIn(clazz) && !member.isAbstractOverride)
             overrideError("needs `abstract override' modifiers")
-          } else if (member.isAnyOverride && (other hasFlag ACCESSOR) && other.accessed.isVariable && !other.accessed.isLazy) {
+          else if (member.isAnyOverride && (other hasFlag ACCESSOR) && other.accessed.isVariable && !other.accessed.isLazy) {
             // !?! this is not covered by the spec. We need to resolve this either by changing the spec or removing the test here.
             // !!! is there a !?! convention? I'm !!!ing this to make sure it turns up on my searches.
             if (!settings.overrideVars)
@@ -514,36 +506,34 @@ abstract class RefChecks
                      !member.isDeferred && !other.isDeferred &&
                      intersectionIsEmpty(
                        member.extendedOverriddenSymbols,
-                       other.extendedOverriddenSymbols)) {
+                       other.extendedOverriddenSymbols))
             overrideError(
               "cannot override a concrete member without a third member that's overridden by both " +
                 "(this rule is designed to prevent ``accidental overrides'')")
-          } else if (other.isStable && !member.isStable) { // (1.4)
+          else if (other.isStable && !member.isStable) // (1.4)
             overrideError("needs to be a stable, immutable value")
-          } else if (member.isValue && member.isLazy &&
-                     other.isValue && !other.isSourceMethod && !other.isDeferred && !other.isLazy) {
+          else if (member.isValue && member.isLazy &&
+                   other.isValue && !other.isSourceMethod && !other.isDeferred && !other.isLazy)
             overrideError("cannot override a concrete non-lazy value")
-          } else if (other.isValue && other.isLazy && !other.isSourceMethod && !other.isDeferred &&
-                     member.isValue && !member.isLazy) {
+          else if (other.isValue && other.isLazy && !other.isSourceMethod && !other.isDeferred &&
+                   member.isValue && !member.isLazy)
             overrideError(
               "must be declared lazy to override a concrete lazy value")
-          } else if (other.isDeferred && member.isTermMacro && member.extendedOverriddenSymbols
-                       .forall(_.isDeferred)) { // (1.9)
+          else if (other.isDeferred && member.isTermMacro && member.extendedOverriddenSymbols
+                     .forall(_.isDeferred)) // (1.9)
             overrideError(
               "cannot be used here - term macros cannot override abstract methods")
-          } else if (other.isTermMacro && !member.isTermMacro) { // (1.10)
+          else if (other.isTermMacro && !member.isTermMacro) // (1.10)
             overrideError(
               "cannot be used here - only term macros can override term macros")
-          } else {
+          else {
             checkOverrideTypes()
             checkOverrideDeprecated()
-            if (settings.warnNullaryOverride) {
-              if (other.paramss.isEmpty && !member.paramss.isEmpty) {
+            if (settings.warnNullaryOverride)
+              if (other.paramss.isEmpty && !member.paramss.isEmpty)
                 reporter.warning(
                   member.pos,
                   "non-nullary method overrides nullary method")
-              }
-            }
           }
         }
 
@@ -587,7 +577,7 @@ abstract class RefChecks
           }
           // check a type alias's RHS corresponds to its declaration
           // this overlaps somewhat with validateVariance
-          if (low.isAliasType) {
+          if (low.isAliasType)
             typer.infer.checkKindBounds(
               low :: Nil,
               lowType.normalize :: Nil,
@@ -602,7 +592,7 @@ abstract class RefChecks
                     kindErrors.toList.mkString("\n", ", ", "")
                 )
             }
-          } else if (low.isAbstractType && lowType.isVolatile && !highInfo.bounds.hi.isVolatile)
+          else if (low.isAbstractType && lowType.isVolatile && !highInfo.bounds.hi.isVolatile)
             overrideError(
               "is a volatile type; cannot override a type with non-volatile upper bound")
         }
@@ -616,7 +606,7 @@ abstract class RefChecks
             overrideTypeError()
             explainTypes(lowType, highType)
           }
-          if (low.isStable && !highType.isVolatile) {
+          if (low.isStable && !highType.isVolatile)
             if (lowType.isVolatile)
               overrideError(
                 "has a volatile type; cannot override a member with non-volatile type")
@@ -631,7 +621,6 @@ abstract class RefChecks
                   checkAllOverrides(tsym, typesOnly = true)
                 case _ =>
               }
-          }
         }
         def checkOverrideTypes() {
           if (high.isAliasType) checkOverrideAlias()
@@ -815,7 +804,7 @@ abstract class RefChecks
                         )
                       val addendum =
                         (
-                          if (abstractSym == concreteSym) {
+                          if (abstractSym == concreteSym)
                             // TODO: what is the optimal way to test for a raw type at this point?
                             // Compilation has already failed so we shouldn't have to worry overmuch
                             // about forcing types.
@@ -825,7 +814,7 @@ abstract class RefChecks
                               ": their type parameters differ"
                             else
                               ": their prefixes (i.e. enclosing instances) differ"
-                          } else if (abstractSym isSubClass concreteSym)
+                          else if (abstractSym isSubClass concreteSym)
                             subclassMsg(abstractSym, concreteSym)
                           else if (concreteSym isSubClass abstractSym)
                             subclassMsg(concreteSym, abstractSym)
@@ -870,18 +859,16 @@ abstract class RefChecks
         //
         // (3) is violated but not (2).
         def checkNoAbstractDecls(bc: Symbol) {
-          for (decl <- bc.info.decls) {
+          for (decl <- bc.info.decls)
             if (decl.isDeferred && !ignoreDeferred(decl)) {
               val impl = decl.matchingSymbol(clazz.thisType, admit = VBRIDGE)
-              if (impl == NoSymbol || (decl.owner isSubClass impl.owner)) {
+              if (impl == NoSymbol || (decl.owner isSubClass impl.owner))
                 abstractClassError(
                   false,
                   "there is a deferred declaration of " + infoString(decl) +
                     " which is not implemented in a subclass" + analyzer
                     .abstractVarMessage(decl))
-              }
             }
-          }
           if (bc.superClass hasFlag ABSTRACT)
             checkNoAbstractDecls(bc.superClass)
         }
@@ -892,7 +879,7 @@ abstract class RefChecks
 
         if (abstractErrors.nonEmpty)
           reporter.error(clazz.pos, abstractErrorMessage)
-      } else if (clazz.isTrait && !(clazz isSubClass AnyValClass)) {
+      } else if (clazz.isTrait && !(clazz isSubClass AnyValClass))
         // For non-AnyVal classes, prevent abstract methods in interfaces that override
         // final members in Object; see #4431
         for (decl <- clazz.info.decls) {
@@ -905,7 +892,6 @@ abstract class RefChecks
               decl.pos,
               "trait cannot redefine final method from class AnyRef")
         }
-      }
 
       /* Returns whether there is a symbol declared in class `inclazz`
        * (which must be different from `clazz`) whose name and type
@@ -1004,11 +990,10 @@ abstract class RefChecks
         val baseClass = tp.typeSymbol
         if (baseClass.isClass) {
           val index = clazz.info.baseTypeIndex(baseClass)
-          if (index >= 0) {
+          if (index >= 0)
             if (seenTypes(index) forall (tp1 => !(tp1 <:< tp)))
               seenTypes(index) =
                 tp :: (seenTypes(index) filter (tp1 => !(tp <:< tp1)))
-          }
         }
         val remaining = tp.parents filterNot seenParents
         seenParents ++= remaining
@@ -1248,37 +1233,35 @@ abstract class RefChecks
 
       if (nullCount == 2) // null == null
         nonSensiblyEq()
-      else if (nullCount == 1) {
+      else if (nullCount == 1)
         if (onSyms(_ exists isPrimitiveValueClass)) // null == 5
           nonSensiblyNeq()
         else if (onTrees(_ exists isNew)) // null == new AnyRef
           nonSensiblyNew()
-      } else if (isBoolean(receiver)) {
-        if (!isBoolean(actual) && !isMaybeValue(actual)) // true == 5
-          nonSensiblyNeq()
-      } else if (isUnit(receiver)) {
-        if (isUnit(actual)) // () == ()
-          nonSensiblyEq()
-        else if (!isUnit(actual) && !isMaybeValue(actual)) // () == "abc"
-          nonSensiblyNeq()
-      } else if (isNumeric(receiver)) {
-        if (!isNumeric(actual))
-          if (isUnit(actual) || isBoolean(actual) || !isMaybeValue(
-                actual
-              )) // 5 == "abc"
+        else if (isBoolean(receiver)) {
+          if (!isBoolean(actual) && !isMaybeValue(actual)) // true == 5
             nonSensiblyNeq()
-      } else if (isWarnable && !isCaseEquals) {
-        if (isNew(qual)) // new X == y
-          nonSensiblyNew()
-        else if (isNew(other) && (receiver.isEffectivelyFinal || isReferenceOp)) // object X ; X == new Y
-          nonSensiblyNew()
-        else if (receiver.isEffectivelyFinal && !(receiver isSubClass actual) && !actual.isRefinementClass) { // object X, Y; X == Y
-          if (isEitherNullable)
-            nonSensible("non-null ", false)
-          else
+        } else if (isUnit(receiver))
+          if (isUnit(actual)) // () == ()
+            nonSensiblyEq()
+          else if (!isUnit(actual) && !isMaybeValue(actual)) // () == "abc"
             nonSensiblyNeq()
-        }
-      }
+          else if (isNumeric(receiver)) {
+            if (!isNumeric(actual))
+              if (isUnit(actual) || isBoolean(actual) || !isMaybeValue(
+                    actual
+                  )) // 5 == "abc"
+                nonSensiblyNeq()
+          } else if (isWarnable && !isCaseEquals)
+            if (isNew(qual)) // new X == y
+              nonSensiblyNew()
+            else if (isNew(other) && (receiver.isEffectivelyFinal || isReferenceOp)) // object X ; X == new Y
+              nonSensiblyNew()
+            else if (receiver.isEffectivelyFinal && !(receiver isSubClass actual) && !actual.isRefinementClass) // object X, Y; X == Y
+              if (isEitherNullable)
+                nonSensible("non-null ", false)
+              else
+                nonSensiblyNeq()
 
       // warn if one but not the other is a derived value class
       // this is especially important to enable transitioning from
@@ -1312,9 +1295,8 @@ abstract class RefChecks
           }
         }
         // warn only if they have no common supertype below Object
-        else if (!haveSubclassRelationship) {
+        else if (!haveSubclassRelationship)
           warnIfLubless()
-        }
       }
     }
 
@@ -1746,13 +1728,12 @@ abstract class RefChecks
             "implicitAmbiguous")
 
         case tpt @ TypeTree() =>
-          if (tpt.original != null) {
+          if (tpt.original != null)
             tpt.original foreach {
               case dc @ TypeTreeWithDeferredRefCheck() =>
                 applyRefchecksToAnnotations(dc.check()) // #2416
               case _ =>
             }
-          }
 
           doTypeTraversal(tree) {
             case tp @ AnnotatedType(annots, _) =>
@@ -1855,9 +1836,9 @@ abstract class RefChecks
       //
       // We don't need to perform the check on the Select node, and `!isHigherKinded will guard against this
       // redundant (and previously buggy, SI-9546) consideration.
-      if (!tree.tpe.isHigherKinded && isSimpleCaseApply(tree)) {
+      if (!tree.tpe.isHigherKinded && isSimpleCaseApply(tree))
         transformCaseApply(tree)
-      } else {
+      else {
         qual match {
           case Super(_, mix) => checkSuper(mix)
           case _             =>
@@ -1900,7 +1881,7 @@ abstract class RefChecks
 
     // Verify classes extending AnyVal meet the requirements
     private def checkAnyValSubclass(clazz: Symbol) =
-      if (clazz.isDerivedValueClass) {
+      if (clazz.isDerivedValueClass)
         if (clazz.isTrait)
           reporter.error(
             clazz.pos,
@@ -1909,7 +1890,6 @@ abstract class RefChecks
           reporter.error(
             clazz.pos,
             "`abstract' modifier cannot be used with value classes")
-      }
 
     private def checkUnexpandedMacro(t: Tree) =
       if (!t.isDef && t.hasSymbolField && t.symbol.isTermMacro)
@@ -1937,10 +1917,9 @@ abstract class RefChecks
             checkInfiniteLoop(tree.asInstanceOf[ValOrDefDef])
             if (settings.warnNullaryUnit)
               checkNullaryMethodReturnType(sym)
-            if (settings.warnInaccessible) {
+            if (settings.warnInaccessible)
               if (!sym.isConstructor && !sym.isEffectivelyFinalOrNotOverridden && !sym.isSynthetic)
                 checkAccessibilityOfReferencedTypes(tree)
-            }
             tree match {
               case dd: DefDef => checkByNameRightAssociativeDef(dd)
               case _          =>
@@ -1970,7 +1949,7 @@ abstract class RefChecks
             abort(
               "adapt should have turned dc: TypeTreeWithDeferredRefCheck into tpt: TypeTree, with tpt.original == dc")
           case tpt @ TypeTree() =>
-            if (tpt.original != null) {
+            if (tpt.original != null)
               tpt.original foreach {
                 case dc @ TypeTreeWithDeferredRefCheck() =>
                   transform(
@@ -1979,7 +1958,6 @@ abstract class RefChecks
                 // tpt has the right type if the deferred checks are ok
                 case _ =>
               }
-            }
 
             val existentialParams = new ListBuffer[Symbol]
             var skipBounds = false
@@ -1999,11 +1977,10 @@ abstract class RefChecks
                 checkTypeRef(tpWithWildcards, tree, skipBounds)
               case _ =>
             }
-            if (skipBounds) {
+            if (skipBounds)
               tree.setType(tree.tpe.map {
                 _.filterAnnotations(_.symbol != UncheckedBoundsClass)
               })
-            }
 
             tree
 

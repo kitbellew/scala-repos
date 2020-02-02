@@ -183,14 +183,13 @@ sealed abstract class AsyncStream[+A] {
       }
     }
 
-    if (concurrencyLevel == 1) {
+    if (concurrencyLevel == 1)
       mapF(f)
-    } else if (concurrencyLevel < 1) {
+    else if (concurrencyLevel < 1)
       throw new IllegalArgumentException(
         s"concurrencyLevel must be at least one. got: $concurrencyLevel")
-    } else {
+    else
       embed(step(Nil, () => this))
-    }
   }
 
   /**
@@ -575,18 +574,17 @@ sealed abstract class AsyncStream[+A] {
     * @param groupSize must be a positive number, or an IllegalArgumentException will be thrown.
     */
   def grouped(groupSize: Int): AsyncStream[Seq[A]] =
-    if (groupSize > 1) {
+    if (groupSize > 1)
       Embed(buffer(groupSize).map {
         case (items, _) if items.isEmpty => empty
         case (items, remaining) =>
           Cons(Future.value(items), () => remaining().grouped(groupSize))
       })
-    } else if (groupSize == 1) {
+    else if (groupSize == 1)
       map(Seq(_))
-    } else {
+    else
       throw new IllegalArgumentException(
         s"groupSize must be positive, but was $groupSize")
-    }
 
   /**
     * Add up the values of all of the elements in this stream. If you

@@ -85,14 +85,13 @@ object ProtectedBranchService {
         command: ReceiveCommand,
         pusher: String)(implicit session: Session): Option[String] = {
       val branch = command.getRefName.stripPrefix("refs/heads/")
-      if (branch != command.getRefName) {
+      if (branch != command.getRefName)
         getProtectedBranchInfo(owner, repository, branch).getStopReason(
           receivePack.isAllowNonFastForwards,
           command,
           pusher)
-      } else {
+      else
         None
-      }
     }
   }
 
@@ -129,7 +128,7 @@ object ProtectedBranchService {
         isAllowNonFastForwards: Boolean,
         command: ReceiveCommand,
         pusher: String)(implicit session: Session): Option[String] =
-      if (enabled) {
+      if (enabled)
         command.getType() match {
           case ReceiveCommand.Type.UPDATE |
               ReceiveCommand.Type.UPDATE_NONFASTFORWARD
@@ -150,19 +149,17 @@ object ProtectedBranchService {
             Some("Cannot delete a protected branch")
           case _ => None
         }
-      } else {
+      else
         None
-      }
     def unSuccessedContexts(sha1: String)(
         implicit session: Session): Set[String] =
-      if (contexts.isEmpty) {
+      if (contexts.isEmpty)
         Set.empty
-      } else {
+      else
         contexts.toSet -- getCommitStatues(owner, repository, sha1)
           .filter(_.state == CommitState.SUCCESS)
           .map(_.context)
           .toSet
-      }
     def needStatusCheck(pusher: String)(implicit session: Session): Boolean =
       pusher match {
         case _ if !enabled              => false

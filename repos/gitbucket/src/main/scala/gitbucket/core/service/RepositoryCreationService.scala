@@ -31,11 +31,10 @@ trait RepositoryCreationService {
     insertRepository(name, owner, description, isPrivate)
 
     // Add collaborators for group repository
-    if (ownerAccount.isGroupAccount) {
+    if (ownerAccount.isGroupAccount)
       getGroupMembers(owner).foreach { member =>
         addCollaborator(owner, name, member.userName)
       }
-    }
 
     // Insert default labels
     insertDefaultLabels(owner, name)
@@ -44,20 +43,20 @@ trait RepositoryCreationService {
     val gitdir = getRepositoryDir(owner, name)
     JGitUtil.initRepository(gitdir)
 
-    if (createReadme) {
+    if (createReadme)
       using(Git.open(gitdir)) { git =>
         val builder = DirCache.newInCore.builder()
         val inserter = git.getRepository.newObjectInserter()
         val headId = git.getRepository.resolve(Constants.HEAD + "^{commit}")
-        val content = if (description.nonEmpty) {
-          name + "\n" +
-            "===============\n" +
-            "\n" +
-            description.get
-        } else {
-          name + "\n" +
-            "===============\n"
-        }
+        val content =
+          if (description.nonEmpty)
+            name + "\n" +
+              "===============\n" +
+              "\n" +
+              description.get
+          else
+            name + "\n" +
+              "===============\n"
 
         builder.add(
           JGitUtil.createDirCacheEntry(
@@ -76,7 +75,6 @@ trait RepositoryCreationService {
           loginAccount.mailAddress,
           "Initial commit")
       }
-    }
 
     // Create Wiki repository
     createWikiRepository(loginAccount, owner, name)

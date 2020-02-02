@@ -56,9 +56,8 @@ class ScAnnotationImpl private (
 
   def typeElement: ScTypeElement = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScAnnotationStub].getTypeElement
-    }
     annotationExpr.constr.typeElement
   }
 
@@ -120,9 +119,8 @@ class ScAnnotationImpl private (
     val existing: PsiAnnotationMemberValue = findDeclaredAttributeValue(
       attributeName)
     if (value == null) {
-      if (existing == null) {
+      if (existing == null)
         return null.asInstanceOf[T]
-      }
       def delete(elem: PsiElement) {
         elem.getParent match {
           case arg: ScArgumentExprList =>
@@ -139,9 +137,8 @@ class ScAnnotationImpl private (
               if (next != null && next.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
                 elem.delete()
                 next.delete()
-              } else {
+              } else
                 elem.delete()
-              }
             }
           case _ => elem.delete()
         }
@@ -151,36 +148,31 @@ class ScAnnotationImpl private (
         case args: ScArgumentExprList => delete(existing)
         case other                    => delete(other)
       }
-    } else {
-      if (existing != null) {
-        existing.replace(value)
-      } else {
-        val args: Seq[ScArgumentExprList] = annotationExpr.constr.arguments
-        if (args.length == 0) {
-          return null.asInstanceOf[T] //todo: ?
-        }
-        val params: Seq[ScExpression] = args.flatMap(arg => arg.exprs)
-        if (params.length == 1 && !params(0).isInstanceOf[ScAssignStmt]) {
-          params(0).replace(
-            ScalaPsiElementFactory.createExpressionFromText(
-              PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(0).getText,
-              params(0).getManager))
-        }
-        var allowNoName: Boolean = params.length == 0 &&
-          (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(attributeName) || null == attributeName)
-        var namePrefix: String = null
-        if (allowNoName) {
-          namePrefix = ""
-        } else {
-          namePrefix = attributeName + " = "
-        }
-
-        args(0).addBefore(
+    } else if (existing != null)
+      existing.replace(value)
+    else {
+      val args: Seq[ScArgumentExprList] = annotationExpr.constr.arguments
+      if (args.length == 0)
+        return null.asInstanceOf[T] //todo: ?
+      val params: Seq[ScExpression] = args.flatMap(arg => arg.exprs)
+      if (params.length == 1 && !params(0).isInstanceOf[ScAssignStmt])
+        params(0).replace(
           ScalaPsiElementFactory.createExpressionFromText(
-            namePrefix + value.getText,
-            value.getManager),
-          null)
-      }
+            PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(0).getText,
+            params(0).getManager))
+      var allowNoName: Boolean = params.length == 0 &&
+        (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(attributeName) || null == attributeName)
+      var namePrefix: String = null
+      if (allowNoName)
+        namePrefix = ""
+      else
+        namePrefix = attributeName + " = "
+
+      args(0).addBefore(
+        ScalaPsiElementFactory.createExpressionFromText(
+          namePrefix + value.getText,
+          value.getManager),
+        null)
     }
     findDeclaredAttributeValue(attributeName).asInstanceOf[T]
   }

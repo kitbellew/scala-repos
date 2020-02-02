@@ -67,7 +67,6 @@ object ConsoleProject {
   }
   final class Evaluate[T] private[sbt] (val eval: T)
   private def bootIvyHome(app: xsbti.AppConfiguration): Option[File] =
-    try {
-      Option(app.provider.scalaProvider.launcher.ivyHome)
-    } catch { case _: NoSuchMethodError => None }
+    try Option(app.provider.scalaProvider.launcher.ivyHome)
+    catch { case _: NoSuchMethodError => None }
 }

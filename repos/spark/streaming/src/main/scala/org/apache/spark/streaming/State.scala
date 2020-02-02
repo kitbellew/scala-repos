@@ -142,11 +142,10 @@ private[streaming] class StateImpl[S] extends State[S] {
     defined
 
   override def get(): S =
-    if (defined) {
+    if (defined)
       state
-    } else {
+    else
       throw new NoSuchElementException("State is not set")
-    }
 
   override def update(newState: S): Unit = {
     require(!removed, "Cannot update the state after it has been removed")

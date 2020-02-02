@@ -40,7 +40,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
 
     myFileText append fileText.substring(0, i1)
 
-    while (i1 > -1 || i2 > -1) {
+    while (i1 > -1 || i2 > -1)
       if (i2 < i1 && i2 > -1) {
         appendPair("#1")
 
@@ -74,7 +74,6 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
           else fileText.substring(i2Old + FOLD_MARKER_LENGTH, i2)
         )
       } else assert(assertion = false, "Unbalanced fold markers #2")
-    }
 
     assert(
       myOpenMarkers.isEmpty,

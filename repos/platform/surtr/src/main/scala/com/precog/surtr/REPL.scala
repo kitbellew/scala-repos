@@ -153,9 +153,8 @@ trait REPL
       val tree = shakeTree(oldTree)
       val strs = for (error <- tree.errors) yield showError(error)
 
-      if (!tree.errors.isEmpty) {
+      if (!tree.errors.isEmpty)
         out.println(color.red(strs mkString "\n"))
-      }
 
       if (tree.errors filterNot isWarning isEmpty)
         Some(tree)
@@ -164,7 +163,7 @@ trait REPL
     }
 
     def handle(c: Command) = c match {
-      case Eval(tree) => {
+      case Eval(tree) =>
         val optTree = compile(tree)
 
         for (tree <- optTree) {
@@ -189,9 +188,8 @@ trait REPL
         }
 
         true
-      }
 
-      case PrintTree(tree) => {
+      case PrintTree(tree) =>
         bindRoot(tree, tree)
         val tree2 = shakeTree(tree)
 
@@ -199,17 +197,14 @@ trait REPL
         out.println(prettyPrint(tree2))
 
         true
-      }
 
-      case Help => {
+      case Help =>
         printHelp(out)
         true
-      }
 
-      case Quit => {
+      case Quit =>
         terminal.restore()
         false
-      }
     }
 
     def loop() {
@@ -218,13 +213,11 @@ trait REPL
       val failures = results collect { case f: Failure        => f }
 
       if (successes.isEmpty) {
-        try {
-          handleFailures(failures)
-        } catch {
-          case pe: ParseException => {
+        try handleFailures(failures)
+        catch {
+          case pe: ParseException =>
             out.println()
             out.println(color.red(pe.mkString))
-          }
         }
         println()
         loop()
@@ -258,9 +251,9 @@ trait REPL
 
   def readNext(reader: ConsoleReader, color: Color): String = {
     var input = reader.readLine(color.blue(Prompt))
-    if (input == null) {
+    if (input == null)
       readNext(reader, color)
-    } else {
+    else {
       var line = reader.readLine(color.blue(Follow))
       while (line != null) {
         input += '\n' + line
@@ -311,8 +304,8 @@ object Console extends App {
     scalaz.Validation[blueeyes.json.serialization.Extractor.Error, Lifecycle]] =
     for {
       replConfig <- loadConfig(args.headOption)
-    } yield {
-      scalaz.Success[blueeyes.json.serialization.Extractor.Error, Lifecycle] {
+    } yield scalaz
+      .Success[blueeyes.json.serialization.Extractor.Error, Lifecycle] {
         new REPL with Lifecycle { self =>
           val storageTimeout = yggConfig.storageTimeout
 
@@ -390,7 +383,6 @@ object Console extends App {
           }
         }
       }
-    }
 
   val run = repl.flatMap[PrecogUnit] {
     case scalaz.Success(lifecycle) =>

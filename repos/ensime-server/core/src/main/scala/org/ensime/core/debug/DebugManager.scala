@@ -48,9 +48,8 @@ class DebugManager(
   def tryPendingBreaksForSourcename(sourceName: String): Unit =
     for (breaks <- pendingBreaksBySourceName.get(sourceName)) {
       val toTry = mutable.HashSet() ++ breaks
-      for (bp <- toTry) {
+      for (bp <- toTry)
         setBreakpoint(bp.file, bp.line)
-      }
     }
 
   def setBreakpoint(file: File, line: Int): Boolean = {
@@ -66,22 +65,19 @@ class DebugManager(
 
   def clearBreakpoint(file: File, line: Int): Unit = {
     val clearBp = Breakpoint(file, line)
-    for (bps <- pendingBreaksBySourceName.get(file.getName)) {
+    for (bps <- pendingBreaksBySourceName.get(file.getName))
       bps.retain { _ != clearBp }
-    }
     val toRemove = activeBreakpoints.filter { _ == clearBp }
-    for (vm <- maybeVM) {
+    for (vm <- maybeVM)
       vm.clearBreakpoints(toRemove)
-    }
     activeBreakpoints --= toRemove
   }
 
   def clearAllBreakpoints(): Unit = {
     pendingBreaksBySourceName.clear()
     activeBreakpoints = Set.empty
-    for (vm <- maybeVM) {
+    for (vm <- maybeVM)
       vm.clearAllBreakpoints()
-    }
   }
 
   def moveActiveBreaksToPending(): Unit = {
@@ -115,11 +111,8 @@ class DebugManager(
 
   def withVM[T](action: (VM => T)): Option[T] =
     maybeVM.synchronized {
-      try {
-        for (vm <- maybeVM) yield {
-          action(vm)
-        }
-      } catch {
+      try for (vm <- maybeVM) yield action(vm)
+      catch {
         case e: VMDisconnectedException =>
           log.error(e, "Attempted interaction with disconnected VM:")
           disconnectDebugVM()
@@ -139,9 +132,8 @@ class DebugManager(
   private def handleRPCWithVMAndThread(threadId: DebugThreadId)(
       action: ((VM, ThreadReference) => RpcResponse)): RpcResponse =
     withVM { vm =>
-      (for (thread <- vm.threadById(threadId)) yield {
-        action(vm, thread)
-      }).getOrElse {
+      (for (thread <- vm.threadById(threadId))
+        yield action(vm, thread)).getOrElse {
         log.warning(s"Could not find thread: $threadId")
         FalseResponse
       }
@@ -183,25 +175,23 @@ class DebugManager(
     case e: VMDisconnectEvent =>
       disconnectDebugVM()
     case e: StepEvent =>
-      (for (pos <- sourceMap.locToPos(e.location())) yield {
-        broadcaster ! DebugStepEvent(
+      (for (pos <- sourceMap.locToPos(e.location()))
+        yield broadcaster ! DebugStepEvent(
           DebugThreadId(e.thread().uniqueID()),
           e.thread().name,
           pos.file,
-          pos.line)
-      }) getOrElse {
+          pos.line)) getOrElse {
         val loc = e.location()
         log.warning(
           s"Step position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
       }
     case e: BreakpointEvent =>
-      (for (pos <- sourceMap.locToPos(e.location())) yield {
-        broadcaster ! DebugBreakEvent(
+      (for (pos <- sourceMap.locToPos(e.location()))
+        yield broadcaster ! DebugBreakEvent(
           DebugThreadId(e.thread().uniqueID()),
           e.thread().name,
           pos.file,
-          pos.line)
-      }) getOrElse {
+          pos.line)) getOrElse {
         val loc = e.location()
         log.warning(
           s"Break position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
@@ -285,9 +275,8 @@ class DebugManager(
       sender ! handleRPCWithVM() { vm => TrueResponse }
     case DebugStopReq =>
       sender ! handleRPCWithVM() { vm =>
-        if (vm.mode.shouldExit) {
+        if (vm.mode.shouldExit)
           vm.exit(0)
-        }
         vm.dispose()
         TrueResponse
       }
@@ -302,9 +291,8 @@ class DebugManager(
         TrueResponse
       }
     case DebugSetBreakReq(file, line: Int) =>
-      if (!setBreakpoint(file, line)) {
+      if (!setBreakpoint(file, line))
         bgMessage("Location not loaded. Set pending breakpoint.")
-      }
       sender ! TrueResponse
     case DebugClearBreakReq(file, line: Int) =>
       clearBreakpoint(file, line)

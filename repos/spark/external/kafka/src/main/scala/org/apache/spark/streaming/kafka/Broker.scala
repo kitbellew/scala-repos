@@ -56,9 +56,8 @@ object Broker {
     new Broker(host, port)
 
   def unapply(broker: Broker): Option[(String, Int)] =
-    if (broker == null) {
+    if (broker == null)
       None
-    } else {
+    else
       Some((broker.host, broker.port))
-    }
 }

@@ -99,15 +99,14 @@ class PackageCollectionFillerSpec extends FlatSpec with RunOnApplicationThread {
 
     fillCollection(originalList, newContent)
 
-    if (newContent == null || newContent.isEmpty) {
+    if (newContent == null || newContent.isEmpty)
       this.emptyEvaluation(analyzer, originalList)
-    } else {
+    else
       this.filledEvaluation(
         analyzer,
         originalList,
         newContent,
         (an, li) => an.addedElements.toList should be(li.toList))
-    }
     this.finalEvaluation(analyzer)
   }
 
@@ -118,9 +117,9 @@ class PackageCollectionFillerSpec extends FlatSpec with RunOnApplicationThread {
 
     fillSFXCollection(originalList, newContent)
 
-    if (newContent == null || newContent.isEmpty) {
+    if (newContent == null || newContent.isEmpty)
       this.emptyEvaluation(analyzer, originalList)
-    } else {
+    else {
       this.filledEvaluation(
         analyzer,
         originalList,

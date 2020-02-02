@@ -133,17 +133,16 @@ object AddressFromURIString {
     if (uri eq null) None
     else if (uri.getScheme == null || (uri.getUserInfo == null && uri.getHost == null))
       None
-    else if (uri.getUserInfo == null) { // case 1: “akka://system”
+    else if (uri.getUserInfo == null) // case 1: “akka://system”
       if (uri.getPort != -1) None
       else Some(Address(uri.getScheme, uri.getHost))
-    } else { // case 2: “akka://system@host:port”
-      if (uri.getHost == null || uri.getPort == -1) None
-      else
-        Some(
-          if (uri.getUserInfo == null) Address(uri.getScheme, uri.getHost)
-          else
-            Address(uri.getScheme, uri.getUserInfo, uri.getHost, uri.getPort))
-    }
+    else // case 2: “akka://system@host:port”
+    if (uri.getHost == null || uri.getPort == -1) None
+    else
+      Some(
+        if (uri.getUserInfo == null) Address(uri.getScheme, uri.getHost)
+        else
+          Address(uri.getScheme, uri.getUserInfo, uri.getHost, uri.getPort))
 
   /**
     * Try to construct an Address from the given String or throw a java.net.MalformedURLException.

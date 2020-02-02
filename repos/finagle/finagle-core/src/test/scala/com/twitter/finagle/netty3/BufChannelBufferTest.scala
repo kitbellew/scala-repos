@@ -35,9 +35,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
   }
 
   test("reader index boundary check 1") {
-    try {
-      buffer.writerIndex(0)
-    } catch {
+    try buffer.writerIndex(0)
+    catch {
       case e: IndexOutOfBoundsException =>
         fail()
     }
@@ -47,9 +46,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
   }
 
   test("reader index boundary check 2") {
-    try {
-      buffer.writerIndex(buffer.capacity())
-    } catch {
+    try buffer.writerIndex(buffer.capacity())
+    catch {
       case e: IndexOutOfBoundsException =>
         fail()
     }
@@ -59,9 +57,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
   }
 
   test("reader index boundary check 3") {
-    try {
-      buffer.writerIndex(CAPACITY / 2)
-    } catch {
+    try buffer.writerIndex(CAPACITY / 2)
+    catch {
       case e: IndexOutOfBoundsException =>
         fail()
     }
@@ -1351,11 +1348,10 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     val value = new Array[Byte](32)
     random.nextBytes(value)
     // Prevent overflow / underflow
-    if (value(0) == 0) {
+    if (value(0) == 0)
       value(0) = (value(0) + 1).asInstanceOf[Byte]
-    } else if (value(0) == -1) {
+    else if (value(0) == -1)
       value(0) = (value(0) - 1).asInstanceOf[Byte]
-    }
 
     val bytes = Arrays.copyOf(value, CAPACITY)
     val bcb = new BufChannelBuffer(Buf.ByteArray.Owned(bytes))
@@ -1441,14 +1437,12 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
 
     val nioBuffers = bcb.toByteBuffers()
     var length = 0
-    for (b <- nioBuffers) {
+    for (b <- nioBuffers)
       length = length + b.remaining()
-    }
 
     val nioBuffer = ByteBuffer.allocate(length)
-    for (b <- nioBuffers) {
+    for (b <- nioBuffers)
       nioBuffer.put(b)
-    }
     nioBuffer.flip()
 
     assertEquals(ByteBuffer.wrap(value), nioBuffer)
@@ -1462,9 +1456,8 @@ class BufChannelBufferTest extends FunSuite with BeforeAndAfter {
     0.until(CAPACITY - BLOCK_SIZE + 1, BLOCK_SIZE) foreach { i =>
       val nioBuffers = bcb.toByteBuffers(i, BLOCK_SIZE)
       val nioBuffer = ByteBuffer.allocate(BLOCK_SIZE)
-      for (b <- nioBuffers) {
+      for (b <- nioBuffers)
         nioBuffer.put(b)
-      }
       nioBuffer.flip()
 
       assertEquals(ByteBuffer.wrap(value, i, BLOCK_SIZE), nioBuffer)

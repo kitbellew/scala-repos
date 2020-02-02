@@ -151,17 +151,16 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           case (c: StrColumn) =>
             new DateColumn {
               def isDefinedAt(row: Int): Boolean =
-                if (!c.isDefinedAt(row)) {
+                if (!c.isDefinedAt(row))
                   false
-                } else {
+                else {
                   val s = c(row)
                   isValidISO(s) || isDateTimeFlexibly(s)
                 }
               def apply(row: Int) = {
                 val s = c(row)
-                try {
-                  parseDateTime(s, true)
-                } catch {
+                try parseDateTime(s, true)
+                catch {
                   case e: IllegalArgumentException =>
                     parseDateTimeFlexibly(s)
                 }
@@ -275,7 +274,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           // creates a BitSet for each array-column with index `idx`
           def defined(idx: Int): BitSet = {
-            val bools = dateTimes map { _.length > idx }
+            val bools = dateTimes map _.length > idx
             val indices = bools.zipWithIndex collect { case (true, idx) => idx }
 
             BitSetUtil.create(indices)

@@ -142,9 +142,8 @@ final class ScalaJSRunner private[testadapter] (
       val slave = createSlave()
       slaves.put(threadId, slave)
       slave
-    } else {
+    } else
       slaves(threadId)
-    }
   }
 
   /** Starts the stopping sequence of all slaves.

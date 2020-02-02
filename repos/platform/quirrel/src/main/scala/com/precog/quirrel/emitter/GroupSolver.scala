@@ -50,13 +50,12 @@ trait GroupSolver
         case IntersectBucketSpec(left, right) =>
           loopSpec(dispatches)(left) ++ loopSpec(dispatches)(right)
 
-        case Group(origin, target, forest, _) => {
+        case Group(origin, target, forest, _) =>
           val originErrors = origin map loop(dispatches) getOrElse Set()
           val targetErrors = loop(dispatches)(target)
           val forestErrors = loopSpec(dispatches)(forest)
 
           originErrors ++ targetErrors ++ forestErrors
-        }
 
         case UnfixedSolution(_, solution, _) => loop(dispatches)(solution)
 
@@ -69,7 +68,7 @@ trait GroupSolver
     def loop(dispatches: Set[Dispatch])(tree: Expr): Set[Error] = tree match {
       case Let(_, _, _, _, right) => loop(dispatches)(right)
 
-      case expr @ Solve(_, constraints, child) => {
+      case expr @ Solve(_, constraints, child) =>
         // this can populate buckets with more dispatches than emitter will
         // have.  that's ok though, because we *add* the correct dispatch set
         // below when we use loopSpec
@@ -86,7 +85,7 @@ trait GroupSolver
               case (key, value) => (Identifier(Vector(), key) -> let) -> value
             }
           }
-        } reduceOption { _ ++ _ } getOrElse Map()
+        } reduceOption _ ++ _ getOrElse Map()
 
         val (forestSpecM, forestErrors) =
           solveForest(expr, findGroups(expr, dispatches))
@@ -107,10 +106,9 @@ trait GroupSolver
         val specM = mergedM orElse forestSpecM orElse constrSpecM
 
         val finalErrors = specM match {
-          case Some(forest) => {
+          case Some(forest) =>
             val rem = expr.vars -- listSolvedVars(forest)
             rem map UnableToSolveTicVariable map { Error(expr, _) }
-          }
 
           case None =>
             expr.vars map UnableToSolveTicVariable map { Error(expr, _) }
@@ -122,16 +120,15 @@ trait GroupSolver
           loopSpec(dispatches)(spec)
         } getOrElse Set()
 
-        val forestErrors2 = if (finalErrors.isEmpty) {
-          forestErrors filter {
-            case Error(tpe) => tpe == ConstraintsWithinInnerSolve
-          }
-        } else {
-          forestErrors
-        }
+        val forestErrors2 =
+          if (finalErrors.isEmpty)
+            forestErrors filter {
+              case Error(tpe) => tpe == ConstraintsWithinInnerSolve
+            }
+          else
+            forestErrors
 
         childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++ finalErrors
-      }
 
       case Assert(_, pred, child) =>
         loop(dispatches)(pred) ++ loop(dispatches)(child)
@@ -146,7 +143,7 @@ trait GroupSolver
 
       case TicVar(_, _) => Set()
 
-      case d @ Dispatch(_, _, actuals) => {
+      case d @ Dispatch(_, _, actuals) =>
         val actualErrors = (actuals map loop(dispatches)).fold(Set[Error]()) {
           _ ++ _
         }
@@ -157,7 +154,6 @@ trait GroupSolver
         }
 
         actualErrors ++ originErrors
-      }
 
       case NaryOp(_, values) =>
         (values map loop(dispatches)).fold(Set[Error]()) { _ ++ _ }
@@ -171,7 +167,7 @@ trait GroupSolver
       forest: Set[(Sigma, Where, List[Dispatch])])
       : (Option[BucketSpec], Set[Error]) = {
     val results = forest map {
-      case (sigma, where, dtrace) => {
+      case (sigma, where, dtrace) =>
         val leftProv = where.left.provenance
         val rightProv = where.right.provenance
 
@@ -215,22 +211,19 @@ trait GroupSolver
             else
               (None, errors) // TODO emit a new error
           } getOrElse (None, errors)
-        } else {
+        } else
           (None, Set[Error]())
-        }
-      }
     }
 
     mergeSpecs(results)
   }
 
   private def resolveExpr(sigma: Sigma, expr: Expr): Expr = expr match {
-    case expr @ Dispatch(_, id, _) => {
+    case expr @ Dispatch(_, id, _) =>
       expr.binding match {
         case FormalBinding(let) => resolveExpr(sigma, sigma((id, let)))
         case _                  => expr
       }
-    }
 
     case _ => expr
   }
@@ -261,9 +254,8 @@ trait GroupSolver
         Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
       else
         Set(Error(constraint, InseparablePairedTicVariables(vars)))
-    } else {
+    } else
       Set()
-    }
 
     (back, errors ++ contribErrors)
   }
@@ -299,7 +291,7 @@ trait GroupSolver
       free: Boolean,
       sigma: Sigma,
       dtrace: List[Dispatch]): (Option[BucketSpec], Set[Error]) = expr match {
-    case And(_, left, right) => {
+    case And(_, left, right) =>
       val (leftSpec, leftErrors) =
         solveGroupCondition(b, left, free, sigma, dtrace)
       val (rightSpec, rightErrors) =
@@ -310,9 +302,8 @@ trait GroupSolver
           yield IntersectBucketSpec(ls, rs)
 
       (andSpec orElse leftSpec orElse rightSpec, leftErrors ++ rightErrors)
-    }
 
-    case Or(_, left, right) => {
+    case Or(_, left, right) =>
       val (leftSpec, leftErrors) =
         solveGroupCondition(b, left, free, sigma, dtrace)
       val (rightSpec, rightErrors) =
@@ -323,9 +314,8 @@ trait GroupSolver
           yield UnionBucketSpec(ls, rs)
 
       (andSpec orElse leftSpec orElse rightSpec, leftErrors ++ rightErrors)
-    }
 
-    case expr: ComparisonOp if !listTicVars(Some(b), expr, sigma).isEmpty => {
+    case expr: ComparisonOp if !listTicVars(Some(b), expr, sigma).isEmpty =>
       val vars = listTicVars(Some(b), expr, sigma)
 
       if (vars.size > 1) {
@@ -338,9 +328,9 @@ trait GroupSolver
         resultM map { result =>
           val innerVars = listTicVars(Some(b), result, sigma)
 
-          if (innerVars.isEmpty) {
+          if (innerVars.isEmpty)
             (Some(UnfixedSolution(tv, result, dtrace)), Set[Error]())
-          } else {
+          else {
             val errors = innerVars map {
               case (_, id) => Error(expr, ExtraVarsInGroupConstraint(id))
             }
@@ -349,9 +339,8 @@ trait GroupSolver
           }
         } getOrElse (None, Set(Error(expr, UnableToSolveTicVariable(tv))))
       }
-    }
 
-    case expr: Comp if !listTicVars(Some(b), expr, sigma).isEmpty => {
+    case expr: Comp if !listTicVars(Some(b), expr, sigma).isEmpty =>
       val vars = listTicVars(Some(b), expr, sigma)
 
       if (vars.size > 1) {
@@ -366,9 +355,8 @@ trait GroupSolver
         else
           (None, Set(Error(expr, UnableToSolveTicVariable(tv))))
       }
-    }
 
-    case expr @ Dispatch(_, id, actuals) => {
+    case expr @ Dispatch(_, id, actuals) =>
       expr.binding match {
         case LetBinding(let) =>
           solveGroupCondition(
@@ -378,25 +366,22 @@ trait GroupSolver
             enterLet(sigma, let, actuals),
             expr :: dtrace)
 
-        case FormalBinding(let) => {
+        case FormalBinding(let) =>
           val actualM = sigma get ((id, let))
           val resultM = actualM map {
             solveGroupCondition(b, _, free, sigma, dtrace)
           }
           resultM getOrElse sys.error("uh...?")
-        }
 
         // TODO solve through functions that we deeply understand
-        case _ => {
+        case _ =>
           val vars = listTicVars(Some(b), expr, sigma)
 
           if (vars.isEmpty) // it's an independent extra; we're saved!
             (Some(Extra(expr, dtrace)), Set())
           else
             (None, Set(Error(expr, UnableToSolveCriticalConditionAnon)))
-        }
       }
-    }
 
     case expr
         if listTicVars(Some(b), expr, sigma).isEmpty && !listTicVars(
@@ -422,12 +407,11 @@ trait GroupSolver
       tv: TicId,
       free: Boolean,
       sigma: Sigma): PartialFunction[Node, Boolean] = {
-    case d @ Dispatch(_, id, actuals) => {
+    case d @ Dispatch(_, id, actuals) =>
       d.binding match {
-        case FormalBinding(let) => {
+        case FormalBinding(let) =>
           val actualM = sigma get ((id, let))
           actualM flatMap pred(b, tv, free, sigma).lift getOrElse false
-        }
 
         case LetBinding(let) =>
           pred(b, tv, free, enterLet(sigma, let, actuals))
@@ -435,7 +419,6 @@ trait GroupSolver
 
         case _ => false
       }
-    }
 
     case t @ TicVar(_, `tv`) =>
       !free && t.binding == SolveBinding(b) || free && t.binding == FreeBinding(
@@ -451,13 +434,12 @@ trait GroupSolver
       specs: TraversableOnce[(Option[BucketSpec], Set[Error])])
       : (Option[BucketSpec], Set[Error]) = {
     val (back, errors) = specs.fold((None: Option[BucketSpec], Set[Error]())) {
-      case ((leftAcc, leftErrors), (rightAcc, rightErrors)) => {
+      case ((leftAcc, leftErrors), (rightAcc, rightErrors)) =>
         val merged =
           for (left <- leftAcc; right <- rightAcc)
             yield IntersectBucketSpec(left, right)
 
         (merged orElse leftAcc orElse rightAcc, leftErrors ++ rightErrors)
-      }
     }
 
     if (back.isDefined && !(errors collect { case Error(tpe) => tpe } contains ConstraintsWithinInnerSolve))
@@ -480,9 +462,9 @@ trait GroupSolver
           from,
           sigma)
 
-      case to @ Dispatch(_, id, actuals) => {
+      case to @ Dispatch(_, id, actuals) =>
         to.binding match {
-          case FormalBinding(let) => {
+          case FormalBinding(let) =>
             val exactResult = sigma get ((id, let)) map {
               isTranspecable(_, from, sigma)
             }
@@ -496,7 +478,6 @@ trait GroupSolver
                 isTranspecable(subSigma(id.id), from, sigma)
               }
             }
-          }
 
           case LetBinding(let) =>
             isTranspecable(let.left, from, enterLet(sigma, let, actuals))
@@ -505,7 +486,6 @@ trait GroupSolver
 
           case _ => false
         }
-      }
 
       case Eq(_, left, right) if isPrimitive(left, sigma) =>
         isTranspecable(right, from, sigma)
@@ -650,9 +630,9 @@ trait GroupSolver
   private def isPrimitive(expr: Expr, sigma: Sigma): Boolean = expr match {
     case Literal(_) => true
 
-    case expr @ Dispatch(_, id, actuals) => {
+    case expr @ Dispatch(_, id, actuals) =>
       expr.binding match {
-        case FormalBinding(let) => {
+        case FormalBinding(let) =>
           val exactResult = sigma get ((id, let)) map { isPrimitive(_, sigma) }
 
           exactResult getOrElse {
@@ -664,14 +644,12 @@ trait GroupSolver
               isPrimitive(subSigma(id.id), sigma)
             }
           }
-        }
 
         case LetBinding(let) =>
           isPrimitive(let.left, enterLet(sigma, let, actuals))
 
         case _ => false
       }
-    }
 
     case Let(_, _, _, _, right) => isPrimitive(right, sigma)
 
@@ -694,12 +672,11 @@ trait GroupSolver
       sigma: Sigma): Set[(Option[Solve], TicId)] = expr match {
     case Let(_, _, _, left, right) => listTicVars(b, right, sigma)
 
-    case b2 @ Solve(_, constraints, child) => {
+    case b2 @ Solve(_, constraints, child) =>
       val allVars = (constraints map { listTicVars(b, _, sigma) } reduce {
         _ ++ _
       })
       allVars -- listTicVars(Some(b2), child, sigma)
-    }
 
     case Assert(_, pred, child) =>
       listTicVars(b, pred, sigma) ++ listTicVars(b, child, sigma)
@@ -717,25 +694,23 @@ trait GroupSolver
 
     case t @ TicVar(_, name)
         if b.isDefined && (t.binding == SolveBinding(b.get) || t.binding == FreeBinding(
-          b.get)) => {
+          b.get)) =>
       t.binding match {
         case SolveBinding(b2) => Set((Some(b2), name))
         case FreeBinding(b2)  => Set((Some(b2), name))
         case NullBinding      => Set()
       }
-    }
 
-    case t @ TicVar(_, name) if !b.isDefined => {
+    case t @ TicVar(_, name) if !b.isDefined =>
       t.binding match {
         case SolveBinding(b2) => Set((Some(b2), name))
         case FreeBinding(b2)  => Set((Some(b2), name))
         case NullBinding      => Set()
       }
-    }
 
     case TicVar(_, _) => Set()
 
-    case d @ Dispatch(_, id, actuals) => {
+    case d @ Dispatch(_, id, actuals) =>
       val leftSet = d.binding match {
         case LetBinding(b2) =>
           listTicVars(b, b2.left, enterLet(sigma, b2, actuals))
@@ -744,7 +719,6 @@ trait GroupSolver
         case _                  => Set[(Option[Solve], TicId)]()
       }
       (actuals map { listTicVars(b, _, sigma) }).fold(leftSet) { _ ++ _ }
-    }
 
     case NaryOp(_, values) =>
       (values map { listTicVars(b, _, sigma) }).fold(Set()) { _ ++ _ }
@@ -809,19 +783,17 @@ trait GroupSolver
           Kernel(nodes3, sigma2, k.seen ++ nodes3)
         }
 
-        if (kernels2 forall { _.nodes.isEmpty }) {
+        if (kernels2 forall { _.nodes.isEmpty })
           Set()
-        } else {
+        else
           bfs(kernels2)
-        }
-      } else {
+      } else
         results
-      }
     }
 
-    if (nodes.size == 1) {
+    if (nodes.size == 1)
       nodes.headOption
-    } else {
+    else {
       val kernels = nodes map { n =>
         Kernel(Set(ExprWrapper(n)), sigma, Set(ExprWrapper(n)))
       }
@@ -850,7 +822,7 @@ trait GroupSolver
 
       case _: TicVar => (Set(), sigma)
 
-      case expr @ Dispatch(_, id, actuals) => {
+      case expr @ Dispatch(_, id, actuals) =>
         expr.binding match {
           case LetBinding(let) =>
             (Set(let.left), enterLet(sigma, let, actuals))
@@ -859,7 +831,6 @@ trait GroupSolver
 
           case _ => (Set(actuals: _*), sigma)
         }
-      }
 
       case NaryOp(_, values) => (Set(values: _*), sigma)
     }
@@ -882,10 +853,9 @@ trait GroupSolver
 
       case s @ UnfixedSolution(_, _, _) => s
 
-      case f @ FixedSolution(id2, _, _, _) => {
+      case f @ FixedSolution(id2, _, _, _) =>
         assert(id != id2)
         f
-      }
 
       case e @ Extra(_, _) => e
     }

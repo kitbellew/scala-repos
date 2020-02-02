@@ -27,10 +27,9 @@ object TestUtils {
       val clazz = loader.splice.loadClass(name.splice)
       val ctors = clazz.getConstructors()
 
-      if (ctors.size != 1) {
+      if (ctors.size != 1)
         throw new IllegalArgumentException(
           "You may only call newInstance with single-ctor classes")
-      }
 
       val ctor = ctors.head
       ctor.newInstance(args.splice: _*).asInstanceOf[AnyRef]

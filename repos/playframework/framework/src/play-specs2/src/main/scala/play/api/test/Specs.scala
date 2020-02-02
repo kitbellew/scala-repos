@@ -105,9 +105,6 @@ abstract class WithBrowser[WEBDRIVER <: WebDriver](
     TestBrowser(webDriver, Some("http://localhost:" + port))
 
   override def around[T: AsResult](t: => T): Result =
-    try {
-      Helpers.running(TestServer(port, app))(AsResult.effectively(t))
-    } finally {
-      browser.quit()
-    }
+    try Helpers.running(TestServer(port, app))(AsResult.effectively(t))
+    finally browser.quit()
 }

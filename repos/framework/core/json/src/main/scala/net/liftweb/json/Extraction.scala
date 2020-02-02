@@ -62,9 +62,8 @@ object Extraction {
     */
   def extractOpt[A](
       json: JValue)(implicit formats: Formats, mf: Manifest[A]): Option[A] =
-    try {
-      Some(extract(json)(formats, mf))
-    } catch { case _: MappingException => None }
+    try Some(extract(json)(formats, mf))
+    catch { case _: MappingException => None }
 
   /** Decompose a case class into JSON.
     * <p>
@@ -89,9 +88,9 @@ object Extraction {
 
     val serializer = formats.typeHints.serialize
     val any = a.asInstanceOf[AnyRef]
-    if (formats.customSerializer(formats).isDefinedAt(a)) {
+    if (formats.customSerializer(formats).isDefinedAt(a))
       formats.customSerializer(formats)(a)
-    } else if (!serializer.isDefinedAt(a)) {
+    else if (!serializer.isDefinedAt(a))
       any match {
         case null                         => JNull
         case x: JValue                    => x
@@ -136,7 +135,7 @@ object Extraction {
               mkObject(x.getClass, uniqueFields ++ args)
           }
       }
-    } else prependTypeHint(any.getClass, serializer(any))
+    else prependTypeHint(any.getClass, serializer(any))
   }
 
   /** Flattens the JSON to a key/value map.
@@ -185,10 +184,10 @@ object Extraction {
       case "false" => JBool(false)
       case "[]"    => JArray(Nil)
       case x @ _ =>
-        if (value.charAt(0).isDigit) {
+        if (value.charAt(0).isDigit)
           if (value.indexOf('.') == -1) JInt(BigInt(value))
           else JDouble(JsonParser.parseDouble(value))
-        } else JString(JsonParser.unquote(value.substring(1)))
+        else JString(JsonParser.unquote(value.substring(1)))
     }
 
     def submap(prefix: String): Map[String, String] =
@@ -234,13 +233,12 @@ object Extraction {
     def mkMapping(clazz: Class[_], typeArgs: Seq[Class[_]])(
         implicit formats: Formats): Meta.Mapping =
       if (clazz == classOf[Option[_]] || clazz == classOf[List[_]] || clazz == classOf[
-            Set[_]] || clazz.isArray) {
+            Set[_]] || clazz.isArray)
         Col(TypeInfo(clazz, None), mkMapping(typeArgs.head, typeArgs.tail))
-      } else if (clazz == classOf[Map[_, _]]) {
+      else if (clazz == classOf[Map[_, _]])
         Dict(mkMapping(typeArgs.tail.head, typeArgs.tail.tail))
-      } else {
+      else
         mappingOf(clazz, typeArgs)
-      }
 
     extract0(json, mkMapping(clazz, typeArgs))
   }
@@ -358,16 +356,15 @@ object Extraction {
       }
 
       val custom = formats.customDeserializer(formats)
-      if (custom.isDefinedAt(constructor.targetType, json)) {
+      if (custom.isDefinedAt(constructor.targetType, json))
         custom(constructor.targetType, json)
-      } else {
+      else
         json match {
           case JNull => null
           case JObject(TypeHint(t, fs)) =>
             mkWithTypeHint(t, fs, constructor.targetType)
           case _ => instantiate
         }
-      }
     }
 
     object TypeHint {
@@ -452,21 +449,19 @@ object Extraction {
         mapping: Mapping,
         path: String,
         optional: Boolean) =
-      if (optional && root == JNothing) {
+      if (optional && root == JNothing)
         None
-      } else {
+      else
         try {
           val x = build(root, mapping)
           if (optional) Option(x) else x
         } catch {
           case e @ MappingException(msg, _) =>
-            if (optional && (root == JNothing || root == JNull)) {
+            if (optional && (root == JNothing || root == JNull))
               None
-            } else {
+            else
               fail("No usable value for " + path + "\n" + msg, e)
-            }
         }
-      }
 
     build(json, mapping)
   }
@@ -528,10 +523,9 @@ object Extraction {
       val custom = formats.customDeserializer(formats)
       val typeInfo = TypeInfo(targetType, None)
 
-      if (custom.isDefinedAt(typeInfo, json)) {
+      if (custom.isDefinedAt(typeInfo, json))
         custom(typeInfo, json)
-      } else {
+      else
         fail("Do not know how to convert " + json + " into " + targetType)
-      }
   }
 }

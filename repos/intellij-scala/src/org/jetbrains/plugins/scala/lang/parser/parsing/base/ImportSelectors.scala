@@ -30,7 +30,7 @@ object ImportSelectors extends ParserNode {
         return false
     }
     //Let's parse Import selectors while we will not see Import selector or will see '}'
-    while (true) {
+    while (true)
       builder.getTokenType match {
         case ScalaTokenTypes.tRBRACE =>
           builder error ErrMsg("import.selector.expected")
@@ -41,13 +41,12 @@ object ImportSelectors extends ParserNode {
         case ScalaTokenTypes.tUNDER =>
           builder.advanceLexer() //Ate _
           builder.getTokenType match {
-            case ScalaTokenTypes.tRBRACE => {
+            case ScalaTokenTypes.tRBRACE =>
               builder.advanceLexer() //Ate }
               builder.restoreNewlinesState
               importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTORS)
               return true
-            }
-            case _ => {
+            case _ =>
               ParserUtils.parseLoopUntilRBrace(
                 builder,
                 () => {}
@@ -55,29 +54,24 @@ object ImportSelectors extends ParserNode {
               builder.restoreNewlinesState
               importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTORS)
               return true
-            }
           }
         case ScalaTokenTypes.tIDENTIFIER =>
           ImportSelector parse builder
           builder.getTokenType match {
-            case ScalaTokenTypes.tCOMMA => {
+            case ScalaTokenTypes.tCOMMA =>
               builder.advanceLexer() //Ate ,
-            }
-            case ScalaTokenTypes.tRBRACE => {
+            case ScalaTokenTypes.tRBRACE =>
               builder.advanceLexer() //Ate}
               builder.restoreNewlinesState
               importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTORS)
               return true
-            }
-            case null => {
+            case null =>
               builder.restoreNewlinesState
               importSelectorMarker.done(ScalaElementTypes.IMPORT_SELECTORS)
               return true
-            }
-            case _ => {
+            case _ =>
               builder error ErrMsg("rbrace.expected")
               builder.advanceLexer()
-            }
           }
         case null =>
           builder.restoreNewlinesState
@@ -87,7 +81,6 @@ object ImportSelectors extends ParserNode {
           builder error ErrMsg("rbrace.expected")
           builder.advanceLexer()
       }
-    }
     true
   }
 }

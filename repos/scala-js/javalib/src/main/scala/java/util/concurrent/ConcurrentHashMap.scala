@@ -79,20 +79,17 @@ class ConcurrentHashMap[K >: Null, V >: Null]
       if (oldValue === old) {
         put(key, newValue)
         true
-      } else {
+      } else
         false
-      }
-    } else {
+    } else
       throw new NullPointerException()
-    }
 
   override def replace(key: K, value: V): V =
-    if (key != null && value != null) {
+    if (key != null && value != null)
       if (inner(Box(key)) != null) put(key, value)
       else null
-    } else {
+    else
       throw new NullPointerException()
-    }
 
   override def clear(): Unit =
     inner.clear()
@@ -123,9 +120,8 @@ class ConcurrentHashMap[K >: Null, V >: Null]
             if (lastKey != null) {
               inner.remove(lastKey)
               lastKey = null
-            } else {
+            } else
               throw new IllegalStateException()
-            }
         }
     }
 
@@ -201,12 +197,11 @@ object ConcurrentHashMap {
     private def removeWhere(p: Any => Boolean): Boolean = {
       val iter = chm.entrySet.iterator
       var changed = false
-      while (iter.hasNext) {
+      while (iter.hasNext)
         if (p(iter.next().getKey())) {
           iter.remove()
           changed = true
         }
-      }
       changed
     }
   }

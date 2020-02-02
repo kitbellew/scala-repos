@@ -218,9 +218,8 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
     * Unregisters the cluster JMX MBean from MBean server.
     */
   def unregisterMBean(): Unit =
-    try {
-      mBeanServer.unregisterMBean(clusterMBeanName)
-    } catch {
+    try mBeanServer.unregisterMBean(clusterMBeanName)
+    catch {
       case e: InstanceNotFoundException ⇒ // ignore - we are running multiple cluster nodes in the same JVM (probably for testing)
     }
 

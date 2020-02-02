@@ -217,39 +217,34 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
     val visitor = new ScalaRecursiveElementVisitor {
       override def visitFunction(fun: ScFunction): Unit = {
-        if (fun.getParent.isInstanceOf[ScTemplateBody]) {
+        if (fun.getParent.isInstanceOf[ScTemplateBody])
           annotator.checkOverrideMethods(fun, mock, isInSources = false)
-        }
         super.visitFunction(fun)
       }
 
       override def visitTypeDefinition(typedef: ScTypeDefinition): Unit = {
-        if (typedef.getParent.isInstanceOf[ScTemplateBody]) {
+        if (typedef.getParent.isInstanceOf[ScTemplateBody])
           annotator.checkOverrideTypes(typedef, mock)
-        }
         super.visitTypeDefinition(typedef)
       }
 
       override def visitTypeAlias(alias: ScTypeAlias): Unit = {
-        if (alias.getParent.isInstanceOf[ScTemplateBody]) {
+        if (alias.getParent.isInstanceOf[ScTemplateBody])
           annotator.checkOverrideTypes(alias, mock)
-        }
         super.visitTypeAlias(alias)
       }
 
       override def visitVariable(varr: ScVariable): Unit = {
         if (varr.getParent.isInstanceOf[ScTemplateBody] ||
-            varr.getParent.isInstanceOf[ScEarlyDefinitions]) {
+            varr.getParent.isInstanceOf[ScEarlyDefinitions])
           annotator.checkOverrideVars(varr, mock, isInSources = false)
-        }
         super.visitVariable(varr)
       }
 
       override def visitValue(v: ScValue): Unit = {
         if (v.getParent.isInstanceOf[ScTemplateBody] ||
-            v.getParent.isInstanceOf[ScEarlyDefinitions]) {
+            v.getParent.isInstanceOf[ScEarlyDefinitions])
           annotator.checkOverrideVals(v, mock, isInSources = false)
-        }
         super.visitValue(v)
       }
 

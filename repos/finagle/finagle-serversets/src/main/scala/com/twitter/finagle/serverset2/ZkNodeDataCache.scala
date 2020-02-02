@@ -66,9 +66,8 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
       case Some(Buf.Utf8(data)) =>
         val results = parseNode(path, data)
         // avoid string concatenation cost if not logging debug
-        if (logger.isLoggable(Level.DEBUG)) {
+        if (logger.isLoggable(Level.DEBUG))
           logger.debug(s"$path retrieved ${results.length} for $entityType")
-        }
         results
       case None => Nil
     }

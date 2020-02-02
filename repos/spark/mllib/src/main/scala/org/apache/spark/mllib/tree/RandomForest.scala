@@ -199,16 +199,15 @@ private class RandomForest(
     logDebug("max memory usage for aggregates = " + maxMemoryUsage + " bytes.")
     val maxMemoryPerNode = {
       val featureSubset: Option[Array[Int]] =
-        if (metadata.subsamplingFeatures) {
+        if (metadata.subsamplingFeatures)
           // Find numFeaturesPerNode largest bins to get an upper bound on memory usage.
           Some(
             metadata.numBins.zipWithIndex
               .sortBy(-_._1)
               .take(metadata.numFeaturesPerNode)
               .map(_._2))
-        } else {
+        else
           None
-        }
       RandomForest.aggregateSizeForNode(metadata, featureSubset) * 8L
     }
     require(
@@ -229,16 +228,16 @@ private class RandomForest(
 
     // Create an RDD of node Id cache.
     // At first, all the rows belong to the root nodes (node Id == 1).
-    val nodeIdCache = if (strategy.useNodeIdCache) {
-      Some(
-        NodeIdCache.init(
-          data = baggedInput,
-          numTrees = numTrees,
-          checkpointInterval = strategy.checkpointInterval,
-          initVal = 1))
-    } else {
-      None
-    }
+    val nodeIdCache =
+      if (strategy.useNodeIdCache)
+        Some(
+          NodeIdCache.init(
+            data = baggedInput,
+            numTrees = numTrees,
+            checkpointInterval = strategy.checkpointInterval,
+            initVal = 1))
+      else
+        None
 
     // FIFO queue of nodes to train: (treeIndex, node)
     val nodeQueue = new mutable.Queue[(Int, Node)]()
@@ -290,15 +289,13 @@ private class RandomForest(
     logInfo(s"$timer")
 
     // Delete any remaining checkpoints used for node Id cache.
-    if (nodeIdCache.nonEmpty) {
-      try {
-        nodeIdCache.get.deleteAllCheckpoints()
-      } catch {
+    if (nodeIdCache.nonEmpty)
+      try nodeIdCache.get.deleteAllCheckpoints()
+      catch {
         case e: IOException =>
           logWarning(
             s"delete all checkpoints failed. Error reason: ${e.getMessage}")
       }
-    }
 
     val trees =
       topNodes.map(topNode => new DecisionTreeModel(topNode, strategy.algo))
@@ -568,7 +565,7 @@ object RandomForest extends Serializable with Logging {
       val (treeIndex, node) = nodeQueue.head
       // Choose subset of features for node (if subsampling).
       val featureSubset: Option[Array[Int]] =
-        if (metadata.subsamplingFeatures) {
+        if (metadata.subsamplingFeatures)
           Some(
             SamplingUtils
               .reservoirSampleAndCount(
@@ -576,9 +573,8 @@ object RandomForest extends Serializable with Logging {
                 metadata.numFeaturesPerNode,
                 rng.nextLong)
               ._1)
-        } else {
+        else
           None
-        }
       // Check if enough memory remains to add this node to the group.
       val nodeMemUsage =
         RandomForest.aggregateSizeForNode(metadata, featureSubset) * 8L
@@ -612,17 +608,16 @@ object RandomForest extends Serializable with Logging {
   private[tree] def aggregateSizeForNode(
       metadata: DecisionTreeMetadata,
       featureSubset: Option[Array[Int]]): Long = {
-    val totalBins = if (featureSubset.nonEmpty) {
-      featureSubset.get
-        .map(featureIndex => metadata.numBins(featureIndex).toLong)
-        .sum
-    } else {
-      metadata.numBins.map(_.toLong).sum
-    }
-    if (metadata.isClassification) {
+    val totalBins =
+      if (featureSubset.nonEmpty)
+        featureSubset.get
+          .map(featureIndex => metadata.numBins(featureIndex).toLong)
+          .sum
+      else
+        metadata.numBins.map(_.toLong).sum
+    if (metadata.isClassification)
       metadata.numClasses * totalBins
-    } else {
+    else
       3 * totalBins
-    }
   }
 }

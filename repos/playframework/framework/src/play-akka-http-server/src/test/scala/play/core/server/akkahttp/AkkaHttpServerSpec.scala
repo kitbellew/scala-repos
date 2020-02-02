@@ -200,9 +200,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           try {
             val response = await(wsUrl("/")(testServerPort).get())
             response.body must_== resultString
-          } finally {
-            server.stop()
-          }
+          } finally server.stop()
         }
         // Start and stop the server 20 times
         (0 until 20) must contain { (i: Int) => testStartAndStop(i) }

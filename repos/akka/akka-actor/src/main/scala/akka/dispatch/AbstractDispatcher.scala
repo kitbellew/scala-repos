@@ -69,7 +69,7 @@ private[akka] object MessageDispatcher {
   final val debug = false // Deliberately without type ascription to make it a compile-time constant
   lazy val actors = new Index[MessageDispatcher, ActorRef](16, _ compareTo _)
   def printActors(): Unit =
-    if (debug) {
+    if (debug)
       for {
         d ← actors.keys
         a ← {
@@ -88,7 +88,6 @@ private[akka] object MessageDispatcher {
         }
         println(" -> " + a + status + messages + parent)
       }
-    }
 }
 
 abstract class MessageDispatcher(
@@ -169,9 +168,8 @@ abstract class MessageDispatcher(
   final override protected def unbatchedExecute(r: Runnable): Unit = {
     val invocation = TaskInvocation(eventStream, r, taskCleanup)
     addInhabitants(+1)
-    try {
-      executeTask(invocation)
-    } catch {
+    try executeTask(invocation)
+    catch {
       case t: Throwable ⇒
         addInhabitants(-1)
         throw t
@@ -240,11 +238,8 @@ abstract class MessageDispatcher(
     final def run() {
       shutdownSchedule match {
         case SCHEDULED ⇒
-          try {
-            if (inhabitants == 0) shutdown() //Warning, racy
-          } finally {
-            while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
-          }
+          try if (inhabitants == 0) shutdown() //Warning, racy
+          finally while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
         case RESCHEDULED ⇒
           if (updateShutdownSchedule(RESCHEDULED, SCHEDULED))
             scheduleShutdownAction()

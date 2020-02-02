@@ -169,11 +169,10 @@ object SbtExternalSystemManager {
     projectJdkName
       .flatMap(name => Option(ProjectJdkTable.getInstance().findJdk(name)))
       .flatMap { sdk =>
-        try {
-          sdk.getSdkType
-            .isInstanceOf[AndroidSdkType]
-            .option(Map("ANDROID_HOME" -> sdk.getSdkModificator.getHomePath))
-        } catch {
+        try sdk.getSdkType
+          .isInstanceOf[AndroidSdkType]
+          .option(Map("ANDROID_HOME" -> sdk.getSdkModificator.getHomePath))
+        catch {
           case _: NoClassDefFoundError => None
         }
       }

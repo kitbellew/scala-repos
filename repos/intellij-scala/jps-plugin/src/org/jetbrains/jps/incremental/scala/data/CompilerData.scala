@@ -31,23 +31,23 @@ object CompilerData {
     val target = chunk.representativeTarget
     val module = target.getModule
 
-    val compilerJars = if (SettingsManager.hasScalaSdk(module)) {
-      compilerJarsIn(module).flatMap {
-        case jars: CompilerJars =>
-          val absentJars = jars.files.filter(!_.exists)
-          Either.cond(
-            absentJars.isEmpty,
-            Some(jars),
-            "Scala compiler JARs not found (module '" + chunk
-              .representativeTarget()
-              .getModule
-              .getName + "'): "
-              + absentJars.map(_.getPath).mkString(", ")
-          )
-      }
-    } else {
-      Right(None)
-    }
+    val compilerJars =
+      if (SettingsManager.hasScalaSdk(module))
+        compilerJarsIn(module).flatMap {
+          case jars: CompilerJars =>
+            val absentJars = jars.files.filter(!_.exists)
+            Either.cond(
+              absentJars.isEmpty,
+              Some(jars),
+              "Scala compiler JARs not found (module '" + chunk
+                .representativeTarget()
+                .getModule
+                .getName + "'): "
+                + absentJars.map(_.getPath).mkString(", ")
+            )
+        }
+      else
+        Right(None)
 
     compilerJars.flatMap { jars =>
       val incrementalityType = SettingsManager
@@ -70,20 +70,19 @@ object CompilerData {
 
         val jvmSdk =
           if (globalSettings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
-                .get(context) != null) {
+                .get(context) != null)
             Option(globalSettings.getCompileServerSdk).flatMap { sdkName =>
               val libraries = model.getGlobal.getLibraryCollection
                 .getLibraries(JpsJavaSdkType.INSTANCE)
                 .asScala
               libraries.find(_.getName == sdkName).map(_.getProperties)
             }
-          } else {
+          else
             Option(
               model.getProject.getSdkReferencesTable.getSdkReference(
                 JpsJavaSdkType.INSTANCE))
               .flatMap(references => Option(references.resolve))
               .map(_.getProperties)
-          }
 
         if (jvmSdk.contains(moduleJdk)) Right(None)
         else {
@@ -133,7 +132,7 @@ object CompilerData {
         val extraJars =
           files.filterNot(file => file == libraryJar || file == compilerJar)
 
-        val reflectJarError = {
+        val reflectJarError =
           readProperty(compilerJar, "compiler.properties", "version.number")
             .flatMap {
               case version
@@ -144,7 +143,6 @@ object CompilerData {
                   .map(_ + " in Scala compiler classpath in Scala SDK " + sdk.getName)
               case _ => None
             }
-        }
 
         reflectJarError.toLeft(CompilerJars(libraryJar, compilerJar, extraJars))
       }

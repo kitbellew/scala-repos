@@ -93,9 +93,8 @@ private[finagle] class Cache[A](
       val rv = Some(deque.pop()._2)
       if (deque.isEmpty) cancelTimer()
       rv
-    } else {
+    } else
       None
-    }
   }
 
   /**
@@ -109,9 +108,8 @@ private[finagle] class Cache[A](
         // should ditch *oldest* items, so take from last of deque
         val (time, oldest) = deque.removeLast()
         Some(oldest)
-      } else {
+      } else
         None
-      }
     }
     evicted foreach { evict(_) }
   }

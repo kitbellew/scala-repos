@@ -80,7 +80,7 @@ trait Adaptations {
           t.pos,
           adaptWarningMessage(
             "No automatic adaptation here: use explicit parentheses."))
-      else if (args.isEmpty) {
+      else if (args.isEmpty)
         if (settings.future)
           context.error(
             t.pos,
@@ -95,7 +95,7 @@ trait Adaptations {
                                                                                      "this is unlikely to be what you want.")
           context.deprecationWarning(t.pos, t.symbol, adaptWarningMessage(msg))
         }
-      } else if (settings.warnAdaptedArgs)
+      else if (settings.warnAdaptedArgs)
         context.warning(
           t.pos,
           adaptWarningMessage(

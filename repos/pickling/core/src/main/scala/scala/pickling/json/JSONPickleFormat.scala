@@ -131,7 +131,7 @@ package json {
           isIgnoringFields = true
         } else {
           tags.push(realTag)
-          if (primitives.contains(realTag.key)) {
+          if (primitives.contains(realTag.key))
             // Null always goes out raw.
             if (hints.isElidedType || realTag.key == FastTypeTag.Null.key)
               primitives(realTag.key)(picklee)
@@ -147,7 +147,7 @@ package json {
               append("}")
               indent()
             }
-          } else {
+          else {
             appendLine("{")
             if (!hints.isElidedType) {
               // quickly decide whether we should use picklee.getClass instead
@@ -291,15 +291,15 @@ package json {
       nested
     }
     def beginEntry(): String = withHints { hints =>
-      lastReadTag = {
+      lastReadTag =
         if (datum == null) FastTypeTag.Null.key
-        else if (hints.isElidedType) {
+        else if (hints.isElidedType)
           datum match {
             case JSONObject(fields) if fields.contains("$ref") =>
               FastTypeTag.Ref.key
             case _ => hints.elidedType.get.key
           }
-        } else {
+        else
           datum match {
             case JSONObject(fields) if fields.contains("$ref") =>
               FastTypeTag.Ref.key
@@ -312,8 +312,6 @@ package json {
               throw new PicklingException(
                 s"Logic pickling error:  Could not find a type tag on primitive, and no elided type was hinted: $value")
           }
-        }
-      }
       lastReadTag
     }
     def atPrimitive: Boolean = primitives.contains(lastReadTag)

@@ -33,9 +33,8 @@ object Json extends Logging {
     */
   def parseFull(input: String): Option[Any] =
     lock synchronized {
-      try {
-        JSON.parseFull(input)
-      } catch {
+      try JSON.parseFull(input)
+      catch {
         case t: Throwable =>
           throw new KafkaException(
             "Can't parse json string: %s".format(input),

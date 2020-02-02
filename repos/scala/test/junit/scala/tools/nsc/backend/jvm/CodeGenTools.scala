@@ -92,10 +92,9 @@ object CodeGenTools {
       outDir: AbstractFile): List[(String, Array[Byte])] = {
     def files(dir: AbstractFile): List[(String, Array[Byte])] = {
       val res = ListBuffer.empty[(String, Array[Byte])]
-      for (f <- dir.iterator) {
+      for (f <- dir.iterator)
         if (!f.isDirectory) res += ((f.name, f.toByteArray))
         else if (f.name != "." && f.name != "..") res ++= files(f)
-      }
       res.toList
     }
     files(outDir)

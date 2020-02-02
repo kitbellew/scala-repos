@@ -115,12 +115,12 @@ trait TreeAndTypeAnalysis extends Debugging {
         case sym: RefinementClassSymbol =>
           val parentSubtypes =
             tp.parents.flatMap(parent => enumerateSubtypes(parent, grouped))
-          if (parentSubtypes exists (_.nonEmpty)) {
+          if (parentSubtypes exists (_.nonEmpty))
             // If any of the parents is enumerable, then the refinement type is enumerable.
             // We must only include subtypes of the parents that conform to `tp`.
             // See neg/virtpatmat_exhaust_compound.scala for an example.
             parentSubtypes map (_.filter(_ <:< tp))
-          } else Nil
+          else Nil
         // make sure it's not a primitive, else (5: Byte) match { case 5 => ... } sees no Byte
         case sym if sym.isSealed =>
           val tpApprox = typer.infer.approximateAbstracts(tp)
@@ -644,12 +644,11 @@ trait MatchAnalysis extends MatchApproximation {
               findAllModelsFor(propToSolvable(matchFails), prevBinder.pos)
 
             val scrutVar = Var(prevBinderTree)
-            val counterExamples = {
+            val counterExamples =
               matchFailModels.flatMap { model =>
                 val varAssignments = expandModel(model)
                 varAssignments.flatMap(modelToCounterExample(scrutVar) _)
               }
-            }
 
             // sorting before pruning is important here in order to
             // keep neg/t7020.scala stable
@@ -842,18 +841,17 @@ trait MatchAnalysis extends MatchApproximation {
         if (equal.isEmpty) {
           val oneHot = for {
             s <- syms
-          } yield {
-            addVarAssignment(List(s.const), syms.filterNot(_ == s).map(_.const))
-          }
+          } yield addVarAssignment(
+            List(s.const),
+            syms.filterNot(_ == s).map(_.const))
           allEqual :: allNotEqual :: oneHot
-        } else {
+        } else
           allEqual :: allNotEqual :: Nil
-        }
       }
 
-      if (expanded.isEmpty) {
+      if (expanded.isEmpty)
         List(varAssignment)
-      } else {
+      else {
         // we need the cartesian product here,
         // since we want to report all missing cases
         // (i.e., combinations)
@@ -861,18 +859,14 @@ trait MatchAnalysis extends MatchApproximation {
           for {
             map1 <- xs
             map2 <- ys
-          } yield {
-            map1 ++ map2
-          })
+          } yield map1 ++ map2)
 
         // add expanded variables
         // note that we can just use `++`
         // since the Maps have disjoint keySets
         for {
           m <- cartesianProd
-        } yield {
-          varAssignment ++ m
-        }
+        } yield varAssignment ++ m
       }
     }
 
@@ -1074,11 +1068,10 @@ trait MatchAnalysis extends MatchApproximation {
         cases: List[List[TreeMaker]],
         pt: Type,
         suppression: Suppression): Unit = {
-      if (!suppression.suppressUnreachable) {
+      if (!suppression.suppressUnreachable)
         unreachableCase(prevBinder, cases, pt) foreach { caseIndex =>
           reportUnreachable(cases(caseIndex).last.pos)
         }
-      }
       if (!suppression.suppressExhaustive) {
         val counterExamples = exhaustive(prevBinder, cases, pt)
         if (counterExamples.nonEmpty)

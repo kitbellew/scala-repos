@@ -85,7 +85,7 @@ object Main {
     val syms = scalaSig.topLevelClasses ::: scalaSig.topLevelObjects
     syms.head.parent match {
       //Partial match
-      case Some(p) if (p.name != "<empty>") => {
+      case Some(p) if (p.name != "<empty>") =>
         val path = p.path
         if (!isPackageObject) {
           stream.print("package ")
@@ -99,14 +99,12 @@ object Main {
             stream.print("\n")
           }
         }
-      }
       case _ =>
     }
     // Print classes
     val printer = new ScalaSigPrinter(stream, printPrivates)
-    for (c <- syms) {
+    for (c <- syms)
       printer.printSymbol(c)
-    }
     baos.toString
   }
 
@@ -161,14 +159,13 @@ object Main {
     val cls = path.findClass(encName)
     if (cls.isDefined && cls.get.binary.isDefined) {
       val cfile = cls.get.binary.get
-      if (verbose) {
+      if (verbose)
         Console.println(
           Console.BOLD + "FILENAME" + Console.RESET + " = " + cfile.path)
-      }
       val bytes = cfile.toByteArray
-      if (isScalaFile(bytes)) {
+      if (isScalaFile(bytes))
         Console.println(decompileScala(bytes, isPackageObjectFile(encName)))
-      } else {
+      else {
         // construct a reader for the classfile content
         val reader = new ByteArrayReader(cfile.toByteArray)
         // parse the classfile
@@ -336,10 +333,9 @@ object Main {
         List("-classpath", "-cp") map (arguments getArgument _) reduceLeft (_ orElse _)
       val path = cparg map (fromPathString(_)) getOrElse EmptyClasspath
       // print the classpath if output is verbose
-      if (verbose) {
+      if (verbose)
         Console.println(
           Console.BOLD + "CLASSPATH" + Console.RESET + " = " + path)
-      }
       // process all given classes
       arguments.getOthers.foreach(process(arguments, path))
     }

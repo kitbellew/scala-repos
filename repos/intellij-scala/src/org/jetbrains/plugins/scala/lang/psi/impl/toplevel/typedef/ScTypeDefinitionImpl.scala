@@ -107,38 +107,32 @@ abstract class ScTypeDefinitionImpl protected (
 
   def getType(ctx: TypingContext) = {
     val parentClass: ScTemplateDefinition = containingClass
-    if (typeParameters.isEmpty) {
-      if (parentClass != null) {
+    if (typeParameters.isEmpty)
+      if (parentClass != null)
         Success(
           ScProjectionType(
             ScThisType(parentClass),
             this,
             superReference = false),
           Some(this))
-      } else {
+      else
         Success(ScType.designator(this), Some(this))
-      }
-    } else {
-      if (parentClass != null) {
-        Success(
-          ScParameterizedType(
-            ScProjectionType(
-              ScThisType(parentClass),
-              this,
-              superReference = false),
-            typeParameters.map(
-              new ScTypeParameterType(_, ScSubstitutor.empty))),
-          Some(this)
-        )
-      } else {
-        Success(
-          ScParameterizedType(
-            ScType.designator(this),
-            typeParameters.map(
-              new ScTypeParameterType(_, ScSubstitutor.empty))),
-          Some(this))
-      }
-    }
+    else if (parentClass != null)
+      Success(
+        ScParameterizedType(
+          ScProjectionType(
+            ScThisType(parentClass),
+            this,
+            superReference = false),
+          typeParameters.map(new ScTypeParameterType(_, ScSubstitutor.empty))),
+        Some(this)
+      )
+    else
+      Success(
+        ScParameterizedType(
+          ScType.designator(this),
+          typeParameters.map(new ScTypeParameterType(_, ScSubstitutor.empty))),
+        Some(this))
   }
 
   def getTypeWithProjections(
@@ -473,9 +467,8 @@ abstract class ScTypeDefinitionImpl protected (
 
   override def isDeprecated: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScTemplateDefinitionStub].isDeprecated
-    }
     hasAnnotation("scala.deprecated").isDefined || hasAnnotation(
       "java.lang.Deprecated").isDefined
   }

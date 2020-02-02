@@ -66,14 +66,13 @@ class SourceMapTest {
           val throwSte = trace2.tail.head
           assertTrue(normFileName(throwSte).contains("/SourceMapTest.scala"))
           throwSte
-        } else {
+        } else
           /* In fullOpt, it may happen that the constructor of
            * TestException is inlined, in which case there is no trace of
            * it anymore. The first stack element in SourceMapTest.scala is
            * therefore the one we're interested in.
            */
           topSte
-        }
 
         assertEquals(lineNo, throwSte.getLineNumber)
     }
@@ -250,9 +249,8 @@ trait Writer {
             if (c < ' ') {
               val t = "000" + Integer.toHexString(c)
               sb.append("\\u" + t.takeRight(4))
-            } else {
+            } else
               sb.append(c.toString)
-            }
         }
         i += 1
       }
@@ -429,26 +427,24 @@ class Json extends Writer2 {
         /**/
         ch = s.charAt(pos) /**/
         /**/
-        chKind = /***/ if (ch < 255) {
+        chKind =
+          /***/ if (ch < 255)
+            /**/
+            /**/ /***/
+            charKind(ch)
+          else
+            /**/
+            /**/ /***/
+            Other
 
-          /**/
-          /**/ /***/
-          charKind(ch)
-        } else {
-
-          /**/
-          /**/ /***/
-          Other
-        } /**/
+        /**/
         pos += 1
         if (ch == '\n'.toInt) {
           chLinePos += 1
           chCharPos = 1
-        } else {
-
+        } else
           /**/
           chCharPos += 1 /**/
-        }
       } else {
         ch = -1
         pos = size + 1
@@ -484,21 +480,18 @@ class Json extends Writer2 {
         chNext()
         getDigits()
         BIGNUMBER
-      } else {
+      } else
         NUMBER
-      }
       val k2 = if (ch == 'E'.toInt || ch == 'e'.toInt) {
         chNext()
-        if (ch == '+'.toInt) {
+        if (ch == '+'.toInt)
           chNext()
-        } else if (ch == '-'.toInt) {
+        else if (ch == '-'.toInt)
           chNext()
-        }
         getDigits()
         FLOATNUMBER
-      } else {
+      } else
         k1
-      }
 
       /**/
       tokenKind = k2 /**/
@@ -541,9 +534,8 @@ class Json extends Writer2 {
         kind match {
           case Letter =>
             val first = chMark
-            while (chKind == Letter || chKind == Digit) {
+            while (chKind == Letter || chKind == Digit)
               chNext()
-            }
             tokenKind = ID
             tokenValue = chSubstr(first)
 
@@ -557,7 +549,7 @@ class Json extends Writer2 {
             val sb = new StringBuilder(50)
             chNext()
             var first = chMark
-            while (ch != '"'.toInt && ch >= 32) {
+            while (ch != '"'.toInt && ch >= 32)
               if (ch == '\\'.toInt) {
                 sb.append(chSubstr(first))
                 chNext()
@@ -580,10 +572,8 @@ class Json extends Writer2 {
                     sb.append(code.toChar.toString)
                 }
                 first = chMark
-              } else {
+              } else
                 chNext()
-              }
-            }
             if (ch != '"') chError("Unexpected string character: " + ch.toChar)
 
             sb.append(chSubstr(first))
@@ -592,9 +582,8 @@ class Json extends Writer2 {
 
             tokenValue = sb.toString()
             chNext()
-            if (tokenValue.length() == 0 && ch == '{') {
+            if (tokenValue.length() == 0 && ch == '{')
               handleRaw()
-            }
 
           case Colon => handle(COLON) /**/
           case Comma => handle(COMMA) /**/
@@ -677,9 +666,8 @@ class Json extends Writer2 {
       JsObject(result.toMap)
     }
     def handleNumber(name: String, f: String => Unit) = {
-      try {
-        f(tokenValue)
-      } catch {
+      try f(tokenValue)
+      catch {
         case _: Throwable => tokenError("Bad " + name)
       }
       val old = tokenValue

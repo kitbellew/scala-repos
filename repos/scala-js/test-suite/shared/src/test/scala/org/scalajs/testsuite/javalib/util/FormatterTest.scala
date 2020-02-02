@@ -172,24 +172,21 @@ class FormatterTest {
     assertF("  0x5", "%#5x", new JInteger(5))
     assertF("  0X5", "%#5X", new JInteger(5))
     assertF("fffffffd", "%x", new JInteger(-3))
-    if (!executingInJVM) {
+    if (!executingInJVM)
       // expected:<f[ffffff]c> but was:<f[]c>
       assertF("fffffffc", "%x", new JByte(-4.toByte))
-    }
     assertF("0x005", "%0#5x", new JByte(5.toByte))
     assertF("  0x5", "%#5x", new JByte(5.toByte))
     assertF("  0X5", "%#5X", new JByte(5.toByte))
-    if (!executingInJVM) {
+    if (!executingInJVM)
       // expected:<f[ffffff]d> but was:<f[]d>
       assertF("fffffffd", "%x", new JByte(-3.toByte))
-    }
     assertF("0x005", "%0#5x", new JShort(5.toShort))
     assertF("  0x5", "%#5x", new JShort(5.toShort))
     assertF("  0X5", "%#5X", new JShort(5.toShort))
-    if (!executingInJVM) {
+    if (!executingInJVM)
       // expected:<fff[ffff]d> but was:<fff[]d>
       assertF("fffffffd", "%x", new JShort(-3.toShort))
-    }
     assertF("fffffffffffffffb", "%x", new JLong(-5L))
     assertF("1A", "%X", new JLong(26L))
   }

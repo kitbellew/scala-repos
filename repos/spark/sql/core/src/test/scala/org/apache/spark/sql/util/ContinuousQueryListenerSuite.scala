@@ -136,9 +136,7 @@ class ContinuousQueryListenerSuite
       sqlContext.streams.removeListener(listener1)
       assert(isListenerActive(listener1) === false)
       assert(isListenerActive(listener2) === true)
-    } finally {
-      addedListeners.foreach(sqlContext.streams.removeListener)
-    }
+    } finally addedListeners.foreach(sqlContext.streams.removeListener)
   }
 
   test("event ordering") {
@@ -162,14 +160,10 @@ class ContinuousQueryListenerSuite
   private def withListenerAdded(listener: ContinuousQueryListener)(
       body: => Unit): Unit = {
     @volatile var query: StreamExecution = null
-    try {
-      failAfter(1 minute) {
-        sqlContext.streams.addListener(listener)
-        body
-      }
-    } finally {
-      sqlContext.streams.removeListener(listener)
-    }
+    try failAfter(1 minute) {
+      sqlContext.streams.addListener(listener)
+      body
+    } finally sqlContext.streams.removeListener(listener)
   }
 
   private def addedListeners(): Array[ContinuousQueryListener] = {

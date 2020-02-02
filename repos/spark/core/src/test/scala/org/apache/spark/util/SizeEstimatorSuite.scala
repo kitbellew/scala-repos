@@ -150,14 +150,12 @@ class SizeEstimatorSuite
       SizeEstimator.estimate(Array.fill(10000)(new DummyString(arr))))
 
     val buf = new ArrayBuffer[DummyString]()
-    for (i <- 0 until 5000) {
+    for (i <- 0 until 5000)
       buf.append(new DummyString(new Array[Char](10)))
-    }
     assertResult(340016)(SizeEstimator.estimate(buf.toArray))
 
-    for (i <- 0 until 5000) {
+    for (i <- 0 until 5000)
       buf.append(new DummyString(arr))
-    }
     assertResult(683912)(SizeEstimator.estimate(buf.toArray))
 
     // If an array contains the *same* element many times, we should only count it once.

@@ -80,9 +80,8 @@ private[spark] class HadoopPartition(rddId: Int, idx: Int, s: InputSplit)
         Map(
           "map_input_file" -> is.getPath().toString(),
           "mapreduce_map_input_file" -> is.getPath().toString())
-      } else {
+      } else
         Map()
-      }
     envVars
   }
 }
@@ -118,9 +117,8 @@ class HadoopRDD[K, V](
     extends RDD[(K, V)](sc, Nil)
     with Logging {
 
-  if (initLocalJobConfFuncOpt.isDefined) {
+  if (initLocalJobConfFuncOpt.isDefined)
     sparkContext.clean(initLocalJobConfFuncOpt.get)
-  }
 
   def this(
       sc: SparkContext,
@@ -153,7 +151,7 @@ class HadoopRDD[K, V](
   // Returns a JobConf that will be used on slaves to obtain input splits for Hadoop reads.
   protected def getJobConf(): JobConf = {
     val conf: Configuration = broadcastedConf.value.value
-    if (shouldCloneJobConf) {
+    if (shouldCloneJobConf)
       // Hadoop Configuration objects are not thread-safe, which may lead to various problems if
       // one job modifies a configuration while another reads it (SPARK-2546).  This problem occurs
       // somewhat rarely because most jobs treat the configuration as though it's immutable.  One
@@ -164,32 +162,28 @@ class HadoopRDD[K, V](
       HadoopRDD.CONFIGURATION_INSTANTIATION_LOCK.synchronized {
         logDebug("Cloning Hadoop Configuration")
         val newJobConf = new JobConf(conf)
-        if (!conf.isInstanceOf[JobConf]) {
+        if (!conf.isInstanceOf[JobConf])
           initLocalJobConfFuncOpt.map(f => f(newJobConf))
-        }
         newJobConf
       }
-    } else {
-      if (conf.isInstanceOf[JobConf]) {
-        logDebug("Re-using user-broadcasted JobConf")
-        conf.asInstanceOf[JobConf]
-      } else if (HadoopRDD.containsCachedMetadata(jobConfCacheKey)) {
-        logDebug("Re-using cached JobConf")
-        HadoopRDD.getCachedMetadata(jobConfCacheKey).asInstanceOf[JobConf]
-      } else {
-        // Create a JobConf that will be cached and used across this RDD's getJobConf() calls in the
-        // local process. The local cache is accessed through HadoopRDD.putCachedMetadata().
-        // The caching helps minimize GC, since a JobConf can contain ~10KB of temporary objects.
-        // Synchronize to prevent ConcurrentModificationException (SPARK-1097, HADOOP-10456).
-        HadoopRDD.CONFIGURATION_INSTANTIATION_LOCK.synchronized {
-          logDebug("Creating new JobConf and caching it for later re-use")
-          val newJobConf = new JobConf(conf)
-          initLocalJobConfFuncOpt.map(f => f(newJobConf))
-          HadoopRDD.putCachedMetadata(jobConfCacheKey, newJobConf)
-          newJobConf
-        }
+    else if (conf.isInstanceOf[JobConf]) {
+      logDebug("Re-using user-broadcasted JobConf")
+      conf.asInstanceOf[JobConf]
+    } else if (HadoopRDD.containsCachedMetadata(jobConfCacheKey)) {
+      logDebug("Re-using cached JobConf")
+      HadoopRDD.getCachedMetadata(jobConfCacheKey).asInstanceOf[JobConf]
+    } else
+      // Create a JobConf that will be cached and used across this RDD's getJobConf() calls in the
+      // local process. The local cache is accessed through HadoopRDD.putCachedMetadata().
+      // The caching helps minimize GC, since a JobConf can contain ~10KB of temporary objects.
+      // Synchronize to prevent ConcurrentModificationException (SPARK-1097, HADOOP-10456).
+      HadoopRDD.CONFIGURATION_INSTANTIATION_LOCK.synchronized {
+        logDebug("Creating new JobConf and caching it for later re-use")
+        val newJobConf = new JobConf(conf)
+        initLocalJobConfFuncOpt.map(f => f(newJobConf))
+        HadoopRDD.putCachedMetadata(jobConfCacheKey, newJobConf)
+        newJobConf
       }
-    }
   }
 
   protected def getInputFormat(conf: JobConf): InputFormat[K, V] = {
@@ -210,9 +204,8 @@ class HadoopRDD[K, V](
     val inputFormat = getInputFormat(jobConf)
     val inputSplits = inputFormat.getSplits(jobConf, minPartitions)
     val array = new Array[Partition](inputSplits.size)
-    for (i <- 0 until inputSplits.size) {
+    for (i <- 0 until inputSplits.size)
       array(i) = new HadoopPartition(id, i, inputSplits(i))
-    }
     array
   }
 
@@ -275,18 +268,15 @@ class HadoopRDD[K, V](
       val value: V = reader.createValue()
 
       override def getNext(): (K, V) = {
-        try {
-          finished = !reader.next(key, value)
-        } catch {
+        try finished = !reader.next(key, value)
+        catch {
           case eof: EOFException =>
             finished = true
         }
-        if (!finished) {
+        if (!finished)
           inputMetrics.incRecordsReadInternal(1)
-        }
-        if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0) {
+        if (inputMetrics.recordsRead % SparkHadoopUtil.UPDATE_INPUT_METRICS_INTERVAL_RECORDS == 0)
           updateBytesRead()
-        }
         (key, value)
       }
 
@@ -297,32 +287,26 @@ class HadoopRDD[K, V](
           // reader more than once, since that exposes us to MAPREDUCE-5918 when running against
           // Hadoop 1.x and older Hadoop 2.x releases. That bug can lead to non-deterministic
           // corruption issues when reading compressed input.
-          try {
-            reader.close()
-          } catch {
+          try reader.close()
+          catch {
             case e: Exception =>
-              if (!ShutdownHookManager.inShutdown()) {
+              if (!ShutdownHookManager.inShutdown())
                 logWarning("Exception in RecordReader.close()", e)
-              }
-          } finally {
-            reader = null
-          }
-          if (getBytesReadCallback.isDefined) {
+          } finally reader = null
+          if (getBytesReadCallback.isDefined)
             updateBytesRead()
-          } else if (split.inputSplit.value.isInstanceOf[FileSplit] ||
-                     split.inputSplit.value.isInstanceOf[CombineFileSplit]) {
+          else if (split.inputSplit.value.isInstanceOf[FileSplit] ||
+                   split.inputSplit.value.isInstanceOf[CombineFileSplit])
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
-            try {
-              inputMetrics.incBytesReadInternal(
-                split.inputSplit.value.getLength)
-            } catch {
+            try inputMetrics.incBytesReadInternal(
+              split.inputSplit.value.getLength)
+            catch {
               case e: java.io.IOException =>
                 logWarning(
                   "Unable to get input size to set InputMetrics for task",
                   e)
             }
-          }
         }
       }
     }
@@ -360,12 +344,11 @@ class HadoopRDD[K, V](
   }
 
   override def persist(storageLevel: StorageLevel): this.type = {
-    if (storageLevel.deserialized) {
+    if (storageLevel.deserialized)
       logWarning(
         "Caching NewHadoopRDDs as deserialized objects usually leads to undesired" +
           " behavior because Hadoop's RecordReader reuses the same Writable object for all records." +
           " Use a map transformation to make copies of the records.")
-    }
     super.persist(storageLevel)
   }
 
@@ -453,9 +436,8 @@ private[spark] object HadoopRDD extends Logging {
   }
 
   private[spark] val SPLIT_INFO_REFLECTIONS: Option[SplitInfoReflections] =
-    try {
-      Some(new SplitInfoReflections)
-    } catch {
+    try Some(new SplitInfoReflections)
+    catch {
       case e: Exception =>
         logDebug(
           "SplitLocationInfo and other new Hadoop classes are " +
@@ -471,16 +453,14 @@ private[spark] object HadoopRDD extends Logging {
       val locationStr = HadoopRDD.SPLIT_INFO_REFLECTIONS.get.getLocation
         .invoke(loc)
         .asInstanceOf[String]
-      if (locationStr != "localhost") {
+      if (locationStr != "localhost")
         if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
               .invoke(loc)
               .asInstanceOf[Boolean]) {
           logDebug("Partition " + locationStr + " is cached by Hadoop.")
           out += new HDFSCacheTaskLocation(locationStr).toString
-        } else {
+        } else
           out += new HostTaskLocation(locationStr).toString
-        }
-      }
     }
     out.seq
   }

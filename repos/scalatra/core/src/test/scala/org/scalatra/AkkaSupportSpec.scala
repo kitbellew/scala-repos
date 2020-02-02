@@ -185,9 +185,8 @@ class AkkaSupportSpec extends MutableScalatraSpec {
       val fIdsToresponses = Future.sequence(idsToResponseFs)
       val idsToResponses = Await.result(fIdsToresponses, 60.seconds)
       foreachWhen(idsToResponses) {
-        case (expected, actual) => {
+        case (expected, actual) =>
           expected must_== actual
-        }
       }
     }
   }

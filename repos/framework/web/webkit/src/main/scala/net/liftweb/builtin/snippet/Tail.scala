@@ -45,7 +45,7 @@ object Head extends DispatchSnippet {
     def validHeadTagsOnly(in: NodeSeq): NodeSeq =
       in flatMap {
         case Group(ns) => validHeadTagsOnly(ns)
-        case e: Elem if (null eq e.prefix) && valid.contains(e.label) => {
+        case e: Elem if (null eq e.prefix) && valid.contains(e.label) =>
           new Elem(
             e.prefix,
             e.label,
@@ -53,7 +53,6 @@ object Head extends DispatchSnippet {
             e.scope,
             e.minimizeEmpty,
             validHeadTagsOnly(e.child): _*)
-        }
         case e: Elem if (null eq e.prefix) => NodeSeq.Empty
         case x                             => x
       }
@@ -63,11 +62,10 @@ object Head extends DispatchSnippet {
     <head>{
       if ((S.attr("withResourceId") or S.attr("withresourceid"))
             .filter(Helpers.toBoolean)
-            .isDefined) {
+            .isDefined)
         WithResourceId.render(xhtml)
-      } else {
+      else
         xhtml
-      }
     }</head>
   }
 }

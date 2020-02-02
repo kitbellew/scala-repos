@@ -236,9 +236,7 @@ class MonitorableThread(runnable: Runnable, name: String)
     try {
       MonitorableThread.alive.incrementAndGet
       super.run
-    } finally {
-      MonitorableThread.alive.decrementAndGet
-    }
+    } finally MonitorableThread.alive.decrementAndGet
 }
 
 /**
@@ -250,16 +248,12 @@ class BoundedExecutorDecorator(val executor: ExecutorService, bound: Int)
 
   override def execute(command: Runnable) = {
     semaphore.acquire
-    try {
-      executor.execute(new Runnable() {
-        def run =
-          try {
-            command.run
-          } finally {
-            semaphore.release
-          }
-      })
-    } catch {
+    try executor.execute(new Runnable() {
+      def run =
+        try command.run
+        finally semaphore.release
+    })
+    catch {
       case e: RejectedExecutionException =>
         EventHandler.warning(this, e.toString)
         semaphore.release
@@ -314,9 +308,8 @@ trait LazyExecutorService extends ExecutorServiceDelegate {
 
   def createExecutor: ExecutorService
 
-  lazy val executor = {
+  lazy val executor =
     createExecutor
-  }
 }
 
 class LazyExecutorServiceWrapper(executorFactory: => ExecutorService)

@@ -152,11 +152,10 @@ abstract class TreeCheckers extends Analyzer {
       movedMsgs.clear()
 
       // duplicate defs
-      for ((sym, defs) <- defSyms; if defs.size > 1) {
+      for ((sym, defs) <- defSyms; if defs.size > 1)
         errorFn(
           "%s DefTrees with symbol '%s': %s"
             .format(defs.size, ownerstr(sym), defs map beststr mkString ", "))
-      }
       defSyms.clear()
     }
 
@@ -179,10 +178,9 @@ abstract class TreeCheckers extends Analyzer {
 
   def posstr(p: Position): String = (
     if (p eq null) ""
-    else {
+    else
       try p.source.path + ":" + p.line
       catch { case _: UnsupportedOperationException => p.toString }
-    }
   )
 
   def errorFn(pos: Position, msg: Any): Unit =
@@ -328,7 +326,7 @@ abstract class TreeCheckers extends Analyzer {
 
         tree match {
           case DefDef(_, _, _, _, _, _) =>
-            if (sym.hasAccessorFlag && !sym.isDeferred) {
+            if (sym.hasAccessorFlag && !sym.isDeferred)
               sym.tpe.resultType match {
                 case _: ConstantType => ()
                 case _ =>
@@ -343,13 +341,11 @@ abstract class TreeCheckers extends Analyzer {
                       sym + " is getter or setter, but accessed sym " + accessed + " shows " + agetter + " and " + asetter)
                   }
               }
-            }
           case ValDef(_, _, _, _) =>
-            if (sym.hasGetter && !sym.isOuterField && !sym.isOuterAccessor) {
+            if (sym.hasGetter && !sym.isOuterField && !sym.isOuterAccessor)
               assertFn(
                 sym.getterIn(sym.owner) != NoSymbol,
                 ownerstr(sym) + " has getter but cannot be found. " + sym.ownerChain)
-            }
           case Apply(fn, args) =>
             if (args exists (_ == EmptyTree))
               errorFn(

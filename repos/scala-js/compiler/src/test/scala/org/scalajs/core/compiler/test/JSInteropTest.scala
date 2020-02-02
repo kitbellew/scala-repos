@@ -19,16 +19,14 @@ class JSInteropTest extends DirectTest with TestHelpers {
   def warnNoJSNativeAnnotation: Unit =
     for {
       obj <- Seq("class", "trait", "object")
-    } yield {
-      s"""
+    } yield s"""
       $obj A extends js.Object
       """ hasWarns
-        s"""
+      s"""
         |newSource1.scala:5: warning: Classes, traits and objects inheriting from js.Any should be annotated with @js.native, unless they have @ScalaJSDefined. The default will switch to Scala.js-defined in the next major version of Scala.js.
         |      $obj A extends js.Object
         |      ${" " * obj.length} ^
       """
-    }
   @Test
   def warnJSPackageObjectDeprecated: Unit =
     s"""
@@ -43,18 +41,16 @@ class JSInteropTest extends DirectTest with TestHelpers {
   def noJSNativeAnnotWithSJSDefinedAnnot: Unit =
     for {
       obj <- Seq("class", "trait", "object")
-    } yield {
-      s"""
+    } yield s"""
       @ScalaJSDefined
       @js.native
       $obj A extends js.Object
       """ hasErrors
-        s"""
+      s"""
         |newSource1.scala:7: error: @ScalaJSDefined and @js.native cannot be used together
         |      $obj A extends js.Object
         |      ${" " * obj.length} ^
       """
-    }
   @Test
   def noJSNativeAnnotWithoutJSAny: Unit = {
 
@@ -116,19 +112,17 @@ class JSInteropTest extends DirectTest with TestHelpers {
   def noScalaStuffInsideNativeJSObject: Unit =
     for {
       inner <- Seq("class", "trait", "object")
-    } yield {
-      s"""
+    } yield s"""
       @js.native
       object A extends js.Object {
         $inner A
       }
       """ hasErrors
-        s"""
+      s"""
         |newSource1.scala:7: error: Native JS objects cannot contain inner Scala traits, classes or objects (i.e., not extending js.Any)
         |        $inner A
         |        ${" " * inner.length} ^
       """
-    }
   @Test
   def noNonSyntheticCompanionInsideNativeJSObject: Unit = {
 
@@ -159,19 +153,17 @@ class JSInteropTest extends DirectTest with TestHelpers {
   def noScalaJSDefinedClassObjectInsideNativeJSObject: Unit =
     for {
       inner <- Seq("class", "object")
-    } yield {
-      s"""
+    } yield s"""
       @js.native
       object A extends js.Object {
         @ScalaJSDefined $inner A extends js.Object
       }
       """ hasErrors
-        s"""
+      s"""
         |newSource1.scala:7: error: Native JS objects cannot contain inner Scala.js-defined JS classes or objects
         |        @ScalaJSDefined $inner A extends js.Object
         |                        ${" " * inner.length} ^
       """
-    }
   @Test
   def noBadSetters: Unit =
     """
@@ -557,20 +549,18 @@ class JSInteropTest extends DirectTest with TestHelpers {
   def noNativeClassObjectInsideScalaJSDefinedObject: Unit =
     for {
       inner <- Seq("class", "object")
-    } {
-      s"""
+    } s"""
       @ScalaJSDefined
       object A extends js.Object {
         @js.native
         $inner B extends js.Object
       }
       """ hasErrors
-        s"""
+      s"""
         |newSource1.scala:8: error: Scala.js-defined JS objects may not have inner native JS classes or objects
         |        $inner B extends js.Object
         |        ${" " * inner.length} ^
       """
-    }
   @Test
   def noNonLiteralJSName: Unit = {
 

@@ -14,9 +14,8 @@ trait JsonSupportServlet[T]
   post("/json") {
     parsedBody match {
       case JNothing ⇒ halt(400, "invalid json")
-      case json: JObject ⇒ {
+      case json: JObject ⇒
         (json \ "name").extract[String]
-      }
       case _ ⇒ halt(400, "unknown json")
     }
   }

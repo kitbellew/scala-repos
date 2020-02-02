@@ -142,9 +142,7 @@ class WorksheetInProcessRunnerFactory {
               ).printStackTrace(new PrintStream(myOut, false))
             case e: Exception =>
               client trace e
-          } finally {
-            myOut.flush()
-          }
+          } finally myOut.flush()
       }
     }
 

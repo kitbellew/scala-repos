@@ -32,7 +32,7 @@ trait States {
     def reificationIsConcrete: Boolean = _reificationIsConcrete
     def reificationIsConcrete_=(value: Boolean): Unit = {
       _reificationIsConcrete = value
-      if (!value && concrete) {
+      if (!value && concrete)
         current match {
           case tpe: Type =>
             CannotReifyWeakType(s" having unresolved type parameter $tpe")
@@ -41,7 +41,6 @@ trait States {
               s" referring to ${sym.kindString} ${sym.fullName} local to the reifee")
           case _ => CannotReifyWeakType("")
         }
-      }
     }
     var reifyStack = reifee :: Nil
     var localSymbols = Map[Symbol, Int]()

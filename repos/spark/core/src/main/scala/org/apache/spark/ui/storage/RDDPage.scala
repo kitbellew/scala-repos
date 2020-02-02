@@ -73,11 +73,10 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val page: Int = {
       // If the user has changed to a larger page size, then go to page 1 in order to avoid
       // IndexOutOfBoundsException.
-      if (blockPageSize <= blockPrevPageSize) {
+      if (blockPageSize <= blockPrevPageSize)
         blockPage
-      } else {
+      else
         1
-      }
     }
     val blockTableHTML =
       try {
@@ -253,11 +252,10 @@ private[ui] class BlockDataSource(
       case unknownColumn =>
         throw new IllegalArgumentException(s"Unknown column: $unknownColumn")
     }
-    if (desc) {
+    if (desc)
       ordering.reverse
-    } else {
+    else
       ordering
-    }
   }
 }
 
@@ -305,11 +303,10 @@ private[ui] class BlockPagedTable(
       "Size on Disk",
       "Executors")
 
-    if (!blockHeaders.contains(sortColumn)) {
+    if (!blockHeaders.contains(sortColumn))
       throw new IllegalArgumentException(s"Unknown column: $sortColumn")
-    }
 
-    val headerRow: Seq[Node] = {
+    val headerRow: Seq[Node] =
       blockHeaders.map { header =>
         if (header == sortColumn) {
           val headerLink = Unparsed(
@@ -336,7 +333,6 @@ private[ui] class BlockPagedTable(
           </th>
         }
       }
-    }
     <thead>{headerRow}</thead>
   }
 

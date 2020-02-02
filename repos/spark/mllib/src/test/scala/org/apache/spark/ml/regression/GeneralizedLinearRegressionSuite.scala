@@ -388,7 +388,7 @@ class GeneralizedLinearRegressionSuite
     for ((link, dataset) <- Seq(
            ("identity", datasetGaussianIdentity),
            ("log", datasetGaussianLog),
-           ("inverse", datasetGaussianInverse))) {
+           ("inverse", datasetGaussianInverse)))
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("gaussian")
@@ -421,7 +421,6 @@ class GeneralizedLinearRegressionSuite
 
         idx += 1
       }
-    }
   }
 
   test("generalized linear regression: gaussian family against glmnet") {
@@ -523,7 +522,7 @@ class GeneralizedLinearRegressionSuite
     for ((link, dataset) <- Seq(
            ("logit", datasetBinomial),
            ("probit", datasetBinomial),
-           ("cloglog", datasetBinomial))) {
+           ("cloglog", datasetBinomial)))
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("binomial")
@@ -558,7 +557,6 @@ class GeneralizedLinearRegressionSuite
 
         idx += 1
       }
-    }
   }
 
   test("generalized linear regression: poisson family against glm") {
@@ -609,7 +607,7 @@ class GeneralizedLinearRegressionSuite
     for ((link, dataset) <- Seq(
            ("log", datasetPoissonLog),
            ("identity", datasetPoissonIdentity),
-           ("sqrt", datasetPoissonSqrt))) {
+           ("sqrt", datasetPoissonSqrt)))
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("poisson")
@@ -642,7 +640,6 @@ class GeneralizedLinearRegressionSuite
 
         idx += 1
       }
-    }
   }
 
   test("generalized linear regression: gamma family against glm") {
@@ -693,7 +690,7 @@ class GeneralizedLinearRegressionSuite
     for ((link, dataset) <- Seq(
            ("inverse", datasetGammaInverse),
            ("identity", datasetGammaIdentity),
-           ("log", datasetGammaLog))) {
+           ("log", datasetGammaLog)))
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("gamma")
@@ -726,7 +723,6 @@ class GeneralizedLinearRegressionSuite
 
         idx += 1
       }
-    }
   }
 
   test("glm summary: gaussian family with weight") {

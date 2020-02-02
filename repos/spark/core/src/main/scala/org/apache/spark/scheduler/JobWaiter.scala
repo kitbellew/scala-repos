@@ -59,14 +59,12 @@ private[spark] class JobWaiter[T](
     synchronized {
       resultHandler(index, result.asInstanceOf[T])
     }
-    if (finishedTasks.incrementAndGet() == totalTasks) {
+    if (finishedTasks.incrementAndGet() == totalTasks)
       jobPromise.success(())
-    }
   }
 
   override def jobFailed(exception: Exception): Unit =
-    if (!jobPromise.tryFailure(exception)) {
+    if (!jobPromise.tryFailure(exception))
       logWarning("Ignore failure", exception)
-    }
 
 }

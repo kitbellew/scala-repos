@@ -29,43 +29,41 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
     Some(arr)
 
   def join(left: Index[T], right: Index[T], how: JoinType): ReIndexer[T] =
-    if (left == right) {
+    if (left == right)
       ReIndexer(None, None, right)
-    } else if (left.isUnique && right.isUnique) {
+    else if (left.isUnique && right.isUnique)
       how match {
         case InnerJoin => intersect(left, right)
         case OuterJoin => union(left, right)
         case LeftJoin  => leftJoinUnique(left, right)
         case RightJoin => leftJoinUnique(right, left).swap
       }
-    } else if (right.isUnique && how == LeftJoin) {
+    else if (right.isUnique && how == LeftJoin)
       leftJoinUnique(left, right)
-    } else if (left.isUnique && how == RightJoin) {
+    else if (left.isUnique && how == RightJoin)
       leftJoinUnique(right, left).swap
-    } else if (left.isMonotonic && right.isMonotonic) {
+    else if (left.isMonotonic && right.isMonotonic)
       how match {
         case InnerJoin => innerJoinMonotonic(left, right)
         case OuterJoin => outerJoinMonotonic(left, right)
         case LeftJoin  => leftJoinMonotonic(left, right)
         case RightJoin => leftJoinMonotonic(right, left).swap
       }
-    } else {
+    else
       how match {
         case RightJoin => factorizedJoin(right, left, LeftJoin).swap
         case _         => factorizedJoin(left, right, how)
       }
-    }
 
   // unions two indices with set semantics
   private def union(left: Index[T], right: Index[T]): ReIndexer[T] = {
     if (!left.isUnique || !right.isUnique)
       throw Index.IndexException("Cannot union non-unique indexes")
 
-    if (left.isMonotonic && right.isMonotonic) {
+    if (left.isMonotonic && right.isMonotonic)
       outerJoinMonotonicUnique(left, right)
-    } else {
+    else
       outerJoinUnique(left, right)
-    }
   }
 
   // Intersects two indices if both have set semantics
@@ -78,20 +76,19 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
     val min = ll.min(rl)
     val max = ll.max(rl)
 
-    if (left.isMonotonic && right.isMonotonic && !(max > 5 * min)) {
+    if (left.isMonotonic && right.isMonotonic && !(max > 5 * min))
       innerJoinMonotonicUnique(left, right)
-    } else {
+    else
       innerJoinUnique(left, right)
-    }
   }
 
   private def leftJoinUnique(left: Index[T], right: Index[T]): ReIndexer[T] = {
     val ll = left.length
     val rl = right.length
 
-    if (left.isMonotonic && right.isMonotonic && !(ll > 5 * rl)) {
+    if (left.isMonotonic && right.isMonotonic && !(ll > 5 * rl))
       leftJoinMonotonicUnique(left, right)
-    } else {
+    else {
       val indexer = array.empty[Int](ll)
       var i = 0
       while (i < ll) {
@@ -147,9 +144,9 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       while (i < n) {
         val v = idx.raw(i)
         val loc = map.get(v)
-        if (loc != -1) {
+        if (loc != -1)
           labels(i) = loc
-        } else {
+        else {
           map.put(v, numUniq)
           uniques.add(v)
           labels(i) = numUniq
@@ -244,7 +241,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
       l = left.raw(i)
       r = right.raw(j)
-      while (i < ll && j < rl) {
+      while (i < ll && j < rl)
         if (scalar.lt(l, r)) {
           i += 1
           if (i < ll) l = left.raw(i)
@@ -261,7 +258,6 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
           if (j < right.length) r = right.raw(j)
           c += 1
         }
-      }
 
       // consider two special cases that speed things up down the line
       if (c == ll)
@@ -288,7 +284,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       var rc = 0
       var rgrp = 0
       var count = 0
-      if (nleft > 0 && nright > 0) {
+      if (nleft > 0 && nright > 0)
         while (lc < nleft && rc < nright) {
           val lval: T = left.raw(lc)
           val rval: T = right.raw(rc)
@@ -308,7 +304,6 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
           else
             rc += 1
         }
-      }
       count
     }
 
@@ -470,7 +465,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       var rc = 0
       var done = false
       var count = 0
-      if (nleft == 0) {
+      if (nleft == 0)
         if (callback == TNoOp)
           count = nright
         else
@@ -479,7 +474,7 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
             callback(l, r, res, -1, rc, v, rc)
             rc += 1
           }
-      } else if (nright == 0) {
+      else if (nright == 0)
         if (callback == TNoOp)
           count = nleft
         else
@@ -488,8 +483,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
             callback(l, r, res, lc, -1, v, lc)
             lc += 1
           }
-      } else {
-        while (!done) {
+      else
+        while (!done)
           if (lc == nleft) {
             if (callback == TNoOp)
               count += nright - rc
@@ -544,8 +539,6 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
               rc += 1
             }
           }
-        }
-      }
       count
     }
 
@@ -607,9 +600,8 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       val l: T = left.raw(i)
       var r: T = l
 
-      while (j < rl && scalar.lt({ r = right.raw(j); r }, l)) {
+      while (j < rl && scalar.lt({ r = right.raw(j); r }, l))
         j += 1
-      }
 
       if (j < rl && l == r)
         rgt(i) = j
@@ -643,11 +635,11 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
       var done = false
       var count = 0
 
-      if (nleft > 0) {
-        while (!done) {
-          if (lc == nleft) {
+      if (nleft > 0)
+        while (!done)
+          if (lc == nleft)
             done = true
-          } else if (rc == nright) {
+          else if (rc == nright) {
             if (callback == TNoOp)
               count += nleft - lc
             else
@@ -676,12 +668,9 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
               callback(l, r, res, lc, -1, lval, count)
               count += 1
               lc += 1
-            } else {
+            } else
               rc += 1
-            }
           }
-        }
-      }
       count
     }
 

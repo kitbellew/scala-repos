@@ -49,13 +49,12 @@ private[repl] trait SparkExprTyper extends Logging {
       var isIncomplete = false
       reporter.withIncompleteHandler((_, _) => isIncomplete = true) {
         val trees = codeParser.stmts(line)
-        if (reporter.hasErrors) {
+        if (reporter.hasErrors)
           Some(Nil)
-        } else if (isIncomplete) {
+        else if (isIncomplete)
           None
-        } else {
+        else
           Some(trees)
-        }
       }
     }
   // def parsesAsExpr(line: String) = {

@@ -20,7 +20,7 @@ object Test extends Properties("IndexScript") {
   }
 
   val docFactory = {
-    val settings = new doc.Settings({ Console.err.println(_) })
+    val settings = new doc.Settings(Console.err.println(_))
     settings.scaladocQuietRun = true
     settings.nowarn.value = true
     settings.classpath.value = getClasspath
@@ -38,20 +38,18 @@ object Test extends Properties("IndexScript") {
         None
     }
 
-  property("allPackages") = {
-    createIndexScript(
-      "src/scaladoc/scala/tools/nsc/doc/html/page/IndexScript.scala") match {
-      case Some(index) =>
-        index.allPackages.map(_.toString) == List(
-          "scala",
-          "scala.tools",
-          "scala.tools.nsc",
-          "scala.tools.nsc.doc",
-          "scala.tools.nsc.doc.html",
-          "scala.tools.nsc.doc.html.page"
-        )
-      case None =>
-        false
-    }
+  property("allPackages") = createIndexScript(
+    "src/scaladoc/scala/tools/nsc/doc/html/page/IndexScript.scala") match {
+    case Some(index) =>
+      index.allPackages.map(_.toString) == List(
+        "scala",
+        "scala.tools",
+        "scala.tools.nsc",
+        "scala.tools.nsc.doc",
+        "scala.tools.nsc.doc.html",
+        "scala.tools.nsc.doc.html.page"
+      )
+    case None =>
+      false
   }
 }

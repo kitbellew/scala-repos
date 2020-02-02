@@ -84,9 +84,8 @@ case class Expand(
             result = groups(idx)(input)
             idx += 1
 
-            if (idx == groups.length && iter.hasNext) {
+            if (idx == groups.length && iter.hasNext)
               idx = 0
-            }
 
             numOutputRows += 1
             result
@@ -158,10 +157,10 @@ case class Expand(
     // right after declaration. Otherwise its value is computed in the part 2.
     val outputColumns = output.indices.map { col =>
       val firstExpr = projections.head(col)
-      if (sameOutput(col)) {
+      if (sameOutput(col))
         // This column is the same across all output rows. Just generate code for it here.
         BindReferences.bindReference(firstExpr, child.output).gen(ctx)
-      } else {
+      else {
         val isNull = ctx.freshName("isNull")
         val value = ctx.freshName("value")
         val code = s"""
@@ -177,7 +176,7 @@ case class Expand(
     val cases = projections.zipWithIndex.map {
       case (exprs, row) =>
         var updateCode = ""
-        for (col <- exprs.indices) {
+        for (col <- exprs.indices)
           if (!sameOutput(col)) {
             val ev =
               BindReferences.bindReference(exprs(col), child.output).gen(ctx)
@@ -188,7 +187,6 @@ case class Expand(
                |${outputColumns(col).value} = ${ev.value};
             """.stripMargin
           }
-        }
 
         s"""
          |case $row:

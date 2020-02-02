@@ -55,12 +55,12 @@ private[akka] object IndirectActorProducer {
         case _ ⇒
           Reflect.instantiate(clazz, args).asInstanceOf[IndirectActorProducer]
       }
-    } else if (classOf[Actor].isAssignableFrom(clazz)) {
+    } else if (classOf[Actor].isAssignableFrom(clazz))
       if (args.isEmpty)
         new NoArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]])
       else
         new ArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]], args)
-    } else throw new IllegalArgumentException(s"unknown actor creator [$clazz]")
+    else throw new IllegalArgumentException(s"unknown actor creator [$clazz]")
 }
 
 /**

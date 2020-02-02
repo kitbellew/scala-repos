@@ -26,31 +26,28 @@ import org.apache.spark.sql.types._
   */
 object TypeUtils {
   def checkForNumericExpr(dt: DataType, caller: String): TypeCheckResult =
-    if (dt.isInstanceOf[NumericType] || dt == NullType) {
+    if (dt.isInstanceOf[NumericType] || dt == NullType)
       TypeCheckResult.TypeCheckSuccess
-    } else {
+    else
       TypeCheckResult.TypeCheckFailure(
         s"$caller requires numeric types, not $dt")
-    }
 
   def checkForOrderingExpr(dt: DataType, caller: String): TypeCheckResult =
-    if (RowOrdering.isOrderable(dt)) {
+    if (RowOrdering.isOrderable(dt))
       TypeCheckResult.TypeCheckSuccess
-    } else {
+    else
       TypeCheckResult.TypeCheckFailure(
         s"$caller does not support ordering on type $dt")
-    }
 
   def checkForSameTypeInputExpr(
       types: Seq[DataType],
       caller: String): TypeCheckResult =
-    if (types.distinct.size > 1) {
+    if (types.distinct.size > 1)
       TypeCheckResult.TypeCheckFailure(
         s"input to $caller should all be the same type, but it's " +
           types.map(_.simpleString).mkString("[", ", ", "]"))
-    } else {
+    else
       TypeCheckResult.TypeCheckSuccess
-    }
 
   def getNumeric(t: DataType): Numeric[Any] =
     t.asInstanceOf[NumericType].numeric.asInstanceOf[Numeric[Any]]

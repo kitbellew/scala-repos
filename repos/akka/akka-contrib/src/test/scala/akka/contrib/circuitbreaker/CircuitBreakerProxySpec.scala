@@ -20,9 +20,9 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       maxFailures = 2,
       callTimeout = 200 millis,
       resetTimeout = 1 second,
-      failureDetector = {
+      failureDetector =
         _ == "FAILURE"
-      })
+    )
 
   trait CircuitBreakerScenario {
     val sender = TestProbe()

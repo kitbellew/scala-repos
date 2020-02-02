@@ -95,7 +95,7 @@ abstract class SymbolLoaders {
       completer: SymbolLoader): Symbol = {
     val pname = newTermName(name)
     val preExisting = root.info.decls lookup pname
-    if (preExisting != NoSymbol) {
+    if (preExisting != NoSymbol)
       // Some jars (often, obfuscated ones) include a package and
       // object with the same name. Rather than render them unusable,
       // offer a setting to resolve the conflict one way or the other.
@@ -118,7 +118,6 @@ abstract class SymbolLoaders {
         )
         return NoSymbol
       }
-    }
     // todo: find out initialization sequence for pkg/pkg.moduleClass is different from enterModule
     val pkg = root.newPackage(pname)
     pkg.moduleClass setInfo completer
@@ -287,15 +286,12 @@ abstract class SymbolLoaders {
       enteringPhase(phaseBeforeRefchecks) {
         root.setInfo(new PackageClassInfoType(newScope, root))
 
-        if (!root.isRoot) {
-          for (classRep <- classpath.classes) {
+        if (!root.isRoot)
+          for (classRep <- classpath.classes)
             initializeFromClassPath(root, classRep)
-          }
-        }
         if (!root.isEmptyPackageClass) {
-          for (pkg <- classpath.packages) {
+          for (pkg <- classpath.packages)
             enterPackage(root, pkg.name, new PackageLoader(pkg))
-          }
 
           openPackageModule(root)
         }
@@ -393,7 +389,7 @@ abstract class SymbolLoaders {
       enteringPhase(phaseBeforeRefchecks)(
         classfileParser.parse(classfile, root))
 
-      if (root.associatedFile eq NoAbstractFile) {
+      if (root.associatedFile eq NoAbstractFile)
         root match {
           // In fact, the ModuleSymbol forwards its setter to the module class
           case _: ClassSymbol | _: ModuleSymbol =>
@@ -406,7 +402,6 @@ abstract class SymbolLoaders {
               "Not setting associatedFile to %s because %s is a %s"
                 .format(classfile, root.name, root.shortSymbolClass))
         }
-      }
       if (Statistics.canEnable) Statistics.stopTimer(classReadNanos, start)
     }
     override def sourcefile: Option[AbstractFile] = classfileParser.srcfile

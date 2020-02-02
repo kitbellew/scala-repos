@@ -77,11 +77,10 @@ abstract class UnCurry
     private val newMembers = mutable.Map[Symbol, mutable.Buffer[Tree]]()
 
     private lazy val forceSpecializationInfoTransformOfFunctionN: Unit = {
-      if (currentRun.specializePhase != NoPhase) { // be robust in case of -Ystop-after:uncurry
+      if (currentRun.specializePhase != NoPhase) // be robust in case of -Ystop-after:uncurry
         exitingSpecialize {
           FunctionClass.seq.foreach(cls => cls.info)
         }
-      }
     }
 
     /** Add a new synthetic member for `currentOwner` */
@@ -197,11 +196,9 @@ abstract class UnCurry
           Try(t, catches, _) <- body
           cdef <- catches
           if catchesThrowable(cdef) && !isSyntheticCase(cdef)
-        } {
-          reporter.warning(
-            body.pos,
-            "catch block may intercept non-local return from " + meth)
-        }
+        } reporter.warning(
+          body.pos,
+          "catch block may intercept non-local return from " + meth)
 
         Block(List(keyDef), tryCatch)
       }
@@ -374,12 +371,11 @@ abstract class UnCurry
         exitingUncurry {
           if (isJava && !isReferenceArray(suffix.tpe) && isArrayOfSymbol(
                 fun.tpe.params.last.tpe,
-                ObjectClass)) {
+                ObjectClass))
             // The array isn't statically known to be a reference array, so call ScalaRuntime.toObjectArray.
             suffix = localTyper.typedPos(pos) {
               gen.mkRuntimeCall(nme.toObjectArray, List(suffix))
             }
-          }
         }
         args.take(formals.length - 1) :+ (suffix setType formals.last)
       }
@@ -503,7 +499,7 @@ abstract class UnCurry
                 if (dd.symbol hasAnnotation VarargsClass) validateVarargs(dd)
 
                 withNeedLift(needLift = false) {
-                  if (dd.symbol.isClassConstructor) {
+                  if (dd.symbol.isClassConstructor)
                     atOwner(sym) {
                       val rhs1 = (rhs: @unchecked) match {
                         case Block(stats, expr) =>
@@ -531,10 +527,9 @@ abstract class UnCurry
                         transform(tpt),
                         rhs1)
                     }
-                  } else {
+                  else
                     super.transform(treeCopy
                       .DefDef(dd, mods, name, tparams, vparamssNoRhs, tpt, rhs))
-                  }
                 }
               case ValDef(_, _, _, rhs) =>
                 if (sym eq NoSymbol)
@@ -598,12 +593,11 @@ abstract class UnCurry
                 val tree1 = super.transform(tree)
                 if (isByNameRef(tree1)) {
                   val tree2 = tree1 setType functionType(Nil, tree1.tpe)
-                  return {
-                    if (noApply contains tree2) tree2
-                    else
-                      localTyper.typedPos(tree1.pos)(
-                        Apply(Select(tree2, nme.apply), Nil))
-                  }
+                  return
+                  if (noApply contains tree2) tree2
+                  else
+                    localTyper.typedPos(tree1.pos)(
+                      Apply(Select(tree2, nme.apply), Nil))
                 }
                 tree1
             }
@@ -669,13 +663,13 @@ abstract class UnCurry
           // (only pure methods are typed as ConstantType). We could also do this for methods with arguments,
           // after ensuring the arguments are not referenced.
           val literalRhsIfConst =
-            if (newParamss.head.isEmpty) { // We know newParamss.length == 1 from above
+            if (newParamss.head.isEmpty) // We know newParamss.length == 1 from above
               ddSym.info.resultType match {
                 case tp @ ConstantType(value) =>
                   Literal(value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
                 case _ => newRhs
               }
-            } else newRhs
+            else newRhs
 
           val flatdd = copyDefDef(dd)(
             vparamss = newParamss,
@@ -837,7 +831,7 @@ abstract class UnCurry
 
         val rhs1 =
           if (rhs == EmptyTree || tempVals.isEmpty) rhs
-          else {
+          else
             localTyper.typedPos(rhs.pos) {
               // Patch the method body to refer to the temp vals
               val rhsSubstituted = rhs.substituteSymbols(
@@ -846,7 +840,6 @@ abstract class UnCurry
               // The new method body: { val p$1 = p.asInstanceOf[<dependent type>]; ...; <rhsSubstituted> }
               Block(tempVals, rhsSubstituted)
             }
-          }
 
         (allParams :: Nil, rhs1)
       }

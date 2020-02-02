@@ -78,9 +78,9 @@ object ApplicationSecretGenerator {
     val secretConfigValue: ConfigValue = config.getValue("play.crypto.secret")
     val secretConfigOrigin: ConfigOrigin = secretConfigValue.origin()
 
-    if (secretConfigOrigin.lineNumber == -1) {
+    if (secretConfigOrigin.lineNumber == -1)
       throw new MessageOnlyException("Could not change play.crypto.secret")
-    } else {
+    else {
       val lineNumber: Int = secretConfigOrigin.lineNumber - 1
 
       val newLines: List[String] = lines.updated(
@@ -94,14 +94,12 @@ object ApplicationSecretGenerator {
         val applicationSecretValue = config.getValue("application.secret")
         val applicationSecretOrigin = applicationSecretValue.origin()
 
-        if (applicationSecretOrigin.lineNumber == -1) {
+        if (applicationSecretOrigin.lineNumber == -1)
           newLines
-        } else {
+        else
           newLines.patch(applicationSecretOrigin.lineNumber() - 1, Nil, 1)
-        }
-      } else {
+      } else
         newLines
-      }
     }
   }
 }

@@ -80,19 +80,17 @@ private[util] class BatchedWriteAheadLog(
       if (active) {
         walWriteQueue.offer(Record(byteBuffer, time, promise))
         true
-      } else {
+      } else
         false
-      }
     }
-    if (putSuccessfully) {
+    if (putSuccessfully)
       Await.result(
         promise.future,
         WriteAheadLogUtils.getBatchingTimeout(conf).milliseconds)
-    } else {
+    else
       throw new IllegalStateException(
         "close() was called on BatchedWriteAheadLog before " +
           s"write request with time $time could be fulfilled.")
-    }
   }
 
   /**
@@ -145,14 +143,12 @@ private[util] class BatchedWriteAheadLog(
   private def startBatchedWriterThread(): Thread = {
     val thread = new Thread(new Runnable {
       override def run(): Unit = {
-        while (active) {
-          try {
-            flushRecords()
-          } catch {
+        while (active)
+          try flushRecords()
+          catch {
             case NonFatal(e) =>
               logWarning("Encountered exception in Batched Writer Thread.", e)
           }
-        }
         logInfo("BatchedWriteAheadLog Writer thread exiting.")
       }
     }, "BatchedWriteAheadLog Writer")
@@ -190,9 +186,7 @@ private[util] class BatchedWriteAheadLog(
       case NonFatal(e) =>
         logWarning(s"BatchedWriteAheadLog Writer failed to write $buffer", e)
         buffer.foreach(_.promise.failure(e))
-    } finally {
-      buffer.clear()
-    }
+    } finally buffer.clear()
   }
 
   /** Method for querying the queue length. Should only be used in tests. */
@@ -225,11 +219,10 @@ private[util] object BatchedWriteAheadLog {
     */
   def deaggregate(buffer: ByteBuffer): Array[ByteBuffer] = {
     val prevPosition = buffer.position()
-    try {
-      Utils
-        .deserialize[Array[Array[Byte]]](JavaUtils.bufferToArray(buffer))
-        .map(ByteBuffer.wrap)
-    } catch {
+    try Utils
+      .deserialize[Array[Array[Byte]]](JavaUtils.bufferToArray(buffer))
+      .map(ByteBuffer.wrap)
+    catch {
       case _: ClassCastException => // users may restart a stream with batching enabled
         // Restore `position` so that the user can read `buffer` later
         buffer.position(prevPosition)

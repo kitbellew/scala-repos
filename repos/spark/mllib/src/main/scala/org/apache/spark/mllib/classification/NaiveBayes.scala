@@ -159,10 +159,9 @@ class NaiveBayesModel private[spark] (
 
   private def bernoulliCalculation(testData: Vector) = {
     testData.foreachActive((_, value) =>
-      if (value != 0.0 && value != 1.0) {
+      if (value != 0.0 && value != 1.0)
         throw new SparkException(
-          s"Bernoulli naive Bayes requires 0 or 1 feature values but found $testData.")
-      })
+          s"Bernoulli naive Bayes requires 0 or 1 feature values but found $testData."))
     val prob = thetaMinusNegTheta.get.multiply(testData)
     BLAS.axpy(1.0, piVector, prob)
     BLAS.axpy(1.0, negThetaSum.get, prob)
@@ -399,10 +398,9 @@ class NaiveBayes private (
         case sv: SparseVector => sv.values
         case dv: DenseVector  => dv.values
       }
-      if (!values.forall(_ >= 0.0)) {
+      if (!values.forall(_ >= 0.0))
         throw new SparkException(
           s"Naive Bayes requires nonnegative feature values but found $v.")
-      }
     }
 
     val requireZeroOneBernoulliValues: Vector => Unit = (v: Vector) => {
@@ -410,10 +408,9 @@ class NaiveBayes private (
         case sv: SparseVector => sv.values
         case dv: DenseVector  => dv.values
       }
-      if (!values.forall(v => v == 0.0 || v == 1.0)) {
+      if (!values.forall(v => v == 0.0 || v == 1.0))
         throw new SparkException(
           s"Bernoulli naive Bayes requires 0 or 1 feature values but found $v.")
-      }
     }
 
     // Aggregates term frequencies per label.
@@ -423,11 +420,10 @@ class NaiveBayes private (
       .map(p => (p.label, p.features))
       .combineByKey[(Long, DenseVector)](
         createCombiner = (v: Vector) => {
-          if (modelType == Bernoulli) {
+          if (modelType == Bernoulli)
             requireZeroOneBernoulliValues(v)
-          } else {
+          else
             requireNonnegativeValues(v)
-          }
           (1L, v.copy.toDense)
         },
         mergeValue = (c: (Long, DenseVector), v: Vector) => {

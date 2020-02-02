@@ -97,11 +97,10 @@ class ScalaIntroduceVariableHandler
     }
 
     //clear data on startRefactoring, if there is no marks, but there is some data
-    if (StartMarkAction.canStart(project) == null) {
+    if (StartMarkAction.canStart(project) == null)
       editor.putUserData(
         IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO,
         new IntroduceTypeAliasData())
-    }
 
     val typeElement = selectedElement match {
       case Some(te: ScTypeElement) =>
@@ -109,12 +108,12 @@ class ScalaIntroduceVariableHandler
       case _ => getTypeElementAtOffset
     }
 
-    if (typeElement.isDefined) {
+    if (typeElement.isDefined)
       if (editor
             .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
-            .isData) {
+            .isData)
         invokeTypeElement(project, editor, file, typeElement.get)
-      } else {
+      else
         ScalaRefactoringUtil.afterTypeElementChoosing(
           project,
           editor,
@@ -125,8 +124,7 @@ class ScalaIntroduceVariableHandler
           ScalaRefactoringUtil.trimSpacesAndComments(editor, file)
           invokeTypeElement(project, editor, file, typeElement)
         }
-      }
-    } else {
+    else {
       val canBeIntroduced: ScExpression => Boolean =
         ScalaRefactoringUtil.checkCanBeIntroduced(_)
       ScalaRefactoringUtil.afterExpressionChoosing(

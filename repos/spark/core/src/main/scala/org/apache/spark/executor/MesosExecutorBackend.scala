@@ -95,9 +95,9 @@ private[spark] class MesosExecutorBackend
   override def launchTask(d: ExecutorDriver, taskInfo: TaskInfo) {
     val taskId = taskInfo.getTaskId.getValue.toLong
     val taskData = MesosTaskLaunchData.fromByteString(taskInfo.getData)
-    if (executor == null) {
+    if (executor == null)
       logError("Received launchTask but executor was null")
-    } else {
+    else
       SparkHadoopUtil.get.runAsSparkUser { () =>
         executor.launchTask(
           this,
@@ -106,7 +106,6 @@ private[spark] class MesosExecutorBackend
           taskInfo.getName,
           taskData.serializedTask)
       }
-    }
   }
 
   override def error(d: ExecutorDriver, message: String) {
@@ -114,12 +113,11 @@ private[spark] class MesosExecutorBackend
   }
 
   override def killTask(d: ExecutorDriver, t: TaskID) {
-    if (executor == null) {
+    if (executor == null)
       logError("Received KillTask but executor was null")
-    } else {
+    else
       // TODO: Determine the 'interruptOnCancel' property set for the given job.
       executor.killTask(t.getValue.toLong, interruptThread = false)
-    }
   }
 
   override def reregistered(d: ExecutorDriver, p2: SlaveInfo) {}

@@ -61,14 +61,16 @@ object ThreadRepo {
       }
   }
 
-  def setRead(thread: Thread): Funit = {
-    List.fill(thread.nbUnread) {
-      $update(
-        $select(thread.id) ++ Json.obj("posts.isRead" -> false),
-        $set("posts.$.isRead" -> true)
-      )
-    }
-  }.sequenceFu.void
+  def setRead(thread: Thread): Funit =
+    List
+      .fill(thread.nbUnread) {
+        $update(
+          $select(thread.id) ++ Json.obj("posts.isRead" -> false),
+          $set("posts.$.isRead" -> true)
+        )
+      }
+      .sequenceFu
+      .void
 
   def deleteFor(user: ID)(thread: ID) =
     $update($select(thread), $pull("visibleByUserIds", user))

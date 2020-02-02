@@ -57,10 +57,10 @@ class RecipeByteStrings extends RecipeSpec {
             )
 
             private def emitChunk(): Unit =
-              if (buffer.isEmpty) {
+              if (buffer.isEmpty)
                 if (isClosed(in)) completeStage()
                 else pull(in)
-              } else {
+              else {
                 val (chunk, nextBuffer) = buffer.splitAt(chunkSize)
                 buffer = nextBuffer
                 push(out, chunk)

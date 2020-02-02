@@ -79,11 +79,10 @@ class InputOutputMetricsSuite
 
     tmpFile = new File(testTempDir, getClass.getSimpleName + ".txt")
     val pw = new PrintWriter(new FileWriter(tmpFile))
-    for (x <- 1 to numRecords) {
+    for (x <- 1 to numRecords)
       // scalastyle:off println
       pw.println(RandomUtils.nextInt(0, numBuckets))
-      // scalastyle:on println
-    }
+    // scalastyle:on println
     pw.close()
 
     // Path to tmpFile
@@ -260,9 +259,8 @@ class InputOutputMetricsSuite
     assert(inputRead == numRecords)
 
     // Only supported on newer Hadoop
-    if (SparkHadoopUtil.get.getFSBytesWrittenOnThreadCallback().isDefined) {
+    if (SparkHadoopUtil.get.getFSBytesWrittenOnThreadCallback().isDefined)
       assert(outputWritten == numBuckets)
-    }
     assert(shuffleRead == shuffleWritten)
   }
 
@@ -386,9 +384,7 @@ class InputOutputMetricsSuite
           case (bytes, fileStatus) =>
             assert(bytes >= fileStatus.getLen)
         }
-      } finally {
-        fs.delete(outPath, true)
-      }
+      } finally fs.delete(outPath, true)
     }
   }
 

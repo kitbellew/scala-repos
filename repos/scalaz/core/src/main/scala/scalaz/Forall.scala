@@ -23,9 +23,8 @@ trait Foralls {
   def apply[P[_]](p: CPS[P]): Forall[P] = new Forall[P] {
     def apply[A]: P[A] = {
       case class Control(arg: P[A]) extends Throwable
-      try {
-        p((arg: P[A]) => throw new Control(arg))
-      } catch {
+      try p((arg: P[A]) => throw new Control(arg))
+      catch {
         case Control(arg) => arg
       }
     }

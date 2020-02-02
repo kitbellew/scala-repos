@@ -56,9 +56,9 @@ object EnsembleTree {
     */
   private def createTree(): Map[String, List[TreeItem[String]]] = {
     val pairs = for ((dirName, examples) <- loadExampleNames()) yield {
-      val leaves = for (leafName <- examples) yield {
-        new TreeItem(ExampleInfo.formatAddSpaces(leafName))
-      }
+      val leaves =
+        for (leafName <- examples)
+          yield new TreeItem(ExampleInfo.formatAddSpaces(leafName))
       dirName -> leaves.toList.sortWith(SortUtils.treeItemSort)
     }
     TreeMap(pairs: _*)
@@ -89,9 +89,8 @@ object EnsembleTree {
         val img = new ImageView {
           val filePath = ExampleInfo.thumbnailPath(leafName, groupName)
           val inputStream = this.getClass.getResourceAsStream(filePath)
-          if (inputStream == null) {
+          if (inputStream == null)
             throw new IOException("Unable to locate resource: " + filePath)
-          }
           image = new Image(inputStream)
         }
         val button = new Button(sampleName, img) {

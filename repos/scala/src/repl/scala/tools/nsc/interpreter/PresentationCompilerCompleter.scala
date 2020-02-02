@@ -135,19 +135,15 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
       found
     }
     val buf1 = buf.patch(cursor, Cursor, 0)
-    try {
-      intp.presentationCompile(buf1) match {
-        case Left(_) => Completion.NoCandidates
-        case Right(result) =>
-          try {
-            buf match {
-              case slashPrint() if cursor == buf.length => print(result)
-              case slashTypeAt(start, end) if cursor == buf.length =>
-                typeAt(result, start.toInt, end.toInt)
-              case _ => candidates(result)
-            }
-          } finally result.cleanup()
-      }
+    try intp.presentationCompile(buf1) match {
+      case Left(_) => Completion.NoCandidates
+      case Right(result) =>
+        try buf match {
+          case slashPrint() if cursor == buf.length => print(result)
+          case slashTypeAt(start, end) if cursor == buf.length =>
+            typeAt(result, start.toInt, end.toInt)
+          case _ => candidates(result)
+        } finally result.cleanup()
     } catch {
       case NonFatal(e) =>
         if (isReplDebug) e.printStackTrace()

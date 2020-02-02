@@ -123,9 +123,7 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
       val message = "\n\n             code: " + line +
         "\n  actual problems: " + problemsIn(file).toString + "\n"
       Assert.assertTrue(message, pattern.isDefinedAt(problemsIn(file)))
-    } finally {
-      Compatibility.seqClass = None
-    }
+    } finally Compatibility.seqClass = None
   }
 
   private def problemsIn(file: ScalaFile): List[ApplicabilityProblem] =

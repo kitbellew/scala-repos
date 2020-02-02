@@ -80,13 +80,12 @@ abstract class AsyncBase[I, O, S, D, RC](
             res.onSuccess { t => responses.put(((tups, Success(t)))) }
             res.onFailure { t => responses.put(((tups, Failure(t)))) }
             // Make sure there are not too many outstanding:
-            if (addOutstandingFuture(res.unit)) {
+            if (addOutstandingFuture(res.unit))
               iterSize + 1
-            } else {
+            else
               iterSize
-            }
         }
-        if (outstandingFutures.size > maxWaitingFutures.get) {
+        if (outstandingFutures.size > maxWaitingFutures.get)
           /*
            * This can happen on large key expansion.
            * May indicate maxWaitingFutures is too low.
@@ -96,30 +95,26 @@ abstract class AsyncBase[I, O, S, D, RC](
             maxWaitingFutures.get,
             iterSize
           )
-        }
     }
 
   private def addOutstandingFuture(fut: Future[Unit]): Boolean =
     if (!fut.isDefined) {
       outstandingFutures.put(fut)
       true
-    } else {
+    } else
       false
-    }
 
   private def forceExtraFutures() {
     outstandingFutures.dequeueAll(_.isDefined)
     val toForce = outstandingFutures.trimTo(maxWaitingFutures.get).toIndexedSeq
-    if (toForce.nonEmpty) {
-      try {
-        Await.ready(Future.collect(toForce), maxWaitingTime.get)
-      } catch {
+    if (toForce.nonEmpty)
+      try Await.ready(Future.collect(toForce), maxWaitingTime.get)
+      catch {
         case te: TimeoutException =>
           logger.error(
             "forceExtra failed on %d Futures".format(toForce.size),
             te)
       }
-    }
   }
 
   private def emptyQueue = {

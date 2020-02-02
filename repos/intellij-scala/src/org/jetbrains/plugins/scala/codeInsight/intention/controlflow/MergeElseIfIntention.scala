@@ -41,9 +41,8 @@ class MergeElseIfIntention extends PsiElementBaseIntentionAction {
     val blockExpr = ifStmt.elseBranch.orNull
     if (blockExpr != null && blockExpr.isInstanceOf[ScBlockExpr]) {
       val exprs = blockExpr.asInstanceOf[ScBlockExpr].exprs
-      if (exprs.size == 1 && exprs(0).isInstanceOf[ScIfStmt]) {
+      if (exprs.size == 1 && exprs(0).isInstanceOf[ScIfStmt])
         return true
-      }
     }
 
     false

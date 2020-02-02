@@ -45,7 +45,7 @@ object CanFilterMedian {
           var index = halfWindow
 
           overhang match {
-            case OptOverhang.PreserveLength => {
+            case OptOverhang.PreserveLength =>
               //calculate beginning and end separately, for partial-windows (no overhang)
               for (indexFromBeginning <- 0 until halfWindow)
                 tempret(indexFromBeginning) = median(
@@ -53,8 +53,7 @@ object CanFilterMedian {
               for (indexToEnd <- 0 until halfWindow)
                 tempret(data.length - indexToEnd - 1) = median(
                   data(data.length - 2 * indexToEnd - 1 until data.length))
-            }
-            case OptOverhang.None => {}
+            case OptOverhang.None =>
             case opt: OptOverhang =>
               throw new IllegalArgumentException(
                 "Option " + opt + " is invalid here.")
@@ -82,10 +81,9 @@ object CanFilterMedian {
                 halfWindow)
               //if the new value and old value lie on different sides of the current Median,
               if ((nowObsoleteWindowValue >= currentMedian || newWindowValue >= currentMedian)
-                  && (nowObsoleteWindowValue <= currentMedian || newWindowValue <= currentMedian)) {
+                  && (nowObsoleteWindowValue <= currentMedian || newWindowValue <= currentMedian))
                 //then the median needs to be recalculated
                 currentMedian = quickSelectImpl(tempDataExtract, halfWindow)
-              }
             }
             //...if the two values are the same, do nothing
 
@@ -115,26 +113,22 @@ object CanFilterMedian {
           found = true
         } else if (fromValue < pivotValue) {
           var count = pivotPoint - 1
-          while (count >= 0) {
+          while (count >= 0)
             if (arr(count) == fromValue) {
               arr(count) = toValue
               count = Int.MinValue
               found = true
-            } else {
+            } else
               count -= 1
-            }
-          }
         } else { //if( fromValue > pivotValue ){
           var count = pivotPoint + 1
-          while (count < arr.length) {
+          while (count < arr.length)
             if (arr(count) == fromValue) {
               arr(count) = toValue
               count = Int.MaxValue
               found = true
-            } else {
+            } else
               count += 1
-            }
-          }
         }
 
         require(

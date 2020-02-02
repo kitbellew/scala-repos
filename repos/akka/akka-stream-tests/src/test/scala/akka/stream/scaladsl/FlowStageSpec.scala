@@ -268,11 +268,10 @@ class FlowStageSpec
           new StatefulStage[Int, Int] {
             override def initial = new State {
               override def onPush(elem: Int, ctx: Context[Int]) =
-                if (elem == 2) {
+                if (elem == 2)
                   throw new IllegalArgumentException("two not allowed")
-                } else {
+                else
                   emit(Iterator(elem, elem), ctx)
-                }
             }
           })
         .runWith(TestSink.probe[Int])

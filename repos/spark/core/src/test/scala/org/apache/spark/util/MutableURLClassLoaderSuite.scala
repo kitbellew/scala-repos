@@ -124,17 +124,17 @@ class MutableURLClassLoaderSuite extends SparkFunSuite with Matchers {
 
     val sc = new SparkContext("local", "driverLoaderTest")
 
-    try {
-      sc.makeRDD(1 to 5, 2)
-        .mapPartitions { x =>
-          val loader = Thread.currentThread().getContextClassLoader
-          // scalastyle:off classforname
-          Class.forName(className, true, loader).newInstance()
-          // scalastyle:on classforname
-          Seq().iterator
-        }
-        .count()
-    } catch {
+    try sc
+      .makeRDD(1 to 5, 2)
+      .mapPartitions { x =>
+        val loader = Thread.currentThread().getContextClassLoader
+        // scalastyle:off classforname
+        Class.forName(className, true, loader).newInstance()
+        // scalastyle:on classforname
+        Seq().iterator
+      }
+      .count()
+    catch {
       case e: SparkException
           if e.getMessage.contains("ClassNotFoundException") =>
         fail("Local executor could not find class", e)

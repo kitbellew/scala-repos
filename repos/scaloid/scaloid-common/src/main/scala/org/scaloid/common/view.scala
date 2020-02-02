@@ -53,9 +53,8 @@ trait PressAndHoldable[+This <: View] {
     private val repeatUpdateHandler = new android.os.Handler()
 
     override def onTouch(v: View, event: MotionEvent): Boolean = {
-      if (event.getAction == MotionEvent.ACTION_UP && autoIncrementing) {
+      if (event.getAction == MotionEvent.ACTION_UP && autoIncrementing)
         autoIncrementing = false
-      }
       false
     }
 
@@ -110,9 +109,8 @@ trait TraitView[This <: android.view.View]
     basis.findViewById(id).asInstanceOf[V]
 
   @inline def uniqueId(implicit activity: Activity): Int = {
-    if (basis.getId < 0) {
+    if (basis.getId < 0)
       basis.setId(getUniqueId)
-    }
     basis.getId
   }
 

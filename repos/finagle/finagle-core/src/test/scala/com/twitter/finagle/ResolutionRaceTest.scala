@@ -24,20 +24,16 @@ class ResolutionRaceTest extends FunSuite with AssertionsForJUnit {
     val server = Echo.serve(socketAddr, Echoer)
     val addr = server.boundAddress.asInstanceOf[InetSocketAddress]
     val dest = "asyncinet!localhost:%d".format(addr.getPort)
-    try {
-      1 to 1000 foreach { i =>
-        val phrase = "%03d [%s]".format(i, dest)
-        val echo = Echo.newService(dest)
-        try {
-          val echoed = Await.result(echo(phrase))
-          assert(echoed == phrase)
-        } finally Await.ready(echo.close())
-      }
+    try 1 to 1000 foreach { i =>
+      val phrase = "%03d [%s]".format(i, dest)
+      val echo = Echo.newService(dest)
+      try {
+        val echoed = Await.result(echo(phrase))
+        assert(echoed == phrase)
+      } finally Await.ready(echo.close())
     } catch {
       case _: NoBrokersAvailableException =>
         fail("resolution is racy")
-    } finally {
-      Await.result(server.close())
-    }
+    } finally Await.result(server.close())
   }
 }

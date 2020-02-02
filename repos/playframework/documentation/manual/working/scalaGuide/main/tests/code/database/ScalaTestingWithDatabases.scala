@@ -90,11 +90,11 @@ object ScalaTestingWithDatabases extends Specification {
       val database = Databases.inMemory()
       //#in-memory
 
-      try {
-        database.getConnection().getMetaData.getDatabaseProductName must_== "H2"
-      } finally {
-        database.shutdown()
-      }
+      try database
+        .getConnection()
+        .getMetaData
+        .getDatabaseProductName must_== "H2"
+      finally database.shutdown()
     }
 
     "allow connecting to an in memory database with more options" in {
@@ -112,13 +112,14 @@ object ScalaTestingWithDatabases extends Specification {
       )
       //#in-memory-full-config
 
-      try {
-        database.getConnection().getMetaData.getDatabaseProductName must_== "H2"
-      } finally {
-        //#in-memory-shutdown
-        database.shutdown()
-        //#in-memory-shutdown
-      }
+      try database
+        .getConnection()
+        .getMetaData
+        .getDatabaseProductName must_== "H2"
+      finally
+      //#in-memory-shutdown
+      database.shutdown()
+      //#in-memory-shutdown
     }
 
     "manage an in memory database for the user" in {

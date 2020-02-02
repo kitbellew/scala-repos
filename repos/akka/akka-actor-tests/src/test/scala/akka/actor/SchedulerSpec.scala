@@ -306,11 +306,8 @@ trait SchedulerSpec
       val barrier = TestLatch()
       import system.dispatcher
       val job = system.scheduler.scheduleOnce(timeout)(barrier.countDown())
-      try {
-        Await.ready(barrier, 5000 milliseconds)
-      } finally {
-        job.cancel()
-      }
+      try Await.ready(barrier, 5000 milliseconds)
+      finally job.cancel()
     }
 
     "survive being stressed without cancellation" taggedAs TimingTest in {
@@ -333,9 +330,8 @@ trait SchedulerSpec
           }
       }
       val histogram = latencies groupBy (_ / 100000000L)
-      for (k ← histogram.keys.toSeq.sorted) {
+      for (k ← histogram.keys.toSeq.sorted)
         system.log.info(f"${k * 100}%3d: ${histogram(k).size}")
-      }
     }
   }
 }
@@ -417,9 +413,8 @@ class LightArrayRevolverSchedulerSpec
           }
       }
       val histogram = latencies groupBy (_ / 100000000L)
-      for (k ← histogram.keys.toSeq.sorted) {
+      for (k ← histogram.keys.toSeq.sorted)
         system.log.info(f"${k * 100}%3d: ${histogram(k).size}")
-      }
       expectNoMsg(1.second)
     }
 

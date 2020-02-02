@@ -34,9 +34,8 @@ class MailBox {
     }
     if (r1 != null) {
       r.next = r1.next; r1.elem.msg = msg; r1.elem.notify();
-    } else {
+    } else
       lastSent = insert(lastSent, msg);
-    }
   }
 
   def receive[a](f: PartialFunction[Any, a]): a = {

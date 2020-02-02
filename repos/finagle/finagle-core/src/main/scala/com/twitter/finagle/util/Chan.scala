@@ -30,7 +30,7 @@ trait Proc[-T] extends Chan[T] {
         val elem = q.poll()
         // Swallow exceptions as these would cause
         // unbounded queue growth.
-        if (!closed) {
+        if (!closed)
           try receiver(elem)
           catch {
             case exc: Throwable =>
@@ -38,7 +38,6 @@ trait Proc[-T] extends Chan[T] {
                 .getLogger("")
                 .log(Level.WARNING, "Exception thrown in proc", exc)
           }
-        }
       } while (nq.decrementAndGet() > 0)
   }
 

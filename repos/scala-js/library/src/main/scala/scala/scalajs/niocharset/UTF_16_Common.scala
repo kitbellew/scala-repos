@@ -45,24 +45,25 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
           val b1 = in.get() & 0xff
           val b2 = in.get() & 0xff
 
-          val wasBOM = if (endianness == AutoEndian) {
-            // Read BOM
-            if (b1 == 0xfe && b2 == 0xff) {
-              endianness = BigEndian
-              true
-            } else if (b1 == 0xff && b2 == 0xfe) {
-              endianness = LittleEndian
-              true
-            } else {
-              // Not a valid BOM: default to BigEndian and start reading
-              endianness = BigEndian
-              false
-            }
-          } else false
+          val wasBOM =
+            if (endianness == AutoEndian)
+              // Read BOM
+              if (b1 == 0xfe && b2 == 0xff) {
+                endianness = BigEndian
+                true
+              } else if (b1 == 0xff && b2 == 0xfe) {
+                endianness = LittleEndian
+                true
+              } else {
+                // Not a valid BOM: default to BigEndian and start reading
+                endianness = BigEndian
+                false
+              }
+            else false
 
-          if (wasBOM) {
+          if (wasBOM)
             loop()
-          } else {
+          else {
             val bigEndian = endianness == BigEndian
 
             @inline def bytes2char(hi: Int, lo: Int): Char =
@@ -73,7 +74,7 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
             if (Character.isLowSurrogate(c1)) {
               in.position(in.position - 2)
               CoderResult.malformedForLength(2)
-            } else if (!Character.isHighSurrogate(c1)) {
+            } else if (!Character.isHighSurrogate(c1))
               if (out.remaining == 0) {
                 in.position(in.position - 2)
                 CoderResult.OVERFLOW
@@ -81,28 +82,24 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
                 out.put(c1)
                 loop()
               }
+            else if (in.remaining < 2) {
+              in.position(in.position - 2)
+              CoderResult.UNDERFLOW
             } else {
-              if (in.remaining < 2) {
-                in.position(in.position - 2)
-                CoderResult.UNDERFLOW
-              } else {
-                val b3 = in.get() & 0xff
-                val b4 = in.get() & 0xff
-                val c2 = bytes2char(b3, b4)
+              val b3 = in.get() & 0xff
+              val b4 = in.get() & 0xff
+              val c2 = bytes2char(b3, b4)
 
-                if (!Character.isLowSurrogate(c2)) {
-                  in.position(in.position - 4)
-                  CoderResult.malformedForLength(2)
-                } else {
-                  if (out.remaining < 2) {
-                    in.position(in.position - 4)
-                    CoderResult.OVERFLOW
-                  } else {
-                    out.put(c1)
-                    out.put(c2)
-                    loop()
-                  }
-                }
+              if (!Character.isLowSurrogate(c2)) {
+                in.position(in.position - 4)
+                CoderResult.malformedForLength(2)
+              } else if (out.remaining < 2) {
+                in.position(in.position - 4)
+                CoderResult.OVERFLOW
+              } else {
+                out.put(c1)
+                out.put(c2)
+                loop()
               }
             }
           }
@@ -128,16 +125,15 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
     }
 
     def encodeLoop(in: CharBuffer, out: ByteBuffer): CoderResult = {
-      if (needToWriteBOM) {
-        if (out.remaining < 2) {
+      if (needToWriteBOM)
+        if (out.remaining < 2)
           return CoderResult.OVERFLOW // scalastyle:ignore
-        } else {
+        else {
           // Always encode in big endian
           out.put(0xfe.toByte)
           out.put(0xff.toByte)
           needToWriteBOM = false
         }
-      }
 
       val bigEndian = endianness != LittleEndian
 
@@ -161,7 +157,7 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
           if (Character.isLowSurrogate(c1)) {
             in.position(in.position - 1)
             CoderResult.malformedForLength(1)
-          } else if (!Character.isHighSurrogate(c1)) {
+          } else if (!Character.isHighSurrogate(c1))
             if (out.remaining < 2) {
               in.position(in.position - 1)
               CoderResult.OVERFLOW
@@ -169,26 +165,22 @@ private[niocharset] abstract class UTF_16_Common protected ( // scalastyle:ignor
               putChar(c1)
               loop()
             }
+          else if (in.remaining < 1) {
+            in.position(in.position - 1)
+            CoderResult.UNDERFLOW
           } else {
-            if (in.remaining < 1) {
-              in.position(in.position - 1)
-              CoderResult.UNDERFLOW
-            } else {
-              val c2 = in.get()
+            val c2 = in.get()
 
-              if (!Character.isLowSurrogate(c2)) {
-                in.position(in.position - 2)
-                CoderResult.malformedForLength(1)
-              } else {
-                if (out.remaining < 4) {
-                  in.position(in.position - 2)
-                  CoderResult.OVERFLOW
-                } else {
-                  putChar(c1)
-                  putChar(c2)
-                  loop()
-                }
-              }
+            if (!Character.isLowSurrogate(c2)) {
+              in.position(in.position - 2)
+              CoderResult.malformedForLength(1)
+            } else if (out.remaining < 4) {
+              in.position(in.position - 2)
+              CoderResult.OVERFLOW
+            } else {
+              putChar(c1)
+              putChar(c2)
+              loop()
             }
           }
         }

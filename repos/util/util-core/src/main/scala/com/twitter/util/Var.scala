@@ -388,13 +388,12 @@ private[util] class UpdatableVar[T](init: T)
 
   def update(newv: T): Unit = synchronized {
     val State(value, version, parties) = cas(_ := newv)
-    for (p @ Party(obs, _, _) <- parties) {
+    for (p @ Party(obs, _, _) <- parties)
       // An antecedent update may have closed the current
       // party (e.g. flatMap does this); we need to check that
       // the party is active here in order to prevent stale updates.
       if (p.active)
         obs.publish(this, value, version)
-    }
   }
 
   protected def observe(depth: Int, obs: Observer[T]): Closable = {

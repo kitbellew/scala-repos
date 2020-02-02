@@ -106,11 +106,11 @@ object ExpressionEncoder {
 
     val schema = StructType(encoders.zipWithIndex.map {
       case (e, i) =>
-        val (dataType, nullable) = if (e.flat) {
-          e.schema.head.dataType -> e.schema.head.nullable
-        } else {
-          e.schema -> true
-        }
+        val (dataType, nullable) =
+          if (e.flat)
+            e.schema.head.dataType -> e.schema.head.nullable
+          else
+            e.schema -> true
         StructField(s"_${i + 1}", dataType, nullable)
     })
 
@@ -136,11 +136,11 @@ object ExpressionEncoder {
 
     val fromRowExpressions = encoders.zipWithIndex.map {
       case (enc, index) =>
-        if (enc.flat) {
+        if (enc.flat)
           enc.fromRowExpression.transform {
             case b: BoundReference => b.copy(ordinal = index)
           }
-        } else {
+        else {
           val input = BoundReference(index, enc.schema, nullable = true)
           enc.fromRowExpression.transformUp {
             case UnresolvedAttribute(nameParts) =>
@@ -266,11 +266,10 @@ case class ExpressionEncoder[T](
     * function.
     */
   def fromRow(row: InternalRow): T =
-    try {
-      constructProjection(row)
-        .get(0, ObjectType(clsTag.runtimeClass))
-        .asInstanceOf[T]
-    } catch {
+    try constructProjection(row)
+      .get(0, ObjectType(clsTag.runtimeClass))
+      .asInstanceOf[T]
+    catch {
       case e: Exception =>
         throw new RuntimeException(
           s"Error while decoding: $e\n${fromRowExpression.treeString}",
@@ -311,9 +310,8 @@ case class ExpressionEncoder[T](
         if (b.ordinal > maxOrdinal) maxOrdinal = b.ordinal
       case _ =>
     }
-    if (maxOrdinal >= 0 && maxOrdinal != schema.length - 1) {
+    if (maxOrdinal >= 0 && maxOrdinal != schema.length - 1)
       fail(StructType.fromAttributes(schema), maxOrdinal)
-    }
 
     // If we have nested tuple, the `fromRowExpression` will contains `GetStructField` instead of
     // `UnresolvedExtractValue`, so we need to check if their ordinals are all valid.
@@ -328,17 +326,15 @@ case class ExpressionEncoder[T](
     unbound.foreach {
       case g: GetStructField =>
         val maxOrdinal = exprToMaxOrdinal.getOrElse(g.child, -1)
-        if (maxOrdinal < g.ordinal) {
+        if (maxOrdinal < g.ordinal)
           exprToMaxOrdinal.update(g.child, g.ordinal)
-        }
       case _ =>
     }
     exprToMaxOrdinal.foreach {
       case (expr, maxOrdinal) =>
         val schema = expr.dataType.asInstanceOf[StructType]
-        if (maxOrdinal != schema.length - 1) {
+        if (maxOrdinal != schema.length - 1)
           fail(schema, maxOrdinal)
-        }
     }
   }
 

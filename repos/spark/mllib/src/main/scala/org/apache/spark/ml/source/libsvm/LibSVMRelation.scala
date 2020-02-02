@@ -45,7 +45,7 @@ private[libsvm] class LibSVMOutputWriter(
 
   private[this] val buffer = new Text()
 
-  private val recordWriter: RecordWriter[NullWritable, Text] = {
+  private val recordWriter: RecordWriter[NullWritable, Text] =
     new TextOutputFormat[NullWritable, Text]() {
       override def getDefaultWorkFile(
           context: TaskAttemptContext,
@@ -58,7 +58,6 @@ private[libsvm] class LibSVMOutputWriter(
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId$extension")
       }
     }.getRecordWriter(context)
-  }
 
   override def write(row: Row): Unit = {
     val label = row.get(0)
@@ -116,10 +115,9 @@ class DefaultSource extends FileFormat with DataSourceRegister {
   private def verifySchema(dataSchema: StructType): Unit =
     if (dataSchema.size != 2 ||
         (!dataSchema(0).dataType.sameType(DataTypes.DoubleType)
-        || !dataSchema(1).dataType.sameType(new VectorUDT()))) {
+        || !dataSchema(1).dataType.sameType(new VectorUDT())))
       throw new IOException(
         s"Illegal schema for libsvm data, schema=$dataSchema")
-    }
   override def inferSchema(
       sqlContext: SQLContext,
       options: Map[String, String],
@@ -140,9 +138,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
           bucketId: Option[Int],
           dataSchema: StructType,
           context: TaskAttemptContext): OutputWriter = {
-        if (bucketId.isDefined) {
+        if (bucketId.isDefined)
           sys.error("LibSVM doesn't support bucketing")
-        }
         new LibSVMOutputWriter(path, dataSchema, context)
       }
     }

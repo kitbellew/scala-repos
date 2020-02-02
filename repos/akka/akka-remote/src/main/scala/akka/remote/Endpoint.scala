@@ -402,11 +402,11 @@ private[remote] class ReliableDeliverySupervisor(
       context.become(gated(writerTerminated = true, earlyUngateRequested))
     case IsIdle ⇒ sender() ! Idle
     case Ungate ⇒
-      if (!writerTerminated) {
+      if (!writerTerminated)
         // Ungate was sent from EndpointManager, but we must wait for Terminated first.
         context.become(
           gated(writerTerminated = false, earlyUngateRequested = true))
-      } else if (resendBuffer.nonAcked.nonEmpty || resendBuffer.nacked.nonEmpty) {
+      else if (resendBuffer.nonAcked.nonEmpty || resendBuffer.nacked.nonEmpty) {
         // If we talk to a system we have not talked to before (or has given up talking to in the past) stop
         // system delivery attempts after the specified time. This act will drop the pending system messages and gate the
         // remote address at the EndpointManager level stopping this actor. In case the remote system becomes reachable
@@ -495,11 +495,11 @@ private[remote] class ReliableDeliverySupervisor(
         writer ! sequencedSend
     } else writer ! send
 
-  private def resendNacked(): Unit = resendBuffer.nacked foreach { writer ! _ }
+  private def resendNacked(): Unit = resendBuffer.nacked foreach writer ! _
 
   private def resendAll(): Unit = {
     resendNacked()
-    resendBuffer.nonAcked.take(settings.SysResendLimit) foreach { writer ! _ }
+    resendBuffer.nonAcked.take(settings.SysResendLimit) foreach writer ! _
   }
 
   private def tryBuffer(s: Send): Unit =
@@ -915,47 +915,45 @@ private[remote] class EndpointWriter(
   }
 
   def writeSend(s: Send): Boolean =
-    try {
-      handle match {
-        case Some(h) ⇒
-          if (provider.remoteSettings.LogSend) {
-            def msgLog =
-              s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption
-                .getOrElse(extendedSystem.deadLetters)}]"
-            log.debug("sending message {}", msgLog)
+    try handle match {
+      case Some(h) ⇒
+        if (provider.remoteSettings.LogSend) {
+          def msgLog =
+            s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption
+              .getOrElse(extendedSystem.deadLetters)}]"
+          log.debug("sending message {}", msgLog)
+        }
+
+        val pdu = codec.constructMessage(
+          s.recipient.localAddressToUse,
+          s.recipient,
+          serializeMessage(s.message),
+          s.senderOption,
+          seqOption = s.seqOpt,
+          ackOption = lastAck)
+
+        val pduSize = pdu.size
+        remoteMetrics.logPayloadBytes(s.message, pduSize)
+
+        if (pduSize > transport.maximumPayloadBytes) {
+          val reason = new OversizedPayloadException(
+            s"Discarding oversized payload sent to ${s.recipient}: max allowed size ${transport.maximumPayloadBytes} bytes, actual size of encoded ${s.message.getClass} was ${pdu.size} bytes.")
+          log.error(
+            reason,
+            "Transient association error (association remains live)")
+          true
+        } else {
+          val ok = h.write(pdu)
+          if (ok) {
+            ackDeadline = newAckDeadline
+            lastAck = None
           }
+          ok
+        }
 
-          val pdu = codec.constructMessage(
-            s.recipient.localAddressToUse,
-            s.recipient,
-            serializeMessage(s.message),
-            s.senderOption,
-            seqOption = s.seqOpt,
-            ackOption = lastAck)
-
-          val pduSize = pdu.size
-          remoteMetrics.logPayloadBytes(s.message, pduSize)
-
-          if (pduSize > transport.maximumPayloadBytes) {
-            val reason = new OversizedPayloadException(
-              s"Discarding oversized payload sent to ${s.recipient}: max allowed size ${transport.maximumPayloadBytes} bytes, actual size of encoded ${s.message.getClass} was ${pdu.size} bytes.")
-            log.error(
-              reason,
-              "Transient association error (association remains live)")
-            true
-          } else {
-            val ok = h.write(pdu)
-            if (ok) {
-              ackDeadline = newAckDeadline
-              lastAck = None
-            }
-            ok
-          }
-
-        case None ⇒
-          throw new EndpointException(
-            "Internal error: Endpoint is in state Writing, but no association handle is present.")
-      }
+      case None ⇒
+        throw new EndpointException(
+          "Internal error: Endpoint is in state Writing, but no association handle is present.")
     } catch {
       case e: NotSerializableException ⇒
         log.error(e, "Transient association error (association remains live)")
@@ -1241,9 +1239,8 @@ private[remote] class EndpointReader(
 
   private def tryDecodeMessageAndAck(
       pdu: ByteString): (Option[Ack], Option[Message]) =
-    try {
-      codec.decodeMessage(pdu, provider, localAddress)
-    } catch {
+    try codec.decodeMessage(pdu, provider, localAddress)
+    catch {
       case NonFatal(e) ⇒
         throw new EndpointException("Error while decoding incoming Akka PDU", e)
     }

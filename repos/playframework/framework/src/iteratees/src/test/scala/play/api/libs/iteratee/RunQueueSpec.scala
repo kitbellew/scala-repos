@@ -35,23 +35,20 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
     val runCount = new AtomicInteger(0)
     val orderingErrors = new AtomicInteger(0)
 
-    for (i <- 0 until runs) {
+    for (i <- 0 until runs)
       queueTester.schedule {
         val observedRunCount = runCount.getAndIncrement()
 
         // Introduce another Future just to make things complicated :)
         Future {
           // We see observedRunCount != i then this task was run out of order
-          if (observedRunCount != i) {
+          if (observedRunCount != i)
             orderingErrors.incrementAndGet() // Record the error
-          }
           // If this is the last task, complete our result promise
-          if ((observedRunCount + 1) >= runs) {
+          if ((observedRunCount + 1) >= runs)
             result.success(orderingErrors.get)
-          }
         }
       }
-    }
     result.future
   }
 
@@ -63,9 +60,8 @@ object RunQueueSpec extends Specification with ExecutionSpecification {
       def percentageOfRunsWithOrderingErrors(
           runSize: Int,
           queueTester: QueueTester): Int = {
-        val results: Seq[Future[Int]] = for (i <- 0 until 9) yield {
-          countOrderingErrors(runSize, queueTester)
-        }
+        val results: Seq[Future[Int]] =
+          for (i <- 0 until 9) yield countOrderingErrors(runSize, queueTester)
         Await.result(Future.sequence(results), waitTime).filter(_ > 0).size * 10
       }
 

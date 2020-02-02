@@ -162,15 +162,13 @@ object theModelValues {
   private val optionalFrogs =
     for {
       i <- STONE_NUMBER_LIST
-    } yield {
-      if (i < NUMBER_OF_FROGS) {
+    } yield
+      if (i < NUMBER_OF_FROGS)
         i -> Some(new LeftFrog())
-      } else if (i == NUMBER_OF_FROGS) {
+      else if (i == NUMBER_OF_FROGS)
         i -> None
-      } else {
+      else
         i -> Some(new RightFrog())
-      }
-    }
 
   val optionalFrogMap = optionalFrogs.toMap
 }
@@ -216,15 +214,13 @@ class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
     optionalFrogMap = for {
       entry @ (i, _) <- optionalFrogMap
       j <- positionSingleton(frog)
-    } yield {
-      if (i == j) {
+    } yield
+      if (i == j)
         i -> None
-      } else if (i == next(j)) {
+      else if (i == next(j))
         i -> Some(frog)
-      } else {
+      else
         entry
-      }
-    }
   }
 
   val position = (frog: Frog) => positionSingleton(frog).head
@@ -311,15 +307,13 @@ object theViewValues {
     for {
       i <- STONE_NUMBER_LIST
       frog <- theModelValues.optionalFrogMap(i)
-    } yield {
-      if (i < NUMBER_OF_FROGS) {
+    } yield
+      if (i < NUMBER_OF_FROGS)
         GreenFrogShape(i, frog)
-      } else if (i == NUMBER_OF_FROGS) {
+      else if (i == NUMBER_OF_FROGS)
         theDummyFrogShape
-      } else {
+      else
         RedFrogShape(i, frog)
-      }
-    }
 }
 
 //

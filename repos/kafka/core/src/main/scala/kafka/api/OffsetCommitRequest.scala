@@ -134,9 +134,8 @@ case class OffsetCommitRequest(
     }
 
     // version 2 or above specific data
-    if (versionId >= 2) {
+    if (versionId >= 2)
       buffer.putLong(retentionMs)
-    }
 
     buffer.putInt(requestInfoGroupedByTopic.size) // number of topics
     requestInfoGroupedByTopic.foreach { t1 => // topic -> Map[TopicAndPartition, OffsetMetadataAndError]

@@ -37,9 +37,7 @@ class PersistenceEngineSuite extends SparkFunSuite {
         conf,
         serializer =>
           new FileSystemPersistenceEngine(dir.getAbsolutePath, serializer))
-    } finally {
-      Utils.deleteRecursively(dir)
-    }
+    } finally Utils.deleteRecursively(dir)
   }
 
   test("ZooKeeperPersistenceEngine") {
@@ -49,14 +47,11 @@ class PersistenceEngineSuite extends SparkFunSuite {
     // zkTestServer successfully because there is a time gap between finding a free port and
     // starting zkTestServer. But the failure possibility should be very low.
     val zkTestServer = new TestingServer(findFreePort(conf))
-    try {
-      testPersistenceEngine(conf, serializer => {
-        conf.set("spark.deploy.zookeeper.url", zkTestServer.getConnectString)
-        new ZooKeeperPersistenceEngine(conf, serializer)
-      })
-    } finally {
-      zkTestServer.stop()
-    }
+    try testPersistenceEngine(conf, serializer => {
+      conf.set("spark.deploy.zookeeper.url", zkTestServer.getConnectString)
+      new ZooKeeperPersistenceEngine(conf, serializer)
+    })
+    finally zkTestServer.stop()
   }
 
   private def testPersistenceEngine(
@@ -122,9 +117,7 @@ class PersistenceEngineSuite extends SparkFunSuite {
         testRpcEnv.shutdown()
         testRpcEnv.awaitTermination()
       }
-    } finally {
-      persistenceEngine.close()
-    }
+    } finally persistenceEngine.close()
   }
 
   private def findFreePort(conf: SparkConf): Int = {

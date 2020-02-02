@@ -146,9 +146,9 @@ class ContinuousQuerySuite extends StreamTest with SharedSQLContext {
     )(q: StreamExecution): Boolean = {
 
       def awaitTermFunc(): Unit =
-        if (timeoutMs <= 0) {
+        if (timeoutMs <= 0)
           q.awaitTermination()
-        } else {
+        else {
           val returnedValue = q.awaitTermination(timeoutMs)
           assert(
             returnedValue === expectedReturnValue,

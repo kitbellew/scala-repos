@@ -91,11 +91,10 @@ object CanFirwin {
     require(
       max(omegas) <= nyquist,
       "The cutoff frequencies must be smaller than the nyquist frequency!")
-    if (omegas.length > 1) {
+    if (omegas.length > 1)
       require(
         min(diff(omegas)) > 0,
         "The cutoff frequency must be monotonically increasing.")
-    }
 
     val nyquistPass = (zeroPass != isOdd(omegas.length))
     var tempCutoff = (omegas / nyquist).toArray
@@ -114,10 +113,9 @@ object CanFirwin {
     val m = DenseVector.tabulate(taps)(i => i.toDouble) - alpha
 
     val h = DenseVector.zeros[Double](m.length)
-    for (band <- scaledCutoff.toArray.zipWithIndex) {
+    for (band <- scaledCutoff.toArray.zipWithIndex)
       if (isEven(band._2)) h -= sincpi(m :* band._1) :* band._1
       else h += sincpi(m :* band._1) :* band._1
-    }
 
     val win = optWindow match {
       case OptWindowFunction.Hamming(alpha, beta) =>
@@ -127,12 +125,11 @@ object CanFirwin {
       case OptWindowFunction.Blackman(a0, a1, a2) =>
         WindowFunctions.blackmanWindow(taps, a0, a1, a2)
       case OptWindowFunction.None => DenseVector.ones[Double](taps)
-      case OptWindowFunction.User(dv) => {
+      case OptWindowFunction.User(dv) =>
         require(
           dv.length == taps,
           "Length of specified window function is not the same as taps option!")
         dv
-      }
     }
 
     h *= win

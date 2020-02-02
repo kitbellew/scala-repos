@@ -23,9 +23,8 @@ final class PresentationCompilerThread(var compiler: Global, name: String = "")
       })
       compiler.pollForWork(compiler.NoPosition)
       while (compiler.isOutOfDate) {
-        try {
-          compiler.backgroundCompile()
-        } catch {
+        try compiler.backgroundCompile()
+        catch {
           case ex: FreshRunReq =>
             compiler.debugLog("fresh run req caught, starting new pass")
         }

@@ -132,7 +132,7 @@ final class BtreeClientIntegrationSuite
   def testBadd(
       client: Client,
       dict: mutable.HashMap[String, mutable.HashMap[String, String]]) {
-    for ((outerKey, inner) <- dict) {
+    for ((outerKey, inner) <- dict)
       for ((innerKey, value) <- inner) {
         val target = client.bAdd(
           StringToChannelBuffer(outerKey),
@@ -142,7 +142,6 @@ final class BtreeClientIntegrationSuite
           Await.result(target) == 1,
           "BADD failed for " + outerKey + " " + innerKey)
       }
-    }
 
     println("Test BADD succeeded")
   }
@@ -164,7 +163,7 @@ final class BtreeClientIntegrationSuite
   def testBget(
       client: Client,
       dict: mutable.HashMap[String, mutable.HashMap[String, String]]) {
-    for ((outerKey, inner) <- dict) {
+    for ((outerKey, inner) <- dict)
       for ((innerKey, value) <- inner) {
         val target = client.bGet(
           StringToChannelBuffer(outerKey),
@@ -174,7 +173,6 @@ final class BtreeClientIntegrationSuite
           value == targetVal,
           "BGET failed for " + outerKey + " expected " + value + " got " + targetVal)
       }
-    }
 
     println("Test BGET succeeded")
   }
@@ -182,7 +180,7 @@ final class BtreeClientIntegrationSuite
   def testBrem(
       client: Client,
       dict: mutable.HashMap[String, mutable.HashMap[String, String]]) {
-    for ((outerKey, inner) <- dict) {
+    for ((outerKey, inner) <- dict)
       for ((innerKey, value) <- inner) {
         val target = client.bRem(
           StringToChannelBuffer(outerKey),
@@ -192,7 +190,6 @@ final class BtreeClientIntegrationSuite
           "BREM failed for " + outerKey + " " + innerKey)
         inner.remove(innerKey)
       }
-    }
 
     println("Test BREM succeeded")
   }
@@ -264,11 +261,11 @@ final class BtreeClientIntegrationSuite
         Option(StringToChannelBuffer(innerKeys(start)._1)),
         Option(StringToChannelBuffer(innerKeys(end)._1)))
 
-      if (start > end) {
+      if (start > end)
         assert(
           Await.ready(target).poll.get.isThrow,
           "BRANGE failed for " + outerKey + " return should be a throw")
-      } else {
+      else {
         innerKeys = innerKeys.slice(start, end + 1)
         validate(outerKey, innerKeys, Await.result(target))
       }
@@ -329,13 +326,12 @@ final class BtreeClientIntegrationSuite
         Option(StringToChannelBuffer(start)),
         Option(StringToChannelBuffer(end)))
 
-      if (start > end) {
+      if (start > end)
         assert(
           Await.ready(target).poll.get.isThrow,
           "BRANGE failed for " + outerKey + " return should be a throw")
-      } else {
+      else
         validate(outerKey, innerKeys, Await.result(target))
-      }
     }
 
     println("Test BRANGE Exclusive Start End succeeded")

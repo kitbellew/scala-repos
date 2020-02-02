@@ -351,9 +351,7 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           //#stream-to-file
           await(downloadedFile) must_== file
 
-        } finally {
-          file.delete()
-        }
+        } finally file.delete()
       }
 
       "stream to a result" in withServer {
@@ -382,9 +380,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
                   case _ =>
                     Ok.chunked(body).as(contentType)
                 }
-              } else {
+              } else
                 BadGateway
-              }
           }
         }
         //#stream-to-result

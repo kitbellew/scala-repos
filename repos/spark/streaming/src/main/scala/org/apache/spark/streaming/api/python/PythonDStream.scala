@@ -95,9 +95,8 @@ private[python] class TransformFunction(
       rdds: JList[_]): JavaRDD[Array[Byte]] = {
     val resultRDD = pfunc.call(time, rdds)
     val failure = pfunc.getLastFailure
-    if (failure != null) {
+    if (failure != null)
       throw new SparkException("An exception was raised by Python:\n" + failure)
-    }
     resultRDD
   }
 
@@ -145,9 +144,8 @@ private[python] object PythonTransformFunctionSerializer {
     val id = f.get(h).asInstanceOf[String]
     val results = serializer.dumps(id)
     val failure = serializer.getLastFailure
-    if (failure != null) {
+    if (failure != null)
       throw new SparkException("An exception was raised by Python:\n" + failure)
-    }
     results
   }
 
@@ -155,9 +153,8 @@ private[python] object PythonTransformFunctionSerializer {
     require(serializer != null, "Serializer has not been registered!")
     val pfunc = serializer.loads(bytes)
     val failure = serializer.getLastFailure
-    if (failure != null) {
+    if (failure != null)
       throw new SparkException("An exception was raised by Python:\n" + failure)
-    }
     pfunc
   }
 }
@@ -223,11 +220,10 @@ private[python] class PythonTransformedDStream(
 
   override def compute(validTime: Time): Option[RDD[Array[Byte]]] = {
     val rdd = parent.getOrCompute(validTime)
-    if (rdd.isDefined) {
+    if (rdd.isDefined)
       func(rdd, validTime)
-    } else {
+    else
       None
-    }
   }
 }
 
@@ -280,11 +276,10 @@ private[python] class PythonStateDStream(
   override def compute(validTime: Time): Option[RDD[Array[Byte]]] = {
     val lastState = getOrCompute(validTime - slideDuration)
     val rdd = parent.getOrCompute(validTime)
-    if (rdd.isDefined) {
+    if (rdd.isDefined)
       func(lastState.orElse(initialRDD), rdd, validTime)
-    } else {
+    else
       lastState
-    }
   }
 }
 
@@ -337,29 +332,27 @@ private[python] class PythonReducedWindowedDStream(
       val oldRDDs = parent.slice(
         previous.beginTime + parent.slideDuration,
         current.beginTime)
-      val subtracted = if (oldRDDs.size > 0) {
-        invReduceFunc(previousRDD, Some(ssc.sc.union(oldRDDs)), validTime)
-      } else {
-        previousRDD
-      }
+      val subtracted =
+        if (oldRDDs.size > 0)
+          invReduceFunc(previousRDD, Some(ssc.sc.union(oldRDDs)), validTime)
+        else
+          previousRDD
 
       // add the RDDs of the reduced values in "new time steps"
       val newRDDs =
         parent.slice(previous.endTime + parent.slideDuration, current.endTime)
-      if (newRDDs.size > 0) {
+      if (newRDDs.size > 0)
         func(subtracted, Some(ssc.sc.union(newRDDs)), validTime)
-      } else {
+      else
         subtracted
-      }
     } else {
       // Get the RDDs of the reduced values in current window
       val currentRDDs =
         parent.slice(current.beginTime + parent.slideDuration, current.endTime)
-      if (currentRDDs.size > 0) {
+      if (currentRDDs.size > 0)
         func(None, Some(ssc.sc.union(currentRDDs)), validTime)
-      } else {
+      else
         None
-      }
     }
   }
 }

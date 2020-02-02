@@ -109,9 +109,8 @@ object HBEventsUtil {
 
     // get RowKey from string representation
     def apply(s: String): RowKey =
-      try {
-        apply(Base64.decodeBase64(s))
-      } catch {
+      try apply(Base64.decodeBase64(s))
+      catch {
         case e: Exception =>
           throw new RowKeyException(
             s"Failed to convert String $s to RowKey because $e",
@@ -184,23 +183,20 @@ object HBEventsUtil {
     }
 
     // TODO: make properties Option[]
-    if (!event.properties.isEmpty) {
+    if (!event.properties.isEmpty)
       addStringToE(colNames("properties"), write(event.properties.toJObject))
-    }
 
     event.prId.foreach { prId => addStringToE(colNames("prId"), prId) }
 
     addLongToE(colNames("eventTime"), event.eventTime.getMillis)
     val eventTimeZone = event.eventTime.getZone
-    if (!eventTimeZone.equals(EventValidation.defaultTimeZone)) {
+    if (!eventTimeZone.equals(EventValidation.defaultTimeZone))
       addStringToE(colNames("eventTimeZone"), eventTimeZone.getID)
-    }
 
     addLongToE(colNames("creationTime"), event.creationTime.getMillis)
     val creationTimeZone = event.creationTime.getZone
-    if (!creationTimeZone.equals(EventValidation.defaultTimeZone)) {
+    if (!creationTimeZone.equals(EventValidation.defaultTimeZone))
       addStringToE(colNames("creationTimeZone"), creationTimeZone.getID)
-    }
 
     // can use zero-length byte array for tag cell value
     (put, rowKey)
@@ -236,11 +232,10 @@ object HBEventsUtil {
 
     def getOptStringCol(col: String): Option[String] = {
       val r = result.getValue(eBytes, colNames(col))
-      if (r == null) {
+      if (r == null)
         None
-      } else {
+      else
         Some(Bytes.toString(r))
-      }
     }
 
     def getTimestamp(col: String): Long =
@@ -297,7 +292,7 @@ object HBEventsUtil {
     val scan: Scan = new Scan()
 
     (entityType, entityId) match {
-      case (Some(et), Some(eid)) => {
+      case (Some(et), Some(eid)) =>
         val start = PartialRowKey(et, eid, startTime.map(_.getMillis)).toBytes
         // if no untilTime, stop when reach next bytes of entityTypeAndId
         val stop = PartialRowKey(
@@ -317,15 +312,12 @@ object HBEventsUtil {
           scan.setStartRow(start)
           scan.setStopRow(stop)
         }
-      }
-      case (_, _) => {
+      case (_, _) =>
         val minTime: Long = startTime.map(_.getMillis).getOrElse(0)
         val maxTime: Long = untilTime.map(_.getMillis).getOrElse(Long.MaxValue)
         scan.setTimeRange(minTime, maxTime)
-        if (reversed.getOrElse(false)) {
+        if (reversed.getOrElse(false))
           scan.setReversed(true)
-        }
-      }
     }
 
     val filters = new FilterList(FilterList.Operator.MUST_PASS_ALL)
@@ -379,16 +371,15 @@ object HBEventsUtil {
           compEvent)
         eventFilters.addFilter(filterEvent)
       }
-      if (!eventFilters.getFilters().isEmpty) {
+      if (!eventFilters.getFilters().isEmpty)
         filters.addFilter(eventFilters)
-      }
     }
 
     targetEntityType.foreach { tetOpt =>
       if (tetOpt.isEmpty) {
         val filter = createSkipRowIfColumnExistFilter("targetEntityType")
         filters.addFilter(filter)
-      } else {
+      } else
         tetOpt.foreach { tet =>
           val filter =
             createBinaryFilter("targetEntityType", Bytes.toBytes(tet))
@@ -396,26 +387,23 @@ object HBEventsUtil {
           filter.setFilterIfMissing(true)
           filters.addFilter(filter)
         }
-      }
     }
 
     targetEntityId.foreach { teidOpt =>
       if (teidOpt.isEmpty) {
         val filter = createSkipRowIfColumnExistFilter("targetEntityId")
         filters.addFilter(filter)
-      } else {
+      } else
         teidOpt.foreach { teid =>
           val filter = createBinaryFilter("targetEntityId", Bytes.toBytes(teid))
           // the entire row will be skipped if the column is not found.
           filter.setFilterIfMissing(true)
           filters.addFilter(filter)
         }
-      }
     }
 
-    if (!filters.getFilters().isEmpty) {
+    if (!filters.getFilters().isEmpty)
       scan.setFilter(filters)
-    }
 
     scan
   }

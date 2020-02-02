@@ -20,9 +20,8 @@ class SbtNotificationListener
       text: String,
       stdOut: Boolean) {
     // TODO this check must be performed in the External System itself (see SCL-7405)
-    if (id.getProjectSystemId == SbtProjectSystem.Id) {
+    if (id.getProjectSystemId == SbtProjectSystem.Id)
       processOutput(text)
-    }
   }
 
   override def onSuccess(id: ExternalSystemTaskId): Unit =
@@ -30,9 +29,7 @@ class SbtNotificationListener
       project <- Option(id.findProject())
       settings <- Option(SbtLocalSettings.getInstance(project))
       if id.getType == ExternalSystemTaskType.RESOLVE_PROJECT
-    } {
-      settings.lastUpdateTimestamp = System.currentTimeMillis()
-    }
+    } settings.lastUpdateTimestamp = System.currentTimeMillis()
 
   private def processOutput(text: String) {
     text match {

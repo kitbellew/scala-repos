@@ -351,11 +351,10 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   // This backup pool is mainly provided in case of long time zookeeper outage during which
   // cache client needs to be restarted.
   backupPool foreach { pool =>
-    if (!pool.isEmpty) {
+    if (!pool.isEmpty)
       ready within (CachePoolCluster.timer, BackupPoolFallBackTimeout) onFailure {
         _ => updatePool(pool)
       }
-    }
   }
 
   override def applyZKData(data: Array[Byte]): Unit =
@@ -395,9 +394,9 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
       expectedSize: Int,
       spoolChanges: Future[Spool[Cluster.Change[CacheNode]]]
   ): Future[Set[CacheNode]] =
-    if (expectedSize == currentSet.size) {
+    if (expectedSize == currentSet.size)
       Future.value(currentSet)
-    } else
+    else
       spoolChanges flatMap { spool =>
         spool match {
           case Cluster.Add(node) *:: tail =>
@@ -478,9 +477,8 @@ class ZookeeperCacheNodeGroup(
         // e.g. certain cache node key is re-assigned to another host
         if (removed.forall(_.key.isDefined) && added.forall(_.key.isDefined) &&
             removed.size == added.size && removed.map(_.key.get) == added.map(
-              _.key.get)) {
+              _.key.get))
           set() = newMembers
-        }
       }
     }
 }

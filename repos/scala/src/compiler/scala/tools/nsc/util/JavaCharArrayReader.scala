@@ -59,9 +59,8 @@ class JavaCharArrayReader(
           d
         }
         if (buf(bp) == 'u' && decodeUni && evenSlashPrefix) {
-          do {
-            bp += 1 //; nextcol += 1
-          } while (buf(bp) == 'u')
+          do bp += 1 //; nextcol += 1
+          while (buf(bp) == 'u')
           val code = udigit << 12 | udigit << 8 | udigit << 4 | udigit
           ch = code.asInstanceOf[Char]
           isUnicode = true

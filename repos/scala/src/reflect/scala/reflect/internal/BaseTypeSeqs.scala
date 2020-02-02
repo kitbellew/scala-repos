@@ -66,19 +66,17 @@ trait BaseTypeSeqs {
             //if (!decls.isEmpty) abort("computing closure of "+this+":"+this.isInstanceOf[RefinedType]+"/"+closureCache(j))
             //Console.println("compute closure of "+this+" => glb("+variants+")")
             pending += i
-            try {
-              mergePrefixAndArgs(
-                variants,
-                Variance.Contravariant,
-                lubDepth(variants)) match {
-                case NoType =>
-                  typeError(
-                    "no common type instance of base types " + (variants mkString ", and ") + " exists.")
-                case tp0 =>
-                  pending(i) = false
-                  elems(i) = tp0
-                  tp0
-              }
+            try mergePrefixAndArgs(
+              variants,
+              Variance.Contravariant,
+              lubDepth(variants)) match {
+              case NoType =>
+                typeError(
+                  "no common type instance of base types " + (variants mkString ", and ") + " exists.")
+              case tp0 =>
+                pending(i) = false
+                elems(i) = tp0
+                tp0
             } catch {
               case CyclicInheritance =>
                 typeError(

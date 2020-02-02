@@ -87,14 +87,13 @@ object ExternalCompile {
            * length.
            */
           if ((fork in compile).value && isWindows &&
-              (sourcesArgs.map(_.length).sum > 1536)) {
+              (sourcesArgs.map(_.length).sum > 1536))
             IO.withTemporaryFile("sourcesargs", ".txt") { sourceListFile =>
               IO.writeLines(sourceListFile, sourcesArgs)
               doCompile(List("@" + sourceListFile.getAbsolutePath()))
             }
-          } else {
+          else
             doCompile(sourcesArgs)
-          }
 
           // Output is all files in classesDirectory
           (classesDirectory ** AllPassFilter).get.toSet

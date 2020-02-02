@@ -59,10 +59,9 @@ object CollectionsOnListTest extends CollectionsTestBase {
     def testIfSorted(rangeValues: Boolean): Unit = {
       for (i <- range.init)
         assertTrue(list(i).compareTo(list(i + 1)) <= 0)
-      if (absoluteOrder && rangeValues) {
+      if (absoluteOrder && rangeValues)
         for (i <- range)
           assertEquals(0, list(i).compareTo(toElem(i)))
-      }
     }
 
     list.addAll(range.map(toElem))
@@ -94,10 +93,9 @@ object CollectionsOnListTest extends CollectionsTestBase {
     def testIfSorted(rangeValues: Boolean): Unit = {
       for (i <- range.init)
         assertTrue(cmpFun(list(i), list(i + 1)) <= 0)
-      if (absoluteOrder && rangeValues) {
+      if (absoluteOrder && rangeValues)
         for (i <- range)
           assertEquals(0, cmpFun(list(i), toElem(i)))
-      }
     }
 
     val cmp = new ju.Comparator[T] {
@@ -146,9 +144,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
              range.last,
              range(range.size / 3),
              range(range.size / 2),
-             range(3 * range.size / 5))) {
+             range(3 * range.size / 5)))
         assertEquals(i, ju.Collections.binarySearch(list, toElem(i)))
-      }
 
       // If not found it should return: -(insertion point) - 1
       assertEquals(-1, ju.Collections.binarySearch(list, toElem(-1)))
@@ -185,9 +182,8 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
              range.last,
              range(range.size / 3),
              range(range.size / 2),
-             range(3 * range.size / 5))) {
+             range(3 * range.size / 5)))
         assertEquals(i, ju.Collections.binarySearch(list, toElem(i), cmp))
-      }
 
       // If not found it should return: -(insertion point) - 1
       assertEquals(-1, ju.Collections.binarySearch(list, toElem(-1), cmp))

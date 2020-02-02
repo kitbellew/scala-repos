@@ -92,9 +92,7 @@ class FpFilterTest extends FunSuite with Checkers {
   def genSimpleDouble: Gen[Double] =
     for {
       n <- arbitrary[Long]
-    } yield {
-      (n >>> 11) * 1.1102230246251565e-16
-    }
+    } yield (n >>> 11) * 1.1102230246251565e-16
 
   def genPoint: Gen[Point] =
     for {

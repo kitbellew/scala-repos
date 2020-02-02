@@ -20,9 +20,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
  */
 object VarDef {
   def parse(builder: ScalaPsiBuilder): Boolean = {
-    if (PatDef parse builder) {
+    if (PatDef parse builder)
       return true
-    }
 
     // Parsing specifig wildcard definition
     val valDefMarker = builder.mark
@@ -33,9 +32,8 @@ object VarDef {
 
         if (ScalaTokenTypes.tCOLON.equals(builder.getTokenType)) {
           ParserUtils.eatElement(builder, ScalaTokenTypes.tCOLON)
-          if (!Type.parse(builder)) {
+          if (!Type.parse(builder))
             builder error "type declaration expected"
-          }
           hasTypeDcl = true
         } else {
           valDefMarker.rollbackTo
@@ -49,10 +47,9 @@ object VarDef {
           builder.getTokenType match {
             case ScalaTokenTypes.tUNDER => builder.advanceLexer
             //Ate _
-            case _ => {
+            case _ =>
               valDefMarker.rollbackTo
               return false
-            }
           }
           valDefMarker.drop
           return true

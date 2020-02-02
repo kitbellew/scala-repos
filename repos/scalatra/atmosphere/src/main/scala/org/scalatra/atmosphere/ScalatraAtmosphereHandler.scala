@@ -92,18 +92,18 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
         (req.requestMethod, route.isDefined) match {
           case (Post, _) =>
             var client: AtmosphereClient = null
-            if (isNew) {
+            if (isNew)
               session =
                 AtmosphereResourceFactory.getDefault.find(resource.uuid).session
-            }
 
             client = session(org.scalatra.atmosphere.AtmosphereClientKey)
               .asInstanceOf[AtmosphereClient]
             handleIncomingMessage(req, client)
           case (_, true) =>
-            val cl = if (isNew) {
-              createClient(route.get, session, resource)
-            } else null
+            val cl =
+              if (isNew)
+                createClient(route.get, session, resource)
+              else null
 
             addEventListener(resource)
             resumeIfNeeded(resource)
@@ -185,11 +185,9 @@ class ScalatraAtmosphereHandler(scalatraApp: ScalatraBase)(
   }
 
   private[this] def liftAction(action: org.scalatra.Action) =
-    try {
-      action() match {
-        case cl: AtmosphereClient => Some(cl)
-        case _                    => None
-      }
+    try action() match {
+      case cl: AtmosphereClient => Some(cl)
+      case _                    => None
     } catch {
       case t: Throwable =>
         t.printStackTrace()

@@ -269,11 +269,10 @@ object KetamaClientStress extends App {
           val (key, value) = (
             randomString(config.keysize()),
             Buf.Utf8(randomString(config.valuesize())))
-          () => {
+          () =>
             replicationClient.add(
               key + load_count.getAndIncrement().toString,
               value)
-          }
         case "replace" =>
           keyValueSet foreach { case (k, v) => replicationClient.set(k, v)() }
           () => {
@@ -305,9 +304,8 @@ object KetamaClientStress extends App {
 
       // quit the loop when all load is drained
       if (howmuch_load >= config.cap() && (config
-            .loadrate() == 0 || howmuch_throughput >= howmuch_load)) {
+            .loadrate() == 0 || howmuch_throughput >= howmuch_load))
         sys.exit()
-      }
     }
   }
 }

@@ -36,7 +36,7 @@ class RenameJavaToScalaAction extends AnAction {
         if (file != null) elements = Array(file)
         else elements = Array.empty
       }
-      for (element <- elements) {
+      for (element <- elements)
         element.getContainingFile match {
           case j: PsiJavaFile if j.isInScalaModule =>
             val dir = j.getContainingDirectory
@@ -48,7 +48,6 @@ class RenameJavaToScalaAction extends AnAction {
             disable()
             return
         }
-      }
       enable()
     } catch {
       case e: Exception => disable()
@@ -63,11 +62,11 @@ class RenameJavaToScalaAction extends AnAction {
       if (file != null) elements = Array(file)
       else elements = Array.empty
     }
-    for (element <- elements) {
+    for (element <- elements)
       element.getContainingFile match {
         case jFile: PsiJavaFile if jFile.isInScalaModule =>
           val dir = jFile.getContainingDirectory
-          if (dir.isWritable) {
+          if (dir.isWritable)
             ScalaUtils.runWriteAction(
               new Runnable {
                 def run() {
@@ -112,9 +111,8 @@ class RenameJavaToScalaAction extends AnAction {
                   settings.KEEP_BLANK_LINES_IN_CODE = 0
                   settings.KEEP_BLANK_LINES_IN_DECLARATIONS = 0
                   settings.KEEP_BLANK_LINES_BEFORE_RBRACE = 0
-                  try {
-                    manager.reformatText(file, 0, file.getTextLength)
-                  } finally {
+                  try manager.reformatText(file, 0, file.getTextLength)
+                  finally {
                     settings.KEEP_BLANK_LINES_IN_CODE = keep_blank_lines_in_code
                     settings.KEEP_BLANK_LINES_IN_DECLARATIONS =
                       keep_blank_lines_in_declarations
@@ -127,9 +125,7 @@ class RenameJavaToScalaAction extends AnAction {
               jFile.getProject,
               "Convert to Scala"
             )
-          }
         case _ =>
       }
-    }
   }
 }

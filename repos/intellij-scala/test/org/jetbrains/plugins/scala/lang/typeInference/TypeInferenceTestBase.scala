@@ -45,11 +45,8 @@ abstract class TypeInferenceTestBase
     val extensionPoint =
       Extensions.getRootArea.getExtensionPoint(SyntheticMembersInjector.EP_NAME)
     extensionPoint.registerExtension(injector)
-    try {
-      doTest()
-    } finally {
-      extensionPoint.unregisterExtension(injector)
-    }
+    try doTest()
+    finally extensionPoint.unregisterExtension(injector)
   }
 
   protected def doTest() {

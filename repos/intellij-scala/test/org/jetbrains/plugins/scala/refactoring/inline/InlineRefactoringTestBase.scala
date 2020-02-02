@@ -49,9 +49,8 @@ abstract class InlineRefactoringTestBase
     val scalaFile = getFileAdapter.asInstanceOf[ScalaFile]
     var element = CommonDataKeys.PSI_ELEMENT.getData(
       DataManager.getInstance().getDataContextFromFocus.getResult)
-    if (element == null) {
+    if (element == null)
       element = BaseRefactoringAction.getElementAtCaret(editor, scalaFile)
-    }
 
     var res: String = null
     val firstPsi = scalaFile.findElementAt(0)

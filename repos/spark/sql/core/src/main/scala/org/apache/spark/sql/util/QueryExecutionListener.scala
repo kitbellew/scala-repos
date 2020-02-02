@@ -122,23 +122,19 @@ class ExecutionListenerManager private[sql] () extends Logging {
   private[this] val lock = new ReentrantReadWriteLock()
 
   private def withErrorHandling(f: QueryExecutionListener => Unit): Unit =
-    for (listener <- listeners) {
-      try {
-        f(listener)
-      } catch {
+    for (listener <- listeners)
+      try f(listener)
+      catch {
         case NonFatal(e) =>
           logWarning("Error executing query execution listener", e)
       }
-    }
 
   /** Acquires a read lock on the cache for the duration of `f`. */
   private def readLock[A](f: => A): A = {
     val rl = lock.readLock()
     rl.lock()
     try f
-    finally {
-      rl.unlock()
-    }
+    finally rl.unlock()
   }
 
   /** Acquires a write lock on the cache for the duration of `f`. */
@@ -146,8 +142,6 @@ class ExecutionListenerManager private[sql] () extends Logging {
     val wl = lock.writeLock()
     wl.lock()
     try f
-    finally {
-      wl.unlock()
-    }
+    finally wl.unlock()
   }
 }

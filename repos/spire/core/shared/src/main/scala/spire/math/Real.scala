@@ -148,15 +148,14 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
       case Exact(n) =>
         Exact(n.pow(k))
       case _ =>
-        if (k < 0) {
+        if (k < 0)
           reciprocal.pow(-k)
-        } else if (k == 0) {
+        else if (k == 0)
           Real.one
-        } else if (k == 1) {
+        else if (k == 1)
           this
-        } else {
+        else
           loop(x, k - 1, x)
-        }
     }
   }
 
@@ -276,11 +275,11 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
       case 1  => ("", m.toString)
     }
     val i = str.length - d
-    val s = if (i > 0) {
-      sign + str.substring(0, i) + "." + str.substring(i)
-    } else {
-      sign + "0." + ("0" * -i) + str
-    }
+    val s =
+      if (i > 0)
+        sign + str.substring(0, i) + "." + str.substring(i)
+      else
+        sign + "0." + ("0" * -i) + str
     s.replaceAll("0+$", "").replaceAll("\\.$", "")
   }
 }
@@ -394,22 +393,21 @@ object Real extends RealInstances {
         sy = y(pp).signum
         pp += 1
       }
-      if (sx > 0) {
+      if (sx > 0)
         atan(y / x)(p)
-      } else if (sy >= 0 && sx < 0) {
+      else if (sy >= 0 && sx < 0)
         (atan(y / x) + Real.pi)(p)
-      } else if (sy < 0 && sx < 0) {
+      else if (sy < 0 && sx < 0)
         (atan(y / x) - Real.pi)(p)
-      } else if (sy > 0) {
+      else if (sy > 0)
         (Real.pi / Real.two)(p)
-      } else if (sy < 0) {
+      else if (sy < 0)
         (-Real.pi / Real.two)(p)
-      } else {
+      else
         throw new IllegalArgumentException("atan2(0, 0) is undefined")
-        // // ugh
-        // Real.zero
-        // //sys.error("undefined sx=%s sy=%s" format (sx, sy))
-      }
+    // // ugh
+    // Real.zero
+    // //sys.error("undefined sx=%s sy=%s" format (sx, sy))
     })
 
   def asin(x: Real): Real = {

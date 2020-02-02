@@ -95,7 +95,7 @@ trait AnalysisTest extends PlanTest {
 
     if (!expectedErrors
           .map(_.toLowerCase)
-          .forall(e.getMessage.toLowerCase.contains)) {
+          .forall(e.getMessage.toLowerCase.contains))
       fail(s"""Exception message should contain the following substrings:
            |
            |  ${expectedErrors.mkString("\n  ")}
@@ -104,6 +104,5 @@ trait AnalysisTest extends PlanTest {
            |
            |  ${e.getMessage}
          """.stripMargin)
-    }
   }
 }

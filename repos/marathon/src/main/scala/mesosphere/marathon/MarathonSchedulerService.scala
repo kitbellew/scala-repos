@@ -247,9 +247,8 @@ class MarathonSchedulerService @Inject() (
           // aren't then the driver was stopped via external means. For example,
           // our leadership could have been defeated or perhaps it was
           // abdicated. Therefore, for these cases we offer our leadership again.
-          if (isRunning) {
+          if (isRunning)
             offerLeadership()
-          }
         case Failure(t) =>
           log.error("Exception while running driver", t)
           abdicateAfterFailure(
@@ -413,9 +412,9 @@ class MarathonSchedulerService @Inject() (
     timer.schedule(
       new TimerTask {
         def run() {
-          if (leader.get()) {
+          if (leader.get())
             schedulerActor ! ScaleApps
-          } else log.info("Not leader therefore not scaling apps")
+          else log.info("Not leader therefore not scaling apps")
         }
       },
       scaleAppsInitialDelay.toMillis,

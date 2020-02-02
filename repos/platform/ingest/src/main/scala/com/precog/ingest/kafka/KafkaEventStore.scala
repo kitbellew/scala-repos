@@ -111,9 +111,9 @@ class LocalKafkaEventStore(
       toEncode match {
         case x :: xs =>
           val message = codec.toMessage(x)
-          if (message.size + messagePadding <= maxMessageSize) {
+          if (message.size + messagePadding <= maxMessageSize)
             encodeAll(xs, messages :+ message)
-          } else {
+          else {
             val postSplit = x.split(2)
             if (postSplit.length == 1) {
               logger.error(
@@ -122,9 +122,8 @@ class LocalKafkaEventStore(
               left(
                 StoreFailure(
                   "Failed insertion due to excessively large event(s)!"))
-            } else {
+            } else
               encodeAll(postSplit ::: xs, messages)
-            }
           }
 
         case Nil => right(messages)

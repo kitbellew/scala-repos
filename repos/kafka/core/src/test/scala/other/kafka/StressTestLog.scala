@@ -106,21 +106,18 @@ object StressTestLog {
   class ReaderThread(val log: Log) extends WorkerThread {
     @volatile var offset = 0
     override def work() {
-      try {
-        log.read(offset, 1024, Some(offset + 1)).messageSet match {
-          case read: FileMessageSet if read.sizeInBytes > 0 => {
-            val first = read.head
-            require(
-              first.offset == offset,
-              "We should either read nothing or the message we asked for.")
-            require(
-              MessageSet.entrySize(first.message) == read.sizeInBytes,
-              "Expected %d but got %d."
-                .format(MessageSet.entrySize(first.message), read.sizeInBytes))
-            offset += 1
-          }
-          case _ =>
-        }
+      try log.read(offset, 1024, Some(offset + 1)).messageSet match {
+        case read: FileMessageSet if read.sizeInBytes > 0 =>
+          val first = read.head
+          require(
+            first.offset == offset,
+            "We should either read nothing or the message we asked for.")
+          require(
+            MessageSet.entrySize(first.message) == read.sizeInBytes,
+            "Expected %d but got %d."
+              .format(MessageSet.entrySize(first.message), read.sizeInBytes))
+          offset += 1
+        case _ =>
       } catch {
         case e: OffsetOutOfRangeException => // this is okay
       }

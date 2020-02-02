@@ -77,13 +77,12 @@ trait IssuesControllerBase extends ControllerBase {
 
   get("/:owner/:repository/issues")(referrersOnly { repository =>
     val q = request.getParameter("q")
-    if (Option(q).exists(_.contains("is:pr"))) {
+    if (Option(q).exists(_.contains("is:pr")))
       redirect(
         s"/${repository.owner}/${repository.name}/pulls?q=" + StringUtil
           .urlEncode(q))
-    } else {
+    else
       searchIssues(repository)
-    }
   })
 
   get("/:owner/:repository/issues/:id")(referrersOnly {
@@ -144,7 +143,7 @@ trait IssuesControllerBase extends ControllerBase {
             if (writable) form.milestoneId else None)
 
           // insert labels
-          if (writable) {
+          if (writable)
             form.labelNames.map { value =>
               val labels = getLabels(owner, name)
               value.split(",").foreach { labelName =>
@@ -153,7 +152,6 @@ trait IssuesControllerBase extends ControllerBase {
                 }
               }
             }
-          }
 
           // record activity
           recordCreateIssueActivity(owner, name, userName, issueId, form.title)
@@ -293,9 +291,9 @@ trait IssuesControllerBase extends ControllerBase {
       defining(repository.owner, repository.name) {
         case (owner, name) =>
           getComment(owner, name, params("id")).map { comment =>
-            if (isEditable(owner, name, comment.commentedUserName)) {
+            if (isEditable(owner, name, comment.commentedUserName))
               Ok(deleteComment(comment.commentId))
-            } else Unauthorized
+            else Unauthorized
           } getOrElse NotFound
       }
   })
@@ -304,7 +302,7 @@ trait IssuesControllerBase extends ControllerBase {
     repository =>
       getIssue(repository.owner, repository.name, params("id")) map {
         x =>
-          if (isEditable(x.userName, x.repositoryName, x.openedUserName)) {
+          if (isEditable(x.userName, x.repositoryName, x.openedUserName))
             params.get("dataType") collect {
               case t if t == "html" =>
                 html
@@ -328,14 +326,14 @@ trait IssuesControllerBase extends ControllerBase {
                 )
               )
             }
-          } else Unauthorized
+          else Unauthorized
       } getOrElse NotFound
   })
 
   ajaxGet("/:owner/:repository/issue_comments/_data/:id")(readableUsersOnly {
     repository =>
       getComment(repository.owner, repository.name, params("id")) map { x =>
-        if (isEditable(x.userName, x.repositoryName, x.commentedUserName)) {
+        if (isEditable(x.userName, x.repositoryName, x.commentedUserName))
           params.get("dataType") collect {
             case t if t == "html" =>
               html.editcomment(
@@ -363,7 +361,7 @@ trait IssuesControllerBase extends ControllerBase {
               )
             )
           }
-        } else Unauthorized
+        else Unauthorized
       } getOrElse NotFound
   })
 
@@ -529,15 +527,14 @@ trait IssuesControllerBase extends ControllerBase {
           sessionKey,
           if (request.hasQueryString) {
             val q = request.getParameter("q")
-            if (q == null || q.trim.isEmpty) {
+            if (q == null || q.trim.isEmpty)
               IssueSearchCondition(request)
-            } else {
+            else
               IssueSearchCondition(
                 q,
                 getMilestones(owner, repoName)
                   .map(x => (x.title, x.milestoneId))
                   .toMap)
-            }
           } else
             session
               .getAs[IssueSearchCondition](sessionKey)
@@ -553,11 +550,10 @@ trait IssuesControllerBase extends ControllerBase {
             IssueLimit,
             owner -> repoName),
           page,
-          if (!getAccountByUserName(owner).exists(_.isGroupAccount)) {
+          if (!getAccountByUserName(owner).exists(_.isGroupAccount))
             (getCollaborators(owner, repoName) :+ owner).sorted
-          } else {
-            getCollaborators(owner, repoName)
-          },
+          else
+            getCollaborators(owner, repoName),
           getMilestones(owner, repoName),
           getLabels(owner, repoName),
           countIssue(condition.copy(state = "open"), false, owner -> repoName),

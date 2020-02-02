@@ -39,12 +39,10 @@ private[saddle] object IndexImpl {
     var monotonic = true
     while (i < keys.length) {
       val k = keys.raw(i)
-      if (map.inc(k) == 0) {
+      if (map.inc(k) == 0)
         map.put(k, i)
-      } else {
-        if (k != keys.raw(i - 1))
-          contiguous = false
-      }
+      else if (k != keys.raw(i - 1))
+        contiguous = false
       if (i > 0)
         monotonic &&= !sc.gt(keys.raw(i - 1), keys.raw(i))
       i += 1

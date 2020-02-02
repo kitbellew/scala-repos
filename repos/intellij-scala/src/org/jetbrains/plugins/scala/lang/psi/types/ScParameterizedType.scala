@@ -39,17 +39,16 @@ case class JavaArrayType(arg: ScType) extends ValueType {
     val arrayClasses =
       ScalaPsiManager.instance(project).getCachedClasses(scope, "scala.Array")
     var arrayClass: PsiClass = null
-    for (clazz <- arrayClasses) {
+    for (clazz <- arrayClasses)
       clazz match {
         case _: ScClass => arrayClass = clazz
         case _          =>
       }
-    }
     if (arrayClass != null) {
       val tps = arrayClass.getTypeParameters
-      if (tps.length == 1) {
+      if (tps.length == 1)
         Some(ScParameterizedType(ScType.designator(arrayClass), Seq(arg)))
-      } else None
+      else None
     } else None
   }
 
@@ -58,12 +57,11 @@ case class JavaArrayType(arg: ScType) extends ValueType {
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     update(this) match {
       case (true, res) => res
       case _ =>
@@ -137,9 +135,8 @@ class ScParameterizedType private (
   private var hash: Int = -1
 
   override def hashCode: Int = {
-    if (hash == -1) {
+    if (hash == -1)
       hash = designator.hashCode() + typeArgs.hashCode() * 31
-    }
     hash
   }
 
@@ -199,12 +196,11 @@ class ScParameterizedType private (
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     val newVisited = visited + this
     update(this) match {
       case (true, res) => res
@@ -412,10 +408,9 @@ case class ScTypeParameterType(
   private var hash: Int = -1
 
   override def hashCode: Int = {
-    if (hash == -1) {
+    if (hash == -1)
       hash = (((param.hashCode() * 31 + upper.hashCode) * 31 + lower
         .hashCode()) * 31 + args.hashCode()) * 31 + name.hashCode
-    }
     hash
   }
 

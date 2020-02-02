@@ -485,12 +485,10 @@ abstract class ClassfileParser {
     val isTopLevel = !(currentClass containsChar '$') // Java class name; *don't* try to to use Scala name decoding (SI-7532)
 
     val c = if (isTopLevel) pool.getClassSymbol(nameIdx) else clazz
-    if (isTopLevel) {
-      if (c != clazz) {
+    if (isTopLevel)
+      if (c != clazz)
         if ((clazz eq NoSymbol) && (c ne NoSymbol)) clazz = c
         else mismatchError(c)
-      }
-    }
 
     addEnclosingTParams(clazz)
     parseInnerClasses() // also sets the isScala / isScalaRaw flags, see r15956
@@ -537,13 +535,12 @@ abstract class ClassfileParser {
       }
 
       loaders.pendingLoadActions ::= (queueLoad _)
-      if (loaders.parentsLevel == 0) {
+      if (loaders.parentsLevel == 0)
         while (loaders.pendingLoadActions.nonEmpty) {
           val item = loaders.pendingLoadActions.head
           loaders.pendingLoadActions = loaders.pendingLoadActions.tail
           item()
         }
-      }
     } else
       parseAttributes(clazz, classInfo)
   }
@@ -607,55 +604,53 @@ abstract class ClassfileParser {
       if (name == nme.CONSTRUCTOR)
         sawPrivateConstructor = true
       in.skip(2); skipAttributes()
+    } else if ((sflags & PRIVATE) != 0L && optimized) { // TODO this should be !optimized, no? See c4181f656d.
+      in.skip(4); skipAttributes()
     } else {
-      if ((sflags & PRIVATE) != 0L && optimized) { // TODO this should be !optimized, no? See c4181f656d.
-        in.skip(4); skipAttributes()
-      } else {
-        val name = readName()
-        val sym =
-          ownerForFlags(jflags).newMethod(name.toTermName, NoPosition, sflags)
-        var info = pool.getType(sym, u2)
-        if (name == nme.CONSTRUCTOR)
-          info match {
-            case MethodType(params, restpe) =>
-              // if this is a non-static inner class, remove the explicit outer parameter
-              val paramsNoOuter = innerClasses getEntry currentClass match {
-                case Some(entry) if !isScalaRaw && !entry.jflags.isStatic =>
-                  /* About `clazz.owner.hasPackageFlag` below: SI-5957
-                   * For every nested java class A$B, there are two symbols in the scala compiler.
-                   *  1. created by SymbolLoader, because of the existence of the A$B.class file, owner: package
-                   *  2. created by ClassfileParser of A when reading the inner classes, owner: A
-                   * If symbol 1 gets completed (e.g. because the compiled source mentions `A$B`, not `A#B`), the
-                   * ClassfileParser for 1 executes, and clazz.owner is the package.
-                   */
-                  assert(
-                    params.head.tpe.typeSymbol == clazz.owner || clazz.owner.hasPackageFlag,
-                    params.head.tpe.typeSymbol + ": " + clazz.owner)
-                  params.tail
-                case _ =>
-                  params
-              }
-              val newParams = paramsNoOuter match {
-                case (init :+ tail) if jflags.isSynthetic =>
-                  // SI-7455 strip trailing dummy argument ("access constructor tag") from synthetic constructors which
-                  // are added when an inner class needs to access a private constructor.
-                  init
-                case _ =>
-                  paramsNoOuter
-              }
+      val name = readName()
+      val sym =
+        ownerForFlags(jflags).newMethod(name.toTermName, NoPosition, sflags)
+      var info = pool.getType(sym, u2)
+      if (name == nme.CONSTRUCTOR)
+        info match {
+          case MethodType(params, restpe) =>
+            // if this is a non-static inner class, remove the explicit outer parameter
+            val paramsNoOuter = innerClasses getEntry currentClass match {
+              case Some(entry) if !isScalaRaw && !entry.jflags.isStatic =>
+                /* About `clazz.owner.hasPackageFlag` below: SI-5957
+                 * For every nested java class A$B, there are two symbols in the scala compiler.
+                 *  1. created by SymbolLoader, because of the existence of the A$B.class file, owner: package
+                 *  2. created by ClassfileParser of A when reading the inner classes, owner: A
+                 * If symbol 1 gets completed (e.g. because the compiled source mentions `A$B`, not `A#B`), the
+                 * ClassfileParser for 1 executes, and clazz.owner is the package.
+                 */
+                assert(
+                  params.head.tpe.typeSymbol == clazz.owner || clazz.owner.hasPackageFlag,
+                  params.head.tpe.typeSymbol + ": " + clazz.owner)
+                params.tail
+              case _ =>
+                params
+            }
+            val newParams = paramsNoOuter match {
+              case (init :+ tail) if jflags.isSynthetic =>
+                // SI-7455 strip trailing dummy argument ("access constructor tag") from synthetic constructors which
+                // are added when an inner class needs to access a private constructor.
+                init
+              case _ =>
+                paramsNoOuter
+            }
 
-              info = MethodType(newParams, clazz.tpe)
-          }
-        // Note: the info may be overwritten later with a generic signature
-        // parsed from SignatureATTR
-        sym setInfo info
-        propagatePackageBoundary(jflags, sym)
-        parseAttributes(sym, info)
-        if (jflags.isVarargs)
-          sym modifyInfo arrayToRepeated
+            info = MethodType(newParams, clazz.tpe)
+        }
+      // Note: the info may be overwritten later with a generic signature
+      // parsed from SignatureATTR
+      sym setInfo info
+      propagatePackageBoundary(jflags, sym)
+      parseAttributes(sym, info)
+      if (jflags.isVarargs)
+        sym modifyInfo arrayToRepeated
 
-        getScope(jflags) enter sym
-      }
+      getScope(jflags) enter sym
     }
   }
 
@@ -668,7 +663,7 @@ abstract class ClassfileParser {
     }
     def subName(isDelimiter: Char => Boolean): Name = {
       val start = index
-      while (!isDelimiter(sig.charAt(index))) { index += 1 }
+      while (!isDelimiter(sig.charAt(index))) index += 1
       sig.subName(start, index)
     }
     def sig2type(
@@ -699,7 +694,7 @@ abstract class ClassfileParser {
                 accept('<')
                 val xs = new ListBuffer[Type]()
                 var i = 0
-                while (sig.charAt(index) != '>') {
+                while (sig.charAt(index) != '>')
                   sig.charAt(index) match {
                     case variance @ ('+' | '-' | '*') =>
                       index += 1
@@ -723,7 +718,6 @@ abstract class ClassfileParser {
                     case _ =>
                       xs += sig2type(tparams, skiptvs)
                   }
-                }
                 accept('>')
                 assert(xs.length > 0, tp)
                 debuglogResult("new existential")(
@@ -776,18 +770,16 @@ abstract class ClassfileParser {
           // NOTE that the comparison to Object only works for abstract types bounded by classes that are strict subclasses of Object
           // if the bound is exactly Object, it will have been converted to Any, and the comparison will fail
           // see also RestrictJavaArraysMap (when compiling java sources directly)
-          if (elemtp.typeSymbol.isAbstractType && !(elemtp <:< ObjectTpe)) {
+          if (elemtp.typeSymbol.isAbstractType && !(elemtp <:< ObjectTpe))
             elemtp = intersectionType(List(elemtp, ObjectTpe))
-          }
 
           arrayType(elemtp)
         case '(' =>
           // we need a method symbol. given in line 486 by calling getType(methodSym, ..)
           assert(sym ne null, sig)
           val paramtypes = new ListBuffer[Type]()
-          while (sig.charAt(index) != ')') {
+          while (sig.charAt(index) != ')')
             paramtypes += objToAny(sig2type(tparams, skiptvs))
-          }
           index += 1
           val restype = if (sym != null && sym.isClassConstructor) {
             accept('V')
@@ -847,12 +839,11 @@ abstract class ClassfileParser {
       else {
         classTParams = tparams
         val parents = new ListBuffer[Type]()
-        while (index < end) {
+        while (index < end)
           parents += sig2type(
             tparams,
             skiptvs = false
           ) // here the variance doesn't matter
-        }
         ClassInfoType(parents.toList, instanceScope, sym)
       }
     GenPolyType(ownTypeParams, tpe)
@@ -1146,17 +1137,18 @@ abstract class ClassfileParser {
             s"Class file for ${entry.externalName} not found")
           .setFlag(JAVA)
 
-      val (innerClass, innerModule) = if (file == NoAbstractFile) {
-        (newStub(name.toTypeName), newStub(name.toTermName))
-      } else {
-        val cls =
-          owner.newClass(name.toTypeName, NoPosition, sflags) setInfo completer
-        val mod =
-          owner.newModule(name.toTermName, NoPosition, sflags) setInfo completer
-        mod.moduleClass setInfo loaders.moduleClassLoader
-        List(cls, mod.moduleClass) foreach (_.associatedFile = file)
-        (cls, mod)
-      }
+      val (innerClass, innerModule) =
+        if (file == NoAbstractFile)
+          (newStub(name.toTypeName), newStub(name.toTermName))
+        else {
+          val cls =
+            owner.newClass(name.toTypeName, NoPosition, sflags) setInfo completer
+          val mod =
+            owner.newModule(name.toTermName, NoPosition, sflags) setInfo completer
+          mod.moduleClass setInfo loaders.moduleClassLoader
+          List(cls, mod.moduleClass) foreach (_.associatedFile = file)
+          (cls, mod)
+        }
 
       scope enter innerClass
       scope enter innerModule
@@ -1173,13 +1165,12 @@ abstract class ClassfileParser {
       unlinkIfPresent(cName.toTypeName)
     }
 
-    for (entry <- innerClasses.entries) {
+    for (entry <- innerClasses.entries)
       // create a new class member for immediate inner classes
       if (entry.outerName == currentClass) {
         val file = classFileLookup.findClassFile(entry.externalName.toString)
         enterClassAndModule(entry, file.getOrElse(NoAbstractFile))
       }
-    }
   }
 
   /** Parse inner classes. Expects `in.bp` to point to the superclass entry.

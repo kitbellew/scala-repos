@@ -41,9 +41,8 @@ class CharacterTest {
     /* Ported from
      * https://github.com/gwtproject/gwt/blob/master/user/test/com/google/gwt/emultest/java/lang/CharacterTest.java
      */
-    for (i <- 0 until 36) {
+    for (i <- 0 until 36)
       assertEquals(i, Character.digit(Character.forDigit(i, 36), 36))
-    }
     assertEquals('9', Character.forDigit(9, 10))
   }
 

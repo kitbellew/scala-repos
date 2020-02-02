@@ -105,7 +105,7 @@ private[play] final class RunQueue {
       case null    => Vector.empty
       case pending => pending :+ op
     }
-    if (state.compareAndSet(prevState, newState)) {
+    if (state.compareAndSet(prevState, newState))
       prevState match {
         case null =>
           // We've update the state to say that we're running an op,
@@ -113,7 +113,7 @@ private[play] final class RunQueue {
           execute(op)
         case _ =>
       }
-    } else schedule(op) // Try again
+    else schedule(op) // Try again
   }
 
   private def execute(op: Op): Unit = {
@@ -137,13 +137,13 @@ private[play] final class RunQueue {
       case pending if pending.isEmpty => null
       case pending                    => pending.tail
     }
-    if (state.compareAndSet(prevState, newState)) {
+    if (state.compareAndSet(prevState, newState))
       prevState match {
         // We have a pending operation to execute
         case pending if !pending.isEmpty => execute(pending.head)
         case _                           =>
       }
-    } else opExecutionComplete() // Try again
+    else opExecutionComplete() // Try again
   }
 
 }

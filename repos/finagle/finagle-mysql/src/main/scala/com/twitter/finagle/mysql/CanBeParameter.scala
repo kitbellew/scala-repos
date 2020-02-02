@@ -18,7 +18,7 @@ trait CanBeParameter[-A] { outer =>
 }
 
 object CanBeParameter {
-  implicit val stringCanBeParameter = {
+  implicit val stringCanBeParameter =
     new CanBeParameter[String] {
       def sizeOf(param: String): Int = {
         val bytes = param.getBytes(Charset.defaultCharset)
@@ -29,66 +29,58 @@ object CanBeParameter {
       def write(writer: BufferWriter, param: String) =
         writer.writeLengthCodedString(param)
     }
-  }
 
-  implicit val booleanCanBeParameter = {
+  implicit val booleanCanBeParameter =
     new CanBeParameter[Boolean] {
       def sizeOf(param: Boolean) = 1
       def typeCode(param: Boolean) = Type.Tiny
       def write(writer: BufferWriter, param: Boolean) =
         writer.writeBoolean(param)
     }
-  }
 
-  implicit val byteCanBeParameter = {
+  implicit val byteCanBeParameter =
     new CanBeParameter[Byte] {
       def sizeOf(param: Byte) = 1
       def typeCode(param: Byte) = Type.Tiny
       def write(writer: BufferWriter, param: Byte) = writer.writeByte(param)
     }
-  }
 
-  implicit val shortCanBeParameter = {
+  implicit val shortCanBeParameter =
     new CanBeParameter[Short] {
       def sizeOf(param: Short) = 2
       def typeCode(param: Short) = Type.Short
       def write(writer: BufferWriter, param: Short) = writer.writeShort(param)
     }
-  }
 
-  implicit val intCanBeParameter = {
+  implicit val intCanBeParameter =
     new CanBeParameter[Int] {
       def sizeOf(param: Int) = 4
       def typeCode(param: Int) = Type.Long
       def write(writer: BufferWriter, param: Int) = writer.writeInt(param)
     }
-  }
 
-  implicit val longCanBeParameter = {
+  implicit val longCanBeParameter =
     new CanBeParameter[Long] {
       def sizeOf(param: Long) = 8
       def typeCode(param: Long) = Type.LongLong
       def write(writer: BufferWriter, param: Long) = writer.writeLong(param)
     }
-  }
 
-  implicit val floatCanBeParameter = {
+  implicit val floatCanBeParameter =
     new CanBeParameter[Float] {
       def sizeOf(param: Float) = 4
       def typeCode(param: Float) = Type.Float
       def write(writer: BufferWriter, param: Float) = writer.writeFloat(param)
     }
-  }
 
-  implicit val doubleCanBeParameter = {
+  implicit val doubleCanBeParameter =
     new CanBeParameter[Double] {
       def sizeOf(param: Double) = 8
       def typeCode(param: Double) = Type.Double
       def write(writer: BufferWriter, param: Double) = writer.writeDouble(param)
     }
-  }
 
-  implicit val byteArrayCanBeParameter = {
+  implicit val byteArrayCanBeParameter =
     new CanBeParameter[Array[Byte]] {
       def sizeOf(param: Array[Byte]) =
         Buffer.sizeOfLen(param.length) + param.length
@@ -100,9 +92,8 @@ object CanBeParameter {
       def write(writer: BufferWriter, param: Array[Byte]) =
         writer.writeLengthCodedBytes(param)
     }
-  }
 
-  implicit val valueCanBeParameter = {
+  implicit val valueCanBeParameter =
     new CanBeParameter[Value] {
       def sizeOf(param: Value) = param match {
         case RawValue(_, _, true, b) => Buffer.sizeOfLen(b.length) + b.length
@@ -146,27 +137,24 @@ object CanBeParameter {
         case _              => ()
       }
     }
-  }
 
-  implicit val timestampCanBeParameter = {
+  implicit val timestampCanBeParameter =
     new CanBeParameter[java.sql.Timestamp] {
       def sizeOf(param: java.sql.Timestamp) = 12
       def typeCode(param: java.sql.Timestamp) = Type.Timestamp
       def write(writer: BufferWriter, param: java.sql.Timestamp) =
         valueCanBeParameter.write(writer, TimestampValue(param))
     }
-  }
 
-  implicit val sqlDateCanBeParameter = {
+  implicit val sqlDateCanBeParameter =
     new CanBeParameter[java.sql.Date] {
       def sizeOf(param: java.sql.Date) = 5
       def typeCode(param: java.sql.Date) = Type.Date
       def write(writer: BufferWriter, param: java.sql.Date) =
         valueCanBeParameter.write(writer, DateValue(param))
     }
-  }
 
-  implicit val javaDateCanBeParameter = {
+  implicit val javaDateCanBeParameter =
     new CanBeParameter[java.util.Date] {
       def sizeOf(param: java.util.Date) = 12
       def typeCode(param: java.util.Date) = Type.DateTime
@@ -175,13 +163,11 @@ object CanBeParameter {
           writer,
           TimestampValue(new java.sql.Timestamp(param.getTime)))
     }
-  }
 
-  implicit val nullCanBeParameter = {
+  implicit val nullCanBeParameter =
     new CanBeParameter[Null] {
       def sizeOf(param: Null) = 0
       def typeCode(param: Null) = Type.Null
       def write(writer: BufferWriter, param: Null): Unit = ()
     }
-  }
 }

@@ -106,11 +106,10 @@ private[clustering] trait LDAParams
 
   /** Get docConcentration used by spark.mllib LDA */
   protected def getOldDocConcentration: Vector =
-    if (isSet(docConcentration)) {
+    if (isSet(docConcentration))
       Vectors.dense(getDocConcentration)
-    } else {
+    else
       Vectors.dense(-1.0)
-    }
 
   /**
     * Concentration parameter (commonly named "beta" or "eta") for the prior placed on topics'
@@ -149,11 +148,10 @@ private[clustering] trait LDAParams
 
   /** Get topicConcentration used by spark.mllib LDA */
   protected def getOldTopicConcentration: Double =
-    if (isSet(topicConcentration)) {
+    if (isSet(topicConcentration))
       getTopicConcentration
-    } else {
+    else
       -1.0
-    }
 
   /** Supported values for Param [[optimizer]]. */
   @Since("1.6.0")
@@ -305,14 +303,13 @@ private[clustering] trait LDAParams
     */
   protected def validateAndTransformSchema(schema: StructType): StructType = {
     if (isSet(docConcentration)) {
-      if (getDocConcentration.length != 1) {
+      if (getDocConcentration.length != 1)
         require(
           getDocConcentration.length == getK,
           s"LDA docConcentration was of length" +
             s" ${getDocConcentration.length}, but k = $getK.  docConcentration must be an array of" +
             s" length either 1 (scalar) or k (num topics)."
         )
-      }
       getOptimizer match {
         case "online" =>
           require(
@@ -326,7 +323,7 @@ private[clustering] trait LDAParams
               getDocConcentration.mkString(","))
       }
     }
-    if (isSet(topicConcentration)) {
+    if (isSet(topicConcentration))
       getOptimizer match {
         case "online" =>
           require(
@@ -339,7 +336,6 @@ private[clustering] trait LDAParams
             s"For EM optimizer, topicConcentration" +
               s" must be >= 1.  Found value: $getTopicConcentration")
       }
-    }
     SchemaUtils.checkColumnType(schema, $(featuresCol), new VectorUDT)
     SchemaUtils.appendColumn(schema, $(topicDistributionCol), new VectorUDT)
   }
@@ -636,9 +632,8 @@ class DistributedLDAModel private[ml] (
     extends LDAModel(uid, vocabSize, sqlContext) {
 
   override protected def oldLocalModel: OldLocalLDAModel = {
-    if (oldLocalModelOption.isEmpty) {
+    if (oldLocalModelOption.isEmpty)
       oldLocalModelOption = Some(oldDistributedModel.toLocal)
-    }
     oldLocalModelOption.get
   }
 

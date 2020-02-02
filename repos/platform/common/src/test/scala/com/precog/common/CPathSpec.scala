@@ -38,7 +38,7 @@ class CPathSpec extends Specification {
 
       val result = makeTree(cpaths, values)
 
-      val expected: CPathTree[Int] = {
+      val expected: CPathTree[Int] =
         RootNode(
           Seq(
             FieldNode(
@@ -55,7 +55,6 @@ class CPathSpec extends Specification {
             ),
             FieldNode(CPathField("foo"), Seq(LeafNode(0)))
           ))
-      }
 
       result mustEqual expected
     }

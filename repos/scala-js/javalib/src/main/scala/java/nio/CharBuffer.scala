@@ -122,9 +122,9 @@ abstract class CharBuffer private[nio] (
     GenBuffer(this).generic_compareTo(that)(_.compareTo(_))
 
   override def toString(): String =
-    if (_array != null) { // even if read-only
+    if (_array != null) // even if read-only
       new String(_array, position + _arrayOffset, remaining)
-    } else {
+    else {
       val chars = new Array[Char](remaining)
       val savedPos = position
       get(chars)

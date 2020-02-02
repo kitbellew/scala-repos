@@ -43,9 +43,8 @@ object Constructor {
     if (builder.getTokenType == ScalaTokenTypes.tLPARENTHESIS) {
       if (!builder.newlineBeforeCurrentToken)
         ArgumentExprs parse builder
-      while (builder.getTokenType == ScalaTokenTypes.tLPARENTHESIS && (!isAnnotation || annotationAllowed) && !builder.newlineBeforeCurrentToken) {
+      while (builder.getTokenType == ScalaTokenTypes.tLPARENTHESIS && (!isAnnotation || annotationAllowed) && !builder.newlineBeforeCurrentToken)
         ArgumentExprs parse builder
-      }
     }
     constrMarker.done(ScalaElementTypes.CONSTRUCTOR)
     true

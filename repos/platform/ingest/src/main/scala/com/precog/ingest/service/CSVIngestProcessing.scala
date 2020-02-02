@@ -125,9 +125,9 @@ class CSVIngestProcessing(
     @tailrec final def readBatch(
         reader: CSVReader,
         batch: Vector[Array[String]]): (Boolean, Vector[Array[String]]) =
-      if (batch.size >= batchSize) {
+      if (batch.size >= batchSize)
         (false, batch)
-      } else {
+      else {
         val nextRow = reader.readNext()
         if (nextRow == null) (true, batch)
         else readBatch(reader, batch :+ nextRow)
@@ -177,7 +177,7 @@ class CSVIngestProcessing(
         // TODO: handle errors in readBatch
         M.point(readBatch(reader, Vector())) flatMap {
           case (done, batch) =>
-            if (batch.isEmpty) {
+            if (batch.isEmpty)
               // the batch will only be empty if there's nothing left to read, but the batch size
               // boundary was hit on the previous read and so it was not discovered that we didn't
               // need to continue until now. This could be cleaner via a more CPS'ed style, but meh.
@@ -191,7 +191,7 @@ class CSVIngestProcessing(
                 streamRef.terminate) flatMap { _ =>
                 M.point(BatchResult(total, ingested, errors))
               }
-            } else {
+            else {
               val types = CsvType.inferTypes(batch.iterator)
               val jvals = batch map { row =>
                 (paths zip types zip row).foldLeft(JUndefined: JValue) {
@@ -225,11 +225,10 @@ class CSVIngestProcessing(
         }
 
       M.point(reader.readNext()) flatMap { header =>
-        if (header == null) {
+        if (header == null)
           M.point(NotIngested("No CSV data was found in the request content."))
-        } else {
+        else
           readBatches(normalizeHeaders(header), reader, 0, 0, Vector())
-        }
       }
     }
 

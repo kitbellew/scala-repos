@@ -64,13 +64,12 @@ private[hive] case class DescribeHiveTableCommand(
               partColumnInfo
         }
 
-        if (isExtended) {
+        if (isExtended)
           results ++= Seq(
             (
               "Detailed Table Information",
               table.hiveQlTable.getTTable.toString,
               ""))
-        }
 
         results.map {
           case (name, dataType, comment) =>

@@ -23,10 +23,10 @@ class PoolingReadRepairClient(
   def getResult(keys: Iterable[String]) = {
     val clients = getSubsetOfClients()
     val futures = clients.map(_.getResult(keys))
-    if (futures.size == 1) {
+    if (futures.size == 1)
       // Don't bother being fancy, just GTFO
       futures.head
-    } else {
+    else {
       // We construct a return value future that we will update manually ourselves
       // to accomodate the more complicated logic.
       val answer = new Promise[GetResult]
@@ -34,9 +34,8 @@ class PoolingReadRepairClient(
       // First pass: return the first complete, correct answer from the clients
       val futureAttempts = futures.map { future =>
         future.map { result =>
-          if (result.hits.size == keys.size) {
+          if (result.hits.size == keys.size)
             answer.updateIfEmpty(Try(result))
-          }
           result
         }
       }
@@ -65,9 +64,8 @@ class PoolingReadRepairClient(
       if (rand.nextFloat < readRepairProbability) readRepairCount + 1 else 1
     val buf = new ArrayBuffer[BaseClient[Buf]]
     allClients.copyToBuffer(buf)
-    while (buf.size > num) {
+    while (buf.size > num)
       buf.remove(rand.nextInt(buf.size))
-    }
     buf.toSeq
   }
 

@@ -23,11 +23,10 @@ trait CoordinateSpace[V, @sp(Float, Double) F]
 
   def dot(v: V, w: V): F = {
     @tailrec def loop(sum: F, i: Int): F =
-      if (i < dimensions) {
+      if (i < dimensions)
         loop(scalar.plus(sum, scalar.times(coord(v, i), coord(w, i))), i + 1)
-      } else {
+      else
         sum
-      }
 
     loop(scalar.zero, 0)
   }

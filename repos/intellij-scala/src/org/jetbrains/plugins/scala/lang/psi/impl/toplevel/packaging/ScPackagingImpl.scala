@@ -67,17 +67,15 @@ class ScPackagingImpl private (
 
   def isExplicit: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScPackageContainerStub].isExplicit
-    }
     findChildByType[PsiElement](ScalaTokenTypes.tLBRACE) != null
   }
 
   def ownNamePart: String = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScPackageContainerStub].ownNamePart
-    }
     reference match {
       case Some(r) => r.qualName
       case None    => ""
@@ -86,9 +84,8 @@ class ScPackagingImpl private (
 
   def prefix: String = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScPackageContainerStub].prefix
-    }
     def parentPackageName(e: PsiElement): String = e.getParent match {
       case p: ScPackaging =>
         val _packName = parentPackageName(p)
@@ -103,7 +100,7 @@ class ScPackagingImpl private (
 
   def typeDefs = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.getChildrenByType(
         TokenSet.create(
           ScalaElementTypes.OBJECT_DEF,
@@ -111,7 +108,7 @@ class ScPackagingImpl private (
           ScalaElementTypes.TRAIT_DEF
         ),
         JavaArrayFactoryUtil.ScTypeDefinitionFactory)
-    } else {
+    else {
       val buffer = new ArrayBuffer[ScTypeDefinition]
       var curr = getFirstChild
       while (curr != null) {
@@ -129,9 +126,10 @@ class ScPackagingImpl private (
   def declaredElements = {
     val _prefix = prefix
     val packageName = getPackageName
-    val topRefName = if (packageName.indexOf(".") != -1) {
-      packageName.substring(0, packageName.indexOf("."))
-    } else packageName
+    val topRefName =
+      if (packageName.indexOf(".") != -1)
+        packageName.substring(0, packageName.indexOf("."))
+      else packageName
     val top = if (_prefix.length > 0) _prefix + "." + topRefName else topRefName
     val p = ScPackageImpl(
       JavaPsiFacade.getInstance(getProject).findPackage(top))
@@ -156,9 +154,8 @@ class ScPackagingImpl private (
             processor,
             state,
             lastParent,
-            place)) {
+            place))
         return false
-      }
 
       findPackageObject(place.getResolveScope) match {
         case Some(po) =>
@@ -202,9 +199,10 @@ class ScPackagingImpl private (
       val startOffset =
         findChildByType[PsiElement](ScalaTokenTypes.tLBRACE).getTextRange.getEndOffset - getTextRange.getStartOffset
       val text = getText
-      val endOffset = if (text.apply(text.length - 1) == '}') {
-        text.length - 1
-      } else text.length
+      val endOffset =
+        if (text.apply(text.length - 1) == '}')
+          text.length - 1
+        else text.length
       text.substring(startOffset, endOffset)
     } else {
       val text = getText

@@ -838,9 +838,9 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
         (0 until n) foreach { i ⇒
           target(offset + i) = (x >>> start - 8 * i).toByte
         }
-      } else if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+      } else if (byteOrder == ByteOrder.LITTLE_ENDIAN)
         (0 until n) foreach { i ⇒ target(offset + i) = (x >>> 8 * i).toByte }
-      } else
+      else
         throw new IllegalArgumentException("Unknown byte order " + byteOrder)
     }
 

@@ -28,7 +28,7 @@ class IndexScript(universe: doc.Universe) extends Page {
   val packages = {
     val pairs = allPackagesWithTemplates.toIterable
       .map(_ match {
-        case (pack, templates) => {
+        case (pack, templates) =>
           val merged = mergeByQualifiedName(templates)
 
           val ary = merged.keys.toList
@@ -49,7 +49,6 @@ class IndexScript(universe: doc.Universe) extends Page {
             }
 
           pack.qualifiedName -> JSONArray(ary)
-        }
       })
       .toSeq
 

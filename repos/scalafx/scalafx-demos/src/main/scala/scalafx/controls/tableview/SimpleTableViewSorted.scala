@@ -46,18 +46,18 @@ object SimpleTableViewSorted extends JFXApp {
     scene = new Scene {
       val firstNameColumn = new TableColumn[Person, String] {
         text = "First Name"
-        cellValueFactory = { _.value.firstName }
+        cellValueFactory = _.value.firstName
         prefWidth = 180
 
       }
       val lastNameColumn = new TableColumn[Person, String] {
         text = "Last Name"
-        cellValueFactory = { _.value.lastName }
+        cellValueFactory = _.value.lastName
         prefWidth = 180
       }
       val phoneColumn = new TableColumn[Person, String] {
         text = "Phone"
-        cellValueFactory = { _.value.phone }
+        cellValueFactory = _.value.phone
         prefWidth = 180
       }
 

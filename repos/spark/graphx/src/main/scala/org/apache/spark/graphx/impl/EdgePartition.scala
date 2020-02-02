@@ -82,7 +82,7 @@ private[graphx] class EdgePartition[
   /** Return a new `EdgePartition` with the specified active set, provided as an iterator. */
   def withActiveSet(iter: Iterator[VertexId]): EdgePartition[ED, VD] = {
     val activeSet = new VertexSet
-    while (iter.hasNext) { activeSet.add(iter.next()) }
+    while (iter.hasNext) activeSet.add(iter.next())
     new EdgePartition(
       localSrcIds,
       localDstIds,
@@ -242,9 +242,8 @@ private[graphx] class EdgePartition[
       et.dstAttr = vertexAttrs(localDstId)
       et.attr = data(i)
       if (vpred(et.srcId, et.srcAttr) && vpred(et.dstId, et.dstAttr) && epred(
-            et)) {
+            et))
         builder.add(et.srcId, et.dstId, localSrcId, localDstId, et.attr)
-      }
       i += 1
     }
     builder.toEdgePartition
@@ -281,12 +280,12 @@ private[graphx] class EdgePartition[
     // releasing them to the builder when we see the beginning of the next run
     var i = 0
     while (i < size) {
-      if (i > 0 && currSrcId == srcIds(i) && currDstId == dstIds(i)) {
+      if (i > 0 && currSrcId == srcIds(i) && currDstId == dstIds(i))
         // This edge should be accumulated into the existing run
         currAttr = merge(currAttr, data(i))
-      } else {
+      else {
         // This edge starts a new run of edges
-        if (i > 0) {
+        if (i > 0)
           // First release the existing run to the builder
           builder.add(
             currSrcId,
@@ -294,7 +293,6 @@ private[graphx] class EdgePartition[
             currLocalSrcId,
             currLocalDstId,
             currAttr)
-        }
         // Then start accumulating for a new run
         currSrcId = srcIds(i)
         currDstId = dstIds(i)
@@ -305,14 +303,13 @@ private[graphx] class EdgePartition[
       i += 1
     }
     // Finally, release the last accumulated run
-    if (size > 0) {
+    if (size > 0)
       builder.add(
         currSrcId,
         currDstId,
         currLocalSrcId,
         currLocalDstId,
         currAttr)
-    }
     builder.toEdgePartition
   }
 
@@ -340,12 +337,11 @@ private[graphx] class EdgePartition[
       val srcId = this.srcIds(i)
       val dstId = this.dstIds(i)
       // ... forward j to the index of the corresponding edge in `other`, and...
-      while (j < other.size && other.srcIds(j) < srcId) { j += 1 }
+      while (j < other.size && other.srcIds(j) < srcId) j += 1
       if (j < other.size && other.srcIds(j) == srcId) {
-        while (j < other.size && other.srcIds(j) == srcId && other.dstIds(j) < dstId) {
+        while (j < other.size && other.srcIds(j) == srcId && other.dstIds(j) < dstId)
           j += 1
-        }
-        if (j < other.size && other.srcIds(j) == srcId && other.dstIds(j) == dstId) {
+        if (j < other.size && other.srcIds(j) == srcId && other.dstIds(j) == dstId)
           // ... run `f` on the matching edge
           builder.add(
             srcId,
@@ -353,7 +349,6 @@ private[graphx] class EdgePartition[
             localSrcIds(i),
             localDstIds(i),
             f(srcId, dstId, this.data(i), other.attrs(j)))
-        }
       }
       i += 1
     }
@@ -412,12 +407,10 @@ private[graphx] class EdgePartition[
         val localDstId = localDstIds(pos)
         triplet.srcId = local2global(localSrcId)
         triplet.dstId = local2global(localDstId)
-        if (includeSrc) {
+        if (includeSrc)
           triplet.srcAttr = vertexAttrs(localSrcId)
-        }
-        if (includeDst) {
+        if (includeDst)
           triplet.dstAttr = vertexAttrs(localDstId)
-        }
         triplet.attr = data(pos)
         pos += 1
         triplet
@@ -605,9 +598,9 @@ private class AggregatingEdgeContext[VD, ED, A](
   }
 
   @inline private def send(localId: Int, msg: A) {
-    if (bitset.get(localId)) {
+    if (bitset.get(localId))
       aggregates(localId) = mergeMsg(aggregates(localId), msg)
-    } else {
+    else {
       aggregates(localId) = msg
       bitset.set(localId)
     }

@@ -86,15 +86,14 @@ abstract class InputDStream[T: ClassTag](_ssc: StreamingContext)
     * times.
     */
   override private[streaming] def isTimeValid(time: Time): Boolean =
-    if (!super.isTimeValid(time)) {
+    if (!super.isTimeValid(time))
       false // Time not valid
-    } else {
+    else {
       // Time is valid, but check it it is more than lastValidTime
-      if (lastValidTime != null && time < lastValidTime) {
+      if (lastValidTime != null && time < lastValidTime)
         logWarning(
           "isTimeValid called with " + time + " where as last valid time is " +
             lastValidTime)
-      }
       lastValidTime = time
       true
     }

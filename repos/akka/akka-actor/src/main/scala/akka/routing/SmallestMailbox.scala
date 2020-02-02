@@ -55,17 +55,17 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       deep: Boolean = false): Routee =
     if (targets.isEmpty)
       NoRoutee
-    else if (at >= targets.size) {
-      if (deep) {
+    else if (at >= targets.size)
+      if (deep)
         if (isTerminated(proposedTarget))
           targets(ThreadLocalRandom.current.nextInt(targets.size))
         else proposedTarget
-      } else selectNext(targets, proposedTarget, currentScore, 0, deep = true)
-    } else {
+      else selectNext(targets, proposedTarget, currentScore, 0, deep = true)
+    else {
       val target = targets(at)
       val newScore: Long =
         if (isSuspended(target)) Long.MaxValue - 1
-        else { //Just about better than the DeadLetters
+        else //Just about better than the DeadLetters
           (if (isProcessingMessage(target)) 1L else 0L) +
             (if (!hasMessages(target)) 0L
              else { //Race between hasMessages and numberOfMessages here, unfortunate the numberOfMessages returns 0 if unknown
@@ -73,7 +73,6 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
                if (noOfMsgs > 0) noOfMsgs
                else Long.MaxValue - 3 //Just better than a suspended actorref
              })
-        }
 
       if (newScore == 0) target
       else if (newScore < 0 || newScore >= currentScore)

@@ -135,11 +135,11 @@ object InfoSerializers {
       }
 
       val methods0 = readList(readMethod())
-      val methods = if (useHacks065) {
-        methods0.filter(m => !Definitions.isReflProxyName(m.encodedName))
-      } else {
-        methods0
-      }
+      val methods =
+        if (useHacks065)
+          methods0.filter(m => !Definitions.isReflProxyName(m.encodedName))
+        else
+          methods0
 
       val info = ClassInfo(
         encodedName,
@@ -163,13 +163,12 @@ object InfoSerializers {
       // Check that we support this version of the IR
       val version = input.readUTF()
       val supported = ScalaJSVersions.binarySupported
-      if (!supported.contains(version)) {
+      if (!supported.contains(version))
         throw new IRVersionNotSupportedException(
           version,
           supported,
           s"This version ($version) of Scala.js IR is not supported. " +
             s"Supported versions are: ${supported.mkString(", ")}")
-      }
 
       version
     }

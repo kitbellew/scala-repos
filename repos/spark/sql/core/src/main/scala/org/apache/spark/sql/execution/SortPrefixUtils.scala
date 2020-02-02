@@ -68,11 +68,10 @@ object SortPrefixUtils {
       val field = schema.head
       getPrefixComparator(
         SortOrder(BoundReference(0, field.dataType, field.nullable), Ascending))
-    } else {
+    } else
       new PrefixComparator {
         override def compare(prefix1: Long, prefix2: Long): Int = 0
       }
-    }
 
   /**
     * Creates the prefix computer for the first field in the given schema, in ascending order.
@@ -88,9 +87,8 @@ object SortPrefixUtils {
         override def computePrefix(row: InternalRow): Long =
           prefixProjection.apply(row).getLong(0)
       }
-    } else {
+    } else
       new UnsafeExternalRowSorter.PrefixComputer {
         override def computePrefix(row: InternalRow): Long = 0
       }
-    }
 }

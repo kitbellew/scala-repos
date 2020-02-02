@@ -31,11 +31,8 @@ class PersistenceSerializerDocSpec extends WordSpec {
   val system = ActorSystem(
     "PersistenceSerializerDocSpec",
     ConfigFactory.parseString(customSerializerConfig))
-  try {
-    SerializationExtension(system)
-  } finally {
-    TestKit.shutdownActorSystem(system, 10.seconds, false)
-  }
+  try SerializationExtension(system)
+  finally TestKit.shutdownActorSystem(system, 10.seconds, false)
 }
 
 class MyPayload

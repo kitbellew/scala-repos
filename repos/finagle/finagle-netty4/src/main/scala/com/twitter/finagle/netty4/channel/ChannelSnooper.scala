@@ -16,9 +16,8 @@ private[netty4] trait ChannelSnooper extends ChannelDuplexHandler {
 
   def printer(message: String, exc: Throwable = null): Unit = {
     printStream.println(message)
-    if (exc != null) {
+    if (exc != null)
       exc.printStackTrace(printStream)
-    }
   }
 
   def print(id: ChannelId, indicator: String, message: String): Unit =

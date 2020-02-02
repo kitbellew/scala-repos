@@ -37,14 +37,13 @@ object WordBlacklist {
   @volatile private var instance: Broadcast[Seq[String]] = null
 
   def getInstance(sc: SparkContext): Broadcast[Seq[String]] = {
-    if (instance == null) {
+    if (instance == null)
       synchronized {
         if (instance == null) {
           val wordBlacklist = Seq("a", "b", "c")
           instance = sc.broadcast(wordBlacklist)
         }
       }
-    }
     instance
   }
 }
@@ -57,13 +56,11 @@ object DroppedWordsCounter {
   @volatile private var instance: Accumulator[Long] = null
 
   def getInstance(sc: SparkContext): Accumulator[Long] = {
-    if (instance == null) {
+    if (instance == null)
       synchronized {
-        if (instance == null) {
+        if (instance == null)
           instance = sc.accumulator(0L, "WordsInBlacklistCounter")
-        }
       }
-    }
     instance
   }
 }
@@ -132,9 +129,8 @@ object RecoverableNetworkWordCount {
             if (blacklist.value.contains(word)) {
               droppedWordsCounter += count
               false
-            } else {
+            } else
               true
-            }
         }
         .collect()
         .mkString("[", ", ", "]")

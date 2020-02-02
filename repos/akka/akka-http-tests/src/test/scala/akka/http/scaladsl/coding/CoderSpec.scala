@@ -80,13 +80,12 @@ abstract class CoderSpec
         .awaitResult(1.second) should equal(request)
     }
 
-    if (corruptInputCheck) {
+    if (corruptInputCheck)
       "throw an error on corrupt input" in {
         (the[RuntimeException] thrownBy {
           ourDecode(corruptContent)
         }).getCause should be(a[DataFormatException])
       }
-    }
 
     "not throw an error if a subsequent block is corrupt" in {
       pending // FIXME: should we read as long as possible and only then report an error, that seems somewhat arbitrary

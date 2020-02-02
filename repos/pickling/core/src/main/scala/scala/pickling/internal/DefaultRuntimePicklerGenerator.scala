@@ -78,15 +78,17 @@ class DefaultRuntimePicklerGenerator(reflectionLock: ReentrantLock)
           null,
           elemUnpickler)
       } else {
-        val runtime = if (share.isInstanceOf[refs.ShareNothing]) {
-          // debug(s"@@@ creating ShareNothingInterpretedUnpicklerRuntime for type $tagKey")
-          new ShareNothingInterpretedUnpicklerRuntime(
-            currentRuntime.currentMirror,
-            tagKey)
-        } else {
-          // debug(s"@@@ creating InterpretedUnpicklerRuntime for type $tagKey")
-          new InterpretedUnpicklerRuntime(currentRuntime.currentMirror, tagKey)
-        }
+        val runtime =
+          if (share.isInstanceOf[refs.ShareNothing])
+            // debug(s"@@@ creating ShareNothingInterpretedUnpicklerRuntime for type $tagKey")
+            new ShareNothingInterpretedUnpicklerRuntime(
+              currentRuntime.currentMirror,
+              tagKey)
+          else
+            // debug(s"@@@ creating InterpretedUnpicklerRuntime for type $tagKey")
+            new InterpretedUnpicklerRuntime(
+              currentRuntime.currentMirror,
+              tagKey)
         runtime.genUnpickler
 
       }

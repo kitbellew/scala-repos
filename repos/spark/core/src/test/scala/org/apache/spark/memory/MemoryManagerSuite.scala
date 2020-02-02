@@ -108,10 +108,9 @@ private[memory] trait MemoryManagerSuite
           evictedBlocks.append(
             (null, BlockStatus(StorageLevel.MEMORY_ONLY, numBytesToFree, 0L)))
           numBytesToFree
-        } else {
+        } else
           // No blocks were evicted because eviction would not free enough space.
           0L
-        }
       }
     }
 

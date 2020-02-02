@@ -131,12 +131,10 @@ class TrainValidationSplit @Since("1.5.0") (
   @Since("1.5.0")
   override def copy(extra: ParamMap): TrainValidationSplit = {
     val copied = defaultCopy(extra).asInstanceOf[TrainValidationSplit]
-    if (copied.isDefined(estimator)) {
+    if (copied.isDefined(estimator))
       copied.setEstimator(copied.getEstimator.copy(extra))
-    }
-    if (copied.isDefined(evaluator)) {
+    if (copied.isDefined(evaluator))
       copied.setEvaluator(copied.getEvaluator.copy(extra))
-    }
     copied
   }
 }

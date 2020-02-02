@@ -11,9 +11,9 @@ package object util {
       import TimeUnit._
 
       def appendIfPositive(value: Long, unit: TimeUnit, res: String): String =
-        if (value > 0) {
+        if (value > 0)
           s"$res $value ${unit.name().toLowerCase}"
-        } else res
+        else res
 
       @tailrec
       def loop(unit: TimeUnit, res: String = ""): String =
@@ -28,11 +28,10 @@ package object util {
             loop(MILLISECONDS, appendIfPositive(d.toSeconds % 60, unit, res))
           case MILLISECONDS =>
             val value = d.toMillis % 1000
-            if (res.isEmpty) {
+            if (res.isEmpty)
               s"$value milliseconds"
-            } else {
+            else
               appendIfPositive(value, unit, res)
-            }
           case MICROSECONDS =>
             loop(MILLISECONDS, res)
           case NANOSECONDS =>

@@ -48,7 +48,7 @@ private[http] class HttpRequestParser(
     @tailrec def parseCustomMethod(
         ix: Int = 0,
         sb: JStringBuilder = new JStringBuilder(16)): Int =
-      if (ix < maxMethodLength) {
+      if (ix < maxMethodLength)
         byteChar(input, cursor + ix) match {
           case ' ' ⇒
             customMethods(sb.toString) match {
@@ -62,7 +62,7 @@ private[http] class HttpRequestParser(
             }
           case c ⇒ parseCustomMethod(ix + 1, sb.append(c))
         }
-      } else
+      else
         throw new ParsingException(
           BadRequest,
           ErrorInfo(
@@ -150,13 +150,13 @@ private[http] class HttpRequestParser(
           else headers
 
         val allHeaders =
-          if (method == HttpMethods.GET) {
+          if (method == HttpMethods.GET)
             Handshake.Server
               .websocketUpgrade(headers, hostHeaderPresent) match {
               case Some(upgrade) ⇒ upgrade :: allHeaders0
               case None ⇒ allHeaders0
             }
-          } else allHeaders0
+          else allHeaders0
 
         emit(
           RequestStart(
@@ -179,11 +179,11 @@ private[http] class HttpRequestParser(
             emitRequestStart(emptyEntity(cth))
             setCompletionHandling(HttpMessageParser.CompletionOk)
             startNewMessage(input, bodyStart)
-          } else if (!method.isEntityAccepted) {
+          } else if (!method.isEntityAccepted)
             failMessageStart(
               UnprocessableEntity,
               s"${method.name} requests must not have an entity")
-          } else if (contentLength <= input.size - bodyStart) {
+          else if (contentLength <= input.size - bodyStart) {
             val cl = contentLength.toInt
             emitRequestStart(strictEntity(cth, input, bodyStart, cl))
             setCompletionHandling(HttpMessageParser.CompletionOk)
@@ -203,7 +203,7 @@ private[http] class HttpRequestParser(
         case Some(te) ⇒
           val completedHeaders =
             addTransferEncodingWithChunkedPeeled(headers, te)
-          if (te.isChunked) {
+          if (te.isChunked)
             if (clh.isEmpty) {
               emitRequestStart(chunkedEntity(cth), completedHeaders)
               parseChunk(
@@ -214,7 +214,7 @@ private[http] class HttpRequestParser(
             } else
               failMessageStart(
                 "A chunked request must not contain a Content-Length header.")
-          } else
+          else
             parseEntity(
               completedHeaders,
               protocol,

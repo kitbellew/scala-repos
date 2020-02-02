@@ -250,13 +250,13 @@ trait ScBlock
       }
 
     val superTypes = t.extendsBlock.superTypes
-    if (superTypes.length > 1 || !holders.isEmpty || !aliases.isEmpty) {
+    if (superTypes.length > 1 || !holders.isEmpty || !aliases.isEmpty)
       ScCompoundType.fromPsi(
         superTypes,
         holders.toList,
         aliases.toList,
         ScSubstitutor.empty)
-    } else superTypes(0)
+    else superTypes(0)
   }
 
   def hasCaseClauses: Boolean = false

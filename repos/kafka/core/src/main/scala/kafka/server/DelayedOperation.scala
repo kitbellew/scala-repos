@@ -69,9 +69,8 @@ abstract class DelayedOperation(delayMs: Long) extends TimerTask with Logging {
       cancel()
       onComplete()
       true
-    } else {
+    } else
       false
-    }
 
   /**
     * Check if the delayed operation is already completed
@@ -206,10 +205,9 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     // if it cannot be completed by now and hence is watched, add to the expire queue also
     if (!operation.isCompleted()) {
       timeoutTimer.add(operation)
-      if (operation.isCompleted()) {
+      if (operation.isCompleted())
         // cancel the timer task
         operation.cancel()
-      }
     }
 
     false
@@ -269,9 +267,8 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
       if (watchersForKey.get(key) != watchers)
         return
 
-      if (watchers != null && watchers.watched == 0) {
+      if (watchers != null && watchers.watched == 0)
         watchersForKey.remove(key)
-      }
     }
   }
 
@@ -305,10 +302,10 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
         val iter = operations.iterator()
         while (iter.hasNext) {
           val curr = iter.next()
-          if (curr.isCompleted) {
+          if (curr.isCompleted)
             // another thread has completed this operation, just remove it
             iter.remove()
-          } else if (curr synchronized curr.tryComplete()) {
+          else if (curr synchronized curr.tryComplete()) {
             completed += 1
             iter.remove()
           }

@@ -71,9 +71,8 @@ private[spark] class YarnClientSchedulerBackend(
     // SPARK-8851: In yarn-client mode, the AM still does the credentials refresh. The driver
     // reads the credentials from HDFS, just like the executors and updates its own credentials
     // cache.
-    if (conf.contains("spark.yarn.credentials.file")) {
+    if (conf.contains("spark.yarn.credentials.file"))
       YarnSparkHadoopUtil.get.startExecutorDelegationTokenRenewer(conf)
-    }
     monitorThread = asyncMonitorApplication()
     monitorThread.start()
   }
@@ -101,14 +100,13 @@ private[spark] class YarnClientSchedulerBackend(
     )
     optionTuples.foreach {
       case (optionName, envVar, sparkProp) =>
-        if (sc.getConf.contains(sparkProp)) {
+        if (sc.getConf.contains(sparkProp))
           extraArgs += (optionName, sc.getConf.get(sparkProp))
-        } else if (envVar != null && System.getenv(envVar) != null) {
+        else if (envVar != null && System.getenv(envVar) != null) {
           extraArgs += (optionName, System.getenv(envVar))
-          if (deprecatedEnvVars.contains(envVar)) {
+          if (deprecatedEnvVars.contains(envVar))
             logWarning(
               s"NOTE: $envVar is deprecated. Use ${deprecatedEnvVars(envVar)} instead.")
-          }
         }
     }
     // The app name is a special case because "spark.app.name" is required of all applications.
@@ -133,14 +131,12 @@ private[spark] class YarnClientSchedulerBackend(
       client.monitorApplication(appId.get, returnOnRunning = true) // blocking
     if (state == YarnApplicationState.FINISHED ||
         state == YarnApplicationState.FAILED ||
-        state == YarnApplicationState.KILLED) {
+        state == YarnApplicationState.KILLED)
       throw new SparkException(
         "Yarn application has already ended! " +
           "It might have been killed or unable to launch application master.")
-    }
-    if (state == YarnApplicationState.RUNNING) {
+    if (state == YarnApplicationState.RUNNING)
       logInfo(s"Application ${appId.get} has started running.")
-    }
   }
 
   /**
@@ -166,9 +162,8 @@ private[spark] class YarnClientSchedulerBackend(
     }
 
     def stopMonitor(): Unit =
-      if (allowInterrupt) {
+      if (allowInterrupt)
         this.interrupt()
-      }
   }
 
   /**
@@ -193,9 +188,8 @@ private[spark] class YarnClientSchedulerBackend(
     assert(
       client != null,
       "Attempted to stop this scheduler before starting it!")
-    if (monitorThread != null) {
+    if (monitorThread != null)
       monitorThread.stopMonitor()
-    }
 
     // Report a final state to the launcher if one is connected. This is needed since in client
     // mode this backend doesn't let the app monitor loop run to completion, so it does not report

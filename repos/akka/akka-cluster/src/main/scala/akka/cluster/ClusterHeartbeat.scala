@@ -147,13 +147,12 @@ private[cluster] final class ClusterHeartbeatSender
       state = state.addMember(m.uniqueAddress)
 
   def removeMember(m: Member): Unit =
-    if (m.uniqueAddress == cluster.selfUniqueAddress) {
+    if (m.uniqueAddress == cluster.selfUniqueAddress)
       // This cluster node will be shutdown, but stop this actor immediately
       // to avoid further updates
       context stop self
-    } else {
+    else
       state = state.removeMember(m.uniqueAddress)
-    }
 
   def unreachableMember(m: Member): Unit =
     state = state.unreachableMember(m.uniqueAddress)

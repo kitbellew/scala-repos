@@ -48,9 +48,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expression,
       catalystValue,
       inputRow)
-    if (GenerateUnsafeProjection.canSupport(expression.dataType)) {
+    if (GenerateUnsafeProjection.canSupport(expression.dataType))
       checkEvalutionWithUnsafeProjection(expression, catalystValue, inputRow)
-    }
     checkEvaluationWithOptimization(expression, catalystValue, inputRow)
   }
 
@@ -80,9 +79,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
   protected def generateProject(
       generator: => Projection,
       expression: Expression): Projection =
-    try {
-      generator
-    } catch {
+    try generator
+    catch {
       case e: Throwable =>
         fail(s"""
             |Code generation of $expression failed:
@@ -152,11 +150,10 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       val lit = InternalRow(expected)
       val expectedRow =
         UnsafeProjection.create(Array(expression.dataType)).apply(lit)
-      if (unsafeRow != expectedRow) {
+      if (unsafeRow != expectedRow)
         fail(
           "Incorrect evaluation in unsafe mode: " +
             s"$expression, actual: $unsafeRow, expected: $expectedRow$input")
-      }
     }
   }
 
@@ -271,9 +268,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       inputRow: InternalRow,
       expr: Expression): Unit = {
     val interpret =
-      try {
-        evaluate(expr, inputRow)
-      } catch {
+      try evaluate(expr, inputRow)
+      catch {
         case e: Exception => fail(s"Exception evaluating $expr", e)
       }
 
@@ -283,10 +279,9 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       expr)
     val codegen = plan(inputRow).get(0, expr.dataType)
 
-    if (!compareResults(interpret, codegen)) {
+    if (!compareResults(interpret, codegen))
       fail(
         s"Incorrect evaluation: $expr, interpret: $interpret, codegen: $codegen")
-    }
   }
 
   /**

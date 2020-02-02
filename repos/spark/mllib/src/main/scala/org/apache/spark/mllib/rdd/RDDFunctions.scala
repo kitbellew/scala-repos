@@ -41,11 +41,10 @@ class RDDFunctions[T: ClassTag](self: RDD[T]) extends Serializable {
     require(
       windowSize > 0,
       s"Sliding window size must be positive, but got $windowSize.")
-    if (windowSize == 1 && step == 1) {
+    if (windowSize == 1 && step == 1)
       self.map(Array(_))
-    } else {
+    else
       new SlidingRDD[T](self, windowSize, step)
-    }
   }
 
   /**

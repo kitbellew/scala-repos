@@ -109,10 +109,10 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
             .takeWhile { _._2.isDefined }
             .collect { case (batch, Some(flow)) => (batch, flow) }
 
-          if (existing.isEmpty) {
+          if (existing.isEmpty)
             Left(List(
               "[ERROR] Could not load any batches of the service stream in: " + toString + " for: " + timeSpan.toString))
-          } else {
+          else {
             val inBatches = List(startingBatch) ++ existing.map { _._1 }
             val bInt = BatchID.toInterval(inBatches).get // by construction this is an interval, so this can't throw
             val toRead = batchOps.intersect(bInt, timeSpan) // No need to read more than this

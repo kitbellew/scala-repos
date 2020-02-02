@@ -68,11 +68,10 @@ object Test extends DirectTest {
     val it = insns.iterator()
     while (it.hasNext) {
       val in = it.next()
-      if (in.getOpcode == Opcodes.IRETURN) {
+      if (in.getOpcode == Opcodes.IRETURN)
         // Insert an ATHROW before the IRETURN. The IRETURN will then be dead code.
         // The ICodeReader should not crash if there's dead code.
         insns.insert(in.getPrevious, new InsnNode(Opcodes.ATHROW))
-      }
     }
 
     AsmUtils.traceMethod(method)

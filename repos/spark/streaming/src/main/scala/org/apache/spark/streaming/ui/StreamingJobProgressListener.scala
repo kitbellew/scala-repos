@@ -159,10 +159,10 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
   private def getBatchTimeAndOutputOpId(
       properties: Properties): Option[(Time, Int)] = {
     val batchTime = properties.getProperty(JobScheduler.BATCH_TIME_PROPERTY_KEY)
-    if (batchTime == null) {
+    if (batchTime == null)
       // Not submitted from JobScheduler
       None
-    } else {
+    else {
       val outputOpId =
         properties.getProperty(JobScheduler.OUTPUT_OP_ID_PROPERTY_KEY)
       assert(outputOpId != null)

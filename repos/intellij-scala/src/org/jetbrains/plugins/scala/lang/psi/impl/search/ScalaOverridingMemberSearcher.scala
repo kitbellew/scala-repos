@@ -52,11 +52,9 @@ class MethodImplementationsSearch
                .getOverridingMethods(namedElement)
              //to avoid duplicates with ScalaOverridingMemberSearcher
              if !namedElement.isInstanceOf[PsiMethod] || !implementation
-               .isInstanceOf[PsiMethod]) {
-          if (!consumer.process(implementation)) {
+               .isInstanceOf[PsiMethod])
+          if (!consumer.process(implementation))
             return false
-          }
-        }
       case _ =>
     }
     true
@@ -77,11 +75,9 @@ class ScalaOverridingMemberSearcher
       case namedElement: ScNamedElement =>
         for (implementation <- ScalaOverridingMemberSearcher
                .getOverridingMethods(namedElement)
-             if implementation.isInstanceOf[PsiMethod]) {
-          if (!consumer.process(implementation.asInstanceOf[PsiMethod])) {
+             if implementation.isInstanceOf[PsiMethod])
+          if (!consumer.process(implementation.asInstanceOf[PsiMethod]))
             return false
-          }
-        }
         false //do not process JavaOverridingMemberSearcher
       case _ => true
     }
@@ -94,9 +90,8 @@ object ScalaOverridingMemberSearcher {
     inReadAction {
       for (psiMethod <- ScalaOverridingMemberSearcher.search(
              method,
-             deep = true)) {
+             deep = true))
         result += psiMethod
-      }
     }
     result.toArray
   }
@@ -191,18 +186,16 @@ object ScalaOverridingMemberSearcher {
         .search(parentClass, scope, true)
         .toArray(PsiClass.EMPTY_ARRAY)
     }
-    for (clazz <- inheritors if !break) {
+    for (clazz <- inheritors if !break)
       break = !process(clazz)
-    }
 
     if (withSelfType) {
       val inheritors = ScalaStubsUtil.getSelfTypeInheritors(
         parentClass,
         parentClass.getResolveScope)
       break = false
-      for (clazz <- inheritors if !break) {
+      for (clazz <- inheritors if !break)
         break = !process(clazz)
-      }
     }
 
     buffer.toArray

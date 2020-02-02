@@ -39,15 +39,13 @@ import org.apache.spark.sql.catalyst.expressions.Expression
 @DeveloperApi
 case class DecimalType(precision: Int, scale: Int) extends FractionalType {
 
-  if (scale > precision) {
+  if (scale > precision)
     throw new AnalysisException(
       s"Decimal scale ($scale) cannot be greater than precision ($precision).")
-  }
 
-  if (precision > DecimalType.MAX_PRECISION) {
+  if (precision > DecimalType.MAX_PRECISION)
     throw new AnalysisException(
       s"DecimalType can only support precision up to 38")
-  }
 
   // default constructor for Java
   def this(precision: Int) = this(precision, 0)

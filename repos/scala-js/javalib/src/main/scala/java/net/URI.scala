@@ -115,7 +115,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       val ssp = cmp(this._schemeSpecificPart, that._schemeSpecificPart)
       if (ssp != 0) ssp
       else cmpOpt(this._fragment, that._fragment)
-    } else if (this._authority != that._authority) {
+    } else if (this._authority != that._authority)
       if (this._host.isDefined && that._host.isDefined) {
         val ui = cmpOpt(this._userInfo, that._userInfo)
         if (ui != 0) ui
@@ -129,7 +129,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
         }
       } else
         cmpOpt(this._authority, that._authority)
-    } else if (this._path != that._path)
+    else if (this._path != that._path)
       cmpOpt(this._path, that._path)
     else if (this._query != that._query)
       cmpOpt(this._query, that._query)
@@ -604,12 +604,11 @@ object URI {
     if (userInfo != null)
       resStr += quoteUserInfo(userInfo) + "@"
 
-    if (host != null) {
+    if (host != null)
       if (URI.ipv6Re.test(host))
         resStr += "[" + host + "]"
       else
         resStr += host
-    }
 
     if (port != -1)
       resStr += ":" + port
@@ -673,12 +672,11 @@ object URI {
           decoder.reset()
           byteBuf.clear()
           decoding = false
-        } else {
+        } else
           byteBuf.compact()
-        }
       }
 
-      while (inBuf.hasRemaining) {
+      while (inBuf.hasRemaining)
         inBuf.get() match {
           case '%' =>
             if (!byteBuf.hasRemaining)
@@ -696,7 +694,6 @@ object URI {
               decode(true)
             outBuf.put(c)
         }
-      }
 
       if (decoding)
         decode(true)
@@ -832,7 +829,7 @@ object URI {
   private def normalizeEscapes(str: String): String = {
     var i = 0
     var res = ""
-    while (i < str.length) {
+    while (i < str.length)
       if (str.charAt(i) == '%') {
         assert(str.length > i + 2, "Invalid escape in URI")
         res += str.substring(i, i + 3).toUpperCase()
@@ -841,7 +838,6 @@ object URI {
         res += str.substring(i, i + 1)
         i += 1
       }
-    }
 
     res
   }

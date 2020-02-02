@@ -158,9 +158,8 @@ private class JLineConsoleReader
           consoleReader: ConsoleReader,
           list: JList[CharSequence],
           i: Int): Boolean =
-        try {
-          handler.complete(consoleReader, list, i)
-        } finally if (getCursorBuffer.cursor != getCursorBuffer.length()) {
+        try handler.complete(consoleReader, list, i)
+        finally if (getCursorBuffer.cursor != getCursorBuffer.length()) {
           print(" ")
           getCursorBuffer.write(' ')
           backspace()

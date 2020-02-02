@@ -25,7 +25,7 @@ object TopStatSeq {
     var parseState = ParserState.EMPTY_STATE
     if (waitBrace) parseState = ParserState.FILE_STATE
     if (hasPackage) parseState = ParserState.FILE_STATE
-    while (true) {
+    while (true)
       builder.getTokenType match {
         //end of parsing when find } or builder.eof
         case ScalaTokenTypes.tRBRACE if waitBrace => return parseState
@@ -40,7 +40,7 @@ object TopStatSeq {
           }
           (parseState, TopStat.parse(builder, parseState)) match {
             case (_, 0) => error
-            case (0, i) => {
+            case (0, i) =>
               parseState = i % 3
               builder.getTokenType match {
                 case ScalaTokenTypes.tSEMICOLON =>
@@ -51,8 +51,7 @@ object TopStatSeq {
                   if (!builder.newlineBeforeCurrentToken)
                     builder error ScalaBundle.message("semi.expected")
               }
-            }
-            case _ => {
+            case _ =>
               builder.getTokenType match {
                 case ScalaTokenTypes.tSEMICOLON =>
                   builder.advanceLexer //it is good
@@ -64,10 +63,8 @@ object TopStatSeq {
 
                 //else is ok
               }
-            }
           }
       }
-    }
     return parseState
   }
 }

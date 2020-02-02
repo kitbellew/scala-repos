@@ -33,20 +33,17 @@ object FileCharset {
           "Failed to detect charset for file: " + file.getPath + ".",
           t)
         Codec.defaultCharsetCodec.charSet
-    } finally {
-      detector.reset()
-    }
+    } finally detector.reset()
   }
 
   private[this] def getCharset(
       detector: UniversalDetector,
       default: Codec): Charset = {
     val cs = detector.getDetectedCharset
-    if (cs == null || cs.trim().isEmpty) {
+    if (cs == null || cs.trim().isEmpty)
       default.charSet
-    } else {
+    else
       Charset.forName(cs)
-    }
   }
 
   def apply(barr: Array[Byte]): Charset = {
@@ -63,9 +60,7 @@ object FileCharset {
       case t: Throwable =>
         logger.warn("Failed to detect charset.", t)
         Codec.defaultCharsetCodec.charSet
-    } finally {
-      detector.reset()
-    }
+    } finally detector.reset()
   }
 
 }

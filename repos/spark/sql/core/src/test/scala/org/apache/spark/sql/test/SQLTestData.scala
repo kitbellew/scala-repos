@@ -230,13 +230,12 @@ private[sql] trait SQLTestData { self =>
     df
   }
 
-  protected lazy val unparsedStrings: RDD[String] = {
+  protected lazy val unparsedStrings: RDD[String] =
     sqlContext.sparkContext.parallelize(
       "1, A1, true, null" ::
         "2, B2, false, null" ::
         "3, C3, true, null" ::
         "4, D4, true, 2147483644" :: Nil)
-  }
 
   // An RDD with 4 elements and 8 partitions
   protected lazy val withEmptyParts: RDD[IntField] = {

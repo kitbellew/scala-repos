@@ -51,16 +51,14 @@ private[prediction] object ExampleFormConnector extends FormConnector {
 
   override def toEventJson(data: Map[String, String]): JObject = {
     val json =
-      try {
-        data.get("type") match {
-          case Some("userAction")     => userActionToEventJson(data)
-          case Some("userActionItem") => userActionItemToEventJson(data)
-          case Some(x) =>
-            throw new ConnectorException(
-              s"Cannot convert unknown type $x to event JSON")
-          case None =>
-            throw new ConnectorException(s"The field 'type' is required.")
-        }
+      try data.get("type") match {
+        case Some("userAction")     => userActionToEventJson(data)
+        case Some("userActionItem") => userActionItemToEventJson(data)
+        case Some(x) =>
+          throw new ConnectorException(
+            s"Cannot convert unknown type $x to event JSON")
+        case None =>
+          throw new ConnectorException(s"The field 'type' is required.")
       } catch {
         case e: ConnectorException => throw e
         case e: Exception =>
@@ -75,15 +73,15 @@ private[prediction] object ExampleFormConnector extends FormConnector {
     import org.json4s.JsonDSL._
 
     // two level optional data
-    val context = if (data.exists(_._1.startsWith("context["))) {
-      Some(
-        ("ip" -> data.get("context[ip]")) ~
-          ("prop1" -> data.get("context[prop1]").map(_.toDouble)) ~
-          ("prop2" -> data.get("context[prop2]"))
-      )
-    } else {
-      None
-    }
+    val context =
+      if (data.exists(_._1.startsWith("context[")))
+        Some(
+          ("ip" -> data.get("context[ip]")) ~
+            ("prop1" -> data.get("context[prop1]").map(_.toDouble)) ~
+            ("prop2" -> data.get("context[prop2]"))
+        )
+      else
+        None
 
     val json =
       ("event" -> data("event")) ~

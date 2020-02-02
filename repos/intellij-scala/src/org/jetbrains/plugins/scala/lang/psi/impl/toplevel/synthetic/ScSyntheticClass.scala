@@ -141,17 +141,15 @@ class ScSyntheticClass(
         val name = if (nameSet == null) p.name else nameSet
         methods.get(name) match {
           case Some(ms) =>
-            for (method <- ms) {
+            for (method <- ms)
               if (!processor.execute(method, state)) return false
-            }
           case None =>
         }
       case _: ImplicitProcessor => //do nothing, there is no implicit synthetic methods
       case _: BaseProcessor     =>
         //method toString and hashCode exists in java.lang.Object
-        for (p <- methods; method <- p._2) {
+        for (p <- methods; method <- p._2)
           if (!processor.execute(method, state)) return false
-        }
       case _ => //do not execute synthetic methods to not Scala processors.
     }
 
@@ -592,15 +590,13 @@ object Unit
 
   val prefix = "scala."
   def findClass(qName: String, scope: GlobalSearchScope): PsiClass = {
-    if (qName.startsWith(prefix)) {
+    if (qName.startsWith(prefix))
       byName(qName.substring(prefix.length)) match {
         case Some(c) => return c
         case _       =>
       }
-    }
-    for (obj <- syntheticObjects) {
+    for (obj <- syntheticObjects)
       if (obj.qualifiedName == qName) return obj
-    }
     null
   }
 
@@ -608,9 +604,8 @@ object Unit
     val res: ArrayBuffer[PsiClass] = new ArrayBuffer[PsiClass]
     val c = findClass(qName, scope)
     if (c != null) res += c
-    for (obj <- syntheticObjects) {
+    for (obj <- syntheticObjects)
       if (obj.qualifiedName == qName) res += obj
-    }
     res.toArray
   }
 

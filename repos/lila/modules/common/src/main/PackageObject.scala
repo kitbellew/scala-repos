@@ -52,16 +52,14 @@ trait PackageObject extends Steroids with WithFuture {
   }
 
   def parseIntOption(str: String): Option[Int] =
-    try {
-      Some(java.lang.Integer.parseInt(str))
-    } catch {
+    try Some(java.lang.Integer.parseInt(str))
+    catch {
       case e: NumberFormatException => None
     }
 
   def parseFloatOption(str: String): Option[Float] =
-    try {
-      Some(java.lang.Float.parseFloat(str))
-    } catch {
+    try Some(java.lang.Float.parseFloat(str))
+    catch {
       case e: NumberFormatException => None
     }
 

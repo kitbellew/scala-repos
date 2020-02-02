@@ -72,9 +72,8 @@ class ScSelfInvocationImpl(node: ASTNode)
       enableTupling = true,
       selfConstructorResolve = true)
     for (constr <- clazz.secondaryConstructors.filter(_ != method)
-         if constr != method) {
+         if constr != method)
       proc.execute(constr, ResolveState.initial)
-    }
     clazz.constructor match {
       case Some(constr) => proc.execute(constr, ResolveState.initial())
       case _            =>

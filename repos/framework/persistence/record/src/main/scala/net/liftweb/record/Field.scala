@@ -245,9 +245,9 @@ trait TypedField[ThisType] extends BaseField {
       case (f: Failure)     => set_!(f) // preserve failures set in
       case _                => Failure(notOptionalErrorMessage)
     }
-    if (forceDirty_?) {
+    if (forceDirty_?)
       dirty_?(true)
-    } else if (!dirty_?) {
+    else if (!dirty_?) {
       val same = (oldValue, data) match {
         case (Full(ov), Full(nv)) => ov == nv
         case (a, b)               => a == b
@@ -471,9 +471,8 @@ trait Field[ThisType, OwnerType <: Record[OwnerType]]
     if (owner.meta.mutable_?) {
       this.setBox(in)
       owner
-    } else {
+    } else
       owner.meta.createWithMutableField(owner, this, in)
-    }
 }
 
 /**

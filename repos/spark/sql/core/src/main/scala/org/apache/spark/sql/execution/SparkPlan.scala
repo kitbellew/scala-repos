@@ -64,11 +64,11 @@ abstract class SparkPlan
   // sqlContext will be null when we are being deserialized on the slaves.  In this instance
   // the value of subexpressionEliminationEnabled will be set by the deserializer after the
   // constructor has run.
-  val subexpressionEliminationEnabled: Boolean = if (sqlContext != null) {
-    sqlContext.conf.subexpressionEliminationEnabled
-  } else {
-    false
-  }
+  val subexpressionEliminationEnabled: Boolean =
+    if (sqlContext != null)
+      sqlContext.conf.subexpressionEliminationEnabled
+    else
+      false
 
   /**
     * Whether the "prepare" method is called.
@@ -179,19 +179,17 @@ abstract class SparkPlan
     subqueryResults.foreach {
       case (e, futureResult) =>
         val rows = Await.result(futureResult, Duration.Inf)
-        if (rows.length > 1) {
+        if (rows.length > 1)
           sys.error(
             s"more than one row returned by a subquery used as an expression:\n${e.plan}")
-        }
         if (rows.length == 1) {
           assert(
             rows(0).numFields == 1,
             s"Expects 1 field, but got ${rows(0).numFields}; something went wrong in analysis")
           e.updateResult(rows(0).get(0, e.dataType))
-        } else {
+        } else
           // If there is no rows returned, the result should be null.
           e.updateResult(null)
-        }
     }
     subqueryResults.clear()
   }
@@ -304,9 +302,8 @@ abstract class SparkPlan
     * This is modeled after RDD.take but never runs any job locally on the driver.
     */
   def executeTake(n: Int): Array[InternalRow] = {
-    if (n == 0) {
+    if (n == 0)
       return new Array[InternalRow](0)
-    }
 
     val childRDD = getByteArrayRdd(n)
 
@@ -317,16 +314,14 @@ abstract class SparkPlan
       // The number of partitions to try in this iteration. It is ok for this number to be
       // greater than totalParts because we actually cap it at totalParts in runJob.
       var numPartsToTry = 1L
-      if (partsScanned > 0) {
+      if (partsScanned > 0)
         // If we didn't find any rows after the first iteration, just try all partitions next.
         // Otherwise, interpolate the number of partitions we need to try, but overestimate it
         // by 50%.
-        if (buf.size == 0) {
+        if (buf.size == 0)
           numPartsToTry = totalParts - 1
-        } else {
+        else
           numPartsToTry = (1.5 * n * partsScanned / buf.size).toInt
-        }
-      }
       numPartsToTry = math.max(0, numPartsToTry) // guard against negative num of partitions
 
       val left = n - buf.size
@@ -344,11 +339,10 @@ abstract class SparkPlan
       partsScanned += p.size
     }
 
-    if (buf.size > n) {
+    if (buf.size > n)
       buf.take(n).toArray
-    } else {
+    else
       buf.toArray
-    }
   }
 
   private[this] def isTesting: Boolean = sys.props.contains("spark.testing")

@@ -19,11 +19,10 @@ object ScalaCSRFActionSpec extends CSRFCommonSpecs {
         handleResponse: (WSResponse) => T) =
       withServer(configuration) {
         case _ =>
-          if (sendUnauthorizedResult) {
+          if (sendUnauthorizedResult)
             csrfCheck(Action(req => Results.Ok), new CustomErrorHandler())
-          } else {
+          else
             csrfCheck(Action(req => Results.Ok))
-          }
       } {
         import play.api.Play.current
         handleResponse(

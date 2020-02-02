@@ -201,7 +201,7 @@ private[yarn] class AMDelegationTokenRenewer(
     // If lastCredentialsFileSuffix is 0, then the AM is either started or restarted. If the AM
     // was restarted, then the lastCredentialsFileSuffix might be > 0, so find the newest file
     // and update the lastCredentialsFileSuffix.
-    if (lastCredentialsFileSuffix == 0) {
+    if (lastCredentialsFileSuffix == 0)
       hadoopUtil
         .listFilesSorted(
           remoteFs,
@@ -213,7 +213,6 @@ private[yarn] class AMDelegationTokenRenewer(
           lastCredentialsFileSuffix =
             hadoopUtil.getSuffixForCredentialsPath(status.getPath)
         }
-    }
     val nextSuffix = lastCredentialsFileSuffix + 1
     val tokenPathStr =
       credentialsFile + SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM + nextSuffix

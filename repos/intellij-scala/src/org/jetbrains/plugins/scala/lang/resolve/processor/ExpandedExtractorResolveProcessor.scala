@@ -36,7 +36,7 @@ class ExpandedExtractorResolveProcessor(
       val accessible = isAccessible(named, ref)
       if (accessibility && !accessible) return true
       named match {
-        case bind: ScTypedDefinition => {
+        case bind: ScTypedDefinition =>
           val parentSubst = getSubst(state)
           val parentImports = getImports(state)
           val typez = getFromType(state) match {
@@ -73,7 +73,6 @@ class ExpandedExtractorResolveProcessor(
               ResolveState.initial)
             addResults(buffer.toSeq)
           }
-        }
         case _ => return super.execute(element, state)
       }
     }

@@ -40,9 +40,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
       e match {
         case c: ScClass =>
           processor.execute(c, state)
-          if (isOkForFakeCompanionModule(c)) {
+          if (isOkForFakeCompanionModule(c))
             processor.execute(c.fakeCompanionModule.get, state)
-          }
           c.getSyntheticImplicitMethod match {
             case Some(impl) => if (!processElement(impl, state)) return false
             case _          =>
@@ -50,9 +49,8 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
           true
         case t: ScTrait =>
           processor.execute(t, state)
-          if (isOkForFakeCompanionModule(t)) {
+          if (isOkForFakeCompanionModule(t))
             processor.execute(t.fakeCompanionModule.get, state)
-          }
           true
         case named: ScNamedElement => processor.execute(named, state)
         case holder: ScDeclaredElementsHolder =>

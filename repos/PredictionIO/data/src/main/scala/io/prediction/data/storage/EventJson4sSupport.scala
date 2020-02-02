@@ -41,7 +41,7 @@ object EventJson4sSupport {
     */
   @DeveloperApi
   def readJson: PartialFunction[JValue, Event] = {
-    case JObject(x) => {
+    case JObject(x) =>
       val fields = new DataMap(x.toMap)
       // use get() if required in json
       // use getOpt() if not required in json
@@ -58,9 +58,8 @@ object EventJson4sSupport {
         val eventTime = fields
           .getOpt[String]("eventTime")
           .map { s =>
-            try {
-              DataUtils.stringToDateTime(s)
-            } catch {
+            try DataUtils.stringToDateTime(s)
+            catch {
               case _: Exception =>
                 throw new MappingException(s"Fail to extract eventTime $s")
             }
@@ -101,7 +100,6 @@ object EventJson4sSupport {
       } catch {
         case e: Exception => throw new MappingException(e.toString, e)
       }
-    }
   }
 
   /** :: DeveloperApi ::
@@ -111,7 +109,7 @@ object EventJson4sSupport {
     */
   @DeveloperApi
   def writeJson: PartialFunction[Any, JValue] = {
-    case d: Event => {
+    case d: Event =>
       JObject(JField(
         "eventId",
         d.eventId.map(eid => JString(eid)).getOrElse(JNothing)) ::
@@ -135,7 +133,6 @@ object EventJson4sSupport {
           "creationTime",
           JString(DataUtils.dateTimeToString(d.creationTime))) ::
         Nil)
-    }
   }
 
   /** :: DeveloperApi ::
@@ -145,7 +142,7 @@ object EventJson4sSupport {
     */
   @DeveloperApi
   def deserializeFromJValue: PartialFunction[JValue, Event] = {
-    case jv: JValue => {
+    case jv: JValue =>
       val event = (jv \ "event").extract[String]
       val entityType = (jv \ "entityType").extract[String]
       val entityId = (jv \ "entityId").extract[String]
@@ -170,7 +167,6 @@ object EventJson4sSupport {
         prId = prId,
         creationTime = creationTime
       )
-    }
   }
 
   /** :: DeveloperApi ::
@@ -180,7 +176,7 @@ object EventJson4sSupport {
     */
   @DeveloperApi
   def serializeToJValue: PartialFunction[Any, JValue] = {
-    case d: Event => {
+    case d: Event =>
       JObject(JField("event", JString(d.event)) ::
         JField("entityType", JString(d.entityType)) ::
         JField("entityId", JString(d.entityId)) ::
@@ -198,7 +194,6 @@ object EventJson4sSupport {
           "creationTime",
           JString(DataUtils.dateTimeToString(d.creationTime))) ::
         Nil)
-    }
   }
 
   /** :: DeveloperApi ::
@@ -224,15 +219,13 @@ object BatchEventsJson4sSupport {
 
   @DeveloperApi
   def readJson: PartialFunction[JValue, Seq[Try[Event]]] = {
-    case JArray(events) => {
+    case JArray(events) =>
       events.map { event =>
-        try {
-          Success(EventJson4sSupport.readJson(event))
-        } catch {
+        try Success(EventJson4sSupport.readJson(event))
+        catch {
           case e: Exception => Failure(e)
         }
       }
-    }
   }
 
   @DeveloperApi

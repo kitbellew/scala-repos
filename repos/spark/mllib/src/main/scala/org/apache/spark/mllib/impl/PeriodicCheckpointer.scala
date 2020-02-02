@@ -95,14 +95,12 @@ private[mllib] abstract class PeriodicCheckpointer[T](
       checkpointQueue.enqueue(newData)
       // Remove checkpoints before the latest one.
       var canDelete = true
-      while (checkpointQueue.size > 1 && canDelete) {
+      while (checkpointQueue.size > 1 && canDelete)
         // Delete the oldest checkpoint only if the next checkpoint exists.
-        if (isCheckpointed(checkpointQueue.head)) {
+        if (isCheckpointed(checkpointQueue.head))
           removeCheckpointFile()
-        } else {
+        else
           canDelete = false
-        }
-      }
     }
   }
 
@@ -128,9 +126,8 @@ private[mllib] abstract class PeriodicCheckpointer[T](
     * Call this at the end to delete any remaining checkpoint files.
     */
   def deleteAllCheckpoints(): Unit =
-    while (checkpointQueue.nonEmpty) {
+    while (checkpointQueue.nonEmpty)
       removeCheckpointFile()
-    }
 
   /**
     * Dequeue the oldest checkpointed Dataset, and remove its checkpoint files.
@@ -141,9 +138,8 @@ private[mllib] abstract class PeriodicCheckpointer[T](
     // Since the old checkpoint is not deleted by Spark, we manually delete it.
     val fs = FileSystem.get(sc.hadoopConfiguration)
     getCheckpointFiles(old).foreach { checkpointFile =>
-      try {
-        fs.delete(new Path(checkpointFile), true)
-      } catch {
+      try fs.delete(new Path(checkpointFile), true)
+      catch {
         case e: Exception =>
           logWarning(
             "PeriodicCheckpointer could not remove old checkpoint file: " +

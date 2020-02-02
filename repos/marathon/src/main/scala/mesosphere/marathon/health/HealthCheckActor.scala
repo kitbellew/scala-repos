@@ -156,10 +156,10 @@ class HealthCheckActor(
         case Unhealthy(_, _, _, _) =>
           taskTracker.tasksByAppSync.task(taskId) match {
             case Some(task) =>
-              if (ignoreFailures(task, health)) {
+              if (ignoreFailures(task, health))
                 // Don't update health
                 health
-              } else {
+              else {
                 eventBus.publish(FailedHealthCheck(app.id, taskId, healthCheck))
                 checkConsecutiveFailures(task, health)
                 health.update(result)
@@ -172,7 +172,7 @@ class HealthCheckActor(
 
       taskHealth += (taskId -> newHealth)
 
-      if (health.alive != newHealth.alive) {
+      if (health.alive != newHealth.alive)
         eventBus.publish(
           HealthStatusChanged(
             appId = app.id,
@@ -180,7 +180,6 @@ class HealthCheckActor(
             version = result.version,
             alive = newHealth.alive)
         )
-      }
 
     case result: HealthResult =>
       log.warning(s"Ignoring health result [$result] due to version mismatch.")

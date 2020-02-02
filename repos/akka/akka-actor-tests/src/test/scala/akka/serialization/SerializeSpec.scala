@@ -200,9 +200,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
           val deadLetters = in.readObject().asInstanceOf[DeadLetterActorRef]
           (deadLetters eq a.deadLetters) should ===(true)
         }
-      } finally {
-        shutdown(a)
-      }
+      } finally shutdown(a)
     }
 
     "resolve serializer by direct interface" in {
@@ -328,9 +326,8 @@ class ReferenceSerializationSpec
     "declare Serializable classes to be use JavaSerializer" in {
       serializerMustBe(classOf[Serializable], classOf[JavaSerializer])
       serializerMustBe(classOf[String], classOf[JavaSerializer])
-      for (smc ← systemMessageClasses) {
+      for (smc ← systemMessageClasses)
         serializerMustBe(smc, classOf[JavaSerializer])
-      }
     }
 
     "declare Array[Byte] to use ByteArraySerializer" in {
@@ -359,17 +356,16 @@ class SerializationCompatibilitySpec
       // Using null as the cause to avoid a large serialized message and JDK differences
       verify(
         Create(Some(null)),
-        if (scala.util.Properties.versionNumberString.startsWith("2.10.")) {
+        if (scala.util.Properties.versionNumberString.startsWith("2.10."))
           "aced00057372001b616b6b612e64697370617463682e7379736d73672e4372656174650000000000" +
             "0000010200014c00076661696c75726574000e4c7363616c612f4f7074696f6e3b78707372000a73" +
             "63616c612e536f6d65e2a09f87fc0836ae0200014c0001787400124c6a6176612f6c616e672f4f62" +
             "6a6563743b7872000c7363616c612e4f7074696f6ee36024a8328a45e9020000787070"
-        } else {
+        else
           "aced00057372001b616b6b612e64697370617463682e7379736d73672e4372656174650000000000" +
             "0000010200014c00076661696c75726574000e4c7363616c612f4f7074696f6e3b78707372000a73" +
             "63616c612e536f6d651122f2695ea18b740200014c0001787400124c6a6176612f6c616e672f4f62" +
             "6a6563743b7872000c7363616c612e4f7074696f6efe6937fddb0e6674020000787070"
-        }
       )
     }
     "be preserved for the Recreate SystemMessage" in {
@@ -454,9 +450,8 @@ class OverriddenSystemMessageSerializationSpec
 
     "resolve to a single serializer" in {
       EventFilter.warning(start = "Multiple serializers found", occurrences = 0) intercept {
-        for (smc ← systemMessageClasses) {
+        for (smc ← systemMessageClasses)
           ser.serializerFor(smc).getClass should ===(classOf[TestSerializer])
-        }
       }
     }
 

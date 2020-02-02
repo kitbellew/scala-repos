@@ -52,11 +52,10 @@ class JavaActionAnnotations(
 
   val actionMixins = {
     val allDeclaredAnnotations: Seq[java.lang.annotation.Annotation] =
-      if (config.controllerAnnotationsFirst) {
+      if (config.controllerAnnotationsFirst)
         controllerAnnotations ++ method.getDeclaredAnnotations
-      } else {
+      else
         method.getDeclaredAnnotations ++ controllerAnnotations
-      }
     allDeclaredAnnotations
       .collect {
         case a: play.mvc.With => a.value.map(c => (a, c)).toSeq
@@ -97,21 +96,20 @@ abstract class JavaAction(components: JavaHandlerComponents)
         try {
           JContext.current.set(ctx)
           invocation
-        } finally {
-          JContext.current.set(oldContext)
-        }
+        } finally JContext.current.set(oldContext)
       }
     }
 
     val baseAction = components.actionCreator
       .createAction(javaContext.request, annotations.method)
 
-    val endOfChainAction = if (config.executeActionCreatorActionFirst) {
-      rootAction
-    } else {
-      baseAction.delegate = rootAction
-      baseAction
-    }
+    val endOfChainAction =
+      if (config.executeActionCreatorActionFirst)
+        rootAction
+      else {
+        baseAction.delegate = rootAction
+        baseAction
+      }
 
     val finalUserDeclaredAction =
       annotations.actionMixins.foldLeft[JAction[_ <: Any]](endOfChainAction) {
@@ -128,9 +126,9 @@ abstract class JavaAction(components: JavaHandlerComponents)
       if (config.executeActionCreatorActionFirst) {
         baseAction.delegate = finalUserDeclaredAction
         baseAction
-      } else {
+      } else
         finalUserDeclaredAction
-      })
+    )
 
     val trampolineWithContext: ExecutionContext = {
       val javaClassLoader = Thread.currentThread.getContextClassLoader

@@ -39,16 +39,15 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       root._errors ++= errors
 
       root
-    } else {
+    } else
       tree.root
-    }
 
   def performShake(tree: Expr): (
       Expr,
       Set[(Identifier, NameBinding)],
       Set[(TicId, VarBinding)],
       Set[Error]) = tree match {
-    case b @ Let(loc, id, params, left, right) => {
+    case b @ Let(loc, id, params, left, right) =>
       lazy val (left2, leftNameBindings, leftVarBindings, leftErrors) =
         performShake(left)
       val (right2, rightNameBindings, rightVarBindings, rightErrors) =
@@ -68,16 +67,14 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
           leftNameBindings ++ rightNameBindings,
           leftVarBindings ++ rightVarBindings,
           leftErrors ++ rightErrors ++ errors)
-      } else {
+      } else
         (
           right2,
           rightNameBindings,
           rightVarBindings,
           rightErrors + Error(b, UnusedLetBinding(id)))
-      }
-    }
 
-    case b @ Solve(loc, constraints, child) => {
+    case b @ Solve(loc, constraints, child) =>
       val mapped = constraints map performShake
 
       val constraints2 = mapped map { _._1 }
@@ -86,10 +83,10 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         case (_, names, vars, _) => (names, vars)
       } unzip
 
-      val constNames = constNameVector reduce { _ ++ _ }
-      val constVars = constVarVector reduce { _ ++ _ }
+      val constNames = constNameVector reduce _ ++ _
+      val constVars = constVarVector reduce _ ++ _
 
-      val constErrors = mapped map { _._4 } reduce { _ ++ _ }
+      val constErrors = mapped map { _._4 } reduce _ ++ _
 
       val (child2, childNames, childVars, childErrors) = performShake(child)
 
@@ -105,14 +102,12 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         constNames ++ childNames,
         constVars ++ childVars,
         constErrors ++ childErrors ++ errors)
-    }
 
-    case Import(loc, spec, child) => {
+    case Import(loc, spec, child) =>
       val (child2, names, vars, errors) = performShake(child)
       (Import(loc, spec, child2), names, vars, errors)
-    }
 
-    case Assert(loc, pred, child) => {
+    case Assert(loc, pred, child) =>
       val (pred2, predNames, predVars, predErrors) = performShake(pred)
       val (child2, childNames, childVars, childErrors) = performShake(child)
 
@@ -121,9 +116,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         predNames ++ childNames,
         predVars ++ childVars,
         predErrors ++ childErrors)
-    }
 
-    case Observe(loc, data, samples) => {
+    case Observe(loc, data, samples) =>
       val (data2, dataNames, dataVars, dataErrors) = performShake(data)
       val (samples2, samplesNames, samplesVars, samplesErrors) = performShake(
         samples)
@@ -133,14 +127,12 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         dataNames ++ samplesNames,
         dataVars ++ samplesVars,
         dataErrors ++ samplesErrors)
-    }
 
-    case New(loc, child) => {
+    case New(loc, child) =>
       val (child2, names, vars, errors) = performShake(child)
       (New(loc, child2), names, vars, errors)
-    }
 
-    case Relate(loc, from, to, in) => {
+    case Relate(loc, from, to, in) =>
       val (from2, fromNames, fromVars, fromErrors) = performShake(from)
       val (to2, toNames, toVars, toErrors) = performShake(to)
       val (in2, inNames, inVars, inErrors) = performShake(in)
@@ -149,7 +141,6 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         fromNames ++ toNames ++ inNames,
         fromVars ++ toVars ++ inVars,
         fromErrors ++ toErrors ++ inErrors)
-    }
 
     case e @ TicVar(loc, id) =>
       (TicVar(loc, id), Set(), Set(id -> e.binding), Set())
@@ -160,7 +151,7 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
     case e @ UndefinedLit(_) => (e, Set(), Set(), Set())
     case e @ NullLit(_)      => (e, Set(), Set(), Set())
 
-    case ObjectDef(loc, props) => {
+    case ObjectDef(loc, props) =>
       val mapped: Vector[(
           String,
           (
@@ -184,9 +175,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       }
 
       (ObjectDef(loc, props2), names, vars, errors)
-    }
 
-    case ArrayDef(loc, values) => {
+    case ArrayDef(loc, values) =>
       val mapped = values map performShake
       val values2 = mapped map { case (value, _, _, _) => value }
 
@@ -201,19 +191,16 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       }
 
       (ArrayDef(loc, values2), names, vars, errors)
-    }
 
-    case Descent(loc, child, property) => {
+    case Descent(loc, child, property) =>
       val (child2, names, vars, errors) = performShake(child)
       (Descent(loc, child2, property), names, vars, errors)
-    }
 
-    case MetaDescent(loc, child, property) => {
+    case MetaDescent(loc, child, property) =>
       val (child2, bindings, vars, errors) = performShake(child)
       (MetaDescent(loc, child2, property), bindings, vars, errors)
-    }
 
-    case Deref(loc, left, right) => {
+    case Deref(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -222,9 +209,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case d @ Dispatch(loc, name, actuals) => {
+    case d @ Dispatch(loc, name, actuals) =>
       val mapped = actuals map performShake
       val actuals2 = mapped map { case (value, _, _, _) => value }
 
@@ -239,9 +225,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
       }
 
       (Dispatch(loc, name, actuals2), names + (name -> d.binding), vars, errors)
-    }
 
-    case Cond(loc, pred, left, right) => {
+    case Cond(loc, pred, left, right) =>
       val (pred2, predNames, predVars, predErrors) = performShake(pred)
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
@@ -251,9 +236,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         predNames ++ leftNames ++ rightNames,
         predVars ++ leftVars ++ rightVars,
         predErrors ++ leftErrors ++ rightErrors)
-    }
 
-    case Where(loc, left, right) => {
+    case Where(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -262,9 +246,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case With(loc, left, right) => {
+    case With(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -273,9 +256,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Intersect(loc, left, right) => {
+    case Intersect(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -284,9 +266,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Union(loc, left, right) => {
+    case Union(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -295,9 +276,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Difference(loc, left, right) => {
+    case Difference(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -306,9 +286,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Add(loc, left, right) => {
+    case Add(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -317,9 +296,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Sub(loc, left, right) => {
+    case Sub(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -328,9 +306,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Mul(loc, left, right) => {
+    case Mul(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -339,9 +316,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Div(loc, left, right) => {
+    case Div(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -350,9 +326,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Mod(loc, left, right) => {
+    case Mod(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -361,9 +336,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Pow(loc, left, right) => {
+    case Pow(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -372,9 +346,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Lt(loc, left, right) => {
+    case Lt(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -383,9 +356,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case LtEq(loc, left, right) => {
+    case LtEq(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -394,9 +366,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Gt(loc, left, right) => {
+    case Gt(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -405,9 +376,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case GtEq(loc, left, right) => {
+    case GtEq(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -416,9 +386,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Eq(loc, left, right) => {
+    case Eq(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -427,9 +396,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case NotEq(loc, left, right) => {
+    case NotEq(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -438,9 +406,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case And(loc, left, right) => {
+    case And(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -449,9 +416,8 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Or(loc, left, right) => {
+    case Or(loc, left, right) =>
       val (left2, leftNames, leftVars, leftErrors) = performShake(left)
       val (right2, rightNames, rightVars, rightErrors) = performShake(right)
 
@@ -460,17 +426,14 @@ trait TreeShaker extends Phases with parser.AST with Binder with Errors {
         leftNames ++ rightNames,
         leftVars ++ rightVars,
         leftErrors ++ rightErrors)
-    }
 
-    case Comp(loc, child) => {
+    case Comp(loc, child) =>
       val (child2, names, vars, errors) = performShake(child)
       (Comp(loc, child2), names, vars, errors)
-    }
 
-    case Neg(loc, child) => {
+    case Neg(loc, child) =>
       val (child2, names, vars, errors) = performShake(child)
       (Neg(loc, child2), names, vars, errors)
-    }
 
     case Paren(_, child) => performShake(child) // nix parentheses on shake
   }

@@ -107,13 +107,12 @@ abstract class Expression extends TreeNode[Expression] {
         val value = ctx.freshName("value")
         val ve = ExprCode("", isNull, value)
         ve.code = genCode(ctx, ve)
-        if (ve.code != "") {
+        if (ve.code != "")
           // Add `this` in the comment.
           ve.copy(
             s"/* ${toCommentSafeString(this.toString)} */\n" + ve.code.trim)
-        } else {
+        else
           ve
-        }
       }
 
   /**
@@ -293,11 +292,10 @@ abstract class UnaryExpression extends Expression {
     */
   override def eval(input: InternalRow): Any = {
     val value = child.eval(input)
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       nullSafeEval(value)
-    }
   }
 
   /**
@@ -380,15 +378,14 @@ abstract class BinaryExpression extends Expression {
     */
   override def eval(input: InternalRow): Any = {
     val value1 = left.eval(input)
-    if (value1 == null) {
+    if (value1 == null)
       null
-    } else {
+    else {
       val value2 = right.eval(input)
-      if (value2 == null) {
+      if (value2 == null)
         null
-      } else {
+      else
         nullSafeEval(value1, value2)
-      }
     }
   }
 
@@ -485,16 +482,15 @@ abstract class BinaryOperator extends BinaryExpression with ExpectsInputTypes {
 
   override def checkInputDataTypes(): TypeCheckResult =
     // First check whether left and right have the same type, then check if the type is acceptable.
-    if (left.dataType != right.dataType) {
+    if (left.dataType != right.dataType)
       TypeCheckResult.TypeCheckFailure(s"differing types in '$sql' " +
         s"(${left.dataType.simpleString} and ${right.dataType.simpleString}).")
-    } else if (!inputType.acceptsType(left.dataType)) {
+    else if (!inputType.acceptsType(left.dataType))
       TypeCheckResult.TypeCheckFailure(
         s"'$sql' requires ${inputType.simpleString} type," +
           s" not ${left.dataType.simpleString}")
-    } else {
+    else
       TypeCheckResult.TypeCheckSuccess
-    }
 
   override def sql: String = s"(${left.sql} $sqlOperator ${right.sql})"
 }
@@ -525,9 +521,8 @@ abstract class TernaryExpression extends Expression {
       val value2 = exprs(1).eval(input)
       if (value2 != null) {
         val value3 = exprs(2).eval(input)
-        if (value3 != null) {
+        if (value3 != null)
           return nullSafeEval(value1, value2, value3)
-        }
       }
     }
     null

@@ -130,14 +130,13 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
       })
       .map(_.head)
 
-    for (v <- realMeth) {
+    for (v <- realMeth)
       v.invoke(rec) match {
         case mf: Field[_, BaseRecord] if !mf.ignoreField_? =>
           mf.setName_!(v.getName)
           f(v, mf)
         case _ =>
       }
-    }
 
   }
 
@@ -224,11 +223,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     */
   def validate(inst: BaseRecord): List[FieldError] = {
     foreachCallback(inst, _.beforeValidation)
-    try {
-      fieldList.flatMap(_.field(inst).validate)
-    } finally {
-      foreachCallback(inst, _.afterValidation)
-    }
+    try fieldList.flatMap(_.field(inst).validate)
+    finally foreachCallback(inst, _.afterValidation)
   }
 
   /**
@@ -438,9 +434,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     * @param req - The Req to read from
     */
   def setFieldsFromReq(inst: BaseRecord, req: Req) {
-    for (fh <- fieldList) {
+    for (fh <- fieldList)
       fh.field(inst).setFromAny(req.param(fh.name))
-    }
   }
 
   /**
@@ -453,9 +448,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     for {
       fh <- fieldList
       fld <- rec.fieldByName(fh.name)
-    } {
-      fh.field(inst).setFromAny(fld.valueBox)
-    }
+    } fh.field(inst).setFromAny(fld.valueBox)
   }
 
   def copy(rec: BaseRecord): BaseRecord = {

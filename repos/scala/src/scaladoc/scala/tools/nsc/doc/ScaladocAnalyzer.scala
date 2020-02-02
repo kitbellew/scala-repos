@@ -49,12 +49,11 @@ trait ScaladocAnalyzer extends Analyzer {
               reporter.warning(useCase.pos, err.errMsg)
             case _ =>
           }
-          for (useCaseSym <- useCase.defined) {
+          for (useCaseSym <- useCase.defined)
             if (sym.name != useCaseSym.name)
               reporter.warning(
                 useCase.pos,
                 "@usecase " + useCaseSym.name.decode + " does not match commented symbol: " + sym.name.decode)
-          }
         }
       }
 
@@ -74,7 +73,7 @@ trait ScaladocAnalyzer extends Analyzer {
       val enclClass = context.enclClass.owner
 
       def defineAlias(name: Name) = (
-        if (context.scope.lookup(name) == NoSymbol) {
+        if (context.scope.lookup(name) == NoSymbol)
           lookupVariable(name.toString.substring(1), enclClass) foreach {
             repl =>
               silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
@@ -90,7 +89,6 @@ trait ScaladocAnalyzer extends Analyzer {
                   context.scope.enter(alias)
               }
           }
-        }
       )
 
       for (tree <- trees; t <- tree)
@@ -137,9 +135,7 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
 
     override protected def skipComment(): Boolean =
       if (in.ch == '/') {
-        do {
-          in.next
-        } while ((in.ch != CR) && (in.ch != LF) && (in.ch != SU))
+        do in.next while ((in.ch != CR) && (in.ch != LF) && (in.ch != SU))
         true
       } else if (in.ch == '*') {
         docBuffer = null
@@ -148,10 +144,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
         if (in.ch == '*')
           docBuffer = new StringBuilder(scaladoc._1)
         do {
-          do {
-            if (in.ch != '*' && in.ch != SU) {
-              in.next; putDocChar(in.ch)
-            }
+          do if (in.ch != '*' && in.ch != SU) {
+            in.next; putDocChar(in.ch)
           } while (in.ch != '*' && in.ch != SU)
           while (in.ch == '*') {
             in.next; putDocChar(in.ch)
@@ -160,9 +154,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
         if (in.ch == '/') in.next
         else incompleteInputError("unclosed comment")
         true
-      } else {
+      } else
         false
-      }
   }
 
   class ScaladocUnitScanner(unit0: CompilationUnit, patches0: List[BracePatch])
@@ -274,9 +267,8 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
               val pos = doc.pos.withEnd(t.pos.end)
               // always make the position transparent
               pos.makeTransparent
-            } else {
+            } else
               t.pos
-            }
           }
         }
         joined.find(_.pos.isOpaqueRange) foreach { main =>

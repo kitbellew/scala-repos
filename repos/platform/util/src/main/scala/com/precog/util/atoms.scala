@@ -61,18 +61,14 @@ class Atom[A] extends Source[A] with Sink[A] {
 
   def update(a: A) {
     lock.lock()
-    try {
-      if (!isSet || !isForced) {
-        value = a
-        isSet = true
+    try if (!isSet || !isForced) {
+      value = a
+      isSet = true
 
-        semaphore synchronized {
-          semaphore.notifyAll()
-        }
+      semaphore synchronized {
+        semaphore.notifyAll()
       }
-    } finally {
-      lock.unlock()
-    }
+    } finally lock.unlock()
   }
 
   def +=[B](b: B)(
@@ -80,27 +76,23 @@ class Atom[A] extends Source[A] with Sink[A] {
       evidence: A <:< TraversableOnce[B]) {
     if (!isForced || setterThread != null) {
       lock.lock()
-      try {
-        if (!isForced || setterThread != null) {
-          val builder = if (value == null) { // TODO gross!
+      try if (!isForced || setterThread != null) {
+        val builder =
+          if (value == null) // TODO gross!
             cbf()
-          } else {
+          else {
             val back = cbf(value)
             back ++= value
             back
           }
 
-          builder += b
+        builder += b
 
-          value = builder.result()
+        value = builder.result()
 
-          if (setterThread != null) {
-            isSet = true
-          }
-        }
-      } finally {
-        lock.unlock()
-      }
+        if (setterThread != null)
+          isSet = true
+      } finally lock.unlock()
     }
   }
 
@@ -110,27 +102,23 @@ class Atom[A] extends Source[A] with Sink[A] {
       evidence2: A <:< TraversableOnce[E]) {
     if (!isForced || setterThread != null) {
       lock.lock()
-      try {
-        if (!isForced || setterThread != null) {
-          val builder = if (value == null) { // TODO gross!
+      try if (!isForced || setterThread != null) {
+        val builder =
+          if (value == null) // TODO gross!
             cbf()
-          } else {
+          else {
             val back = cbf(value)
             back ++= value
             back
           }
 
-          builder ++= evidence2(c)
+        builder ++= evidence2(c)
 
-          value = builder.result()
+        value = builder.result()
 
-          if (setterThread != null) {
-            isSet = true
-          }
-        }
-      } finally {
-        lock.unlock()
-      }
+        if (setterThread != null)
+          isSet = true
+      } finally lock.unlock()
     }
   }
 
@@ -140,31 +128,26 @@ class Atom[A] extends Source[A] with Sink[A] {
       evidence2: Coll[E] <:< TraversableOnce[E]) {
     if (!isForced || setterThread != null) {
       lock.lock()
-      try {
-        if (!isForced || setterThread != null) {
-          val builder = if (value == null) { // TODO gross!
+      try if (!isForced || setterThread != null) {
+        val builder =
+          if (value == null) // TODO gross!
             cbf()
-          } else {
+          else {
             val current = evidence(value)
             val back = cbf(current)
             back ++= current
             back
           }
 
-          // not thread safe, basically horrible
-          if (a.value != null) {
-            builder ++= evidence2(a.value)
-          }
+        // not thread safe, basically horrible
+        if (a.value != null)
+          builder ++= evidence2(a.value)
 
-          value = builder.result()
+        value = builder.result()
 
-          if (setterThread != null) {
-            isSet = true
-          }
-        }
-      } finally {
-        lock.unlock()
-      }
+        if (setterThread != null)
+          isSet = true
+      } finally lock.unlock()
     }
   }
 
@@ -173,19 +156,15 @@ class Atom[A] extends Source[A] with Sink[A] {
   }
 
   def into(sink: Sink[A]) {
-    if (isSet) {
+    if (isSet)
       sink() = value
-    } else {
+    else {
       lock.lock()
-      if (isSet) {
+      if (isSet)
         sink() = value
-      } else {
-        try {
-          targets += sink
-        } finally {
-          lock.unlock()
-        }
-      }
+      else
+        try targets += sink
+        finally lock.unlock()
     }
   }
 
@@ -193,47 +172,38 @@ class Atom[A] extends Source[A] with Sink[A] {
   def apply(): A = {
     isForced = true
 
-    if (isSet) {
+    if (isSet)
       value
-    } else {
+    else {
       lock.lock()
-      try {
-        if (isSet) {
-          value
-        } else if (setterThread != null) {
-          if (setterThread == Thread.currentThread) {
-            sys.error("Recursive atom definition detected")
-          } else {
-            lock.unlock()
-            try {
-              semaphore synchronized {
-                semaphore.wait()
-              }
-            } finally {
-              lock.lock()
-            }
-            value
-          }
-        } else {
-          setterThread = Thread.currentThread
+      try if (isSet)
+        value
+      else if (setterThread != null)
+        if (setterThread == Thread.currentThread)
+          sys.error("Recursive atom definition detected")
+        else {
           lock.unlock()
-          try {
-            populate()
-
-            if (!isSet) {
-              sys.error(
-                "Unable to self-populate atom (value not set following attempted population)")
-            }
-          } finally {
-            lock.lock()
-            setterThread = null
-          }
-
+          try semaphore synchronized {
+            semaphore.wait()
+          } finally lock.lock()
           value
         }
-      } finally {
+      else {
+        setterThread = Thread.currentThread
         lock.unlock()
-      }
+        try {
+          populate()
+
+          if (!isSet)
+            sys.error(
+              "Unable to self-populate atom (value not set following attempted population)")
+        } finally {
+          lock.lock()
+          setterThread = null
+        }
+
+        value
+      } finally lock.unlock()
     }
 
     if (!targets.isEmpty) {
@@ -241,9 +211,7 @@ class Atom[A] extends Source[A] with Sink[A] {
       try {
         targets foreach { _() = value }
         targets = Set()
-      } finally {
-        lock.unlock()
-      }
+      } finally lock.unlock()
     }
 
     value

@@ -24,9 +24,8 @@ class MethodRequiredFilter[REQUEST <: Request](
       response.status = Status.MethodNotAllowed
       response.allow = allowedMethods
       Future.value(response)
-    } else {
+    } else
       service(request)
-    }
 }
 
 object MethodRequiredFilter

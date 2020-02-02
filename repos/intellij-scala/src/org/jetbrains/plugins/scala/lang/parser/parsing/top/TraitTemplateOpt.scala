@@ -45,7 +45,7 @@ object TraitTemplateOpt {
           MixinParents parse builder
           //parse template body
           builder.getTokenType match {
-            case ScalaTokenTypes.tLBRACE => {
+            case ScalaTokenTypes.tLBRACE =>
               if (builder.twoNewlinesBeforeCurrentToken) {
                 extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
                 return
@@ -53,33 +53,28 @@ object TraitTemplateOpt {
               TemplateBody parse builder
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
-            case _ => {
+            case _ =>
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
           }
-        } else {
+        } else
           //parse template body
           builder.getTokenType match {
-            case ScalaTokenTypes.tLBRACE => {
+            case ScalaTokenTypes.tLBRACE =>
               TemplateBody parse builder
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
-            case _ => {
+            case _ =>
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
-            }
           }
-        }
       //if we find nl => it could be TemplateBody only, but we can't find nl after extends keyword
       //In this case of course it's ClassParents
       case _ =>
         MixinParents parse builder
         //parse template body
         builder.getTokenType match {
-          case ScalaTokenTypes.tLBRACE => {
+          case ScalaTokenTypes.tLBRACE =>
             if (builder.twoNewlinesBeforeCurrentToken) {
               extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
               return
@@ -87,11 +82,9 @@ object TraitTemplateOpt {
             TemplateBody parse builder
             extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
             return
-          }
-          case _ => {
+          case _ =>
             extendsMarker.done(ScalaElementTypes.EXTENDS_BLOCK)
             return
-          }
         }
     }
   }

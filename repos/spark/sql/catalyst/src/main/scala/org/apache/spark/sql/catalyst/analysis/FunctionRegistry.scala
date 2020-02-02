@@ -321,13 +321,13 @@ object FunctionRegistry {
     val varargCtor = Try(
       tag.runtimeClass.getDeclaredConstructor(classOf[Seq[_]])).toOption
     val builder = (expressions: Seq[Expression]) => {
-      if (varargCtor.isDefined) {
+      if (varargCtor.isDefined)
         // If there is an apply method that accepts Seq[Expression], use that one.
         Try(varargCtor.get.newInstance(expressions).asInstanceOf[Expression]) match {
           case Success(e) => e
           case Failure(e) => throw new AnalysisException(e.getMessage)
         }
-      } else {
+      else {
         // Otherwise, find an ctor method that matches the number of arguments, and use that.
         val params = Seq.fill(expressions.size)(classOf[Expression])
         val f = Try(tag.runtimeClass.getDeclaredConstructor(params: _*)) match {
@@ -346,7 +346,7 @@ object FunctionRegistry {
 
     val clazz = tag.runtimeClass
     val df = clazz.getAnnotation(classOf[ExpressionDescription])
-    if (df != null) {
+    if (df != null)
       (
         name,
         (
@@ -356,8 +356,7 @@ object FunctionRegistry {
             df.usage(),
             df.extended()),
           builder))
-    } else {
+    else
       (name, (new ExpressionInfo(clazz.getCanonicalName, name), builder))
-    }
   }
 }

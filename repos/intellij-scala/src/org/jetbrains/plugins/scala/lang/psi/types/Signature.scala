@@ -194,15 +194,12 @@ class Signature(
         val tp2 = unified2.subst(t2())
         val tp1 = unified1.subst(t1())
         var t = Equivalence.equivInner(tp2, tp1, undefSubst, falseUndef)
-        if (!t._1 && tp1.equiv(AnyRef) && this.isJava) {
+        if (!t._1 && tp1.equiv(AnyRef) && this.isJava)
           t = Equivalence.equivInner(tp2, Any, undefSubst, falseUndef)
-        }
-        if (!t._1 && tp2.equiv(AnyRef) && other.isJava) {
+        if (!t._1 && tp2.equiv(AnyRef) && other.isJava)
           t = Equivalence.equivInner(Any, tp1, undefSubst, falseUndef)
-        }
-        if (!t._1) {
+        if (!t._1)
           return (false, undefSubst)
-        }
         undefSubst = t._2
       }
     }

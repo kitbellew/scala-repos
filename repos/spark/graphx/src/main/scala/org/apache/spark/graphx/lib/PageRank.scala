@@ -262,11 +262,10 @@ object PageRank extends Logging {
     }
 
     def sendMessage(edge: EdgeTriplet[(Double, Double), Double]) =
-      if (edge.srcAttr._2 > tol) {
+      if (edge.srcAttr._2 > tol)
         Iterator((edge.dstId, edge.srcAttr._2 * edge.attr))
-      } else {
+      else
         Iterator.empty
-      }
 
     def messageCombiner(a: Double, b: Double): Double = a + b
 

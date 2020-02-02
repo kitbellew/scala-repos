@@ -122,9 +122,8 @@ class Zk2Resolver(
     val key = hosts.split(",").sorted mkString ","
     val value = discoverers(key)
 
-    if (chatty()) {
+    if (chatty())
       eprintf("ServiceDiscoverer(%s->%s)\n", hosts, value)
-    }
 
     value
   }
@@ -175,11 +174,10 @@ class Zk2Resolver(
                 (host, port, metadata + (WeightedAddress.weightKey -> weight))
             }
 
-            if (chatty()) {
+            if (chatty())
               eprintf(
                 "Received new serverset vector: %s\n",
                 subseq mkString ",")
-            }
 
             if (subseq.isEmpty) Var.value(Addr.Neg)
             else inetResolver.bindHostPortsToAddr(subseq)
@@ -212,13 +210,12 @@ class Zk2Resolver(
               tuple =>
                 val (clientHealth, state) = tuple
 
-                if (chatty()) {
+                if (chatty())
                   eprintf(
                     "New state for %s!%s: %s\n",
                     path,
                     endpointOption getOrElse "default",
                     state)
-                }
 
                 synchronized {
                   val State(addr, _nlimbo, _size) = state

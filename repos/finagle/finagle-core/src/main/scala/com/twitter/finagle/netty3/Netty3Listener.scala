@@ -286,9 +286,8 @@ case class Netty3Listener[In, Out](
     new IdentityHashMap[StatsReceiver, ChannelHandler]
 
   def channelStatsHandler(statsReceiver: StatsReceiver) = synchronized {
-    if (!(statsHandlers containsKey statsReceiver)) {
+    if (!(statsHandlers containsKey statsReceiver))
       statsHandlers.put(statsReceiver, new ChannelStatsHandler(statsReceiver))
-    }
 
     statsHandlers.get(statsReceiver)
   }
@@ -318,22 +317,20 @@ case class Netty3Listener[In, Out](
             new ReadTimeoutHandler(nettyTimer, timeoutValue, timeoutUnit))
         }
 
-        if (channelWriteCompletionTimeout < Duration.Top) {
+        if (channelWriteCompletionTimeout < Duration.Top)
           pipeline.addLast(
             "writeCompletionTimeout",
             new WriteCompletionTimeoutHandler(
               timer,
               channelWriteCompletionTimeout))
-        }
 
         for (Netty3ListenerTLSConfig(newEngine) <- tlsConfig)
           addTlsToPipeline(pipeline, newEngine)
 
-        if (!statsReceiver.isNull) {
+        if (!statsReceiver.isNull)
           pipeline.addLast(
             "channelRequestStatsHandler",
             new ChannelRequestStatsHandler(statsReceiver))
-        }
 
         pipeline.addLast("finagleBridge", newBridge())
         pipeline

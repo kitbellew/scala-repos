@@ -101,7 +101,7 @@ abstract class IngestProducer(args: Array[String])
       threads.foreach(_.start)
       threads.foreach(_.join)
 
-      val totalErrors = testRuns map { _.errorCount } reduce { _ + _ }
+      val totalErrors = testRuns map { _.errorCount } reduce _ + _
 
       val seconds = (System.nanoTime - start) / 1000000000.0
 
@@ -134,16 +134,14 @@ abstract class IngestProducer(args: Array[String])
           0.until(messages).foreach { i =>
             if (i % 10 == 0 && verbose)
               println("Sending to [%s]: %d".format(path, i))
-            try {
-              send(event, timeout)
-            } catch {
+            try send(event, timeout)
+            catch {
               case ex =>
                 ex.printStackTrace
                 errors += 1
             }
-            if (delay > 0) {
+            if (delay > 0)
               Thread.sleep(delay)
-            }
           }
       }
     }
@@ -231,9 +229,8 @@ Usage:
   if (args.size < 3) {
     usage()
     System.exit(1)
-  } else {
+  } else
     run(args(0), args(1), args(2))
-  }
 
   AkkaDefaults.actorSystem.shutdown
 }

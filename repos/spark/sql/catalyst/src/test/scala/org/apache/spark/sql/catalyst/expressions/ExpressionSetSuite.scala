@@ -35,9 +35,8 @@ class ExpressionSetSuite extends SparkFunSuite {
   def setTest(size: Int, exprs: Expression*): Unit =
     test(s"expect $size: ${exprs.mkString(", ")}") {
       val set = ExpressionSet(exprs)
-      if (set.size != size) {
+      if (set.size != size)
         fail(set.toDebugString)
-      }
     }
 
   def setTestIgnore(size: Int, exprs: Expression*): Unit =

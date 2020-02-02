@@ -49,16 +49,15 @@ trait ContextTrees { self: Global =>
     synchronized {
       @tailrec
       def locateFinestContextTree(context: ContextTree): ContextTree =
-        if (context.pos includes pos) {
+        if (context.pos includes pos)
           locateContextTree(context.children, pos) match {
             case Some(x) =>
               locateFinestContextTree(x)
             case None =>
               context
           }
-        } else {
+        else
           context
-        }
       def sanitizeContext(c: Context): Context = {
         c.retyping = false
         c
@@ -127,60 +126,56 @@ trait ContextTrees { self: Global =>
     */
   def addContext(contexts: Contexts, context: Context, cpos: Position): Unit =
     synchronized {
-      try {
-        if (!cpos.isRange) {} else if (contexts.isEmpty)
+      try if (!cpos.isRange) {} else if (contexts.isEmpty)
+        contexts += new ContextTree(cpos, context)
+      else {
+        val hi = contexts.length - 1
+        if (contexts(hi).pos precedes cpos)
           contexts += new ContextTree(cpos, context)
+        else if (contexts(hi).pos properlyIncludes cpos) // fast path w/o search
+          addContext(contexts(hi).children, context, cpos)
+        else if (cpos precedes contexts(0).pos)
+          new ContextTree(cpos, context) +=: contexts
         else {
-          val hi = contexts.length - 1
-          if (contexts(hi).pos precedes cpos)
-            contexts += new ContextTree(cpos, context)
-          else if (contexts(hi).pos properlyIncludes cpos) // fast path w/o search
-            addContext(contexts(hi).children, context, cpos)
-          else if (cpos precedes contexts(0).pos)
-            new ContextTree(cpos, context) +=: contexts
-          else {
-            def insertAt(idx: Int): Boolean = {
-              val oldpos = contexts(idx).pos
-              if (oldpos sameRange cpos) {
-                contexts(idx) =
-                  new ContextTree(cpos, context, contexts(idx).children)
-                true
-              } else if (oldpos includes cpos) {
-                addContext(contexts(idx).children, context, cpos)
-                true
-              } else if (cpos includes oldpos) {
-                val start = contexts.indexWhere(cpos includes _.pos)
-                val last = contexts.lastIndexWhere(cpos includes _.pos)
-                contexts(start) = new ContextTree(
-                  cpos,
-                  context,
-                  contexts.slice(start, last + 1))
-                contexts.remove(start + 1, last - start)
-                true
-              } else false
-            }
-            def loop(lo: Int, hi: Int) {
-              if (hi - lo > 1) {
-                val mid = (lo + hi) / 2
-                val midpos = contexts(mid).pos
-                if (cpos precedes midpos)
-                  loop(lo, mid)
-                else if (midpos precedes cpos)
-                  loop(mid, hi)
-                else
-                  addContext(contexts(mid).children, context, cpos)
-              } else if (!insertAt(lo) && !insertAt(hi)) {
-                val lopos = contexts(lo).pos
-                val hipos = contexts(hi).pos
-                if ((lopos precedes cpos) && (cpos precedes hipos))
-                  contexts.insert(hi, new ContextTree(cpos, context))
-                else
-                  inform(
-                    "internal error? skewed positions: " + lopos + " !< " + cpos + " !< " + hipos)
-              }
-            }
-            loop(0, hi)
+          def insertAt(idx: Int): Boolean = {
+            val oldpos = contexts(idx).pos
+            if (oldpos sameRange cpos) {
+              contexts(idx) =
+                new ContextTree(cpos, context, contexts(idx).children)
+              true
+            } else if (oldpos includes cpos) {
+              addContext(contexts(idx).children, context, cpos)
+              true
+            } else if (cpos includes oldpos) {
+              val start = contexts.indexWhere(cpos includes _.pos)
+              val last = contexts.lastIndexWhere(cpos includes _.pos)
+              contexts(start) =
+                new ContextTree(cpos, context, contexts.slice(start, last + 1))
+              contexts.remove(start + 1, last - start)
+              true
+            } else false
           }
+          def loop(lo: Int, hi: Int) {
+            if (hi - lo > 1) {
+              val mid = (lo + hi) / 2
+              val midpos = contexts(mid).pos
+              if (cpos precedes midpos)
+                loop(lo, mid)
+              else if (midpos precedes cpos)
+                loop(mid, hi)
+              else
+                addContext(contexts(mid).children, context, cpos)
+            } else if (!insertAt(lo) && !insertAt(hi)) {
+              val lopos = contexts(lo).pos
+              val hipos = contexts(hi).pos
+              if ((lopos precedes cpos) && (cpos precedes hipos))
+                contexts.insert(hi, new ContextTree(cpos, context))
+              else
+                inform(
+                  "internal error? skewed positions: " + lopos + " !< " + cpos + " !< " + hipos)
+            }
+          }
+          loop(0, hi)
         }
       } catch {
         case ex: Throwable =>

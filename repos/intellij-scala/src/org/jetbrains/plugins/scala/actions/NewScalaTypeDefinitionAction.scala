@@ -49,23 +49,20 @@ class NewScalaTypeDefinitionAction
     builder.addKind("Object", Icons.OBJECT, ScalaFileTemplateUtil.SCALA_OBJECT)
     builder.addKind("Trait", Icons.TRAIT, ScalaFileTemplateUtil.SCALA_TRAIT)
 
-    for (template <- FileTemplateManager.getInstance(project).getAllTemplates) {
-      if (isScalaTemplate(template) && checkPackageExists(directory)) {
+    for (template <- FileTemplateManager.getInstance(project).getAllTemplates)
+      if (isScalaTemplate(template) && checkPackageExists(directory))
         builder.addKind(
           template.getName,
           Icons.FILE_TYPE_LOGO,
           template.getName)
-      }
-    }
 
     builder.setTitle("Create New Scala Class")
     builder.setValidator(new InputValidatorEx {
       def getErrorText(inputString: String): String = {
         if (inputString.length > 0 && !PsiNameHelper
               .getInstance(project)
-              .isQualifiedName(inputString)) {
+              .isQualifiedName(inputString))
           return "This is not a valid Scala qualified name"
-        }
         null
       }
 
@@ -109,9 +106,8 @@ class NewScalaTypeDefinitionAction
   private def isUnderSourceRoots(dataContext: DataContext): Boolean = {
     val module: Module =
       dataContext.getData(LangDataKeys.MODULE.getName).asInstanceOf[Module]
-    if (!Option(module).exists(_.hasScala)) {
+    if (!Option(module).exists(_.hasScala))
       return false
-    }
     val view =
       dataContext.getData(LangDataKeys.IDE_VIEW.getName).asInstanceOf[IdeView]
     val project =
@@ -122,9 +118,8 @@ class NewScalaTypeDefinitionAction
       val dirs = view.getDirectories
       for (dir <- dirs) {
         val aPackage = JavaDirectoryService.getInstance.getPackage(dir)
-        if (projectFileIndex.isInSourceContent(dir.getVirtualFile) && aPackage != null) {
+        if (projectFileIndex.isInSourceContent(dir.getVirtualFile) && aPackage != null)
           return true
-        }
       }
     }
     false
@@ -172,15 +167,13 @@ object NewScalaTypeDefinitionAction {
 
     var i: Int = 0
     while (i < parameters.length) {
-      {
-        properties.setProperty(parameters(i), parameters(i + 1))
-      }
+
+      properties.setProperty(parameters(i), parameters(i + 1))
       i += 2
     }
     var text: String = null
-    try {
-      text = template.getText(properties)
-    } catch {
+    try text = template.getText(properties)
+    catch {
       case e: Exception =>
         throw new RuntimeException(
           "Unable to load template for " + FileTemplateManager.getInstance

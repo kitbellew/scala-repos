@@ -195,16 +195,15 @@ class ClusterClientTest
 
       // update config data node, which triggers the pool update
       // cache pool cluster should be updated
-      try {
-        expectPoolStatus(
-          myPool,
-          currentSize = 5,
-          expectedPoolSize = 10,
-          expectedAdd = 5,
-          expectedRem = 0) {
-          updateCachePoolConfigData(10)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        myPool,
+        currentSize = 5,
+        expectedPoolSize = 10,
+        expectedAdd = 5,
+        expectedRem = 0) {
+        updateCachePoolConfigData(10)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       /***** remove 2 servers from the zk serverset ******/
       // cache pool should remain the same size at this moment
@@ -222,16 +221,15 @@ class ClusterClientTest
 
       // update config data node, which triggers the pool update
       // cache pool should be updated
-      try {
-        expectPoolStatus(
-          myPool,
-          currentSize = 10,
-          expectedPoolSize = 8,
-          expectedAdd = 0,
-          expectedRem = 2) {
-          updateCachePoolConfigData(8)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        myPool,
+        currentSize = 10,
+        expectedPoolSize = 8,
+        expectedAdd = 0,
+        expectedRem = 2) {
+        updateCachePoolConfigData(8)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       /***** remove 2 more then add 3 ******/
       // cache pool should remain the same size at this moment
@@ -250,16 +248,15 @@ class ClusterClientTest
 
       // update config data node, which triggers the pool update
       // cache pool should be updated
-      try {
-        expectPoolStatus(
-          myPool,
-          currentSize = 8,
-          expectedPoolSize = 9,
-          expectedAdd = 3,
-          expectedRem = 2) {
-          updateCachePoolConfigData(9)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        myPool,
+        currentSize = 8,
+        expectedPoolSize = 9,
+        expectedAdd = 3,
+        expectedRem = 2) {
+        updateCachePoolConfigData(9)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
@@ -298,17 +295,16 @@ class ClusterClientTest
       /***** start 5 more memcached servers and join the cluster ******/
       // update config data node, which triggers the pool update
       // cache pool cluster should still be able to see underlying pool changes
-      try {
-        expectPoolStatus(
-          myPool,
-          currentSize = 5,
-          expectedPoolSize = 10,
-          expectedAdd = 5,
-          expectedRem = 0) {
-          addMoreServers(5)
-          updateCachePoolConfigData(10)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        myPool,
+        currentSize = 5,
+        expectedPoolSize = 10,
+        expectedAdd = 5,
+        expectedRem = 0) {
+        addMoreServers(5)
+        updateCachePoolConfigData(10)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
@@ -327,34 +323,32 @@ class ClusterClientTest
 
       // bring the server back online
       // give it some time we should see the cache pool cluster pick up underlying pool
-      try {
-        expectPoolStatus(
-          myPool,
-          currentSize = 2,
-          expectedPoolSize = 5,
-          expectedAdd = 5,
-          expectedRem = 2) {
-          zookeeperServer.startNetwork
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        myPool,
+        currentSize = 2,
+        expectedPoolSize = 5,
+        expectedAdd = 5,
+        expectedRem = 2) {
+        zookeeperServer.startNetwork
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       /***** start 5 more memcached servers and join the cluster ******/
       // update config data node, which triggers the pool update
       // cache pool cluster should still be able to see underlying pool changes
-      try {
-        expectPoolStatus(
-          myPool,
-          currentSize = 5,
-          expectedPoolSize = 10,
-          expectedAdd = 5,
-          expectedRem = 0) {
-          addMoreServers(5)
-          updateCachePoolConfigData(10)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        myPool,
+        currentSize = 5,
+        expectedPoolSize = 10,
+        expectedAdd = 5,
+        expectedRem = 0) {
+        addMoreServers(5)
+        updateCachePoolConfigData(10)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
     }
 
-  if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
+  if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("Ketama ClusterClient using a distributor - set & get") {
       val client = KetamaClientBuilder()
         .clientBuilder(
@@ -372,9 +366,8 @@ class ClusterClientTest
       val Buf.Utf8(res) = Await.result(client.get("foo"), TimeOut).get
       assert(res == "bar")
     }
-  }
 
-  if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
+  if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("Ketama ClusterClient using a distributor - many keys") {
       val client = KetamaClientBuilder()
         .clientBuilder(
@@ -402,7 +395,6 @@ class ClusterClientTest
         assert(res == "bar" + n)
       }
     }
-  }
 
   test("Ketama ClusterClient using a distributor - use custom keys") {
     // create my cluster client solely based on a zk client and a path
@@ -413,14 +405,13 @@ class ClusterClientTest
     val customKey = "key-"
     var shardId = -1
     val myClusterWithCustomKey = mycluster map {
-      case node: CacheNode => {
+      case node: CacheNode =>
         shardId += 1
         CacheNode(
           node.host,
           node.port,
           node.weight,
           Some(customKey + shardId.toString))
-      }
     }
     val client = KetamaClientBuilder()
       .clientBuilder(
@@ -456,96 +447,90 @@ class ClusterClientTest
 
       // add 4 more cache servers and update cache pool config data, now there should be 7 shards
       var additionalServers = List[EndpointStatus]()
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 5,
-          expectedPoolSize = 9,
-          expectedAdd = 4,
-          expectedRem = 0) {
-          additionalServers = addMoreServers(4)
-          updateCachePoolConfigData(9)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 5,
+        expectedPoolSize = 9,
+        expectedAdd = 4,
+        expectedRem = 0) {
+        additionalServers = addMoreServers(4)
+        updateCachePoolConfigData(9)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 9) }
 
       // remove 2 cache servers and update cache pool config data, now there should be 7 shards
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 9,
-          expectedPoolSize = 7,
-          expectedAdd = 0,
-          expectedRem = 2) {
-          additionalServers(0).leave()
-          additionalServers(1).leave()
-          updateCachePoolConfigData(7)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 9,
+        expectedPoolSize = 7,
+        expectedAdd = 0,
+        expectedRem = 2) {
+        additionalServers(0).leave()
+        additionalServers(1).leave()
+        updateCachePoolConfigData(7)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 7) }
 
       // remove another 2 cache servers and update cache pool config data, now there should be 5 shards
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 7,
-          expectedPoolSize = 5,
-          expectedAdd = 0,
-          expectedRem = 2) {
-          additionalServers(2).leave()
-          additionalServers(3).leave()
-          updateCachePoolConfigData(5)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 7,
+        expectedPoolSize = 5,
+        expectedAdd = 0,
+        expectedRem = 2) {
+        additionalServers(2).leave()
+        additionalServers(3).leave()
+        updateCachePoolConfigData(5)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 5) }
 
       // add 2 more cache servers and update cache pool config data, now there should be 7 shards
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 5,
-          expectedPoolSize = 7,
-          expectedAdd = 2,
-          expectedRem = 0) {
-          additionalServers = addMoreServers(2)
-          updateCachePoolConfigData(7)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 5,
+        expectedPoolSize = 7,
+        expectedAdd = 2,
+        expectedRem = 0) {
+        additionalServers = addMoreServers(2)
+        updateCachePoolConfigData(7)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 7) }
 
       // add another 2 more cache servers and update cache pool config data, now there should be 9 shards
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 7,
-          expectedPoolSize = 9,
-          expectedAdd = 2,
-          expectedRem = 0) {
-          additionalServers = addMoreServers(2)
-          updateCachePoolConfigData(9)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 7,
+        expectedPoolSize = 9,
+        expectedAdd = 2,
+        expectedRem = 0) {
+        additionalServers = addMoreServers(2)
+        updateCachePoolConfigData(9)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 9) }
 
       // remove 2 and add 2, now there should be still 9 shards
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 9,
-          expectedPoolSize = 9,
-          expectedAdd = 2,
-          expectedRem = 2) {
-          additionalServers(0).leave()
-          additionalServers(1).leave()
-          addMoreServers(2)
-          updateCachePoolConfigData(9)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 9,
+        expectedPoolSize = 9,
+        expectedAdd = 2,
+        expectedRem = 2) {
+        additionalServers(0).leave()
+        additionalServers(1).leave()
+        addMoreServers(2)
+        updateCachePoolConfigData(9)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 9) }
     }
@@ -572,31 +557,29 @@ class ClusterClientTest
 
       // add 4 more cache servers and update cache pool config data, now there should be 7 shards
       var additionalServers = List[EndpointStatus]()
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 5,
-          expectedPoolSize = 9,
-          expectedAdd = 4,
-          expectedRem = 0) {
-          additionalServers = addMoreServers(4)
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 5,
+        expectedPoolSize = 9,
+        expectedAdd = 4,
+        expectedRem = 0) {
+        additionalServers = addMoreServers(4)
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 9) }
 
       // remove 2 cache servers and update cache pool config data, now there should be 7 shards
-      try {
-        expectPoolStatus(
-          mycluster,
-          currentSize = 9,
-          expectedPoolSize = 7,
-          expectedAdd = 0,
-          expectedRem = 2) {
-          additionalServers(0).leave()
-          additionalServers(1).leave()
-        }.get(10.seconds)()
-      } catch { case _: Exception => fail("it shouldn't trown an exception") }
+      try expectPoolStatus(
+        mycluster,
+        currentSize = 9,
+        expectedPoolSize = 7,
+        expectedAdd = 0,
+        expectedRem = 2) {
+        additionalServers(0).leave()
+        additionalServers(1).leave()
+      }.get(10.seconds)()
+      catch { case _: Exception => fail("it shouldn't trown an exception") }
 
       eventually { assert(trackCacheShards(client).size == 7) }
     }

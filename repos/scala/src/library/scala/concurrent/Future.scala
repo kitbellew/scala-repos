@@ -716,16 +716,11 @@ object Future {
       val result = Promise[Option[T]]()
       val ref = new AtomicInteger(futuresBuffer.size)
       val search: Try[T] => Unit = v =>
-        try {
-          v match {
-            case Success(r) if p(r) => result tryComplete Success(Some(r))
-            case _                  =>
-          }
-        } finally {
-          if (ref.decrementAndGet == 0) {
-            result tryComplete Success(None)
-          }
-        }
+        try v match {
+          case Success(r) if p(r) => result tryComplete Success(Some(r))
+          case _                  =>
+        } finally if (ref.decrementAndGet == 0)
+          result tryComplete Success(None)
 
       futuresBuffer.foreach(_ onComplete search)
 
@@ -746,12 +741,11 @@ object Future {
       implicit executor: ExecutionContext): Future[Option[T]] = {
     def searchNext(i: Iterator[Future[T]]): Future[Option[T]] =
       if (!i.hasNext) successful[Option[T]](None)
-      else {
+      else
         i.next().transformWith {
           case Success(r) if p(r) => successful(Some(r))
           case other              => searchNext(i)
         }
-      }
     searchNext(futures.iterator)
   }
 

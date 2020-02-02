@@ -105,20 +105,19 @@ final class IntervalSeq[T] private (
   def isEmpty: Boolean = !belowAll && values.isEmpty
 
   def isContiguous: Boolean =
-    if (belowAll) {
+    if (belowAll)
       kinds match {
         case Array()     => true
         case Array(kind) => kind != K01
         case _           => false
       }
-    } else {
+    else
       kinds match {
         case Array()     => true
         case Array(_)    => true
         case Array(a, b) => a != K10 && b != K01
         case _           => false
       }
-    }
 
   private[this] def lowerBound(i: Int) = (kinds(i): @switch) match {
     case K01 => Open(values(i))
@@ -134,17 +133,16 @@ final class IntervalSeq[T] private (
   }
 
   def hull: Interval[T] =
-    if (isEmpty) {
+    if (isEmpty)
       Interval.empty[T]
-    } else if (belowAll && aboveAll) {
+    else if (belowAll && aboveAll)
       Interval.all[T]
-    } else if (belowAll) {
+    else if (belowAll)
       Interval.fromBounds(Unbound(), upperBound(kinds.length - 1))
-    } else if (aboveAll) {
+    else if (aboveAll)
       Interval.fromBounds(lowerBound(0), Unbound())
-    } else {
+    else
       Interval.fromBounds(lowerBound(0), upperBound(kinds.length - 1))
-    }
 
   // todo: switch to AbstractTraversable once we no longer need to support scala 2.10
   def intervals: Traversable[Interval[T]] = new Traversable[Interval[T]] {
@@ -406,11 +404,11 @@ object IntervalSeq {
     protected[this] def rBelow = if (ri > 0) valueAbove(rk(ri - 1)) else r0
 
     def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Unit =
-      if (a0 == a1) {
+      if (a0 == a1)
         fromB(aBelow(a0), b0, b1)
-      } else if (b0 == b1) {
+      else if (b0 == b1)
         fromA(a0, a1, bBelow(b0))
-      } else {
+      else {
         val am = (a0 + a1) / 2
         val res = Searching.search(b, a(am), b0, b1 - 1)(order)
         if (res >= 0) {
@@ -534,13 +532,13 @@ object IntervalSeq {
       if (i > 0) valueAbove(bk(i - 1)) else b0
 
     def merge0(a0: Int, a1: Int, b0: Int, b1: Int): Boolean =
-      if (a0 == a1 && b0 == b1) {
+      if (a0 == a1 && b0 == b1)
         true
-      } else if (a0 == a1) {
+      else if (a0 == a1)
         fromB(aBelow(a0), b0, b1)
-      } else if (b0 == b1) {
+      else if (b0 == b1)
         fromA(a0, a1, bBelow(b0))
-      } else {
+      else {
         val am = (a0 + a1) / 2
         val res = Searching.search(b, a(am), b0, b1 - 1)(order)
         if (res >= 0) {
@@ -641,9 +639,8 @@ object IntervalSeq {
       } else if (lower ne null) {
         result = Interval.fromBounds(lower, Unbound())
         lower = null
-      } else {
+      } else
         Iterator.empty.next()
-      }
       result
     }
 

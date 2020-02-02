@@ -37,11 +37,10 @@ object Embed extends DispatchSnippet {
   // Elem and the value of the name attribute.
   private object BindAtWithName {
     def unapply(in: Elem): Option[(Elem, String)] =
-      if (in.prefix == "lift" && in.label == "bind-at") {
+      if (in.prefix == "lift" && in.label == "bind-at")
         in.attribute("name").map { nameNode => (in, nameNode.text) }
-      } else {
+      else
         None
-      }
   }
 
   private lazy val logger = Logger(this.getClass)
@@ -50,39 +49,35 @@ object Embed extends DispatchSnippet {
     case _ => render _
   }
 
-  def render(kids: NodeSeq): NodeSeq = {
+  def render(kids: NodeSeq): NodeSeq =
     for {
       ctx <- S.session ?~ ("FIX" + "ME: session is invalid")
       what <- S.attr ~ ("what") ?~ ("FIX" + "ME The 'what' attribute not defined. In order to embed a template, the 'what' attribute must be specified")
       templateOpt <- ctx.findTemplate(what.text) ?~ ("FIX" + "ME trying to embed a template named '" + what + "', but the template was not found. ")
-    } yield {
-      (what, Templates.checkForContentId(templateOpt))
+    } yield (what, Templates.checkForContentId(templateOpt)) match {
+      case Full((templateName, template)) =>
+        val bindings: Seq[CssSel] = kids.collect {
+          case BindAtWithName(element, name) =>
+            s"#$name" #> element.child
+        }
+
+        val bindFn =
+          if (bindings.length > 1)
+            bindings.reduceLeft(_ & _)
+          else if (bindings.length == 1)
+            bindings(0)
+          else
+            PassThru
+
+        bindFn(template)
+      case Failure(msg, _, _) =>
+        logger.error("'embed' snippet failed with message: " + msg)
+        throw new SnippetExecutionException("Embed Snippet failed: " + msg)
+
+      case _ =>
+        logger.error(
+          "'embed' snippet failed because it was invoked outside session context")
+        throw new SnippetExecutionException("session is invalid")
     }
-  } match {
-    case Full((templateName, template)) => {
-      val bindings: Seq[CssSel] = kids.collect {
-        case BindAtWithName(element, name) =>
-          s"#$name" #> element.child
-      }
-
-      val bindFn =
-        if (bindings.length > 1)
-          bindings.reduceLeft(_ & _)
-        else if (bindings.length == 1)
-          bindings(0)
-        else
-          PassThru
-
-      bindFn(template)
-    }
-    case Failure(msg, _, _) =>
-      logger.error("'embed' snippet failed with message: " + msg)
-      throw new SnippetExecutionException("Embed Snippet failed: " + msg)
-
-    case _ =>
-      logger.error(
-        "'embed' snippet failed because it was invoked outside session context")
-      throw new SnippetExecutionException("session is invalid")
-  }
 
 }

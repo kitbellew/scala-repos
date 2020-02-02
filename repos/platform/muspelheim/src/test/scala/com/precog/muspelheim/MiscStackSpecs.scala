@@ -953,10 +953,10 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, SObject(obj)) => obj
       }
 
-      val india = maps filter { _.values forall { _ == SString("India") } }
+      val india = maps filter { _.values forall _ == SString("India") }
       india.size mustEqual (16)
 
-      val canada = maps filter { _.values forall { _ == SString("Canada") } }
+      val canada = maps filter { _.values forall _ == SString("Canada") }
       canada.size mustEqual (570)
     }
 
@@ -980,7 +980,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, SObject(obj)) => obj
       }
 
-      val india = maps filter { _.values forall { _ == SString("India") } }
+      val india = maps filter { _.values forall _ == SString("India") }
       india.size mustEqual (16)
     }
 
@@ -1530,11 +1530,10 @@ trait MiscStackSpecs extends EvalStackSpecs {
       results must haveSize(100)
 
       results must haveAllElementsLike {
-        case (ids, SObject(obj)) => {
+        case (ids, SObject(obj)) =>
           ids.length must_== 1
           obj must haveSize(1)
           obj must haveKey("aa")
-        }
       }
     }
 
@@ -1551,12 +1550,11 @@ trait MiscStackSpecs extends EvalStackSpecs {
       results must haveSize(10000)
 
       results must haveAllElementsLike {
-        case (ids, SObject(obj)) => {
+        case (ids, SObject(obj)) =>
           ids.length must_== 2
           obj must haveSize(2)
           obj must haveKey("aa")
           obj must haveKey("bb")
-        }
       }
     }
 
@@ -1575,10 +1573,9 @@ trait MiscStackSpecs extends EvalStackSpecs {
       results must haveSize(100 * 100)
 
       results must haveAllElementsLike {
-        case (ids, SBoolean(b)) => {
+        case (ids, SBoolean(b)) =>
           ids must haveSize(2)
           b mustEqual true
-        }
       }
     }
 
@@ -2013,11 +2010,10 @@ trait MiscStackSpecs extends EvalStackSpecs {
       val results = evalE(input)
 
       results must haveAllElementsLike {
-        case (ids, SObject(obj)) => {
+        case (ids, SObject(obj)) =>
           ids.length must_== 1
           obj must haveSize(5)
           obj must contain("gender" -> SString("male"))
-        }
       }
     }
 
@@ -2072,13 +2068,12 @@ trait MiscStackSpecs extends EvalStackSpecs {
       results must haveSize(14)
 
       results must haveAllElementsLike {
-        case (ids, SObject(obj)) => {
+        case (ids, SObject(obj)) =>
           ids.length must_== 1
           obj must haveSize(5)
           obj must contain(
             "ageRange" -> SArray(Vector(SDecimal(25), SDecimal(36))))
           obj must contain("gender" -> SString("female"))
-        }
       }
     }
 
@@ -3782,13 +3777,12 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(3)
 
       result must haveAllElementsLike {
-        case (ids, SArray(arr)) => {
+        case (ids, SArray(arr)) =>
           ids must haveSize(2)
           arr must haveSize(2)
 
           arr(0) must beOneOf(SDecimal(2), SDecimal(3), SDecimal(4))
           arr(1) mustEqual SArray(Vector(SDecimal(2), SDecimal(3), SDecimal(4)))
-        }
         case _ => ko
       }
 
@@ -3813,13 +3807,12 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(3)
 
       result must haveAllElementsLike {
-        case (ids, SArray(arr)) => {
+        case (ids, SArray(arr)) =>
           ids must haveSize(2)
           arr must haveSize(2)
 
           arr(0) must beOneOf(SDecimal(2), SDecimal(3), SDecimal(4))
           arr(1) mustEqual SArray(Vector(SDecimal(2), SDecimal(3), SDecimal(4)))
-        }
         case _ => ko
       }
 
@@ -3851,7 +3844,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
       result must haveSize(2)
 
       result must haveAllElementsLike {
-        case (ids, SObject(obj)) => {
+        case (ids, SObject(obj)) =>
           // note that `ids` has size 1 because flatten retains the original ids
           // and adds a new synth id, and in this case there are no original ids
           ids must haveSize(1)
@@ -3859,7 +3852,6 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
           if (obj("foo") == SDecimal(5)) obj("ack") mustEqual SDecimal(10000)
           else obj("ack") mustEqual SDecimal(0)
-        }
         case _ => ko
       }
     }

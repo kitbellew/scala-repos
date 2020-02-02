@@ -73,13 +73,13 @@ private[hive] class HadoopTableReader(
   // https://hadoop.apache.org/docs/r1.0.4/mapred-default.html
   //
   // In order keep consistency with Hive, we will let it be 0 in local mode also.
-  private val _minSplitsPerRDD = if (sc.sparkContext.isLocal) {
-    0 // will splitted based on block by default.
-  } else {
-    math.max(
-      sc.hiveconf.getInt("mapred.map.tasks", 1),
-      sc.sparkContext.defaultMinPartitions)
-  }
+  private val _minSplitsPerRDD =
+    if (sc.sparkContext.isLocal)
+      0 // will splitted based on block by default.
+    else
+      math.max(
+        sc.hiveconf.getInt("mapred.map.tasks", 1),
+        sc.sparkContext.defaultMinPartitions)
 
   // TODO: set aws s3 credentials.
 
@@ -172,9 +172,9 @@ private[hive] class HadoopTableReader(
     def verifyPartitionPath(
         partitionToDeserializer: Map[HivePartition, Class[_ <: Deserializer]])
         : Map[HivePartition, Class[_ <: Deserializer]] =
-      if (!sc.conf.verifyPartitionPath) {
+      if (!sc.conf.verifyPartitionPath)
         partitionToDeserializer
-      } else {
+      else {
         var existPathSet = collection.mutable.Set[String]()
         var pathPatternSet = collection.mutable.Set[String]()
         partitionToDeserializer.filter {
@@ -222,11 +222,11 @@ private[hive] class HadoopTableReader(
         // Partitioning columns are delimited by "/"
         val partCols = partColsDelimited.trim().split("/").toSeq
         // 'partValues[i]' contains the value for the partitioning column at 'partCols[i]'.
-        val partValues = if (partSpec == null) {
-          Array.fill(partCols.size)(new String)
-        } else {
-          partCols.map(col => new String(partSpec.get(col))).toArray
-        }
+        val partValues =
+          if (partSpec == null)
+            Array.fill(partCols.size)(new String)
+          else
+            partCols.map(col => new String(partSpec.get(col))).toArray
 
         // Create local references so that the outer object isn't serialized.
         val tableDesc = relation.tableDesc
@@ -275,11 +275,10 @@ private[hive] class HadoopTableReader(
     }.toSeq
 
     // Even if we don't use any partitions, we still need an empty RDD
-    if (hivePartitionRDDs.size == 0) {
+    if (hivePartitionRDDs.size == 0)
       new EmptyRDD[InternalRow](sc.sparkContext)
-    } else {
+    else
       new UnionRDD(hivePartitionRDDs(0).context, hivePartitionRDDs)
-    }
   }
 
   /**
@@ -337,14 +336,12 @@ private[hive] object HiveTableUtil {
     val storageHandler = HiveUtils.getStorageHandler(jobConf, property)
     if (storageHandler != null) {
       val jobProperties = new util.LinkedHashMap[String, String]
-      if (input) {
+      if (input)
         storageHandler.configureInputJobProperties(tableDesc, jobProperties)
-      } else {
+      else
         storageHandler.configureOutputJobProperties(tableDesc, jobProperties)
-      }
-      if (!jobProperties.isEmpty) {
+      if (!jobProperties.isEmpty)
         tableDesc.setJobProperties(jobProperties)
-      }
     }
   }
 }
@@ -388,15 +385,14 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
       tableDeser: Deserializer): Iterator[InternalRow] = {
 
     val soi =
-      if (rawDeser.getObjectInspector.equals(tableDeser.getObjectInspector)) {
+      if (rawDeser.getObjectInspector.equals(tableDeser.getObjectInspector))
         rawDeser.getObjectInspector.asInstanceOf[StructObjectInspector]
-      } else {
+      else
         ObjectInspectorConverters
           .getConvertedOI(
             rawDeser.getObjectInspector,
             tableDeser.getObjectInspector)
           .asInstanceOf[StructObjectInspector]
-      }
 
     logDebug(soi.toString)
 
@@ -473,11 +469,10 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
       var i = 0
       while (i < fieldRefs.length) {
         val fieldValue = soi.getStructFieldData(raw, fieldRefs(i))
-        if (fieldValue == null) {
+        if (fieldValue == null)
           mutableRow.setNullAt(fieldOrdinals(i))
-        } else {
+        else
           unwrappers(i)(fieldValue, mutableRow, fieldOrdinals(i))
-        }
         i += 1
       }
 

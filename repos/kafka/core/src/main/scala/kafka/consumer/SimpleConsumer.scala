@@ -190,9 +190,8 @@ class SimpleConsumer(
     OffsetFetchResponse.readFrom(sendRequest(request).payload())
 
   private def getOrMakeConnection() {
-    if (!isClosed && !blockingChannel.isConnected) {
+    if (!isClosed && !blockingChannel.isConnected)
       connect()
-    }
   }
 
   /**

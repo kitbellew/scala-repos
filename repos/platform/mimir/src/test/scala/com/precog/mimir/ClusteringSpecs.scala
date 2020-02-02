@@ -249,21 +249,20 @@ trait ClusteringLibSpecs[M[+_]]
               case SObject(clusterMap) =>
                 clusterMap("cluster1") must beLike {
                   case SObject(schemadCluster) =>
-                    if (schemadCluster contains "a") {
+                    if (schemadCluster contains "a")
                       isGoodCluster(
                         clusterMap,
                         pointsA,
                         centersA,
                         k,
                         dimensionA)
-                    } else {
+                    else
                       isGoodCluster(
                         clusterMap,
                         pointsB,
                         centersB,
                         k,
                         dimensionB)
-                    }
                 }
             }
 
@@ -459,7 +458,7 @@ trait ClusteringLibSpecs[M[+_]]
                   testCluster(model, clusterMapA, assignmentsA, point.toRValue)
               }
 
-              if (obj.contains("model2")) {
+              if (obj.contains("model2"))
                 obj("model2") must beLike {
                   case SObject(model) =>
                     testCluster(
@@ -468,9 +467,8 @@ trait ClusteringLibSpecs[M[+_]]
                       assignmentsB,
                       point.toRValue)
                 }
-              } else {
+              else
                 ok
-              }
           }
         }
       }

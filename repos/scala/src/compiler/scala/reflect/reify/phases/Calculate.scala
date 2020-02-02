@@ -25,7 +25,7 @@ trait Calculate {
   private def localSymbols_=(value: Map[Symbol, Int]): Unit =
     state.localSymbols = value
   private def registerLocalSymbol(sym: Symbol, metalevel: Int): Unit =
-    if (sym != null && sym != NoSymbol) {
+    if (sym != null && sym != NoSymbol)
       if (localSymbols contains sym)
         assert(
           localSymbols(sym) == metalevel,
@@ -33,7 +33,6 @@ trait Calculate {
             .format(localSymbols(sym), metalevel))
       else
         localSymbols += (sym -> metalevel)
-    }
 
   /**
     *  Merely traverses the reifiee and records symbols local to the reifee along with their metalevels.

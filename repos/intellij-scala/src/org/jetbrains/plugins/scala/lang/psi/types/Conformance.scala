@@ -212,12 +212,11 @@ object Conformance {
           if (a.tpt.args.length > 0 && !l.isInstanceOf[ScParameterizedType])
             ScParameterizedType(l, a.tpt.args)
           else l
-        if (!a.lower.equiv(Nothing)) {
+        if (!a.lower.equiv(Nothing))
           result =
             conformsInner(left, a.lower, visited, undefinedSubst, checkWeak)
-        } else {
+        else
           result = (true, undefinedSubst)
-        }
         if (result._1 && !a.upper.equiv(Any)) {
           val t = conformsInner(a.upper, left, visited, result._2, checkWeak)
           if (t._1) result = t //this is optionally
@@ -239,10 +238,9 @@ object Conformance {
                   ScParameterizedType(lower, p.typeArgs)
                 case lower => ScParameterizedType(lower, p.typeArgs)
               }
-            if (!lower.equiv(Nothing)) {
+            if (!lower.equiv(Nothing))
               result =
                 conformsInner(l, lower, visited, undefinedSubst, checkWeak)
-            }
           case _ =>
         }
       }
@@ -326,9 +324,8 @@ object Conformance {
               if (notNullClass != null) {
                 val notNullType = ScDesignatorType(notNullClass)
                 result = (!conforms(notNullType, l), undefinedSubst) //todo: think about undefinedSubst
-              } else {
+              } else
                 result = (true, undefinedSubst)
-              }
             case _ => result = (true, undefinedSubst)
           }
         }
@@ -555,7 +552,7 @@ object Conformance {
       r.visitType(rightVisitor)
       if (result != null) return
 
-      if (checkWeak && r.isInstanceOf[ValType]) {
+      if (checkWeak && r.isInstanceOf[ValType])
         (r, x) match {
           case (
               types.Byte,
@@ -585,7 +582,6 @@ object Conformance {
             return
           case _ =>
         }
-      }
 
       if (x eq types.Any) {
         result = (true, undefinedSubst)
@@ -619,7 +615,7 @@ object Conformance {
         return
       }
 
-      if (x eq types.AnyRef) {
+      if (x eq types.AnyRef)
         if (r eq types.Any) {
           result = (false, undefinedSubst)
           return
@@ -640,11 +636,9 @@ object Conformance {
           result = (true, undefinedSubst)
           return
         }
-      }
 
-      if (x eq Singleton) {
+      if (x eq Singleton)
         result = (false, undefinedSubst)
-      }
 
       if (x eq types.AnyVal) {
         result = (
@@ -1102,11 +1096,10 @@ object Conformance {
                 ScParameterizedType(upper, p.typeArgs)
               case upper => ScParameterizedType(upper, p.typeArgs)
             }
-          if (!upper.equiv(Any)) {
+          if (!upper.equiv(Any))
             result = conformsInner(upper, r, visited, undefinedSubst, checkWeak)
-          } else {
+          else
             result = (true, undefinedSubst)
-          }
           if (result._1) {
             val lower: ScType =
               subst.subst(a.lower) match {
@@ -1406,7 +1399,7 @@ object Conformance {
               var anotherType: ScType =
                 ScParameterizedType(des1, parameterType.args)
               var args1replace = args1
-              if (args1.length != args2.length) {
+              if (args1.length != args2.length)
                 ScType.extractClassType(l) match {
                   case Some((clazz, classSubst)) =>
                     val t: (Boolean, ScType) =
@@ -1428,7 +1421,6 @@ object Conformance {
                     result = (false, undefinedSubst)
                     return
                 }
-              }
               undefinedSubst = undefinedSubst.addUpper(
                 (owner2.tpt.name, owner2.tpt.getId),
                 anotherType)
@@ -1445,7 +1437,7 @@ object Conformance {
               var anotherType: ScType =
                 ScParameterizedType(des2, parameterType.args)
               var args2replace = args2
-              if (args1.length != args2.length) {
+              if (args1.length != args2.length)
                 ScType.extractClassType(r) match {
                   case Some((clazz, classSubst)) =>
                     val t: (Boolean, ScType) =
@@ -1467,7 +1459,6 @@ object Conformance {
                     result = (false, undefinedSubst)
                     return
                 }
-              }
               undefinedSubst = undefinedSubst.addLower(
                 (owner1.tpt.name, owner1.tpt.getId),
                 anotherType)
@@ -1484,7 +1475,7 @@ object Conformance {
               var anotherType: ScType =
                 ScParameterizedType(des1, parameterType.args)
               var args1replace = args1
-              if (args1.length != args2.length) {
+              if (args1.length != args2.length)
                 ScType.extractClassType(l) match {
                   case Some((clazz, classSubst)) =>
                     val t: (Boolean, ScType) =
@@ -1506,7 +1497,6 @@ object Conformance {
                     result = (false, undefinedSubst)
                     return
                 }
-              }
               undefinedSubst = undefinedSubst.addUpper(
                 (owner2.tpt.name, owner2.tpt.getId),
                 anotherType)
@@ -1707,9 +1697,9 @@ object Conformance {
             ScUndefinedType(tpt))
       }
       val res = conformsInner(subst.subst(q), r, HashSet.empty, undefinedSubst)
-      if (!res._1) {
+      if (!res._1)
         result = (false, undefinedSubst)
-      } else {
+      else {
         val unSubst: ScUndefinedSubstitutor = res._2
         unSubst.getSubstitutor(notNonable = false) match {
           case Some(uSubst) =>
@@ -1903,10 +1893,9 @@ object Conformance {
       trait TypeParameterTypeNothingNullVisitor extends NothingNullVisitor {
         override def visitStdType(x: StdType) {
           if (x eq types.Nothing) result = (true, undefinedSubst)
-          else if (x eq types.Null) {
+          else if (x eq types.Null)
             result =
               conformsInner(tpt1.lower.v, r, HashSet.empty, undefinedSubst)
-          }
         }
       }
 
@@ -2020,15 +2009,14 @@ object Conformance {
     override def visitUndefinedType(u: ScUndefinedType) {
       val rightVisitor = new ValDesignatorSimplification {
         override def visitUndefinedType(u2: ScUndefinedType) {
-          if (u2.level > u.level) {
+          if (u2.level > u.level)
             result =
               (true, undefinedSubst.addUpper((u2.tpt.name, u2.tpt.getId), u))
-          } else if (u.level > u2.level) {
+          else if (u.level > u2.level)
             result =
               (true, undefinedSubst.addUpper((u2.tpt.name, u2.tpt.getId), u))
-          } else {
+          else
             result = (true, undefinedSubst)
-          }
         }
       }
       r.visitType(rightVisitor)
@@ -2229,9 +2217,8 @@ object Conformance {
       if (unSubst.isEmpty) return tuple
       return tuple.copy(_2 = unSubst + tuple._2)
     }
-    if (guard.currentStack().contains(key)) {
+    if (guard.currentStack().contains(key))
       return (false, new ScUndefinedSubstitutor())
-    }
 
     val uSubst = new ScUndefinedSubstitutor()
 
@@ -2248,31 +2235,29 @@ object Conformance {
         case Some((rClass: PsiClass, subst: ScSubstitutor)) =>
           ScType.extractClass(l) match {
             case Some(lClass) =>
-              if (rClass.qualifiedName == "java.lang.Object") {
+              if (rClass.qualifiedName == "java.lang.Object")
                 return conformsInner(
                   l,
                   types.AnyRef,
                   visited,
                   uSubst,
                   checkWeak)
-              } else if (lClass.qualifiedName == "java.lang.Object") {
+              else if (lClass.qualifiedName == "java.lang.Object")
                 return conformsInner(
                   types.AnyRef,
                   r,
                   visited,
                   uSubst,
                   checkWeak)
-              }
               val inh = smartIsInheritor(rClass, subst, lClass)
               if (!inh._1) return (false, uSubst)
               val tp = inh._2
               //Special case for higher kind types passed to generics.
-              if (lClass.hasTypeParameters) {
+              if (lClass.hasTypeParameters)
                 l match {
                   case p: ScParameterizedType =>
                   case _                      => return (true, uSubst)
                 }
-              }
               val t = conformsInner(
                 l,
                 tp,
@@ -2370,10 +2355,9 @@ object Conformance {
     while (laterIterator.hasNext) {
       val (clazz, subst) = laterIterator.next()
       val recursive = smartIsInheritor(clazz, subst, condition, visited + clazz)
-      if (recursive._1) {
+      if (recursive._1)
         if (res == null) res = recursive._2
         else if (recursive._2.conforms(res)) res = recursive._2
-      }
     }
     if (res == null) (false, null)
     else (true, res)

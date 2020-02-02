@@ -121,9 +121,9 @@ object StateChangeLogMerger extends Logging {
     }
 
     // Populate data structures.
-    if (options.has(filesOpt)) {
+    if (options.has(filesOpt))
       files :::= options.valueOf(filesOpt).split(",").toList
-    } else if (options.has(regexOpt)) {
+    else if (options.has(regexOpt)) {
       val regex = options.valueOf(regexOpt)
       val fileNameIndex = regex.lastIndexOf('/') + 1
       val dirName =
@@ -134,9 +134,8 @@ object StateChangeLogMerger extends Logging {
         .map(dirName + "/" + _.getName)
         .toList
     }
-    if (options.has(topicOpt)) {
+    if (options.has(topicOpt))
       topic = options.valueOf(topicOpt)
-    }
     if (options.has(partitionsOpt)) {
       partitions = options.valueOf(partitionsOpt).split(",").toList.map(_.toInt)
       val duplicatePartitions = CoreUtils.duplicates(partitions)
@@ -195,7 +194,7 @@ object StateChangeLogMerger extends Logging {
         case Some(d) =>
           val date = dateFormat.parse(d)
           if ((date.equals(startDate) || date.after(startDate)) && (date.equals(
-                endDate) || date.before(endDate))) {
+                endDate) || date.before(endDate)))
             topicPartitionRegex.findFirstMatchIn(nextLine) match {
               case Some(matcher) =>
                 if ((topic == null || topic == matcher.group(1)) && (partitions.isEmpty || partitions
@@ -203,7 +202,6 @@ object StateChangeLogMerger extends Logging {
                   return new LineIterator(nextLine, itr)
               case None =>
             }
-          }
         case None =>
       }
     }

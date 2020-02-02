@@ -1201,7 +1201,7 @@ object EmitterSpecs
         ))
     }
 
-    "emit split and merge for cf example with consecutively-constrained paired tic variables on a single set" in {
+    "emit split and merge for cf example with consecutively-constrained paired tic variables on a single set" in
       testEmit(
         """
         | organizations := //organizations
@@ -1212,8 +1212,7 @@ object EmitterSpecs
         |   
         |   organizations''
         |   
-        | hist""".stripMargin)(Vector())
-    }.pendingUntilFixed
+        | hist""".stripMargin)(Vector()).pendingUntilFixed
 
     "emit split and merge for cf example with single, multiply constrained tic variable" in {
       testEmit("""
@@ -1375,7 +1374,7 @@ object EmitterSpecs
         ))
     }
 
-    "emit split and merge for rr cf example" in {
+    "emit split and merge for rr cf example" in
       testEmit(
         """
         | clicks := //clicks
@@ -1384,8 +1383,7 @@ object EmitterSpecs
         |   solve 'time
         |     clicks where clicks.externalSessionId = 'time & clicks.datetime = sessionId
         |   
-        | totalPairs("fubar")""".stripMargin)(Vector())
-    }.pendingUntilFixed // TODO this *really* should be working
+        | totalPairs("fubar")""".stripMargin)(Vector()).pendingUntilFixed // TODO this *really* should be working
 
     "emit split and merge for ctr example" in {
       testEmit(

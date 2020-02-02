@@ -37,7 +37,7 @@ class ConstraintPropagationSuite extends SparkFunSuite {
       expected: ExpressionSet): Unit = {
     val missing = expected -- found
     val extra = found -- expected
-    if (missing.nonEmpty || extra.nonEmpty) {
+    if (missing.nonEmpty || extra.nonEmpty)
       fail(s"""
            |== FAIL: Constraints do not match ===
            |Found: ${found.mkString(",")}
@@ -47,7 +47,6 @@ class ConstraintPropagationSuite extends SparkFunSuite {
            |Found but not expected: ${if (extra.isEmpty) "N/A"
               else extra.mkString(",")}
          """.stripMargin)
-    }
   }
 
   test("propagating constraints in filters") {

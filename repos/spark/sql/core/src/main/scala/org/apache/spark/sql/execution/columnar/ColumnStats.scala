@@ -249,9 +249,8 @@ private[columnar] class StringColumnStats extends ColumnStats {
 private[columnar] class BinaryColumnStats extends ColumnStats {
   override def gatherStats(row: InternalRow, ordinal: Int): Unit = {
     super.gatherStats(row, ordinal)
-    if (!row.isNullAt(ordinal)) {
+    if (!row.isNullAt(ordinal))
       sizeInBytes += BINARY.actualSize(row, ordinal)
-    }
   }
 
   override def collectedStatistics: GenericInternalRow =
@@ -288,9 +287,8 @@ private[columnar] class ObjectColumnStats(dataType: DataType)
 
   override def gatherStats(row: InternalRow, ordinal: Int): Unit = {
     super.gatherStats(row, ordinal)
-    if (!row.isNullAt(ordinal)) {
+    if (!row.isNullAt(ordinal))
       sizeInBytes += columnType.actualSize(row, ordinal)
-    }
   }
 
   override def collectedStatistics: GenericInternalRow =

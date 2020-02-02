@@ -87,9 +87,9 @@ private[http] class HttpResponseParser(
       skipReason(startIdx)
     } else if (byteChar(input, cursor + 3) == '\r' && byteChar(
                  input,
-                 cursor + 4) == '\n') {
+                 cursor + 4) == '\n')
       throw new ParsingException("Status code misses trailing space")
-    } else badStatusCode
+    else badStatusCode
   }
 
   def handleInformationalResponses: Boolean = true
@@ -142,7 +142,7 @@ private[http] class HttpResponseParser(
           startNewMessage(input, bodyStart)
       }
 
-    if (statusCode.allowsEntity && (contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD)) {
+    if (statusCode.allowsEntity && (contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD))
       teh match {
         case None ⇒
           clh match {
@@ -178,7 +178,7 @@ private[http] class HttpResponseParser(
         case Some(te) ⇒
           val completedHeaders =
             addTransferEncodingWithChunkedPeeled(headers, te)
-          if (te.isChunked) {
+          if (te.isChunked)
             if (clh.isEmpty) {
               emitResponseStart(chunkedEntity(cth), completedHeaders)
               parseChunk(
@@ -189,7 +189,7 @@ private[http] class HttpResponseParser(
             } else
               failMessageStart(
                 "A chunked response must not contain a Content-Length header.")
-          } else
+          else
             parseEntity(
               completedHeaders,
               protocol,
@@ -202,7 +202,7 @@ private[http] class HttpResponseParser(
               hostHeaderPresent,
               closeAfterResponseCompletion)
       }
-    } else finishEmptyResponse()
+    else finishEmptyResponse()
   }
 
   def parseToCloseBody(

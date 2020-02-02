@@ -39,12 +39,11 @@ class DeploymentPlanRevertTest
         actualGroupIds should equal(expectedGroupIds)
       }
 
-      for (groupId <- expectedGroupIds) {
+      for (groupId <- expectedGroupIds)
         withClue(s"for group id $groupId") {
           actual.group(groupId).map(_.withoutChildren) should equal(
             expected.group(groupId).map(_.withoutChildren))
         }
-      }
 
       val actualAppIds = actual.transitiveApps.map(_.id)
       val expectedAppIds = expected.transitiveApps.map(_.id)
@@ -57,11 +56,10 @@ class DeploymentPlanRevertTest
         actualAppIds should equal(expectedAppIds)
       }
 
-      for (appId <- expectedAppIds) {
+      for (appId <- expectedAppIds)
         withClue(s"for app id $appId") {
           actual.app(appId) should equal(expected.app(appId))
         }
-      }
 
       // just in case we missed differences
       actual should equal(expected)
@@ -547,17 +545,15 @@ class DeploymentPlanRevertTest
 
       Then(
         "The result should only contain items with the prior or the new version")
-      for (app <- reverted.transitiveApps) {
+      for (app <- reverted.transitiveApps)
         withClue(s"version for app ${app.id} ") {
           app.version.toDateTime.getMillis should be <= (1L)
         }
-      }
 
-      for (group <- reverted.transitiveGroups) {
+      for (group <- reverted.transitiveGroups)
         withClue(s"version for group ${group.id} ") {
           group.version.toDateTime.getMillis should be <= (1L)
         }
-      }
 
       Then(
         "the result should be the same as if we had only applied all the other deployments")

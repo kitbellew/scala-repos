@@ -25,9 +25,9 @@ private[runtime] class TwoWayCache[J, S] {
 
   private object SomeRef {
     def unapply[T](optRef: Option[WeakReference[T]]): Option[T] =
-      if (optRef.nonEmpty) {
+      if (optRef.nonEmpty)
         Option(optRef.get.get)
-      } else None
+      else None
   }
 
   def toScala(key: J)(body: => S): S = synchronized {

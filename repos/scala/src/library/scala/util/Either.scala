@@ -304,7 +304,7 @@ object Either {
       */
     def foreach[U](f: A => U) = e match {
       case Left(a)  => f(a)
-      case Right(_) => {}
+      case Right(_) =>
     }
 
     /**
@@ -469,7 +469,7 @@ object Either {
       * @param f The side-effecting function to execute.
       */
     def foreach[U](f: B => U) = e match {
-      case Left(_)  => {}
+      case Left(_)  =>
       case Right(b) => f(b)
     }
 

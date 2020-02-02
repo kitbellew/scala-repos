@@ -38,9 +38,8 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
 
   val indices = client.admin.indices
   val indexExistResponse = indices.prepareExists(index).get
-  if (!indexExistResponse.isExists) {
+  if (!indexExistResponse.isExists)
     indices.prepareCreate(index).get
-  }
   val typeExistResponse = indices.prepareTypesExists(index).setTypes(estype).get
   if (!typeExistResponse.isExists) {
     val json =
@@ -104,9 +103,8 @@ class ESChannels(client: Client, config: StorageClientConfig, index: String)
     }
 
   def delete(id: Int): Unit =
-    try {
-      client.prepareDelete(index, estype, id.toString).get
-    } catch {
+    try client.prepareDelete(index, estype, id.toString).get
+    catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
     }

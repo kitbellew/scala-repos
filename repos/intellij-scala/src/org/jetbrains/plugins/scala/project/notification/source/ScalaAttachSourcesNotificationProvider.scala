@@ -80,12 +80,11 @@ class ScalaAttachSourcesNotificationProvider(
     var hasNonLightAction: Boolean = false
     for (each <- Extensions.getExtensions(EXTENSION_POINT_NAME)) {
       import scala.collection.JavaConversions._
-      for (action <- each.getActions(libraries, psiFile)) {
+      for (action <- each.getActions(libraries, psiFile))
         if (hasNonLightAction) {
           if (!action
-                .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
+                .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction])
             actions.add(action)
-          }
         } else {
           if (!action
                 .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
@@ -94,7 +93,6 @@ class ScalaAttachSourcesNotificationProvider(
           }
           actions.add(action)
         }
-      }
     }
     Collections.sort(
       actions,
@@ -154,13 +152,12 @@ class ScalaAttachSourcesNotificationProvider(
       .getFileIndex
       .getOrderEntriesForFile(file)
     import scala.collection.JavaConversions._
-    for (entry <- entries) {
+    for (entry <- entries)
       entry match {
         case entry: LibraryOrderEntry =>
           libs.add(entry)
         case _ =>
       }
-    }
     if (libs.isEmpty) null else libs
   }
 

@@ -58,7 +58,7 @@ class RunConsoleAction extends AnAction {
           val runner = RunnerRegistry
             .getInstance()
             .getRunner(runExecutor.getId, configuration)
-          if (runner != null) {
+          if (runner != null)
             try {
               val builder: ExecutionEnvironmentBuilder =
                 new ExecutionEnvironmentBuilder(project, runExecutor)
@@ -71,7 +71,6 @@ class RunConsoleAction extends AnAction {
                   e.getMessage,
                   ExecutionBundle.message("error.common.title"))
             }
-          }
         }
 
         import scala.collection.JavaConversions._

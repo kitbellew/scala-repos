@@ -135,19 +135,17 @@ private trait PredicateRandDraws[@specialized(Int, Double) T] extends Rand[T] {
 
   def draw() = { // Not the most efficient implementation ever, but meh.
     var x = rand.draw()
-    while (!predicate(x)) {
+    while (!predicate(x))
       x = rand.draw()
-    }
     x
   }
 
   override def drawOpt() = {
     val x = rand.get()
-    if (predicate(x)) {
+    if (predicate(x))
       Some(x)
-    } else {
+    else
       None
-    }
   }
 }
 

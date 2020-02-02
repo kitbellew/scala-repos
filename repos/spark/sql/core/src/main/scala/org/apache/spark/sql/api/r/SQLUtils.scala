@@ -68,16 +68,14 @@ private[r] object SQLUtils {
       case r"\Aarray<(.+)${elemType}>\Z" =>
         org.apache.spark.sql.types.ArrayType(getSQLDataType(elemType))
       case r"\Amap<(.+)${keyType},(.+)${valueType}>\Z" =>
-        if (keyType != "string" && keyType != "character") {
+        if (keyType != "string" && keyType != "character")
           throw new IllegalArgumentException(
             "Key type of a map must be string or character")
-        }
         org.apache.spark.sql.types
           .MapType(getSQLDataType(keyType), getSQLDataType(valueType))
       case r"\Astruct<(.+)${fieldsStr}>\Z" =>
-        if (fieldsStr(fieldsStr.length - 1) == ',') {
+        if (fieldsStr(fieldsStr.length - 1) == ',')
           throw new IllegalArgumentException(s"Invaid type $dataType")
-        }
         val fields = fieldsStr.split(",")
         val structFields = fields.map { field =>
           field match {
@@ -145,9 +143,8 @@ private[r] object SQLUtils {
     val colArray = new Array[Array[Any]](numCols)
     for (colNo <- 0 until numCols) {
       colArray(colNo) = new Array[Any](numRows)
-      for (rowNo <- 0 until numRows) {
+      for (rowNo <- 0 until numRows)
         colArray(colNo)(rowNo) = localDF(rowNo)(colNo)
-      }
     }
     colArray
   }

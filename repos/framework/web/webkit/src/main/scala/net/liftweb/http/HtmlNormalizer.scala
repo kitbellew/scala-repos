@@ -83,9 +83,9 @@ private[http] final object HtmlNormalizer {
       shouldRewriteUrl: Boolean, // whether to apply URLRewrite.rewriteFunc
       eventAttributes: List[EventAttribute] = Nil
   ): (Option[String], MetaData, List[EventAttribute]) =
-    if (attributes == Null) {
+    if (attributes == Null)
       (None, Null, eventAttributes)
-    } else {
+    else {
       // Note: we don't do this tail-recursively because we have to preserve
       // attribute order!
       val (id, normalizedRemainingAttributes, remainingEventAttributes) =
@@ -112,12 +112,11 @@ private[http] final object HtmlNormalizer {
               else
                 base
 
-            if (strippedJs.trim.isEmpty) {
+            if (strippedJs.trim.isEmpty)
               Nil
-            } else {
+            else
               // When using javascript:-style URIs, event.preventDefault is implied.
               List(strippedJs + "; event.preventDefault()")
-            }
           }
 
           val updatedEventAttributes =
@@ -230,12 +229,11 @@ private[http] final object HtmlNormalizer {
             attributesIncludingEventsAsData)),
           jsForEventAttributes(generatedId, eventAttributes)
         )
-      } else {
+      } else
         NodeAndEventJs(
           element.copy(attributes = attributesIncludingEventsAsData),
           Noop
         )
-      }
     }
   }
 

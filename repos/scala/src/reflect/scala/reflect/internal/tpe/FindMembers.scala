@@ -27,13 +27,12 @@ trait FindMembers {
     // The selector class of `T.this.type` is `T`, and *not* the first base class, `C`.
     private[this] var _selectorClass: Symbol = null
     private def selectorClass: Symbol = {
-      if (_selectorClass eq null) {
+      if (_selectorClass eq null)
         _selectorClass = tpe match {
           case tt: ThisType =>
             tt.sym // SI-7507 the first base class is not necessarily the selector class.
           case _ => initBaseClasses.head
         }
-      }
       _selectorClass
     }
 
@@ -109,12 +108,11 @@ trait FindMembers {
                   flags,
                   currentBaseClass,
                   seenFirstNonRefinementClass,
-                  refinementParents)) {
+                  refinementParents))
               if (shortCircuit(sym)) return false
               else addMemberIfNew(sym)
-            } else if (excl == DEFERRED) {
+            else if (excl == DEFERRED)
               deferredSeen = true
-            }
           }
           entry = if (findAll) entry.next else decls lookupNextEntry entry
         }
@@ -270,9 +268,9 @@ trait FindMembers {
       }
 
     protected def addMemberIfNew(sym: Symbol): Unit =
-      if (member0 eq NoSymbol) {
+      if (member0 eq NoSymbol)
         member0 = sym // The first found member
-      } else if (members eq null) {
+      else if (members eq null) {
         // We've found exactly one member so far...
         if (isNewMember(member0, sym)) {
           // ... make that two.
@@ -310,12 +308,12 @@ trait FindMembers {
 
     // Assemble the result from the hand-rolled ListBuffer
     protected def result: Symbol =
-      if (members eq null) {
+      if (members eq null)
         if (member0 == NoSymbol) {
           if (Statistics.canEnable) Statistics.incCounter(noMemberCount)
           NoSymbol
         } else member0
-      } else {
+      else {
         if (Statistics.canEnable) Statistics.incCounter(multMemberCount)
         lastM.tl = Nil
         initBaseClasses.head.newOverloaded(tpe, members)

@@ -61,9 +61,9 @@ class ObservableSetSpec[T]
       generatedSet: Set[Int],
       originalSet: ObservableSet[Int],
       shouldBeTheSame: Boolean) {
-    if (shouldBeTheSame) {
+    if (shouldBeTheSame)
       generatedSet should be theSameInstanceAs (originalSet)
-    } else {
+    else {
       generatedSet should not be theSameInstanceAs(originalSet)
       generatedSet.getClass.getInterfaces
         .contains(classOf[ObservableSet[Int]]) should be(true)

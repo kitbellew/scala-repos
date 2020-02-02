@@ -73,7 +73,7 @@ object BuildSummer {
     val insertCounter = counter(jobID, Group(nodeName), Name("inserts"))
     val insertFailCounter = counter(jobID, Group(nodeName), Name("insertFail"))
 
-    if (cacheSize.lowerBound == 0) {
+    if (cacheSize.lowerBound == 0)
       new SummerBuilder {
         def getSummer[K, V: Semigroup]
             : com.twitter.algebird.util.summer.AsyncSummer[(K, V), Map[K, V]] =
@@ -81,7 +81,7 @@ object BuildSummer {
             tupleInCounter,
             tupleOutCounter)
       }
-    } else {
+    else {
       val softMemoryFlush =
         storm.getOrElse(dag, node, DEFAULT_SOFT_MEMORY_FLUSH_PERCENT)
       logger.info(s"[$nodeName] softMemoryFlush : ${softMemoryFlush.get}")
@@ -92,7 +92,7 @@ object BuildSummer {
       val useAsyncCache = storm.getOrElse(dag, node, DEFAULT_USE_ASYNC_CACHE)
       logger.info(s"[$nodeName] useAsyncCache : ${useAsyncCache.get}")
 
-      if (!useAsyncCache.get) {
+      if (!useAsyncCache.get)
         new SummerBuilder {
           def getSummer[K, V: Semigroup]
               : com.twitter.algebird.util.summer.AsyncSummer[
@@ -109,7 +109,7 @@ object BuildSummer {
               tupleInCounter,
               tupleOutCounter)
         }
-      } else {
+      else {
         val asyncPoolSize = storm.getOrElse(dag, node, DEFAULT_ASYNC_POOL_SIZE)
         logger.info(s"[$nodeName] asyncPoolSize : ${asyncPoolSize.get}")
 

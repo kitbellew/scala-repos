@@ -49,12 +49,11 @@ class EliminateSerializationSuite extends PlanTest {
       case n: NewInstance => n
     })
 
-    if (newInstances.size != count) {
+    if (newInstances.size != count)
       fail(s"""
            |Wrong number of object creations in plan: ${newInstances.size} != $count
            |$plan
          """.stripMargin)
-    }
   }
 
   test("back to back MapPartitions") {

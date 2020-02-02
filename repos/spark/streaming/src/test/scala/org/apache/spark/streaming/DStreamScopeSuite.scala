@@ -45,11 +45,8 @@ class DStreamScopeSuite
   }
 
   override def afterAll(): Unit =
-    try {
-      ssc.stop(stopSparkContext = true)
-    } finally {
-      super.afterAll()
-    }
+    try ssc.stop(stopSparkContext = true)
+    finally super.afterAll()
 
   before { assertPropertiesNotSet() }
   after { assertPropertiesNotSet() }

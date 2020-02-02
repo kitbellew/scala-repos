@@ -24,31 +24,28 @@ trait I18nSupport { this: ScalatraBase =>
   }
 
   def locale(implicit request: HttpServletRequest): Locale =
-    if (request == null) {
+    if (request == null)
       throw new ScalatraException(
         "There needs to be a request in scope to call locale")
-    } else {
+    else
       request.get(LocaleKey).map(_.asInstanceOf[Locale]).orNull
-    }
 
   def userLocales(implicit request: HttpServletRequest): Array[Locale] =
-    if (request == null) {
+    if (request == null)
       throw new ScalatraException(
         "There needs to be a request in scope to call userLocales")
-    } else {
+    else
       request.get(UserLocalesKey).map(_.asInstanceOf[Array[Locale]]).orNull
-    }
 
   def messages(key: String)(implicit request: HttpServletRequest): String =
     messages(request)(key)
 
   def messages(implicit request: HttpServletRequest): Messages =
-    if (request == null) {
+    if (request == null)
       throw new ScalatraException(
         "There needs to be a request in scope to call messages")
-    } else {
+    else
       request.get(MessagesKey).map(_.asInstanceOf[Messages]).orNull
-    }
 
   /**
     * Provides a default Message resolver
@@ -95,19 +92,17 @@ trait I18nSupport { this: ScalatraBase =>
         .map { s =>
           def splitLanguageCountry(s: String): Locale = {
             val langCountry = s.split("-")
-            if (langCountry.length > 1) {
+            if (langCountry.length > 1)
               new Locale(langCountry.head, langCountry.last)
-            } else {
+            else
               new Locale(langCountry.head)
-            }
           }
           // If this language has a quality index:
           if (s.indexOf(";") > 0) {
             val qualityLocale = s.split(";")
             splitLanguageCountry(qualityLocale.head)
-          } else {
+          } else
             splitLanguageCountry(s)
-          }
         }
       // save all found locales for later user
       request.setAttribute(UserLocalesKey, locales)

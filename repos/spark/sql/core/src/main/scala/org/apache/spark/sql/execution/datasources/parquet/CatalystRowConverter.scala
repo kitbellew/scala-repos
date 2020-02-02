@@ -197,8 +197,7 @@ private[parquet] class CatalystRowConverter(
   def currentRecord: UnsafeRow = unsafeProjection(currentRow)
 
   // Converters for each field.
-  private val fieldConverters
-      : Array[Converter with HasParentContainerUpdater] = {
+  private val fieldConverters: Array[Converter with HasParentContainerUpdater] =
     parquetType.getFields.asScala
       .zip(catalystType)
       .zipWithIndex
@@ -211,7 +210,6 @@ private[parquet] class CatalystRowConverter(
             new RowUpdater(currentRow, ordinal))
       }
       .toArray
-  }
 
   override def getConverter(fieldIndex: Int): Converter =
     fieldConverters(fieldIndex)
@@ -326,11 +324,10 @@ private[parquet] class CatalystRowConverter(
       // annotated by `LIST` or `MAP` should be interpreted as a required list of required
       // elements where the element type is the type of the field.
       case t: ArrayType if parquetType.getOriginalType != LIST =>
-        if (parquetType.isPrimitive) {
+        if (parquetType.isPrimitive)
           new RepeatedPrimitiveConverter(parquetType, t.elementType, updater)
-        } else {
+        else
           new RepeatedGroupConverter(parquetType, t.elementType, updater)
-        }
 
       case t: ArrayType =>
         new CatalystArrayConverter(parquetType.asGroupType(), t, updater)
@@ -419,13 +416,12 @@ private[parquet] class CatalystRowConverter(
         // Constructs a `Decimal` with an unscaled `Long` value if possible.
         val unscaled = CatalystRowConverter.binaryToUnscaledLong(value)
         Decimal(unscaled, precision, scale)
-      } else {
+      } else
         // Otherwise, resorts to an unscaled `BigInteger` instead.
         Decimal(
           new BigDecimal(new BigInteger(value.getBytes), scale),
           precision,
           scale)
-      }
   }
 
   private class CatalystIntDictionaryAwareDecimalConverter(
@@ -495,13 +491,12 @@ private[parquet] class CatalystRowConverter(
       val elementType = catalystSchema.elementType
       val parentName = parquetSchema.getName
 
-      if (isElementType(repeatedType, elementType, parentName)) {
+      if (isElementType(repeatedType, elementType, parentName))
         newConverter(repeatedType, elementType, new ParentContainerUpdater {
           override def set(value: Any): Unit = currentArray += value
         })
-      } else {
+      else
         new ElementConverter(repeatedType.asGroupType().getType(0), elementType)
-      }
     }
 
     override def getConverter(fieldIndex: Int): Converter = elementConverter

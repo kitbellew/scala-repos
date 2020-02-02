@@ -69,9 +69,8 @@ case class ReusedExchange(override val output: Seq[Attribute], child: Exchange)
 case class ReuseExchange(conf: SQLConf) extends Rule[SparkPlan] {
 
   def apply(plan: SparkPlan): SparkPlan = {
-    if (!conf.exchangeReuseEnabled) {
+    if (!conf.exchangeReuseEnabled)
       return plan
-    }
     // Build a hash map using schema of exchanges to avoid O(N*N) sameResult calls.
     val exchanges = mutable.HashMap[StructType, ArrayBuffer[Exchange]]()
     plan.transformUp {
@@ -80,11 +79,11 @@ case class ReuseExchange(conf: SQLConf) extends Rule[SparkPlan] {
         val sameSchema =
           exchanges.getOrElseUpdate(exchange.schema, ArrayBuffer[Exchange]())
         val samePlan = sameSchema.find { e => exchange.sameResult(e) }
-        if (samePlan.isDefined) {
+        if (samePlan.isDefined)
           // Keep the output of this exchange, the following plans require that to resolve
           // attributes.
           ReusedExchange(exchange.output, samePlan.get)
-        } else {
+        else {
           sameSchema += exchange
           exchange
         }

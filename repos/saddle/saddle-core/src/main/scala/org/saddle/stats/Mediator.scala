@@ -72,9 +72,8 @@ class Mediator(winSz: Int) {
       if (totCt < winSz) totCt += 1
     }
 
-    if (totCt + nanCt > winSz) {
+    if (totCt + nanCt > winSz)
       pop()
-    }
 
     naIdx = (naIdx + 1) % winSz
   }
@@ -99,23 +98,22 @@ class Mediator(winSz: Int) {
         maxCt -= 1
         maxSortDown(p)
         if (maxCt < minCt) minToMax()
+      } else
+      // item is mid
+      if (maxCt > minCt) {
+        // swap head of maxheap with mid
+        swap(-1, 0)
+        // drop head of maxheap
+        swap(-maxCt, -1)
+        maxCt -= 1
+        maxSortDown(-1)
       } else {
-        // item is mid
-        if (maxCt > minCt) {
-          // swap head of maxheap with mid
-          swap(-1, 0)
-          // drop head of maxheap
-          swap(-maxCt, -1)
-          maxCt -= 1
-          maxSortDown(-1)
-        } else {
-          // swap head of minheap with mid
-          swap(0, 1)
-          // drop head of minheap
-          swap(1, minCt)
-          minCt -= 1
-          minSortDown(1)
-        }
+        // swap head of minheap with mid
+        swap(0, 1)
+        // drop head of minheap
+        swap(1, minCt)
+        minCt -= 1
+        minSortDown(1)
       }
 
       totCt -= 1
@@ -151,9 +149,8 @@ class Mediator(winSz: Int) {
   private def minSortDown(iIn: Int) {
     var i = iIn * 2
     while (i <= minCt) {
-      if (i < minCt && isless(i + 1, i)) {
+      if (i < minCt && isless(i + 1, i))
         i += 1
-      }
       if (!cas(i, i / 2))
         i = minCt + 1 // break
       else
@@ -165,9 +162,8 @@ class Mediator(winSz: Int) {
   private def maxSortDown(iIn: Int) {
     var i = iIn * 2
     while (i >= -maxCt) {
-      if (i > -maxCt && isless(i, i - 1)) {
+      if (i > -maxCt && isless(i, i - 1))
         i -= 1
-      }
       if (!cas(i / 2, i))
         i = -(maxCt + 1) // break
       else
@@ -196,9 +192,8 @@ class Mediator(winSz: Int) {
     maxCt += 1 // make room on maxheap
     swap(minCt, -maxCt) // swap element from minheap
     minCt -= 1
-    if (maxSortUp(-maxCt) && (minCt != 0) && cas(1, 0)) {
+    if (maxSortUp(-maxCt) && (minCt != 0) && cas(1, 0))
       minSortDown(1)
-    }
   }
 
   // rebalance toward minheap
@@ -206,9 +201,8 @@ class Mediator(winSz: Int) {
     minCt += 1 // make room on minheap
     swap(-maxCt, minCt) // swap element from maxheap
     maxCt -= 1
-    if (minSortUp(minCt) && cas(0, -1)) {
+    if (minSortUp(minCt) && cas(0, -1))
       maxSortDown(-1)
-    }
   }
 
   private def insert(v: Double) {
@@ -222,60 +216,52 @@ class Mediator(winSz: Int) {
     if (totCt == 0) {
       loc(idx) = 0
       heap(hMid) = idx
-    } else {
-      if (totCt < winSz) {
-        // room in buffer
-        if (maxCt > minCt) {
-          // add to minheap
-          minCt += 1
-          loc(idx) = minCt
-          heap(hMid + minCt) = idx
-          if (minSortUp(minCt) && cas(0, -1)) {
-            maxSortDown(-1)
-          }
-        } else {
-          // add to maxheap
-          maxCt += 1
-          loc(idx) = -maxCt
-          heap(hMid - maxCt) = idx
-          if (maxSortUp(-maxCt) && (minCt != 0) && cas(1, 0)) {
-            minSortDown(1)
-          }
-        }
+    } else if (totCt < winSz)
+      // room in buffer
+      if (maxCt > minCt) {
+        // add to minheap
+        minCt += 1
+        loc(idx) = minCt
+        heap(hMid + minCt) = idx
+        if (minSortUp(minCt) && cas(0, -1))
+          maxSortDown(-1)
       } else {
-        // overwriting old value
-        var reSort = true
-        val p = loc(idx)
+        // add to maxheap
+        maxCt += 1
+        loc(idx) = -maxCt
+        heap(hMid - maxCt) = idx
+        if (maxSortUp(-maxCt) && (minCt != 0) && cas(1, 0))
+          minSortDown(1)
+      }
+    else {
+      // overwriting old value
+      var reSort = true
+      val p = loc(idx)
 
-        if (p > 0) {
-          // new item was inserted in minheap
-          if (minCt < (winSz - 1) / 2) {
-            minCt += 1
-          } else if (v > old) {
-            minSortDown(p); reSort = false
-          }
-          if (reSort && minSortUp(p) && cas(0, -1)) {
-            maxSortDown(-1)
-          }
-        } else if (p < 0) {
-          // new item was inserted in maxheap
-          if (maxCt < winSz / 2) {
-            maxCt += 1
-          } else if (v < old) {
-            maxSortDown(p); reSort = false
-          }
-          if (reSort && maxSortUp(p) && (minCt != 0) && cas(1, 0)) {
-            minSortDown(1)
-          }
-        } else {
-          // new item was inserted at median
-          if ((maxCt != 0) && maxSortUp(-1)) {
-            maxSortDown(-1)
-          }
-          if ((minCt != 0) && minSortUp(1)) {
-            minSortDown(1)
-          }
+      if (p > 0) {
+        // new item was inserted in minheap
+        if (minCt < (winSz - 1) / 2)
+          minCt += 1
+        else if (v > old) {
+          minSortDown(p); reSort = false
         }
+        if (reSort && minSortUp(p) && cas(0, -1))
+          maxSortDown(-1)
+      } else if (p < 0) {
+        // new item was inserted in maxheap
+        if (maxCt < winSz / 2)
+          maxCt += 1
+        else if (v < old) {
+          maxSortDown(p); reSort = false
+        }
+        if (reSort && maxSortUp(p) && (minCt != 0) && cas(1, 0))
+          minSortDown(1)
+      } else {
+        // new item was inserted at median
+        if ((maxCt != 0) && maxSortUp(-1))
+          maxSortDown(-1)
+        if ((minCt != 0) && minSortUp(1))
+          minSortDown(1)
       }
     }
 

@@ -304,12 +304,10 @@ class DenseOptimizationSpaceTest_Double
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
         y <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
         z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-      } yield {
-        (
-          DenseMatrix.fill(N, N)(math.random * x),
-          DenseMatrix.fill(N, N)(math.random * y),
-          DenseMatrix.fill(N, N)(math.random * z))
-      }
+      } yield (
+        DenseMatrix.fill(N, N)(math.random * x),
+        DenseMatrix.fill(N, N)(math.random * y),
+        DenseMatrix.fill(N, N)(math.random * z))
     }
 
   implicit def genTriple: Arbitrary[
@@ -319,12 +317,10 @@ class DenseOptimizationSpaceTest_Double
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
         y <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
         z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
-      } yield {
-        (
-          DenseVector.fill(N)(math.random * x),
-          DenseVector.fill(N)(math.random * y),
-          DenseVector.fill(N)(math.random * z))
-      }
+      } yield (
+        DenseVector.fill(N)(math.random * x),
+        DenseVector.fill(N)(math.random * y),
+        DenseVector.fill(N)(math.random * z))
     }
 
   def genScalar: Arbitrary[Double] =
@@ -400,11 +396,9 @@ class SparseOptimizationSpaceTest_Double
         zAS <- Gen.chooseNum[Int](0, N)
         zi <- Gen.pick(zAS, indices)
         zv <- Gen.listOfN(zAS, Arbitrary.arbitrary[Double].map(_ % 1e100))
-      } yield {
-        (
-          SparseVector(N)(xi.zip(xv.map(_ * math.random)): _*),
-          SparseVector(N)(yi.zip(yv.map(_ * math.random)): _*),
-          SparseVector(N)(zi.zip(zv.map(_ * math.random)): _*))
-      }
+      } yield (
+        SparseVector(N)(xi.zip(xv.map(_ * math.random)): _*),
+        SparseVector(N)(yi.zip(yv.map(_ * math.random)): _*),
+        SparseVector(N)(zi.zip(zv.map(_ * math.random)): _*))
     }
 }

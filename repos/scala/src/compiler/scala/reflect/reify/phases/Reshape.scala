@@ -124,9 +124,8 @@ trait Reshape {
           println("originals are: " + sym.annotations)
         val preTyper = postTyper map toPreTyperAnnotation
         mods.withAnnotations(preTyper)
-      } else {
+      } else
         mods
-      }
 
     /** Restore pre-typer representation of a type.
       *
@@ -212,7 +211,7 @@ trait Reshape {
 
           loop(original)
         }
-        if (annotatedArg != EmptyTree) {
+        if (annotatedArg != EmptyTree)
           if (annotatedArg.isType) {
             if (reifyDebug)
               println("verdict: was an annotated type, reify as usual")
@@ -223,7 +222,7 @@ trait Reshape {
                 "verdict: was an annotated value, equivalent is " + original)
             toPreTyperTypedOrAnnotated(original)
           }
-        } else {
+        else {
           if (reifyDebug) println("verdict: wasn't annotated, reify as usual")
           ty
         }
@@ -243,24 +242,25 @@ trait Reshape {
       *  If we do not do that, subsequent reflective compilation will fail.
       */
     private def toPreTyperAnnotation(ann: AnnotationInfo): Tree = {
-      val args = if (ann.assocs.isEmpty) {
-        ann.args
-      } else {
-        def toScalaAnnotation(jann: ClassfileAnnotArg): Tree =
-          (jann: @unchecked) match {
-            case LiteralAnnotArg(const) => Literal(const)
-            case ArrayAnnotArg(arr) =>
-              Apply(
-                Ident(definitions.ArrayModule),
-                arr.toList map toScalaAnnotation)
-            case NestedAnnotArg(ann) => toPreTyperAnnotation(ann)
-          }
+      val args =
+        if (ann.assocs.isEmpty)
+          ann.args
+        else {
+          def toScalaAnnotation(jann: ClassfileAnnotArg): Tree =
+            (jann: @unchecked) match {
+              case LiteralAnnotArg(const) => Literal(const)
+              case ArrayAnnotArg(arr) =>
+                Apply(
+                  Ident(definitions.ArrayModule),
+                  arr.toList map toScalaAnnotation)
+              case NestedAnnotArg(ann) => toPreTyperAnnotation(ann)
+            }
 
-        ann.assocs map {
-          case (nme, arg) =>
-            AssignOrNamedArg(Ident(nme), toScalaAnnotation(arg))
+          ann.assocs map {
+            case (nme, arg) =>
+              AssignOrNamedArg(Ident(nme), toScalaAnnotation(arg))
+          }
         }
-      }
 
       def extractOriginal: PartialFunction[Tree, Tree] = {
         case Apply(Select(New(tpt), _), _) => tpt
@@ -332,9 +332,8 @@ trait Reshape {
               accessors(vdef).foldLeft(annotations)((curr, acc) =>
                 curr ++ (acc.symbol.annotations map toPreTyperAnnotation))
             Modifiers(flags1, privateWithin1, annotations1) setPositions mods.positions
-          } else {
+          } else
             mods
-          }
           val mods2 = toPreTyperModifiers(mods1, vdef.symbol)
           val name1 = name.dropLocal
           val vdef1 = ValDef(mods2, name1.toTermName, tpt, rhs)
@@ -350,9 +349,8 @@ trait Reshape {
           if (accessors.values.exists(_.contains(ddef))) {
             if (reifyDebug) println("discarding accessor method: " + ddef)
             None
-          } else {
+          } else
             Some(ddef)
-          }
         case tree =>
           Some(tree)
       }
@@ -384,11 +382,11 @@ trait Reshape {
             if (reifyDebug) println(s"reconstructed lazy val is $vdef1")
             vdef1 :: Nil
           case ddef: DefDef if ddef.symbol.isLazy =>
-            if (isUnitType(ddef.symbol.info)) {
+            if (isUnitType(ddef.symbol.info))
               // since lazy values of type Unit don't have val's
               // we need to create them from scratch
               toPreTyperLazyVal(ddef) :: Nil
-            } else Nil
+            else Nil
           case _ => stat :: Nil
         })
     }

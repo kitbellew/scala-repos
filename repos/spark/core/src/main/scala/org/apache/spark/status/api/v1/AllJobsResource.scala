@@ -34,18 +34,15 @@ private[v1] class AllJobsResource(ui: SparkUI) {
     val statusToJobs: Seq[(JobExecutionStatus, Seq[JobUIData])] =
       AllJobsResource.getStatusToJobs(ui)
     val adjStatuses: JList[JobExecutionStatus] = {
-      if (statuses.isEmpty) {
+      if (statuses.isEmpty)
         Arrays.asList(JobExecutionStatus.values(): _*)
-      } else {
+      else
         statuses
-      }
     }
     val jobInfos = for {
       (status, jobs) <- statusToJobs
       job <- jobs if adjStatuses.contains(status)
-    } yield {
-      AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
-    }
+    } yield AllJobsResource.convertJobData(job, ui.jobProgressListener, false)
     jobInfos.sortBy { -_.jobId }
   }
 

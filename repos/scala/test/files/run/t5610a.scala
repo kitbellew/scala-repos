@@ -11,9 +11,8 @@ object Test extends App {
   val result = bar(foo(test))
   test = "bar"
 
-  if (result.str == null) {
+  if (result.str == null)
     println("Destroy ALL THE THINGS!!!")
-  } else {
+  else
     println("Stroke a kitten")
-  }
 }

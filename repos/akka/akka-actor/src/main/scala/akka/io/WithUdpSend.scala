@@ -42,7 +42,7 @@ private[io] trait WithUdpSend {
     case send: Send ⇒
       pendingSend = send
       pendingCommander = sender()
-      if (send.target.isUnresolved) {
+      if (send.target.isUnresolved)
         Dns.resolve(send.target.getHostName)(context.system, self) match {
           case Some(r) ⇒
             try {
@@ -62,9 +62,8 @@ private[io] trait WithUdpSend {
             }
           case None ⇒
         }
-      } else {
+      else
         doSend(registration)
-      }
 
     case ChannelWritable ⇒ if (hasWritePending) doSend(registration)
   }
@@ -79,7 +78,7 @@ private[io] trait WithUdpSend {
       if (TraceLogging) log.debug("Wrote [{}] bytes to channel", writtenBytes)
 
       // Datagram channel either sends the whole message, or nothing
-      if (writtenBytes == 0) {
+      if (writtenBytes == 0)
         if (retriedSend) {
           pendingCommander ! CommandFailed(pendingSend)
           retriedSend = false
@@ -89,14 +88,12 @@ private[io] trait WithUdpSend {
           registration.enableInterest(SelectionKey.OP_WRITE)
           retriedSend = true
         }
-      } else {
+      else {
         if (pendingSend.wantsAck) pendingCommander ! pendingSend.ack
         retriedSend = false
         pendingSend = null
         pendingCommander = null
       }
-    } finally {
-      udp.bufferPool.release(buffer)
-    }
+    } finally udp.bufferPool.release(buffer)
   }
 }

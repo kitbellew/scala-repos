@@ -39,23 +39,19 @@ object BasicHttpClient {
           trickleFeed = trickleFeed)
       }
 
-      if (checkClosed) {
+      if (checkClosed)
         try {
           val line = client.reader.readLine()
-          if (line != null) {
+          if (line != null)
             throw new RuntimeException(
               "Unexpected data after responses received: " + line)
-          }
         } catch {
           case timeout: SocketTimeoutException => throw timeout
         }
-      }
 
       responses
 
-    } finally {
-      client.close()
-    }
+    } finally client.close()
   }
 
   def pipelineRequests(
@@ -72,12 +68,9 @@ object BasicHttpClient {
           requestNo.toString,
           waitForResponses = false)
       }
-      for (i <- 0 until requests.length) yield {
-        client.readResponse(requestNo.toString)
-      }
-    } finally {
-      client.close()
-    }
+      for (i <- 0 until requests.length)
+        yield client.readResponse(requestNo.toString)
+    } finally client.close()
   }
 }
 
@@ -110,7 +103,7 @@ class BasicHttpClient(port: Int) {
     out.write("\r\n")
 
     def writeBody() = {
-      if (request.body.length > 0) {
+      if (request.body.length > 0)
         trickleFeed match {
           case Some(timeout) =>
             request.body.grouped(8192).foreach { chunk =>
@@ -121,25 +114,23 @@ class BasicHttpClient(port: Int) {
           case None =>
             out.write(request.body)
         }
-      }
       out.flush()
     }
 
-    if (waitForResponses) {
+    if (waitForResponses)
       request.headers.get("Expect").filter(_ == "100-continue").map { _ =>
         out.flush()
         val response = readResponse(requestDesc + " continue")
         if (response.status == 100) {
           writeBody()
           Seq(response, readResponse(requestDesc))
-        } else {
+        } else
           Seq(response)
-        }
       } getOrElse {
         writeBody()
         Seq(readResponse(requestDesc))
       }
-    } else {
+    else {
       writeBody()
       Nil
     }
@@ -154,11 +145,10 @@ class BasicHttpClient(port: Int) {
   def readResponse(responseDesc: String) =
     try {
       val statusLine = reader.readLine()
-      if (statusLine == null) {
+      if (statusLine == null)
         // The line can be null when the CI system doesn't respond in time.
         // so retry repeatedly by throwing IOException.
         throw new IOException(s"No response $responseDesc: EOF reached")
-      }
 
       val (version, status, reasonPhrase) = statusLine.split(" ", 3) match {
         case Array(v, s, r) => (v, s.toInt, r)
@@ -170,9 +160,9 @@ class BasicHttpClient(port: Int) {
       // Read headers
       def readHeaders: List[(String, String)] = {
         val header = reader.readLine()
-        if (header.length == 0) {
+        if (header.length == 0)
           Nil
-        } else {
+        else {
           val parsed = header.split(":", 2) match {
             case Array(name, value) => (name.trim(), value.trim())
             case Array(name)        => (name, "")
@@ -183,9 +173,9 @@ class BasicHttpClient(port: Int) {
       val headers = readHeaders.toMap
 
       def readCompletely(length: Int): String =
-        if (length == 0) {
+        if (length == 0)
           ""
-        } else {
+        else {
           val buf = new Array[Char](length)
           def readFromOffset(offset: Int): Unit = {
             val read = reader.read(buf, offset, length - offset)
@@ -199,9 +189,9 @@ class BasicHttpClient(port: Int) {
       val body = headers.get(TRANSFER_ENCODING).filter(_ == CHUNKED).map { _ =>
         def readChunks: List[String] = {
           val chunkLength = Integer.parseInt(reader.readLine())
-          if (chunkLength == 0) {
+          if (chunkLength == 0)
             Nil
-          } else {
+          else {
             val chunk = readCompletely(chunkLength)
             // Ignore newline after chunk
             reader.readLine()
@@ -213,11 +203,10 @@ class BasicHttpClient(port: Int) {
         headers.get(CONTENT_LENGTH).map { length =>
           readCompletely(length.toInt)
         } getOrElse {
-          if (status != CONTINUE && status != NOT_MODIFIED && status != NO_CONTENT) {
+          if (status != CONTINUE && status != NOT_MODIFIED && status != NO_CONTENT)
             consumeRemaining(reader)
-          } else {
+          else
             ""
-          }
         }
       }
 
@@ -233,9 +222,8 @@ class BasicHttpClient(port: Int) {
 
   private def consumeRemaining(reader: BufferedReader): String = {
     val writer = new StringWriter()
-    try {
-      IOUtils.copy(reader, writer)
-    } catch {
+    try IOUtils.copy(reader, writer)
+    catch {
       case timeout: SocketTimeoutException => throw timeout
     }
     writer.toString

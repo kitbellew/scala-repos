@@ -1752,9 +1752,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   }
 
   private def getMap(propName: String, propValue: String): Map[String, String] =
-    try {
-      CoreUtils.parseCsvMap(propValue)
-    } catch {
+    try CoreUtils.parseCsvMap(propValue)
+    catch {
       case e: Exception =>
         throw new IllegalArgumentException(
           "Error parsing configuration property '%s': %s"
@@ -1792,9 +1791,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     if (getString(KafkaConfig.ListenersProp) != null) {
       validateUniquePortAndProtocol(getString(KafkaConfig.ListenersProp))
       CoreUtils.listenerListToEndPoints(getString(KafkaConfig.ListenersProp))
-    } else {
+    } else
       CoreUtils.listenerListToEndPoints("PLAINTEXT://" + hostName + ":" + port)
-    }
 
   // If the user defined advertised listeners, we use those
   // If he didn't but did define advertised host or port, we'll use those and fill in the missing value from regular host / port or defaults
@@ -1807,23 +1805,21 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
       CoreUtils.listenerListToEndPoints(
         getString(KafkaConfig.AdvertisedListenersProp))
     } else if (getString(KafkaConfig.AdvertisedHostNameProp) != null || getInt(
-                 KafkaConfig.AdvertisedPortProp) != null) {
+                 KafkaConfig.AdvertisedPortProp) != null)
       CoreUtils.listenerListToEndPoints(
         "PLAINTEXT://" + advertisedHostName + ":" + advertisedPort)
-    } else {
+    else
       getListeners()
-    }
 
   validateValues()
 
   private def validateValues() {
-    if (brokerIdGenerationEnable) {
+    if (brokerIdGenerationEnable)
       require(
         brokerId >= -1 && brokerId <= maxReservedBrokerId,
         "broker.id must be equal or greater than -1 and not greater than reserved.broker.max.id")
-    } else {
+    else
       require(brokerId >= 0, "broker.id must be equal or greater than 0")
-    }
     require(
       logRollTimeMillis >= 1,
       "log.roll.ms must be equal or greater than 1")

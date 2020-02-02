@@ -45,7 +45,7 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
           m match {
             case f: ScFunctionDefinition =>
               if (f.hasModifierPropertyScala("abstract") && f
-                    .hasModifierPropertyScala("override")) {
+                    .hasModifierPropertyScala("override"))
                 signature.supers.find {
                   case node =>
                     node.info.namedElement match {
@@ -78,16 +78,14 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
                           .orNull
                       case _ => null
                     }
-                    if (place != null) {
+                    if (place != null)
                       holder.createErrorAnnotation(
                         place,
                         message(
                           kindOf(element),
                           element.name,
                           (f.name, f.containingClass.name)))
-                    }
                 }
-              }
             case _ =>
           }
         case _ => //todo: vals?

@@ -304,11 +304,10 @@ object FirstOrderMinimizer {
       if (info.length >= 2 && (state.adjustedValue - info.max).abs <= tolerance * (if (relative)
                                                                                      state.initialAdjVal
                                                                                    else
-                                                                                     1.0)) {
+                                                                                     1.0))
         Some(FunctionValuesConverged)
-      } else {
+      else
         None
-      }
 
     override def initialInfo: Info = IndexedSeq(Double.PositiveInfinity)
   }
@@ -376,18 +375,16 @@ object FirstOrderMinimizer {
             f"External function failed to improve sufficiently! current $newValue%.3f old: ${oldInfo.bestValue}%.3f")
           oldInfo.copy(numFailures = oldInfo.numFailures + 1)
         }
-      } else {
+      } else
         oldInfo
-      }
 
     override def apply(
         state: State[T, _, _],
         info: Info): Option[ConvergenceReason] =
-      if (info.numFailures >= numFailures) {
+      if (info.numFailures >= numFailures)
         Some(MonitorFunctionNotImproving)
-      } else {
+      else
         None
-      }
 
     override def initialInfo: Info = Info(Double.PositiveInfinity, 0)
   }
@@ -456,11 +453,11 @@ object FirstOrderMinimizer {
     def iterations[T](f: BatchDiffFunction[T], init: T)(
         implicit space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, BatchDiffFunction[T]]#State] = {
-      val it = if (useStochastic) {
-        this.iterations(f.withRandomBatches(batchSize), init)(space)
-      } else {
-        iterations(f: DiffFunction[T], init)
-      }
+      val it =
+        if (useStochastic)
+          this.iterations(f.withRandomBatches(batchSize), init)(space)
+        else
+          iterations(f: DiffFunction[T], init)
 
       it.asInstanceOf[Iterator[
         FirstOrderMinimizer[T, BatchDiffFunction[T]]#State]]
@@ -472,17 +469,17 @@ object FirstOrderMinimizer {
     def iterations[T](f: StochasticDiffFunction[T], init: T)(
         implicit space: MutableFiniteCoordinateField[T, _, Double])
         : Iterator[FirstOrderMinimizer[T, StochasticDiffFunction[T]]#State] = {
-      val r = if (useL1) {
-        new AdaptiveGradientDescent.L1Regularization[T](
-          regularization,
-          eta = alpha,
-          maxIter = maxIterations)(space, random)
-      } else { // L2
-        new AdaptiveGradientDescent.L2Regularization[T](
-          regularization,
-          alpha,
-          maxIterations)(space, random)
-      }
+      val r =
+        if (useL1)
+          new AdaptiveGradientDescent.L1Regularization[T](
+            regularization,
+            eta = alpha,
+            maxIter = maxIterations)(space, random)
+        else // L2
+          new AdaptiveGradientDescent.L2Regularization[T](
+            regularization,
+            alpha,
+            maxIterations)(space, random)
       r.iterations(f, init)
     }
 

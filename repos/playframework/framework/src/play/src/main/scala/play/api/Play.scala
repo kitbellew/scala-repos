@@ -140,16 +140,14 @@ object Play {
     * Stops the given application.
     */
   def stop(app: Application) {
-    if (app != null) {
+    if (app != null)
       Threads.withContextClassLoader(app.classloader) {
         app.global.onStop(app)
-        try {
-          Await.ready(app.stop(), Duration.Inf)
-        } catch {
+        try Await.ready(app.stop(), Duration.Inf)
+        catch {
           case NonFatal(e) => logger.warn("Error stopping application", e)
         }
       }
-    }
     _currentApp = null
   }
 

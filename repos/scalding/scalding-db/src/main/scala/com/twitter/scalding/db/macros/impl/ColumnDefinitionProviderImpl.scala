@@ -28,11 +28,10 @@ object ColumnDefinitionProviderImpl {
     import c.universe._
     val classSym = tpe.typeSymbol
     val moduleSym = classSym.companionSymbol
-    if (moduleSym == NoSymbol) {
+    if (moduleSym == NoSymbol)
       c.abort(
         c.enclosingPosition,
         s"No companion for case class $tpe available. Possibly a nested class? These do not work with this macro.")
-    }
     // pick the last apply method which (anecdotally) gives us the defaults
     // set in the case class declaration, not the companion object
     val applyList = moduleSym.typeSignature
@@ -139,7 +138,7 @@ object ColumnDefinitionProviderImpl {
           if (defaultValOpt.isDefined)
             Failure(new Exception(
               s"Case class ${T.tpe} has field $fieldName: ${oTpe.toString}, with a default value. Options cannot have default values"))
-          else {
+          else
             matchField(
               accessorTree,
               tpe.asInstanceOf[TypeRefApi].args.head,
@@ -147,7 +146,6 @@ object ColumnDefinitionProviderImpl {
               None,
               annotationInfo,
               true)
-          }
         case tpe if IsCaseClassImpl.isCaseClassType(c)(tpe) =>
           expandMethod(accessorTree, tpe)
 
@@ -240,7 +238,7 @@ object ColumnDefinitionProviderImpl {
       .filter(_._2.size > 1)
       .keys
 
-    if (duplicateFields.nonEmpty) {
+    if (duplicateFields.nonEmpty)
       c.abort(
         c.enclosingPosition,
         s"""
@@ -248,9 +246,8 @@ object ColumnDefinitionProviderImpl {
         Please check your nested case classes.
         """
       )
-    } else {
+    else
       formats
-    }
   }
 
   def getColumnDefn[T](c: Context)(
@@ -331,7 +328,7 @@ object ColumnDefinitionProviderImpl {
 
     val rsTerm = newTermName(c.fresh("rs"))
     val formats = columnFormats.map {
-      case cf: ColumnFormat[_] => {
+      case cf: ColumnFormat[_] =>
         val fieldName = cf.fieldName.toStr
         // java boxed types needed below to populate cascading's Tuple
         cf.fieldType match {
@@ -351,8 +348,7 @@ object ColumnDefinitionProviderImpl {
           case f =>
             q"""sys.error("Invalid format " + $f + " for " + $fieldName)"""
         }
-        // note: UNSIGNED BIGINT is currently unsupported
-      }
+      // note: UNSIGNED BIGINT is currently unsupported
     }
     val tcTerm = newTermName(c.fresh("conv"))
     val res = q"""

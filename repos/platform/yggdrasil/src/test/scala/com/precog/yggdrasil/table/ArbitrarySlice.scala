@@ -98,11 +98,9 @@ trait ArbitrarySlice {
       data <- sequence(refs.toList.map { cr =>
         genColumn(cr, sz).map(col => (cr, col))
       }, value(Nil))
-    } yield {
-      new Slice {
-        val size = sz
-        val columns: Map[ColumnRef, Column] = data.toMap
-      }
+    } yield new Slice {
+      val size = sz
+      val columns: Map[ColumnRef, Column] = data.toMap
     }
   }
 }

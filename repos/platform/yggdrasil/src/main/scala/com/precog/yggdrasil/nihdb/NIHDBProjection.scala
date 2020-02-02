@@ -83,11 +83,10 @@ final class NIHDBProjection(
     try {
       // We're limiting ourselves to 2 billion blocks total here
       val index = id.map(_.toInt).getOrElse(0)
-      if (index >= readers.length) {
+      if (index >= readers.length)
         None
-      } else {
+      else
         Some(Block(index, readers(index).snapshot(columns).segments, true))
-      }
     } catch {
       case e =>
         // Difficult to do anything else here other than bail

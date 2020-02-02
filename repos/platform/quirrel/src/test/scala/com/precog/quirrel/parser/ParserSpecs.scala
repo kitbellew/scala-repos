@@ -2813,18 +2813,16 @@ object ParserSpecs
 
   val exampleDir = new File("quirrel/examples")
 
-  if (exampleDir.exists) {
+  if (exampleDir.exists)
     "specification examples" >> {
-      for (file <- exampleDir.listFiles if file.getName endsWith ".qrl") {
+      for (file <- exampleDir.listFiles if file.getName endsWith ".qrl")
         file.getName >> {
           parseSingle(LineStream(Source.fromFile(file))) must not(
             throwA[Throwable])
         }
-      }
     }
-  } else {
+  else
     "specification examples" >> skipped
-  }
 
   private def parseSingle(str: LineStream): Expr = {
     val set = parse(str)

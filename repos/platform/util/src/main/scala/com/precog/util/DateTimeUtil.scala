@@ -37,11 +37,11 @@ object DateTimeUtil {
   def parseDateTime(value0: String, withOffset: Boolean): DateTime = {
     val value = value0.trim.replace(" ", "T")
 
-    val parser = if (value.contains("-") || value.contains(":")) {
-      fullParser
-    } else {
-      basicParser
-    }
+    val parser =
+      if (value.contains("-") || value.contains(":"))
+        fullParser
+      else
+        basicParser
 
     val p = if (withOffset) parser.withOffsetParsed else parser
     p.parseDateTime(value)
@@ -65,9 +65,8 @@ object DateTimeUtil {
   }
 
   def isDateTimeFlexibly(s: String): Boolean =
-    try {
-      Chronic.parse(s, defaultOptions) != null
-    } catch {
+    try Chronic.parse(s, defaultOptions) != null
+    catch {
       case e: Exception => false
     }
 
@@ -75,14 +74,14 @@ object DateTimeUtil {
     try {
       parseDateTime(str, true); true
     } catch {
-      case e: IllegalArgumentException => { false }
+      case e: IllegalArgumentException => false
     }
 
   def isValidTimeZone(str: String): Boolean =
     try {
       DateTimeZone.forID(str); true
     } catch {
-      case e: IllegalArgumentException => { false }
+      case e: IllegalArgumentException => false
     }
 
   def isValidFormat(time: String, fmt: String): Boolean =
@@ -90,13 +89,13 @@ object DateTimeUtil {
       DateTimeFormat.forPattern(fmt).withOffsetParsed().parseDateTime(time);
       true
     } catch {
-      case e: IllegalArgumentException => { false }
+      case e: IllegalArgumentException => false
     }
 
   def isValidPeriod(period: String): Boolean =
     try {
       new Period(period); true
     } catch {
-      case e: IllegalArgumentException => { false }
+      case e: IllegalArgumentException => false
     }
 }

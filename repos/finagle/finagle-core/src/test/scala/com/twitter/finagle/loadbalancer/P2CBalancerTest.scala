@@ -52,11 +52,10 @@ private[loadbalancer] trait P2CSuite {
 
   def assertEven(fs: Traversable[P2CServiceFactory]) {
     val ml = fs.head.meanLoad
-    for (f <- fs) {
+    for (f <- fs)
       assert(
         math.abs(f.meanLoad - ml) < ε,
         "ml=%f; f.ml=%f; ε=%f".format(ml, f.meanLoad, ε))
-    }
   }
 }
 
@@ -119,7 +118,7 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
     var pending = Set[Service[Unit, Int]]()
     val bal = newBal(Var.value(init))
 
-    for (i <- 0 until R) {
+    for (i <- 0 until R)
       i % 3 match {
         case 0 =>
           pending += Await.result(bal())
@@ -131,7 +130,6 @@ class P2CBalancerTest extends FunSuite with App with P2CSuite {
           hd.close()
         case _ =>
       }
-    }
 
     assertEven(init)
   }

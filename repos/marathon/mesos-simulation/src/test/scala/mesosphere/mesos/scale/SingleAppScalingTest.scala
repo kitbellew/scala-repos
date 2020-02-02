@@ -107,9 +107,8 @@ class SingleAppScalingTest
 
     for (i <- 1 to 20) {
       val waitTime: Long = startTime + i * 1000 - System.currentTimeMillis()
-      if (waitTime > 0) {
+      if (waitTime > 0)
         Thread.sleep(waitTime)
-      }
       //      val currentApp = marathon.app(appIdPath)
       val appJson =
         (marathon.listAppsInBaseGroup.entityJson \ "apps")
@@ -158,9 +157,9 @@ class SingleAppScalingTest
       log.info(
         s"XXX (suspendSuccessfully) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
 
-      if (instances == 0) {
+      if (instances == 0)
         Some(())
-      } else {
+      else {
         // slow down
         Thread.sleep(1000)
         None

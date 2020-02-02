@@ -54,12 +54,11 @@ private[spark] class WholeTextFileRDD(
     inputFormat.setMinPartitions(jobContext, minPartitions)
     val rawSplits = inputFormat.getSplits(jobContext).toArray
     val result = new Array[Partition](rawSplits.size)
-    for (i <- 0 until rawSplits.size) {
+    for (i <- 0 until rawSplits.size)
       result(i) = new NewHadoopPartition(
         id,
         i,
         rawSplits(i).asInstanceOf[InputSplit with Writable])
-    }
     result
   }
 }

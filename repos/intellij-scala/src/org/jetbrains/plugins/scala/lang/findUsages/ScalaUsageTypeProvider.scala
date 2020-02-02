@@ -45,71 +45,61 @@ final class ScalaUsageTypeProvider extends UsageTypeProviderEx {
           ref.bind() match {
             case Some(x) =>
               val targetElement = only.getElement
-              if (x.element != targetElement) {
+              if (x.element != targetElement)
                 return UsageType.READ // TODO custom usage type?
-              }
             case None =>
           }
         case _ =>
       }
 
-      for (ie <- parentOfType[ScImportExpr]) {
+      for (ie <- parentOfType[ScImportExpr])
         return UsageType.CLASS_IMPORT
-      }
 
       for (ie <- parentOfType[ScNewTemplateDefinition];
            tp <- ie.extendsBlock.templateParents
-           if isAncestor(tp, element, false)) {
+           if isAncestor(tp, element, false))
         return UsageType.CLASS_NEW_OPERATOR
-      }
 
       for (ie <- parentOfType[ScTemplateDefinition];
            tp <- ie.extendsBlock.templateParents
-           if isAncestor(tp, element, false)) {
+           if isAncestor(tp, element, false))
         return UsageType.CLASS_EXTENDS_IMPLEMENTS_LIST
-      }
 
       for (fun <- parentOfType[ScFunction];
            tp <- fun.returnTypeElement
-           if isAncestor(tp, element, false)) {
+           if isAncestor(tp, element, false))
         return UsageType.CLASS_METHOD_RETURN_TYPE
-      }
 
       for (value <- parentOfType[ScValue];
            tp <- value.typeElement
-           if isAncestor(tp, element, false)) {
+           if isAncestor(tp, element, false))
         value.getContext match {
           case _: ScTemplateBody => return UsageType.CLASS_FIELD_DECLARATION
           case _                 => return UsageType.CLASS_LOCAL_VAR_DECLARATION
         }
-      }
 
       for (variable <- parentOfType[ScVariable];
            tp <- variable.typeElement
-           if isAncestor(tp, element, false)) {
+           if isAncestor(tp, element, false))
         variable.getContext match {
           case _: ScTemplateBody => return UsageType.CLASS_FIELD_DECLARATION
           case _                 => return UsageType.CLASS_LOCAL_VAR_DECLARATION
         }
-      }
 
       for (param <- parentOfType[ScParameter];
            tp <- param.typeElement
-           if isAncestor(tp, element, false)) {
+           if isAncestor(tp, element, false))
         return UsageType.CLASS_METHOD_PARAMETER_DECLARATION
-      }
 
       for (consPattern <- parentOfType[ScConstructorPattern];
            tp <- Option(consPattern.ref)
-           if isAncestor(tp, element, false)) {
+           if isAncestor(tp, element, false))
         return ScalaUsageTypeProvider.ClassConstructorPattern
-      }
 
       for (typedPattern <- parentOfType[ScTypedPattern];
            tp <- typedPattern.typePattern
-           if isAncestor(tp.typeElement, element, false)) {
+           if isAncestor(tp.typeElement, element, false))
         return ScalaUsageTypeProvider.ClassTypedPattern
-      }
 
       // TODO more of these, including Scala specific: case class/object, pattern match, type ascription, ...
     }

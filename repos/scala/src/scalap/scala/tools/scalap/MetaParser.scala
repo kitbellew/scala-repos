@@ -19,9 +19,7 @@ class MetaParser(meta: String) {
   val res = new StringBuffer
 
   private def nextToken: String = {
-    do {
-      token = scanner.nextToken().trim()
-    } while (token.length() == 0)
+    do token = scanner.nextToken().trim() while (token.length() == 0)
     token
   }
 
@@ -45,20 +43,19 @@ class MetaParser(meta: String) {
   def parse: Option[String] =
     if (scanner.hasMoreTokens()) {
       nextToken
-      try {
-        if (!scanner.hasMoreTokens())
-          None
-        else if (token == "class")
-          Some(parseMetaClass)
-        else if (token == "method")
-          Some(parseMetaMethod)
-        else if (token == "field")
-          Some(parseMetaField)
-        else if (token == "constr")
-          Some(parseConstrField)
-        else
-          None
-      } catch {
+      try if (!scanner.hasMoreTokens())
+        None
+      else if (token == "class")
+        Some(parseMetaClass)
+      else if (token == "method")
+        Some(parseMetaMethod)
+      else if (token == "field")
+        Some(parseMetaField)
+      else if (token == "constr")
+        Some(parseConstrField)
+      else
+        None
+      catch {
         case _: Exception => None
       }
     } else
@@ -88,7 +85,7 @@ class MetaParser(meta: String) {
       nextToken
       res.append("]")
     }
-    if (token == "extends") {
+    if (token == "extends")
       do {
         if (token == "extends")
           res.append(" extends ")
@@ -97,7 +94,6 @@ class MetaParser(meta: String) {
         nextToken
         parseType
       } while (token == "with")
-    }
     res.toString()
   }
 
@@ -105,9 +101,9 @@ class MetaParser(meta: String) {
     nextToken
     if (token == "[") {
       nextToken
-      if (token == "]") {
+      if (token == "]")
         nextToken
-      } else {
+      else {
         var loop = true
         res.append("[")
         while (loop) {

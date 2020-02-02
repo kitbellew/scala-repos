@@ -60,7 +60,7 @@ class ScalaEvaluatorCache(project: Project)
           cachedEvaluators.remove(pos)
       }
       None
-    } else {
+    } else
       cachedEvaluators.get((file, offset)) match {
         case Some(map) =>
           map.collectFirst {
@@ -70,7 +70,6 @@ class ScalaEvaluatorCache(project: Project)
           }
         case None => None
       }
-    }
   }
 
   def add(

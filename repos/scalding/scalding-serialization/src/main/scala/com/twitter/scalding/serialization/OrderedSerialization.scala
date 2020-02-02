@@ -123,9 +123,8 @@ object OrderedSerialization {
           val u = packFn(t)
           cache = (t, u)
           u
-        } else {
+        } else
           readCache._2
-        }
       }
 
       override def hash(t: T) = otherOrdSer.hash(packCache(t))
@@ -173,9 +172,9 @@ object OrderedSerialization {
     */
   def orderingTransitive[T](implicit ordb: OrderedSerialization[T]): Law3[T] =
     Law3("transitivity", { (a: T, b: T, c: T) =>
-      if (ordb.lteq(a, b) && ordb.lteq(b, c)) {
+      if (ordb.lteq(a, b) && ordb.lteq(b, c))
         ordb.lteq(a, c)
-      } else true
+      else true
     })
 
   /**
@@ -184,9 +183,9 @@ object OrderedSerialization {
     */
   def orderingAntisymmetry[T](implicit ordb: OrderedSerialization[T]): Law2[T] =
     Law2("antisymmetry", { (a: T, b: T) =>
-      if (ordb.lteq(a, b) && ordb.lteq(b, a)) {
+      if (ordb.lteq(a, b) && ordb.lteq(b, a))
         ordb.equiv(a, b)
-      } else true
+      else true
     })
 
   /**

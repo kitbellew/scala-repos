@@ -47,7 +47,7 @@ case class Statistics private[ragnarok] (
     * example.
     */
   def *(x: Double): Statistics =
-    if (x >= 0.0) {
+    if (x >= 0.0)
       Statistics(
         tails,
         allMin map (_ * x),
@@ -55,7 +55,7 @@ case class Statistics private[ragnarok] (
         m * x,
         vn * x * x,
         n)
-    } else {
+    else
       Statistics(
         tails,
         allMax map (_ * x),
@@ -63,26 +63,25 @@ case class Statistics private[ragnarok] (
         m * x,
         vn * math.abs(x) * math.abs(x),
         n)
-    }
 
   def +(x: Double): Statistics = this + Statistics(x, tails = tails)
 
   def +(that: Statistics): Statistics = Statistics.semigroup.append(this, that)
 
   // Calculates the mean, variance, and count without outliers.
-  private lazy val meanVarCount: (Double, Double, Int) = if (n > 2 * tails) {
-    (allMin.reverse.tail ++ allMax.tail).foldLeft((m, vn, n)) {
-      case ((m, vn, n), x) =>
-        val mprev = m + (m - x) / (n - 1)
-        val sprev = vn - (x - mprev) * (x - m)
-        (mprev, sprev, n - 1)
-    } match {
-      case (m, vn, 1) => (m, 0.0, 1)
-      case (m, vn, n) => (m, math.abs(vn / (n - 1)), n)
-    }
-  } else {
-    (Double.NaN, Double.NaN, 0)
-  }
+  private lazy val meanVarCount: (Double, Double, Int) =
+    if (n > 2 * tails)
+      (allMin.reverse.tail ++ allMax.tail).foldLeft((m, vn, n)) {
+        case ((m, vn, n), x) =>
+          val mprev = m + (m - x) / (n - 1)
+          val sprev = vn - (x - mprev) * (x - m)
+          (mprev, sprev, n - 1)
+      } match {
+        case (m, vn, 1) => (m, 0.0, 1)
+        case (m, vn, n) => (m, math.abs(vn / (n - 1)), n)
+      }
+    else
+      (Double.NaN, Double.NaN, 0)
 
   def min: Double = allMin.last
 

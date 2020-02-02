@@ -27,13 +27,12 @@ trait ShortIsNRoot extends NRoot[Short] {
       val next = prev | add
       val e = Math.pow(next, n)
 
-      if (e == x || add == 0) {
+      if (e == x || add == 0)
         next.toShort
-      } else if (e <= 0 || e > x) {
+      else if (e <= 0 || e > x)
         findnroot(prev, add >> 1)
-      } else {
+      else
         findnroot(next, add >> 1)
-      }
     }
 
     findnroot(0, 1 << ((33 - n) / n))

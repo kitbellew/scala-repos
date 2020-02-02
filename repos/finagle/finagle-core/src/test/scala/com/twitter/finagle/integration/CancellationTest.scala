@@ -28,25 +28,23 @@ class CancellationTest extends FunSuite with IntegrationBase with MockitoSugar {
     val meCaptor = ArgumentCaptor.forClass(classOf[DownstreamMessageEvent])
     verify(m.channelPipeline).sendDownstream(meCaptor.capture)
     assert(meCaptor.getValue match {
-      case event: DownstreamMessageEvent => {
+      case event: DownstreamMessageEvent =>
         assert(event.getChannel == m.channel)
         assert(event.getMessage match {
           case s: String => s == "123"
         })
         true
-      }
     })
 
     f.raise(new Exception)
     val seCaptor = ArgumentCaptor.forClass(classOf[DownstreamChannelStateEvent])
     verify(m.channelPipeline, times(2)).sendDownstream(seCaptor.capture)
     assert(seCaptor.getValue match {
-      case event: DownstreamChannelStateEvent => {
+      case event: DownstreamChannelStateEvent =>
         assert(event.getChannel == m.channel)
         assert(event.getState == ChannelState.OPEN)
         assert(event.getValue == java.lang.Boolean.FALSE)
         true
-      }
     })
   }
 

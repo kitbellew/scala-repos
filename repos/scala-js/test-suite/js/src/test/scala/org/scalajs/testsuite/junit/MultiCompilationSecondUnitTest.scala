@@ -10,9 +10,8 @@ class MultiCompilationSecondUnitTestCheck {
     // Test for issue #2112
     val boot = JUnitUtil.loadBootstrapper(
       "org.scalajs.testsuite.junit.MultiCompilationSecondUnitTest")
-    try {
-      boot.invoke(boot.newInstance(), "testFromMultiCompilation")
-    } catch {
+    try boot.invoke(boot.newInstance(), "testFromMultiCompilation")
+    catch {
       case e: Throwable =>
         fail(s"Could not invoke a test: ${e.getMessage}")
     }

@@ -29,10 +29,8 @@ package object testkit {
           "Filter completion error:\n" + failed.mkString("\n"))
 
       result
-    } finally {
-      system.eventStream.publish(
-        TestEvent.UnMute(eventFilters.to[immutable.Seq]))
-    }
+    } finally system.eventStream.publish(
+      TestEvent.UnMute(eventFilters.to[immutable.Seq]))
   }
 
   def filterEvents[T](eventFilters: EventFilter*)(block: ⇒ T)(

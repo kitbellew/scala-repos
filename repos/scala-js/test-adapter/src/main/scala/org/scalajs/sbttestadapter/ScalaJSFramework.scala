@@ -36,10 +36,9 @@ final class ScalaJSFramework(
       remoteArgs: Array[String],
       testClassLoader: ClassLoader): Runner = synchronized {
 
-    if (_isRunning) {
+    if (_isRunning)
       throw new IllegalStateException(
         "Scala.js test frameworks do not support concurrent runs")
-    }
 
     _isRunning = true
 

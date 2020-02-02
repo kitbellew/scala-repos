@@ -68,9 +68,7 @@ class ThrottledResponseExpirationTest {
       Assert.assertEquals(0, delayQueue.size())
       reaper.doWork()
       Assert.assertEquals(4, numCallbacks)
-    } finally {
-      clientMetrics.shutdown()
-    }
+    } finally clientMetrics.shutdown()
   }
 
   @Test

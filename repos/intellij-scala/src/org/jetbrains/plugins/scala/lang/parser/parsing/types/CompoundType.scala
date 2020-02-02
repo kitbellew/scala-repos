@@ -37,14 +37,13 @@ object CompoundType {
           while (builder.getTokenType == ScalaTokenTypes.kWITH) {
             isCompound = true
             builder.advanceLexer() //Ate with
-            if (!AnnotType.parse(builder, isPattern)) {
+            if (!AnnotType.parse(builder, isPattern))
               builder error ScalaBundle.message("wrong.type")
-            }
           }
           val hasRefinement = Refinement parse builder
-          if (isCompound || hasRefinement) {
+          if (isCompound || hasRefinement)
             compoundMarker.done(ScalaElementTypes.COMPOUND_TYPE)
-          } else compoundMarker.drop()
+          else compoundMarker.drop()
           true
         }
     }

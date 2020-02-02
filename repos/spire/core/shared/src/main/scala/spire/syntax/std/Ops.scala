@@ -346,9 +346,9 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
       ct: ClassTag[A],
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] = {
     val arr = as.toArray
-    if (arr.length <= k) {
+    if (arr.length <= k)
       fromArray(arr)
-    } else {
+    else {
       Selection.select(arr, k)
       fromSizeAndArray(k, arr)
     }

@@ -253,7 +253,7 @@ sealed trait ExpressionDag[N[_]] { self =>
   protected def ensure[T](node: N[T]): (ExpressionDag[N], Id[T]) =
     find(node) match {
       case Some(id) => (this, id)
-      case None => {
+      case None =>
         val lit: Lit[T] = toLiteral(node)
         lit match {
           case ConstLit(n) =>
@@ -274,7 +274,6 @@ sealed trait ExpressionDag[N[_]] { self =>
             val (exp2, id2) = exp1.ensure(n2.evaluate)
             exp2.addExp(node, Binary(id1, id2, fn))
         }
-      }
     }
 
   /**

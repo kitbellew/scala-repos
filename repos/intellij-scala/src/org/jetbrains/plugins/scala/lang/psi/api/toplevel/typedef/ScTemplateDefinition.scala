@@ -50,11 +50,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
     this match {
       case st: ScalaStubBasedElementImpl[_] =>
         val stub = st.getStub
-        if (stub != null) {
+        if (stub != null)
           return stub
             .findChildStubByType(ScalaElementTypes.EXTENDS_BLOCK)
             .getPsi
-        }
       case _ =>
     }
     assert(
@@ -434,7 +433,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             extendsBlock match {
               case e: ScExtendsBlock if e != null =>
                 if (PsiTreeUtil.isContextAncestor(e, place, true) || !PsiTreeUtil
-                      .isContextAncestor(this, place, true)) {
+                      .isContextAncestor(this, place, true))
                   this match {
                     case t: ScTypeDefinition
                         if selfTypeElement != None &&
@@ -459,9 +458,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                                 processor,
                                 state,
                                 lastParent,
-                                place)) {
+                                place))
                             return false
-                          }
                       }
                     case _ =>
                       if (!TypeDefinitionMembers.processDeclarations(
@@ -471,7 +469,6 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                             lastParent,
                             place)) return false
                   }
-                }
               case _ =>
             }
         }
@@ -486,11 +483,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
           case Some(a) => a.getNode
           case None =>
             val last = body.getNode.getLastChildNode
-            if (ScalaPsiUtil.isLineTerminator(last.getTreePrev.getPsi)) {
+            if (ScalaPsiUtil.isLineTerminator(last.getTreePrev.getPsi))
               last.getTreePrev
-            } else {
+            else
               last
-            }
         }
         if (ScalaPsiUtil.isLineTerminator(before.getPsi))
           body.getNode.addChild(

@@ -95,18 +95,17 @@ class WatermarkPool[Req, Rep](
   }
 
   @tailrec private[this] def dequeue(): Option[Service[Req, Rep]] =
-    if (queue.isEmpty) {
+    if (queue.isEmpty)
       None
-    } else {
+    else {
       val service = queue.removeFirst()
       if (service.status == Status.Closed) {
         // Note: since these are ServiceWrappers, accounting is taken
         // care of by ServiceWrapper.close()
         service.close()
         dequeue()
-      } else {
+      } else
         Some(service)
-      }
     }
 
   def apply(conn: ClientConnection): Future[Service[Req, Rep]] = {

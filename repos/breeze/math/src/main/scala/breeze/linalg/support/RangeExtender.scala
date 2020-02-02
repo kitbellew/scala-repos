@@ -19,11 +19,10 @@ class RangeExtender(val re: Range) extends AnyVal {
         )
       (actualStart to actualEnd by re.step)
 
-    } else if (re.end < 0 || re.start < 0) {
+    } else if (re.end < 0 || re.start < 0)
       throw new IllegalArgumentException(
         "cannot use negative end indexing with 'until', due to ambiguities from Range.end being exclusive")
-    } else {
+    else
       re
-    }
 
 }

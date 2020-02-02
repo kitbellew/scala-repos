@@ -71,17 +71,13 @@ private[streaming] object RawTextSender extends Logging {
       val socket = serverSocket.accept()
       logInfo("Got a new connection")
       val out = new RateLimitedOutputStream(socket.getOutputStream, bytesPerSec)
-      try {
-        while (true) {
-          out.write(countBuf.array)
-          out.write(array)
-        }
+      try while (true) {
+        out.write(countBuf.array)
+        out.write(array)
       } catch {
         case e: IOException =>
           logError("Client disconnected")
-      } finally {
-        socket.close()
-      }
+      } finally socket.close()
     }
   }
 }

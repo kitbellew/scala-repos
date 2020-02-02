@@ -152,17 +152,15 @@ trait FlashMapSupport extends Handler {
          * Only the outermost FlashMapSupport sweeps it at the end.
          * This deals with both nested filters and redirects to other servlets.
          */
-        if (isOutermost) {
+        if (isOutermost)
           f.sweep()
-        }
         flashMapSetSession(f)
       }
 
       if (isOutermost) {
         req(LockKey) = "locked"
-        if (sweepUnusedFlashEntries(req)) {
+        if (sweepUnusedFlashEntries(req))
           f.flag()
-        }
       }
 
       super.handle(req, res)
@@ -173,10 +171,10 @@ trait FlashMapSupport extends Handler {
     * @param f
     */
   def flashMapSetSession(f: FlashMap): Unit =
-    try {
-      // Save flashMap to Session after (a session could stop existing during a request, so catch exception)
-      session(SessionKey) = f
-    } catch {
+    try
+    // Save flashMap to Session after (a session could stop existing during a request, so catch exception)
+    session(SessionKey) = f
+    catch {
       case e: Throwable =>
     }
 

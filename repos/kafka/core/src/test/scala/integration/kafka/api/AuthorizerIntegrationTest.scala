@@ -763,9 +763,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
           i.toString.getBytes,
           i.toString.getBytes))
     }
-    try {
-      futures.foreach(_.get)
-    } catch {
+    try futures.foreach(_.get)
+    catch {
       case e: ExecutionException => throw e.getCause
     }
   }
@@ -796,9 +795,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     val maxIters = numRecords * 50
     var iters = 0
     while (records.size < numRecords) {
-      for (record <- consumer.poll(50).asScala) {
+      for (record <- consumer.poll(50).asScala)
         records.add(record)
-      }
       if (iters > maxIters)
         throw new IllegalStateException(
           "Failed to consume the expected records after " + iters + " iterations.")

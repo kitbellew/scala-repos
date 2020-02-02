@@ -34,7 +34,7 @@ object REPL {
     val command = new CompilerCommand(args.toList, settings)
     if (command.settings.version)
       reporter.echo(versionMsg)
-    else {
+    else
       try {
         object compiler extends Global(command.settings, reporter) {
 //          printTypings = true
@@ -43,18 +43,16 @@ object REPL {
           reporter.flush()
           return
         }
-        if (command.shouldStopWithInfo) {
+        if (command.shouldStopWithInfo)
           reporter.echo(command.getInfoMessage(compiler))
-        } else {
+        else
           run(compiler)
-        }
       } catch {
         case ex @ FatalError(msg) =>
           if (true || command.settings.debug) // !!!
             ex.printStackTrace()
           reporter.error(null, "fatal error: " + msg)
       }
-    }
   }
 
   def main(args: Array[String]) {
@@ -66,9 +64,8 @@ object REPL {
     Console.print(prompt)
     try {
       val line = Console.readLine()
-      if (line.length() > 0) {
+      if (line.length() > 0)
         action(line)
-      }
       loop(action)
     } catch {
       case _: java.io.EOFException => //nop

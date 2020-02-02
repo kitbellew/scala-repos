@@ -60,10 +60,9 @@ private[play] abstract class ClosableLazy[T >: Null <: AnyRef, C] {
         value = v
         closeFunction = cf
         v
-      } else {
+      } else
         // Value was initialized by another thread before we got the monitor
         value
-      }
     }
   }
 
@@ -73,10 +72,10 @@ private[play] abstract class ClosableLazy[T >: Null <: AnyRef, C] {
     */
   final def close(): C = {
     val optionalClose: Option[CloseFunction] = synchronized {
-      if (hasBeenClosed) {
+      if (hasBeenClosed)
         // Already closed
         None
-      } else if (value == null) {
+      else if (value == null) {
         // Close before first call to get
         hasBeenClosed = true
         None

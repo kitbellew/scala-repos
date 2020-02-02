@@ -94,12 +94,10 @@ private[sql] class SQLListener(conf: SparkConf)
       executions.take(toRemove).foreach { execution =>
         for (executionUIData <- _executionIdToData.remove(
                execution.executionId)) {
-          for (jobId <- executionUIData.jobs.keys) {
+          for (jobId <- executionUIData.jobs.keys)
             _jobIdToExecutionId.remove(jobId)
-          }
-          for (stageId <- executionUIData.stages) {
+          for (stageId <- executionUIData.stages)
             _stageIdToStageMetrics.remove(stageId)
-          }
         }
       }
       executions.trimStart(toRemove)
@@ -108,10 +106,9 @@ private[sql] class SQLListener(conf: SparkConf)
   override def onJobStart(jobStart: SparkListenerJobStart): Unit = {
     val executionIdString =
       jobStart.properties.getProperty(SQLExecution.EXECUTION_ID_KEY)
-    if (executionIdString == null) {
+    if (executionIdString == null)
       // This is not a job created by SQL
       return
-    }
     val executionId = executionIdString.toLong
     val jobId = jobStart.jobId
     val stageIds = jobStart.stageIds
@@ -138,26 +135,24 @@ private[sql] class SQLListener(conf: SparkConf)
         case JobFailed(_) =>
           executionUIData.jobs(jobId) = JobExecutionStatus.FAILED
       }
-      if (executionUIData.completionTime.nonEmpty && !executionUIData.hasRunningJobs) {
+      if (executionUIData.completionTime.nonEmpty && !executionUIData.hasRunningJobs)
         // We are the last job of this execution, so mark the execution as finished. Note that
         // `onExecutionEnd` also does this, but currently that can be called before `onJobEnd`
         // since these are called on different threads.
         markExecutionFinished(executionId)
-      }
     }
   }
 
   override def onExecutorMetricsUpdate(
       executorMetricsUpdate: SparkListenerExecutorMetricsUpdate): Unit =
     synchronized {
-      for ((taskId, stageId, stageAttemptID, accumUpdates) <- executorMetricsUpdate.accumUpdates) {
+      for ((taskId, stageId, stageAttemptID, accumUpdates) <- executorMetricsUpdate.accumUpdates)
         updateTaskAccumulatorValues(
           taskId,
           stageId,
           stageAttemptID,
           accumUpdates,
           finishTask = false)
-      }
     }
 
   override def onStageSubmitted(
@@ -165,9 +160,9 @@ private[sql] class SQLListener(conf: SparkConf)
     val stageId = stageSubmitted.stageInfo.stageId
     val stageAttemptId = stageSubmitted.stageInfo.attemptId
     // Always override metrics for old stage attempt
-    if (_stageIdToStageMetrics.contains(stageId)) {
+    if (_stageIdToStageMetrics.contains(stageId))
       _stageIdToStageMetrics(stageId) = new SQLStageMetrics(stageAttemptId)
-    } else {
+    else {
       // If a stage belongs to some SQL execution, its stageId will be put in "onJobStart".
       // Since "_stageIdToStageMetrics" doesn't contain it, it must not belong to any SQL execution.
       // So we can ignore it. Otherwise, this may lead to memory leaks (SPARK-11126).
@@ -175,14 +170,13 @@ private[sql] class SQLListener(conf: SparkConf)
   }
 
   override def onTaskEnd(taskEnd: SparkListenerTaskEnd): Unit = synchronized {
-    if (taskEnd.taskMetrics != null) {
+    if (taskEnd.taskMetrics != null)
       updateTaskAccumulatorValues(
         taskEnd.taskInfo.taskId,
         taskEnd.stageId,
         taskEnd.stageAttemptId,
         taskEnd.taskMetrics.accumulatorUpdates(),
         finishTask = true)
-    }
   }
 
   /**
@@ -199,11 +193,11 @@ private[sql] class SQLListener(conf: SparkConf)
       case Some(stageMetrics) =>
         if (stageAttemptID < stageMetrics.stageAttemptId) {
           // A task of an old stage attempt. Because a new stage is submitted, we can ignore it.
-        } else if (stageAttemptID > stageMetrics.stageAttemptId) {
+        } else if (stageAttemptID > stageMetrics.stageAttemptId)
           logWarning(
             s"A task should not have a higher stageAttemptID ($stageAttemptID) then " +
               s"what we have seen (${stageMetrics.stageAttemptId})")
-        } else {
+        else
           // TODO We don't know the attemptId. Currently, what we can do is overriding the
           // accumulator updates. However, if there are two same task are running, such as
           // speculation, the accumulator updates will be overriding by different task attempts,
@@ -213,9 +207,9 @@ private[sql] class SQLListener(conf: SparkConf)
               if (finishTask) {
                 taskMetrics.finished = true
                 taskMetrics.accumulatorUpdates = accumulatorUpdates
-              } else if (!taskMetrics.finished) {
+              } else if (!taskMetrics.finished)
                 taskMetrics.accumulatorUpdates = accumulatorUpdates
-              } else {
+              else {
                 // If a task is finished, we should not override with accumulator updates from
                 // heartbeat reports
               }
@@ -227,7 +221,6 @@ private[sql] class SQLListener(conf: SparkConf)
                 finished = finishTask,
                 accumulatorUpdates)
           }
-        }
       case None =>
       // This execution and its stage have been dropped
     }
@@ -260,11 +253,11 @@ private[sql] class SQLListener(conf: SparkConf)
       synchronized {
         _executionIdToData.get(executionId).foreach { executionUIData =>
           executionUIData.completionTime = Some(time)
-          if (!executionUIData.hasRunningJobs) {
+          if (!executionUIData.hasRunningJobs)
             // onExecutionEnd happens after all "onJobEnd"s
             // So we should update the execution lists.
             markExecutionFinished(executionId)
-          } else {
+          else {
             // There are some running jobs, onExecutionEnd happens before some "onJobEnd"s.
             // Then we don't if the execution is successful, so let the last onJobEnd updates the
             // execution lists.
@@ -372,9 +365,8 @@ private[spark] class SQLHistoryListener(conf: SparkConf, sparkUI: SparkUI)
           val newValue = new LongSQLMetricValue(
             a.update.map(_.toString.toLong).getOrElse(0L))
           Some(a.copy(update = Some(newValue)))
-        } else {
+        } else
           None
-        }
       },
       finishTask = true
     )

@@ -37,9 +37,9 @@ trait SummingbirdConfig { self =>
     val changedOrAddedKeys = newMap.flatMap {
       case (k, v) =>
         val oldVal = get(k)
-        if (oldVal != Some(v)) {
+        if (oldVal != Some(v))
           Some((k, v))
-        } else None
+        else None
     }
     val newWithoutRemoved = removedKeys.foldLeft(self)(_.remove(_))
     changedOrAddedKeys.foldLeft(newWithoutRemoved) { _ + _ }

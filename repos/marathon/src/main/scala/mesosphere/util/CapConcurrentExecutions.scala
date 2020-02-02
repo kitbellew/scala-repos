@@ -118,10 +118,9 @@ private[util] class RestrictParallelExecutionsActor(
   override def postStop(): Unit = {
     metrics.reset()
 
-    for (execute <- queue) {
+    for (execute <- queue)
       execute.complete(
         Failure(new IllegalStateException(s"$self actor stopped")))
-    }
 
     queue = Queue.empty
 
@@ -130,11 +129,11 @@ private[util] class RestrictParallelExecutionsActor(
 
   override def receive: Receive = {
     case exec: Execute[_] =>
-      if (active >= maxParallel && queue.size >= maxQueued) {
+      if (active >= maxParallel && queue.size >= maxQueued)
         sender ! Status.Failure(
           new IllegalStateException(
             s"$self queue may not exceed $maxQueued entries"))
-      } else {
+      else {
         queue :+= exec
         startNextIfPossible()
       }
@@ -145,9 +144,8 @@ private[util] class RestrictParallelExecutionsActor(
   }
 
   private[this] def startNextIfPossible(): Unit = {
-    if (active < maxParallel) {
+    if (active < maxParallel)
       startNext()
-    }
 
     metrics.processing.setValue(active)
     metrics.queued.setValue(queue.size)

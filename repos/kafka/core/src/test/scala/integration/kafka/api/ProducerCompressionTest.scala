@@ -108,9 +108,8 @@ class ProducerCompressionTest(compression: String)
               null,
               message))
       val futures = responses.toList
-      for ((future, offset) <- futures zip (0 until numRecords)) {
+      for ((future, offset) <- futures zip (0 until numRecords))
         assertEquals(offset.toLong, future.get.offset)
-      }
 
       // make sure the fetched message count match
       val fetchResponse = consumer.fetch(

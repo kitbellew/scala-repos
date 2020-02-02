@@ -88,9 +88,9 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     }
 
     val packageObjectsData = PackageObjectsData.getFor(context)
-    if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context)) { //rebuild
+    if (JavaBuilderUtil.isForcedRecompilationAllJavaModules(context)) //rebuild
       packageObjectsData.clear()
-    } else {
+    else {
       val additionalFiles =
         packageObjectsData.invalidatedPackageObjects(sources).filter(_.exists)
       if (additionalFiles.nonEmpty) {
@@ -204,13 +204,11 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       tempRoot <- project.getBuildRootIndex
         .getTempTargetRoots(target, context)
         .asScala
-    } {
-      FileUtil.processFilesRecursively(
-        tempRoot.getRootFile,
-        new Processor[File] {
-          def process(file: File) = checkAndCollectFile(file)
-        })
-    }
+    } FileUtil.processFilesRecursively(
+      tempRoot.getRootFile,
+      new Processor[File] {
+        def process(file: File) = checkAndCollectFile(file)
+      })
 
     //if no scala files to compile, return empty seq
     if (!result.exists(_.getName.endsWith(".scala"))) Seq.empty

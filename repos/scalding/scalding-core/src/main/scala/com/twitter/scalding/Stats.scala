@@ -151,17 +151,14 @@ object RuntimeStats extends java.io.Serializable {
     LoggerFactory.getLogger(this.getClass)
 
   private val flowMappingStore
-      : mutable.Map[String, WeakReference[FlowProcess[_]]] = {
+      : mutable.Map[String, WeakReference[FlowProcess[_]]] =
     (new ConcurrentHashMap[String, WeakReference[FlowProcess[_]]]).asScala
-  }
 
   def getFlowProcessForUniqueId(uniqueId: UniqueID): FlowProcess[_] =
     (for {
       weakFlowProcess <- flowMappingStore.get(uniqueId.get)
       flowProcess <- weakFlowProcess.get
-    } yield {
-      flowProcess
-    }).getOrElse {
+    } yield flowProcess).getOrElse {
       sys.error(
         "Error in job deployment, the FlowProcess for unique id %s isn't available"
           .format(uniqueId))

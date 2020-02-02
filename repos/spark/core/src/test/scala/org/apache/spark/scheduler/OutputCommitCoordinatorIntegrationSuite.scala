@@ -55,13 +55,11 @@ class OutputCommitCoordinatorIntegrationSuite
     // Regression test for SPARK-10381
     failAfter(Span(60, Seconds)) {
       val tempDir = Utils.createTempDir()
-      try {
-        sc.parallelize(1 to 4, 2)
-          .map(_.toString)
-          .saveAsTextFile(tempDir.getAbsolutePath + "/out")
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      try sc
+        .parallelize(1 to 4, 2)
+        .map(_.toString)
+        .saveAsTextFile(tempDir.getAbsolutePath + "/out")
+      finally Utils.deleteRecursively(tempDir)
     }
   }
 }
@@ -70,9 +68,8 @@ private class ThrowExceptionOnFirstAttemptOutputCommitter
     extends FileOutputCommitter {
   override def commitTask(context: TaskAttemptContext): Unit = {
     val ctx = TaskContext.get()
-    if (ctx.attemptNumber < 1) {
+    if (ctx.attemptNumber < 1)
       throw new java.io.FileNotFoundException("Intentional exception")
-    }
     super.commitTask(context)
   }
 }

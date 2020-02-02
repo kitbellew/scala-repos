@@ -138,9 +138,8 @@ class ScalaMemberInplaceRenamer(
                 }
             }
           }
-          if (!myProject.isDisposed && myProject.isOpen) {
+          if (!myProject.isDisposed && myProject.isOpen)
             PsiDocumentManager.getInstance(myProject).commitDocument(document)
-          }
         }
       },
       getCommandName,

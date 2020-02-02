@@ -111,9 +111,8 @@ class SpectralProjectedGradient[T](val projection: T => T = { (t: T) => t }, tol
     val search = new BacktrackingLineSearch(fb, maxIterations = maxSrcht)
     gamma = search.minimize(searchFun, gamma)
 
-    if (gamma < 1e-10) {
+    if (gamma < 1e-10)
       throw new LineSearchFailed(normGradInDir, norm(direction))
-    }
 
     gamma
   }

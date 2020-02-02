@@ -55,12 +55,11 @@ private[streaming] class ReceiverSupervisorImpl(
 
   private val receivedBlockHandler: ReceivedBlockHandler = {
     if (WriteAheadLogUtils.enableReceiverLog(env.conf)) {
-      if (checkpointDirOption.isEmpty) {
+      if (checkpointDirOption.isEmpty)
         throw new SparkException(
           "Cannot enable receiver write-ahead log without checkpoint directory set. " +
             "Please use streamingContext.checkpoint() to set the checkpoint directory. " +
             "See documentation for more details.")
-      }
       new WriteAheadLogBasedBlockHandler(
         env.blockManager,
         receiver.streamId,
@@ -68,9 +67,8 @@ private[streaming] class ReceiverSupervisorImpl(
         env.conf,
         hadoopConf,
         checkpointDirOption.get)
-    } else {
+    } else
       new BlockManagerBasedBlockHandler(env.blockManager, receiver.storageLevel)
-    }
   }
 
   /** Remote RpcEndpointRef for the ReceiverTracker */

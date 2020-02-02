@@ -113,17 +113,17 @@ object ResourceMatcher {
 
     // Local volumes only need to be matched if we are making a reservation for resident tasks --
     // that means if the resources that are matched are still unreserved.
-    val diskMatch = if (!selector.reserved && app.diskForVolumes > 0) {
-      scalarResourceMatch(
-        Resource.DISK,
-        app.disk + app.diskForVolumes,
-        ScalarMatchResult.Scope.IncludingLocalVolumes)
-    } else {
-      scalarResourceMatch(
-        Resource.DISK,
-        app.disk,
-        ScalarMatchResult.Scope.ExcludingLocalVolumes)
-    }
+    val diskMatch =
+      if (!selector.reserved && app.diskForVolumes > 0)
+        scalarResourceMatch(
+          Resource.DISK,
+          app.disk + app.diskForVolumes,
+          ScalarMatchResult.Scope.IncludingLocalVolumes)
+      else
+        scalarResourceMatch(
+          Resource.DISK,
+          app.disk,
+          ScalarMatchResult.Scope.ExcludingLocalVolumes)
 
     val scalarMatchResults = Iterable(
       scalarResourceMatch(
@@ -148,26 +148,24 @@ object ResourceMatcher {
         Constraints.meetsConstraint(tasks, offer, constraint)
       }
 
-      if (badConstraints.nonEmpty && log.isInfoEnabled) {
+      if (badConstraints.nonEmpty && log.isInfoEnabled)
         log.info(
           s"Offer [${offer.getId.getValue}]. Constraints for app [${app.id}] not satisfied.\n" +
             s"The conflicting constraints are: [${badConstraints.mkString(", ")}]"
         )
-      }
 
       badConstraints.isEmpty
     }
 
-    if (scalarMatchResults.forall(_.matches)) {
+    if (scalarMatchResults.forall(_.matches))
       for {
         portsMatch <- portsMatchOpt
         if meetsAllConstraints
       } yield ResourceMatch(scalarMatchResults.collect {
         case m: ScalarMatch => m
       }, portsMatch)
-    } else {
+    else
       None
-    }
   }
 
   private[this] def matchScalarResource(
@@ -186,9 +184,9 @@ object ResourceMatcher {
         resourcesLeft: Iterable[Protos.Resource],
         resourcesConsumed: List[ScalarMatch.Consumption] = List.empty)
         : ScalarMatchResult =
-      if (valueLeft <= 0) {
+      if (valueLeft <= 0)
         ScalarMatch(name, requiredValue, resourcesConsumed, scope = scope)
-      } else {
+      else
         resourcesLeft.headOption match {
           case None =>
             NoMatch(
@@ -212,7 +210,6 @@ object ResourceMatcher {
               resourcesLeft.tail,
               consumedValue :: resourcesConsumed)
         }
-      }
 
     val resourcesForName = groupedResources.getOrElse(name, Iterable.empty)
     val matchingScalarResources = resourcesForName.filter(selector(_))
@@ -223,7 +220,7 @@ object ResourceMatcher {
       offer: Offer,
       selector: ResourceSelector,
       scalarMatchResults: Iterable[ScalarMatchResult]): Unit =
-    if (log.isInfoEnabled) {
+    if (log.isInfoEnabled)
       if (scalarMatchResults.exists(!_.matches)) {
         val basicResourceString = scalarMatchResults.mkString(", ")
         log.info(
@@ -231,5 +228,4 @@ object ResourceMatcher {
             s"$selector. " +
             s"Not all basic resources satisfied: $basicResourceString")
       }
-    }
 }

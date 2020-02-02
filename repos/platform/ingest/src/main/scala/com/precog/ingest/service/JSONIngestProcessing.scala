@@ -120,14 +120,13 @@ final class JSONIngestProcessing(
                 (overLargeIdx >= 0).option(
                   overLargeIdx + state.report.ingested -> overLargeMsg)
 
-              if (errors.isEmpty) {
+              if (errors.isEmpty)
                 accumulate(
                   state.update(updatedParser, ingestSize),
                   records ++ parsed.values,
                   rest)
-              } else {
+              else
                 IngestReport(0, errors).point[Future]
-              }
 
             case None =>
               val (parsed, finalParser) = state.parser(Done)
@@ -153,9 +152,8 @@ final class JSONIngestProcessing(
                     _ => IngestReport(completedRecords.size, Nil)
                   )
                 }
-              } else {
+              } else
                 IngestReport(0, errors).point[Future]
-              }
           }
 
         accumulate(state, Vector.empty[JValue], stream)
@@ -242,7 +240,7 @@ final class JSONIngestProcessing(
             }
             val ingestSize = toIngest.size
 
-            if (overLarge.isEmpty && parsed.errors.isEmpty) {
+            if (overLarge.isEmpty && parsed.errors.isEmpty)
               storage.store(
                 apiKey,
                 path,
@@ -257,7 +255,7 @@ final class JSONIngestProcessing(
                   _ => continue(state.update(updatedParser, ingestSize, Nil))
                 )
               }
-            } else {
+            else
               storage.store(
                 apiKey,
                 path,
@@ -278,7 +276,6 @@ final class JSONIngestProcessing(
                   }
                 )
               }
-            }
         }
 
       errorHandling match {

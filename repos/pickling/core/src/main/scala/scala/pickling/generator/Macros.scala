@@ -21,7 +21,7 @@ private[pickling] trait PicklingMacros
   val handleCaseClassSubclasses = !configOption(
     typeOf[IsIgnoreCaseClassSubclasses])
   val generator =
-    if (isStaticOnly) {
+    if (isStaticOnly)
       // TODO - should we consider externalizable "safe" or "static only" since we know it's externalizable at compile time?
       PicklingAlgorithm.aggregate(
         Seq(
@@ -30,7 +30,7 @@ private[pickling] trait PicklingMacros
             careAboutSubclasses = handleCaseClassSubclasses),
           AdtPickling,
           ScalaSingleton))
-    } else {
+    else
       PicklingAlgorithm.aggregate(
         Seq(
           new CaseClassPickling(
@@ -41,7 +41,6 @@ private[pickling] trait PicklingMacros
           new ExternalizablePickling,
           WillRobinsonPickling
         ))
-    }
 
   object logger extends AlgorithmLogger {
     def warn(msg: String): Unit = c.warning(c.enclosingPosition, msg)

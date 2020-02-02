@@ -116,9 +116,8 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
               foo <- foos.headOption
               buffereds <- body.get("buffered")
               buffered <- buffereds.headOption
-            } yield {
-              Results.Ok(foo + " " + buffered)
-            }).getOrElse(Results.NotFound)
+            } yield Results.Ok(foo + " " + buffered))
+              .getOrElse(Results.NotFound)
           }
       }
       .build()

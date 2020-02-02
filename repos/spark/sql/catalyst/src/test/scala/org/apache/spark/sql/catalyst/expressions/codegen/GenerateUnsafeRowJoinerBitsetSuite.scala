@@ -101,9 +101,8 @@ class GenerateUnsafeRowJoinerBitsetSuite extends SparkFunSuite {
   }
 
   private def testBitsets(numFields1: Int, numFields2: Int): Unit =
-    for (i <- 0 until 5) {
+    for (i <- 0 until 5)
       testBitsetsOnce(numFields1, numFields2)
-    }
 
   private def testBitsetsOnce(numFields1: Int, numFields2: Int): Unit = {
     info(s"num fields: $numFields1 and $numFields2")
@@ -117,16 +116,12 @@ class GenerateUnsafeRowJoinerBitsetSuite extends SparkFunSuite {
     val row1 = createUnsafeRow(numFields1)
     val row2 = createUnsafeRow(numFields2)
 
-    if (numFields1 > 0) {
-      for (i <- 0 until Random.nextInt(numFields1)) {
+    if (numFields1 > 0)
+      for (i <- 0 until Random.nextInt(numFields1))
         row1.setNullAt(Random.nextInt(numFields1))
-      }
-    }
-    if (numFields2 > 0) {
-      for (i <- 0 until Random.nextInt(numFields2)) {
+    if (numFields2 > 0)
+      for (i <- 0 until Random.nextInt(numFields2))
         row2.setNullAt(Random.nextInt(numFields2))
-      }
-    }
 
     val concater = GenerateUnsafeRowJoiner.create(schema1, schema2)
     val output = concater.join(row1, row2)
@@ -150,14 +145,12 @@ class GenerateUnsafeRowJoinerBitsetSuite extends SparkFunSuite {
        """.stripMargin
     }
 
-    for (i <- 0 until (numFields1 + numFields2)) {
-      if (i < numFields1) {
+    for (i <- 0 until (numFields1 + numFields2))
+      if (i < numFields1)
         assert(output.isNullAt(i) === row1.isNullAt(i), dumpDebug())
-      } else {
+      else
         assert(
           output.isNullAt(i) === row2.isNullAt(i - numFields1),
           dumpDebug())
-      }
-    }
   }
 }

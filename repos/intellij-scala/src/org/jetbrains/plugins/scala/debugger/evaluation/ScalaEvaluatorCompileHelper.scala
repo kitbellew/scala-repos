@@ -36,27 +36,24 @@ class ScalaEvaluatorCompileHelper(project: Project)
 
   private val listener = new DebuggerManagerAdapter {
     override def sessionAttached(session: DebuggerSession): Unit =
-      if (EvaluatorCompileHelper.needCompileServer && project.hasScala) {
+      if (EvaluatorCompileHelper.needCompileServer && project.hasScala)
         CompileServerLauncher.ensureServerRunning(project)
-      }
 
     override def sessionDetached(session: DebuggerSession) = {
       clearTempFiles()
 
       if (!ScalaCompileServerSettings
             .getInstance()
-            .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer) {
+            .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer)
         CompileServerLauncher.ensureNotRunning(project)
-      }
     }
   }
 
   override def projectOpened(): Unit =
-    if (!ApplicationManager.getApplication.isUnitTestMode) {
+    if (!ApplicationManager.getApplication.isUnitTestMode)
       DebuggerManagerEx
         .getInstanceEx(project)
         .addDebuggerManagerListener(listener)
-    }
 
   override def projectClosed(): Unit =
     DebuggerManagerEx
@@ -89,11 +86,9 @@ class ScalaEvaluatorCompileHelper(project: Project)
       outputDir: File): Array[(File, String)] = {
     CompileServerLauncher.ensureServerRunning(project)
     val connector = new ServerConnector(module, files, outputDir)
-    try {
-      connector.compile() match {
-        case Left(output)  => output
-        case Right(errors) => throw EvaluationException(errors.mkString("\n"))
-      }
+    try connector.compile() match {
+      case Left(output)  => output
+      case Right(errors) => throw EvaluationException(errors.mkString("\n"))
     } catch {
       case e: Exception =>
         throw EvaluationException("Could not compile:\n" + e.getMessage)

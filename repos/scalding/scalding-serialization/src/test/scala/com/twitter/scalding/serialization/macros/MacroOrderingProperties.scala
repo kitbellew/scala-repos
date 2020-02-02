@@ -299,15 +299,14 @@ class MacroOrderingProperties
         val compareBinary =
           obuf.compareBinary(serializedA, serializedB).unsafeToInt
         val compareMem = obuf.compare(a, b)
-        if (compareBinary < 0) {
+        if (compareBinary < 0)
           assert(
             compareMem < 0,
             s"Compare binary: $compareBinary, and compareMem : $compareMem must have the same sign")
-        } else if (compareBinary > 0) {
+        else if (compareBinary > 0)
           assert(
             compareMem > 0,
             s"Compare binary: $compareBinary, and compareMem : $compareMem must have the same sign")
-        }
     }
   }
 
@@ -319,11 +318,10 @@ class MacroOrderingProperties
     val rta = rt(a) // before we do anything ensure these don't throw
     val rtb = rt(b) // before we do anything ensure these don't throw
     val asize = Serialization.toBytes(a).length
-    if (obuf.dynamicSize(a).isDefined) {
+    if (obuf.dynamicSize(a).isDefined)
       assert(
         obuf.dynamicSize(a).get == asize,
         "dynamic size matches the correct value")
-    }
     if (obuf.staticSize.isDefined) {
       assert(
         obuf.dynamicSize(a).get == asize,

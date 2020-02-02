@@ -56,14 +56,13 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
           PsiDocumentManager.getInstance(project).getDocument(file)
         val dirtyScope: TextRange =
           if (document == null) file.getTextRange
-          else {
+          else
             DaemonCodeAnalyzer.getInstance(project) match {
               case analyzerImpl: DaemonCodeAnalyzerImpl =>
                 val fileStatusMap = analyzerImpl.getFileStatusMap
                 fileStatusMap.getFileDirtyScope(document, Pass.UPDATE_ALL)
               case _ => file.getTextRange
             }
-          }
         success = refCountHolder.analyze(action, dirtyScope, file)
       } else {
         myRefCountHolder = null
@@ -86,15 +85,13 @@ class ScalaAnnotatorHighlightVisitor(project: Project)
     new ScalaAnnotatorHighlightVisitor(project)
 
   private def runAnnotator(element: PsiElement) {
-    if (DumbService.getInstance(project).isDumb) {
+    if (DumbService.getInstance(project).isDumb)
       return
-    }
     (new ScalaAnnotator).annotate(element, myAnnotationHolder)
     if (myAnnotationHolder.hasAnnotations) {
       import scala.collection.JavaConversions._
-      for (annotation <- myAnnotationHolder) {
+      for (annotation <- myAnnotationHolder)
         myHolder.add(HighlightInfo.fromAnnotation(annotation))
-      }
       myAnnotationHolder.clear()
     }
   }

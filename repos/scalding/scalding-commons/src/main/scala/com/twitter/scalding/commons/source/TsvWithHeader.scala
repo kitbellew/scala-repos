@@ -50,42 +50,37 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
     new Fields(names: _*)
   }
 
-  override val fields = if (f == Fields.UNKNOWN) {
-    fieldsFromHeaderFile
-  } else {
-    f
-  }
+  override val fields =
+    if (f == Fields.UNKNOWN)
+      fieldsFromHeaderFile
+    else
+      f
 
   // TODO: move this method to make it a util function.
   def readFromFile(filename: String)(implicit mode: Mode) =
     mode match {
-      case Hdfs(_, conf) => {
+      case Hdfs(_, conf) =>
         try {
           val pt = new Path(filename)
           val fs = pt.getFileSystem(conf)
           fs.open(pt).readUTF
         } catch {
-          case e: IOException => {
+          case e: IOException =>
             throw new RuntimeException(e)
-          }
         }
-      }
       // Local mode
-      case _ => {
-        try {
-          Files.toString(new File(filename), Charsets.UTF_8)
-        } catch {
-          case e: IOException => {
+      case _ =>
+        try Files.toString(new File(filename), Charsets.UTF_8)
+        catch {
+          case e: IOException =>
             throw new RuntimeException(e)
-          }
         }
-      }
     }
 
   // TODO: move this method to make it a util function.
   def writeToFile(filename: String, text: String)(implicit mode: Mode) {
     mode match {
-      case Hdfs(_, conf) => {
+      case Hdfs(_, conf) =>
         try {
           val pt = new Path(filename)
           val fs = pt.getFileSystem(conf)
@@ -95,13 +90,11 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
           br.write(text)
           br.close()
         } catch {
-          case e: IOException => {
+          case e: IOException =>
             throw new RuntimeException(e)
-          }
         }
-      }
       // Local mode
-      case _ => {
+      case _ =>
         try {
           val br = new BufferedWriter(
             new OutputStreamWriter(new FileOutputStream(filename), "utf-8"))
@@ -109,11 +102,9 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
           br.write(text)
           br.close()
         } catch {
-          case e: IOException => {
+          case e: IOException =>
             throw new RuntimeException(e)
-          }
         }
-      }
     }
   }
 

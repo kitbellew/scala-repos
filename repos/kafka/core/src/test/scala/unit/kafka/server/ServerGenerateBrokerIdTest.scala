@@ -142,9 +142,8 @@ class ServerGenerateBrokerIdTest extends ZooKeeperTestHarness {
       config2,
       threadNamePrefix = Option(this.getClass.getName)
     ) // user specified broker id
-    try {
-      server1.startup()
-    } catch {
+    try server1.startup()
+    catch {
       case e: kafka.common.InconsistentBrokerIdException => //success
     }
     server1.shutdown()

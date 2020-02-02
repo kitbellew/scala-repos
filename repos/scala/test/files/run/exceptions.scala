@@ -30,9 +30,8 @@ object exceptions {
     val key = 2000;
     val map: IntMap[String] = new Empty[String];
     val value =
-      try {
-        map.lookup(key)
-      } catch {
+      try map.lookup(key)
+      catch {
         case e: Throwable => e.getMessage()
       }
     check("lookup(" + key + ")", value, "KO");

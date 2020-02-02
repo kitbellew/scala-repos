@@ -99,13 +99,12 @@ class MiscInteropTest {
 
     val instance = {
       val tag = js.constructorTag[OtherwiseUnreferencedJSClassForTag]
-      if (assumingES6) {
+      if (assumingES6)
         js.Dynamic
           .newInstance(tag.constructor)(35)
           .asInstanceOf[OtherwiseUnreferencedJSClassForTag]
-      } else {
+      else
         tag.newInstance(35)
-      }
     }
     assertEquals(35, instance.x)
   }

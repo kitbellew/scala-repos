@@ -32,14 +32,14 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
 
   override def fetch(key: String): Future[Option[T]] =
     directOrCached(store.fetch(key)) { cache =>
-      if (noVersionKey(key)) {
+      if (noVersionKey(key))
         Future.successful {
           cache.get(key) match {
             case Some(t) => t
             case _       => None
           }
         }
-      } else {
+      else {
         //if we need to fetch a versioned entry, try if this is the latest version we have in the cache
         //otherwise let the underlying store fetch that entry.
         val id = idFromVersionKey(key)
@@ -97,10 +97,9 @@ class EntityStoreCache[T <: MarathonState[_, T]](store: EntityStore[T])
 
     def handleEntries(names: Seq[String]): Future[Unit] = {
       val (unversionedNames, versionedNames) = names.partition(noVersionKey)
-      if (log.isDebugEnabled) {
+      if (log.isDebugEnabled)
         log.debug(
           s"$store Preload and cache entries: $unversionedNames and versioned entries $versionedNames")
-      }
       //add keys with None for version entries
       versionedNames.foreach(cache.put(_, None))
       //add key with loaded values

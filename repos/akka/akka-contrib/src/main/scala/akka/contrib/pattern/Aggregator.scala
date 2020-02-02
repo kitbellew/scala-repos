@@ -62,12 +62,10 @@ trait Aggregator {
     */
   def handleMessage(msg: Any): Boolean = {
     processing = true
-    try {
-      expectList process { fn ⇒
-        var processed = true
-        fn.applyOrElse(msg, (_: Any) ⇒ processed = false)
-        processed
-      }
+    try expectList process { fn ⇒
+      var processed = true
+      fn.applyOrElse(msg, (_: Any) ⇒ processed = false)
+      processed
     } finally {
       processing = false
       expectList addAll addBuffer

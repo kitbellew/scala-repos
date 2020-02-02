@@ -60,9 +60,8 @@ object JsonExtractor {
         Seq.empty[TypeAdapterFactory]): T =
     extractorOption match {
       case JsonExtractorOption.Both =>
-        try {
-          extractWithJson4sNative(json, json4sFormats, clazz)
-        } catch {
+        try extractWithJson4sNative(json, json4sFormats, clazz)
+        catch {
           case e: Exception =>
             extractWithGson(json, clazz, gsonTypeAdapterFactories)
         }

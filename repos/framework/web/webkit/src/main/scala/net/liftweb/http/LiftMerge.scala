@@ -215,29 +215,25 @@ private[http] trait LiftMerge {
                       idAttribute <- e.attributes("id").take(1)
                       id = idAttribute.text
                       nodes <- processedSnippets.get(id)
-                    } yield {
-                      normalizeMergeAndExtractEvents(nodes, startingState)
-                    }
+                    } yield normalizeMergeAndExtractEvents(nodes, startingState)
 
                   deferredNodes.foldLeft(soFar.append(normalizedResults))(
                     _ append _)
 
                 case _ =>
-                  if (headChild) {
+                  if (headChild)
                     headChildren ++= normalizedResults.node
-                  } else if (headInBodyChild) {
+                  else if (headInBodyChild)
                     addlHead ++= normalizedResults.node
-                  } else if (tailInBodyChild) {
+                  else if (tailInBodyChild)
                     addlTail ++= normalizedResults.node
-                  } else if (_bodyChild && !bodyHead && !bodyTail) {
+                  else if (_bodyChild && !bodyHead && !bodyTail)
                     bodyChildren ++= normalizedResults.node
-                  }
 
-                  if (bodyHead || bodyTail) {
+                  if (bodyHead || bodyTail)
                     soFar.append(normalizedResults.js)
-                  } else {
+                  else
                     soFar.append(normalizedResults)
-                  }
               }
             } getOrElse {
             soFar
@@ -284,9 +280,8 @@ private[http] trait LiftMerge {
       }
 
       val pageJs = assemblePageSpecificJavaScript(eventJs)
-      if (pageJs.toJsCmd.trim.nonEmpty) {
+      if (pageJs.toJsCmd.trim.nonEmpty)
         addlTail += pageScopedScriptFileWith(pageJs)
-      }
 
       for {
         node <- HeadHelper.removeHtmlDuplicates(addlTail.toList)
@@ -296,22 +291,20 @@ private[http] trait LiftMerge {
 
       val autoIncludeComet = LiftRules.autoIncludeComet(this)
       val bodyAttributes: List[(String, String)] =
-        if (stateful_? && (autoIncludeComet || LiftRules.enableLiftGC)) {
+        if (stateful_? && (autoIncludeComet || LiftRules.enableLiftGC))
           ("data-lift-gc" -> RenderVersion.get) ::
             (
-              if (autoIncludeComet) {
+              if (autoIncludeComet)
                 ("data-lift-session-id" -> (S.session.map(_.uniqueId) openOr "xx")) ::
                   S.requestCometVersions.is.toList.map {
                     case CometVersionPair(guid, version) =>
                       (s"data-lift-comet-$guid" -> version.toString)
                   }
-              } else {
+              else
                 Nil
-              }
             )
-        } else {
+        else
           Nil
-        }
 
       htmlKids += nl
       htmlKids += headElement.copy(child = headChildren.toList)
@@ -328,30 +321,30 @@ private[http] trait LiftMerge {
         htmlElement.minimizeEmpty,
         htmlKids.toList: _*)
 
-      val ret: Node = if (Props.devMode) {
-        LiftRules.xhtmlValidator.toList.flatMap(_(tmpRet)) match {
-          case Nil => tmpRet
-          case xs =>
-            import scala.xml.transform._
+      val ret: Node =
+        if (Props.devMode)
+          LiftRules.xhtmlValidator.toList.flatMap(_(tmpRet)) match {
+            case Nil => tmpRet
+            case xs =>
+              import scala.xml.transform._
 
-            val errors: NodeSeq =
-              xs.map(e =>
-                <div style="border: red solid 2px">XHTML Validation error:{
-                  e.msg
-                }at line{e.line + 1}and column{e.col}</div>)
+              val errors: NodeSeq =
+                xs.map(e =>
+                  <div style="border: red solid 2px">XHTML Validation error:{
+                    e.msg
+                  }at line{e.line + 1}and column{e.col}</div>)
 
-            val rule = new RewriteRule {
-              override def transform(n: Node) = n match {
-                case e: Elem if e.label == "body" =>
-                  e.copy(child = e.child ++ errors)
+              val rule = new RewriteRule {
+                override def transform(n: Node) = n match {
+                  case e: Elem if e.label == "body" =>
+                    e.copy(child = e.child ++ errors)
 
-                case x => super.transform(x)
+                  case x => super.transform(x)
+                }
               }
-            }
-            (new RuleTransformer(rule)).transform(tmpRet)(0)
-        }
-
-      } else tmpRet
+              (new RuleTransformer(rule)).transform(tmpRet)(0)
+          }
+        else tmpRet
 
       ret
     }

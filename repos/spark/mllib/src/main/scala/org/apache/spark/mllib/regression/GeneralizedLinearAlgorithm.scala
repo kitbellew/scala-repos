@@ -203,9 +203,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     * Generate the initial weights when the user does not supply them
     */
   protected def generateInitialWeights(input: RDD[LabeledPoint]): Vector = {
-    if (numFeatures < 0) {
+    if (numFeatures < 0)
       numFeatures = input.map(_.features.size).first()
-    }
 
     /**
       * When `numOfLinearPredictor > 1`, the intercepts are encapsulated into weights,
@@ -218,13 +217,12 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       * TODO: See if we can deprecate `intercept` in `GeneralizedLinearModel`, and always
       * have the intercept as part of weights to have consistent design.
       */
-    if (numOfLinearPredictor == 1) {
+    if (numOfLinearPredictor == 1)
       Vectors.zeros(numFeatures)
-    } else if (addIntercept) {
+    else if (addIntercept)
       Vectors.zeros((numFeatures + 1) * numOfLinearPredictor)
-    } else {
+    else
       Vectors.zeros(numFeatures * numOfLinearPredictor)
-    }
   }
 
   /**
@@ -244,20 +242,17 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
   @Since("1.0.0")
   def run(input: RDD[LabeledPoint], initialWeights: Vector): M = {
 
-    if (numFeatures < 0) {
+    if (numFeatures < 0)
       numFeatures = input.map(_.features.size).first()
-    }
 
-    if (input.getStorageLevel == StorageLevel.NONE) {
+    if (input.getStorageLevel == StorageLevel.NONE)
       logWarning(
         "The input data is not directly cached, which may hurt performance if its"
           + " parent RDDs are also uncached.")
-    }
 
     // Check the data properties before running the optimizer
-    if (validateData && !validators.forall(func => func(input))) {
+    if (validateData && !validators.forall(func => func(input)))
       throw new SparkException("Input validation failed.")
-    }
 
     /**
       * Scaling columns to unit variance as a heuristic to reduce the condition number:
@@ -278,31 +273,27 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       *
       * Currently, it's only enabled in LogisticRegressionWithLBFGS
       */
-    val scaler = if (useFeatureScaling) {
-      new StandardScaler(withStd = true, withMean = false)
-        .fit(input.map(_.features))
-    } else {
-      null
-    }
+    val scaler =
+      if (useFeatureScaling)
+        new StandardScaler(withStd = true, withMean = false)
+          .fit(input.map(_.features))
+      else
+        null
 
     // Prepend an extra variable consisting of all 1.0's for the intercept.
     // TODO: Apply feature scaling to the weight vector instead of input data.
     val data =
-      if (addIntercept) {
-        if (useFeatureScaling) {
+      if (addIntercept)
+        if (useFeatureScaling)
           input
             .map(lp => (lp.label, appendBias(scaler.transform(lp.features))))
             .cache()
-        } else {
+        else
           input.map(lp => (lp.label, appendBias(lp.features))).cache()
-        }
-      } else {
-        if (useFeatureScaling) {
-          input.map(lp => (lp.label, scaler.transform(lp.features))).cache()
-        } else {
-          input.map(lp => (lp.label, lp.features))
-        }
-      }
+      else if (useFeatureScaling)
+        input.map(lp => (lp.label, scaler.transform(lp.features))).cache()
+      else
+        input.map(lp => (lp.label, lp.features))
 
     /**
       * TODO: For better convergence, in logistic regression, the intercepts should be computed
@@ -310,29 +301,27 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       * the intercept should be set as the average of response.
       */
     val initialWeightsWithIntercept =
-      if (addIntercept && numOfLinearPredictor == 1) {
+      if (addIntercept && numOfLinearPredictor == 1)
         appendBias(initialWeights)
-      } else {
-
+      else
         /** If `numOfLinearPredictor > 1`, initialWeights already contains intercepts. */
         initialWeights
-      }
 
     val weightsWithIntercept =
       optimizer.optimize(data, initialWeightsWithIntercept)
 
-    val intercept = if (addIntercept && numOfLinearPredictor == 1) {
-      weightsWithIntercept(weightsWithIntercept.size - 1)
-    } else {
-      0.0
-    }
+    val intercept =
+      if (addIntercept && numOfLinearPredictor == 1)
+        weightsWithIntercept(weightsWithIntercept.size - 1)
+      else
+        0.0
 
-    var weights = if (addIntercept && numOfLinearPredictor == 1) {
-      Vectors.dense(
-        weightsWithIntercept.toArray.slice(0, weightsWithIntercept.size - 1))
-    } else {
-      weightsWithIntercept
-    }
+    var weights =
+      if (addIntercept && numOfLinearPredictor == 1)
+        Vectors.dense(
+          weightsWithIntercept.toArray.slice(0, weightsWithIntercept.size - 1))
+      else
+        weightsWithIntercept
 
     /**
       * The weights and intercept are trained in the scaled space; we're converting them back to
@@ -342,10 +331,10 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       * will not be changed. w_i = w_i' / v_i where w_i' is the coefficient in the scaled space, w_i
       * is the coefficient in the original space, and v_i is the variance of the column i.
       */
-    if (useFeatureScaling) {
-      if (numOfLinearPredictor == 1) {
+    if (useFeatureScaling)
+      if (numOfLinearPredictor == 1)
         weights = scaler.transform(weights)
-      } else {
+      else {
 
         /**
           * For `numOfLinearPredictor > 1`, we have to transform the weights back to the original
@@ -373,19 +362,16 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
         }
         weights = Vectors.dense(weightsArray)
       }
-    }
 
     // Warn at the end of the run as well, for increased visibility.
-    if (input.getStorageLevel == StorageLevel.NONE) {
+    if (input.getStorageLevel == StorageLevel.NONE)
       logWarning(
         "The input data was not directly cached, which may hurt performance if its"
           + " parent RDDs are also uncached.")
-    }
 
     // Unpersist cached data
-    if (data.getStorageLevel != StorageLevel.NONE) {
+    if (data.getStorageLevel != StorageLevel.NONE)
       data.unpersist(false)
-    }
 
     createModel(weights, intercept)
   }

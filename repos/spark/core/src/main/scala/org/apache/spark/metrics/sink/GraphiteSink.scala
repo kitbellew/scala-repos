@@ -46,13 +46,11 @@ private[spark] class GraphiteSink(
   def propertyToOption(prop: String): Option[String] =
     Option(property.getProperty(prop))
 
-  if (!propertyToOption(GRAPHITE_KEY_HOST).isDefined) {
+  if (!propertyToOption(GRAPHITE_KEY_HOST).isDefined)
     throw new Exception("Graphite sink requires 'host' property.")
-  }
 
-  if (!propertyToOption(GRAPHITE_KEY_PORT).isDefined) {
+  if (!propertyToOption(GRAPHITE_KEY_PORT).isDefined)
     throw new Exception("Graphite sink requires 'port' property.")
-  }
 
   val host = propertyToOption(GRAPHITE_KEY_HOST).get
   val port = propertyToOption(GRAPHITE_KEY_PORT).get.toInt

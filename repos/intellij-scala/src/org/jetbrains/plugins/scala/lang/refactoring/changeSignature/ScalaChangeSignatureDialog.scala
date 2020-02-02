@@ -245,14 +245,13 @@ class ScalaChangeSignatureDialog(
     val paramItems = parameterItems
     val problems = ListBuffer[String]()
 
-    if (myReturnTypeCodeFragment != null) {
+    if (myReturnTypeCodeFragment != null)
       if (myReturnTypeCodeFragment.getText.isEmpty)
         problems += RefactoringBundle.message("changeSignature.no.return.type")
       else if (returnTypeText.isEmpty)
         problems += RefactoringBundle.message(
           "changeSignature.wrong.return.type",
           myReturnTypeCodeFragment.getText)
-    }
 
     val paramNames = paramItems.map(_.parameter.name)
     val names =
@@ -267,11 +266,9 @@ class ScalaChangeSignatureDialog(
       (name, idx) <- namesWithIndices
       (name2, idx2) <- namesWithIndices
       if name == name2 && idx < idx2
-    } {
-      problems += ScalaBundle.message(
-        "change.signature.parameters.same.name.{0}",
-        name)
-    }
+    } problems += ScalaBundle.message(
+      "change.signature.parameters.same.name.{0}",
+      name)
     paramItems.foreach(_.updateType(problems))
 
     paramItems.foreach {
@@ -289,7 +286,7 @@ class ScalaChangeSignatureDialog(
   }
 
   protected override def doValidate(): ValidationInfo = {
-    if (!getTableComponent.isEditing) {
+    if (!getTableComponent.isEditing)
       for {
         item <- parameterItems
         if item.parameter.oldIndex < 0 && StringUtil.isEmpty(
@@ -301,18 +298,16 @@ class ScalaChangeSignatureDialog(
           s"Default value is missing. $stuff will contain blanks instead of the new parameter value."
         return new ValidationInfo(message)
       }
-    }
     super.doValidate()
   }
 
   override def updateSignatureAlarmFired(): Unit = {
     super.updateSignatureAlarmFired()
 
-    if (getDefaultValuesPanel != null) {
+    if (getDefaultValuesPanel != null)
       if (parameterItems.exists(_.typeText.endsWith("*")))
         getDefaultValuesPanel.forceIsModifyCalls()
       else getDefaultValuesPanel.release()
-    }
   }
 
   override def dispose(): Unit = {

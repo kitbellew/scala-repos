@@ -19,9 +19,8 @@ object AccumulatorSpec extends Specification {
 
   def withMaterializer[T](block: Materializer => T) = {
     val system = ActorSystem("test")
-    try {
-      block(ActorMaterializer()(system))
-    } finally {
+    try block(ActorMaterializer()(system))
+    finally {
       system.terminate()
       Await.result(system.whenTerminated, Duration.Inf)
     }

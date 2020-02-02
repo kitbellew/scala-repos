@@ -62,9 +62,9 @@ class ObservableBufferSpec[T]
       generatedBuffer: Buffer[_],
       originalBuffer: ObservableBuffer[_],
       shouldBeTheSame: Boolean) {
-    if (shouldBeTheSame) {
+    if (shouldBeTheSame)
       generatedBuffer should be theSameInstanceAs originalBuffer
-    } else {
+    else {
       generatedBuffer should not be theSameInstanceAs(originalBuffer)
       generatedBuffer.getClass should be(classOf[ObservableBuffer[_]])
     }
@@ -391,9 +391,8 @@ class ObservableBufferSpec[T]
           changeCount += 1
           start should equal(0)
           end should equal(6)
-          for (i <- 0 until 5) {
+          for (i <- 0 until 5)
             permutation(i) should equal(5 - i)
-          }
         case _ @otherChange => fail(otherChange.toString)
       }
     }
@@ -415,9 +414,8 @@ class ObservableBufferSpec[T]
           changeCount += 1
           start should equal(0)
           end should equal(6)
-          for (i <- 0 until 5) {
+          for (i <- 0 until 5)
             permutation(i) should equal(5 - i)
-          }
         case _ @otherChange => fail(otherChange.toString)
       }
     }
@@ -450,9 +448,8 @@ class ObservableBufferSpec[T]
           changeCount += 1
           start should equal(0)
           end should equal(6)
-          for (i <- 0 until 5) {
+          for (i <- 0 until 5)
             permutation(i) should equal(i)
-          }
         case _ @otherChange => fail(otherChange.toString)
       }
     }

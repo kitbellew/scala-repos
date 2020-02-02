@@ -131,9 +131,10 @@ abstract class Duplicators extends Analyzer {
     def fixType(tpe: Type): Type = {
       val tpe1 = envSubstitution(tpe)
       val tpe2: Type = (new FixInvalidSyms)(tpe1)
-      val tpe3 = if (newClassOwner ne null) {
-        tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
-      } else tpe2
+      val tpe3 =
+        if (newClassOwner ne null)
+          tpe2.asSeenFrom(newClassOwner.thisType, oldClassOwner)
+        else tpe2
       tpe3
     }
 

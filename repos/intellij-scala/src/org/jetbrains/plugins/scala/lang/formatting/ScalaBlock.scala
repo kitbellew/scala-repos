@@ -84,11 +84,11 @@ class ScalaBlock(
         })
     parent match {
       case m: ScMatchStmt =>
-        if (m.caseClauses.length == 0) {
+        if (m.caseClauses.length == 0)
           new ChildAttributes(
             if (braceShifted) Indent.getNoneIndent else Indent.getNormalIndent,
             null)
-        } else {
+        else {
           val indent =
             if (mySettings.INDENT_CASE_FROM_SWITCH)
               Indent.getSpaceIndent(2 * indentSize)
@@ -207,11 +207,10 @@ class ScalaBlock(
 
   def getSubBlocks: util.List[Block] = {
     import scala.collection.JavaConversions._
-    if (mySubBlocks == null) {
+    if (mySubBlocks == null)
       mySubBlocks = getDummyBlocks(myNode, myLastNode, this).filterNot {
         _.asInstanceOf[ScalaBlock].getNode.getElementType == ScalaTokenTypes.tWHITE_SPACE_IN_LINE
       }
-    }
     mySubBlocks
   }
 
@@ -225,15 +224,12 @@ class ScalaBlock(
     var lastChild = node.getLastChildNode
     while (lastChild != null &&
            (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi
-             .isInstanceOf[PsiComment])) {
+             .isInstanceOf[PsiComment]))
       lastChild = lastChild.getTreePrev
-    }
-    if (lastChild == null) {
+    if (lastChild == null)
       return false
-    }
-    if (lastChild.getPsi.isInstanceOf[PsiErrorElement]) {
+    if (lastChild.getPsi.isInstanceOf[PsiErrorElement])
       return true
-    }
     isIncomplete(lastChild)
   }
 

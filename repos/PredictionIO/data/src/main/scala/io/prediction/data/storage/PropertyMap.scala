@@ -47,15 +47,13 @@ class PropertyMap(
     ) + lastUpdated.hashCode
 
   override def equals(other: Any): Boolean = other match {
-    case that: PropertyMap => {
+    case that: PropertyMap =>
       (that.canEqual(this)) &&
-      (super.equals(that)) &&
-      (this.firstUpdated.equals(that.firstUpdated)) &&
-      (this.lastUpdated.equals(that.lastUpdated))
-    }
-    case that: DataMap => { // for testing purpose
+        (super.equals(that)) &&
+        (this.firstUpdated.equals(that.firstUpdated)) &&
+        (this.lastUpdated.equals(that.lastUpdated))
+    case that: DataMap => // for testing purpose
       super.equals(that)
-    }
     case _ => false
   }
 

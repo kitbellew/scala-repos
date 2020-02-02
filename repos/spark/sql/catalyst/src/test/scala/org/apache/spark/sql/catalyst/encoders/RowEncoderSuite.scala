@@ -32,9 +32,8 @@ class ExamplePoint(val x: Double, val y: Double) extends Serializable {
       val e = that.asInstanceOf[ExamplePoint]
       (this.x == e.x || (this.x.isNaN && e.x.isNaN) || (this.x.isInfinity && e.x.isInfinity)) &&
       (this.y == e.y || (this.y.isNaN && e.y.isNaN) || (this.y.isInfinity && e.y.isInfinity))
-    } else {
+    } else
       false
-    }
 }
 
 /**
@@ -56,9 +55,9 @@ class ExamplePointUDT extends UserDefinedType[ExamplePoint] {
   override def deserialize(datum: Any): ExamplePoint =
     datum match {
       case values: ArrayData =>
-        if (values.numElements() > 1) {
+        if (values.numElements() > 1)
           new ExamplePoint(values.getDouble(0), values.getDouble(1))
-        } else {
+        else {
           val random = new Random()
           new ExamplePoint(random.nextDouble(), random.nextDouble())
         }
@@ -153,13 +152,11 @@ class RowEncoderSuite extends SparkFunSuite {
         RandomDataGenerator.forType(schema, nullable = false).get
 
       var input: Row = null
-      try {
-        for (_ <- 1 to 5) {
-          input = inputGenerator.apply().asInstanceOf[Row]
-          val row = encoder.toRow(input)
-          val convertedBack = encoder.fromRow(row)
-          assert(input == convertedBack)
-        }
+      try for (_ <- 1 to 5) {
+        input = inputGenerator.apply().asInstanceOf[Row]
+        val row = encoder.toRow(input)
+        val convertedBack = encoder.fromRow(row)
+        assert(input == convertedBack)
       } catch {
         case e: Exception =>
           fail(

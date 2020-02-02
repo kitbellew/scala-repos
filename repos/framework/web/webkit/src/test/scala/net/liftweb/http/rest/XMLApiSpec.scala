@@ -88,7 +88,7 @@ object XmlApiSpec extends Specification {
   case class matchXmlResponse(expected: Node) extends Matcher[LiftResponse] {
     def apply[T <: LiftResponse](response: org.specs2.matcher.Expectable[T]) =
       response.value match {
-        case x: XmlResponse => {
+        case x: XmlResponse =>
           /* For some reason, the UnprefixedAttributes that Lift uses to merge in
            * new attributes makes comparison fail. Instead, we simply stringify and
            * reparse the response contents and that seems to fix the issue. */
@@ -98,7 +98,6 @@ object XmlApiSpec extends Specification {
             "%s matches %s".format(converted, expected),
             "%s does not match %s".format(converted, expected),
             response)
-        }
         case other => result(false, "matches", "not an XmlResponse", response)
       }
   }
@@ -127,10 +126,9 @@ object XmlApiSpec extends Specification {
 
       failure must haveClass[XmlResponse]
       failure match {
-        case x: XmlResponse => {
+        case x: XmlResponse =>
           x.xml.attribute("success").map(_.text) must_== Some("false")
           x.xml.attribute("msg").isDefined must_== true
-        }
       }
     }
 

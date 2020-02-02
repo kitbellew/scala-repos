@@ -31,10 +31,7 @@ trait LocalSparkContext {
     val conf = new SparkConf()
     GraphXUtils.registerKryoClasses(conf)
     val sc = new SparkContext("local", "test", conf)
-    try {
-      f(sc)
-    } finally {
-      sc.stop()
-    }
+    try f(sc)
+    finally sc.stop()
   }
 }

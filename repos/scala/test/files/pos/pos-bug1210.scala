@@ -15,8 +15,6 @@ object Test {
 
     def g: List[selfType] = Nil
 
-    {
-      f[selfType](_.g)
-    }
+    f[selfType](_.g)
   }
 }

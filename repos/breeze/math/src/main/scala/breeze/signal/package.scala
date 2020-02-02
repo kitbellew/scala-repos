@@ -63,21 +63,21 @@ package object signal {
         "If fs and dt are both specified, fs == 1.0/dt must be true. Otherwise, they are incompatible")
     val realFs = if (fs < 0 && dt > 0) 1d / dt else fs
 
-    val shiftedFreq = if (isEven(windowLength)) {
-      DenseVector.vertcat(
-        DenseVector.tabulate(0 to windowLength / 2 - 1)((i: Int) =>
-          i.toDouble * realFs / windowLength.toDouble),
-        DenseVector.tabulate(-windowLength / 2 to -1)((i: Int) =>
-          i.toDouble * realFs / windowLength.toDouble)
-      )
-    } else {
-      DenseVector.vertcat(
-        DenseVector.tabulate(0 to (windowLength - 1) / 2)((i: Int) =>
-          i.toDouble * realFs / windowLength.toDouble),
-        DenseVector.tabulate(-(windowLength - 1) / 2 to -1)((i: Int) =>
-          i.toDouble * realFs / windowLength.toDouble)
-      )
-    }
+    val shiftedFreq =
+      if (isEven(windowLength))
+        DenseVector.vertcat(
+          DenseVector.tabulate(0 to windowLength / 2 - 1)((i: Int) =>
+            i.toDouble * realFs / windowLength.toDouble),
+          DenseVector.tabulate(-windowLength / 2 to -1)((i: Int) =>
+            i.toDouble * realFs / windowLength.toDouble)
+        )
+      else
+        DenseVector.vertcat(
+          DenseVector.tabulate(0 to (windowLength - 1) / 2)((i: Int) =>
+            i.toDouble * realFs / windowLength.toDouble),
+          DenseVector.tabulate(-(windowLength - 1) / 2 to -1)((i: Int) =>
+            i.toDouble * realFs / windowLength.toDouble)
+        )
     if (shifted) fourierShift(shiftedFreq) else shiftedFreq
   }
 

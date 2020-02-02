@@ -91,9 +91,7 @@ object Main {
     } catch {
       case e: Throwable =>
         client.trace(e)
-    } finally {
-      System.setOut(oldOut)
-    }
+    } finally System.setOut(oldOut)
   }
 
   private def cancelShutdown() =

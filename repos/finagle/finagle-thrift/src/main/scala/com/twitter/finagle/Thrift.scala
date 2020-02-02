@@ -215,13 +215,12 @@ object Thrift
       // classifier is used to make when deserialization happens in the stack
       // uniform whether or not a `ResponseClassifier` is wired up.
       val classifier =
-        if (params.contains[com.twitter.finagle.param.ResponseClassifier]) {
+        if (params.contains[com.twitter.finagle.param.ResponseClassifier])
           ThriftResponseClassifier.usingDeserializeCtx(
             params[com.twitter.finagle.param.ResponseClassifier].responseClassifier
           )
-        } else {
+        else
           ThriftResponseClassifier.DeserializeCtxOnly
-        }
       configured(com.twitter.finagle.param.ResponseClassifier(classifier))
     }
 

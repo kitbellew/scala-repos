@@ -41,9 +41,9 @@ object ResolveProcessor {
       place: PsiElement): String = {
     def defaultForTypeAlias(t: ScTypeAlias): String =
       if (t.getParent
-            .isInstanceOf[ScTemplateBody] && t.containingClass != null) {
+            .isInstanceOf[ScTemplateBody] && t.containingClass != null)
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
-      } else null
+      else null
 
     result.getActualElement match {
       case c: ScTypeParam => null
@@ -80,9 +80,8 @@ class ResolveProcessor(
   @volatile
   private var resolveScope: GlobalSearchScope = null
   def getResolveScope: GlobalSearchScope = {
-    if (resolveScope == null) {
+    if (resolveScope == null)
       resolveScope = ref.getResolveScope
-    }
     resolveScope
   }
 
@@ -128,9 +127,8 @@ class ResolveProcessor(
 
     def update: Boolean = {
       val iterator = levelSet.iterator()
-      while (iterator.hasNext) {
+      while (iterator.hasNext)
         candidatesSet += iterator.next()
-      }
       qualifiedNamesSet.addAll(levelQualifiedNamesSet)
       levelSet.clear()
       levelQualifiedNamesSet.clear()
@@ -230,18 +228,16 @@ class ResolveProcessor(
   override def candidatesS: Set[ScalaResolveResult] = {
     var res = candidatesSet
     val iterator = levelSet.iterator()
-    while (iterator.hasNext) {
+    while (iterator.hasNext)
       res += iterator.next()
-    }
     if (!compareWithIgnoredSet(res)) {
       res.clear()
       restartFromHistory()
       //now let's add everything again
       res = candidatesSet
       val iterator = levelSet.iterator()
-      while (iterator.hasNext) {
+      while (iterator.hasNext)
         res += iterator.next()
-      }
     }
 
     /*

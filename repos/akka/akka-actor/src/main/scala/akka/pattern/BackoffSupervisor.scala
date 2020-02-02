@@ -269,9 +269,8 @@ private[akka] trait HandleBackoff { this: Actor ⇒
   override def preStart(): Unit = startChild()
 
   def startChild(): Unit =
-    if (child.isEmpty) {
+    if (child.isEmpty)
       child = Some(context.watch(context.actorOf(childProps, childName)))
-    }
 
   def handleBackoff: Receive = {
     case StartChild ⇒

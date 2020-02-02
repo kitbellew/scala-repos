@@ -507,9 +507,8 @@ class CleanerTester(
           "The following resources were not cleaned up:\n" + uncleanedResourcesToString)
       }
       postCleanupValidate()
-    } finally {
-      logInfo("Resources left from cleaning up:\n" + uncleanedResourcesToString)
-    }
+    } finally logInfo(
+      "Resources left from cleaning up:\n" + uncleanedResourcesToString)
   }
 
   /** Verify that RDDs, shuffles, etc. occupy resources */

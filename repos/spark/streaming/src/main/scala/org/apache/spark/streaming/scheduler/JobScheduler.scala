@@ -96,10 +96,9 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     if (eventLoop == null) return // scheduler has already been stopped
     logDebug("Stopping JobScheduler")
 
-    if (receiverTracker != null) {
+    if (receiverTracker != null)
       // First, stop receiving
       receiverTracker.stop(processAllReceivedData)
-    }
 
     // Second, stop generating jobs. If it has to process all received data,
     // then this will wait for all the processing through JobScheduler to be over.
@@ -110,15 +109,17 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     jobExecutor.shutdown()
 
     // Wait for the queued jobs to complete if indicated
-    val terminated = if (processAllReceivedData) {
-      jobExecutor
-        .awaitTermination(1, TimeUnit.HOURS) // just a very large period of time
-    } else {
-      jobExecutor.awaitTermination(2, TimeUnit.SECONDS)
-    }
-    if (!terminated) {
+    val terminated =
+      if (processAllReceivedData)
+        jobExecutor
+          .awaitTermination(
+            1,
+            TimeUnit.HOURS
+          ) // just a very large period of time
+      else
+        jobExecutor.awaitTermination(2, TimeUnit.SECONDS)
+    if (!terminated)
       jobExecutor.shutdownNow()
-    }
     logDebug("Stopped job executor")
 
     // Stop everything else
@@ -129,9 +130,9 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
   }
 
   def submitJobSet(jobSet: JobSet) {
-    if (jobSet.jobs.isEmpty) {
+    if (jobSet.jobs.isEmpty)
       logInfo("No jobs added for time " + jobSet.time)
-    } else {
+    else {
       listenerBus.post(StreamingListenerBatchSubmitted(jobSet.toBatchInfo))
       jobSets.put(jobSet.time, jobSet)
       jobSet.jobs.foreach(job => jobExecutor.execute(new JobHandler(job)))
@@ -151,13 +152,11 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
   }
 
   private def processEvent(event: JobSchedulerEvent) {
-    try {
-      event match {
-        case JobStarted(job, startTime) => handleJobStart(job, startTime)
-        case JobCompleted(job, completedTime) =>
-          handleJobCompletion(job, completedTime)
-        case ErrorReported(m, e) => handleError(m, e)
-      }
+    try event match {
+      case JobStarted(job, startTime) => handleJobStart(job, startTime)
+      case JobCompleted(job, completedTime) =>
+        handleJobCompletion(job, completedTime)
+      case ErrorReported(m, e) => handleError(m, e)
     } catch {
       case e: Throwable =>
         reportError("Error in job scheduler", e)
@@ -168,11 +167,10 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     val jobSet = jobSets.get(job.time)
     val isFirstJobOfJobSet = !jobSet.hasStarted
     jobSet.handleJobStart(job)
-    if (isFirstJobOfJobSet) {
+    if (isFirstJobOfJobSet)
       // "StreamingListenerBatchStarted" should be posted after calling "handleJobStart" to get the
       // correct "jobSet.processingStartTime".
       listenerBus.post(StreamingListenerBatchStarted(jobSet.toBatchInfo))
-    }
     job.setStartTime(startTime)
     listenerBus.post(
       StreamingListenerOutputOperationStarted(job.toOutputOperationInfo))
@@ -247,9 +245,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
             job.run()
           }
           _eventLoop = eventLoop
-          if (_eventLoop != null) {
+          if (_eventLoop != null)
             _eventLoop.post(JobCompleted(job, clock.getTimeMillis()))
-          }
         } else {
           // JobScheduler has been stopped.
         }

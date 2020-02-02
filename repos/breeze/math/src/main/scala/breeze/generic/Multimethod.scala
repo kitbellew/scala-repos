@@ -41,9 +41,9 @@ trait Multimethod[Method, A <: AnyRef, R] extends MMRegistry1[Method] {
     val ac = a.asInstanceOf[AnyRef].getClass
 
     val cached = cache.get(ac)
-    if (cached != null) {
+    if (cached != null)
       doMethod(cached.asInstanceOf, a)
-    } else {
+    else {
       val options = resolve(ac)
       options.size match {
         case 0 => bindingMissing(a)
@@ -53,9 +53,9 @@ trait Multimethod[Method, A <: AnyRef, R] extends MMRegistry1[Method] {
           doMethod(method, a)
         case _ =>
           val selected = selectBestOption(options)
-          if (selected.size != 1) {
+          if (selected.size != 1)
             multipleOptions(a, options)
-          } else {
+          else {
             val method = selected.values.head
             cache.put(ac, method)
             doMethod(method, a)
@@ -95,13 +95,13 @@ trait Multimethod2[Method[AA, BB, RR] <: Function2[AA, BB, RR], A, B, R]
     val bc = b.asInstanceOf[AnyRef].getClass
 
     val cached = cache.get(ac -> bc)
-    if (cached != null) {
+    if (cached != null)
       cached match {
         case None => bindingMissing(a, b)
         case Some(m) =>
           m.asInstanceOf[Method[A, B, R]].apply(a, b)
       }
-    } else {
+    else {
       val options = resolve(ac, bc.asInstanceOf[Class[_ <: B]])
       options.size match {
         case 0 =>
@@ -155,13 +155,13 @@ trait Multiproc2[Method[AA, BB] <: (AA, BB) => Unit, A <: AnyRef, B]
     val bc = b.asInstanceOf[AnyRef].getClass
 
     val cached = cache.get(ac -> bc)
-    if (cached != null) {
+    if (cached != null)
       cached match {
         case None => bindingMissing(a, b)
         case Some(m) =>
           m.asInstanceOf[Method[A, B]].apply(a, b)
       }
-    } else {
+    else {
       val m = resolve(
         a.getClass,
         b.asInstanceOf[AnyRef].getClass.asInstanceOf[Class[_ <: B]])
@@ -203,16 +203,14 @@ trait MMRegistry2[R] {
 
   def register(a: Class[_], b: Class[_], op: R) {
     ops(a -> b) = op
-    if (b.isPrimitive) {
+    if (b.isPrimitive)
       ops(a -> ReflectionUtil.boxedFromPrimitive(b)) = op
-    }
     if (a.isPrimitive) {
       ops(ReflectionUtil.boxedFromPrimitive(a) -> b) = op
-      if (b.isPrimitive) {
+      if (b.isPrimitive)
         ops(
           ReflectionUtil.boxedFromPrimitive(a) -> ReflectionUtil
             .boxedFromPrimitive(b)) = op
-      }
     }
     cache.clear()
   }
@@ -225,14 +223,11 @@ trait MMRegistry2[R] {
       val t = queue.dequeue()
       result += t
       val s = t.getSuperclass
-      if (s != null) {
+      if (s != null)
         queue += s
-      }
-      for (i <- t.getInterfaces) {
-        if (!result(i)) {
+      for (i <- t.getInterfaces)
+        if (!result(i))
           queue += i
-        }
-      }
     }
     result
   }
@@ -244,9 +239,8 @@ trait MMRegistry2[R] {
         val sa = closeSupertypes(a)
         val sb = closeSupertypes(b)
         val candidates = ArrayBuffer[((Class[_], Class[_]), R)]()
-        for (aa <- sa; bb <- sb; op <- ops.get(aa -> bb)) {
+        for (aa <- sa; bb <- sb; op <- ops.get(aa -> bb))
           candidates += ((aa -> bb) -> op)
-        }
         candidates.toMap[(Class[_], Class[_]), R]
     }
 
@@ -255,7 +249,7 @@ trait MMRegistry2[R] {
    **/
   protected def selectBestOption(options: Map[(Class[_], Class[_]), R]) = {
     var bestCandidates = Set[(Class[_], Class[_])]()
-    for (pair @ (aa, bb) <- options.keys) {
+    for (pair @ (aa, bb) <- options.keys)
       // if there is no option (aaa,bbb) s.t. aaa <: aa && bbb <: bb, then add it to the list
       if (!bestCandidates.exists(pair =>
             aa.isAssignableFrom(pair._1) && bb.isAssignableFrom(pair._2))) {
@@ -263,7 +257,6 @@ trait MMRegistry2[R] {
           pair._1.isAssignableFrom(aa) && pair._2.isAssignableFrom(bb))
         bestCandidates += pair
       }
-    }
 
     options.filterKeys(bestCandidates)
   }
@@ -282,10 +275,8 @@ trait MMRegistry3[R] {
       if (a.isPrimitive) Seq(a, ReflectionUtil.boxedFromPrimitive(a))
       else Seq(a)
 
-    for (ac <- choicesFor(a); bc <- choicesFor(b); cc <- choicesFor(c)) {
+    for (ac <- choicesFor(a); bc <- choicesFor(b); cc <- choicesFor(c))
       ops((ac, bc, cc)) = op
-
-    }
 
     cache.clear()
   }
@@ -298,14 +289,11 @@ trait MMRegistry3[R] {
       val t = queue.dequeue()
       result += t
       val s = t.getSuperclass
-      if (s != null) {
+      if (s != null)
         queue += s
-      }
-      for (i <- t.getInterfaces) {
-        if (!result(i)) {
+      for (i <- t.getInterfaces)
+        if (!result(i))
           queue += i
-        }
-      }
     }
     result
   }
@@ -321,9 +309,8 @@ trait MMRegistry3[R] {
         val sb = closeSupertypes(b)
         val sc = closeSupertypes(c)
         val candidates = ArrayBuffer[((Class[_], Class[_], Class[_]), R)]()
-        for (aa <- sa; bb <- sb; cc <- sc; op <- ops.get((aa, bb, cc))) {
+        for (aa <- sa; bb <- sb; cc <- sc; op <- ops.get((aa, bb, cc)))
           candidates += ((aa, bb, cc) -> op)
-        }
         candidates.toMap[(Class[_], Class[_], Class[_]), R]
     }
 
@@ -333,7 +320,7 @@ trait MMRegistry3[R] {
   protected def selectBestOption(
       options: Map[(Class[_], Class[_], Class[_]), R]) = {
     var bestCandidates = Set[(Class[_], Class[_], Class[_])]()
-    for (pair @ (aa, bb, cc) <- options.keys) {
+    for (pair @ (aa, bb, cc) <- options.keys)
       // if there is no option (aaa,bbb) s.t. aaa <: aa && bbb <: bb, then add it to the list
       if (!bestCandidates.exists(pair =>
             aa.isAssignableFrom(pair._1) && bb.isAssignableFrom(pair._2)) && cc
@@ -343,7 +330,6 @@ trait MMRegistry3[R] {
             .isAssignableFrom(bb) && pair._3.isAssignableFrom(cc))
         bestCandidates += pair
       }
-    }
 
     options.filterKeys(bestCandidates)
   }
@@ -355,9 +341,8 @@ trait MMRegistry1[M] {
 
   def register(a: Class[_], op: M) {
     ops(a) = op
-    if (a.isPrimitive) {
+    if (a.isPrimitive)
       ops(ReflectionUtil.boxedFromPrimitive(a)) = op
-    }
     cache.clear()
   }
 
@@ -370,9 +355,7 @@ trait MMRegistry1[M] {
         val newCA = checkedA ++ a.getInterfaces
         val sa = a.getSuperclass +: a.getInterfaces.filterNot(checkedA)
         val allParents =
-          for (aa <- sa; if aa != null; m <- resolve(aa, newCA)) yield {
-            m
-          }
+          for (aa <- sa; if aa != null; m <- resolve(aa, newCA)) yield m
         allParents.toMap
     }
 
@@ -381,13 +364,12 @@ trait MMRegistry1[M] {
    **/
   protected def selectBestOption(options: Map[Class[_], M]) = {
     var bestCandidates = Set[Class[_]]()
-    for (aa <- options.keys) {
+    for (aa <- options.keys)
       // if there is no option (aaa,bbb) s.t. aaa <: aa && bbb <: bb, then add it to the list
       if (!bestCandidates.exists(c => aa.isAssignableFrom(c))) {
         bestCandidates = bestCandidates.filterNot(c => c.isAssignableFrom(aa))
         bestCandidates += aa
       }
-    }
 
     options.filterKeys(bestCandidates)
   }

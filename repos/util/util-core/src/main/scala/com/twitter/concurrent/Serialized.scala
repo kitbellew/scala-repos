@@ -28,11 +28,9 @@ trait Serialized {
 
     serializedQueue add { Job(result, () => f) }
 
-    if (nwaiters.getAndIncrement() == 0) {
-      do {
-        Try { serializedQueue.remove()() }
-      } while (nwaiters.decrementAndGet() > 0)
-    }
+    if (nwaiters.getAndIncrement() == 0)
+      do Try { serializedQueue.remove()() } while (nwaiters
+        .decrementAndGet() > 0)
 
     result
   }

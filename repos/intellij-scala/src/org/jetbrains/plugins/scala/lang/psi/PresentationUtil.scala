@@ -99,9 +99,8 @@ object PresentationUtil {
         }
         if (lastSize != buffer.length) buffer.append(" ")
         val name = param.name
-        if (name != null) {
+        if (name != null)
           buffer.append(name)
-        }
         buffer.append(": ")
         buffer.append(
           presentationString(param.getType, substitutor)
@@ -112,9 +111,8 @@ object PresentationUtil {
         fun.getParent match {
           case body: ScTemplateBody if fun.containingClass != null =>
             val qual = fun.containingClass.qualifiedName
-            if (qual != null) {
+            if (qual != null)
               buffer.append(qual).append(".")
-            }
           case _ =>
         }
         buffer.append(fun.name)

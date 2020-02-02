@@ -121,10 +121,9 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
     val topicMetricRegex = new Regex(".*(" + topic + ")$")
     val metricGroups =
       Metrics.defaultRegistry().groupedMetrics(MetricPredicate.ALL).entrySet()
-    for (metricGroup <- metricGroups) {
+    for (metricGroup <- metricGroups)
       if (topicMetricRegex.pattern.matcher(metricGroup.getKey()).matches)
         return true
-    }
     false
   }
 }

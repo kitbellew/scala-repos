@@ -237,7 +237,7 @@ class ConcurrentMemory(
             }
             cast(go(prod, service))
 
-          case Summer(producer, store, sg) => {
+          case Summer(producer, store, sg) =>
             def go[K, V](
                 in: Prod[(K, V)],
                 str: Store[K, V],
@@ -247,7 +247,6 @@ class ConcurrentMemory(
               (planned + (that -> phys), phys)
             }
             cast(go(producer, store, sg))
-          }
 
           case other =>
             sys.error(

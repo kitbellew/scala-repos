@@ -5,17 +5,15 @@ object Test extends App {
 
   val lb0 = newLB
 
-  try {
-    lb0.insert(9, 'x)
-  } catch {
+  try lb0.insert(9, 'x)
+  catch {
     case ex: IndexOutOfBoundsException => println(ex)
   }
 
   val lb1 = newLB
 
-  try {
-    lb1.insert(9, 'x)
-  } catch {
+  try lb1.insert(9, 'x)
+  catch {
     case ex: IndexOutOfBoundsException =>
   }
 

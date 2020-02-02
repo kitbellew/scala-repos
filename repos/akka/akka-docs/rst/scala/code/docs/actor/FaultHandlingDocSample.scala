@@ -161,7 +161,7 @@ class CounterService extends Actor {
     storage = Some(
       context.watch(context.actorOf(Props[Storage], name = "storage")))
     // Tell the counter, if any, to use the new storage
-    counter foreach { _ ! UseStorage(storage) }
+    counter foreach _ ! UseStorage(storage)
     // We need the initial value to be able to operate
     storage.get ! Get(key)
   }
@@ -187,7 +187,7 @@ class CounterService extends Actor {
       // We receive Terminated because we watch the child, see initStorage.
       storage = None
       // Tell the counter that there is no storage for the moment
-      counter foreach { _ ! UseStorage(None) }
+      counter foreach _ ! UseStorage(None)
       // Try to re-establish storage after while
       context.system.scheduler.scheduleOnce(10 seconds, self, Reconnect)
 
@@ -248,7 +248,7 @@ class Counter(key: String, initialValue: Long) extends Actor {
   def storeCount() {
     // Delegate dangerous work, to protect our valuable state.
     // We can continue without storage.
-    storage foreach { _ ! Store(Entry(key, count)) }
+    storage foreach _ ! Store(Entry(key, count))
   }
 
 }

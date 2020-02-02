@@ -163,9 +163,9 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     */
   @scala.annotation.varargs
   def load(paths: String*): DataFrame =
-    if (paths.isEmpty) {
+    if (paths.isEmpty)
       sqlContext.emptyDataFrame
-    } else {
+    else
       sqlContext.baseRelationToDataFrame(
         DataSource
           .apply(
@@ -175,7 +175,6 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
             className = source,
             options = extraOptions.toMap)
           .resolveRelation())
-    }
 
   /**
     * Loads input data stream in as a [[DataFrame]], for data streams that don't require a path

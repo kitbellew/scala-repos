@@ -120,7 +120,7 @@ private[akka] object MultiStreamOutputProcessor {
       subscriptionTimeout.cancel()
       if (state.compareAndSet(Open, Attached(s)))
         actor ! SubstreamSubscribe(key, s)
-      else {
+      else
         state.get() match {
           case _: Attached | Cancelled ⇒
             rejectAdditionalSubscriber(s, "Substream publisher")
@@ -131,7 +131,6 @@ private[akka] object MultiStreamOutputProcessor {
             throw new IllegalStateException(
               "Publisher cannot become open after being used before")
         }
-      }
     }
 
     def attachSubscriber(s: Subscriber[Any]): Unit =

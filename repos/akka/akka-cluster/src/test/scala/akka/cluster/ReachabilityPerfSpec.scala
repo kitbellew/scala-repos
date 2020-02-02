@@ -52,19 +52,17 @@ class ReachabilityPerfSpec extends WordSpec with Matchers {
       r2: Reachability,
       thunk: (Reachability, Reachability) ⇒ Unit,
       times: Int): Unit =
-    for (i ← 1 to times) {
+    for (i ← 1 to times)
       thunk(
         Reachability(r1.records, r1.versions),
         Reachability(r2.records, r2.versions))
-    }
 
   private def checkThunkFor(
       r1: Reachability,
       thunk: Reachability ⇒ Unit,
       times: Int): Unit =
-    for (i ← 1 to times) {
+    for (i ← 1 to times)
       thunk(Reachability(r1.records, r1.versions))
-    }
 
   private def merge(
       expectedRecords: Int)(r1: Reachability, r2: Reachability): Unit =

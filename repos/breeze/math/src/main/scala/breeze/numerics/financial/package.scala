@@ -20,9 +20,9 @@ package object financial {
       presentValue: Double,
       when: PaymentTime = End): Double = {
     require(numPeriods >= 0)
-    if (rate == 0) {
+    if (rate == 0)
       -1 * (presentValue + payment * numPeriods)
-    } else {
+    else {
       val fromPv = presentValue * math.pow(1.0 + rate, numPeriods)
       val fromPayments = payment * ((1.0 + rate * when.t) / rate) * (math.pow(
         1.0 + rate,
@@ -38,9 +38,9 @@ package object financial {
       futureValue: Double,
       when: PaymentTime = End): Double = {
     require(numPeriods >= 0)
-    if (rate == 0) {
+    if (rate == 0)
       -1 * (futureValue + payment * numPeriods)
-    } else {
+    else {
       val denominator = math.pow(1.0 + rate, numPeriods)
       val fromPayments = payment * ((1.0 + rate * when.t) / rate) * (math.pow(
         1.0 + rate,
@@ -83,9 +83,9 @@ package object financial {
       presentValue: Double,
       futureValue: Double = 0.0,
       when: PaymentTime = End): Double =
-    if (rate == 0) {
+    if (rate == 0)
       -1 * (futureValue + presentValue) / numPeriods
-    } else {
+    else {
       val denominator = ((1.0 + rate * when.t) / rate) * (math.pow(
         1.0 + rate,
         numPeriods) - 1.0)
@@ -99,10 +99,9 @@ package object financial {
       futureValue: Double = 0.0,
       when: PaymentTime = End)
       : (DenseVector[Double], DenseVector[Double], DenseVector[Double]) = {
-    if (when == Start) {
+    if (when == Start)
       throw new IllegalArgumentException(
         "This method is broken for payment at the start of the period!")
-    }
     val pmt = payment(rate, numPeriods, presentValue, futureValue, when)
     val interestPayment = DenseVector.zeros[Double](numPeriods)
     val principalPayment = DenseVector.zeros[Double](numPeriods)
@@ -162,23 +161,21 @@ package object financial {
 
       val nonZeroEigNum = rootEig.eigenvalues.length;
       val complexEig = DenseVector.zeros[Complex](nonZeroEigNum)
-      for (i <- 0 until nonZeroEigNum) {
+      for (i <- 0 until nonZeroEigNum)
         complexEig(i) =
           Complex(rootEig.eigenvalues(i), rootEig.eigenvaluesComplex(i))
-      }
 
       complexEig
-    } else {
+    } else
       DenseVector.zeros[Complex](N + 1)
-    }
     //pading 0 to the end
-    val fullRoots = if (0 < trailingZeros) {
-      DenseVector.vertcat(
-        complexRoots,
-        DenseVector.zeros[Complex](trailingZeros))
-    } else {
-      complexRoots
-    }
+    val fullRoots =
+      if (0 < trailingZeros)
+        DenseVector.vertcat(
+          complexRoots,
+          DenseVector.zeros[Complex](trailingZeros))
+      else
+        complexRoots
     fullRoots
   }
 
@@ -196,11 +193,11 @@ package object financial {
     )
     val rates = realRes.mapValues(v => 1.0 / v - 1.0)
 
-    val rate = if (rates.length <= 0) {
-      None
-    } else {
-      Option[Double](rates(argmin(abs(rates))))
-    }
+    val rate =
+      if (rates.length <= 0)
+        None
+      else
+        Option[Double](rates(argmin(abs(rates))))
     rate
   }
 
@@ -213,10 +210,9 @@ package object financial {
     val positives = values.mapValues(x => if (0 < x) x else 0)
     var negCnt: Int = values.valuesIterator.count(_ < 0)
     val negatives = values.mapValues(x => if (x < 0) x else 0)
-    if (posCnt == 0 || negCnt == 0) {
+    if (posCnt == 0 || negCnt == 0)
       throw new IllegalArgumentException(
         "The values must has one positive and negative value!")
-    }
 
     val inflowNPV: Double = netPresentValue(reinvestRate, positives)
     val outflowNPV: Double = netPresentValue(financeRate, negatives)
@@ -233,12 +229,13 @@ package object financial {
       when: PaymentTime = End) = {
     require(pmt != 0, "The payment of annuity(pmt) can not be zero!")
 
-    val nper = if (0 == rate) {
-      (-fv + pv) / pmt;
-    } else {
-      val z = pmt * (1.0 + rate * when.t) / rate
-      log((z - fv) / (z + pv)) / log(1.0 + rate)
-    }
+    val nper =
+      if (0 == rate)
+        (-fv + pv) / pmt;
+      else {
+        val z = pmt * (1.0 + rate * when.t) / rate
+        log((z - fv) / (z + pv)) / log(1.0 + rate)
+      }
     nper
   }
 

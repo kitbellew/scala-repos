@@ -76,7 +76,7 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("gets") {
       Await.result(client.set("foos", Buf.Utf8("xyz")))
       Await.result(client.set("bazs", Buf.Utf8("xyz")))
@@ -102,9 +102,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
         )
       assert(result == expected)
     }
-  }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("cas") {
       Await.result(client.set("x", Buf.Utf8("y")))
       val Some((value, casUnique)) = Await.result(client.gets("x"))
@@ -117,7 +116,6 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       assert(res.isDefined)
       assert(res.get == Buf.Utf8("z"))
     }
-  }
 
   test("append & prepend") {
     Await.result(client.set("foo", Buf.Utf8("bar")))
@@ -142,14 +140,13 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     assert(Await.result(client.decr("foo", l)) == Some(0L))
   }
 
-  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined) {
+  if (Option(System.getProperty("USE_EXTERNAL_MEMCACHED")).isDefined)
     test("stats") {
       val stats = Await.result(client.stats())
       assert(stats != null)
       assert(!stats.isEmpty)
       stats.foreach { stat => assert(stat.startsWith("STAT")) }
     }
-  }
 
   test("send malformed keys") {
     // test key validation trait
@@ -224,9 +221,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     server2.foreach(_.stop())
 
     // trigger ejection
-    for (i <- 0 to 20) {
+    for (i <- 0 to 20)
       Await.ready(client.get(s"foo$i"), TimeOut)
-    }
 
     // one memcache host alive
     val clientSet =
@@ -239,10 +235,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
 
     // previously set values have cache misses
     var cacheMisses = 0
-    for (i <- 0 to 20) {
+    for (i <- 0 to 20)
       if (Await.result(client.get(s"foo$i"), TimeOut) == None)
         cacheMisses = cacheMisses + 1
-    }
     assert(cacheMisses > 0)
   }
 

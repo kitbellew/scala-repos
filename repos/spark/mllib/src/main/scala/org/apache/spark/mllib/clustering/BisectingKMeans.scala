@@ -145,11 +145,10 @@ class BisectingKMeans private (
     */
   @Since("1.6.0")
   def run(input: RDD[Vector]): BisectingKMeansModel = {
-    if (input.getStorageLevel == StorageLevel.NONE) {
+    if (input.getStorageLevel == StorageLevel.NONE)
       logWarning(
         s"The input RDD ${input.id} is not directly cached, which may hurt performance if"
           + " its parent RDDs are also not cached.")
-    }
     val d = input.map(_.size).first()
     logInfo(s"Feature dimension: $d.")
     // Compute and cache vector norms for fast distance computation.
@@ -163,11 +162,11 @@ class BisectingKMeans private (
     val n = rootSummary.size
     logInfo(s"Number of points: $n.")
     logInfo(s"Initial cost: ${rootSummary.cost}.")
-    val minSize = if (minDivisibleClusterSize >= 1.0) {
-      math.ceil(minDivisibleClusterSize).toLong
-    } else {
-      math.ceil(minDivisibleClusterSize * n).toLong
-    }
+    val minSize =
+      if (minDivisibleClusterSize >= 1.0)
+        math.ceil(minDivisibleClusterSize).toLong
+      else
+        math.ceil(minDivisibleClusterSize * n).toLong
     logInfo(s"The minimum number of points of a divisible cluster is $minSize.")
     var inactiveClusters = mutable.Seq.empty[(Long, ClusterSummary)]
     val random = new Random(seed)
@@ -180,7 +179,7 @@ class BisectingKMeans private (
           (summary.size >= minSize) && (summary.cost > MLUtils.EPSILON * summary.size)
       }
       // If we don't need all divisible clusters, take the larger ones.
-      if (divisibleClusters.size > numLeafClustersNeeded) {
+      if (divisibleClusters.size > numLeafClustersNeeded)
         divisibleClusters = divisibleClusters.toSeq
           .sortBy {
             case (_, summary) =>
@@ -188,7 +187,6 @@ class BisectingKMeans private (
           }
           .take(numLeafClustersNeeded)
           .toMap
-      }
       if (divisibleClusters.nonEmpty) {
         val divisibleIndices = divisibleClusters.keys.toSet
         logInfo(s"Dividing ${divisibleIndices.size} clusters on level $level.")
@@ -320,9 +318,8 @@ private object BisectingKMeans extends Serializable {
     /** Returns the summary. */
     def summary: ClusterSummary = {
       val mean = sum.copy
-      if (n > 0L) {
+      if (n > 0L)
         BLAS.scal(1.0 / n, mean)
-      }
       val center = new VectorWithNorm(mean)
       val cost = math.max(sumSq - n * center.norm * center.norm, 0.0)
       new ClusterSummary(n, center, cost)
@@ -370,9 +367,8 @@ private object BisectingKMeans extends Serializable {
             KMeans.fastSquaredDistance(newClusterCenters(child), v)
           }
           (selected, v)
-        } else {
+        } else
           (index, v)
-        }
     }
 
   /**
@@ -478,9 +474,9 @@ private[clustering] class ClusteringTreeNode private[clustering] (
   /** Returns the full prediction path from root to leaf. */
   private def predictPath(
       pointWithNorm: VectorWithNorm): List[ClusteringTreeNode] =
-    if (isLeaf) {
+    if (isLeaf)
       this :: Nil
-    } else {
+    else {
       val selected = children.minBy { child =>
         KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm)
       }
@@ -513,9 +509,9 @@ private[clustering] class ClusteringTreeNode private[clustering] (
   private def predict(
       pointWithNorm: VectorWithNorm,
       cost: Double): (Int, Double) =
-    if (isLeaf) {
+    if (isLeaf)
       (index, cost)
-    } else {
+    else {
       val (selectedChild, minCost) = children
         .map { child =>
           (
@@ -530,9 +526,8 @@ private[clustering] class ClusteringTreeNode private[clustering] (
     * Returns all leaf nodes from this node.
     */
   def leafNodes: Array[ClusteringTreeNode] =
-    if (isLeaf) {
+    if (isLeaf)
       Array(this)
-    } else {
+    else
       children.flatMap(_.leafNodes)
-    }
 }

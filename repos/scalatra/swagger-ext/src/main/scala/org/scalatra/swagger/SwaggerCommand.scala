@@ -30,7 +30,7 @@ object SwaggerCommandSupport {
         val f = fld.invoke(obj).asInstanceOf[Field[Any]]
         // remove if statement below to include header params in description again
         if (f.valueSource == ValueSource.Header) lst
-        else {
+        else
           Parameter(
             f.displayName | f.name,
             DataType(f.binding.valueManifest),
@@ -44,7 +44,6 @@ object SwaggerCommandSupport {
             required = f.isRequired,
             position = f.position
           ) :: lst
-        }
       } else lst
     }
 

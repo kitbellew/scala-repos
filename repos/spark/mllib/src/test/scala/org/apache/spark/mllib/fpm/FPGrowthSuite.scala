@@ -318,9 +318,7 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
         (itemset.items.toSet, itemset.freq)
       }
       assert(freqItemsets3.toSet === newFreqItemsets.toSet)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 
   test("model save/load with Int type") {
@@ -346,8 +344,6 @@ class FPGrowthSuite extends SparkFunSuite with MLlibTestSparkContext {
         (itemset.items.toSet, itemset.freq)
       }
       assert(freqItemsets3.toSet === newFreqItemsets.toSet)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 }

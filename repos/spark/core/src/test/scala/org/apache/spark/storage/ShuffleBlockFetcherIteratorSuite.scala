@@ -52,15 +52,13 @@ class ShuffleBlockFetcherIteratorSuite
           val listener =
             invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
 
-          for (blockId <- blocks) {
-            if (data.contains(BlockId(blockId))) {
+          for (blockId <- blocks)
+            if (data.contains(BlockId(blockId)))
               listener.onBlockFetchSuccess(blockId, data(BlockId(blockId)))
-            } else {
+            else
               listener.onBlockFetchFailure(
                 blockId,
                 new BlockNotFoundException(blockId))
-            }
-          }
         }
       })
     transfer

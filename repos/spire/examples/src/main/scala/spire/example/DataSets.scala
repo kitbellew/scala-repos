@@ -260,9 +260,9 @@ object CrossValidation {
 
     @tailrec
     def loop(left: List[(V, K)], right0: List[(V, K)], n: Int, sum: F): F =
-      if (n <= 0) {
+      if (n <= 0)
         sum / k
-      } else {
+      else {
         val len = (right0.size + n - 1) / n
         val (removed, right) = right0.splitAt(len)
         val predict = train(dataset.space)(left ++ right)

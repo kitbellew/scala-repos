@@ -21,9 +21,8 @@ class StaticTraitScFunctionWrapper(
     function,
     containingClass: PsiClassWrapper)
   val method: PsiMethod = {
-    try {
-      elementFactory.createMethodFromText(methodText, containingClass)
-    } catch {
+    try elementFactory.createMethodFromText(methodText, containingClass)
+    catch {
       case e: Exception =>
         elementFactory.createMethodFromText(
           "public void FAILED_TO_DECOMPILE_METHOD() {}",
@@ -49,7 +48,7 @@ object StaticTraitScFunctionWrapper {
 
     builder.append(JavaConversionUtil.annotationsAndModifiers(function, true))
 
-    if (!function.isConstructor) {
+    if (!function.isConstructor)
       function.returnType match {
         case Success(tp, _) =>
           builder.append(
@@ -57,7 +56,6 @@ object StaticTraitScFunctionWrapper {
               .typeText(tp, function.getProject, function.getResolveScope))
         case _ => builder.append("java.lang.Object")
       }
-    }
 
     builder.append(" ")
     val name =

@@ -47,9 +47,9 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       sqlContext: SQLContext,
       options: Map[String, String],
       files: Seq[FileStatus]): Option[StructType] =
-    if (files.isEmpty) {
+    if (files.isEmpty)
       None
-    } else {
+    else {
       val parsedOptions: JSONOptions = new JSONOptions(options)
       val jsonFiles = files.filterNot { status =>
         val name = status.getPath.getName
@@ -120,9 +120,8 @@ class DefaultSource extends FileFormat with DataSourceRegister {
 
     val paths = inputPaths.map(_.getPath)
 
-    if (paths.nonEmpty) {
+    if (paths.nonEmpty)
       FileInputFormat.setInputPaths(job, paths: _*)
-    }
 
     sqlContext.sparkContext
       .hadoopRDD(
@@ -165,7 +164,7 @@ private[json] class JsonOutputWriter(
     new JsonFactory().createGenerator(writer).setRootValueSeparator(null)
   private[this] val result = new Text()
 
-  private val recordWriter: RecordWriter[NullWritable, Text] = {
+  private val recordWriter: RecordWriter[NullWritable, Text] =
     new TextOutputFormat[NullWritable, Text]() {
       override def getDefaultWorkFile(
           context: TaskAttemptContext,
@@ -182,7 +181,6 @@ private[json] class JsonOutputWriter(
           f"part-r-$split%05d-$uniqueWriteJobId$bucketString.json$extension")
       }
     }.getRecordWriter(context)
-  }
 
   override def write(row: Row): Unit =
     throw new UnsupportedOperationException("call writeInternal")

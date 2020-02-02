@@ -90,28 +90,25 @@ private[netty] class Inbox(
   def process(dispatcher: Dispatcher): Unit = {
     var message: InboxMessage = null
     inbox.synchronized {
-      if (!enableConcurrent && numActiveThreads != 0) {
+      if (!enableConcurrent && numActiveThreads != 0)
         return
-      }
       message = messages.poll()
-      if (message != null) {
+      if (message != null)
         numActiveThreads += 1
-      } else {
+      else
         return
-      }
     }
     while (true) {
       safelyCall(endpoint) {
         message match {
           case RpcMessage(_sender, content, context) =>
-            try {
-              endpoint
-                .receiveAndReply(context)
-                .applyOrElse[Any, Unit](content, { msg =>
-                  throw new SparkException(
-                    s"Unsupported message $message from ${_sender}")
-                })
-            } catch {
+            try endpoint
+              .receiveAndReply(context)
+              .applyOrElse[Any, Unit](content, { msg =>
+                throw new SparkException(
+                  s"Unsupported message $message from ${_sender}")
+              })
+            catch {
               case NonFatal(e) =>
                 context.sendFailure(e)
                 // Throw the exception -- this exception will be caught by the safelyCall function.
@@ -127,13 +124,11 @@ private[netty] class Inbox(
 
           case OnStart =>
             endpoint.onStart()
-            if (!endpoint.isInstanceOf[ThreadSafeRpcEndpoint]) {
+            if (!endpoint.isInstanceOf[ThreadSafeRpcEndpoint])
               inbox.synchronized {
-                if (!stopped) {
+                if (!stopped)
                   enableConcurrent = true
-                }
               }
-            }
 
           case OnStop =>
             val activeThreads = inbox.synchronized { inbox.numActiveThreads }
@@ -173,10 +168,10 @@ private[netty] class Inbox(
   }
 
   def post(message: InboxMessage): Unit = inbox.synchronized {
-    if (stopped) {
+    if (stopped)
       // We already put "OnStop" into "messages", so we should drop further messages
       onDrop(message)
-    } else {
+    else {
       messages.add(message)
       false
     }

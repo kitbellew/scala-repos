@@ -137,17 +137,13 @@ private[spark] class PipedRDD[T: ClassTag](
     new Thread(s"stderr reader for $command") {
       override def run(): Unit = {
         val err = proc.getErrorStream
-        try {
-          for (line <- Source.fromInputStream(err).getLines) {
-            // scalastyle:off println
-            System.err.println(line)
-            // scalastyle:on println
-          }
-        } catch {
+        try for (line <- Source.fromInputStream(err).getLines)
+          // scalastyle:off println
+          System.err.println(line)
+        // scalastyle:on println
+        catch {
           case t: Throwable => childThreadException.set(t)
-        } finally {
-          err.close()
-        }
+        } finally err.close()
       }
     }.start()
 
@@ -159,22 +155,17 @@ private[spark] class PipedRDD[T: ClassTag](
         try {
           // scalastyle:off println
           // input the pipe context firstly
-          if (printPipeContext != null) {
+          if (printPipeContext != null)
             printPipeContext(out.println)
-          }
-          for (elem <- firstParent[T].iterator(split, context)) {
-            if (printRDDElement != null) {
+          for (elem <- firstParent[T].iterator(split, context))
+            if (printRDDElement != null)
               printRDDElement(elem, out.println)
-            } else {
+            else
               out.println(elem)
-            }
-          }
           // scalastyle:on println
         } catch {
           case t: Throwable => childThreadException.set(t)
-        } finally {
-          out.close()
-        }
+        } finally out.close()
       }
     }.start()
 
@@ -182,24 +173,23 @@ private[spark] class PipedRDD[T: ClassTag](
     val lines = Source.fromInputStream(proc.getInputStream).getLines()
     new Iterator[String] {
       def next(): String = {
-        if (!hasNext()) {
+        if (!hasNext())
           throw new NoSuchElementException()
-        }
         lines.next()
       }
 
       def hasNext(): Boolean = {
-        val result = if (lines.hasNext) {
-          true
-        } else {
-          val exitStatus = proc.waitFor()
-          cleanup()
-          if (exitStatus != 0) {
-            throw new IllegalStateException(
-              s"Subprocess exited with status $exitStatus")
+        val result =
+          if (lines.hasNext)
+            true
+          else {
+            val exitStatus = proc.waitFor()
+            cleanup()
+            if (exitStatus != 0)
+              throw new IllegalStateException(
+                s"Subprocess exited with status $exitStatus")
+            false
           }
-          false
-        }
         propagateChildException()
         result
       }
@@ -230,9 +220,8 @@ private object PipedRDD {
   def tokenize(command: String): Seq[String] = {
     val buf = new ArrayBuffer[String]
     val tok = new StringTokenizer(command)
-    while (tok.hasMoreElements) {
+    while (tok.hasMoreElements)
       buf += tok.nextToken()
-    }
     buf
   }
 }

@@ -90,12 +90,12 @@ class RetryFilter[Req, Rep](
     svcRep.transform { rep =>
       policy((req, rep)) match {
         case Some((howlong, nextPolicy)) =>
-          if (retryBudget.tryWithdraw()) {
+          if (retryBudget.tryWithdraw())
             schedule(howlong) {
               Trace.record("finagle.retry")
               dispatch(req, service, nextPolicy, count + 1)
             }
-          } else {
+          else {
             budgetExhausted.incr()
             retriesStat.add(count)
             svcRep

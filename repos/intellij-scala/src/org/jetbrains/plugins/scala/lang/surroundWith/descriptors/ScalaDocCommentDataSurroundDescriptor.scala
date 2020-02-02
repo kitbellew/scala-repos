@@ -47,21 +47,20 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
       return PsiElement.EMPTY_ARRAY
 
     val isFirstElementMarked =
-      if (checkBoundElement(startElement)) { //cannot extract function because of return
+      if (checkBoundElement(
+            startElement
+          )) //cannot extract function because of return
         false
-      } else {
-        if (checkSyntaxBoundElement(startElement, true)) true
-        else return PsiElement.EMPTY_ARRAY
-      }
-
-    val isLastElementMarked = if (checkBoundElement(endElement)) {
-      false
-    } else {
-      if (checkSyntaxBoundElement(endElement, false)) true
+      else if (checkSyntaxBoundElement(startElement, true)) true
       else return PsiElement.EMPTY_ARRAY
-    }
 
-    if (startElement.getParent != endElement.getParent) {
+    val isLastElementMarked =
+      if (checkBoundElement(endElement))
+        false
+      else if (checkSyntaxBoundElement(endElement, false)) true
+      else return PsiElement.EMPTY_ARRAY
+
+    if (startElement.getParent != endElement.getParent)
       (isFirstElementMarked, isLastElementMarked) match {
         case (true, true)
             if (startElement.getParent.getParent == endElement.getParent.getParent) =>
@@ -71,30 +70,28 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
             if (startElement.getParent == endElement.getParent.getParent) =>
         case _                                                            => return PsiElement.EMPTY_ARRAY
       }
-    } else if (isFirstElementMarked && isLastElementMarked) { // in case <selection>__blah blah__</selection>
+    else if (isFirstElementMarked && isLastElementMarked) // in case <selection>__blah blah__</selection>
       return Array(startElement.getParent)
-    }
 
-    if (endElement == startElement) {
+    if (endElement == startElement)
       return Array(startElement)
-    }
 
-    var (nextElement, elementsToSurround) = if (isFirstElementMarked) {
-      if (startElement.getParent.getTextRange.getEndOffset <= endOffset)
-        (
-          startElement.getParent.getNextSibling,
-          ArrayBuffer(startElement.getParent))
+    var (nextElement, elementsToSurround) =
+      if (isFirstElementMarked)
+        if (startElement.getParent.getTextRange.getEndOffset <= endOffset)
+          (
+            startElement.getParent.getNextSibling,
+            ArrayBuffer(startElement.getParent))
+        else
+          return PsiElement.EMPTY_ARRAY
       else
-        return PsiElement.EMPTY_ARRAY
-    } else {
-      (startElement.getNextSibling, ArrayBuffer(startElement))
-    }
-    val lastBoundElement = if (isLastElementMarked) {
-      if (endElement.getTextOffset >= startOffset) (endElement.getParent)
-      else return PsiElement.EMPTY_ARRAY
-    } else {
-      endElement
-    }
+        (startElement.getNextSibling, ArrayBuffer(startElement))
+    val lastBoundElement =
+      if (isLastElementMarked)
+        if (endElement.getTextOffset >= startOffset) (endElement.getParent)
+        else return PsiElement.EMPTY_ARRAY
+      else
+        endElement
 
     var hasAsterisk = false
 
@@ -106,14 +103,13 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
           !nextElement.getNode.getElementType
             .isInstanceOf[ScaladocSyntaxElementType]) ||
           (nextElement.getNode.getElementType == DOC_WHITESPACE && nextElement.getText
-            .indexOf("\n") != nextElement.getText.lastIndexOf("\n"))) {
+            .indexOf("\n") != nextElement.getText.lastIndexOf("\n")))
         return PsiElement.EMPTY_ARRAY
-      } else if (nextElement.getNode.getElementType == DOC_COMMENT_LEADING_ASTERISKS) {
+      else if (nextElement.getNode.getElementType == DOC_COMMENT_LEADING_ASTERISKS) {
         if (hasAsterisk) return PsiElement.EMPTY_ARRAY
         hasAsterisk = true
-      } else if (nextElement.getNode.getElementType != DOC_WHITESPACE) {
+      } else if (nextElement.getNode.getElementType != DOC_WHITESPACE)
         hasAsterisk = false
-      }
 
       elementsToSurround += nextElement
     } while (nextElement != lastBoundElement && (

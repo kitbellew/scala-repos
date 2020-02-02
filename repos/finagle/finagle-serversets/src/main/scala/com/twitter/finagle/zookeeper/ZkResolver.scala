@@ -50,13 +50,12 @@ private class ZkOffer(serverSet: ServerSet, path: String)
   private[this] val log = Logger.getLogger("zkoffer")
 
   override def run() {
-    try {
-      serverSet.watch(new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
-        def onChange(newSet: ImmutableSet[ServiceInstance]) {
-          inbound !! newSet.asScala.toSet
-        }
-      })
-    } catch {
+    try serverSet.watch(new DynamicHostSet.HostChangeMonitor[ServiceInstance] {
+      def onChange(newSet: ImmutableSet[ServiceInstance]) {
+        inbound !! newSet.asScala.toSet
+      }
+    })
+    catch {
       case exc: MonitorException =>
         // There are certain path permission checks in the serverset library
         // that can cause exceptions here. We'll send an empty set (which
@@ -151,10 +150,9 @@ class ZkResolver(factory: ZkClientFactory) extends Resolver {
 
   private[this] def zkHosts(hosts: String) = {
     val zkHosts = factory.hostSet(hosts)
-    if (zkHosts.isEmpty) {
+    if (zkHosts.isEmpty)
       throw new ZkResolverException(
         "ZK client address \"%s\" resolves to nothing".format(hosts))
-    }
     zkHosts
   }
 

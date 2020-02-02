@@ -84,17 +84,17 @@ object ScalaAfterNewCompletionUtil {
     val undefines: Seq[ScUndefinedType] = clazz.getTypeParameters.map(ptp =>
       new ScUndefinedType(new ScTypeParameterType(ptp, ScSubstitutor.empty)))
     val predefinedType =
-      if (clazz.getTypeParameters.length == 1) {
+      if (clazz.getTypeParameters.length == 1)
         ScParameterizedType(ScDesignatorType(clazz), undefines)
-      } else
+      else
         ScDesignatorType(clazz)
     val noUndefType =
-      if (clazz.getTypeParameters.length == 1) {
+      if (clazz.getTypeParameters.length == 1)
         ScParameterizedType(
           ScDesignatorType(clazz),
           clazz.getTypeParameters.map(ptp =>
             new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-      } else
+      else
         ScDesignatorType(clazz)
 
     val iterator = expectedTypes.iterator
@@ -111,13 +111,12 @@ object ScalaAfterNewCompletionUtil {
               new AfterNewLookupElementRenderer(_, _, _),
               new ScalaConstructorInsertHandler,
               renamesMap)
-            for (undefine <- undefines) {
+            for (undefine <- undefines)
               subst.subst(undefine) match {
                 case ScUndefinedType(_) =>
                   lookupElement.typeParametersProblem = true
                 case _ =>
               }
-            }
             return lookupElement
           case _ =>
         }
@@ -130,9 +129,8 @@ object ScalaAfterNewCompletionUtil {
       new AfterNewLookupElementRenderer(_, _, _),
       new ScalaConstructorInsertHandler,
       renamesMap)
-    if (undefines.nonEmpty) {
+    if (undefines.nonEmpty)
       lookupElement.typeParametersProblem = true
-    }
     lookupElement
   }
 
@@ -160,9 +158,8 @@ object ScalaAfterNewCompletionUtil {
       psiClass match {
         case clazz: PsiClass =>
           if (psiClass.isInterface || psiClass.isInstanceOf[ScTrait] ||
-              psiClass.hasModifierPropertyScala("abstract")) {
+              psiClass.hasModifierPropertyScala("abstract"))
             tailText += " {...}"
-          }
           val location: String = clazz.getPresentation.getLocationString
           presentation.setTailText(tailText + " " + location, true)
         case _ =>
@@ -213,9 +210,8 @@ object ScalaAfterNewCompletionUtil {
     val qualName = psiClass.qualifiedName
     if (ScalaCodeStyleSettings
           .getInstance(psiClass.getProject)
-          .hasImportWithPrefix(qualName)) {
+          .hasImportWithPrefix(qualName))
       lookupElement.prefixCompletion = true
-    }
     lookupElement.setInsertHandler(new ScalaConstructorInsertHandler)
     tp match {
       case ScParameterizedType(_, tps) => lookupElement.typeParameters = tps
@@ -291,16 +287,16 @@ object ScalaAfterNewCompletionUtil {
                   new ScUndefinedType(
                     new ScTypeParameterType(ptp, ScSubstitutor.empty)))
               val predefinedType =
-                if (clazz.getTypeParameters.nonEmpty) {
+                if (clazz.getTypeParameters.nonEmpty)
                   ScParameterizedType(ScDesignatorType(clazz), undefines)
-                } else ScDesignatorType(clazz)
+                else ScDesignatorType(clazz)
               val noUndefType =
-                if (clazz.getTypeParameters.nonEmpty) {
+                if (clazz.getTypeParameters.nonEmpty)
                   ScParameterizedType(
                     ScDesignatorType(clazz),
                     clazz.getTypeParameters.map(ptp =>
                       new ScTypeParameterType(ptp, ScSubstitutor.empty)))
-                } else ScDesignatorType(clazz)
+                else ScDesignatorType(clazz)
               if (!predefinedType.conforms(typez)) return true
               val undef = Conformance.undefinedSubst(typez, predefinedType)
               undef.getSubstitutor match {
@@ -313,13 +309,12 @@ object ScalaAfterNewCompletionUtil {
                     insertHandler,
                     renamesMap)
                   if (lookupElement != null) {
-                    for (undefine <- undefines) {
+                    for (undefine <- undefines)
                       undefSubst.subst(undefine) match {
                         case ScUndefinedType(_) =>
                           lookupElement.typeParametersProblem = true
                         case _ =>
                       }
-                    }
                     result.addElement(lookupElement)
                   }
                 case _ =>

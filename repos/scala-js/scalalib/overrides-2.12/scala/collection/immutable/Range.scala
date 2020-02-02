@@ -116,16 +116,16 @@ class Range(val start: Int, val end: Int, val step: Int)
   override def head = if (isEmpty) Nil.head else start
 
   override def min[A1 >: Int](implicit ord: Ordering[A1]): Int =
-    if (ord eq Ordering.Int) {
+    if (ord eq Ordering.Int)
       if (step > 0) head
       else last
-    } else super.min(ord)
+    else super.min(ord)
 
   override def max[A1 >: Int](implicit ord: Ordering[A1]): Int =
-    if (ord eq Ordering.Int) {
+    if (ord eq Ordering.Int)
       if (step > 0) last
       else head
-    } else super.max(ord)
+    else super.max(ord)
 
   protected def copy(start: Int, end: Int, step: Int): Range =
     new Range(start, end, step)
@@ -162,11 +162,10 @@ class Range(val start: Int, val end: Int, val step: Int)
     var count = 0
     val terminal = terminalElement
     val step = this.step
-    while (if (isCommonCase) {
+    while (if (isCommonCase)
              i != terminal
-           } else {
-             count < numRangeElements
-           }) {
+           else
+             count < numRangeElements) {
       f(i)
       count += 1
       i += step
@@ -183,11 +182,10 @@ class Range(val start: Int, val end: Int, val step: Int)
   final override def take(n: Int): Range = (
     if (n <= 0 || isEmpty) newEmptyRange(start)
     else if (n >= numRangeElements && numRangeElements >= 0) this
-    else {
+    else
       // May have more than Int.MaxValue elements in range (numRangeElements < 0)
       // but the logic is the same either way: take the first n
       new Range.Inclusive(start, locationAfterN(n - 1), step)
-    }
   )
 
   /** Creates a new range containing all the elements of this range except the first `n` elements.
@@ -200,11 +198,10 @@ class Range(val start: Int, val end: Int, val step: Int)
   final override def drop(n: Int): Range = (
     if (n <= 0 || isEmpty) this
     else if (n >= numRangeElements && numRangeElements >= 0) newEmptyRange(end)
-    else {
+    else
       // May have more than Int.MaxValue elements (numRangeElements < 0)
       // but the logic is the same either way: go forwards n steps, keep the rest
       copy(locationAfterN(n), end, step)
-    }
   )
 
   /** Creates a new range containing the elements starting at `from` up to but not including `until`.
@@ -354,32 +351,29 @@ class Range(val start: Int, val end: Int, val step: Int)
 
   final def contains(x: Int) =
     if (x == end && !isInclusive) false
-    else if (step > 0) {
+    else if (step > 0)
       if (x < start || x > end) false
       else (step == 1) || (((x - start) % step) == 0)
-    } else {
-      if (x < end || x > start) false
-      else (step == -1) || (((x - start) % step) == 0)
-    }
+    else if (x < end || x > start) false
+    else (step == -1) || (((x - start) % step) == 0)
 
   final override def sum[B >: Int](implicit num: Numeric[B]): Int =
-    if (num eq scala.math.Numeric.IntIsIntegral) {
+    if (num eq scala.math.Numeric.IntIsIntegral)
       // this is normal integer range with usual addition. arithmetic series formula can be used
       if (isEmpty) 0
       else if (numRangeElements == 1) head
       else (numRangeElements.toLong * (head + last) / 2).toInt
-    } else {
-      // user provided custom Numeric, we cannot rely on arithmetic series formula
-      if (isEmpty) num.toInt(num.zero)
-      else {
-        var acc = num.zero
-        var i = head
-        while (i != terminalElement) {
-          acc = num.plus(acc, i)
-          i = i + step
-        }
-        num.toInt(acc)
+    else
+    // user provided custom Numeric, we cannot rely on arithmetic series formula
+    if (isEmpty) num.toInt(num.zero)
+    else {
+      var acc = num.zero
+      var i = head
+      while (i != terminalElement) {
+        acc = num.plus(acc, i)
+        i = i + step
       }
+      num.toInt(acc)
     }
 
   override def toIterable = this

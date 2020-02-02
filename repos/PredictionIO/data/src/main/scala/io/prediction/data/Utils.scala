@@ -32,14 +32,13 @@ private[prediction] object Utils {
     // 1. "yyyy-MM-dd'T'HH:mm:ss.SSSZZ"
     // 2. "yyyy-MM-dd'T'HH:mm:ssZZ"
     // The first one also takes milliseconds into account.
-    try {
-      // formatting for "yyyy-MM-dd'T'HH:mm:ss.SSSZZ"
-      dateTimeFormatter.parseDateTime(dt)
-    } catch {
-      case e: IllegalArgumentException => {
+    try
+    // formatting for "yyyy-MM-dd'T'HH:mm:ss.SSSZZ"
+    dateTimeFormatter.parseDateTime(dt)
+    catch {
+      case e: IllegalArgumentException =>
         // handle when the datetime string doesn't specify milliseconds.
         dateTimeNoMillisFormatter.parseDateTime(dt)
-      }
     }
 
   def dateTimeToString(dt: DateTime): String = dateTimeFormatter.print(dt)

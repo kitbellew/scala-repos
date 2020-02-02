@@ -92,7 +92,7 @@ class RunLengthEncodingSuite extends SparkFunSuite {
       val decoder = RunLengthEncoding.decoder(buffer, columnType)
       val mutableRow = new GenericMutableRow(1)
 
-      if (inputSeq.nonEmpty) {
+      if (inputSeq.nonEmpty)
         inputSeq.foreach { i =>
           assert(decoder.hasNext)
           assertResult(values(i), "Wrong decoded value") {
@@ -100,7 +100,6 @@ class RunLengthEncodingSuite extends SparkFunSuite {
             columnType.getField(mutableRow, 0)
           }
         }
-      }
 
       assert(!decoder.hasNext)
     }

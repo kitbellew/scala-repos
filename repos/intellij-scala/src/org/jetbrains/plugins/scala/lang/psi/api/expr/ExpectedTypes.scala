@@ -285,13 +285,12 @@ private[expr] object ExpectedTypes {
         val exprs = tuple.exprs
         val actExpr = expr.getDeepSameElementInContext
         val index = exprs.indexOf(actExpr)
-        for (tp: ScType <- tuple.expectedTypes(fromUnderscore = true)) {
+        for (tp: ScType <- tuple.expectedTypes(fromUnderscore = true))
           tp match {
             case ScTupleType(comps) if comps.length == tuple.exprs.length =>
               buffer += ((comps(index), None))
             case _ =>
           }
-        }
         buffer.toArray
       case infix: ScInfixExpr
           if ((infix.isLeftAssoc && infix.lOp == expr.getSameElementInContext) ||
@@ -416,7 +415,7 @@ private[expr] object ExpectedTypes {
                 callOption,
                 isDynamicNamed = isDynamicNamed)
           }
-        } else {
+        } else
           //it's constructor
           args.getContext match {
             case constr: ScConstructor =>
@@ -435,7 +434,6 @@ private[expr] object ExpectedTypes {
                   .foreach(processArgsExpected(res, expr, i, _, exprs))
             case _ =>
           }
-        }
         res.toArray
       case b: ScBlock
           if b.getContext.isInstanceOf[ScTryBlock]
@@ -463,12 +461,11 @@ private[expr] object ExpectedTypes {
 
     if (fromUnderscore && checkIsUnderscore(expr)) {
       val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
-      for (tp <- result) {
+      for (tp <- result)
         tp._1 match {
           case ScFunctionType(rt: ScType, _) => res += ((rt, None))
           case _                             =>
         }
-      }
       res.toArray
     } else result
   }
@@ -492,7 +489,7 @@ private[expr] object ExpectedTypes {
         else (params(i).paramType, params(i).paramInCode.flatMap(_.typeElement))
       expr match {
         case assign: ScAssignStmt =>
-          if (isDynamicNamed) {
+          if (isDynamicNamed)
             p match {
               case (ScTupleType(comps), te) if comps.length == 2 =>
                 res += ((comps(1), te.map {
@@ -502,7 +499,7 @@ private[expr] object ExpectedTypes {
                 }))
               case _ => res += p
             }
-          } else {
+          else {
             val lE = assign.getLExpression
             lE match {
               case ref: ScReferenceExpression if ref.qualifier.isEmpty =>
@@ -535,7 +532,7 @@ private[expr] object ExpectedTypes {
     }
     tp match {
       case Success(ScMethodType(_, params, _), _) =>
-        if (params.length == 1 && !params.head.isRepeated && exprs.length > 1) {
+        if (params.length == 1 && !params.head.isRepeated && exprs.length > 1)
           params.head.paramType match {
             case ScTupleType(args) =>
               applyForParams(args.zipWithIndex.map {
@@ -544,14 +541,14 @@ private[expr] object ExpectedTypes {
               })
             case _ =>
           }
-        } else applyForParams(params)
+        else applyForParams(params)
       case Success(
           t @ ScTypePolymorphicType(ScMethodType(_, params, _), typeParams),
           _) =>
         val subst = t.abstractTypeSubstitutor
         val newParams =
           params.map(p => p.copy(paramType = subst.subst(p.paramType)))
-        if (newParams.length == 1 && !newParams.head.isRepeated && exprs.length > 1) {
+        if (newParams.length == 1 && !newParams.head.isRepeated && exprs.length > 1)
           newParams.head.paramType match {
             case ScTupleType(args) =>
               applyForParams(args.zipWithIndex.map {
@@ -560,13 +557,13 @@ private[expr] object ExpectedTypes {
               })
             case _ =>
           }
-        } else applyForParams(newParams)
+        else applyForParams(newParams)
       case Success(t @ ScTypePolymorphicType(anotherType, typeParams), _)
           if !forApply =>
         val cand = call
           .getOrElse(expr)
           .applyShapeResolveForExpectedType(anotherType, exprs, call)
-        if (cand.length == 1) {
+        if (cand.length == 1)
           cand(0) match {
             case r @ ScalaResolveResult(fun: ScFunction, s) =>
               val isDynamicNamed =
@@ -596,12 +593,11 @@ private[expr] object ExpectedTypes {
                 isDynamicNamed = isDynamicNamed)
             case _ =>
           }
-        }
       case Success(anotherType, _) if !forApply =>
         val cand = call
           .getOrElse(expr)
           .applyShapeResolveForExpectedType(anotherType, exprs, call)
-        if (cand.length == 1) {
+        if (cand.length == 1)
           cand(0) match {
             case r @ ScalaResolveResult(fun: ScFunction, subst) =>
               val isDynamicNamed =
@@ -624,7 +620,6 @@ private[expr] object ExpectedTypes {
                 isDynamicNamed = isDynamicNamed)
             case _ =>
           }
-        }
       case _ =>
     }
   }

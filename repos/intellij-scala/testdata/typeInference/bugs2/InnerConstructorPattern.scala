@@ -4,10 +4,9 @@ object Test2 {
   val x: H[Int] = new H[Int](3)
 
   x match {
-    case s @ H(z) => {
+    case s @ H(z) =>
       /*start*/
       z /*end*/
-    }
   }
 }
 //Int

@@ -437,11 +437,9 @@ class SquerylRecordSpec extends Specification with AroundExample {
     def rollback: Unit = throw new TransactionRollbackException()
 
     var result: T = null.asInstanceOf[T]
-    try {
-      transaction {
-        result = code
-        rollback
-      }
+    try transaction {
+      result = code
+      rollback
     } catch {
       case e: TransactionRollbackException => // OK, was rolled back
     }
@@ -475,13 +473,12 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
     // Photo must be checked separately
     e1.photo.get match {
-      case Some(p) => {
+      case Some(p) =>
         val p2 = e2.photo.get
         p2 must beSome[Array[Byte]]
         p2.get.size must_== p.size
 
         (0 until p.size) map { i => p2.get(i) must_== p(i) }
-      }
       case None => e2.photo.get must beNone
     }
   }

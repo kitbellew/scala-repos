@@ -23,9 +23,8 @@ package org.apache.spark.util
   */
 private[spark] object MemoryParam {
   def unapply(str: String): Option[Int] =
-    try {
-      Some(Utils.memoryStringToMb(str))
-    } catch {
+    try Some(Utils.memoryStringToMb(str))
+    catch {
       case e: NumberFormatException => None
     }
 }

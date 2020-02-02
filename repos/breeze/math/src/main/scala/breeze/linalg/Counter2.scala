@@ -51,9 +51,8 @@ trait Counter2Like[
 
   override def size = {
     var s = 0
-    for (m <- data.valuesIterator) {
+    for (m <- data.valuesIterator)
       s += m.size
-    }
     s
   }
 
@@ -176,9 +175,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
     new CanMapValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] {
       override def apply(from: Counter2[K1, K2, V], fn: (V => RV)) = {
         val rv = Counter2[K1, K2, RV]()
-        for ((k, v) <- from.iterator) {
+        for ((k, v) <- from.iterator)
           rv(k) = fn(v)
-        }
         rv
       }
     }
@@ -188,9 +186,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
     new CanMapActiveValues[Counter2[K1, K2, V], V, RV, Counter2[K1, K2, RV]] {
       override def apply(from: Counter2[K1, K2, V], fn: (V => RV)) = {
         val rv = Counter2[K1, K2, RV]()
-        for ((k, v) <- from.activeIterator) {
+        for ((k, v) <- from.activeIterator)
           rv(k) = fn(v)
-        }
         rv
       }
     }
@@ -201,9 +198,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       def isTraversableAgain(from: Counter2[K1, K2, V]): Boolean = true
 
       def traverse(from: Counter2[K1, K2, V], fn: ValuesVisitor[V]): Unit =
-        for (v <- from.valuesIterator) {
+        for (v <- from.valuesIterator)
           fn.visit(v)
-        }
     }
 
   implicit def canTraverseKeyValuePairs[K1, K2, V]
@@ -214,9 +210,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       override def traverse(
           from: Counter2[K1, K2, V],
           fn: KeyValuePairsVisitor[(K1, K2), V]): Unit =
-        for ((k, v) <- from.activeIterator) {
+        for ((k, v) <- from.activeIterator)
           fn.visit(k, v)
-        }
 
       override def isTraversableAgain(from: Counter2[K1, K2, V]): Boolean = true
     }
@@ -288,9 +283,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       def apply(from: Counter2[K1, K2, V], axis: Axis._0.type)(
           f: (Counter[K1, V]) => Counter[K1, R]): Counter2[K1, K2, R] = {
         val result = Counter2[K1, K2, R]()
-        for (dom <- from.keySet.map(_._2)) {
+        for (dom <- from.keySet.map(_._2))
           result(::, dom) := f(from(::, dom))
-        }
         result
       }
     }
@@ -326,9 +320,8 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
       def apply(from: Counter2[K1, K2, V], axis: Axis._1.type)(
           f: (Counter[K2, V]) => Counter[K2, R]): Counter2[K1, K2, R] = {
         val result = Counter2[K1, K2, R]()
-        for ((dom, c) <- from.data) {
+        for ((dom, c) <- from.data)
           result(dom, ::) := f(c)
-        }
         result
       }
     }
@@ -379,9 +372,8 @@ trait LowPriorityCounter2 {
       def apply(from: Counter2[K1, K2, V], axis: Axis._0.type)(
           f: (Counter[K1, V]) => R): Counter[K2, R] = {
         val result = Counter[K2, R]()
-        for (dom <- from.keySet.map(_._2)) {
+        for (dom <- from.keySet.map(_._2))
           result(dom) = f(from(::, dom))
-        }
         result
       }
     }
@@ -408,9 +400,8 @@ trait LowPriorityCounter2 {
       def apply(from: Counter2[K1, K2, V], axis: Axis._1.type)(
           f: (Counter[K2, V]) => R): Counter[K1, R] = {
         val result = Counter[K1, R]()
-        for ((dom, c) <- from.data) {
+        for ((dom, c) <- from.data)
           result(dom) = f(c)
-        }
         result
       }
     }

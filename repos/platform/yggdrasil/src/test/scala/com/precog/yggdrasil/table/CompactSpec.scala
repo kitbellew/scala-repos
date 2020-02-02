@@ -87,14 +87,14 @@ trait CompactSpec[M[+_]]
       val numSlices = slices.size
 
       val maskedSlices = slices.map { slice =>
-        if (numSlices > 1 && Random.nextDouble < 0.25) {
+        if (numSlices > 1 && Random.nextDouble < 0.25)
           new Slice {
             val size = slice.size
             val columns = slice.columns.mapValues { col =>
               (col |> cf.util.filter(0, slice.size, new BitSet)).get
             }
           }
-        } else {
+        else {
           val retained = (0 until slice.size).flatMap { x =>
             if (scala.util.Random.nextDouble < 0.75) Some(x) else None
           }

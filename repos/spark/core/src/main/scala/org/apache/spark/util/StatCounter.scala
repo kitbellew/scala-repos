@@ -58,9 +58,9 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
 
   /** Merge another StatCounter into this one, adding up the internal statistics. */
   def merge(other: StatCounter): StatCounter =
-    if (other == this) {
+    if (other == this)
       merge(other.copy()) // Avoid overwriting fields in a weird order
-    } else {
+    else {
       if (n == 0) {
         mu = other.mu
         m2 = other.m2
@@ -69,13 +69,12 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
         minValue = other.minValue
       } else if (other.n != 0) {
         val delta = other.mu - mu
-        if (other.n * 10 < n) {
+        if (other.n * 10 < n)
           mu = mu + (delta * other.n) / (n + other.n)
-        } else if (n * 10 < other.n) {
+        else if (n * 10 < other.n)
           mu = other.mu - (delta * n) / (n + other.n)
-        } else {
+        else
           mu = (mu * n + other.mu * other.n) / (n + other.n)
-        }
         m2 += other.m2 + (delta * delta * n * other.n) / (n + other.n)
         n += other.n
         maxValue = math.max(maxValue, other.maxValue)
@@ -107,22 +106,20 @@ class StatCounter(values: TraversableOnce[Double]) extends Serializable {
 
   /** Return the variance of the values. */
   def variance: Double =
-    if (n == 0) {
+    if (n == 0)
       Double.NaN
-    } else {
+    else
       m2 / n
-    }
 
   /**
     * Return the sample variance, which corrects for bias in estimating the variance by dividing
     * by N-1 instead of N.
     */
   def sampleVariance: Double =
-    if (n <= 1) {
+    if (n <= 1)
       Double.NaN
-    } else {
+    else
       m2 / (n - 1)
-    }
 
   /** Return the standard deviation of the values. */
   def stdev: Double = math.sqrt(variance)

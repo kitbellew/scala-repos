@@ -54,11 +54,10 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
     executorIdToStorageStatus.get(execId).foreach { storageStatus =>
       updatedBlocks.foreach {
         case (blockId, updatedStatus) =>
-          if (updatedStatus.storageLevel == StorageLevel.NONE) {
+          if (updatedStatus.storageLevel == StorageLevel.NONE)
             storageStatus.removeBlock(blockId)
-          } else {
+          else
             storageStatus.updateBlock(blockId, updatedStatus)
-          }
       }
     }
   }
@@ -78,9 +77,8 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
     val metrics = taskEnd.taskMetrics
     if (info != null && metrics != null) {
       val updatedBlocks = metrics.updatedBlockStatuses
-      if (updatedBlocks.length > 0) {
+      if (updatedBlocks.length > 0)
         updateStorageStatus(info.executorId, updatedBlocks)
-      }
     }
   }
 
@@ -107,9 +105,8 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
       executorIdToStorageStatus.remove(executorId).foreach { status =>
         deadExecutorStorageStatus += status
       }
-      if (deadExecutorStorageStatus.size > retainedDeadExecutors) {
+      if (deadExecutorStorageStatus.size > retainedDeadExecutors)
         deadExecutorStorageStatus.trimStart(1)
-      }
     }
   }
 }

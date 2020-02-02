@@ -265,9 +265,8 @@ object ProcessKeeper {
       val killCommand = s"kill -9 ${pids.mkString(" ")}"
       log.warn(s"Left over processes, executing: $killCommand")
       val ret = killCommand.!
-      if (ret != 0) {
+      if (ret != 0)
         log.error(s"kill returned $ret")
-      }
     }
   }
 
@@ -306,9 +305,8 @@ object ProcessKeeper {
   def stopAllServices(): Unit = {
     services.foreach(_.stopAsync())
     services.par.foreach { service =>
-      try {
-        service.awaitTerminated(5, TimeUnit.SECONDS)
-      } catch {
+      try service.awaitTerminated(5, TimeUnit.SECONDS)
+      catch {
         case NonFatal(ex) => log.error(s"Could not stop service $service", ex)
       }
     }

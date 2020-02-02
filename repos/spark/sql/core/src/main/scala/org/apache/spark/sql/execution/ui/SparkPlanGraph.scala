@@ -48,12 +48,11 @@ private[ui] case class SparkPlanGraph(
   /**
     * All the SparkPlanGraphNodes, including those inside of WholeStageCodegen.
     */
-  val allNodes: Seq[SparkPlanGraphNode] = {
+  val allNodes: Seq[SparkPlanGraphNode] =
     nodes.flatMap {
       case cluster: SparkPlanGraphCluster => cluster.nodes :+ cluster
       case node                           => Seq(node)
     }
-  }
 }
 
 private[sql] object SparkPlanGraph {
@@ -137,18 +136,15 @@ private[sql] object SparkPlanGraph {
           planInfo.simpleString,
           planInfo.metadata,
           metrics)
-        if (subgraph == null) {
+        if (subgraph == null)
           nodes += node
-        } else {
+        else
           subgraph.nodes += node
-        }
-        if (name.contains("Exchange")) {
+        if (name.contains("Exchange"))
           exchanges += planInfo -> node
-        }
 
-        if (parent != null) {
+        if (parent != null)
           edges += SparkPlanGraphEdge(node.id, parent.id)
-        }
         planInfo.children.foreach(
           buildSparkPlanGraphNode(
             _,
@@ -181,9 +177,7 @@ private[ui] class SparkPlanGraphNode(
     val values = for {
       metric <- metrics
       value <- metricsValue.get(metric.accumulatorId)
-    } yield {
-      metric.name + ": " + value
-    }
+    } yield metric.name + ": " + value
 
     if (values.nonEmpty) {
       // If there are metrics, display each entry in a separate line.

@@ -225,11 +225,10 @@ object CValue {
 
   implicit object CValueOrder extends Order[CValue] {
     def order(a: CValue, b: CValue): Ordering =
-      if (a.cType == b.cType) {
+      if (a.cType == b.cType)
         Ordering.fromInt(compareValues(a, b))
-      } else {
+      else
         CType.CTypeOrder.order(a.cType, b.cType)
-      }
   }
 }
 
@@ -369,14 +368,13 @@ object CType {
   final def toCValue(jval: JValue): CValue = (jval: @unchecked) match {
     case JString(s) => CString(s)
 
-    case JNum(d) => {
+    case JNum(d) =>
       val ctype = forJValue(jval)
       ctype match {
         case Some(CLong)   => CLong(d.toLong)
         case Some(CDouble) => CDouble(d.toDouble)
         case _             => CNum(d)
       }
-    }
 
     case JBool(b)                    => CBoolean(b)
     case JNull                       => CNull
@@ -390,7 +388,7 @@ object CType {
   final def forJValue(jval: JValue): Option[CType] = jval match {
     case JBool(_) => Some(CBoolean)
 
-    case JNum(d) => {
+    case JNum(d) =>
       lazy val isLong =
         try {
           d.toLongExact
@@ -400,9 +398,8 @@ object CType {
         }
 
       lazy val isDouble =
-        try {
-          BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d
-        } catch {
+        try BigDecimal(d.toDouble.toString, MathContext.UNLIMITED) == d
+        catch {
           case _: NumberFormatException | _: ArithmeticException => false
         }
 
@@ -412,7 +409,6 @@ object CType {
         Some(CDouble)
       else
         Some(CNum)
-    }
 
     case JString(_)                      => Some(CString)
     case JNull                           => Some(CNull)

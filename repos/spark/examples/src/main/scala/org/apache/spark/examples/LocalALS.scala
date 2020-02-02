@@ -46,9 +46,8 @@ object LocalALS {
       ms: Array[RealVector],
       us: Array[RealVector]): Double = {
     val r = new Array2DRowRealMatrix(M, U)
-    for (i <- 0 until M; j <- 0 until U) {
+    for (i <- 0 until M; j <- 0 until U)
       r.setEntry(i, j, ms(i).dotProduct(us(j)))
-    }
     val diffs = r.subtract(targetR)
     var sumSqs = 0.0
     for (i <- 0 until M; j <- 0 until U) {
@@ -74,9 +73,8 @@ object LocalALS {
       Xty = Xty.add(u.mapMultiply(R.getEntry(i, j)))
     }
     // Add regularization coefficients to diagonal terms
-    for (d <- 0 until F) {
+    for (d <- 0 until F)
       XtX.addToEntry(d, d, LAMBDA * U)
-    }
     // Solve it with Cholesky
     new CholeskyDecomposition(XtX).getSolver.solve(Xty)
   }
@@ -97,9 +95,8 @@ object LocalALS {
       Xty = Xty.add(m.mapMultiply(R.getEntry(i, j)))
     }
     // Add regularization coefficients to diagonal terms
-    for (d <- 0 until F) {
+    for (d <- 0 until F)
       XtX.addToEntry(d, d, LAMBDA * M)
-    }
     // Solve it with Cholesky
     new CholeskyDecomposition(XtX).getSolver.solve(Xty)
   }
@@ -115,16 +112,14 @@ object LocalALS {
   def main(args: Array[String]) {
 
     args match {
-      case Array(m, u, f, iters) => {
+      case Array(m, u, f, iters) =>
         M = m.toInt
         U = u.toInt
         F = f.toInt
         ITERATIONS = iters.toInt
-      }
-      case _ => {
+      case _ =>
         System.err.println("Usage: LocalALS <M> <U> <F> <iters>")
         System.exit(1)
-      }
     }
 
     showWarning()

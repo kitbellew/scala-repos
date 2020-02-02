@@ -40,9 +40,8 @@ class ESEvaluationInstances(
 
   val indices = client.admin.indices
   val indexExistResponse = indices.prepareExists(index).get
-  if (!indexExistResponse.isExists) {
+  if (!indexExistResponse.isExists)
     indices.prepareCreate(index).get
-  }
   val typeExistResponse = indices.prepareTypesExists(index).setTypes(estype).get
   if (!typeExistResponse.isExists) {
     val json =
@@ -83,11 +82,10 @@ class ESEvaluationInstances(
   def get(id: String): Option[EvaluationInstance] =
     try {
       val response = client.prepareGet(index, estype, id).get
-      if (response.isExists) {
+      if (response.isExists)
         Some(read[EvaluationInstance](response.getSourceAsString))
-      } else {
+      else
         None
-      }
     } catch {
       case e: ElasticsearchException =>
         error(e.getMessage)
@@ -119,16 +117,14 @@ class ESEvaluationInstances(
     }
 
   def update(i: EvaluationInstance): Unit =
-    try {
-      client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get
-    } catch {
+    try client.prepareUpdate(index, estype, i.id).setDoc(write(i)).get
+    catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
 
   def delete(id: String): Unit =
-    try {
-      client.prepareDelete(index, estype, id).get
-    } catch {
+    try client.prepareDelete(index, estype, id).get
+    catch {
       case e: ElasticsearchException => error(e.getMessage)
     }
 }

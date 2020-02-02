@@ -125,13 +125,11 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
 
     val containerLocalityPreferences =
       ArrayBuffer[ContainerLocalityPreferences]()
-    if (requiredLocalityFreeContainerNum > 0) {
-      for (i <- 0 until requiredLocalityFreeContainerNum) {
+    if (requiredLocalityFreeContainerNum > 0)
+      for (i <- 0 until requiredLocalityFreeContainerNum)
         containerLocalityPreferences += ContainerLocalityPreferences(
           null.asInstanceOf[Array[String]],
           null.asInstanceOf[Array[String]])
-      }
-    }
 
     if (requiredLocalityAwareContainerNum > 0) {
       val largestRatio = updatedHostToContainerCount.values.max

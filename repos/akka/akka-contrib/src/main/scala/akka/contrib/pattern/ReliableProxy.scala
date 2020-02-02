@@ -68,11 +68,10 @@ object ReliableProxy {
           target.tell(msg, snd)
           sender() ! Ack(serial)
           lastSerial = serial
-        } else if (compare(serial, lastSerial) <= 0) {
+        } else if (compare(serial, lastSerial) <= 0)
           sender() ! Ack(serial)
-        } else {
+        else
           logDebug("Received message from {} with wrong serial: {}", snd, msg)
-        }
       case Terminated(`target`) ⇒ context stop self
     }
   }
@@ -288,11 +287,10 @@ class ReliableProxy(
     resetBackoff()
   }
 
-  if (targetPath.address.host.isEmpty && self.path.address == targetPath.address) {
+  if (targetPath.address.host.isEmpty && self.path.address == targetPath.address)
     logDebug(
       "Unnecessary to use ReliableProxy for local target: {}",
       targetPath)
-  }
 
   override def supervisorStrategy = OneForOneStrategy() {
     case _ ⇒ SupervisorStrategy.Escalate
@@ -332,7 +330,7 @@ class ReliableProxy(
       else stay using q
     case Event(Tick, queue) ⇒
       logResend(queue.size)
-      queue foreach { tunnel ! _ }
+      queue foreach tunnel ! _
       scheduleTick()
       stay()
     case Event(Unsent(msgs), queue) ⇒
@@ -390,7 +388,7 @@ class ReliableProxy(
 
   def resend(q: Vector[Message]): Vector[Message] = {
     logResend(q.size)
-    q foreach { tunnel ! _ }
+    q foreach tunnel ! _
     q
   }
 

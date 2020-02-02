@@ -38,27 +38,22 @@ object EarlyDef {
           builder.advanceLexer() //Ate }
           true
         case _ =>
-          if (PatVarDef parse builder) {
+          if (PatVarDef parse builder)
             builder.getTokenType match {
-              case ScalaTokenTypes.tRBRACE => {
+              case ScalaTokenTypes.tRBRACE =>
                 builder.advanceLexer() //Ate }
                 true
-              }
-              case ScalaTokenTypes.tSEMICOLON => {
+              case ScalaTokenTypes.tSEMICOLON =>
                 builder.advanceLexer() //Ate semicolon
                 subparse
-              }
-              case _ => {
-                if (builder.newlineBeforeCurrentToken) {
+              case _ =>
+                if (builder.newlineBeforeCurrentToken)
                   subparse
-                } else {
+                else
                   false
-                }
-              }
             }
-          } else {
+          else
             false
-          }
       }
     if (!subparse) {
       builder.restoreNewlinesState

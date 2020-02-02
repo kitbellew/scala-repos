@@ -52,14 +52,14 @@ class Pool[K, V](valueFactory: Option[(K) => V] = None)
     if (valueFactory.isEmpty)
       throw new KafkaException("Empty value factory in pool.")
     val curr = pool.get(key)
-    if (curr == null) {
+    if (curr == null)
       createLock synchronized {
         val curr = pool.get(key)
         if (curr == null)
           pool.put(key, valueFactory.get(key))
         pool.get(key)
       }
-    } else
+    else
       curr
   }
 

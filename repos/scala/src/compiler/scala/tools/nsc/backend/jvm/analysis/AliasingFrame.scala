@@ -88,9 +88,8 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     * Define the alias set for a given value.
     */
   private def setAliasSet(assignee: Int, set: AliasSet): Unit = {
-    if (aliases(assignee) != null) {
+    if (aliases(assignee) != null)
       aliases(assignee) -= assignee
-    }
     aliases(assignee) = set
   }
 
@@ -130,10 +129,10 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
         val top = stackTop
         newAlias(assignee = top, source = top - 1)
         newAlias(assignee = top - 1, source = top - 2)
-        if (isSize2) {
+        if (isSize2)
           // Size 2 values on the stack only take one slot in the `values` array
           newAlias(assignee = top - 2, source = top)
-        } else {
+        else {
           newAlias(assignee = top - 2, source = top - 3)
           newAlias(assignee = top - 3, source = top)
         }
@@ -141,9 +140,9 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
       case DUP2 =>
         val isSize2 = peekStack(0).getSize == 2
         val top = stackTop
-        if (isSize2) {
+        if (isSize2)
           newAlias(assignee = top, source = top - 1)
-        } else {
+        else {
           newAlias(assignee = top - 1, source = top - 3)
           newAlias(assignee = top, source = top - 2)
         }
@@ -171,10 +170,10 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
           newAlias(assignee = top, source = top - 1)
           newAlias(assignee = top - 1, source = top - 2)
           val v2isSize2 = peekStack(1).getSize == 2
-          if (v2isSize2) {
+          if (v2isSize2)
             // Form 4
             newAlias(assignee = top - 2, source = top)
-          } else {
+          else {
             // Form 2
             newAlias(assignee = top - 2, source = top - 3)
             newAlias(assignee = top - 3, source = top)
@@ -215,11 +214,9 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
           aliases(top - 1) = topAliases
           topAliases -= top
           topAliases += (top - 1)
-        } else {
-          if (aliases(top - 1) != null) {
-            moveNextToTop()
-            aliases(top - 1) = null
-          }
+        } else if (aliases(top - 1) != null) {
+          moveNextToTop()
+          aliases(top - 1) = null
         }
 
       case opcode =>
@@ -312,7 +309,7 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
       if (!knownOk(i)) {
         val thisAliases = this.aliases(i)
         val otherAliases = aliasingOther.aliases(i)
-        if (thisAliases != null) {
+        if (thisAliases != null)
           if (otherAliases == null) {
             if (thisAliases.size > 1) {
               aliasesChanged = true
@@ -334,7 +331,6 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
               }
             }
           }
-        }
       }
       i += 1
     }
@@ -371,12 +367,12 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     var i = 0
     while (i < aliases.length) {
       val set = aliases(i)
-      if (set != null) {
+      if (set != null)
         // size cannot be 0 - alias sets are always at least singletons.
         // for sets of size 1-4, don't use the `newSets` map - lookup / update is slow
-        if (set.size == 1) {
+        if (set.size == 1)
           aliases(i) = null
-        } else if (set.size <= 4) {
+        else if (set.size <= 4) {
           val small = set.set.asInstanceOf[AliasSet.SmallBitSet]
           val firstOfSet = i == min(small)
           if (firstOfSet) {
@@ -386,20 +382,18 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
             if (small.c != -1) aliases(small.c) = newSet
             if (small.d != -1) aliases(small.d) = newSet
           }
-        } else {
-          // the actual hot spot is the hash map operations here: this is where almost all of the 20%
-          // mentioned above is spent.
-          // i also benchmarked an alternative implementation: keep an array of booleans for indexes
-          // that already contain the cloned set. iterate through all elements of the cloned set and
-          // assign the cloned set. this approach is 50% slower than using a hash map.
-          if (newSets contains set) aliases(i) = newSets(set)
-          else {
-            val newSet = set.clone()
-            newSets(set) = newSet
-            aliases(i) = newSet
-          }
+        } else
+        // the actual hot spot is the hash map operations here: this is where almost all of the 20%
+        // mentioned above is spent.
+        // i also benchmarked an alternative implementation: keep an array of booleans for indexes
+        // that already contain the cloned set. iterate through all elements of the cloned set and
+        // assign the cloned set. this approach is 50% slower than using a hash map.
+        if (newSets contains set) aliases(i) = newSets(set)
+        else {
+          val newSet = set.clone()
+          newSets(set) = newSet
+          aliases(i) = newSet
         }
-      }
       i += 1
     }
     this
@@ -595,12 +589,11 @@ object AliasSet {
     var i = 0
     val end = bits.length * 64
     while (i < end) {
-      if (bsContains(bits, i)) {
+      if (bsContains(bits, i))
         if (a == -1) a = i
         else if (b == -1) b = i
         else if (c == -1) c = i
         else return new SmallBitSet(a, b, c, i)
-      }
       i += 1
     }
     null
@@ -700,13 +693,13 @@ object AliasSet {
         3) || checkABCD(d, 4) || checkXs
 
     def next(): Int =
-      if (hasNext) {
+      if (hasNext)
         if (abcdNext != -1) {
           val r = abcdNext; abcdNext = -1; r
         } else {
           val r = i; i += 1; iValid = false; r
         }
-      } else Iterator.empty.next()
+      else Iterator.empty.next()
   }
 
 //  The number of bits in a bit array. Useful for debugging.

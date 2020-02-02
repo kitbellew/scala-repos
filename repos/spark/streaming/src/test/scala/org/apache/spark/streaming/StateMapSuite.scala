@@ -299,13 +299,12 @@ class StateMapSuite extends SparkFunSuite {
           "State map does not match reference map")
 
         // Test whether the previous map before copy has not changed
-        if (prevSetStateMap != null && prevSetRefMap != null) {
+        if (prevSetStateMap != null && prevSetRefMap != null)
           assertMap(
             prevSetStateMap,
             prevSetRefMap,
             time,
             "Parent state map somehow got modified, does not match corresponding reference map")
-        }
       }
 
       // Copy the map and remember the previous maps for future tests
@@ -354,15 +353,13 @@ class StateMapSuite extends SparkFunSuite {
       assert(mapToTest.getAll().toSet === refMapToTestWith.getAll().toSet)
 
       // Assert that get on every key returns the right value
-      for (keyId <- refMapToTestWith.getAll().map { _._1 }) {
+      for (keyId <- refMapToTestWith.getAll().map { _._1 })
         assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId))
-      }
 
       // Assert that every time threshold returns the correct data
-      for (t <- 0L to (time + 1)) {
+      for (t <- 0L to (time + 1))
         assert(
           mapToTest.getByTime(t).toSet === refMapToTestWith.getByTime(t).toSet)
-      }
     }
 
   // Assert whether all the data and operations on a state map matches that of a reference map
@@ -378,10 +375,9 @@ class StateMapSuite extends SparkFunSuite {
           refMapToTestWith.iterator.map { x => (x._1, x._2._1, x._2._2) }.toSet)
 
       // Assert that get on every key returns the right value
-      for (keyId <- refMapToTestWith.keys) {
+      for (keyId <- refMapToTestWith.keys)
         assert(
           mapToTest.get(keyId) === refMapToTestWith.get(keyId).map { _._1 })
-      }
 
       // Assert that every time threshold returns the correct data
       for (t <- 0L to (time + 1)) {

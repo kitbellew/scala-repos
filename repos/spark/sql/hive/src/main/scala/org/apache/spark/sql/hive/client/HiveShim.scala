@@ -384,9 +384,9 @@ private[client] class Shim_v0_13 extends Shim_v0_12 {
     // predicates like "str_key=\"value\" and int_key=1 ..."
     val filter = convertFilters(table, predicates)
     val partitions =
-      if (filter.isEmpty) {
+      if (filter.isEmpty)
         getAllPartitionsMethod.invoke(hive, table).asInstanceOf[JSet[Partition]]
-      } else {
+      else {
         logDebug(s"Hive metastore filter is '$filter'.")
         getPartitionsByFilterMethod
           .invoke(hive, table, filter)

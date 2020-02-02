@@ -114,9 +114,8 @@ trait WebHookService {
       implicit s: Session,
       c: JsonFormat.Context): Unit = {
     val webHooks = getWebHooksByEvent(owner, repository, event)
-    if (webHooks.nonEmpty) {
+    if (webHooks.nonEmpty)
       makePayload.map(callWebHook(event, webHooks, _))
-    }
   }
 
   def callWebHook(
@@ -176,12 +175,10 @@ trait WebHookService {
             logger.debug(s"end web hook invocation for $webHook")
             res
           } catch {
-            case e: Throwable => {
-              if (!reqPromise.isCompleted) {
+            case e: Throwable =>
+              if (!reqPromise.isCompleted)
                 reqPromise.failure(e)
-              }
               throw e
-            }
           }
         }
         f.onSuccess {
@@ -193,9 +190,8 @@ trait WebHookService {
         }
         (webHook, json, reqPromise.future, f)
       }
-    } else {
+    } else
       Nil
-    }
     // logger.debug("end callWebHook")
   }
 }
@@ -221,16 +217,13 @@ trait WebHookPullRequestService extends WebHookService {
       for {
         repoOwner <- users.get(repository.owner)
         issueUser <- users.get(issue.openedUserName)
-      } yield {
-        WebHookIssuesPayload(
-          action = action,
-          number = issue.issueId,
-          repository = ApiRepository(repository, ApiUser(repoOwner)),
-          issue =
-            ApiIssue(issue, RepositoryName(repository), ApiUser(issueUser)),
-          sender = ApiUser(sender)
-        )
-      }
+      } yield WebHookIssuesPayload(
+        action = action,
+        number = issue.issueId,
+        repository = ApiRepository(repository, ApiUser(repoOwner)),
+        issue = ApiIssue(issue, RepositoryName(repository), ApiUser(issueUser)),
+        sender = ApiUser(sender)
+      )
     }
 
   def callPullRequestWebHook(
@@ -260,19 +253,17 @@ trait WebHookPullRequestService extends WebHookService {
         headRepo <- getRepository(
           pullRequest.requestUserName,
           pullRequest.requestRepositoryName)
-      } yield {
-        WebHookPullRequestPayload(
-          action = action,
-          issue = issue,
-          issueUser = issueUser,
-          pullRequest = pullRequest,
-          headRepository = headRepo,
-          headOwner = headOwner,
-          baseRepository = repository,
-          baseOwner = baseOwner,
-          sender = sender
-        )
-      }
+      } yield WebHookPullRequestPayload(
+        action = action,
+        issue = issue,
+        issueUser = issueUser,
+        pullRequest = pullRequest,
+        headRepository = headRepo,
+        headOwner = headOwner,
+        baseRepository = repository,
+        baseOwner = baseOwner,
+        sender = sender
+      )
     }
   }
 
@@ -296,9 +287,9 @@ trait WebHookPullRequestService extends WebHookService {
       wht <- WebHookEvents if wht.event === WebHook.PullRequest
         .asInstanceOf[WebHook.Event]
         .bind && wht.byWebHook(wh)
-    } yield {
-      ((is, iu, pr, bu, ru), wh)
-    }).list.groupBy(_._1).mapValues(_.map(_._2))
+    } yield ((is, iu, pr, bu, ru), wh)).list
+      .groupBy(_._1)
+      .mapValues(_.map(_._2))
 
   def callPullRequestWebHookByRequestBranch(
       action: String,
@@ -371,20 +362,18 @@ trait WebHookPullRequestReviewCommentService extends WebHookService {
         headRepo <- getRepository(
           pullRequest.requestUserName,
           pullRequest.requestRepositoryName)
-      } yield {
-        WebHookPullRequestReviewCommentPayload(
-          action = action,
-          comment = comment,
-          issue = issue,
-          issueUser = issueUser,
-          pullRequest = pullRequest,
-          headRepository = headRepo,
-          headOwner = headOwner,
-          baseRepository = repository,
-          baseOwner = baseOwner,
-          sender = sender
-        )
-      }
+      } yield WebHookPullRequestReviewCommentPayload(
+        action = action,
+        comment = comment,
+        issue = issue,
+        issueUser = issueUser,
+        pullRequest = pullRequest,
+        headRepository = headRepo,
+        headOwner = headOwner,
+        baseRepository = repository,
+        baseOwner = baseOwner,
+        sender = sender
+      )
     }
   }
 }
@@ -416,16 +405,14 @@ trait WebHookIssueCommentService extends WebHookPullRequestService {
         issueUser <- users.get(issue.openedUserName)
         repoOwner <- users.get(repository.owner)
         commenter <- users.get(issueComment.commentedUserName)
-      } yield {
-        WebHookIssueCommentPayload(
-          issue = issue,
-          issueUser = issueUser,
-          comment = issueComment,
-          commentUser = commenter,
-          repository = repository,
-          repositoryUser = repoOwner,
-          sender = sender)
-      }
+      } yield WebHookIssueCommentPayload(
+        issue = issue,
+        issueUser = issueUser,
+        comment = issueComment,
+        commentUser = commenter,
+        repository = repository,
+        repositoryUser = repoOwner,
+        sender = sender)
     }
 }
 

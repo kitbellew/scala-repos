@@ -52,12 +52,11 @@ object Fishnet extends LilaController {
           },
           data =>
             api.authenticateClient(data, clientIp(req)) flatMap {
-              case Failure(msg) => {
+              case Failure(msg) =>
                 val ip = lila.common.HTTPRequest.lastRemoteAddress(req)
                 logger.info(
                   s"key: ${data.fishnet.apikey} ip: $ip | ${msg.getMessage}")
                 Unauthorized(jsonError(msg.getMessage)).fuccess
-              }
               case Success(client) =>
                 f(data)(client).map {
                   case Some(work) => Accepted(Json toJson work)

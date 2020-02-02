@@ -280,7 +280,7 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * this method, logs the message and treats it as no default value for convenience. */
     def default: Option[Option[Any]] = rawDefault.map { v =>
       if (v == "NULL") None
-      else {
+      else
         // NOTE: When extending this list, please also extend the code generator accordingly
         Some((v, tpe) match {
           case (v, "Byte")   => v.toByte
@@ -302,7 +302,6 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
           case ("TRUE", "Boolean")            => true
           case ("FALSE", "Boolean")           => false
         })
-      }
     }
 
     private def formatDefault(v: Any) =

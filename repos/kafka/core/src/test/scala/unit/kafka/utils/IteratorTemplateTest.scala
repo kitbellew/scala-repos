@@ -26,9 +26,9 @@ class IteratorTemplateTest extends Assertions {
   val iterator = new IteratorTemplate[Int]() {
     var i = 0
     override def makeNext() =
-      if (i >= lst.size) {
+      if (i >= lst.size)
         allDone()
-      } else {
+      else {
         val item = lst(i)
         i += 1
         item

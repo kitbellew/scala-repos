@@ -138,16 +138,14 @@ private[controllers] object AssetInfo {
     val matcher = dateRecognizer.matcher(date)
     if (matcher.matches()) {
       val standardDate = matcher.group(3)
-      try {
-        if (standardDate != null) {
-          Some(standardDateParserWithoutTZ.parseDateTime(standardDate).toDate)
-        } else {
-          val alternativeDate = matcher.group(6) // Cannot be null otherwise match would have failed
-          Some(
-            alternativeDateFormatWithTZOffset
-              .parseDateTime(alternativeDate)
-              .toDate)
-        }
+      try if (standardDate != null)
+        Some(standardDateParserWithoutTZ.parseDateTime(standardDate).toDate)
+      else {
+        val alternativeDate = matcher.group(6) // Cannot be null otherwise match would have failed
+        Some(
+          alternativeDateFormatWithTZOffset
+            .parseDateTime(alternativeDate)
+            .toDate)
       } catch {
         case e: IllegalArgumentException =>
           Logger.debug(
@@ -183,11 +181,10 @@ private[controllers] class AssetInfo(
 
   def cacheControl(aggressiveCaching: Boolean): String =
     configuredCacheControl.getOrElse {
-      if (isProd) {
+      if (isProd)
         if (aggressiveCaching) aggressiveCacheControl else defaultCacheControl
-      } else {
+      else
         "no-cache"
-      }
     }
 
   val lastModified: Option[String] = {
@@ -195,11 +192,8 @@ private[controllers] class AssetInfo(
       Option(url.openConnection)
         .map {
           case urlConnection: T @unchecked =>
-            try {
-              f(urlConnection)
-            } finally {
-              Resources.closeUrlConnection(urlConnection)
-            }
+            try f(urlConnection)
+            finally Resources.closeUrlConnection(urlConnection)
         }
         .filterNot(_ == -1)
         .map(httpDateFormat.print)
@@ -303,11 +297,11 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
           val minPath = noextPath + delim + "min." + ext
           resource(minPath).map(_ => minPath)
         }
-        val maybeMinifiedPath = if (checkForMinified) {
-          minifiedPathFor('.').orElse(minifiedPathFor('-')).getOrElse(path)
-        } else {
-          path
-        }
+        val maybeMinifiedPath =
+          if (checkForMinified)
+            minifiedPathFor('.').orElse(minifiedPathFor('-')).getOrElse(path)
+          else
+            path
         if (!isDev) minifiedPathsCache.put(path, maybeMinifiedPath)
         maybeMinifiedPath
       }
@@ -327,12 +321,11 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     }
 
   private def assetInfo(name: String): Future[Option[AssetInfo]] =
-    if (isDev) {
+    if (isDev)
       Future.successful(assetInfoFromResource(name))
-    } else {
+    else
       assetInfoCache.putIfAbsent(name)(assetInfoFromResource)(
         Implicits.trampoline)
-    }
 
   private[controllers] def assetInfoForRequest(
       request: RequestHeader,
@@ -414,9 +407,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
           ifModifiedSince <- parseModifiedDate(ifModifiedSinceStr)
           lastModified <- assetInfo.parsedLastModified
           if !lastModified.after(ifModifiedSince)
-        } yield {
-          NotModified
-        }
+        } yield NotModified
     }
 
   private def cacheableResult[A <: Result](
@@ -444,25 +435,24 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       gzipRequested: Boolean,
       gzipAvailable: Boolean): Result = {
 
-    val response = if (length > 0) {
-      Ok.sendEntity(
-        HttpEntity.Streamed(
-          akka.stream.scaladsl.Source
-            .fromPublisher(Streams.enumeratorToPublisher(resourceData))
-            .map(ByteString.apply),
-          Some(length),
-          Some(mimeType)
-        ))
-    } else {
-      Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
-    }
-    if (gzipRequested && gzipAvailable) {
+    val response =
+      if (length > 0)
+        Ok.sendEntity(
+          HttpEntity.Streamed(
+            akka.stream.scaladsl.Source
+              .fromPublisher(Streams.enumeratorToPublisher(resourceData))
+              .map(ByteString.apply),
+            Some(length),
+            Some(mimeType)
+          ))
+      else
+        Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
+    if (gzipRequested && gzipAvailable)
       response.withHeaders(VARY -> ACCEPT_ENCODING, CONTENT_ENCODING -> "gzip")
-    } else if (gzipAvailable) {
+    else if (gzipAvailable)
       response.withHeaders(VARY -> ACCEPT_ENCODING)
-    } else {
+    else
       response
-    }
   }
 
   /**
@@ -484,9 +474,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
             assetAt(path, bareFile, aggressiveCaching = true)
           case _ => assetAt(path, file.name, false)
         }
-      } else {
+      } else
         assetAt(path, file.name, false)
-      }
   }
 
   /**
@@ -579,11 +568,10 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
     val resourceName = dblSlashRemover(s"/$path/$decodedFile")
     val resourceFile = new File(resourceName)
     val pathFile = new File(path)
-    if (!resourceFile.getCanonicalPath.startsWith(pathFile.getCanonicalPath)) {
+    if (!resourceFile.getCanonicalPath.startsWith(pathFile.getCanonicalPath))
       None
-    } else {
+    else
       Some(resourceName)
-    }
   }
 
   private val dblSlashPattern = """//+""".r

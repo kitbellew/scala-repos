@@ -29,7 +29,7 @@ object MacroDef {
         builder.getTokenType match {
           case ScalaTokenTypes.tCOLON =>
             builder.advanceLexer() //Ate :
-            if (Type.parse(builder)) {
+            if (Type.parse(builder))
               builder.getTokenType match {
                 case ScalaTokenTypes.tASSIGN =>
                   builder.advanceLexer() //Ate =
@@ -37,9 +37,8 @@ object MacroDef {
                     case ScalaTokenTypes.kMACRO =>
                       builder.advanceLexer() //Ate `macro`
                       if (Qual_Id.parse(builder)) {
-                        if (builder.getTokenType == ScalaTokenTypes.tLSQBRACKET) {
+                        if (builder.getTokenType == ScalaTokenTypes.tLSQBRACKET)
                           TypeArgs.parse(builder, isPattern = false)
-                        }
                         marker.drop()
                         true
                       } else {
@@ -54,7 +53,7 @@ object MacroDef {
                   marker.rollbackTo()
                   false
               }
-            } else {
+            else {
               marker.rollbackTo()
               false
             }
@@ -64,9 +63,8 @@ object MacroDef {
               case ScalaTokenTypes.kMACRO =>
                 builder.advanceLexer() //Ate `macro`
                 if (Qual_Id.parse(builder)) {
-                  if (builder.getTokenType == ScalaTokenTypes.tLSQBRACKET) {
+                  if (builder.getTokenType == ScalaTokenTypes.tLSQBRACKET)
                     TypeArgs.parse(builder, isPattern = false)
-                  }
                   marker.drop()
                   true
                 } else {

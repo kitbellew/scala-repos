@@ -65,11 +65,10 @@ trait PrepJSExports { this: PrepJSInterop =>
       err(
         s"In an exported $memType, all parameters with defaults " +
           "must be at the end")
-    else if (baseSym.isConstructor) {
+    else if (baseSym.isConstructor)
       // we can generate constructors entirely in the backend, since they
       // do not need inheritance and such. But we want to check their sanity
       // here by previous tests and the following ones.
-
       if (!hasLegalExportVisibility(clsSym))
         err("You may only export public and protected classes")
       else if (clsSym.isAbstractClass)
@@ -83,7 +82,7 @@ trait PrepJSExports { this: PrepJSInterop =>
         jsInterop.registerForExport(baseSym, exports)
         Nil
       }
-    } else {
+    else {
       assert(!baseSym.isBridge)
 
       // Reset interface flag: Any trait will contain non-empty methods
@@ -127,34 +126,32 @@ trait PrepJSExports { this: PrepJSInterop =>
       def hasAnyNonPrivateCtor: Boolean =
         sym.info.member(nme.CONSTRUCTOR).filter(!isPrivateMaybeWithin(_)).exists
 
-      if (!hasLegalExportVisibility(sym)) {
+      if (!hasLegalExportVisibility(sym))
         err(
           "You may only export public and protected " +
             (if (isMod) "objects" else "classes"))
-      } else if (sym.isLocalToBlock) {
+      else if (sym.isLocalToBlock)
         err(
           "You may not export a local " +
             (if (isMod) "object" else "class"))
-      } else if (!sym.owner.hasPackageFlag) {
+      else if (!sym.owner.hasPackageFlag)
         err(
           "You may not export a nested " +
             (if (isMod) "object" else s"class. $createFactoryInOuterClassHint"))
-      } else if (sym.isAbstractClass) {
+      else if (sym.isAbstractClass)
         err("You may not export an abstract class")
-      } else if (!isMod && !hasAnyNonPrivateCtor) {
+      else if (!isMod && !hasAnyNonPrivateCtor)
         err("You may not export a class that has only private constructors")
-      } else {
+      else {
         val (named, normal) = exports.partition(_.isNamed)
 
         for {
           exp <- named
           if !exp.ignoreInvalid
-        } {
-          reporter.error(
-            exp.pos,
-            "You may not use @JSNamedExport on " +
-              (if (isMod) "an object" else "a Scala.js-defined JS class"))
-        }
+        } reporter.error(
+          exp.pos,
+          "You may not use @JSNamedExport on " +
+            (if (isMod) "an object" else "a Scala.js-defined JS class"))
 
         jsInterop.registerForExport(sym, normal)
       }
@@ -252,12 +249,11 @@ trait PrepJSExports { this: PrepJSInterop =>
           name == "toString" && sym.name != nme.toString_ &&
           sym.tpe.params.isEmpty && !jsInterop.isJSGetter(sym)
 
-      if (isIllegalToString) {
+      if (isIllegalToString)
         reporter.error(
           annot.pos,
           "You may not export a zero-argument " +
             "method named other than 'toString' under the name 'toString'")
-      }
 
       def isIllegalApplyExport =
         isMember && !hasExplicitName &&
@@ -281,11 +277,10 @@ trait PrepJSExports { this: PrepJSInterop =>
         )
       }
 
-      if (isNamedExport && jsInterop.isJSProperty(sym)) {
+      if (isNamedExport && jsInterop.isJSProperty(sym))
         reporter.error(
           annot.pos,
           "You may not export a getter or a setter as a named export")
-      }
 
       ExportInfo(name, annot.pos, isNamedExport, ignoreInvalid = false)
     }
@@ -295,19 +290,18 @@ trait PrepJSExports { this: PrepJSInterop =>
     // The symbol from which we (potentially) inherit exports. It also
     // gives the exports their name
     val trgSym = {
-      if (sym.isModuleClass || (sym.isClass && isJSAny(sym))) {
+      if (sym.isModuleClass || (sym.isClass && isJSAny(sym)))
         sym
-      } else if (sym.isConstructor && sym.isPublic && !isJSAny(sym.owner) &&
-                 sym.owner.isConcreteClass && !sym.owner.isModuleClass) {
+      else if (sym.isConstructor && sym.isPublic && !isJSAny(sym.owner) &&
+               sym.owner.isConcreteClass && !sym.owner.isModuleClass)
         sym.owner
-      } else {
+      else
         NoSymbol
-      }
     }
 
-    if (trgSym == NoSymbol) {
+    if (trgSym == NoSymbol)
       Nil
-    } else {
+    else {
       val trgAnnot =
         if (sym.isModuleClass) JSExportDescendentObjectsAnnotation
         else JSExportDescendentClassesAnnotation
@@ -334,7 +328,7 @@ trait PrepJSExports { this: PrepJSInterop =>
         if nameValid || !ignoreInvalid
       } yield {
         // Enfore no __ in name
-        if (!nameValid) {
+        if (!nameValid)
           // Get all annotation positions for error message
           reporter.error(
             sym.pos,
@@ -342,7 +336,6 @@ trait PrepJSExports { this: PrepJSInterop =>
               "its fully qualified name, since it is forced to be exported by " +
               s"a @${trgAnnot.name} on $forcingSym"
           )
-        }
 
         ExportInfo(name, sym.pos, false, ignoreInvalid)
       }

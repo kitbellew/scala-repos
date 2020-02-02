@@ -251,9 +251,8 @@ abstract class SymbolTable
 
   final def findPhaseWithName(phaseName: String): Phase = {
     var ph = phase
-    while (ph != NoPhase && ph.name != phaseName) {
+    while (ph != NoPhase && ph.name != phaseName)
       ph = ph.prev
-    }
     if (ph eq NoPhase) phase else ph
   }
   final def enteringPhaseWithName[T](phaseName: String)(body: => T): T = {
@@ -298,26 +297,20 @@ abstract class SymbolTable
 
   def openPackageModule(container: Symbol, dest: Symbol) {
     // unlink existing symbols in the package
-    for (member <- container.info.decls.iterator) {
-      if (!member.isPrivate && !member.isConstructor) {
+    for (member <- container.info.decls.iterator)
+      if (!member.isPrivate && !member.isConstructor)
         // todo: handle overlapping definitions in some way: mark as errors
         // or treat as abstractions. For now the symbol in the package module takes precedence.
         for (existing <- dest.info.decl(member.name).alternatives)
           dest.info.decls.unlink(existing)
-      }
-    }
     // enter non-private decls the class
-    for (member <- container.info.decls.iterator) {
-      if (!member.isPrivate && !member.isConstructor) {
+    for (member <- container.info.decls.iterator)
+      if (!member.isPrivate && !member.isConstructor)
         dest.info.decls.enter(member)
-      }
-    }
     // enter decls of parent classes
-    for (p <- container.parentSymbols) {
-      if (p != definitions.ObjectClass) {
+    for (p <- container.parentSymbols)
+      if (p != definitions.ObjectClass)
         openPackageModule(p, dest)
-      }
-    }
   }
 
   /** Convert array parameters denoting a repeated parameter of a Java method
@@ -354,9 +347,8 @@ abstract class SymbolTable
       case ltp: SymLoader => ltp.fromSource
       case _              => false
     }
-    if (pkgModule.isModule && !fromSource) {
+    if (pkgModule.isModule && !fromSource)
       openPackageModule(pkgModule, pkgClass)
-    }
   }
 
   object perRunCaches {

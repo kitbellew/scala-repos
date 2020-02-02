@@ -123,7 +123,7 @@ class BindingFactoryTest
       }
 
   test("BindingFactory reflects status of underlying cached service factory")(
-    for (status <- Seq(Status.Busy, Status.Open, Status.Closed)) {
+    for (status <- Seq(Status.Busy, Status.Open, Status.Closed))
       new Ctx {
         override lazy val newFactory = mkFactory(status)
 
@@ -135,7 +135,6 @@ class BindingFactoryTest
           assert(factory.status == status)
         }
       }
-    }
   )
 
   test("stats")(Time.withCurrentTimeFrozen { tc =>
@@ -471,13 +470,12 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
   })
 
   test("DynNameFactory reflects status of underlying cached service factory")(
-    for (status <- Seq(Status.Closed, Status.Busy, Status.Open)) {
+    for (status <- Seq(Status.Closed, Status.Busy, Status.Open))
       new Ctx {
         when(cache.status(any[NameTree[Name.Bound]])).thenReturn(status)
         namew.notify(Return(NameTree.Leaf(Name.empty)))
         assert(dyn.status == status)
       }
-    }
   )
 
   test("queue requests until name is nonpending (ok)")(new Ctx {

@@ -77,10 +77,9 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
       columns: Option[Set[ColumnRef]])(implicit M: Monad[M])
       : M[Option[BlockProjectionData[Array[Byte], Slice]]] = M.point {
     // TODO: Make this far, far less ugly
-    if (columns.nonEmpty) {
+    if (columns.nonEmpty)
       throw new IllegalArgumentException(
         "JDBM Sort Projections may not be constrained by column descriptor")
-    }
 
     // At this point we have completed all valid writes, so we open readonly + no locks, allowing for concurrent use of sorted data
     //println("opening: " + dbFile.getCanonicalPath)
@@ -92,10 +91,9 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
     try {
       val index: SortedMap[Array[Byte], Array[Byte]] = db.getTreeMap(indexName)
 
-      if (index == null) {
+      if (index == null)
         throw new IllegalArgumentException(
           "No such index in DB: %s:%s".format(dbFile, indexName))
-      }
 
       val constrainedMap = id
         .map { idKey => index.tailMap(idKey) }
@@ -114,25 +112,23 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
           null
         var tries = 0
         while (tries < MAX_SPINS && initial == null) {
-          try {
-            initial = iteratorSetup()
-          } catch {
+          try initial = iteratorSetup()
+          catch {
             case t: Throwable =>
               logger.warn("Failure on load iterator initialization")
           }
           tries += 1
         }
-        if (initial == null) {
+        if (initial == null)
           throw new VicciniException(
             "Initial drop failed with too many concurrent mods.")
-        } else {
+        else
           initial
-        }
       }
 
-      if (iterator.isEmpty) {
+      if (iterator.isEmpty)
         None
-      } else {
+      else {
         val keyColumns =
           sortKeyRefs.map(JDBMSlice.columnFor(CPath("[0]"), sliceSize))
         val valColumns =
@@ -153,8 +149,7 @@ class JDBMRawSortProjection[M[+_]] private[yggdrasil] (
 
         Some(BlockProjectionData(firstKey, lastKey, slice))
       }
-    } finally {
-      db.close() // creating the slice should have already read contents into memory
-    }
+    } finally db
+      .close() // creating the slice should have already read contents into memory
   }
 }

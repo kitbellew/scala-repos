@@ -252,9 +252,8 @@ class ALSSuite
         if (x < trainingFraction) {
           val noise = noiseStd * random.nextGaussian()
           training += Rating(userId, itemId, rating + noise.toFloat)
-        } else {
+        } else
           test += Rating(userId, itemId, rating)
-        }
       }
     }
     logInfo(
@@ -297,14 +296,12 @@ class ALSSuite
       val observed = random.nextDouble() < threshold
       if (observed) {
         val x = random.nextDouble()
-        if (x < totalFraction) {
+        if (x < totalFraction)
           if (x < trainingFraction) {
             val noise = noiseStd * random.nextGaussian()
             training += Rating(userId, itemId, rating + noise.toFloat)
-          } else {
+          } else
             test += Rating(userId, itemId, rating)
-          }
-        }
       }
     }
     logInfo(
@@ -331,9 +328,8 @@ class ALSSuite
     require(size > 0 && size < Int.MaxValue / 3)
     require(b > a)
     val ids = mutable.Set.empty[Int]
-    while (ids.size < size) {
+    while (ids.size < size)
       ids += random.nextInt()
-    }
     val width = b - a
     ids.toSeq.sorted.map(id =>
       (id, Array.fill(rank)(a + random.nextFloat() * width)))
@@ -485,7 +481,7 @@ class ALSSuite
         numItems = 40,
         rank = 2,
         noiseStd = 0.01)
-    for ((numUserBlocks, numItemBlocks) <- Seq((1, 1), (1, 2), (2, 1), (2, 2))) {
+    for ((numUserBlocks, numItemBlocks) <- Seq((1, 1), (1, 2), (2, 1), (2, 2)))
       testALS(
         training,
         test,
@@ -495,7 +491,6 @@ class ALSSuite
         targetRMSE = 0.03,
         numUserBlocks = numUserBlocks,
         numItemBlocks = numItemBlocks)
-    }
   }
 
   test("more blocks than ratings") {
@@ -598,10 +593,9 @@ class ALSSuite
         .mapPartitionsWithIndex { (idx, items) =>
           items.foreach {
             case (id, _) =>
-              if (part.getPartition(id) != idx) {
+              if (part.getPartition(id) != idx)
                 throw new SparkException(
                   s"$tpe with ID $id should not be in partition $idx.")
-              }
           }
           Iterator.empty
         }

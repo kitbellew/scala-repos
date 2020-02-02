@@ -29,10 +29,9 @@ import java.io.File
 object UpdateSerializedObjects {
 
   def main(args: Array[String]): Unit =
-    for (a <- args) {
+    for (a <- args)
       breeze.util.writeObject[AnyRef](
         new File(a),
         breeze.util.readObject(new File(a), ignoreSerialVersionUID = true))
-    }
 
 }

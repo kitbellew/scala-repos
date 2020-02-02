@@ -31,11 +31,10 @@ class Tool extends Configured with HTool {
 
   //  Allows you to set the job for the Tool to run
   def setJobConstructor(jobc: (Args) => Job) {
-    if (rootJob.isDefined) {
+    if (rootJob.isDefined)
       sys.error("Job is already defined")
-    } else {
+    else
       rootJob = Some(jobc)
-    }
   }
 
   protected def getJob(args: Args): Job = rootJob match {
@@ -70,11 +69,10 @@ class Tool extends Configured with HTool {
   protected def run(job: Job): Int = {
 
     val onlyPrintGraph = job.args.boolean("tool.graph")
-    if (onlyPrintGraph) {
+    if (onlyPrintGraph)
       // TODO use proper logging
       println(
         "Only printing the job graph, NOT executing. Run without --tool.graph to execute the job")
-    }
 
     /*
      * This is a tail recursive loop that runs all the
@@ -130,20 +128,18 @@ class Tool extends Configured with HTool {
       }
       j.clear
       //When we get here, the job is finished
-      if (successful) {
+      if (successful)
         j.next match {
           case Some(nextj) => start(nextj, cnt + 1)
           case None        => Unit
         }
-      } else {
+      else
         throw new RuntimeException(
           "Job failed to run: " + jobName +
-            (if (cnt > 0) {
+            (if (cnt > 0)
                " child: " + cnt.toString + ", class: " + j.getClass.getName
-             } else {
-               ""
-             }))
-      }
+             else
+               ""))
     }
     //start a counter to see how deep we recurse:
     start(job, 0)
@@ -153,13 +149,11 @@ class Tool extends Configured with HTool {
 
 object Tool {
   def main(args: Array[String]) {
-    try {
-      ToolRunner.run(new JobConf, new Tool, ExpandLibJarsGlobs(args))
-    } catch {
-      case t: Throwable => {
+    try ToolRunner.run(new JobConf, new Tool, ExpandLibJarsGlobs(args))
+    catch {
+      case t: Throwable =>
         //re-throw the exception with extra info
         throw new Throwable(RichXHandler(t), t)
-      }
     }
   }
 }

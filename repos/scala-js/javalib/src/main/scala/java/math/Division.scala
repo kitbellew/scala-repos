@@ -107,10 +107,10 @@ private[math] object Division {
     while (i >= 0) {
       // Step D3: calculate a guess digit guessDigit
       var guessDigit = 0
-      if (normA(j) == firstDivisorDigit) {
+      if (normA(j) == firstDivisorDigit)
         // set guessDigit to the largest unsigned int value
         guessDigit = -1
-      } else {
+      else {
         val product: Long =
           ((normA(j) & UINT_MAX) << 32) + (normA(j - 1) & UINT_MAX)
         val res: Long = Division.divideLongByInt(product, firstDivisorDigit)
@@ -169,9 +169,8 @@ private[math] object Division {
           }
         }
       }
-      if (quot != null) {
+      if (quot != null)
         quot(i) = guessDigit
-      }
       // Step D7
       j -= 1
       i -= 1
@@ -261,20 +260,17 @@ private[math] object Division {
         rem = aPos % bPos
         // double the remainder and add 1 if a is odd
         rem = (rem << 1) + (temp & 1)
-        if ((divisor & 1) != 0) {
+        if ((divisor & 1) != 0)
           // the divisor is odd
-          if (quot <= rem) {
+          if (quot <= rem)
             rem -= quot
+          else if (quot - rem <= bLong) {
+            rem += bLong - quot
+            quot -= 1
           } else {
-            if (quot - rem <= bLong) {
-              rem += bLong - quot
-              quot -= 1
-            } else {
-              rem += (bLong << 1) - quot
-              quot -= 2
-            }
+            rem += (bLong << 1) - quot
+            quot -= 2
           }
-        }
       }
       dest(i) = (quot & UINT_MAX).toInt
       i -= 1
@@ -309,19 +305,16 @@ private[math] object Division {
       rem = aPos % bPos
       // double the remainder and add 1 if a is odd
       rem = (rem << 1) + (a & 1)
-      if ((b & 1) != 0) { // the divisor is odd
-        if (quot <= rem) {
+      if ((b & 1) != 0) // the divisor is odd
+        if (quot <= rem)
           rem -= quot
+        else if (quot - rem <= bLong) {
+          rem += bLong - quot
+          quot -= 1
         } else {
-          if (quot - rem <= bLong) {
-            rem += bLong - quot
-            quot -= 1
-          } else {
-            rem += (bLong << 1) - quot
-            quot -= 2
-          }
+          rem += (bLong << 1) - quot
+          quot -= 2
         }
-      }
     }
     (rem << 32) | (quot & UINT_MAX)
   }
@@ -427,24 +420,22 @@ private[math] object Division {
 
       // Optimization for small operands
       // (op2.bitLength() < 32) implies by INV (op1.bitLength() < 32)
-      if ((op2.numberLength == 1) && (op2.digits(0) > 0)) {
+      if ((op2.numberLength == 1) && (op2.digits(0) > 0))
         op2 =
           BigInteger.valueOf(Division.gcdBinary(op1.intValue(), op2.intValue()))
-      } else {
+      else {
         // Implements one step of the Euclidean algorithm
         // To reduce one operand if it's much smaller than the other one
         if (op2.numberLength > op1.numberLength * 1.2) {
           op2 = op2.remainder(op1)
-          if (op2.signum() != 0) {
+          if (op2.signum() != 0)
             BitLevel.inplaceShiftRight(op2, op2.getLowestSetBit)
-          }
-        } else {
+        } else
           // Use Knuth's algorithm of successive subtract and shifting
           do {
             Elementary.inplaceSubtract(op2, op1)
             BitLevel.inplaceShiftRight(op2, op2.getLowestSetBit)
           } while (op2.compareTo(op1) >= BigInteger.EQUALS);
-        }
         // now op1 >= op2
         val swap: BigInteger = op2
         op2 = op1
@@ -479,14 +470,12 @@ private[math] object Division {
     if (lsb2 != 0)
       op2 >>>= lsb2
 
-    do {
-      if (op1 >= op2) {
-        op1 -= op2
-        op1 >>>= java.lang.Integer.numberOfTrailingZeros(op1)
-      } else {
-        op2 -= op1
-        op2 >>>= java.lang.Integer.numberOfTrailingZeros(op2)
-      }
+    do if (op1 >= op2) {
+      op1 -= op2
+      op1 >>>= java.lang.Integer.numberOfTrailingZeros(op1)
+    } else {
+      op2 -= op1
+      op2 >>>= java.lang.Integer.numberOfTrailingZeros(op2)
     } while (op1 != 0)
     op2 << pow2Count
   }
@@ -540,9 +529,9 @@ private[math] object Division {
       k = howManyIterations(u, n)
       if (k != 0) {
         BitLevel.inplaceShiftLeft(u, k)
-        if (coefU >= coefV) {
+        if (coefU >= coefV)
           BitLevel.inplaceShiftLeft(r, k)
-        } else {
+        else {
           BitLevel.inplaceShiftRight(s, Math.min(coefV - coefU, k))
           if (k - (coefV - coefU) > 0)
             BitLevel.inplaceShiftLeft(r, k - coefV + coefU)
@@ -552,9 +541,9 @@ private[math] object Division {
       k = howManyIterations(v, n)
       if (k != 0) {
         BitLevel.inplaceShiftLeft(v, k)
-        if (coefV >= coefU) {
+        if (coefV >= coefU)
           BitLevel.inplaceShiftLeft(s, k)
-        } else {
+        else {
           BitLevel.inplaceShiftRight(r, Math.min(coefU - coefV, k))
           if (k - (coefU - coefV) > 0)
             BitLevel.inplaceShiftLeft(s, k - coefU + coefV)
@@ -562,7 +551,7 @@ private[math] object Division {
         coefV += k
       }
 
-      if (u.signum() == v.signum()) {
+      if (u.signum() == v.signum())
         if (coefU <= coefV) {
           Elementary.completeInPlaceSubtract(u, v)
           Elementary.completeInPlaceSubtract(r, s)
@@ -570,14 +559,12 @@ private[math] object Division {
           Elementary.completeInPlaceSubtract(v, u)
           Elementary.completeInPlaceSubtract(s, r)
         }
+      else if (coefU <= coefV) {
+        Elementary.completeInPlaceAdd(u, v)
+        Elementary.completeInPlaceAdd(r, s)
       } else {
-        if (coefU <= coefV) {
-          Elementary.completeInPlaceAdd(u, v)
-          Elementary.completeInPlaceAdd(r, s)
-        } else {
-          Elementary.completeInPlaceAdd(v, u)
-          Elementary.completeInPlaceAdd(s, r)
-        }
+        Elementary.completeInPlaceAdd(v, u)
+        Elementary.completeInPlaceAdd(s, r)
       }
       if (v.signum() == 0 || u.signum() == 0)
         throw new ArithmeticException("BigInteger not invertible.")
@@ -668,9 +655,8 @@ private[math] object Division {
     if (k > m) {
       val r2 = monPro(p.subtract(r), BigInteger.ONE, p, n1)
       monPro(r2, BigInteger.getPowerOfTwo(2 * m - k), p, n1)
-    } else {
+    } else
       monPro(p.subtract(r), BigInteger.getPowerOfTwo(m - k), p, n1)
-    }
   }
 
   /** Calculates a modInverse raised to the power of two.
@@ -684,11 +670,9 @@ private[math] object Division {
     y.numberLength = 1
     y.digits(0) = 1
     y.sign = 1
-    for (i <- 1 until n) {
-      if (BitLevel.testBit(x.multiply(y), i)) {
+    for (i <- 1 until n)
+      if (BitLevel.testBit(x.multiply(y), i))
         y.digits(i >> 5) |= (1 << (i & 31))
-      }
-    }
     y
   }
 
@@ -887,14 +871,12 @@ private[math] object Division {
         acc3 = i
         var j = Math.max(i - 3, 0)
         while (j <= (i - 1)) {
-          if (BitLevel.testBit(exponent, j)) {
+          if (BitLevel.testBit(exponent, j))
             if (j < acc3) {
               acc3 = j
               lowexp = (lowexp << (i - j)) ^ 1
-            } else {
+            } else
               lowexp = lowexp ^ (1 << (j - acc3))
-            }
-          }
           j += 1
         }
         j = acc3
@@ -904,9 +886,8 @@ private[math] object Division {
         }
         res = monPro(pows((lowexp - 1) >> 1), res, modulus, n2)
         i = acc3
-      } else {
+      } else
         res = monPro(res, res, modulus, n2)
-      }
       i -= 1
     }
     res
@@ -952,14 +933,12 @@ private[math] object Division {
   private def howManyIterations(bi: BigInteger, n: Int): Int = {
     var i = n - 1
     if (bi.sign > 0) {
-      while (!bi.testBit(i)) {
+      while (!bi.testBit(i))
         i -= 1
-      }
       n - 1 - i
     } else {
-      while (bi.testBit(i)) {
+      while (bi.testBit(i))
         i -= 1
-      }
       n - 1 - Math.max(i, bi.getLowestSetBit)
     }
   }
@@ -1003,8 +982,7 @@ private[math] object Division {
       outerCarry >>>= 32
     }
     res(modulusLen << 1) = outerCarry.toInt
-    for (j <- 0 until modulusLen + 1) {
+    for (j <- 0 until modulusLen + 1)
       res(j) = res(j + modulusLen)
-    }
   }
 }

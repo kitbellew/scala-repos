@@ -61,18 +61,16 @@ private[simul] final class Socket(
 
     case Aborted => notifyVersion("aborted", Json.obj(), Messadata())
 
-    case PingVersion(uid, v) => {
+    case PingVersion(uid, v) =>
       ping(uid)
       timeBomb.delay
       withMember(uid) { m =>
         history.since(v).fold(resync(m))(_ foreach sendMessage(m))
       }
-    }
 
-    case Broom => {
+    case Broom =>
       broom
       if (timeBomb.boom) self ! PoisonPill
-    }
 
     case lila.chat.actorApi.ChatLine(_, line) =>
       line match {

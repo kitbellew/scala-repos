@@ -219,11 +219,10 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       .getOrElse(false)
 
   override def addAcls(acls: Set[Acl], resource: Resource) {
-    if (acls != null && acls.nonEmpty) {
+    if (acls != null && acls.nonEmpty)
       inWriteLock(lock) {
         updateResourceAcls(resource) { currentAcls => currentAcls ++ acls }
       }
-    }
   }
 
   override def removeAcls(
@@ -328,9 +327,9 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       val newAcls = getNewAcls(currentVersionedAcls.acls)
       val data = Json.encode(Acl.toJsonCompatibleMap(newAcls))
       val (updateSucceeded, updateVersion) =
-        if (!newAcls.isEmpty) {
+        if (!newAcls.isEmpty)
           updatePath(path, data, currentVersionedAcls.zkVersion)
-        } else {
+        else {
           trace(s"Deleting path for $resource because it had no ACLs remaining")
           (
             zkUtils.conditionalDeletePath(path, currentVersionedAcls.zkVersion),
@@ -377,12 +376,11 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       path: String,
       data: String,
       expectedVersion: Int): (Boolean, Int) =
-    try {
-      zkUtils.conditionalUpdatePersistentPathIfExists(
-        path,
-        data,
-        expectedVersion)
-    } catch {
+    try zkUtils.conditionalUpdatePersistentPathIfExists(
+      path,
+      data,
+      expectedVersion)
+    catch {
       case e: ZkNoNodeException =>
         try {
           debug(s"Node $path does not exist, attempting to create it.")
@@ -407,11 +405,10 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
   }
 
   private def updateCache(resource: Resource, versionedAcls: VersionedAcls) {
-    if (versionedAcls.acls.nonEmpty) {
+    if (versionedAcls.acls.nonEmpty)
       aclCache.put(resource, versionedAcls)
-    } else {
+    else
       aclCache.remove(resource)
-    }
   }
 
   private def updateAclChangedFlag(resource: Resource) {

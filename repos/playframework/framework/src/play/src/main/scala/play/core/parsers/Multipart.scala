@@ -174,11 +174,10 @@ object Multipart {
             quote = !quote
           escape = false
         case ';' =>
-          if (!quote) {
+          if (!quote)
             addPart()
-          } else {
+          else
             buffer.append(';')
-          }
           escape = false
         case c =>
           buffer.append(c)
@@ -258,9 +257,8 @@ object Multipart {
   private object NotEnoughDataException
       extends RuntimeException(null, null, false, false)
 
-  private val crlfcrlf: ByteString = {
+  private val crlfcrlf: ByteString =
     ByteString("\r\n\r\n")
-  }
 
   /**
     * Copied and then heavily modified to suit Play's needs from Akka HTTP akka.http.impl.engine.BodyPartParser.
@@ -321,10 +319,10 @@ object Multipart {
     override def onPull(ctx: Context[RawPart]): SyncDirective =
       if (output.nonEmpty)
         ctx.push(dequeue())
-      else if (ctx.isFinishing) {
+      else if (ctx.isFinishing)
         if (terminated) ctx.finish()
         else ctx.pushAndFinish(Left(ParseError("Unexpected end of input")))
-      } else
+      else
         ctx.pull()
 
     override def onUpstreamFinish(ctx: Context[RawPart]): TerminationDirective =
@@ -333,14 +331,13 @@ object Multipart {
     def tryParseInitialBoundary(input: ByteString): StateResult =
       // we don't use boyerMoore here because we are testing for the boundary *without* a
       // preceding CRLF and at a known location (the very beginning of the entity)
-      try {
-        if (boundary(input, 0)) {
-          val ix = boundaryLength
-          if (crlf(input, ix)) parseHeader(input, ix + 2, 0)
-          else if (doubleDash(input, ix)) terminate()
-          else parsePreamble(input, 0)
-        } else parsePreamble(input, 0)
-      } catch {
+      try if (boundary(input, 0)) {
+        val ix = boundaryLength
+        if (crlf(input, ix)) parseHeader(input, ix + 2, 0)
+        else if (doubleDash(input, ix)) terminate()
+        else parsePreamble(input, 0)
+      } else parsePreamble(input, 0)
+      catch {
         case NotEnoughDataException ⇒
           continue(input, 0)((newInput, _) ⇒ tryParseInitialBoundary(newInput))
       }
@@ -424,10 +421,10 @@ object Multipart {
         partName: String,
         fileName: String,
         contentType: Option[String]): StateResult =
-      if (memoryBufferSize > maxMemoryBufferSize) {
+      if (memoryBufferSize > maxMemoryBufferSize)
         bufferExceeded(
           s"Memory buffer full ($maxMemoryBufferSize) on part $partName")
-      } else {
+      else {
         emit(FilePart(partName, fileName, contentType, ()))
         handleFileData(input, partStart, memoryBufferSize)
       }
@@ -445,9 +442,8 @@ object Multipart {
         } else if (doubleDash(input, needleEnd)) {
           emit(input.slice(offset, currentPartEnd))
           terminate()
-        } else {
+        } else
           fail("Unexpected boundary")
-        }
       } catch {
         case NotEnoughDataException =>
           // we cannot emit all input bytes since the end of the input might be the start of the next boundary
@@ -456,9 +452,8 @@ object Multipart {
             emit(input.slice(offset, emitEnd))
             continue(input.drop(emitEnd), 0)(
               handleFileData(_, _, memoryBufferSize))
-          } else {
+          } else
             continue(input, offset)(handleFileData(_, _, memoryBufferSize))
-          }
       }
 
     def handleDataPart(
@@ -471,9 +466,9 @@ object Multipart {
         val needleEnd = currentPartEnd + needle.length
         val newMemoryBufferSize =
           memoryBufferSize + (currentPartEnd - partStart)
-        if (newMemoryBufferSize > maxMemoryBufferSize) {
+        if (newMemoryBufferSize > maxMemoryBufferSize)
           bufferExceeded("Memory buffer full on part " + partName)
-        } else if (crlf(input, needleEnd)) {
+        else if (crlf(input, needleEnd)) {
           emit(
             DataPart(
               partName,
@@ -485,14 +480,12 @@ object Multipart {
               partName,
               input.slice(partStart, currentPartEnd).utf8String))
           terminate()
-        } else {
+        } else
           fail("Unexpected boundary")
-        }
       } catch {
         case NotEnoughDataException =>
-          if (memoryBufferSize + (input.length - partStart - needle.length) > maxMemoryBufferSize) {
+          if (memoryBufferSize + (input.length - partStart - needle.length) > maxMemoryBufferSize)
             bufferExceeded("Memory buffer full on part " + partName)
-          }
           continue(input, partStart)(
             handleDataPart(_, _, memoryBufferSize, partName))
       }
@@ -511,18 +504,17 @@ object Multipart {
         } else if (doubleDash(input, needleEnd)) {
           emit(BadPart(headers))
           terminate()
-        } else {
+        } else
           fail("Unexpected boundary")
-        }
       } catch {
         case NotEnoughDataException =>
           continue(input, partStart)(
             handleBadPart(_, _, memoryBufferSize, headers))
       }
 
-    def emit(bytes: ByteString): Unit = if (bytes.nonEmpty) {
-      output = output.enqueue(Right(bytes))
-    }
+    def emit(bytes: ByteString): Unit =
+      if (bytes.nonEmpty)
+        output = output.enqueue(Right(bytes))
 
     def emit(part: Part[Unit]): Unit =
       output = output.enqueue(Left(part))
@@ -641,10 +633,10 @@ object Multipart {
     def nextIndex(haystack: ByteString, offset: Int): Int = {
       @tailrec def rec(i: Int, j: Int): Int = {
         val byte = byteAt(haystack, i)
-        if (needle(j) == byte) {
+        if (needle(j) == byte)
           if (j == 0) i // found
           else rec(i - 1, j - 1)
-        } else
+        else
           rec(i + math.max(offsetTable(nl1 - j), charTable(byte & 0xff)), nl1)
       }
       rec(offset + nl1, nl1)

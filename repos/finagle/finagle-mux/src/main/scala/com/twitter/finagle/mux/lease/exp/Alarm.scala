@@ -92,12 +92,11 @@ private[lease] class BytesAlarm(counter: ByteCounter, bytes: () => StorageUnit)
     val currentRate = counter.rate() // bytes per millisecond
     val targetMs =
       if (currentRate <= 0) P
-      else {
+      else
         // 80% of what's predicted by rate()
         // 800 == 8 / 10 * 1000
         // 8 / 10 == 80%
         math.max((target().inBytes * 0.8 / currentRate).toLong, P / 10)
-      }
     math.max(math.min(targetMs, P), 0).milliseconds
   }
 

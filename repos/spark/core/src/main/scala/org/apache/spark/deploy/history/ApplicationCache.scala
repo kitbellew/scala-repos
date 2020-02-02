@@ -104,13 +104,12 @@ private[history] class ApplicationCache(
     *
     * Tagged as `protected` so as to allow subclasses in tests to access it directly
     */
-  protected val appCache: LoadingCache[CacheKey, CacheEntry] = {
+  protected val appCache: LoadingCache[CacheKey, CacheEntry] =
     CacheBuilder
       .newBuilder()
       .maximumSize(retainedApplications)
       .removalListener(removalListener)
       .build(appLoader)
-  }
 
   /**
     * The metrics which are updated as the cache is used.
@@ -192,11 +191,11 @@ private[history] class ApplicationCache(
     val cacheKey = CacheKey(appId, attemptId)
     var entry = appCache.getIfPresent(cacheKey)
     var updated = false
-    if (entry == null) {
+    if (entry == null)
       // no entry, so fetch without any post-fetch probes for out-of-dateness
       // this will trigger a callback to loadApplicationEntry()
       entry = appCache.get(cacheKey)
-    } else if (!entry.completed) {
+    else if (!entry.completed) {
       val now = clock.getTimeMillis()
       log.debug(
         s"Probing at time $now for updated application $cacheKey -> $entry")
@@ -210,10 +209,9 @@ private[history] class ApplicationCache(
         appCache.refresh(cacheKey)
         // and repeat the lookup
         entry = appCache.get(cacheKey)
-      } else {
+      } else
         // update the probe timestamp to the current time
         entry.probeTime = now
-      }
     }
     (entry, updated)
   }
@@ -268,11 +266,8 @@ private[history] class ApplicationCache(
     */
   private def time[T](t: Timer)(f: => T): T = {
     val timeCtx = t.time()
-    try {
-      f
-    } finally {
-      timeCtx.close()
-    }
+    try f
+    finally timeCtx.close()
   }
 
   /**
@@ -303,10 +298,10 @@ private[history] class ApplicationCache(
         case Some(LoadedAppUI(ui, updateState)) =>
           val completed =
             ui.getApplicationInfoList.exists(_.attempts.last.completed)
-          if (completed) {
+          if (completed)
             // completed spark UIs are attached directly
             operations.attachSparkUI(appId, attemptId, ui, completed)
-          } else {
+          else {
             // incomplete UIs have the cache-check filter put in front of them.
             ApplicationCacheCheckFilterRelay.registerFilter(
               ui,
@@ -574,9 +569,8 @@ private[history] class ApplicationCacheCheckFilter()
     // nobody has ever implemented any other kind of servlet, yet
     // this check is universal, just in case someone does exactly
     // that on your classpath
-    if (!(request.isInstanceOf[HttpServletRequest])) {
+    if (!(request.isInstanceOf[HttpServletRequest]))
       throw new ServletException("This filter only works for HTTP/HTTPS")
-    }
     val httpRequest = request.asInstanceOf[HttpServletRequest]
     val httpResponse = response.asInstanceOf[HttpServletResponse]
     val requestURI = httpRequest.getRequestURI
@@ -593,9 +587,8 @@ private[history] class ApplicationCacheCheckFilter()
         Option(httpRequest.getQueryString).map("?" + _).getOrElse("")
       val redirectUrl = httpResponse.encodeRedirectURL(requestURI + queryStr)
       httpResponse.sendRedirect(redirectUrl)
-    } else {
+    } else
       chain.doFilter(request, response)
-    }
   }
 
   override def destroy(): Unit = {}
@@ -671,9 +664,8 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
     logDebug(s"Checking $appId/$attemptId from $requestURI")
     applicationCache match {
       case Some(cache) =>
-        try {
-          cache.checkForUpdates(appId, attemptId)
-        } catch {
+        try cache.checkForUpdates(appId, attemptId)
+        catch {
           case ex: Exception =>
             // something went wrong. Keep going with the existing UI
             logWarning(

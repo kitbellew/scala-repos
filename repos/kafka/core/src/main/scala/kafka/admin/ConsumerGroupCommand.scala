@@ -68,26 +68,21 @@ object ConsumerGroupCommand {
       else new ZkConsumerGroupService(opts)
     }
 
-    try {
-      if (opts.options.has(opts.listOpt))
-        consumerGroupService.list()
-      else if (opts.options.has(opts.describeOpt))
-        consumerGroupService.describe()
-      else if (opts.options.has(opts.deleteOpt)) {
-        consumerGroupService match {
-          case service: ZkConsumerGroupService => service.delete()
-          case _ =>
-            throw new IllegalStateException(
-              s"delete is not supported for $consumerGroupService")
-        }
-      }
-    } catch {
+    try if (opts.options.has(opts.listOpt))
+      consumerGroupService.list()
+    else if (opts.options.has(opts.describeOpt))
+      consumerGroupService.describe()
+    else if (opts.options.has(opts.deleteOpt))
+      consumerGroupService match {
+        case service: ZkConsumerGroupService => service.delete()
+        case _ =>
+          throw new IllegalStateException(
+            s"delete is not supported for $consumerGroupService")
+      } catch {
       case e: Throwable =>
         println("Error while executing consumer group command " + e.getMessage)
         println(Utils.stackTrace(e))
-    } finally {
-      consumerGroupService.close()
-    }
+    } finally consumerGroupService.close()
   }
 
   sealed trait ConsumerGroupService {
@@ -324,16 +319,15 @@ object ConsumerGroupCommand {
     private def deleteForGroup() {
       val groups = opts.options.valuesOf(opts.groupOpt)
       groups.asScala.foreach { group =>
-        try {
-          if (AdminUtils.deleteConsumerGroupInZK(zkUtils, group))
-            println(
-              "Deleted all consumer group information for group %s in zookeeper."
-                .format(group))
-          else
-            println(
-              "Delete for group %s failed because its consumers are still active."
-                .format(group))
-        } catch {
+        try if (AdminUtils.deleteConsumerGroupInZK(zkUtils, group))
+          println(
+            "Deleted all consumer group information for group %s in zookeeper."
+              .format(group))
+        else
+          println(
+            "Delete for group %s failed because its consumers are still active."
+              .format(group))
+        catch {
           case e: ZkNoNodeException =>
             println(
               "Delete for group %s failed because group does not exist.".format(
@@ -347,19 +341,18 @@ object ConsumerGroupCommand {
       val topic = opts.options.valueOf(opts.topicOpt)
       Topic.validate(topic)
       groups.asScala.foreach { group =>
-        try {
-          if (AdminUtils.deleteConsumerGroupInfoForTopicInZK(
-                zkUtils,
-                group,
-                topic))
-            println(
-              "Deleted consumer group information for group %s topic %s in zookeeper."
-                .format(group, topic))
-          else
-            println(
-              "Delete for group %s topic %s failed because its consumers are still active."
-                .format(group, topic))
-        } catch {
+        try if (AdminUtils.deleteConsumerGroupInfoForTopicInZK(
+                  zkUtils,
+                  group,
+                  topic))
+          println(
+            "Deleted consumer group information for group %s topic %s in zookeeper."
+              .format(group, topic))
+        else
+          println(
+            "Delete for group %s topic %s failed because its consumers are still active."
+              .format(group, topic))
+        catch {
           case e: ZkNoNodeException =>
             println(
               "Delete for group %s topic %s failed because group does not exist."
@@ -378,31 +371,29 @@ object ConsumerGroupCommand {
     }
 
     private def getZkConsumer(brokerId: Int): Option[SimpleConsumer] =
-      try {
-        zkUtils
-          .readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + brokerId)
-          ._1 match {
-          case Some(brokerInfoString) =>
-            Json.parseFull(brokerInfoString) match {
-              case Some(m) =>
-                val brokerInfo = m.asInstanceOf[Map[String, Any]]
-                val host = brokerInfo.get("host").get.asInstanceOf[String]
-                val port = brokerInfo.get("port").get.asInstanceOf[Int]
-                Some(
-                  new SimpleConsumer(
-                    host,
-                    port,
-                    10000,
-                    100000,
-                    "ConsumerGroupCommand"))
-              case None =>
-                throw new BrokerNotAvailableException(
-                  "Broker id %d does not exist".format(brokerId))
-            }
-          case None =>
-            throw new BrokerNotAvailableException(
-              "Broker id %d does not exist".format(brokerId))
-        }
+      try zkUtils
+        .readDataMaybeNull(ZkUtils.BrokerIdsPath + "/" + brokerId)
+        ._1 match {
+        case Some(brokerInfoString) =>
+          Json.parseFull(brokerInfoString) match {
+            case Some(m) =>
+              val brokerInfo = m.asInstanceOf[Map[String, Any]]
+              val host = brokerInfo.get("host").get.asInstanceOf[String]
+              val port = brokerInfo.get("port").get.asInstanceOf[Int]
+              Some(
+                new SimpleConsumer(
+                  host,
+                  port,
+                  10000,
+                  100000,
+                  "ConsumerGroupCommand"))
+            case None =>
+              throw new BrokerNotAvailableException(
+                "Broker id %d does not exist".format(brokerId))
+          }
+        case None =>
+          throw new BrokerNotAvailableException(
+            "Broker id %d does not exist".format(brokerId))
       } catch {
         case t: Throwable =>
           println("Could not parse broker info due to " + t.getMessage)

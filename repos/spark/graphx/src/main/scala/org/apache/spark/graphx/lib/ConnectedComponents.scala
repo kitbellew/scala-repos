@@ -46,13 +46,12 @@ object ConnectedComponents {
     val ccGraph = graph.mapVertices { case (vid, _) => vid }
     def sendMessage(
         edge: EdgeTriplet[VertexId, ED]): Iterator[(VertexId, VertexId)] =
-      if (edge.srcAttr < edge.dstAttr) {
+      if (edge.srcAttr < edge.dstAttr)
         Iterator((edge.dstId, edge.srcAttr))
-      } else if (edge.srcAttr > edge.dstAttr) {
+      else if (edge.srcAttr > edge.dstAttr)
         Iterator((edge.srcId, edge.dstAttr))
-      } else {
+      else
         Iterator.empty
-      }
     val initialMessage = Long.MaxValue
     val pregelGraph =
       Pregel(ccGraph, initialMessage, maxIterations, EdgeDirection.Either)(

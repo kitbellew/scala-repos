@@ -53,12 +53,11 @@ object ScalaCompletionUtil {
       checkInvocationCount: Boolean = true,
       lookingForAnnotations: Boolean = false): Boolean = {
     if (checkInvocationCount && parameters.getInvocationCount < 2) return false
-    if (dummyPosition.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
+    if (dummyPosition.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER)
       dummyPosition.getParent match {
         case ref: ScReferenceElement if ref.qualifier.isDefined => return false
         case _                                                  =>
       }
-    }
     if (checkInvocationCount && parameters.getInvocationCount >= 2) return true
     val prefix = prefixMatcher.getPrefix
     val capitalized = prefix.length() > 0 && prefix
@@ -96,9 +95,9 @@ object ScalaCompletionUtil {
     }
     val iter = paramNamesWithTypes.map {
       case (s, tp) =>
-        s + ": " + (if (canonical) {
+        s + ": " + (if (canonical)
                       ScType.canonicalText(tp)
-                    } else ScType.presentableText(tp))
+                    else ScType.presentableText(tp))
     }
     val paramsString =
       if (paramNamesWithTypes.size != 1 || !braceArgs)
@@ -110,9 +109,8 @@ object ScalaCompletionUtil {
   }
 
   def getLeafByOffset(offset: Int, element: PsiElement): PsiElement = {
-    if (offset < 0) {
+    if (offset < 0)
       return null
-    }
     var candidate: PsiElement = element.getContainingFile
     if (candidate == null || candidate.getNode == null) return null
     while (candidate.getNode.getChildren(null).nonEmpty) {
@@ -271,9 +269,9 @@ object ScalaCompletionUtil {
     replaceDummy(text, "")
 
   def replaceDummy(text: String, to: String): String =
-    if (text.indexOf(DUMMY_IDENTIFIER) != -1) {
+    if (text.indexOf(DUMMY_IDENTIFIER) != -1)
       text.replaceAll("\\w*" + DUMMY_IDENTIFIER, to)
-    } else text
+    else text
 
   def checkNewWith(
       news: ScNewTemplateDefinition,
@@ -350,40 +348,37 @@ object ScalaCompletionUtil {
         case ref: PsiReference =>
           ref.getElement.getText //this case for anonymous method in ScAccessModifierImpl
       }
-      val id = if (isOpChar(text(text.length - 1))) {
-        "+++++++++++++++++++++++"
-      } else {
-        val rest = ref match {
-          case ref: PsiElement =>
-            text.substring(offset - ref.getTextRange.getStartOffset + 1)
-          case ref: PsiReference =>
-            val from = offset - ref.getElement.getTextRange.getStartOffset + 1
-            if (from < text.length && from >= 0) text.substring(from) else ""
+      val id =
+        if (isOpChar(text(text.length - 1)))
+          "+++++++++++++++++++++++"
+        else {
+          val rest = ref match {
+            case ref: PsiElement =>
+              text.substring(offset - ref.getTextRange.getStartOffset + 1)
+            case ref: PsiReference =>
+              val from = offset - ref.getElement.getTextRange.getStartOffset + 1
+              if (from < text.length && from >= 0) text.substring(from) else ""
+          }
+          if (ScalaNamesUtil.isKeyword(rest))
+            CompletionUtil.DUMMY_IDENTIFIER
+          else
+            CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
         }
-        if (ScalaNamesUtil.isKeyword(rest)) {
-          CompletionUtil.DUMMY_IDENTIFIER
-        } else {
-          CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
-        }
-      }
 
       if (ref.getElement != null &&
           ref.getElement.getPrevSibling != null &&
           ref.getElement.getPrevSibling.getNode.getElementType == ScalaTokenTypes.tSTUB)
         id + "`"
       else id
-    } else {
-      if (element != null && element.getNode.getElementType == ScalaTokenTypes.tSTUB) {
-        CompletionUtil.DUMMY_IDENTIFIER_TRIMMED + "`"
-      } else {
-        val actualElement = file.findElementAt(offset + 1)
-        if (actualElement != null && ScalaNamesUtil.isKeyword(
-              actualElement.getText)) {
-          CompletionUtil.DUMMY_IDENTIFIER
-        } else {
-          CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
-        }
-      }
+    } else if (element != null && element.getNode.getElementType == ScalaTokenTypes.tSTUB)
+      CompletionUtil.DUMMY_IDENTIFIER_TRIMMED + "`"
+    else {
+      val actualElement = file.findElementAt(offset + 1)
+      if (actualElement != null && ScalaNamesUtil.isKeyword(
+            actualElement.getText))
+        CompletionUtil.DUMMY_IDENTIFIER
+      else
+        CompletionUtil.DUMMY_IDENTIFIER_TRIMMED
     }
   }
 
@@ -395,7 +390,7 @@ object ScalaCompletionUtil {
         parameters.getPosition //we got to the top of the tree and didn't find a modificationTrackerOwner
       case owner: ScModificationTrackerOwner
           if owner.isValidModificationTrackerOwner() =>
-        if (owner.containingFile.contains(parameters.getOriginalFile)) {
+        if (owner.containingFile.contains(parameters.getOriginalFile))
           owner
             .getMirrorPositionForCompletion(
               getDummyIdentifier(
@@ -403,7 +398,7 @@ object ScalaCompletionUtil {
                 parameters.getOriginalFile),
               parameters.getOffset - owner.getTextRange.getStartOffset)
             .getOrElse(parameters.getPosition)
-        } else parameters.getPosition
+        else parameters.getPosition
       case _ => inner(element.getContext)
     }
     inner(parameters.getOriginalPosition)

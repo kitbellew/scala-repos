@@ -36,11 +36,11 @@ package mutable {
       // note to self: FYI if you define lbindex as from / sizeMapBucketSize, the first branch
       // below always triggers and tests pass, so you spend a great day benchmarking and profiling
 
-      if (fbindex == lbindex) {
+      if (fbindex == lbindex)
         // if first and last are the same, just count between `from` and `until`
         // return this count
         countElems(from, until)
-      } else {
+      else {
         // otherwise count in first, then count in last
         val fbuntil = ((fbindex + 1) * sizeMapBucketSize) min tableLength
         val fbcount = countElems(from, fbuntil)

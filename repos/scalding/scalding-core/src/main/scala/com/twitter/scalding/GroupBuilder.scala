@@ -91,9 +91,8 @@ class GroupBuilder(val groupFields: Fields)
     * Override the number of reducers used in the groupBy.
     */
   def reducers(r: Int) = {
-    if (r > 0) {
+    if (r > 0)
       numReducers = Some(r)
-    }
     this
   }
 
@@ -370,10 +369,9 @@ class GroupBuilder(val groupFields: Fields)
     reds = None
     val sort = sortF match {
       case None => f
-      case Some(sf) => {
+      case Some(sf) =>
         sf.append(f)
         sf
-      }
     }
     sortF = Some(sort)
     // Update projectFields

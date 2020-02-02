@@ -37,11 +37,10 @@ object MetricDevSuite {
   class QOptionAverageMetric
       extends OptionAverageMetric[EmptyParams, Int, Int, Int] {
     def calculate(q: Int, p: Int, a: Int): Option[Double] =
-      if (q < 0) {
+      if (q < 0)
         None
-      } else {
+      else
         Some(q.toDouble)
-      }
   }
 
   class QStdevMetric extends StdevMetric[EmptyParams, Int, Int, Int] {
@@ -51,11 +50,10 @@ object MetricDevSuite {
   class QOptionStdevMetric
       extends OptionStdevMetric[EmptyParams, Int, Int, Int] {
     def calculate(q: Int, p: Int, a: Int): Option[Double] =
-      if (q < 0) {
+      if (q < 0)
         None
-      } else {
+      else
         Some(q.toDouble)
-      }
   }
 
 }

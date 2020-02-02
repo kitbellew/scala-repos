@@ -33,12 +33,12 @@ case class JarManifest(
   def serialize() =
     <intellij-compat>
       {
-      for (PluginDescriptor(since, until, injtors) <- pluginDescriptors) {
+      for (PluginDescriptor(since, until, injtors) <- pluginDescriptors)
         <scala-plugin since-version={since.toString} until-version={
           until.toString
         }>
         {
-          for (InjectorDescriptor(version, iface, impl, srcs) <- injtors) {
+          for (InjectorDescriptor(version, iface, impl, srcs) <- injtors)
             <psi-injector version={version.toString} ifnterface={iface} implementation={
               impl
             }>
@@ -48,10 +48,8 @@ case class JarManifest(
         </source>
             }
         </psi-injector>
-          }
         }
       </scala-plugin>
-      }
     }
     </intellij-compat>
 }

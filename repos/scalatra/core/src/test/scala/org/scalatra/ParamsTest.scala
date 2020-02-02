@@ -22,9 +22,8 @@ class ParamsTestServlet extends ScalatraServlet {
   }
 
   get("/params/:key") {
-    try {
-      params(params("key"))
-    } catch {
+    try params(params("key"))
+    catch {
       case _: NoSuchElementException => NoSuchElement
     }
   }

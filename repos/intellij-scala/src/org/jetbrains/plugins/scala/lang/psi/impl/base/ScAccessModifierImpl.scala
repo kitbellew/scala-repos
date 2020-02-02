@@ -41,9 +41,8 @@ class ScAccessModifierImpl private (
 
   def idText: Option[String] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScAccessModifierStub].getIdText
-    }
     getNode.findChildByType(ScalaTokenTypes.tIDENTIFIER) match {
       case null => None
       case x    => Some(x.getPsi.getText)
@@ -64,25 +63,22 @@ class ScAccessModifierImpl private (
   //return ref only for {private|protected}[Id], not for private[this]
   def isProtected: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScAccessModifierStub].isProtected
-    }
     getNode.findChildByType(ScalaTokenTypes.kPROTECTED) != null
   }
 
   def isPrivate: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScAccessModifierStub].isPrivate
-    }
     getNode.findChildByType(ScalaTokenTypes.kPRIVATE) != null
   }
 
   def isThis: Boolean = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       return stub.asInstanceOf[ScAccessModifierStub].isThis
-    }
     getNode.findChildByType(ScalaTokenTypes.kTHIS) != null
   }
 

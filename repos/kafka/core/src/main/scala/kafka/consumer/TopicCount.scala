@@ -69,27 +69,25 @@ private[kafka] object TopicCount extends Logging {
       zkUtils.readData(dirs.consumerRegistryDir + "/" + consumerId)._1
     var subscriptionPattern: String = null
     var topMap: Map[String, Int] = null
-    try {
-      Json.parseFull(topicCountString) match {
-        case Some(m) =>
-          val consumerRegistrationMap = m.asInstanceOf[Map[String, Any]]
-          consumerRegistrationMap.get("pattern") match {
-            case Some(pattern) =>
-              subscriptionPattern = pattern.asInstanceOf[String]
-            case None =>
-              throw new KafkaException(
-                "error constructing TopicCount : " + topicCountString)
-          }
-          consumerRegistrationMap.get("subscription") match {
-            case Some(sub) => topMap = sub.asInstanceOf[Map[String, Int]]
-            case None =>
-              throw new KafkaException(
-                "error constructing TopicCount : " + topicCountString)
-          }
-        case None =>
-          throw new KafkaException(
-            "error constructing TopicCount : " + topicCountString)
-      }
+    try Json.parseFull(topicCountString) match {
+      case Some(m) =>
+        val consumerRegistrationMap = m.asInstanceOf[Map[String, Any]]
+        consumerRegistrationMap.get("pattern") match {
+          case Some(pattern) =>
+            subscriptionPattern = pattern.asInstanceOf[String]
+          case None =>
+            throw new KafkaException(
+              "error constructing TopicCount : " + topicCountString)
+        }
+        consumerRegistrationMap.get("subscription") match {
+          case Some(sub) => topMap = sub.asInstanceOf[Map[String, Int]]
+          case None =>
+            throw new KafkaException(
+              "error constructing TopicCount : " + topicCountString)
+        }
+      case None =>
+        throw new KafkaException(
+          "error constructing TopicCount : " + topicCountString)
     } catch {
       case e: Throwable =>
         error("error parsing consumer json string " + topicCountString, e)
@@ -99,9 +97,9 @@ private[kafka] object TopicCount extends Logging {
     val hasWhiteList = whiteListPattern.equals(subscriptionPattern)
     val hasBlackList = blackListPattern.equals(subscriptionPattern)
 
-    if (topMap.isEmpty || !(hasWhiteList || hasBlackList)) {
+    if (topMap.isEmpty || !(hasWhiteList || hasBlackList))
       new StaticTopicCount(consumerId, topMap)
-    } else {
+    else {
       val regex = topMap.head._1
       val numStreams = topMap.head._2
       val filter =

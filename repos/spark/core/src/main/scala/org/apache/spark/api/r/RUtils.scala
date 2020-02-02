@@ -49,9 +49,9 @@ private[spark] object RUtils {
     */
   def sparkRPackagePath(isDriver: Boolean): Seq[String] = {
     val (master, deployMode) =
-      if (isDriver) {
+      if (isDriver)
         (sys.props("spark.master"), sys.props("spark.submit.deployMode"))
-      } else {
+      else {
         val sparkConf = SparkEnv.get.conf
         (
           sparkConf.get("spark.master"),
@@ -73,11 +73,10 @@ private[spark] object RUtils {
     if (isYarnCluster || (isYarnClient && !isDriver)) {
       val sparkRPkgPath = new File("sparkr").getAbsolutePath
       val rPkgPath = new File("rpkg")
-      if (rPkgPath.exists()) {
+      if (rPkgPath.exists())
         Seq(sparkRPkgPath, rPkgPath.getAbsolutePath)
-      } else {
+      else
         Seq(sparkRPkgPath)
-      }
     } else {
       // Otherwise, assume the package is local
       // TODO: support this for Mesos
@@ -85,11 +84,10 @@ private[spark] object RUtils {
         throw new SparkException(
           "SPARK_HOME not set. Can't locate SparkR package.")
       }
-      if (!rPackages.isEmpty) {
+      if (!rPackages.isEmpty)
         Seq(sparkRPkgPath, rPackages.get)
-      } else {
+      else
         Seq(sparkRPkgPath)
-      }
     }
   }
 

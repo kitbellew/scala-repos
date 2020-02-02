@@ -250,7 +250,7 @@ trait ColumnarTableLibModule[M[+_]]
           reductions: List[(Reduction, Option[JType => JType])],
           acc: Reduction): Reduction =
         reductions match {
-          case (x, jtypef) :: xs => {
+          case (x, jtypef) :: xs =>
             val impl = new Reduction(Vector(), "") {
               type Result = (x.Result, acc.Result)
 
@@ -302,7 +302,6 @@ trait ColumnarTableLibModule[M[+_]]
             }
 
             rec(xs, impl)
-          }
 
           case Nil => acc
         }

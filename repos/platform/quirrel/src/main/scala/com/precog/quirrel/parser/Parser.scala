@@ -61,10 +61,10 @@ trait Parser extends RegexParsers with Filters with AST {
   }
 
   def handleFailures(forest: Stream[Failure]): Nothing = {
-    val sorted = forest.toList sortWith { _.tail.length < _.tail.length }
+    val sorted = forest.toList sortWith _.tail.length < _.tail.length
     val length = sorted.head.tail.length
 
-    val failures = Set(sorted takeWhile { _.tail.length == length }: _*)
+    val failures = Set(sorted takeWhile _.tail.length == length: _*)
     throw ParseException(failures)
   }
 
@@ -330,7 +330,7 @@ trait Parser extends RegexParsers with Filters with AST {
       relations: Vector[Expr],
       e: Expr): Expr = {
     val builders = relations zip (relations drop 1) map {
-      case (e1, e2) => { e3: Expr => Relate(loc, e1, e2, e3) }
+      case (e1, e2) => e3: Expr => Relate(loc, e1, e2, e3)
     }
 
     builders.foldRight(e) { _(_) }
@@ -400,7 +400,7 @@ trait Parser extends RegexParsers with Filters with AST {
         case ExpectedLiteral(expect, _) =>
           Parsers.keySet filter { _.first contains expect.head } map Parsers
 
-        case ExpectedRegex(regex) => {
+        case ExpectedRegex(regex) =>
           val first = {
             val back = RegexUtils first regex
 
@@ -411,7 +411,6 @@ trait Parser extends RegexParsers with Filters with AST {
           }
 
           Parsers.keySet filterNot { _.first intersect first isEmpty } map Parsers
-        }
 
         case UnexpectedEndOfStream(Some(expect)) =>
           Parsers.keySet filter { _.first contains expect.head } map Parsers
@@ -433,7 +432,7 @@ trait Parser extends RegexParsers with Filters with AST {
       }
 
       val expectation = pairs.headOption flatMap {
-        case (_, headCount) => {
+        case (_, headCount) =>
           val (possibilities, _) =
             (pairs takeWhile { case (_, c) => headCount == c }).unzip
 
@@ -441,7 +440,6 @@ trait Parser extends RegexParsers with Filters with AST {
             None
           else
             Some(possibilities mkString " or ")
-        }
       }
 
       expectation map { ExpectedPattern format _ } getOrElse SyntaxPattern

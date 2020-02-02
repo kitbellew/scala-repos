@@ -76,9 +76,8 @@ private[finagle] object MultiReaderHelper {
             v
           }
         )
-      } else {
+      } else
         msg
-      }
 
     def exposeNumReadHandles(handles: Set[ReadHandle]) {
       numReadHandles = handles.size
@@ -546,7 +545,7 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     val currentHandles = mutable.Map.empty[Address, ReadHandle]
 
     val event = config.va.changes map {
-      case Addr.Bound(addrs, _) => {
+      case Addr.Bound(addrs, _) =>
         (currentHandles.keySet &~ addrs) foreach { addr =>
           logger.info(s"Host $addr left for reading queue ${config.queueName}")
         }
@@ -581,7 +580,6 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
         }
 
         Return(currentHandles.values.toSet)
-      }
 
       case Addr.Failed(t) => Throw(t)
 

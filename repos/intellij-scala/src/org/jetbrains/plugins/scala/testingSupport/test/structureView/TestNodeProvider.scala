@@ -59,7 +59,7 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
           if (!clazz.isValid) return children
           clazz.extendsBlock.templateBody match {
             case Some(body) =>
-              for (expr <- body.exprs) {
+              for (expr <- body.exprs)
                 (expr match {
                   case expr: ScMethodCall =>
                     TestNodeProvider.extractTestViewElement(
@@ -79,7 +79,6 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
                   case _ =>
                     None
                 }).map(children.add)
-              }
             case _ =>
           }
           children
@@ -128,15 +127,15 @@ object TestNodeProvider {
     import ScalaTestUtil._
     import Specs2Util._
     import org.jetbrains.plugins.scala.testingSupport.test.TestConfigurationUtil.isInheritor
-    if (getFlatSpecBases.exists(isInheritor(clazz, _))) {
+    if (getFlatSpecBases.exists(isInheritor(clazz, _)))
       extractFlatSpec(expr, project)
-    } else if (getFreeSpecBases.exists(isInheritor(clazz, _))) {
+    else if (getFreeSpecBases.exists(isInheritor(clazz, _)))
       extractFreeSpec(expr, project)
-    } else if (getWordSpecBases.exists(isInheritor(clazz, _))) {
+    else if (getWordSpecBases.exists(isInheritor(clazz, _)))
       extractWordSpec(expr, project)
-    } else if (isInheritor(clazz, getUnitSpecBase)) {
+    else if (isInheritor(clazz, getUnitSpecBase))
       extractUnitSpec(expr, project)
-    } else None
+    else None
   }
 
   private def extractTestViewElementPatternDef(
@@ -158,17 +157,17 @@ object TestNodeProvider {
       project: Project): Option[TestStructureViewElement] = {
     import ScalaTestUtil._
     import org.jetbrains.plugins.scala.testingSupport.test.TestConfigurationUtil.isInheritor
-    if (getFunSuiteBases.exists(isInheritor(clazz, _))) {
+    if (getFunSuiteBases.exists(isInheritor(clazz, _)))
       extractFunSuite(expr, project)
-      //this should be a funSuite-like test
-    } else if (getFeatureSpecBases.exists(isInheritor(clazz, _))) {
+    //this should be a funSuite-like test
+    else if (getFeatureSpecBases.exists(isInheritor(clazz, _)))
       extractFeatureSpec(expr, project)
-    } else if (getFunSpecBasesPost2_0.exists(isInheritor(clazz, _)) || getFunSpecBasesPre2_0
-                 .exists(isInheritor(clazz, _))) {
+    else if (getFunSpecBasesPost2_0.exists(isInheritor(clazz, _)) || getFunSpecBasesPre2_0
+               .exists(isInheritor(clazz, _)))
       extractFunSpec(expr, project)
-    } else if (getPropSpecBases.exists(isInheritor(clazz, _))) {
+    else if (getPropSpecBases.exists(isInheritor(clazz, _)))
       extractPropSpec(expr, project)
-    } else None
+    else None
   }
 
   private val scMethodCallDefaultArg = Seq(
@@ -353,29 +352,26 @@ object TestNodeProvider {
       entry: ExtractEntry,
       project: Project): Option[TestStructureViewElement] =
     if (entry.canIgnore && (checkScInfixExpr(expr, "ignore", List("void")) || checkIgnoreExpr(
-          expr))) {
+          expr)))
       Some(
         ignoredScalaTestElement(
           expr,
           getInfixExprTestName(expr),
           entry.children(())))
-    } else if (checkScInfixExpr(
-                 expr,
-                 "is",
-                 List("org.scalatest.PendingNothing")) || checkPendingInfixExpr(
-                 expr)) {
+    else if (checkScInfixExpr(expr, "is", List("org.scalatest.PendingNothing")) || checkPendingInfixExpr(
+               expr))
       Some(
         pendingScalaTestElement(
           expr,
           getInfixExprTestName(expr),
           entry.children(())))
-    } else if (checkScInfixExpr(expr, entry.funName, entry.args: _*)) {
+    else if (checkScInfixExpr(expr, entry.funName, entry.args: _*))
       Some(
         new TestStructureViewElement(
           expr,
           getInfixExprTestName(expr),
           entry.children(())))
-    } else None
+    else None
 
   private def checkPendingInfixExpr(expr: ScInfixExpr): Boolean =
     expr.getLastChild match {
@@ -476,7 +472,7 @@ object TestNodeProvider {
       children: => Array[TreeElement],
       project: Project): Option[TestStructureViewElement] =
     //check matchers here because they are supposed to be stacked, as opposed to scalaTest, where bases are distinct
-    if (isSpecs2Expr(expr: ScInfixExpr)) {
+    if (isSpecs2Expr(expr: ScInfixExpr))
       Some(
         new TestStructureViewElement(
           expr,
@@ -484,7 +480,7 @@ object TestNodeProvider {
           children,
           if (checkSpecsPending(expr)) TestStructureViewElement.pendingStatusId
           else TestStructureViewElement.normalStatusId))
-    } else None
+    else None
 
   private def extractScMethodCall(
       expr: ScMethodCall,
@@ -493,28 +489,28 @@ object TestNodeProvider {
     if (entry.canIgnore && checkScMethodCall(
           expr,
           "ignore",
-          scMethodCallDefaultArg: _*)) {
+          scMethodCallDefaultArg: _*))
       Some(
         ignoredScalaTestElement(
           expr,
           getMethodCallTestName(expr),
           entry.children(())))
-    } else if (entry.canPend && checkMethodCallPending(expr)) {
+    else if (entry.canPend && checkMethodCallPending(expr))
       Some(
         pendingScalaTestElement(
           expr,
           getMethodCallTestName(expr),
           entry.children(())))
-    } else if (checkScMethodCall(expr, entry.funName, entry.args: _*) || checkScMethodCallApply(
-                 expr,
-                 entry.funName,
-                 scMethodCallDefaultArg: _*)) {
+    else if (checkScMethodCall(expr, entry.funName, entry.args: _*) || checkScMethodCallApply(
+               expr,
+               entry.funName,
+               scMethodCallDefaultArg: _*))
       Some(
         new TestStructureViewElement(
           expr,
           getMethodCallTestName(expr),
           entry.children(())))
-    } else None
+    else None
 
   //-----------------Here are checks for concrete test class bases---------------------
   //-----ScalaTest------
@@ -687,19 +683,19 @@ object TestNodeProvider {
     def extractUTestInner(
         expr: PsiElement,
         project: Project): Option[TestStructureViewElement] =
-      if (isUTestInfixExpr(expr)) {
+      if (isUTestInfixExpr(expr))
         Some(
           new TestStructureViewElement(
             expr,
             getInfixExprTestName(expr.asInstanceOf[ScInfixExpr]),
             processChildren(getInnerExprs(expr), extractUTestInner, project)))
-      } else if (isUTestApplyCall(expr)) {
+      else if (isUTestApplyCall(expr))
         Some(
           new TestStructureViewElement(
             expr,
             getMethodCallTestName(expr.asInstanceOf[ScMethodCall]),
             processChildren(getInnerExprs(expr), extractUTestInner, project)))
-      } else None
+      else None
     if (isUTestSuiteApplyCall(expr)) {
       import scala.collection.JavaConversions._
       expr.args.findFirstChildByType(ScalaElementTypes.BLOCK_EXPR) match {

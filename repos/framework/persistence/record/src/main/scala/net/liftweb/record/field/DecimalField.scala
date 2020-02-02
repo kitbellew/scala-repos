@@ -38,14 +38,13 @@ trait DecimalTypedField extends NumericTypedField[BigDecimal] {
     setNumericFromAny(in, n => BigDecimal(n.toString))
 
   def setFromString(s: String): Box[BigDecimal] =
-    if (s == null || s.isEmpty) {
+    if (s == null || s.isEmpty)
       if (optional_?)
         setBox(Empty)
       else
         setBox(Failure(notOptionalErrorMessage))
-    } else {
+    else
       setBox(tryo(BigDecimal(s)))
-    }
 
   def set_!(in: BigDecimal): BigDecimal =
     new BigDecimal(in.bigDecimal.setScale(scale, context.getRoundingMode))

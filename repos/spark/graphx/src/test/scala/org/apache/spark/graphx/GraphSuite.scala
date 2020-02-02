@@ -102,9 +102,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val sameSrcEdges = List((0L, 1L), (0L, 2L))
 
       // The two edges start out in different partitions
-      for (edges <- List(identicalEdges, canonicalEdges, sameSrcEdges)) {
+      for (edges <- List(identicalEdges, canonicalEdges, sameSrcEdges))
         assert(nonemptyParts(mkGraph(edges)).count === 2)
-      }
       // partitionBy(RandomVertexCut) puts identical edges in the same partition
       assert(
         nonemptyParts(mkGraph(identicalEdges).partitionBy(RandomVertexCut)).count === 1)
@@ -360,10 +359,9 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       val n = 5
       val agg = starGraph(sc, n).aggregateMessages[String](
         ctx => {
-          if (ctx.dstAttr != null) {
+          if (ctx.dstAttr != null)
             throw new Exception(
               "expected ctx.dstAttr to be null due to TripletFields, but it was " + ctx.dstAttr)
-          }
           ctx.sendToDst(ctx.srcAttr)
         },
         _ + _,
@@ -485,9 +483,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         et => Iterator((et.dstId, et.srcAttr)),
         _ + _)
       assert(neighborAttrSums.collect().toSet === Set((0: VertexId, n)))
-    } finally {
-      sc.stop()
-    }
+    } finally sc.stop()
   }
 
   test("unpersist graph RDD") {

@@ -104,10 +104,9 @@ class ChannelTransport[In, Out](ch: Channel)
     writeFuture.addListener(new ChannelFutureListener {
       def operationComplete(f: ChannelFuture): Unit =
         if (f.isSuccess) p.setDone()
-        else {
+        else
           // since we can't cancel, `f` must be an exception.
           p.setException(ChannelException(f.getCause, ch.getRemoteAddress))
-        }
     })
 
     // Ordering here is important. We want to call `addListener` on
@@ -162,9 +161,8 @@ class ChannelTransport[In, Out](ch: Channel)
     ch.getPipeline.get(classOf[SslHandler]) match {
       case null => None
       case handler =>
-        try {
-          handler.getEngine.getSession.getPeerCertificates.headOption
-        } catch {
+        try handler.getEngine.getSession.getPeerCertificates.headOption
+        catch {
           case NonFatal(_) => None
         }
     }

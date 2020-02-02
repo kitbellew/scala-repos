@@ -89,19 +89,17 @@ trait Loc[T] {
     */
   def paramValue: Box[T] = calcValue.flatMap(f => f()) or staticValue
 
-  private lazy val staticValue: Box[T] = {
+  private lazy val staticValue: Box[T] =
     allParams.collectFirst {
       case Loc.Value(v) =>
         v.asInstanceOf[T]
     }
-  }
 
-  private lazy val calcValue: Box[() => Box[T]] = {
+  private lazy val calcValue: Box[() => Box[T]] =
     params.collectFirst {
       case Loc.CalcValue(f: Function0[_]) =>
         f.asInstanceOf[() => Box[T]]
     }
-  }
 
   /**
     * Calculate the Query parameters
@@ -143,11 +141,10 @@ trait Loc[T] {
       case menu =>
         menu._parent match {
           case Full(parentMenu: Menu) =>
-            if (!params.collect { case i: Loc.UseParentParams => true }.isEmpty) {
+            if (!params.collect { case i: Loc.UseParentParams => true }.isEmpty)
               parentMenu.loc.allParams.asInstanceOf[List[Loc.LocParam[Any]]]
-            } else {
+            else
               Nil
-            }
           case _ => Nil
         }
     }
@@ -451,7 +448,7 @@ trait Loc[T] {
       current: Boolean,
       path: Boolean): Box[MenuItem] =
     (calcHidden(kids), testAccess) match {
-      case (false, Left(true)) => {
+      case (false, Left(true)) =>
         for {
           p <- currentValue
           t <- link.createLink(p).map(appendQueryParams(p))
@@ -468,7 +465,6 @@ trait Loc[T] {
           placeHolder_?,
           this
         )
-      }
 
       case _ => Empty
     }
@@ -924,15 +920,14 @@ object Loc {
     def createPath(value: T): String = {
       val path: List[String] = pathList(value).map(Helpers.urlEncode)
 
-      if (matchHead_?) {
+      if (matchHead_?)
         path.mkString("/", "/", "/")
-      } else if (SiteMap.rawIndex_? && path == List("index")) {
+      else if (SiteMap.rawIndex_? && path == List("index"))
         "/"
-      } else if (path.length > 1 && path.last == "index") {
+      else if (path.length > 1 && path.last == "index")
         path.dropRight(1).mkString("/", "/", "/")
-      } else {
+      else
         path.mkString("/", "/", "")
-      }
     }
 
     /**

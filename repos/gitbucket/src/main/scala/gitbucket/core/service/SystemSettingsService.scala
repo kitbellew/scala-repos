@@ -34,7 +34,7 @@ trait SystemSettingsService {
       settings.sshHost.foreach(x => props.setProperty(SshHost, x.trim))
       settings.sshPort.foreach(x => props.setProperty(SshPort, x.toString))
       props.setProperty(UseSMTP, settings.useSMTP.toString)
-      if (settings.useSMTP) {
+      if (settings.useSMTP)
         settings.smtp.foreach { smtp =>
           props.setProperty(SmtpHost, smtp.host)
           smtp.port.foreach(x => props.setProperty(SmtpPort, x.toString))
@@ -44,11 +44,10 @@ trait SystemSettingsService {
           smtp.fromAddress.foreach(props.setProperty(SmtpFromAddress, _))
           smtp.fromName.foreach(props.setProperty(SmtpFromName, _))
         }
-      }
       props.setProperty(
         LdapAuthentication,
         settings.ldapAuthentication.toString)
-      if (settings.ldapAuthentication) {
+      if (settings.ldapAuthentication)
         settings.ldap.map { ldap =>
           props.setProperty(LdapHost, ldap.host)
           ldap.port.foreach(x => props.setProperty(LdapPort, x.toString))
@@ -66,7 +65,6 @@ trait SystemSettingsService {
           ldap.ssl.foreach(x => props.setProperty(LdapSsl, x.toString))
           ldap.keystore.foreach(x => props.setProperty(LdapKeystore, x))
         }
-      }
       using(new java.io.FileOutputStream(GitBucketConf)) { out =>
         props.store(out, null)
       }
@@ -74,11 +72,10 @@ trait SystemSettingsService {
 
   def loadSystemSettings(): SystemSettings =
     defining(new java.util.Properties()) { props =>
-      if (GitBucketConf.exists) {
+      if (GitBucketConf.exists)
         using(new java.io.FileInputStream(GitBucketConf)) { in =>
           props.load(in)
         }
-      }
       SystemSettings(
         getOptionValue[String](props, BaseURL, None).map(x =>
           x.replaceFirst("/\\Z", "")),
@@ -97,7 +94,7 @@ trait SystemSettingsService {
           UseSMTP,
           getValue(props, Notification, false)
         ), // handle migration scenario from only notification to useSMTP
-        if (getValue(props, UseSMTP, getValue(props, Notification, false))) {
+        if (getValue(props, UseSMTP, getValue(props, Notification, false)))
           Some(
             Smtp(
               getValue(props, SmtpHost, ""),
@@ -108,11 +105,10 @@ trait SystemSettingsService {
               getOptionValue(props, SmtpFromAddress, None),
               getOptionValue(props, SmtpFromName, None)
             ))
-        } else {
-          None
-        },
+        else
+          None,
         getValue(props, LdapAuthentication, false),
-        if (getValue(props, LdapAuthentication, false)) {
+        if (getValue(props, LdapAuthentication, false))
           Some(
             Ldap(
               getValue(props, LdapHost, ""),
@@ -128,9 +124,8 @@ trait SystemSettingsService {
               getOptionValue[Boolean](props, LdapSsl, None),
               getOptionValue(props, LdapKeystore, None)
             ))
-        } else {
+        else
           None
-        }
       )
     }
 

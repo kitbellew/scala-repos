@@ -115,9 +115,8 @@ class Analyzer(
     val files = scalaCompiler.loadedFiles
     scalaCompiler.askShutdown()
     scalaCompiler = makeScalaCompiler()
-    if (keepLoaded) {
+    if (keepLoaded)
       scalaCompiler.askReloadFiles(files)
-    }
     scalaCompiler.askNotifyWhenReady()
     broadcaster ! CompilerRestartedEvent
   }

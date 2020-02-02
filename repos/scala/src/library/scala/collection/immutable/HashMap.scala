@@ -241,27 +241,24 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         value: B1,
         kv: (A, B1),
         merger: Merger[A, B1]): HashMap[A, B1] =
-      if (hash == this.hash && key == this.key) {
-        if (merger eq null) {
+      if (hash == this.hash && key == this.key)
+        if (merger eq null)
           if (this.value.asInstanceOf[AnyRef] eq value.asInstanceOf[AnyRef])
             this
           else new HashMap1(key, hash, value, kv)
-        } else {
+        else {
           val nkv = merger(this.kv, kv)
           new HashMap1(nkv._1, hash, nkv._2, nkv)
         }
-      } else {
-        if (hash != this.hash) {
-          // they have different hashes, but may collide at this level - find a level at which they don't
-          val that = new HashMap1[A, B1](key, hash, value, kv)
-          makeHashTrieMap[A, B1](this.hash, this, hash, that, level, 2)
-        } else {
-          // 32-bit hash collision (rare, but not impossible)
-          new HashMapCollision1(
-            hash,
-            ListMap.empty.updated(this.key, this.value).updated(key, value))
-        }
-      }
+      else if (hash != this.hash) {
+        // they have different hashes, but may collide at this level - find a level at which they don't
+        val that = new HashMap1[A, B1](key, hash, value, kv)
+        makeHashTrieMap[A, B1](this.hash, this, hash, that, level, 2)
+      } else
+        // 32-bit hash collision (rare, but not impossible)
+        new HashMapCollision1(
+          hash,
+          ListMap.empty.updated(this.key, this.value).updated(key, value))
 
     override def removed0(key: A, hash: Int, level: Int): HashMap[A, B] =
       if (hash == this.hash && key == this.key) HashMap.empty[A, B] else this
@@ -307,11 +304,11 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         value: B1,
         kv: (A, B1),
         merger: Merger[A, B1]): HashMap[A, B1] =
-      if (hash == this.hash) {
+      if (hash == this.hash)
         if ((merger eq null) || !kvs.contains(key))
           new HashMapCollision1(hash, kvs.updated(key, value))
         else new HashMapCollision1(hash, kvs + merger((key, kvs(key)), kv))
-      } else {
+      else {
         val that = new HashMap1(key, hash, value, kv)
         makeHashTrieMap(this.hash, this, hash, that, level, size + 1)
       }
@@ -384,9 +381,9 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     override def get0(key: A, hash: Int, level: Int): Option[B] = {
       val index = (hash >>> level) & 0x1f
       val mask = (1 << index)
-      if (bitmap == -1) {
+      if (bitmap == -1)
         elems(index & 0x1f).get0(key, hash, level + 5)
-      } else if ((bitmap & mask) != 0) {
+      else if ((bitmap & mask) != 0) {
         val offset = Integer.bitCount(bitmap & (mask - 1))
         elems(offset).get0(key, hash, level + 5)
       } else
@@ -452,18 +449,17 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
           } else
             HashMap.empty[A, B]
         } else if (elems.length == 1 && !subNew
-                     .isInstanceOf[HashTrieMap[_, _]]) {
+                     .isInstanceOf[HashTrieMap[_, _]])
           subNew
-        } else {
+        else {
           val elemsNew = new Array[HashMap[A, B]](elems.length)
           Array.copy(elems, 0, elemsNew, 0, elems.length)
           elemsNew(offset) = subNew
           val sizeNew = size + (subNew.size - sub.size)
           new HashTrieMap(bitmap, elemsNew, sizeNew)
         }
-      } else {
+      } else
         this
-      }
     }
 
     override protected def filter0(
@@ -492,28 +488,28 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         }
         i += 1
       }
-      if (offset == offset0) {
+      if (offset == offset0)
         // empty
         null
-      } else if (rs == size0) {
+      else if (rs == size0)
         // unchanged
         this
-      } else if (offset == offset0 + 1 && !buffer(offset0)
-                   .isInstanceOf[HashTrieMap[A, B]]) {
+      else if (offset == offset0 + 1 && !buffer(offset0)
+                 .isInstanceOf[HashTrieMap[A, B]])
         // leaf
         buffer(offset0)
-      } else {
+      else {
         // we have to return a HashTrieMap
         val length = offset - offset0
         val elems1 = new Array[HashMap[A, B]](length)
         System.arraycopy(buffer, offset0, elems1, 0, length)
-        val bitmap1 = if (length == elems.length) {
-          // we can reuse the original bitmap
-          bitmap
-        } else {
-          // calculate new bitmap by keeping just bits in the kept bitmask
-          keepBits(bitmap, kept)
-        }
+        val bitmap1 =
+          if (length == elems.length)
+            // we can reuse the original bitmap
+            bitmap
+          else
+            // calculate new bitmap by keeping just bits in the kept bitmask
+            keepBits(bitmap, kept)
         new HashTrieMap(bitmap1, elems1, rs)
       }
     }
@@ -605,23 +601,22 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
             thatbm = thatbm & ~thatlsb
             thati += 1
             thisi += 1
+          } else
+          // condition below is due to 2 things:
+          // 1) no unsigned int compare on JVM
+          // 2) 0 (no lsb) should always be greater in comparison
+          if (unsignedCompare(thislsb - 1, thatlsb - 1)) {
+            val m = thiselems(thisi)
+            totalelems += m.size
+            merged(i) = m
+            thisbm = thisbm & ~thislsb
+            thisi += 1
           } else {
-            // condition below is due to 2 things:
-            // 1) no unsigned int compare on JVM
-            // 2) 0 (no lsb) should always be greater in comparison
-            if (unsignedCompare(thislsb - 1, thatlsb - 1)) {
-              val m = thiselems(thisi)
-              totalelems += m.size
-              merged(i) = m
-              thisbm = thisbm & ~thislsb
-              thisi += 1
-            } else {
-              val m = thatelems(thati)
-              totalelems += m.size
-              merged(i) = m
-              thatbm = thatbm & ~thatlsb
-              thati += 1
-            }
+            val m = thatelems(thati)
+            totalelems += m.size
+            merged(i) = m
+            thatbm = thatbm & ~thatlsb
+            thati += 1
           }
           i += 1
         }
@@ -667,10 +662,9 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
     while (kept != 0) {
       // lowest remaining bit in current
       val lsb = current ^ (current & (current - 1))
-      if ((kept & 1) != 0) {
+      if ((kept & 1) != 0)
         // mark bit in result bitmap
         result |= lsb
-      }
       // clear lowest remaining one bit in abm
       current &= ~lsb
       // look at the next kept bit

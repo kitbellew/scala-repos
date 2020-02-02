@@ -100,9 +100,8 @@ object PolynomialExpansion extends DefaultParamsReadable[PolynomialExpansion] {
     if (multiplier == 0.0) {
       // do nothing
     } else if (degree == 0 || lastIdx < 0) {
-      if (curPolyIdx >= 0) { // skip the very first 1
+      if (curPolyIdx >= 0) // skip the very first 1
         polyValues(curPolyIdx) = multiplier
-      }
     } else {
       val v = values(lastIdx)
       val lastIdx1 = lastIdx - 1

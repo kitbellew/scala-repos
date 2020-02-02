@@ -166,10 +166,9 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
   }
 
   private def requirePositiveLength(): Unit =
-    if (size < 0) {
+    if (size < 0)
       throw new scala.UnsupportedOperationException(
         "Can't make a vector with a negative length!")
-    }
 
   def toDenseVector: DenseVector[E] = {
     requirePositiveLength()
@@ -192,9 +191,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     requirePositiveLength()
     val index = this.index
     val values = this.data
-    if (alreadySorted && keysAlreadyUnique) {
+    if (alreadySorted && keysAlreadyUnique)
       return new SparseVector(index, values, used, length)
-    }
 
     val outIndex = new Array[Int](index.length)
     val outValues = ArrayUtil.newArrayLike(values, values.length)
@@ -212,25 +210,24 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     }
     var i = 1
     var out = 0
-    if (keysAlreadyUnique) {
+    if (keysAlreadyUnique)
       while (i < ord.length) {
         out += 1
         outIndex(out) = index(ord(i))
         outValues(out) = values(ord(i))
         i += 1
       }
-    } else {
+    else
       while (i < ord.length) {
-        if (outIndex(out) == index(ord(i))) {
+        if (outIndex(out) == index(ord(i)))
           outValues(out) = ring.+(outValues(out), values(ord(i)))
-        } else {
+        else {
           out += 1
           outIndex(out) = index(ord(i))
           outValues(out) = values(ord(i))
         }
         i += 1
       }
-    }
 
     if (ord.length > 0)
       out += 1
@@ -253,9 +250,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     reserve(ah.activeSize)
     var i = 0
     while (i < ah.iterableSize) {
-      if (ah.isActive(i)) {
+      if (ah.isActive(i))
         add(ah.index(i), ah.data(i))
-      }
       i += 1
     }
   }
@@ -311,11 +307,10 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
 
   def toVector = {
     requirePositiveLength()
-    if (size < 40 || activeSize > size / 2) {
+    if (size < 40 || activeSize > size / 2)
       toDenseVector
-    } else {
+    else
       toSparseVector
-    }
 
   }
 }
@@ -342,9 +337,8 @@ object VectorBuilder extends VectorBuilderOps {
 
   def apply[V: ClassTag: Semiring: Zero](length: Int)(values: (Int, V)*) = {
     val r = zeros[V](length)
-    for ((i, v) <- values) {
+    for ((i, v) <- values)
       r.add(i, v)
-    }
     r
   }
 

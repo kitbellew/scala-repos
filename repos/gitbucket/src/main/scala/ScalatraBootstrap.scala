@@ -65,9 +65,8 @@ class ScalatraBootstrap extends LifeCycle {
 
     // Create GITBUCKET_HOME directory if it does not exist
     val dir = new java.io.File(Directory.GitBucketHome)
-    if (!dir.exists) {
+    if (!dir.exists)
       dir.mkdirs()
-    }
   }
 
   override def destroy(context: ServletContext): Unit =

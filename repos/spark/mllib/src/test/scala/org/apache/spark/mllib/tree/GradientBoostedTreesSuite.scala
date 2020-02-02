@@ -57,12 +57,11 @@ class GradientBoostedTreesSuite
         val gbt = GradientBoostedTrees.train(rdd, boostingStrategy)
 
         assert(gbt.trees.size === numIterations)
-        try {
-          EnsembleTestHelper.validateRegressor(
-            gbt,
-            GradientBoostedTreesSuite.data,
-            0.06)
-        } catch {
+        try EnsembleTestHelper.validateRegressor(
+          gbt,
+          GradientBoostedTreesSuite.data,
+          0.06)
+        catch {
           case e: java.lang.AssertionError =>
             logError(
               s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
@@ -100,13 +99,12 @@ class GradientBoostedTreesSuite
         val gbt = GradientBoostedTrees.train(rdd, boostingStrategy)
 
         assert(gbt.trees.size === numIterations)
-        try {
-          EnsembleTestHelper.validateRegressor(
-            gbt,
-            GradientBoostedTreesSuite.data,
-            0.85,
-            "mae")
-        } catch {
+        try EnsembleTestHelper.validateRegressor(
+          gbt,
+          GradientBoostedTreesSuite.data,
+          0.85,
+          "mae")
+        catch {
           case e: java.lang.AssertionError =>
             logError(
               s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
@@ -145,12 +143,11 @@ class GradientBoostedTreesSuite
         val gbt = GradientBoostedTrees.train(rdd, boostingStrategy)
 
         assert(gbt.trees.size === numIterations)
-        try {
-          EnsembleTestHelper.validateClassifier(
-            gbt,
-            GradientBoostedTreesSuite.data,
-            0.9)
-        } catch {
+        try EnsembleTestHelper.validateClassifier(
+          gbt,
+          GradientBoostedTreesSuite.data,
+          0.9)
+        catch {
           case e: java.lang.AssertionError =>
             logError(
               s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
@@ -176,9 +173,8 @@ class GradientBoostedTreesSuite
            "classification",
            "Classification",
            "regression",
-           "Regression")) {
+           "Regression"))
       BoostingStrategy.defaultParams(algo)
-    }
   }
 
   test("model save/load") {
@@ -202,9 +198,7 @@ class GradientBoostedTreesSuite
             DecisionTreeSuite.checkEqual(treeA, treeB)
         }
         assert(model.treeWeights === sameModel.treeWeights)
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      } finally Utils.deleteRecursively(tempDir)
     }
   }
 
@@ -244,11 +238,10 @@ class GradientBoostedTreesSuite
             (
               loss.computeError(gbt, remappedRdd),
               loss.computeError(gbtValidate, remappedRdd))
-          } else {
+          } else
             (
               loss.computeError(gbt, validateRdd),
               loss.computeError(gbtValidate, validateRdd))
-          }
         }
         assert(errorWithValidation <= errorWithoutValidation)
 

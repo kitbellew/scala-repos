@@ -91,9 +91,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("toBreeze") {
     val expected =
       BDM((0.0, 1.0, 2.0), (3.0, 4.0, 5.0), (6.0, 7.0, 8.0), (9.0, 0.0, 1.0))
-    for (mat <- Seq(denseMat, sparseMat)) {
+    for (mat <- Seq(denseMat, sparseMat))
       assert(mat.toBreeze() === expected)
-    }
   }
 
   test("gram") {
@@ -112,13 +111,12 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val colMags = Vectors.dense(math.sqrt(126), math.sqrt(66), math.sqrt(94))
     val expected = BDM((0.0, 54.0, 72.0), (0.0, 0.0, 78.0), (0.0, 0.0, 0.0))
 
-    for (i <- 0 until n; j <- 0 until n) {
+    for (i <- 0 until n; j <- 0 until n)
       expected(i, j) /= (colMags(i) * colMags(j))
-    }
 
     for (mat <- Seq(denseMat, sparseMat)) {
       val G = mat.columnSimilarities(0.11).toBreeze()
-      for (i <- 0 until n; j <- 0 until n) {
+      for (i <- 0 until n; j <- 0 until n)
         if (expected(i, j) > 0) {
           val actual = expected(i, j)
           val estimate = G(i, j)
@@ -126,7 +124,6 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
             math.abs(actual - estimate) / actual < 0.2,
             s"Similarities not close enough: $actual vs $estimate")
         }
-      }
     }
 
     for (mat <- Seq(denseMat, sparseMat)) {
@@ -141,7 +138,7 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("svd of a full-rank matrix") {
-    for (mat <- Seq(denseMat, sparseMat)) {
+    for (mat <- Seq(denseMat, sparseMat))
       for (mode <- Seq("auto", "local-svd", "local-eigs", "dist-eigs")) {
         val localMat = mat.toBreeze()
         val brzSvd.SVD(localU, localSigma, localVt) = brzSvd(localMat)
@@ -172,7 +169,6 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
           mat.computeSVD(1, computeU = false, 1e-9, 300, 1e-10, mode)
         assert(svdWithoutU.U === null)
       }
-    }
   }
 
   test("svd of a low-rank matrix") {
@@ -191,11 +187,10 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("validate k in svd") {
-    for (mat <- Seq(denseMat, sparseMat)) {
+    for (mat <- Seq(denseMat, sparseMat))
       intercept[IllegalArgumentException] {
         mat.computeSVD(-1)
       }
-    }
   }
 
   def closeToZero(G: BDM[Double]): Boolean =
@@ -309,9 +304,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val rdd = RandomRDDs.normalVectorRDD(sc, 100, 10, 0, 0)
     val matrix = new RowMatrix(rdd)
     val cov = matrix.computeCovariance()
-    for (i <- 0 until cov.numRows; j <- 0 until i) {
+    for (i <- 0 until cov.numRows; j <- 0 until i)
       assert(cov(i, j) === cov(j, i))
-    }
   }
 }
 

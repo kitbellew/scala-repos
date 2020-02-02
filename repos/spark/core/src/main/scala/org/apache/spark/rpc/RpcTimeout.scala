@@ -73,9 +73,8 @@ private[spark] class RpcTimeout(
     *         is still not ready
     */
   def awaitResult[T](awaitable: Awaitable[T]): T =
-    try {
-      Await.result(awaitable, duration)
-    } catch addMessageIfTimeout
+    try Await.result(awaitable, duration)
+    catch addMessageIfTimeout
 }
 
 private[spark] object RpcTimeout {
@@ -88,7 +87,7 @@ private[spark] object RpcTimeout {
     * @throws NoSuchElementException if property is not set
     */
   def apply(conf: SparkConf, timeoutProp: String): RpcTimeout = {
-    val timeout = { conf.getTimeAsSeconds(timeoutProp).seconds }
+    val timeout = conf.getTimeAsSeconds(timeoutProp).seconds
     new RpcTimeout(timeout, timeoutProp)
   }
 
@@ -104,7 +103,7 @@ private[spark] object RpcTimeout {
       conf: SparkConf,
       timeoutProp: String,
       defaultValue: String): RpcTimeout = {
-    val timeout = { conf.getTimeAsSeconds(timeoutProp, defaultValue).seconds }
+    val timeout = conf.getTimeAsSeconds(timeoutProp, defaultValue).seconds
     new RpcTimeout(timeout, timeoutProp)
   }
 
@@ -133,7 +132,7 @@ private[spark] object RpcTimeout {
       }
     }
     val finalProp = foundProp.getOrElse(timeoutPropList.head, defaultValue)
-    val timeout = { Utils.timeStringAsSeconds(finalProp._2).seconds }
+    val timeout = Utils.timeStringAsSeconds(finalProp._2).seconds
     new RpcTimeout(timeout, finalProp._1)
   }
 }

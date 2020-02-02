@@ -24,8 +24,7 @@ class ScClassParameterElementType
     super.indexStub(stub, sink)
 
     val name = stub.getName
-    if (name != null) {
+    if (name != null)
       sink.occurrence(ScalaIndexKeys.CLASS_PARAMETER_NAME_KEY, name)
-    }
   }
 }

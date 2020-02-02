@@ -117,10 +117,9 @@ case class SegmentsWrapper(
 
   val size: Int = {
     val sz = segments.foldLeft(0)(_ max _.length)
-    if (logger.isTraceEnabled) {
+    if (logger.isTraceEnabled)
       logger.trace(
         "Computed size %d from:\n  %s".format(sz, segments.mkString("\n  ")))
-    }
     sz
   }
 

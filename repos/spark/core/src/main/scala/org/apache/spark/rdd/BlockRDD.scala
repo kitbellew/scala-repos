@@ -81,11 +81,10 @@ private[spark] class BlockRDD[T: ClassTag](
 
   /** Check if this BlockRDD is valid. If not valid, exception is thrown. */
   private[spark] def assertValid() {
-    if (!isValid) {
+    if (!isValid)
       throw new SparkException(
         "Attempted to use %s after its blocks have been removed!".format(
           toString))
-    }
   }
 
   protected def getBlockIdLocations(): Map[BlockId, Seq[String]] =

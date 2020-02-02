@@ -158,7 +158,7 @@ trait ScFunction
     hasAnnotation("scala.native").isDefined
 
   override def hasModifierProperty(name: String): Boolean = {
-    if (name == "abstract") {
+    if (name == "abstract")
       this match {
         case _: ScFunctionDeclaration =>
           containingClass match {
@@ -168,7 +168,6 @@ trait ScFunction
           }
         case _ =>
       }
-    }
     super.hasModifierProperty(name)
   }
 
@@ -302,9 +301,8 @@ trait ScFunction
     this match {
       case st: ScalaStubBasedElementImpl[_] =>
         val stub = st.getStub
-        if (stub != null) {
+        if (stub != null)
           return stub.asInstanceOf[ScFunctionStub].getReturnTypeElement
-        }
       case _ =>
     }
     findChild(classOf[ScTypeElement])
@@ -373,7 +371,7 @@ trait ScFunction
 
   private def syntheticParamClause: Option[ScParameterClause] = {
     val hasImplicit = clauses.exists(_.clauses.exists(_.isImplicit))
-    if (isConstructor) {
+    if (isConstructor)
       containingClass match {
         case owner: ScTypeParametersOwner =>
           if (hasImplicit) None
@@ -384,14 +382,9 @@ trait ScFunction
               classParam = false)
         case _ => None
       }
-    } else {
-      if (hasImplicit) None
-      else
-        ScalaPsiUtil.syntheticParamClause(
-          this,
-          paramClauses,
-          classParam = false)
-    }
+    else if (hasImplicit) None
+    else
+      ScalaPsiUtil.syntheticParamClause(this, paramClauses, classParam = false)
   }
 
   def declaredElements = Seq(this)
@@ -432,11 +425,11 @@ trait ScFunction
   def getGetterOrSetterFunction: Option[ScFunction] =
     containingClass match {
       case clazz: ScTemplateDefinition =>
-        if (name.endsWith("_=")) {
+        if (name.endsWith("_="))
           clazz.functions.find(_.name == name.substring(0, name.length - 2))
-        } else if (!hasParameterClause) {
+        else if (!hasParameterClause)
           clazz.functions.find(_.name == name + "_=")
-        } else None
+        else None
       case _ => None
     }
 
@@ -480,13 +473,12 @@ trait ScFunction
   @tailrec
   private def isJavaVarargs: Boolean =
     if (hasAnnotation("scala.annotation.varargs").isDefined) true
-    else {
+    else
       superMethod match {
         case Some(f: ScFunction) => f.isJavaVarargs
         case Some(m: PsiMethod)  => m.isVarArgs
         case _                   => false
       }
-    }
 
   /**
     * @return Empty array, if containing class is null.
@@ -504,24 +496,21 @@ trait ScFunction
         first <- clause.clauses.headOption
         if first.hasRepeatedParam
         if isJavaVarargs
-      } {
-        buffer += new ScFunctionWrapper(
-          this,
-          isStatic,
-          isInterface,
-          cClass,
-          isJavaVarargs = true)
-      }
+      } buffer += new ScFunctionWrapper(
+        this,
+        isStatic,
+        isInterface,
+        cClass,
+        isJavaVarargs = true)
 
       val params = parameters
-      for (i <- params.indices if params(i).baseDefaultParam) {
+      for (i <- params.indices if params(i).baseDefaultParam)
         buffer += new ScFunctionWrapper(
           this,
           isStatic = isStatic || isConstructor,
           isInterface,
           cClass,
           forDefault = Some(i + 1))
-      }
     }
     buffer.toSeq
   }
@@ -533,9 +522,8 @@ trait ScFunction
   def getReturnType: PsiType = {
     if (DumbService
           .getInstance(getProject)
-          .isDumb || !SyntheticClasses.get(getProject).isClassesRegistered) {
+          .isDumb || !SyntheticClasses.get(getProject).isClassesRegistered)
       return null //no resolve during dumb mode or while synthetic classes is not registered
-    }
     getReturnTypeImpl
   }
 
@@ -623,7 +611,7 @@ trait ScFunction
             case None => Seq.empty
           }
       }
-    } else {
+    } else
       TypeDefinitionMembers
         .getSignatures(clazz)
         .forName(ScalaPsiUtil.convertMemberName(name))
@@ -632,7 +620,6 @@ trait ScFunction
         case Some(x) => x.supers.map { _.info }
         case None    => Seq.empty
       }
-    }
   }
 
   override def getNameIdentifier: PsiIdentifier = new JavaIdentifier(nameId)

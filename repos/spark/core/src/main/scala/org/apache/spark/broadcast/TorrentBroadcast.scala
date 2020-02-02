@@ -73,11 +73,11 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
   @transient private var blockSize: Int = _
 
   private def setConf(conf: SparkConf) {
-    compressionCodec = if (conf.getBoolean("spark.broadcast.compress", true)) {
-      Some(CompressionCodec.createCodec(conf))
-    } else {
-      None
-    }
+    compressionCodec =
+      if (conf.getBoolean("spark.broadcast.compress", true))
+        Some(CompressionCodec.createCodec(conf))
+      else
+        None
     // Note: use getSizeAsKb (not bytes) to maintain compatibility if no units are provided
     blockSize = conf.getSizeAsKb("spark.broadcast.blockSize", "4m").toInt * 1024
   }
@@ -106,9 +106,8 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
           broadcastId,
           value,
           MEMORY_AND_DISK,
-          tellMaster = false)) {
+          tellMaster = false))
       throw new SparkException(s"Failed to store $broadcastId in BlockManager")
-    }
     val blocks =
       TorrentBroadcast.blockifyObject(
         value,
@@ -123,10 +122,9 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
               pieceId,
               bytes,
               MEMORY_AND_DISK_SER,
-              tellMaster = true)) {
+              tellMaster = true))
           throw new SparkException(
             s"Failed to store $pieceId of $broadcastId in local BlockManager")
-        }
     }
     blocks.length
   }
@@ -157,10 +155,9 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
                     pieceId,
                     b,
                     StorageLevel.MEMORY_AND_DISK_SER,
-                    tellMaster = true)) {
+                    tellMaster = true))
                 throw new SparkException(
                   s"Failed to store $pieceId of $broadcastId in local BlockManager")
-              }
               blocks(pid) = b
             case None =>
               throw new SparkException(
@@ -217,14 +214,10 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
           // Store the merged copy in BlockManager so other tasks on this executor don't
           // need to re-fetch it.
           val storageLevel = StorageLevel.MEMORY_AND_DISK
-          if (!blockManager.putSingle(
-                broadcastId,
-                obj,
-                storageLevel,
-                tellMaster = false)) {
+          if (!blockManager
+                .putSingle(broadcastId, obj, storageLevel, tellMaster = false))
             throw new SparkException(
               s"Failed to store $broadcastId in BlockManager")
-          }
           obj
       }
     }

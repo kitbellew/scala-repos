@@ -53,7 +53,7 @@ class ApacheWatcherTest extends FlatSpec with OneInstancePerTest {
   }
 
   "ApacheWatcher" should "handle and count node events" in {
-    for (ev <- nodeEvents.keys) {
+    for (ev <- nodeEvents.keys)
       if (ev != EventType.None) {
         val determined = watcher.state.changes
           .filter(_ == WatchState.Determined(nodeEvents(ev)))
@@ -63,7 +63,6 @@ class ApacheWatcherTest extends FlatSpec with OneInstancePerTest {
           Await.result(determined) == WatchState.Determined(nodeEvents(ev)))
         assert(statsReceiver.counter(ApacheNodeEvent(ev).name)() == 1)
       }
-    }
   }
 
   "StatsWatcher" should "count session events" in {

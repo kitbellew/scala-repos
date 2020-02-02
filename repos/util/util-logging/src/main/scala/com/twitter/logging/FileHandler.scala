@@ -129,11 +129,10 @@ class FileHandler(
   }
   val (filenamePrefix, filenameSuffix) = {
     val n = filename.lastIndexOf('.')
-    if (n > 0) {
+    if (n > 0)
       (filename.substring(0, n), filename.substring(n))
-    } else {
+    else
       (filename, "")
-    }
   }
 
   // Thread-safety is guarded by synchronized on this
@@ -155,19 +154,17 @@ class FileHandler(
   // This allows us to avoid volatile reads in the publish method.
   private val examineRollTime = nextRollTime.isDefined
 
-  if (rollPolicy == Policy.SigHup) {
+  if (rollPolicy == Policy.SigHup)
     HandleSignal("HUP") { signal =>
       val oldStream = stream
       synchronized {
         stream = openStream()
       }
-      try {
-        oldStream.close()
-      } catch {
+      try oldStream.close()
+      catch {
         case e: Throwable => handleThrowable(e)
       }
     }
-  }
 
   def flush() {
     synchronized {
@@ -178,9 +175,8 @@ class FileHandler(
   def close() {
     synchronized {
       flush()
-      try {
-        stream.close()
-      } catch {
+      try stream.close()
+      catch {
         case e: Throwable => handleThrowable(e)
       }
     }
@@ -233,22 +229,18 @@ class FileHandler(
 
     val rv = rollPolicy match {
       case Policy.MaxSize(_) | Policy.Never | Policy.SigHup => None
-      case Policy.Hourly => {
+      case Policy.Hourly =>
         next.add(Calendar.HOUR_OF_DAY, 1)
         Some(next)
-      }
-      case Policy.Daily => {
+      case Policy.Daily =>
         next.set(Calendar.HOUR_OF_DAY, 0)
         next.add(Calendar.DAY_OF_MONTH, 1)
         Some(next)
-      }
-      case Policy.Weekly(weekday) => {
+      case Policy.Weekly(weekday) =>
         next.set(Calendar.HOUR_OF_DAY, 0)
-        do {
-          next.add(Calendar.DAY_OF_MONTH, 1)
-        } while (next.get(Calendar.DAY_OF_WEEK) != weekday)
+        do next.add(Calendar.DAY_OF_MONTH, 1) while (next.get(
+          Calendar.DAY_OF_WEEK) != weekday)
         Some(next)
-      }
     }
 
     rv map { _.getTimeInMillis }
@@ -294,14 +286,13 @@ class FileHandler(
       val formattedBytes = formattedLine.getBytes(FileHandler.UTF8)
       val lineSizeBytes = formattedBytes.length
 
-      if (examineRollTime) {
+      if (examineRollTime)
         // Only allow a single thread at a time to do a roll
         synchronized {
           nextRollTime foreach { time =>
             if (Time.now.inMilliseconds > time) roll()
           }
         }
-      }
 
       maxFileSize foreach { size =>
         synchronized {

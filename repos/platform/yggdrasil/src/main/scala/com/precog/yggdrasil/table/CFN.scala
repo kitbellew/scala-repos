@@ -89,10 +89,9 @@ object CF1Array {
     def apply(columns0: Map[ColumnRef, Column], range: Range) =
       columns0 collect {
         case (ColumnRef(CPath.Identity, _), col)
-            if pf isDefinedAt (col, range) => {
+            if pf isDefinedAt (col, range) =>
           val (tpe, cols, defined) = pf((col, range))
           tpe -> (cols.asInstanceOf[Array[Array[_]]], defined)
-        }
       }
   }
 }
@@ -194,7 +193,7 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
     val results = this(columns0, range)
 
     val columns = results flatMap {
-      case (tpe @ CString, (cols0, defined)) => {
+      case (tpe @ CString, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[String]]]
 
@@ -206,9 +205,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CBoolean, (cols0, defined)) => {
+      case (tpe @ CBoolean, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Boolean]]]
 
@@ -220,9 +218,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CLong, (cols0, defined)) => {
+      case (tpe @ CLong, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Long]]]
 
@@ -234,9 +231,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CDouble, (cols0, defined)) => {
+      case (tpe @ CDouble, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Double]]]
 
@@ -248,9 +244,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CNum, (cols0, defined)) => {
+      case (tpe @ CNum, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[BigDecimal]]]
 
@@ -262,9 +257,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CNull, (cols0, defined)) => {
+      case (tpe @ CNull, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Unit]]]
 
@@ -275,9 +269,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CEmptyObject, (cols0, defined)) => {
+      case (tpe @ CEmptyObject, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Unit]]]
 
@@ -288,9 +281,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CEmptyArray, (cols0, defined)) => {
+      case (tpe @ CEmptyArray, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Unit]]]
 
@@ -301,9 +293,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CDate, (cols0, defined)) => {
+      case (tpe @ CDate, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[DateTime]]]
 
@@ -315,9 +306,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
-      case (tpe @ CPeriod, (cols0, defined)) => {
+      case (tpe @ CPeriod, (cols0, defined)) =>
         val max = maxIds(cols0, defined)
         val cols = cols0.asInstanceOf[Array[Array[Period]]]
 
@@ -329,7 +319,6 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
         })(collection.breakOut)
 
         columns
-      }
 
       case (tpe, _) => sys.error("Unsupported CFArray type: " + tpe)
     }
@@ -344,9 +333,8 @@ trait ArrayMapperS[M[+_]] extends CMapperS[M] {
   private[this] def maxIds(arr: Array[Array[_]], mask: BitSet): Int = {
     var back = -1
     0 until arr.length foreach { i =>
-      if (mask get i) {
+      if (mask get i)
         back = back max arr(i).length
-      }
     }
     back
   }

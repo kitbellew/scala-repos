@@ -23,30 +23,28 @@ trait UnifiedProtocolCodec {
       i: Long,
       lines: ByteArrays,
       doneFn: ByteArrays => T): NextStep =
-    if (i <= 0) {
+    if (i <= 0)
       emit(doneFn(lines.reverse))
-    } else {
+    else
       readLine { line =>
         val header = line(0)
         header match {
           case ARG_SIZE_MARKER =>
             val size = NumberFormat.toInt(line.drop(1))
-            if (size < 1) {
+            if (size < 1)
               decodeRequestLines(
                 i - 1,
                 lines.+:(RedisCodec.NIL_VALUE_BA.array),
                 doneFn)
-            } else {
+            else
               readBytes(size) { byteArray =>
                 readBytes(2) { eol =>
-                  if (eol(0) != '\r' || eol(1) != '\n') {
+                  if (eol(0) != '\r' || eol(1) != '\n')
                     throw new ProtocolError(
                       "Expected EOL after line data and didn't find it")
-                  }
                   decodeRequestLines(i - 1, lines.+:(byteArray), doneFn)
                 }
               }
-            }
           case STATUS_REPLY =>
             decodeRequestLines(i - 1, lines.+:(line.drop(1).getBytes), doneFn)
           case ARG_COUNT_MARKER =>
@@ -59,6 +57,6 @@ trait UnifiedProtocolCodec {
             throw new ProtocolError("Expected size marker $, got " + b)
         } // header match
       } // readLine
-    } // else
+  // else
   // decodeRequestLines
 }

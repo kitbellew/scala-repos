@@ -23,11 +23,11 @@ class MutateTest extends AsyncTest[JdbcTestDB] {
           (4, "d"))))
       .flatMap { _ =>
         foreach(db.stream(data.mutate.transactionally)) { m =>
-          if (!m.end) {
+          if (!m.end)
             if (m.row._1 == 1) m.row = m.row.copy(_2 = "aa")
             else if (m.row._1 == 2) m.delete
             else if (m.row._1 == 3) m += ((5, "ee"))
-          } else seenEndMarker = true
+            else seenEndMarker = true
         }
       }
       .flatMap { _ =>

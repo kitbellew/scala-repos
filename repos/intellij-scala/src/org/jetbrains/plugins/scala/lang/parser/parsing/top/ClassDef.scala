@@ -36,12 +36,11 @@ object ClassDef {
     }
     val constructorMarker = builder.mark
     val annotationsMarker = builder.mark
-    if (!builder.newlineBeforeCurrentToken) {
+    if (!builder.newlineBeforeCurrentToken)
       while (Annotation.parse(builder)) {}
-    }
     annotationsMarker.done(ScalaElementTypes.ANNOTATIONS)
     val modifierMareker = builder.mark
-    if (!builder.newlineBeforeCurrentToken) {
+    if (!builder.newlineBeforeCurrentToken)
       //parse AccessModifier
       builder.getTokenType match {
         case ScalaTokenTypes.kPRIVATE | ScalaTokenTypes.kPROTECTED =>
@@ -49,7 +48,6 @@ object ClassDef {
         case _ =>
         /*it could be without acces modifier*/
       }
-    }
     modifierMareker.done(ScalaElementTypes.MODIFIERS)
     ClassParamClauses parse builder
     constructorMarker.done(ScalaElementTypes.PRIMARY_CONSTRUCTOR)

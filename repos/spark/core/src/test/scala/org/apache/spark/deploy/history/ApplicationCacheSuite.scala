@@ -371,11 +371,10 @@ class ApplicationCacheSuite
   def assertMetric(name: String, counter: Counter, expected: Long)(
       implicit cache: ApplicationCache): Unit = {
     val actual = counter.getCount
-    if (actual != expected) {
+    if (actual != expected)
       // this is here because Scalatest loses stack depth
       throw new Exception(
         s"Wrong $name value - expected $expected but got $actual in $cache")
-    }
   }
 
   /**
@@ -416,9 +415,8 @@ class ApplicationCacheSuite
     }
     var cause = ex.getCause
     assert(cause !== null)
-    if (!cause.isInstanceOf[NoSuchElementException]) {
+    if (!cause.isInstanceOf[NoSuchElementException])
       throw cause
-    }
   }
 
   test("Large Scale Application Eviction") {

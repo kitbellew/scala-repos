@@ -81,9 +81,8 @@ private[streaming] class RecurringTimer(
   def stop(interruptTimer: Boolean): Long = synchronized {
     if (!stopped) {
       stopped = true
-      if (interruptTimer) {
+      if (interruptTimer)
         thread.interrupt()
-      }
       thread.join()
       logInfo("Stopped timer for " + name + " after time " + prevTime)
     }
@@ -103,9 +102,8 @@ private[streaming] class RecurringTimer(
     */
   private def loop() {
     try {
-      while (!stopped) {
+      while (!stopped)
         triggerActionForNextInterval()
-      }
       triggerActionForNextInterval()
     } catch {
       case e: InterruptedException =>

@@ -46,9 +46,8 @@ object ActorWithBoundedStashSpec {
             if (numStashed == 21) {
               sender() ! "STASHOVERFLOW"
               context stop self
-            } else {
+            } else
               sender() ! "Unexpected StashOverflowException: " + numStashed
-            }
         }
     }
   }

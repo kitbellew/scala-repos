@@ -36,13 +36,12 @@ private case object OracleDialect extends JdbcDialect {
     // https://github.com/apache/spark/pull/8780#issuecomment-145598968
     // and
     // https://github.com/apache/spark/pull/8780#issuecomment-144541760
-    if (sqlType == Types.NUMERIC && size == 0) {
+    if (sqlType == Types.NUMERIC && size == 0)
       // This is sub-optimal as we have to pick a precision/scale in advance whereas the data
       //  in Oracle is allowed to have different precision/scale for each value.
       Option(DecimalType(DecimalType.MAX_PRECISION, 10))
-    } else {
+    else
       None
-    }
 
   override def getJDBCType(dt: DataType): Option[JdbcType] = dt match {
     case StringType => Some(JdbcType("VARCHAR2(255)", java.sql.Types.VARCHAR))

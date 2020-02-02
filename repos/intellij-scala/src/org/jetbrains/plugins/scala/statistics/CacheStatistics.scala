@@ -94,13 +94,12 @@ class CacheStatistics private (id: String, name: String) {
        |time saved (hits * averageTime): $timeSaved
        |****************************
      """.stripMargin
-    } else {
+    } else
       s"""
         |*************************************************************
         |$name not used
         |*************************************************************
       """.stripMargin
-    }
   }
 }
 

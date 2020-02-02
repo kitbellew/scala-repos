@@ -28,11 +28,10 @@ class FixedPointCheck
       implicit val scale = s
       val minV = FixedPoint.MinValue.toRational
       val maxV = FixedPoint.MaxValue.toRational
-      if (r < minV || maxV < r) {
+      if (r < minV || maxV < r)
         Try(FixedPoint(r)).isSuccess shouldBe false
-      } else {
+      else
         FixedPoint(r).toRational shouldBe r.roundTo(s.denom)
-      }
     }
   }
 

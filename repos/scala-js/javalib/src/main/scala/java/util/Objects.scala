@@ -13,7 +13,7 @@ object Objects {
   def deepEquals(a: AnyRef, b: AnyRef): Boolean =
     if (a eq b) true
     else if (a == null || b == null) false
-    else {
+    else
       (a, b) match {
         case (a1: Array[AnyRef], a2: Array[AnyRef])   => Arrays.deepEquals(a1, a2)
         case (a1: Array[Long], a2: Array[Long])       => Arrays.equals(a1, a2)
@@ -26,7 +26,6 @@ object Objects {
         case (a1: Array[Double], a2: Array[Double])   => Arrays.equals(a1, a2)
         case _                                        => a === b
       }
-    }
 
   @inline
   def hashCode(o: AnyRef): Int =

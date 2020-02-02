@@ -70,9 +70,7 @@ class OffsetCheckpoint(val file: File) extends Logging {
             Runtime.getRuntime.halt(1)
           }
           throw e
-      } finally {
-        writer.close()
-      }
+      } finally writer.close()
 
       Utils.atomicMoveWithFallback(tempPath, path)
     }
@@ -99,14 +97,13 @@ class OffsetCheckpoint(val file: File) extends Logging {
             val expectedSize = line.toInt
             val offsets = mutable.Map[TopicAndPartition, Long]()
             line = reader.readLine()
-            while (line != null) {
+            while (line != null)
               WhiteSpacesPattern.split(line) match {
                 case Array(topic, partition, offset) =>
                   offsets += TopicAndPartition(topic, partition.toInt) -> offset.toLong
                   line = reader.readLine()
                 case _ => throw malformedLineException(line)
               }
-            }
             if (offsets.size != expectedSize)
               throw new IOException(
                 s"Expected $expectedSize entries but found only ${offsets.size}")
@@ -117,9 +114,7 @@ class OffsetCheckpoint(val file: File) extends Logging {
         }
       } catch {
         case e: NumberFormatException => throw malformedLineException(line)
-      } finally {
-        reader.close()
-      }
+      } finally reader.close()
     }
   }
 

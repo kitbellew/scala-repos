@@ -20,9 +20,8 @@ trait FramedStringProtocol extends Protocol with SLF4JLogging {
     val header = ByteString("%06x".format(data.length), "UTF-8")
 
     val message = header ++ data
-    if (log.isTraceEnabled) {
+    if (log.isTraceEnabled)
       log.trace(message.utf8String)
-    }
 
     message
   }

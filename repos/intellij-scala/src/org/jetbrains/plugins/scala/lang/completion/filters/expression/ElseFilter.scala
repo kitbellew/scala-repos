@@ -44,9 +44,8 @@ class ElseFilter extends ElementFilter {
             .compile(DUMMY_IDENTIFIER, Pattern.LITERAL)
             .matcher(text)
             .replaceAll(Matcher.quoteReplacement(" else true"))
-        } else {
+        } else
           text = ifStmt.getText + " else true"
-        }
         return checkElseWith(text, parent.getManager)
       }
     }

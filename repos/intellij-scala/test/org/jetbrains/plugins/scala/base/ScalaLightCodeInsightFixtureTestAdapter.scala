@@ -63,11 +63,11 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
         selectionModel.getSelectionStart,
         selectionModel.getSelectionEnd)
 
-    if (!canSurround) {
+    if (!canSurround)
       assert(
         elementsToSurround == null || elementsToSurround.isEmpty,
         elementsToSurround.mkString("![", ",", "]!"))
-    } else {
+    else {
       assert(elementsToSurround.nonEmpty, "No elements to surround!")
       extensions.startCommand(getProject, "Surround With Test") {
         SurroundWithHandler.invoke(

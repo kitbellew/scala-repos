@@ -96,10 +96,9 @@ object SaddleWrapper {
   )(implicit st: ST[A]): Frame[DateTime, String, A] = {
     val index = IndexTime(timeIndex: _*)
     val seriesList = tickerPriceSeq.map {
-      case (ticker, price) => {
+      case (ticker, price) =>
         val series = Series(Vec(price), index)
         (ticker, series)
-      }
     }
     Frame(seriesList: _*)
   }

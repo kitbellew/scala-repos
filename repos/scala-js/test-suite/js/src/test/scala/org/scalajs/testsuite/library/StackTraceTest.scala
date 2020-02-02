@@ -26,7 +26,7 @@ class StackTraceTest {
     } catch {
       case e: IllegalArgumentException =>
         val trace = e.getStackTrace()
-        for ((className, methodName) <- places) {
+        for ((className, methodName) <- places)
           assertTrue(trace exists { elem =>
             /* We use startsWith for class name because some VMs will add
              * additional information at the end of the class name, for some
@@ -37,7 +37,6 @@ class StackTraceTest {
             (elem.getClassName.startsWith(prefix + className) &&
             elem.getMethodName == methodName)
           })
-        }
     }
 
   @Test def decode_class_name_and_method_name(): Unit = {
@@ -72,9 +71,7 @@ class StackTraceTest {
         "Foobar$" -> "<init>") {
         Foobar.z
       }
-    } finally {
-      Error.stackTraceLimit = oldStackTraceLimit
-    }
+    } finally Error.stackTraceLimit = oldStackTraceLimit
   }
 
 }

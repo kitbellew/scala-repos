@@ -77,20 +77,18 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
     val element1: PsiElement = file.findElementAt(startOffset);
     val element2: PsiElement = file.findElementAt(endOffset - 1);
     (element1, element2) match {
-      case (_: PsiWhiteSpace, _) => {
+      case (_: PsiWhiteSpace, _) =>
         return findExpressionInRange(
           file,
           element1.getTextRange.getEndOffset,
           endOffset)
-      }
-      case (_, _: PsiWhiteSpace) => {
+      case (_, _: PsiWhiteSpace) =>
         return findExpressionInRange(
           file,
           startOffset,
           element2.getTextRange.getStartOffset)
-      }
       case (null, _) | (_, null) => return null
-      case _ => {
+      case _ =>
         if (element2.getNode.getElementType == ScalaTokenTypes.tSEMICOLON)
           return findExpressionInRange(file, startOffset, endOffset - 1)
         if (ScalaPsiUtil.isLineTerminator(element1))
@@ -113,7 +111,6 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
             file,
             startOffset,
             element2.getTextRange.getStartOffset)
-      }
     }
 
     def findAllInRange(
@@ -148,11 +145,10 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
           findAllInRange(file, element.getTextRange.getEndOffset, endOffset)
         if (res == null) return null
         result ++ res
-      } else if (element.getTextRange.getEndOffset > endOffset) {
+      } else if (element.getTextRange.getEndOffset > endOffset)
         null
-      } else {
+      else
         result
-      }
     }
     val result = findAllInRange(file, startOffset, endOffset)
     if (result == null) return null

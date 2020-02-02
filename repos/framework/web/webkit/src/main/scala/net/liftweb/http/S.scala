@@ -962,7 +962,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     val cometVersions = requestCometVersions.is
     requestCometVersions.set(Set())
 
-    if (cometVersions.nonEmpty) {
+    if (cometVersions.nonEmpty)
       List(
         js.JE
           .Call(
@@ -979,9 +979,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           )
           .cmd
       )
-    } else {
+    else
       Nil
-    }
   }
 
   /**
@@ -1120,11 +1119,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   def resourceBundles(loc: Locale): List[ResourceBundle] =
     _resBundle.box match {
-      case Full(Nil) => {
+      case Full(Nil) =>
         _resBundle.set(LiftRules.resourceForCurrentLoc.vend() :::
           LiftRules.resourceNames.flatMap(name =>
             tryo {
-              if (Props.devMode) {
+              if (Props.devMode)
                 tryo {
                   val clz = this.getClass.getClassLoader
                     .loadClass("java.util.ResourceBundle")
@@ -1136,7 +1135,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     .head
                   meth.invoke(null)
                 }
-              }
               List(ResourceBundle.getBundle(name, loc))
             }.openOr(
               NamedPF
@@ -1144,7 +1142,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                 .map(List(_)) openOr Nil
             )))
         _resBundle.value
-      }
       case Full(bundles) => bundles
       case _ =>
         throw new IllegalStateException("Attempted to use resource bundles outside of an initialized S scope. " +
@@ -1452,32 +1449,26 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def init[B](request: Box[Req], session: LiftSession)(f: => B): B =
     if (inS.value) f
-    else {
-      if (request.map(_.stateless_?).openOr(false)) {
-        session.doAsStateless(_init(request, session)(() => f))
-      } else {
-        _init(request, session)(() => f)
-      }
-    }
+    else if (request.map(_.stateless_?).openOr(false))
+      session.doAsStateless(_init(request, session)(() => f))
+    else
+      _init(request, session)(() => f)
 
   def statelessInit[B](request: Req)(f: => B): B =
     session match {
-      case Full(s) if s.stateful_? => {
+      case Full(s) if s.stateful_? =>
         throw new StateInStatelessException(
           "Attempt to initialize a stateless session within the context " +
             "of a stateful session")
-      }
 
       case Full(_) => f
 
-      case _ => {
+      case _ =>
         val fakeSess = LiftRules.statelessSession.vend.apply(request)
-        try {
-          _init(Box !! request, fakeSess)(() => f)
-        } finally {
+        try _init(Box !! request, fakeSess)(() => f)
+        finally {
           // ActorPing.schedule(() => fakeSess.doShutDown(), 0 seconds)
         }
-      }
     }
 
   /**
@@ -1638,9 +1629,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   private def wrapQuery[B](f: () => B): B = {
     val begin = millis
-    try {
-      f()
-    } finally {
+    try f()
+    finally {
       val time = millis - begin
       _queryAnalyzer.foreach(_(request, time, queryLog))
     }
@@ -1792,39 +1782,34 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private def _nest2InnerInit[B](f: () => B): B =
     __functionMap.doWith(Map()) {
       doAround(aroundRequest) {
-        try {
-          wrapQuery {
-            val req = this.request
-            session match {
-              case Full(s) if s.stateful_? =>
-                LiftRules.earlyInStateful.toList.foreach(_(req))
+        try wrapQuery {
+          val req = this.request
+          session match {
+            case Full(s) if s.stateful_? =>
+              LiftRules.earlyInStateful.toList.foreach(_(req))
 
-              case Full(s) =>
-                LiftRules.earlyInStateless.toList.foreach(_(req))
+            case Full(s) =>
+              LiftRules.earlyInStateless.toList.foreach(_(req))
 
-              case _ =>
-            }
-            f
+            case _ =>
           }
-        } finally {
-          postFuncs.is.foreach(f => tryo(f()))
-        }
+          f
+        } finally postFuncs.is.foreach(f => tryo(f()))
       }
     }
 
   private def doStatefulRewrite(old: Box[Req]): Box[Req] =
     // Don't even try to rewrite Req.nil
     old.map { req =>
-      if (statefulRequest_? && req.path.partPath.nonEmpty && (req.request ne null)) {
+      if (statefulRequest_? && req.path.partPath.nonEmpty && (req.request ne null))
         Req(
           req,
           S.sessionRewriter.map(_.rewrite) :::
             LiftRules.statefulRewrite.toList,
           Nil,
           LiftRules.statelessReqTest.toList)
-      } else {
+      else
         req
-      }
     }
 
   private def _innerInit[B](request: Box[Req], f: () => B): B =
@@ -2508,12 +2493,11 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Clears the function map.  potentially very destuctive... use at your own risk!
     */
   def clearFunctionMap {
-    if (__functionMap.box.map(_.size).openOr(0) > 0) {
+    if (__functionMap.box.map(_.size).openOr(0) > 0)
       // Issue #1037
       testFunctionMap {
         __functionMap.box.foreach(ignore => __functionMap.set(Map()))
       }
-    }
   }
 
   /**
@@ -2586,9 +2570,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     try {
       _currentSnippet.set(Full(name))
       f
-    } finally {
-      _currentSnippet.set(old)
-    }
+    } finally _currentSnippet.set(old)
   }
 
   def currentSnippet: Box[String] = _currentSnippet.is
@@ -2667,7 +2649,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def addFunctionMap(name: String, value: AFuncHolder) = {
     testFunctionMap {
       (autoCleanUp.box, _oneShot.box) match {
-        case (Full(true), _) => {
+        case (Full(true), _) =>
           updateFunctionMap(
             name,
             new S.ProxyFuncHolder(value) {
@@ -2679,9 +2661,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     shot = true
                     S.session.map(_.removeFunction(name))
                     value.apply(in)
-                  } else {
+                  } else
                     js.JsCmds.Noop
-                  }
                 }
 
               override def apply(in: FileParamHolder): Any =
@@ -2690,15 +2671,13 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
                     shot = true
                     S.session.map(_.removeFunction(name))
                     value.apply(in)
-                  } else {
+                  } else
                     js.JsCmds.Noop
-                  }
                 }
             }
           )
-        }
 
-        case (_, Full(true)) => {
+        case (_, Full(true)) =>
           updateFunctionMap(
             name,
             new S.ProxyFuncHolder(value) {
@@ -2729,9 +2708,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
               override def apply(in: List[String]): Any = {
                 val ns = fixShot()
-                if (ns) {
+                if (ns)
                   theFuture.get(5000).openOrThrowException("legacy code")
-                } else {
+                else {
                   val future = theFuture
                   try {
                     val ret = value.apply(in)
@@ -2746,9 +2725,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
               override def apply(in: FileParamHolder): Any = {
                 val ns = fixShot()
 
-                if (ns) {
+                if (ns)
                   theFuture.get(5000).openOrThrowException("legacy code")
-                } else {
+                else {
                   val future = theFuture
                   try {
                     val ret = value.apply(in)
@@ -2761,7 +2740,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
               }
             }
           )
-        }
 
         case _ =>
           updateFunctionMap(name, value)
@@ -2829,11 +2807,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def formGroup[T](group: Int)(f: => T): T = {
     val x = _formGroup.is
     _formGroup.set(Full(group))
-    try {
-      f
-    } finally {
-      _formGroup.set(x)
-    }
+    try f
+    finally _formGroup.set(x)
   }
 
   import json.JsonAST._

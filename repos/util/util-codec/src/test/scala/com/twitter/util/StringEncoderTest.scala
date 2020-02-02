@@ -73,10 +73,9 @@ class GZIPStringEncoderTest extends WordSpec {
 
       // build a huge string
       val sb = new StringBuilder
-      for (_ <- 1 to 10000) {
+      for (_ <- 1 to 10000)
         sb.append(
           "oasnuthoesntihosnteidosentidosentauhsnoetidosentihsoneitdsnuthsin\n")
-      }
       testCodec(sb.toString)
     }
   }

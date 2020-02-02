@@ -14,9 +14,8 @@ private[client] object EventDeliveryThread
   override def run() {
     while (true) {
       val (u, s) = q.take()
-      try {
-        u() = s
-      } catch {
+      try u() = s
+      catch {
         case exc: Throwable => Monitor.handle(exc)
       }
     }

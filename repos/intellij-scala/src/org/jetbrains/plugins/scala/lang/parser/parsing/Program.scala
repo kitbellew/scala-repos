@@ -17,16 +17,14 @@ object Program {
     // Debug print mode off
     DebugPrint.displayLog = false
 
-    if (!builder.eof()) {
+    if (!builder.eof())
       parseState = CompilationUnit.parse(builder)
-    }
 
-    if (!builder.eof()) {
+    if (!builder.eof())
       while (!builder.eof()) {
         builder error ErrMsg("out.of.compilation.unit")
         builder.advanceLexer()
       }
-    }
 
     return parseState
 

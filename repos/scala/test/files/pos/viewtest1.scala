@@ -35,9 +35,8 @@ object Test {
 
   def main(args: Array[String]) {
     var t: Tree[String] = Empty
-    for (s <- args) {
+    for (s <- args)
       t = t insert s
-    }
     println(t.elements)
   }
 }

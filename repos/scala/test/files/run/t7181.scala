@@ -34,21 +34,19 @@ object Test extends App {
 
   def driver(action: Action): Action = {
     val result =
-      try {
-        action match {
-          case MainNormalExit =>
-            println(s"normal exit $action")
-            action
-          case MainReturn =>
-            println(s"return $action")
-            return action
-          case MainUncaughtException =>
-            println(s"uncaught exception $action")
-            throw UncaughtException(action)
-          case _ =>
-            println(s"caught exception $action")
-            throw CaughtException(action)
-        }
+      try action match {
+        case MainNormalExit =>
+          println(s"normal exit $action")
+          action
+        case MainReturn =>
+          println(s"return $action")
+          return action
+        case MainUncaughtException =>
+          println(s"uncaught exception $action")
+          throw UncaughtException(action)
+        case _ =>
+          println(s"caught exception $action")
+          throw CaughtException(action)
       } catch {
         case CaughtException(action) =>
           action match {
@@ -64,9 +62,7 @@ object Test extends App {
             case _ =>
               sys.error(s"unexpected $action in exception handler")
           }
-      } finally {
-        println(s"finally $action")
-      }
+      } finally println(s"finally $action")
     println(s"normal flow $action")
     result
   }

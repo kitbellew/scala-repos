@@ -119,9 +119,7 @@ object TestOffsetManager {
           println("Commit thread %d: Error while committing offsets to %s:%d for group %s due to %s."
             .format(id, offsetsChannel.host, offsetsChannel.port, groupId, e2))
           offsetsChannel.disconnect()
-      } finally {
-        Thread.sleep(commitIntervalMs)
-      }
+      } finally Thread.sleep(commitIntervalMs)
     }
 
     override def shutdown() {
@@ -189,9 +187,8 @@ object TestOffsetManager {
           fetchTimer.time {
             val response =
               OffsetFetchResponse.readFrom(channel.receive().payload())
-            if (response.requestInfo.exists(_._2.error != Errors.NONE.code)) {
+            if (response.requestInfo.exists(_._2.error != Errors.NONE.code))
               numErrors.getAndIncrement
-            }
           }
         } catch {
           case e1: ClosedByInterruptException =>
@@ -213,9 +210,7 @@ object TestOffsetManager {
           println("Creating new query channel.")
           metadataChannel =
             ClientUtils.channelToAnyBroker(zkUtils, SocketTimeoutMs)
-      } finally {
-        Thread.sleep(fetchIntervalMs)
-      }
+      } finally Thread.sleep(fetchIntervalMs)
 
     }
 
@@ -338,9 +333,7 @@ object TestOffsetManager {
     } catch {
       case e: Throwable =>
         println("Error: ", e)
-    } finally {
-      cleanShutdown()
-    }
+    } finally cleanShutdown()
 
     def cleanShutdown() {
       commitThreads.foreach(_.shutdown())

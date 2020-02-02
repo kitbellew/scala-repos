@@ -280,16 +280,14 @@ object Enumerator {
 
               }(dec)
               Iteratee.flatten(nextI)
-            case Input.EOF => {
+            case Input.EOF =>
               if (attending.single
                     .transformAndGet { _.map(f) }
-                    .forall(_.forall(_ == false))) {
+                    .forall(_.forall(_ == false)))
                 p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
-              } else {
+              else
                 p.success(i)
-              }
               Done((), Input.Empty)
-            }
           }
         }
         Cont(step)
@@ -361,15 +359,13 @@ object Enumerator {
 
               }(dec)
               Iteratee.flatten(nextI)
-            case Input.EOF => {
+            case Input.EOF =>
               if (attending.single.transformAndGet { _.map(f) } == Some(
-                    (false, false))) {
+                    (false, false)))
                 p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
-              } else {
+              else
                 p.success(i)
-              }
               Done((), Input.Empty)
-            }
           }
         }
         Cont(step)
@@ -571,19 +567,16 @@ object Enumerator {
       def step(it: Iteratee[E, A], initial: Boolean = false) {
 
         val next = it.fold {
-          case Step.Cont(k) => {
+          case Step.Cont(k) =>
             executeFuture(retriever(initial))(pec).map {
-              case None => {
+              case None =>
                 val remainingIteratee = k(Input.EOF)
                 iterateeP.success(remainingIteratee)
                 None
-              }
-              case Some(read) => {
+              case Some(read) =>
                 val nextIteratee = k(Input.El(read))
                 Some(nextIteratee)
-              }
             }(dec)
-          }
           case Step.Error(msg, in) =>
             onError(msg, in)
             iterateeP.success(it)

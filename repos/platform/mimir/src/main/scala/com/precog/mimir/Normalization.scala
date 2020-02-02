@@ -183,7 +183,7 @@ trait NormalizationHelperModule[M[+_]]
 
             val resultsAll = unifiedCols collect {
               case (ColumnRef(selector, ctype), col: NumColumn)
-                  if findSuffices(selector).size == 1 => {
+                  if findSuffices(selector).size == 1 =>
                 val suffix = findSuffices(selector).head
 
                 val mean = singleSummary(suffix).mean
@@ -199,12 +199,11 @@ trait NormalizationHelperModule[M[+_]]
                 }
 
                 (ColumnRef(selector, ctype), newColumn)
-              }
             }
 
             val bitsets = resultsAll.values map { _.definedAt(0, range.end) }
             val definedBitset =
-              bitsets reduceOption { _ & _ } getOrElse BitSetUtil
+              bitsets reduceOption _ & _ getOrElse BitSetUtil
                 .create()
 
             def intersectColumn(col: NumColumn): NumColumn =

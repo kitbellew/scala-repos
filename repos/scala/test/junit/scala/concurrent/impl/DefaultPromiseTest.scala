@@ -116,12 +116,11 @@ class DefaultPromiseTest {
 
     /** Check each promise has the expected value. */
     private def assertPromiseValues() {
-      for ((cid, chain) <- chains; p <- chain.promises) {
+      for ((cid, chain) <- chains; p <- chain.promises)
         chain.state match {
           case Right(result) => assertEquals(Some(result), promises(p).value)
           case Left(_)       => ()
         }
-      }
     }
 
     /** Create a promise, returning a handle. */
@@ -185,7 +184,7 @@ class DefaultPromiseTest {
 
       val (newCidA, newCidB) = mergeOp match {
         case NoMerge => (cidA, cidB)
-        case Merge(newState) => {
+        case Merge(newState) =>
           chains = chains - cidA
           chains = chains - cidB
           val newCid = freshId()
@@ -193,7 +192,6 @@ class DefaultPromiseTest {
             newCid,
             Chain(chainA.promises ++ chainB.promises, newState))
           (newCid, newCid)
-        }
       }
       assertPromiseValues()
       (newCidA, newCidB)
@@ -242,9 +240,8 @@ class DefaultPromiseTest {
     val t = new Tester()
     var pMap = Map.empty[PromiseKey, PromiseId]
     def byKey(key: PromiseKey): PromiseId = {
-      if (!pMap.contains(key)) {
+      if (!pMap.contains(key))
         pMap = pMap.updated(key, t.newPromise())
-      }
       pMap(key)
     }
 
@@ -265,9 +262,8 @@ class DefaultPromiseTest {
     var allActions = ps.map(Complete(_)) ++ pPairs.map {
       case (a, b) => Link(a, b)
     } ++ ps.map(AttachHandler(_))
-    for ((permutation, i) <- allActions.permutations.zipWithIndex) {
+    for ((permutation, i) <- allActions.permutations.zipWithIndex)
       testActions(permutation)
-    }
   }
 
   /** Test all permutations of actions with a single promise */
@@ -300,9 +296,9 @@ class DefaultPromiseTest {
           count: Int,
           p1: PromiseId,
           acc: List[FlatMapEvent]): List[FlatMapEvent] =
-        if (count == 0) {
+        if (count == 0)
           Complete(p1) :: acc
-        } else {
+        else {
           val p2 = t.newPromise()
           flatMapEvents(count - 1, p2, Link(p2, p1) :: acc)
         }
@@ -343,9 +339,9 @@ class DefaultPromiseTest {
       }
       @tailrec
       def flatMapTimes(count: Int, p1: DefaultPromise[Int]) {
-        if (count == 0) {
+        if (count == 0)
           execute { p1.success(1) }
-        } else {
+        else {
           val p2 = new DefaultPromise[Int]()
           execute { p2.linkRootOf(p1) }
           flatMapTimes(count - 1, p2)

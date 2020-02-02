@@ -72,24 +72,18 @@ final class Solver(n: Int) {
         }
         k = k + 1
       }
-    } else {
+    } else
       puzzleSolved
-    }
   }
 
   private def puzzleSolved() = {
     val b = board.asString
     if (first == null) {
       first = b; last = b
-    } else {
-      if (b < first) {
-        first = b
-      } else {
-        if (b > last) {
-          last = b
-        }
-      }
-    }
+    } else if (b < first)
+      first = b
+    else if (b > last)
+      last = b
     countdown = countdown - 1
   }
 
@@ -505,9 +499,8 @@ final class BoardCell(_number: Int) extends Cell {
       }
 
       count
-    } else {
+    } else
       0
-    }
 }
 
 // PieceCell.scala

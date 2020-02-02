@@ -280,12 +280,11 @@ abstract class SymbolPairs {
     @tailrec private def advanceCurEntry() {
       if (curEntry ne null) {
         curEntry = curEntry.next
-        if (curEntry ne null) {
+        if (curEntry ne null)
           if (visited(curEntry) || exclude(curEntry.sym))
             advanceCurEntry()
           else
             nextEntry = curEntry
-        }
       }
     }
 

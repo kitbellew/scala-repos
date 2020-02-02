@@ -199,15 +199,13 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
             s @ dag.Split(
               dag.Group(2, Const(CTrue), UnfixedSolution(1, Const(CTrue))),
               IUI(true, sg: SplitGroup, sp: SplitParam),
-              id)) => {
-
+              id)) =>
           sp.id mustEqual 1
           sg.id mustEqual 2
           sg.identities mustEqual Identities.Specs(Vector())
 
           sp.parentId mustEqual id
           sg.parentId mustEqual id
-        }
       }
     }
 
@@ -245,8 +243,7 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
                   UnfixedSolution(3, sg1: SplitGroup)),
                 IUI(true, sg2: SplitGroup, sp2: SplitParam),
                 id2),
-              id1)) => {
-
+              id1)) =>
           sp1.id mustEqual 1
           sg1.id mustEqual 2
           sg1.identities mustEqual Identities.Specs(Vector())
@@ -259,7 +256,6 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
           sp2.parentId mustEqual id2
           sg2.parentId mustEqual id2
-        }
       }
     }
 
@@ -302,8 +298,7 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
                   Join(Add, Cross(_), sg1: SplitGroup, sp1: SplitParam),
                   sg2: SplitGroup),
                 id2),
-              id1)) => {
-
+              id1)) =>
           sp1.id mustEqual 1
           sg1.id mustEqual 2
           sg1.identities mustEqual Identities.Specs(Vector())
@@ -315,7 +310,6 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
           sg1.parentId mustEqual id1
 
           sg2.parentId mustEqual id2
-        }
       }
     }
 
@@ -350,15 +344,13 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
                     UnfixedSolution(1, Const(CLong(1))),
                     UnfixedSolution(1, Const(CLong(3))))),
                 IUI(true, sg: SplitGroup, sp: SplitParam),
-                id)) => {
-
+                id)) =>
             sp.id mustEqual 1
             sg.id mustEqual 3
             sg.identities mustEqual Identities.Specs(Vector())
 
             sg.parentId mustEqual id
             sp.parentId mustEqual id
-          }
         }
       }
 
@@ -392,15 +384,13 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
                     UnfixedSolution(1, Const(CLong(1))),
                     UnfixedSolution(1, Const(CLong(3))))),
                 IUI(true, sg: SplitGroup, sp: SplitParam),
-                id)) => {
-
+                id)) =>
             sp.id mustEqual 1
             sg.id mustEqual 3
             sg.identities mustEqual Identities.Specs(Vector())
 
             sg.parentId mustEqual id
             sp.parentId mustEqual id
-          }
         }
       }
     }
@@ -446,8 +436,7 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
                 true,
                 sg2: SplitGroup,
                 IUI(true, sg1: SplitGroup, sp1: SplitParam)),
-              id)) => {
-
+              id)) =>
           sp1.id mustEqual 1
           sg1.id mustEqual 3
           sg1.identities mustEqual Identities.Specs(Vector())
@@ -458,7 +447,6 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
           sg1.parentId mustEqual id
           sp1.parentId mustEqual id
           sg2.parentId mustEqual id
-        }
       }
     }
 
@@ -483,12 +471,10 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
             s @ dag.Split(
               dag.Group(2, Const(CNull), UnfixedSolution(1, Const(CTrue))),
               Join(Add, IdentitySort, Const(CLong(42)), sg: SplitGroup),
-              id)) => {
-
+              id)) =>
           sg.id mustEqual 2
           sg.identities mustEqual Identities.Specs(Vector())
           sg.parentId mustEqual id
-        }
       }
     }
 

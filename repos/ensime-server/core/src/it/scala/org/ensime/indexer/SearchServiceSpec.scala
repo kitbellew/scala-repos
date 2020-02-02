@@ -37,10 +37,9 @@ class SearchServiceSpec
         m <- config.modules.values
         r <- m.targetDirs ++ m.testTargetDirs
         f <- r.tree
-      } {
-        // simulate a full recompile
-        f.setLastModified(now)
       }
+      // simulate a full recompile
+      f.setLastModified(now)
 
       val (deleted, indexed) = refresh()
       deleted should be > 0

@@ -118,7 +118,7 @@ private[exception] class TestServiceException(
             "incorrect time",
             hasTimestamp,
             false)
-        case "exceptionContents" => {
+        case "exceptionContents" =>
           assert(!hasExceptionContents, "got exception contents >1 times")
           hasExceptionContents = true
 
@@ -151,7 +151,6 @@ private[exception] class TestServiceException(
               case a => fail(a, "exception contents")
             }
           }
-        }
         case "peer" =>
           assert(jsonValue.isTextual)
           hasClient =

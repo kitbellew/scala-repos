@@ -144,13 +144,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       logger.info(
         s"No similarUserFeatures vector for query users ${query.users}.")
       Array[(Int, Double)]()
-    } else {
+    } else
       similarUserFeatures.par // convert to parallel collection
         .mapValues { f => queryFeatures.map { qf => cosine(qf, f) }.sum }
         .filter(_._2 > 0) // keep similarUsers with score > 0
         .seq // convert back to sequential collection
         .toArray
-    }
 
     val filteredScore = indexScores.view.filter {
       case (i, v) =>
@@ -180,17 +179,15 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       implicit ord: Ordering[T]): Seq[T] = {
     val q = mutable.PriorityQueue()
 
-    for (x <- s) {
+    for (x <- s)
       if (q.size < n)
         q.enqueue(x)
-      else {
-        // q is full
-        if (ord.compare(x, q.head) < 0) {
-          q.dequeue()
-          q.enqueue(x)
-        }
+      else
+      // q is full
+      if (ord.compare(x, q.head) < 0) {
+        q.dequeue()
+        q.enqueue(x)
       }
-    }
 
     q.dequeueAll.toSeq.reverse
   }

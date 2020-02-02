@@ -307,11 +307,10 @@ trait Row extends Serializable {
   def getStruct(i: Int): Row = {
     // Product and Row both are recognized as StructType in a Row
     val t = get(i)
-    if (t.isInstanceOf[Product]) {
+    if (t.isInstanceOf[Product])
       Row.fromTuple(t.asInstanceOf[Product])
-    } else {
+    else
       t.asInstanceOf[Row]
-    }
   }
 
   /**
@@ -368,9 +367,8 @@ trait Row extends Serializable {
     val len = length
     var i = 0
     while (i < len) {
-      if (isNullAt(i)) {
+      if (isNullAt(i))
         return true
-      }
       i += 1
     }
     false
@@ -382,43 +380,36 @@ trait Row extends Serializable {
 
     if (other eq null) return false
 
-    if (length != other.length) {
+    if (length != other.length)
       return false
-    }
 
     var i = 0
     while (i < length) {
-      if (isNullAt(i) != other.isNullAt(i)) {
+      if (isNullAt(i) != other.isNullAt(i))
         return false
-      }
       if (!isNullAt(i)) {
         val o1 = get(i)
         val o2 = other.get(i)
         o1 match {
           case b1: Array[Byte] =>
             if (!o2.isInstanceOf[Array[Byte]] ||
-                !java.util.Arrays.equals(b1, o2.asInstanceOf[Array[Byte]])) {
+                !java.util.Arrays.equals(b1, o2.asInstanceOf[Array[Byte]]))
               return false
-            }
           case f1: Float if java.lang.Float.isNaN(f1) =>
             if (!o2.isInstanceOf[Float] || !java.lang.Float.isNaN(
-                  o2.asInstanceOf[Float])) {
+                  o2.asInstanceOf[Float]))
               return false
-            }
           case d1: Double if java.lang.Double.isNaN(d1) =>
             if (!o2.isInstanceOf[Double] || !java.lang.Double.isNaN(
-                  o2.asInstanceOf[Double])) {
+                  o2.asInstanceOf[Double]))
               return false
-            }
           case d1: java.math.BigDecimal
               if o2.isInstanceOf[java.math.BigDecimal] =>
-            if (d1.compareTo(o2.asInstanceOf[java.math.BigDecimal]) != 0) {
+            if (d1.compareTo(o2.asInstanceOf[java.math.BigDecimal]) != 0)
               return false
-            }
           case _ =>
-            if (o1 != o2) {
+            if (o1 != o2)
               return false
-            }
         }
       }
       i += 1

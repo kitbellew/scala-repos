@@ -99,7 +99,7 @@ object MetricsStatsReceiver {
   /**
     * The [[com.twitter.util.events.Event.Type Event.Type]] for counter increment events.
     */
-  val CounterIncr: Event.Type = {
+  val CounterIncr: Event.Type =
     new Event.Type {
       val id = "CounterIncr"
 
@@ -141,12 +141,11 @@ object MetricsStatsReceiver {
             spanIdVal = sid)
         }
     }
-  }
 
   /**
     * The [[com.twitter.util.events.Event.Type Event.Type]] for stat add events.
     */
-  val StatAdd: Event.Type = {
+  val StatAdd: Event.Type =
     new Event.Type {
       val id = "StatAdd"
 
@@ -184,7 +183,6 @@ object MetricsStatsReceiver {
             spanIdVal = sid)
         }
     }
-  }
 }
 
 /**
@@ -274,7 +272,7 @@ class MetricsStatsReceiver(
           val metricsCounter = registry.createCounter(format(names))
           def incr(delta: Int): Unit = {
             metricsCounter.add(delta)
-            if (sink.recording) {
+            if (sink.recording)
               if (Trace.hasId) {
                 val traceId = Trace.id
                 sink.event(
@@ -283,13 +281,11 @@ class MetricsStatsReceiver(
                   longVal = delta,
                   traceIdVal = traceId.traceId.self,
                   spanIdVal = traceId.spanId.self)
-              } else {
+              } else
                 sink.event(
                   CounterIncr,
                   objectVal = metricsCounter.getName(),
                   longVal = delta)
-              }
-            }
           }
         }
         counters.put(names, counter)
@@ -317,7 +313,7 @@ class MetricsStatsReceiver(
             if (doLog) log.info(s"Stat ${histogram.getName()} observed $value")
             val asLong = value.toLong
             histogram.add(asLong)
-            if (sink.recording) {
+            if (sink.recording)
               if (Trace.hasId) {
                 val traceId = Trace.id
                 sink.event(
@@ -326,13 +322,11 @@ class MetricsStatsReceiver(
                   longVal = asLong,
                   traceIdVal = traceId.traceId.self,
                   spanIdVal = traceId.spanId.self)
-              } else {
+              } else
                 sink.event(
                   StatAdd,
                   objectVal = histogram.getName(),
                   longVal = asLong)
-              }
-            }
           }
         }
         stats.put(names, stat)

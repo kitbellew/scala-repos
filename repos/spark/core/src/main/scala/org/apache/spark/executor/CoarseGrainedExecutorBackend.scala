@@ -73,10 +73,9 @@ private[spark] class CoarseGrainedExecutorBackend(
               _.send(msg)
             ) // msg must be RegisterExecutorResponse
           }
-        case Failure(e) => {
+        case Failure(e) =>
           logError(s"Cannot register with driver: $driverUrl", e)
           System.exit(1)
-        }
       }(ThreadUtils.sameThread)
   }
 
@@ -116,9 +115,8 @@ private[spark] class CoarseGrainedExecutorBackend(
       if (executor == null) {
         logError("Received KillTask command but executor was null")
         System.exit(1)
-      } else {
+      } else
         executor.killTask(taskId, interruptThread)
-      }
 
     case StopExecutor =>
       stopping.set(true)
@@ -135,14 +133,13 @@ private[spark] class CoarseGrainedExecutorBackend(
   }
 
   override def onDisconnected(remoteAddress: RpcAddress): Unit =
-    if (stopping.get()) {
+    if (stopping.get())
       logInfo(s"Driver from $remoteAddress disconnected during shutdown")
-    } else if (driver.exists(_.address == remoteAddress)) {
+    else if (driver.exists(_.address == remoteAddress)) {
       logError(s"Driver $remoteAddress disassociated! Shutting down.")
       System.exit(1)
-    } else {
+    } else
       logWarning(s"An unknown ($remoteAddress) driver disconnected.")
-    }
 
   override def statusUpdate(taskId: Long, state: TaskState, data: ByteBuffer) {
     val msg = StatusUpdate(executorId, taskId, state, data)
@@ -189,14 +186,12 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
 
       // Create SparkEnv using properties we fetched from the driver.
       val driverConf = new SparkConf()
-      for ((key, value) <- props) {
+      for ((key, value) <- props)
         // this is required for SSL in standalone mode
-        if (SparkConf.isExecutorStartupConf(key)) {
+        if (SparkConf.isExecutorStartupConf(key))
           driverConf.setIfMissing(key, value)
-        } else {
+        else
           driverConf.set(key, value)
-        }
-      }
       if (driverConf.contains("spark.yarn.credentials.file")) {
         logInfo(
           "Will periodically update credentials from: " +
@@ -240,7 +235,7 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
     val userClassPath = new mutable.ListBuffer[URL]()
 
     var argv = args.toList
-    while (!argv.isEmpty) {
+    while (!argv.isEmpty)
       argv match {
         case ("--driver-url") :: value :: tail =>
           driverUrl = value
@@ -271,12 +266,10 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
           // scalastyle:on println
           printUsageAndExit()
       }
-    }
 
     if (driverUrl == null || executorId == null || hostname == null || cores <= 0 ||
-        appId == null) {
+        appId == null)
       printUsageAndExit()
-    }
 
     run(driverUrl, executorId, hostname, cores, appId, workerUrl, userClassPath)
     System.exit(0)

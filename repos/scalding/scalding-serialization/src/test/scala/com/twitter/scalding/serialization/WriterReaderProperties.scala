@@ -38,9 +38,8 @@ object WriterReaderProperties extends Properties("WriterReaderProperties") {
       @annotation.tailrec
       def go(pos: Int): Boolean =
         if (pos == a.length) true
-        else {
+        else
           teq.equiv(a(pos), b(pos)) && go(pos + 1)
-        }
 
       (a.length == b.length) && go(0)
     }

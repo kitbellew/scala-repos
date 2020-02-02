@@ -774,7 +774,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       testProducer.send(null, null)
       fail("Should not allow sending a null record")
     } catch {
-      case e: Throwable => {
+      case e: Throwable =>
         assertEquals(
           "Interceptor should be notified about exception",
           1,
@@ -783,7 +783,6 @@ class PlaintextConsumerTest extends BaseConsumerTest {
           "Interceptor should not receive metadata with an exception when record is null",
           0,
           MockProducerInterceptor.ON_ERROR_WITH_METADATA_COUNT.intValue())
-      }
     }
 
     // create consumer with interceptor

@@ -284,9 +284,9 @@ class Regex private[matching] (val pattern: Pattern, groupNames: String*)
     */
   def unapplySeq(c: Char): Option[List[Char]] = {
     val m = pattern matcher c.toString
-    if (runMatcher(m)) {
+    if (runMatcher(m))
       if (m.groupCount > 0) Some((m group 1).toList) else Some(Nil)
-    } else None
+    else None
   }
 
   /** Tries to match on a [[scala.util.matching.Regex.Match]].

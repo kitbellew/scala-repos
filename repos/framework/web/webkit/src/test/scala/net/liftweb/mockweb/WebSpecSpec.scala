@@ -36,15 +36,13 @@ object WebSpecSpecBoot {
       case RewriteRequest(
           ParsePath(List("test", "stateless"), _, _, _),
           _,
-          _) => {
+          _) =>
         RewriteResponse(List("stateless", "works"))
-      }
     }
 
     LiftRules.statefulRewrite.append {
-      case RewriteRequest(ParsePath(List("test", "stateful"), _, _, _), _, _) => {
+      case RewriteRequest(ParsePath(List("test", "stateful"), _, _, _), _, _) =>
         RewriteResponse(List("stateful", "works"))
-      }
     }
   }
 }
@@ -54,9 +52,8 @@ object WebSpecSpecBoot {
   */
 object WebSpecSpecRest extends RestHelper {
   serve {
-    case "api" :: "info" :: Nil JsonGet req => {
+    case "api" :: "info" :: Nil JsonGet req =>
       ("version" -> "1.0") ~ ("name" -> "WebSpec")
-    }
   }
 }
 

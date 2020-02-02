@@ -116,14 +116,13 @@ object DBLog {
   private def proxyPreparedStatement(
       stmt: => PreparedStatement,
       query: String) =
-    try {
-      Proxy
-        .newProxyInstance(
-          this.getClass.getClassLoader,
-          Array(classOf[java.sql.PreparedStatement], classOf[DBLog]),
-          new LoggedPreparedStatementHandler(query, stmt))
-        .asInstanceOf[PreparedStatement]
-    } catch {
+    try Proxy
+      .newProxyInstance(
+        this.getClass.getClassLoader,
+        Array(classOf[java.sql.PreparedStatement], classOf[DBLog]),
+        new LoggedPreparedStatementHandler(query, stmt))
+      .asInstanceOf[PreparedStatement]
+    catch {
       case sqle: SQLException =>
         throw new SQLException(
           "Error preparing statement: \"%s\"".format(query),
@@ -153,39 +152,33 @@ object DBLog {
         case "allEntries"       => this.allEntries
 
         // The rest are from Statement
-        case "addBatch" => {
+        case "addBatch" =>
           logStatement("Batched: \"%s\"".format(args(0))) {
             chain(method, args)
           }
-        }
-        case "cancel" => {
+        case "cancel" =>
           logMeta("Cancelled Statement") {
             chain(method, Array())
           }
-        }
-        case "clearBatch" => {
+        case "clearBatch" =>
           logMeta("Cleared Batch") {
             chain(method, Array())
           }
-        }
-        case "clearWarnings" => {
+        case "clearWarnings" =>
           logMeta("Cleared Warnings") {
             chain(method, Array())
           }
-        }
-        case "close" => {
+        case "close" =>
           logMeta("Closed Statement") {
             chain(method, Array())
           }
-        }
-        case "execute" if args.length == 1 => {
+        case "execute" if args.length == 1 =>
           logStatement({ ret: Object =>
             "\"%s\" : result = %s".format(args(0), ret)
           }) {
             chain(method, args)
           }
-        }
-        case "execute" if args(1).getClass == classOf[Int] => {
+        case "execute" if args(1).getClass == classOf[Int] =>
           logStatement({ ret: Object =>
             "Exec \"%s\", Auto-gen keys = %s : result = %s".format(
               args(0),
@@ -195,8 +188,7 @@ object DBLog {
           }) {
             chain(method, args)
           }
-        }
-        case "execute" => {
+        case "execute" =>
           logStatement({ ret: Object =>
             "Exec \"%s\", Auto-gen keys for columns %s".format(
               args(0),
@@ -205,8 +197,7 @@ object DBLog {
           }) {
             chain(method, args)
           }
-        }
-        case "executeBatch" => {
+        case "executeBatch" =>
           logStatement({ result: Object =>
             "Exec batch, counts = " + result
               .asInstanceOf[Array[Int]]
@@ -214,22 +205,19 @@ object DBLog {
           }) {
             chain(method, Array())
           }
-        }
-        case "executeQuery" => {
+        case "executeQuery" =>
           logStatement({ rs: Object =>
             "Exec query \"%s\" : rs = %s".format(args(0), rs)
           }) {
             chain(method, args)
           }
-        }
-        case "executeUpdate" if args.length == 1 => {
+        case "executeUpdate" if args.length == 1 =>
           logStatement({ count: Object =>
             "Exec update \"%s\" : count = %d".format(args(0), count)
           }) {
             chain(method, args)
           }
-        }
-        case "executeUpdate" if args(1).getClass == classOf[Int] => {
+        case "executeUpdate" if args(1).getClass == classOf[Int] =>
           logStatement({ count: Object =>
             "Exec update \"%s\", Auto-gen keys = %s".format(
               args(0),
@@ -239,8 +227,7 @@ object DBLog {
           }) {
             chain(method, args)
           }
-        }
-        case "executeUpdate" => {
+        case "executeUpdate" =>
           logStatement({ count: Object =>
             "Exec update \"%s\", Auto-gen keys for columns %s".format(
               args(0),
@@ -249,46 +236,38 @@ object DBLog {
           }) {
             chain(method, args)
           }
-        }
-        case "getConnection" => {
+        case "getConnection" =>
           logMeta("Get underlying Connection") {
             chain(method, Array())
           }
-        }
-        case "getFetchDirection" => {
+        case "getFetchDirection" =>
           logMeta({ ret: Object =>
             "Get fetch direction : " + StatementConstantDescriptions
               .fetchDirDescriptions(ret.asInstanceOf[Int])
           }) {
             chain(method, Array())
           }
-        }
-        case "getFetchSize" => {
+        case "getFetchSize" =>
           logMeta({ size: Object => "Get fetch size : " + size }) {
             chain(method, Array())
           }
-        }
-        case "getGeneratedKeys" => {
+        case "getGeneratedKeys" =>
           logMeta({ rs: Object => "Get generated keys : rs = " + rs }) {
             chain(method, Array())
           }
-        }
-        case "getMaxFieldSize" => {
+        case "getMaxFieldSize" =>
           logMeta({ size: Object => "Get max field size : " + size }) {
             chain(method, Array())
           }
-        }
-        case "getMaxRows" => {
+        case "getMaxRows" =>
           logMeta({ maxRows: Object => "Get max rows : " + maxRows }) {
             chain(method, Array())
           }
-        }
-        case "getMoreResults" if args.length == 0 => {
+        case "getMoreResults" if args.length == 0 =>
           logMeta({ hasMore: Object => "Get more results : " + hasMore }) {
             chain(method, Array())
           }
-        }
-        case "getMoreResults" => {
+        case "getMoreResults" =>
           logMeta({ ret: Object =>
             "Get more results (%s) : %s".format(
               StatementConstantDescriptions.getMoreResultsDescriptions(
@@ -297,111 +276,92 @@ object DBLog {
           }) {
             chain(method, args)
           }
-        }
-        case "getQueryTimeout" => {
+        case "getQueryTimeout" =>
           logMeta({ timeout: Object =>
             "Get query timeout : %d seconds ".format(timeout)
           }) {
             chain(method, Array())
           }
-        }
-        case "getResultSet" => {
+        case "getResultSet" =>
           logMeta({ rs: Object => "Get result set : " + rs }) {
             chain(method, Array())
           }
-        }
-        case "getResultSetConcurrency" => {
+        case "getResultSetConcurrency" =>
           logMeta({ ret: Object =>
             "Get result set concurrency : " + StatementConstantDescriptions
               .resultSetConcurrencyDescs(ret.asInstanceOf[Int])
           }) {
             chain(method, Array())
           }
-        }
-        case "getResultSetHoldability" => {
+        case "getResultSetHoldability" =>
           logMeta({ ret: Object =>
             "Get ResultSet holdability : " + StatementConstantDescriptions
               .resultSetHoldabilityDescs(ret.asInstanceOf[Int])
           }) {
             chain(method, Array())
           }
-        }
-        case "getResultSetType" => {
+        case "getResultSetType" =>
           logMeta({ ret: Object =>
             "Get ResultSet type : " + StatementConstantDescriptions
               .resultSetTypeDescs(ret.asInstanceOf[Int])
           }) {
             chain(method, Array())
           }
-        }
-        case "getUpdateCount" => {
+        case "getUpdateCount" =>
           logMeta({ count: Object => "Get update count : " + count }) {
             chain(method, Array())
           }
-        }
-        case "getWarnings" => {
+        case "getWarnings" =>
           logMeta({ ret: Object =>
             "Get SQL Warnings: " + Box.!!(ret).map(_.toString).openOr("None")
           }) {
             chain(method, Array())
           }
-        }
-        case "isClosed" => {
+        case "isClosed" =>
           logMeta({ ret: Object => "Check isClosed : " + ret }) {
             chain(method, Array())
           }
-        }
-        case "isPoolable" => {
+        case "isPoolable" =>
           logMeta({ ret: Object => "Check isPoolable : " + ret }) {
             chain(method, Array())
           }
-        }
-        case "setCursorName" => {
+        case "setCursorName" =>
           logMeta("Set cursor name = %s" + args(0)) {
             chain(method, args)
           }
-        }
-        case "setEscapeProcessing" => {
+        case "setEscapeProcessing" =>
           logMeta("Set escape processing = " + args(0)) {
             chain(method, args)
           }
-        }
-        case "setFetchDirection" => {
+        case "setFetchDirection" =>
           logMeta(
             "Set fetch direction = " + StatementConstantDescriptions
               .fetchDirDescriptions(args(0).asInstanceOf[Int])) {
             chain(method, args)
           }
-        }
-        case "setFetchSize" => {
+        case "setFetchSize" =>
           logMeta("Set fetch size = " + args(0)) {
             chain(method, args)
           }
-        }
-        case "setMaxFieldSize" => {
+        case "setMaxFieldSize" =>
           logMeta("Set max field size = " + args(0)) {
             chain(method, args)
           }
-        }
-        case "setMaxRows" => {
+        case "setMaxRows" =>
           logMeta("Set max rows = " + args(0)) {
             chain(method, args)
           }
-        }
-        case "setPoolable" => {
+        case "setPoolable" =>
           logMeta("Set poolable = " + args(0)) {
             chain(method, args)
           }
-        }
-        case "setQueryTimeout" => {
+        case "setQueryTimeout" =>
           logMeta("Set query timeout = " + args(0)) {
             chain(method, args)
           }
-        }
-        case "toString" => {
+        case "toString" =>
           // We'll call into our own representation here
           this.toString
-        }
 
         // These are from wrapper and are required
         case "isWrapperFor" =>
@@ -484,215 +444,181 @@ object DBLog {
         // All of the simple cases can be handled in one spot
         case "setArray" | "setBigDecimal" | "setBoolean" | "setByte" |
             "setBytes" | "setDouble" | "setFloat" | "setInt" | "setLong" |
-            "setNString" | "setRef" | "setRowId" | "setShort" | "setSQLXML" => {
+            "setNString" | "setRef" | "setRowId" | "setShort" | "setSQLXML" =>
           paramMap += args(0).asInstanceOf[Int] -> args(1)
           chain(method, args)
-        }
 
         // Everything else gets special treatment
 
-        case "addBatch" => {
+        case "addBatch" =>
           logStatement("Batching \"%s\"".format(paramified)) {
             chain(method, Array())
           }
-        }
 
-        case "clearParameters" => {
+        case "clearParameters" =>
           paramMap = Map.empty[Int, Any]
           logMeta("Clear parameters") {
             chain(method, Array())
           }
-        }
 
-        case "execute" => {
+        case "execute" =>
           logStatement({ ret: Object =>
             "Exec \"%s\" : %s".format(paramified, ret)
           }) {
             chain(method, Array())
           }
-        }
 
-        case "executeQuery" => {
+        case "executeQuery" =>
           logStatement({ rs: Object =>
             "Exec query \"%s\" : %s".format(paramified, rs)
           }) {
             chain(method, Array())
           }
-        }
 
-        case "executeUpdate" => {
+        case "executeUpdate" =>
           logStatement({ ret: Object =>
             "Exec update \"%s\" : updated %d rows".format(paramified, ret)
           }) {
             chain(method, Array())
           }
-        }
 
-        case "getMetaData" => {
+        case "getMetaData" =>
           logMeta({ ret: Object => "Get metadata : " + ret }) {
             chain(method, Array())
           }
-        }
 
-        case "getParameterMetaData" => {
+        case "getParameterMetaData" =>
           logMeta({ ret: Object => "Get param metadata : " + ret }) {
             chain(method, Array())
           }
-        }
 
-        case "setAsciiStream" if args.length == 2 => {
+        case "setAsciiStream" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> "(Ascii Stream: %s)".format(
             args(1))
           chain(method, args)
-        }
 
-        case "setAsciiStream" => {
+        case "setAsciiStream" =>
           paramMap += args(0)
             .asInstanceOf[Int] -> "(Ascii Stream: %s (%d bytes))".format(
             args(1),
             args(2))
           chain(method, args)
-        }
 
-        case "setBinaryStream" if args.length == 2 => {
+        case "setBinaryStream" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> "(Binary Stream: %s)".format(
             args(1))
           chain(method, args)
-        }
 
-        case "setBinaryStream" => {
+        case "setBinaryStream" =>
           paramMap += args(0)
             .asInstanceOf[Int] -> "(Binary Stream: %s (%d bytes))".format(
             args(1),
             args(2))
           chain(method, args)
-        }
 
-        case "setBlob" if args.length == 2 => {
+        case "setBlob" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> "(Blob : %s)".format(args(1))
           chain(method, args)
-        }
 
-        case "setBlob" => {
+        case "setBlob" =>
           paramMap += args(0).asInstanceOf[Int] -> "(Blob : %s (%d bytes))"
             .format(args(1), args(2))
           chain(method, args)
-        }
 
-        case "setCharacterStream" if args.length == 2 => {
+        case "setCharacterStream" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> "(Char stream : %s)".format(
             args(1))
           chain(method, args)
-        }
 
-        case "setCharacterStream" => {
+        case "setCharacterStream" =>
           paramMap += args(0)
             .asInstanceOf[Int] -> "(Char stream : %s (%d bytes))".format(
             args(1),
             args(2))
           chain(method, args)
-        }
 
-        case "setClob" if args.length == 2 => {
+        case "setClob" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> "(Clob : %s)".format(args(1))
           chain(method, args)
-        }
 
-        case "setClob" => {
+        case "setClob" =>
           paramMap += args(0).asInstanceOf[Int] -> "(Clob : %s (%d bytes))"
             .format(args(1), args(2))
           chain(method, args)
-        }
 
-        case "setDate" if args.length == 2 => {
+        case "setDate" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> args(1)
           chain(method, args)
-        }
 
-        case "setDate" => {
+        case "setDate" =>
           paramMap += args(0).asInstanceOf[Int] -> (args(1) + ":" + args(2))
           chain(method, args)
-        }
 
-        case "setNCharacterStream" if args.length == 2 => {
+        case "setNCharacterStream" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> "(NChar Stream : %s)".format(
             args(1))
           chain(method, args)
-        }
 
-        case "setNCharacterStream" => {
+        case "setNCharacterStream" =>
           paramMap += args(0)
             .asInstanceOf[Int] -> "(NChar Stream : %s (%d bytes))".format(
             args(1),
             args(2))
           chain(method, args)
-        }
 
-        case "setNClob" if args.length == 2 => {
+        case "setNClob" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s)".format(
             args(1))
           chain(method, args)
-        }
 
-        case "setNClob" => {
+        case "setNClob" =>
           paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s (%d bytes))"
             .format(args(1), args(2))
           chain(method, args)
-        }
 
-        case "setNull" => {
+        case "setNull" =>
           paramMap += args(0).asInstanceOf[Int] -> "NULL"
           chain(method, args)
-        }
 
-        case "setObject" if (args.length >= 2 && args.length < 4) => {
+        case "setObject" if (args.length >= 2 && args.length < 4) =>
           paramMap += args(0).asInstanceOf[Int] -> args(1)
           chain(method, args)
-        }
 
-        case "setObject" if args.length == 4 => {
+        case "setObject" if args.length == 4 =>
           paramMap += args(0)
             .asInstanceOf[Int] -> "%s (scale %d)".format(args(1), args(3))
           chain(method, args)
-        }
 
-        case "setString" => {
+        case "setString" =>
           paramMap += args(0).asInstanceOf[Int] -> "\"%s\"".format(args(1))
           chain(method, args)
-        }
 
-        case "setTime" if args.length == 2 => {
+        case "setTime" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> args(1)
           chain(method, args)
-        }
 
-        case "setTime" => {
+        case "setTime" =>
           paramMap += args(0).asInstanceOf[Int] -> (args(1) + ":" + args(2))
           chain(method, args)
-        }
 
-        case "setTimestamp" if args.length == 2 => {
+        case "setTimestamp" if args.length == 2 =>
           paramMap += args(0).asInstanceOf[Int] -> args(1)
           chain(method, args)
-        }
 
-        case "setTimestamp" => {
+        case "setTimestamp" =>
           paramMap += args(0).asInstanceOf[Int] -> (args(1) + ":" + args(2))
           chain(method, args)
-        }
 
-        case "setUnicodeStream" => {
+        case "setUnicodeStream" =>
           paramMap += args(0)
             .asInstanceOf[Int] -> "(Unicode Stream : %s (%d bytes))".format(
             args(1),
             args(2))
           chain(method, args)
-        }
 
-        case "setURL" => {
+        case "setURL" =>
           paramMap += args(0).asInstanceOf[Int] -> "\"%s\"".format(args(1))
           chain(method, args)
-        }
 
         // Chain up to LoggedStatement if we don't handle it here
         case _ => super.invoke(proxy, method, args)

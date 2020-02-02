@@ -61,7 +61,7 @@ object LoggerConfigurator {
 
   private def findFromResources(classLoader: ClassLoader): Option[String] = {
     val in = classLoader.getResourceAsStream("logger-configurator.properties")
-    if (in != null) {
+    if (in != null)
       try {
         val props = new Properties()
         props.load(in)
@@ -70,12 +70,9 @@ object LoggerConfigurator {
         case ex: Exception =>
           ex.printStackTrace()
           None
-      } finally {
-        in.close()
-      }
-    } else {
+      } finally in.close()
+    else
       None
-    }
   }
 
 }

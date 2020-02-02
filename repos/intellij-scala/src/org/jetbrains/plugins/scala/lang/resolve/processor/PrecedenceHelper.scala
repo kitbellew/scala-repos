@@ -56,7 +56,7 @@ trait PrecedenceHelper[T] {
       set.forall { otherResult =>
         if (!ScEquivalenceUtil.smartEquivalence(
               result.getActualElement,
-              otherResult.getActualElement)) {
+              otherResult.getActualElement))
           (result.getActualElement, otherResult.getActualElement) match {
             case (ta: ScTypeAliasDefinition, cls: PsiClass) =>
               ta.isExactAliasFor(cls)
@@ -64,7 +64,7 @@ trait PrecedenceHelper[T] {
               ta.isExactAliasFor(cls)
             case _ => false
           }
-        } else true
+        else true
       }
     }
   }
@@ -76,11 +76,9 @@ trait PrecedenceHelper[T] {
     qualifiedNamesSet.clear()
     levelSet.clear()
     fromHistory = true
-    try {
-      history.foreach {
-        case ChangedLevel       => changedLevel
-        case AddResult(results) => addResults(results)
-      }
+    try history.foreach {
+      case ChangedLevel       => changedLevel
+      case AddResult(results) => addResults(results)
     } finally fromHistory = false
   }
 
@@ -155,9 +153,8 @@ trait PrecedenceHelper[T] {
     def addResults() {
       if (qualifiedName != null) levelQualifiedNamesSet.add(qualifiedName)
       val iterator = results.iterator
-      while (iterator.hasNext) {
+      while (iterator.hasNext)
         levelSet.add(iterator.next())
-      }
     }
     val currentPrecedence = getPrecedence(result)
     val topPrecedence = getTopPrecedence(result)
@@ -167,32 +164,28 @@ trait PrecedenceHelper[T] {
     else if (currentPrecedence == topPrecedence) {
       if (isCheckForEqualPrecedence && qualifiedName != null &&
           (levelQualifiedNamesSet.contains(qualifiedName) ||
-          qualifiedNamesSet.contains(qualifiedName))) {
+          qualifiedNamesSet.contains(qualifiedName)))
         return false
-      } else if (qualifiedName != null && qualifiedNamesSet.contains(
-                   qualifiedName)) return false
-      if (!fromHistory && isUpdateHistory && isSpecialResult(result)) {
+      else if (qualifiedName != null && qualifiedNamesSet.contains(
+                 qualifiedName)) return false
+      if (!fromHistory && isUpdateHistory && isSpecialResult(result))
         results.foreach(ignoredSet.add)
-      } else addResults()
-    } else {
-      if (qualifiedName != null && qualifiedNamesSet.contains(qualifiedName)) {
-        return false
-      } else {
-        if (!fromHistory && isUpdateHistory && isSpecialResult(result)) {
-          results.foreach(ignoredSet.add)
-        } else {
-          setTopPrecedence(result, currentPrecedence)
-          val levelSetIterator = levelSet.iterator()
-          while (levelSetIterator.hasNext) {
-            val next = levelSetIterator.next()
-            if (filterNot(next, result)) {
-              levelSetIterator.remove()
-            }
-          }
-          clearLevelQualifiedSet(result)
-          addResults()
-        }
+      else addResults()
+    } else if (qualifiedName != null && qualifiedNamesSet.contains(
+                 qualifiedName))
+      return false
+    else if (!fromHistory && isUpdateHistory && isSpecialResult(result))
+      results.foreach(ignoredSet.add)
+    else {
+      setTopPrecedence(result, currentPrecedence)
+      val levelSetIterator = levelSet.iterator()
+      while (levelSetIterator.hasNext) {
+        val next = levelSetIterator.next()
+        if (filterNot(next, result))
+          levelSetIterator.remove()
       }
+      clearLevelQualifiedSet(result)
+      addResults()
     }
     true
   }

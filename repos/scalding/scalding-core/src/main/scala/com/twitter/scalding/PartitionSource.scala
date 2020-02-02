@@ -51,28 +51,24 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
       case Read =>
         throw new InvalidSourceException(
           "Using PartitionSource for input not yet implemented")
-      case Write => {
+      case Write =>
         mode match {
-          case Local(_) => {
+          case Local(_) =>
             val localTap = new FileTap(localScheme, basePath, sinkMode)
             openWritesThreshold match {
               case Some(threshold) =>
                 new LPartitionTap(localTap, partition, threshold)
               case None => new LPartitionTap(localTap, partition)
             }
-          }
-          case hdfsMode @ Hdfs(_, _) => {
+          case hdfsMode @ Hdfs(_, _) =>
             val hfsTap = createHfsTap(hdfsScheme, basePath, sinkMode)
             getHPartitionTap(hfsTap)
-          }
-          case hdfsTest @ HadoopTest(_, _) => {
+          case hdfsTest @ HadoopTest(_, _) =>
             val hfsTap =
               createHfsTap(hdfsScheme, hdfsTest.getWritePathFor(this), sinkMode)
             getHPartitionTap(hfsTap)
-          }
           case _ => TestTapFactory(this, hdfsScheme).createTap(readOrWrite)
         }
-      }
     }
 
   /**
@@ -81,10 +77,9 @@ abstract class PartitionSource(val openWritesThreshold: Option[Int] = None)
     * @param mode The mode of the job.
     */
   override def validateTaps(mode: Mode): Unit =
-    if (basePath == null) {
+    if (basePath == null)
       throw new InvalidSourceException(
         "basePath cannot be null for PartitionTap")
-    }
 
   private[this] def getHPartitionTap(hfsTap: Hfs): HPartitionTap =
     openWritesThreshold match {

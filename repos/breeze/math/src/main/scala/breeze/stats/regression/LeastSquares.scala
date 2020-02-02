@@ -29,9 +29,8 @@ private object leastSquaresImplementation {
       workArray,
       workArray.size,
       info)
-    if (info.`val` < 0) {
+    if (info.`val` < 0)
       throw new ArithmeticException("Least squares did not converge.")
-    }
 
     val resultVec =
       new DenseVector[Double](Arrays.copyOf(outputs.data, data.cols))

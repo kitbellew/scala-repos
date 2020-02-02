@@ -631,9 +631,7 @@ private[akka] final class PromiseActorRef private (
           p = provider.tempPath()
           provider.registerTempActor(this, p)
           p
-        } finally {
-          setState(p)
-        }
+        } finally setState(p)
       } else path
     case p: ActorPath ⇒ p
     case StoppedWithPath(p) ⇒ p
@@ -691,7 +689,7 @@ private[akka] final class PromiseActorRef private (
     def ensureCompleted(): Unit = {
       result tryComplete ActorStopResult
       val watchers = clearWatchers()
-      if (!watchers.isEmpty) {
+      if (!watchers.isEmpty)
         watchers foreach { watcher ⇒
           // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
           watcher
@@ -702,16 +700,15 @@ private[akka] final class PromiseActorRef private (
                 existenceConfirmed = true,
                 addressTerminated = false))
         }
-      }
     }
     state match {
       case null ⇒ // if path was never queried nobody can possibly be watching us, so we don't have to publish termination either
         if (updateState(null, Stopped)) ensureCompleted() else stop()
       case p: ActorPath ⇒
-        if (updateState(p, StoppedWithPath(p))) {
+        if (updateState(p, StoppedWithPath(p)))
           try ensureCompleted()
           finally provider.unregisterTempActor(p)
-        } else stop()
+        else stop()
       case Stopped | _: StoppedWithPath ⇒ // already stopped
       case Registering ⇒
         stop() // spin until registration is completed before stopping

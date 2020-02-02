@@ -155,13 +155,11 @@ trait Keys { self: BaseClient =>
     */
   def ttl(key: ChannelBuffer): Future[Option[JLong]] =
     doRequest(Ttl(key)) {
-      case IntegerReply(n) => {
-        if (n != -1) {
+      case IntegerReply(n) =>
+        if (n != -1)
           Future.value(Some(n))
-        } else {
+        else
           Future.value(None)
-        }
-      }
     }
 
 }

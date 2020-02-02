@@ -23,11 +23,8 @@ class Metrics @Inject() (val registry: MetricRegistry) {
     val timer = registry.timer(name)
 
     val startTime = System.nanoTime()
-    try {
-      block
-    } finally {
-      timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
-    }
+    try block
+    finally timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
   }
 
   def counter(name: String): Counter =
@@ -91,11 +88,8 @@ object Metrics {
 
     def apply[T](block: => T): T = {
       val startTime = System.nanoTime()
-      try {
-        block
-      } finally {
-        timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
-      }
+      try block
+      finally timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
     }
 
     def update(duration: FiniteDuration): Unit =

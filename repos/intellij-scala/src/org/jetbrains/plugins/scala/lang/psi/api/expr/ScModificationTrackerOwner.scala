@@ -67,9 +67,8 @@ trait ScModificationTrackerOwner
           case Some(ret)            => true
           case None if !f.hasAssign => true
           case _ =>
-            if (checkForChangedReturn) {
+            if (checkForChangedReturn)
               CachesUtil.addModificationFunctionsReturnType(f)
-            }
             true
         }
       case v: ScValue if !checkForChangedReturn || v.typeElement.isDefined =>

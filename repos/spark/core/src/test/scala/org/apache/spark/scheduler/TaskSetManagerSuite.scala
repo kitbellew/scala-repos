@@ -86,13 +86,11 @@ class FakeTaskScheduler(
   val taskSetsFailed = new ArrayBuffer[String]
 
   val executors = new mutable.HashMap[String, String]
-  for ((execId, host) <- liveExecutors) {
+  for ((execId, host) <- liveExecutors)
     addExecutor(execId, host)
-  }
 
-  for ((execId, host) <- liveExecutors; rack <- getRackForHost(host)) {
+  for ((execId, host) <- liveExecutors; rack <- getRackForHost(host))
     hostsByRack.getOrElseUpdate(rack, new mutable.HashSet[String]()) += host
-  }
 
   dagScheduler = new FakeDAGScheduler(sc, this)
 
@@ -105,9 +103,8 @@ class FakeTaskScheduler(
     executorsOnHost -= execId
     for (rack <- getRackForHost(hostId); hosts <- hostsByRack.get(rack)) {
       hosts -= hostId
-      if (hosts.isEmpty) {
+      if (hosts.isEmpty)
         hostsByRack -= rack
-      }
     }
   }
 
@@ -129,9 +126,8 @@ class FakeTaskScheduler(
       executorsByHost.getOrElseUpdate(host, new mutable.HashSet[String])
     executorsOnHost += execId
     executorIdToHost += execId -> host
-    for (rack <- getRackForHost(host)) {
+    for (rack <- getRackForHost(host))
       hostsByRack.getOrElseUpdate(rack, new mutable.HashSet[String]()) += host
-    }
   }
 
   override def getRackForHost(value: String): Option[String] =
@@ -412,11 +408,10 @@ class TaskSetManagerSuite
         offerResult.get.taskId,
         TaskState.FINISHED,
         TaskResultLost)
-      if (index < MAX_TASK_FAILURES) {
+      if (index < MAX_TASK_FAILURES)
         assert(!sched.taskSetsFailed.contains(taskSet.id))
-      } else {
+      else
         assert(sched.taskSetsFailed.contains(taskSet.id))
-      }
     }
   }
 

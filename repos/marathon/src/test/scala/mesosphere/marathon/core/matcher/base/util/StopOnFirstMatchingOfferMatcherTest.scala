@@ -101,13 +101,12 @@ class StopOnFirstMatchingOfferMatcherTest
       MarathonTestHelper.makeBasicOffer().build()
     lazy val deadline = Timestamp.now() + 30.seconds
 
-    lazy val someMatch: OfferMatcher.MatchedTaskOps = {
+    lazy val someMatch: OfferMatcher.MatchedTaskOps =
       MatchedTaskOps(
         offer.getId,
         Seq(mock[TaskOpWithSource]),
         resendThisOffer = true
       )
-    }
 
     def offerMatcher(matching: OfferMatcher.MatchedTaskOps): OfferMatcher =
       new OfferMatcher {

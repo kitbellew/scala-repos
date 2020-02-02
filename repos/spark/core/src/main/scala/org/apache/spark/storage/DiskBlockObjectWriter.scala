@@ -82,10 +82,9 @@ private[spark] class DiskBlockObjectWriter(
   private var numRecordsWritten = 0
 
   def open(): DiskBlockObjectWriter = {
-    if (hasBeenClosed) {
+    if (hasBeenClosed)
       throw new IllegalStateException(
         "Writer already closed. Cannot be reopened.")
-    }
     fos = new FileOutputStream(file, true)
     ts = new TimeTrackingOutputStream(writeMetrics, fos)
     channel = fos.getChannel()
@@ -134,9 +133,8 @@ private[spark] class DiskBlockObjectWriter(
       finalPosition = file.length()
       // In certain compression codecs, more bytes are written after close() is called
       writeMetrics.incBytesWritten(finalPosition - reportedPosition)
-    } else {
+    } else
       finalPosition = file.length()
-    }
     commitAndCloseHasBeenCalled = true
   }
 
@@ -163,9 +161,7 @@ private[spark] class DiskBlockObjectWriter(
       try {
         truncateStream.getChannel.truncate(initialPosition)
         file
-      } finally {
-        truncateStream.close()
-      }
+      } finally truncateStream.close()
     } catch {
       case e: Exception =>
         logError(
@@ -178,9 +174,8 @@ private[spark] class DiskBlockObjectWriter(
     * Writes a key-value pair.
     */
   def write(key: Any, value: Any) {
-    if (!initialized) {
+    if (!initialized)
       open()
-    }
 
     objOut.writeKey(key)
     objOut.writeValue(value)
@@ -190,9 +185,8 @@ private[spark] class DiskBlockObjectWriter(
   override def write(b: Int): Unit = throw new UnsupportedOperationException()
 
   override def write(kvBytes: Array[Byte], offs: Int, len: Int): Unit = {
-    if (!initialized) {
+    if (!initialized)
       open()
-    }
 
     bs.write(kvBytes, offs, len)
   }
@@ -205,9 +199,8 @@ private[spark] class DiskBlockObjectWriter(
     writeMetrics.incRecordsWritten(1)
 
     // TODO: call updateBytesWritten() less frequently.
-    if (numRecordsWritten % 32 == 0) {
+    if (numRecordsWritten % 32 == 0)
       updateBytesWritten()
-    }
   }
 
   /**
@@ -215,10 +208,9 @@ private[spark] class DiskBlockObjectWriter(
     * This is only valid after commitAndClose() has been called.
     */
   def fileSegment(): FileSegment = {
-    if (!commitAndCloseHasBeenCalled) {
+    if (!commitAndCloseHasBeenCalled)
       throw new IllegalStateException(
         "fileSegment() is only valid after commitAndClose() has been called")
-    }
     new FileSegment(file, initialPosition, finalPosition - initialPosition)
   }
 

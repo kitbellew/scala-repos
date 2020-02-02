@@ -73,12 +73,11 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
             WorksheetFileHook getPanel vFile foreach {
               case ref =>
                 val panel = ref.get()
-                if (panel != null) {
+                if (panel != null)
                   panel.getComponents.foreach {
                     case ab: ActionButton => ab.addNotify()
                     case _                =>
                   }
-                }
             }
           }
         }

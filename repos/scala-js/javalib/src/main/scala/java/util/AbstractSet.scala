@@ -8,12 +8,11 @@ abstract class AbstractSet[E] protected ()
     with Set[E] {
   override def equals(that: Any): Boolean =
     if (that.asInstanceOf[AnyRef] eq this) true
-    else {
+    else
       that match {
         case that: Collection[_] => that.size == this.size && containsAll(that)
         case _                   => false
       }
-    }
 
   override def hashCode(): Int =
     asScalaIterator(iterator).foldLeft(0)((prev, item) => item.hashCode + prev)
@@ -24,13 +23,13 @@ abstract class AbstractSet[E] protected ()
     else {
       @tailrec
       def removeAll(iter: Iterator[E], modified: Boolean): Boolean =
-        if (iter.hasNext) {
+        if (iter.hasNext)
           if (c.contains(iter.next())) {
             iter.remove()
             removeAll(iter, true)
           } else
             removeAll(iter, modified)
-        } else
+        else
           modified
       removeAll(this.iterator, false)
     }

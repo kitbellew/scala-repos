@@ -90,9 +90,9 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         client.error(error)
         ExitCode.ABORT
       case Right(code) =>
-        if (client.hasReportedErrors || client.isCanceled) {
+        if (client.hasReportedErrors || client.isCanceled)
           ExitCode.ABORT
-        } else {
+        else {
           client.progress("Compilation completed", Some(1.0f))
           code
         }
@@ -136,9 +136,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         new Processor[File] {
           def process(file: File) = {
             if (file.isFile && filter.accept(file) && !excludeIndex.isExcluded(
-                  file)) {
+                  file))
               ResourceUpdater.updateResource(context, root, file, outputRoot)
-            }
             true
           }
         }
@@ -211,22 +210,20 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     }
 
     for (target <- chunk.getTargets.asScala ++ sourceTargets;
-         root <- rootIndex.getTargetRoots(target, context).asScala) {
+         root <- rootIndex.getTargetRoots(target, context).asScala)
       FileUtil.processFilesRecursively(
         root.getRootFile,
         new Processor[File] {
           def process(file: File) = {
             if (!excludeIndex.isExcluded(file)) {
               val path = file.getPath
-              if (path.endsWith(".scala") || path.endsWith(".java")) {
+              if (path.endsWith(".scala") || path.endsWith(".java"))
                 result += file -> target
-              }
             }
             true
           }
         }
       )
-    }
 
     result
   }

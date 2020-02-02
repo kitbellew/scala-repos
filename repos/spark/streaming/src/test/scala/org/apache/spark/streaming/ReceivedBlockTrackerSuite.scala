@@ -380,13 +380,12 @@ class ReceivedBlockTrackerSuite
       }
       .flatMap { byteBuffer =>
         val validBuffer =
-          if (WriteAheadLogUtils.isBatchingEnabled(conf, isDriver = true)) {
+          if (WriteAheadLogUtils.isBatchingEnabled(conf, isDriver = true))
             Utils
               .deserialize[Array[Array[Byte]]](byteBuffer.array())
               .map(ByteBuffer.wrap)
-          } else {
+          else
             Array(byteBuffer)
-          }
         validBuffer.map(b =>
           Utils.deserialize[ReceivedBlockTrackerLogEvent](b.array()))
       }

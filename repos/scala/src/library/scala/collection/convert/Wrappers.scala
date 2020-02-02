@@ -131,9 +131,8 @@ private[collection] trait Wrappers {
       with Serializable { self =>
     // Note various overrides to avoid performance gotchas.
     override def contains(o: Object): Boolean =
-      try {
-        underlying.contains(o.asInstanceOf[A])
-      } catch { case cce: ClassCastException => false }
+      try underlying.contains(o.asInstanceOf[A])
+      catch { case cce: ClassCastException => false }
     override def isEmpty = underlying.isEmpty
     def size = underlying.size
     def iterator = new ju.Iterator[A] {
@@ -202,11 +201,9 @@ private[collection] trait Wrappers {
     override def size = underlying.size
 
     override def get(key: AnyRef): B =
-      try {
-        underlying get key.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
-        }
+      try underlying get key.asInstanceOf[A] match {
+        case None    => null.asInstanceOf[B]
+        case Some(v) => v
       } catch {
         case ex: ClassCastException => null.asInstanceOf[B]
       }
@@ -257,12 +254,12 @@ private[collection] trait Wrappers {
       }
 
     override def containsKey(key: AnyRef): Boolean =
-      try {
-        // Note: Subclass of collection.Map with specific key type may redirect generic
-        // contains to specific contains, which will throw a ClassCastException if the
-        // wrong type is passed. This is why we need a type cast to A inside a try/catch.
-        underlying.contains(key.asInstanceOf[A])
-      } catch {
+      try
+      // Note: Subclass of collection.Map with specific key type may redirect generic
+      // contains to specific contains, which will throw a ClassCastException if the
+      // wrong type is passed. This is why we need a type cast to A inside a try/catch.
+      underlying.contains(key.asInstanceOf[A])
+      catch {
         case ex: ClassCastException => false
       }
   }
@@ -275,11 +272,9 @@ private[collection] trait Wrappers {
     }
 
     override def remove(k: AnyRef): B =
-      try {
-        underlying remove k.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
-        }
+      try underlying remove k.asInstanceOf[A] match {
+        case None    => null.asInstanceOf[B]
+        case Some(v) => v
       } catch {
         case ex: ClassCastException => null.asInstanceOf[B]
       }
@@ -349,9 +344,8 @@ private[collection] trait Wrappers {
     }
 
     def remove(k: AnyRef, v: AnyRef) =
-      try {
-        underlying.remove(k.asInstanceOf[A], v.asInstanceOf[B])
-      } catch {
+      try underlying.remove(k.asInstanceOf[A], v.asInstanceOf[B])
+      catch {
         case ex: ClassCastException =>
           false
       }
@@ -397,11 +391,9 @@ private[collection] trait Wrappers {
     def elements: ju.Enumeration[B] =
       asJavaEnumeration(underlying.valuesIterator)
     def get(key: AnyRef) =
-      try {
-        underlying get key.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
-        }
+      try underlying get key.asInstanceOf[A] match {
+        case None    => null.asInstanceOf[B]
+        case Some(v) => v
       } catch {
         case ex: ClassCastException => null.asInstanceOf[B]
       }
@@ -410,11 +402,9 @@ private[collection] trait Wrappers {
       case None    => null.asInstanceOf[B]
     }
     override def remove(key: AnyRef) =
-      try {
-        underlying remove key.asInstanceOf[A] match {
-          case None    => null.asInstanceOf[B]
-          case Some(v) => v
-        }
+      try underlying remove key.asInstanceOf[A] match {
+        case None    => null.asInstanceOf[B]
+        case Some(v) => v
       } catch {
         case ex: ClassCastException => null.asInstanceOf[B]
       }

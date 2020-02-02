@@ -56,11 +56,8 @@ class IndexShuffleBlockResolverSuite
   }
 
   override def afterEach(): Unit =
-    try {
-      Utils.deleteRecursively(tempDir)
-    } finally {
-      super.afterEach()
-    }
+    try Utils.deleteRecursively(tempDir)
+    finally super.afterEach()
 
   test("commit shuffle files multiple times") {
     val resolver = new IndexShuffleBlockResolver(conf, blockManager)

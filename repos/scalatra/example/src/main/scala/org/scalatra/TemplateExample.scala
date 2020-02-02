@@ -139,14 +139,13 @@ class TemplateExample
 
   post("/login") {
     (params("first"), params("last")) match {
-      case (first: String, last: String) => {
+      case (first: String, last: String) =>
         session("first") = first
         session("last") = last
         displayPage(
           "Scalatra: Session Example",
           <pre>You have just logged in as: {first + " " + last}</pre>
           <pre>Route: /login</pre>)
-      }
     }
   }
 

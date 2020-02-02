@@ -121,9 +121,9 @@ object BroadcastTracer {
       tracers foreach { _.record(record) }
 
     def sampleTrace(traceId: TraceId): Option[Boolean] =
-      if (tracers exists { _.sampleTrace(traceId) == Some(true) })
+      if (tracers exists _.sampleTrace(traceId) == Some(true))
         Some(true)
-      else if (tracers forall { _.sampleTrace(traceId) == Some(false) })
+      else if (tracers forall _.sampleTrace(traceId) == Some(false))
         Some(false)
       else
         None

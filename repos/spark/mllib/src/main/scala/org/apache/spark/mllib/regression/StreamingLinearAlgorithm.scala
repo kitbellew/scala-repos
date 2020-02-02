@@ -85,10 +85,9 @@ abstract class StreamingLinearAlgorithm[
     */
   @Since("1.1.0")
   def trainOn(data: DStream[LabeledPoint]): Unit = {
-    if (model.isEmpty) {
+    if (model.isEmpty)
       throw new IllegalArgumentException(
         "Model must be initialized before starting training.")
-    }
     data.foreachRDD { (rdd, time) =>
       if (!rdd.isEmpty) {
         model = Some(algorithm.run(rdd, model.get.weights))
@@ -118,10 +117,9 @@ abstract class StreamingLinearAlgorithm[
     */
   @Since("1.1.0")
   def predictOn(data: DStream[Vector]): DStream[Double] = {
-    if (model.isEmpty) {
+    if (model.isEmpty)
       throw new IllegalArgumentException(
         "Model must be initialized before starting prediction.")
-    }
     data.map { x => model.get.predict(x) }
   }
 
@@ -144,10 +142,9 @@ abstract class StreamingLinearAlgorithm[
   @Since("1.1.0")
   def predictOnValues[K: ClassTag](
       data: DStream[(K, Vector)]): DStream[(K, Double)] = {
-    if (model.isEmpty) {
+    if (model.isEmpty)
       throw new IllegalArgumentException(
         "Model must be initialized before starting prediction")
-    }
     data.mapValues { x => model.get.predict(x) }
   }
 

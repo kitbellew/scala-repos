@@ -222,74 +222,68 @@ class RequestSendThread(
     val QueueItem(apiKey, apiVersion, request, callback) = queue.take()
     import NetworkClientBlockingOps._
     var clientResponse: ClientResponse = null
-    try {
-      lock synchronized {
-        var isSendSuccessful = false
-        while (isRunning.get() && !isSendSuccessful) {
-          // if a broker goes down for a long time, then at some point the controller's zookeeper listener will trigger a
-          // removeBroker which will invoke shutdown() on this thread. At that point, we will stop retrying.
-          try {
-            if (!brokerReady()) {
-              isSendSuccessful = false
-              backoff()
-            } else {
-              val requestHeader =
-                apiVersion.fold(networkClient.nextRequestHeader(apiKey))(
-                  networkClient.nextRequestHeader(apiKey, _))
-              val send = new RequestSend(
-                brokerNode.idString,
-                requestHeader,
-                request.toStruct)
-              val clientRequest =
-                new ClientRequest(time.milliseconds(), true, send, null)
-              clientResponse = networkClient
-                .blockingSendAndReceive(clientRequest, socketTimeoutMs)(time)
-                .getOrElse {
-                  throw new SocketTimeoutException(
-                    s"No response received within $socketTimeoutMs ms")
-                }
-              isSendSuccessful = true
+    try lock synchronized {
+      var isSendSuccessful = false
+      while (isRunning.get() && !isSendSuccessful)
+        // if a broker goes down for a long time, then at some point the controller's zookeeper listener will trigger a
+        // removeBroker which will invoke shutdown() on this thread. At that point, we will stop retrying.
+        try if (!brokerReady()) {
+          isSendSuccessful = false
+          backoff()
+        } else {
+          val requestHeader =
+            apiVersion.fold(networkClient.nextRequestHeader(apiKey))(
+              networkClient.nextRequestHeader(apiKey, _))
+          val send = new RequestSend(
+            brokerNode.idString,
+            requestHeader,
+            request.toStruct)
+          val clientRequest =
+            new ClientRequest(time.milliseconds(), true, send, null)
+          clientResponse = networkClient
+            .blockingSendAndReceive(clientRequest, socketTimeoutMs)(time)
+            .getOrElse {
+              throw new SocketTimeoutException(
+                s"No response received within $socketTimeoutMs ms")
             }
-          } catch {
-            case e: Throwable => // if the send was not successful, reconnect to broker and resend the message
-              warn(
-                ("Controller %d epoch %d fails to send request %s to broker %s. " +
-                  "Reconnecting to broker.").format(
-                  controllerId,
-                  controllerContext.epoch,
-                  request.toString,
-                  brokerNode.toString()),
-                e
-              )
-              networkClient.close(brokerNode.idString)
-              isSendSuccessful = false
-              backoff()
-          }
-        }
-        if (clientResponse != null) {
-          val response =
-            ApiKeys.forId(clientResponse.request.request.header.apiKey) match {
-              case ApiKeys.LEADER_AND_ISR =>
-                new LeaderAndIsrResponse(clientResponse.responseBody)
-              case ApiKeys.STOP_REPLICA =>
-                new StopReplicaResponse(clientResponse.responseBody)
-              case ApiKeys.UPDATE_METADATA_KEY =>
-                new UpdateMetadataResponse(clientResponse.responseBody)
-              case apiKey =>
-                throw new KafkaException(s"Unexpected apiKey received: $apiKey")
-            }
-          stateChangeLogger.trace(
-            "Controller %d epoch %d received response %s for a request sent to broker %s"
-              .format(
+          isSendSuccessful = true
+        } catch {
+          case e: Throwable => // if the send was not successful, reconnect to broker and resend the message
+            warn(
+              ("Controller %d epoch %d fails to send request %s to broker %s. " +
+                "Reconnecting to broker.").format(
                 controllerId,
                 controllerContext.epoch,
-                response.toString,
-                brokerNode.toString))
-
-          if (callback != null) {
-            callback(response)
-          }
+                request.toString,
+                brokerNode.toString()),
+              e
+            )
+            networkClient.close(brokerNode.idString)
+            isSendSuccessful = false
+            backoff()
         }
+      if (clientResponse != null) {
+        val response =
+          ApiKeys.forId(clientResponse.request.request.header.apiKey) match {
+            case ApiKeys.LEADER_AND_ISR =>
+              new LeaderAndIsrResponse(clientResponse.responseBody)
+            case ApiKeys.STOP_REPLICA =>
+              new StopReplicaResponse(clientResponse.responseBody)
+            case ApiKeys.UPDATE_METADATA_KEY =>
+              new UpdateMetadataResponse(clientResponse.responseBody)
+            case apiKey =>
+              throw new KafkaException(s"Unexpected apiKey received: $apiKey")
+          }
+        stateChangeLogger.trace(
+          "Controller %d epoch %d received response %s for a request sent to broker %s"
+            .format(
+              controllerId,
+              controllerContext.epoch,
+              response.toString,
+              brokerNode.toString))
+
+        if (callback != null)
+          callback(response)
       }
     } catch {
       case e: Throwable =>
@@ -304,23 +298,20 @@ class RequestSendThread(
 
   private def brokerReady(): Boolean = {
     import NetworkClientBlockingOps._
-    try {
+    try if (networkClient.isReady(brokerNode, time.milliseconds()))
+      true
+    else {
+      val ready =
+        networkClient.blockingReady(brokerNode, socketTimeoutMs)(time)
 
-      if (networkClient.isReady(brokerNode, time.milliseconds()))
-        true
-      else {
-        val ready =
-          networkClient.blockingReady(brokerNode, socketTimeoutMs)(time)
+      if (!ready)
+        throw new SocketTimeoutException(
+          s"Failed to connect within $socketTimeoutMs ms")
 
-        if (!ready)
-          throw new SocketTimeoutException(
-            s"Failed to connect within $socketTimeoutMs ms")
-
-        info(
-          "Controller %d connected to %s for sending state change requests"
-            .format(controllerId, brokerNode.toString()))
-        true
-      }
+      info(
+        "Controller %d connected to %s for sending state change requests"
+          .format(controllerId, brokerNode.toString()))
+      true
     } catch {
       case e: Throwable =>
         warn(
@@ -439,9 +430,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
                 leaderAndIsr,
                 leaderIsrAndControllerEpoch.controllerEpoch),
               replicas)
-          } else {
+          } else
             PartitionStateInfo(leaderIsrAndControllerEpoch, replicas)
-          }
           brokerIds.filter(b => b >= 0).foreach { brokerId =>
             updateMetadataRequestMap.getOrElseUpdate(
               brokerId,
@@ -648,24 +638,20 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
       }
       stopReplicaRequestMap.clear()
     } catch {
-      case e: Throwable => {
-        if (leaderAndIsrRequestMap.size > 0) {
+      case e: Throwable =>
+        if (leaderAndIsrRequestMap.size > 0)
           error(
             "Haven't been able to send leader and isr requests, current state of " +
               s"the map is $leaderAndIsrRequestMap")
-        }
-        if (updateMetadataRequestMap.size > 0) {
+        if (updateMetadataRequestMap.size > 0)
           error(
             "Haven't been able to send metadata update requests, current state of " +
               s"the map is $updateMetadataRequestMap")
-        }
-        if (stopReplicaRequestMap.size > 0) {
+        if (stopReplicaRequestMap.size > 0)
           error(
             "Haven't been able to send stop replica requests, current state of " +
               s"the map is $stopReplicaRequestMap")
-        }
         throw new IllegalStateException(e)
-      }
     }
   }
 }

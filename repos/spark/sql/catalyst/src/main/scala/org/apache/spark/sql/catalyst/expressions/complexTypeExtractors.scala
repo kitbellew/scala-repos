@@ -96,15 +96,14 @@ object ExtractValue {
       resolver: Resolver): Int = {
     val checkField = (f: StructField) => resolver(f.name, fieldName)
     val ordinal = fields.indexWhere(checkField)
-    if (ordinal == -1) {
+    if (ordinal == -1)
       throw new AnalysisException(
         s"No such struct field $fieldName in ${fields.map(_.name).mkString(", ")}")
-    } else if (fields.indexWhere(checkField, ordinal + 1) != -1) {
+    else if (fields.indexWhere(checkField, ordinal + 1) != -1)
       throw new AnalysisException(
         s"Ambiguous reference to fields ${fields.filter(checkField).mkString(", ")}")
-    } else {
+    else
       ordinal
-    }
   }
 }
 
@@ -143,7 +142,7 @@ case class GetStructField(
       ctx,
       ev,
       eval =>
-        if (nullable) {
+        if (nullable)
           s"""
           if ($eval.isNullAt($ordinal)) {
             ${ev.isNull} = true;
@@ -151,11 +150,10 @@ case class GetStructField(
             ${ev.value} = ${ctx.getValue(eval, dataType, ordinal.toString)};
           }
         """
-        } else {
+        else
           s"""
           ${ev.value} = ${ctx.getValue(eval, dataType, ordinal.toString)};
         """
-        }
     )
 }
 
@@ -184,15 +182,14 @@ case class GetArrayStructFields(
     val result = new Array[Any](length)
     var i = 0
     while (i < length) {
-      if (array.isNullAt(i)) {
+      if (array.isNullAt(i))
         result(i) = null
-      } else {
+      else {
         val row = array.getStruct(i, numFields)
-        if (row.isNullAt(ordinal)) {
+        if (row.isNullAt(ordinal))
           result(i) = null
-        } else {
+        else
           result(i) = row.get(ordinal, field.dataType)
-        }
       }
       i += 1
     }
@@ -262,11 +259,10 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
     val baseValue = value.asInstanceOf[ArrayData]
     val index = ordinal.asInstanceOf[Number].intValue()
     if (index >= baseValue.numElements() || index < 0 || baseValue.isNullAt(
-          index)) {
+          index))
       null
-    } else {
+    else
       baseValue.get(index, dataType)
-    }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =
@@ -323,19 +319,16 @@ case class GetMapValue(child: Expression, key: Expression)
 
     var i = 0
     var found = false
-    while (i < length && !found) {
-      if (keys.get(i, keyType) == ordinal) {
+    while (i < length && !found)
+      if (keys.get(i, keyType) == ordinal)
         found = true
-      } else {
+      else
         i += 1
-      }
-    }
 
-    if (!found || values.isNullAt(i)) {
+    if (!found || values.isNullAt(i))
       null
-    } else {
+    else
       values.get(i, dataType)
-    }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

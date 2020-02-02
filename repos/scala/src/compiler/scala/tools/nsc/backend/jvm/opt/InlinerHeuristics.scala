@@ -99,12 +99,11 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                   else
                     backendReporting.inlinerWarning(pos, s"$initMsg." + warnMsg)
                 } else if (callsiteWarning.isDefined && callsiteWarning.get
-                             .emitWarning(compilerSettings)) {
+                             .emitWarning(compilerSettings))
                   // when annotatedInline is false, and there is some warning, the callsite metadata is possibly incomplete.
                   backendReporting.inlinerWarning(
                     pos,
                     s"there was a problem determining if method ${callee.name} can be inlined: \n" + callsiteWarning.get)
-                }
             }
 
           case Callsite(ins, _, _, Left(warning), _, _, _, pos, _, _) =>

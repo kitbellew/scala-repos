@@ -45,9 +45,8 @@ class DynamicSynonymFilterSpec extends EnsimeSpec {
 
     val words: mutable.ListBuffer[String] = mutable.ListBuffer()
     filter.reset()
-    while (filter.incrementToken()) {
+    while (filter.incrementToken())
       words += source.getAttribute(classOf[CharTermAttribute]).toString
-    }
     filter.close()
     words.toList.sorted
   }

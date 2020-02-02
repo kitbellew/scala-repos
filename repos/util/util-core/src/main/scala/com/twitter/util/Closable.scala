@@ -69,12 +69,11 @@ object Closable {
   def all(closables: Closable*): Closable = new Closable {
     def close(deadline: Time): Future[Unit] = {
       val fs = closables.map(_.close(deadline))
-      for (f <- fs) {
+      for (f <- fs)
         f.poll match {
           case Some(Return(_)) =>
           case _               => return Future.join(fs)
         }
-      }
 
       Future.Done
     }
@@ -121,7 +120,7 @@ object Closable {
 
   private val collectorThread = new Thread("CollectClosables") {
     override def run() {
-      while (true) {
+      while (true)
         try {
           val ref = refq.remove()
           val closable = refs.synchronized(refs.remove(ref))
@@ -150,7 +149,6 @@ object Closable {
               fatal)
             throw fatal
         }
-      }
     }
 
     setDaemon(true)

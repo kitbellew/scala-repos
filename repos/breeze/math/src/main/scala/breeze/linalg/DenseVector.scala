@@ -75,11 +75,10 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
       throw new IndexOutOfBoundsException(
         i + " not in [-" + size + "," + size + ")")
     val trueI = if (i < 0) i + size else i
-    if (noOffsetOrStride) {
+    if (noOffsetOrStride)
       data(trueI)
-    } else {
+    else
       data(offset + trueI * stride)
-    }
   }
 
   def update(i: Int, v: V): Unit = {
@@ -87,11 +86,10 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
       throw new IndexOutOfBoundsException(
         i + " not in [-" + size + "," + size + ")")
     val trueI = if (i < 0) i + size else i
-    if (noOffsetOrStride) {
+    if (noOffsetOrStride)
       data(trueI) = v
-    } else {
+    else
       data(offset + trueI * stride) = v
-    }
   }
 
   private[linalg] val noOffsetOrStride = offset == 0 && stride == 1
@@ -191,9 +189,9 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     * @tparam U
     */
   override def foreach[@spec(Unit) U](fn: (V) => U): Unit =
-    if (stride == 1) { // ABCE stuff
+    if (stride == 1) // ABCE stuff
       cforRange(offset until (offset + length)) { j => fn(data(j)) }
-    } else {
+    else {
       var i = offset
       cforRange(0 until length) { j =>
         fn(data(i))
@@ -232,9 +230,9 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
     new DenseMatrix[V](1, length, data, offset, stride)
 
   override def toArray(implicit cm: ClassTag[V]): Array[V] =
-    if (stride == 1) {
+    if (stride == 1)
       ArrayUtil.copyOfRange(data, offset, offset + length)
-    } else {
+    else {
       val arr = new Array[V](length)
       var i = 0
       var off = offset
@@ -395,13 +393,12 @@ object DenseVector
 
         // threeway fork, following benchmarks and hotspot docs on Array Bounds Check Elimination (ABCE)
         // https://wikis.oracle.com/display/HotSpotInternals/RangeCheckElimination
-        if (from.noOffsetOrStride) {
+        if (from.noOffsetOrStride)
           fastestPath(out, fn, from.data)
-        } else if (from.stride == 1) {
+        else if (from.stride == 1)
           mediumPath(out, fn, from.data, from.offset)
-        } else {
+        else
           slowPath(out, fn, from.data, from.offset, from.stride)
-        }
         DenseVector[V2](out)
       }
 
@@ -456,10 +453,9 @@ object DenseVector
           from1: DenseVector[V],
           from2: DenseVector[W],
           fn: PairValuesVisitor[V, W]): Unit = {
-        if (from1.size != from2.size) {
+        if (from1.size != from2.size)
           throw new IllegalArgumentException(
             "Vectors to be zipped must have same size")
-        }
         cfor(0)(i => i < from1.size, i => i + 1) { i =>
           fn.visit(from1(i), from2(i))
         }
@@ -495,11 +491,10 @@ object DenseVector
         val stride = from.stride
 
         val offset = from.offset
-        if (stride == 1) {
+        if (stride == 1)
           cforRange(offset until offset + length) { j => data(j) = fn(data(j)) }
-        } else {
+        else
           slowPath(fn, data, length, stride, offset)
-        }
       }
 
       private def slowPath(
@@ -639,7 +634,7 @@ object DenseVector
     new CanZipMapKeyValuesDenseVector[V, R]
 
   implicit val canAddIntoD
-      : OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
+      : OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] =
     new OpAdd.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] {
       def apply(a: DenseVector[Double], b: DenseVector[Double]) =
         canDaxpy(a, 1.0, b)
@@ -647,7 +642,6 @@ object DenseVector
         BinaryUpdateRegistry[Vector[Double], Vector[Double], OpAdd.type]]
         .register(this)
     }
-  }
 
   implicit object canDaxpy
       extends scaleAdd.InPlaceImpl3[
@@ -662,9 +656,8 @@ object DenseVector
         val ad = x.data
         val bd = y.data
         cforRange(0 until x.length) { i => bd(i) += ad(i) * a }
-      } else {
+      } else
         cforRange(0 until x.length) { i => y(i) += x(i) * a }
-      }
     }
 
   }
@@ -677,15 +670,14 @@ object DenseVector
   implicit val canAddD: OpAdd.Impl2[
     DenseVector[Double],
     DenseVector[Double],
-    DenseVector[Double]] = {
+    DenseVector[Double]] =
     pureFromUpdate_Double(canAddIntoD)
-  }
   implicitly[
     BinaryRegistry[Vector[Double], Vector[Double], OpAdd.type, Vector[Double]]]
     .register(canAddD)
 
   implicit val canSubIntoD
-      : OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] = {
+      : OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] =
     new OpSub.InPlaceImpl2[DenseVector[Double], DenseVector[Double]] {
       def apply(a: DenseVector[Double], b: DenseVector[Double]) =
         canDaxpy(a, -1.0, b)
@@ -694,13 +686,11 @@ object DenseVector
         .register(this)
     }
 
-  }
   implicit val canSubD: OpSub.Impl2[
     DenseVector[Double],
     DenseVector[Double],
-    DenseVector[Double]] = {
+    DenseVector[Double]] =
     pureFromUpdate_Double(canSubIntoD)
-  }
   implicitly[
     BinaryRegistry[Vector[Double], Vector[Double], OpSub.type, Vector[Double]]]
     .register(canSubD)
@@ -709,14 +699,13 @@ object DenseVector
       extends OpMulInner.Impl2[DenseVector[Double], DenseVector[Double], Double] {
     def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
       require(a.length == b.length, s"Vectors must have same length")
-      if (a.noOffsetOrStride && b.noOffsetOrStride && a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH) {
+      if (a.noOffsetOrStride && b.noOffsetOrStride && a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH)
         DenseVectorSupportMethods.smallDotProduct_Double(
           a.data,
           b.data,
           a.length)
-      } else {
+      else
         blasPath(a, b)
-      }
     }
 
     val UNROLL_FACTOR = 6
@@ -724,14 +713,14 @@ object DenseVector
     private def blasPath(
         a: DenseVector[Double],
         b: DenseVector[Double]): Double =
-      if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1) {
+      if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1)
         DenseVectorSupportMethods.dotProduct_Double(
           a.data,
           a.offset,
           b.data,
           b.offset,
           a.length)
-      } else {
+      else {
         val boff =
           if (b.stride >= 0) b.offset
           else (b.offset + b.stride * (b.length - 1))
@@ -820,24 +809,20 @@ object DenseVector
   }
 
   implicit val space_Double
-      : MutableFiniteCoordinateField[DenseVector[Double], Int, Double] = {
+      : MutableFiniteCoordinateField[DenseVector[Double], Int, Double] =
     MutableFiniteCoordinateField.make[DenseVector[Double], Int, Double]
-  }
 
   implicit val space_Float
-      : MutableFiniteCoordinateField[DenseVector[Float], Int, Float] = {
+      : MutableFiniteCoordinateField[DenseVector[Float], Int, Float] =
     MutableFiniteCoordinateField.make[DenseVector[Float], Int, Float]
-  }
 
   implicit val space_Int
-      : MutableFiniteCoordinateField[DenseVector[Int], Int, Int] = {
+      : MutableFiniteCoordinateField[DenseVector[Int], Int, Int] =
     MutableFiniteCoordinateField.make[DenseVector[Int], Int, Int]
-  }
 
   implicit val space_Long
-      : MutableFiniteCoordinateField[DenseVector[Long], Int, Long] = {
+      : MutableFiniteCoordinateField[DenseVector[Long], Int, Long] =
     MutableFiniteCoordinateField.make[DenseVector[Long], Int, Long]
-  }
 
   object TupleIsomorphisms {
     implicit object doubleIsVector

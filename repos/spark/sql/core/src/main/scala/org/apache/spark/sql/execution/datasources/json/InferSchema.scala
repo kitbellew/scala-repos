@@ -41,11 +41,11 @@ private[sql] object InferSchema {
       configOptions.samplingRatio > 0,
       s"samplingRatio (${configOptions.samplingRatio}) should be greater than 0")
     val shouldHandleCorruptRecord = configOptions.permissive
-    val schemaData = if (configOptions.samplingRatio > 0.99) {
-      json
-    } else {
-      json.sample(withReplacement = false, configOptions.samplingRatio, 1)
-    }
+    val schemaData =
+      if (configOptions.samplingRatio > 0.99)
+        json
+      else
+        json.sample(withReplacement = false, configOptions.samplingRatio, 1)
 
     // perform schema inference on each row and merge afterwards
     val rootType = schemaData
@@ -53,11 +53,9 @@ private[sql] object InferSchema {
         val factory = new JsonFactory()
         configOptions.setJacksonOptions(factory)
         iter.flatMap { row =>
-          try {
-            Utils.tryWithResource(factory.createParser(row)) { parser =>
-              parser.nextToken()
-              Some(inferField(parser, configOptions))
-            }
+          try Utils.tryWithResource(factory.createParser(row)) { parser =>
+            parser.nextToken()
+            Some(inferField(parser, configOptions))
           } catch {
             case _: JsonParseException if shouldHandleCorruptRecord =>
               Some(StructType(
@@ -109,12 +107,11 @@ private[sql] object InferSchema {
       case VALUE_STRING => StringType
       case START_OBJECT =>
         val builder = Seq.newBuilder[StructField]
-        while (nextUntil(parser, END_OBJECT)) {
+        while (nextUntil(parser, END_OBJECT))
           builder += StructField(
             parser.getCurrentName,
             inferField(parser, configOptions),
             nullable = true)
-        }
 
         StructType(builder.result().sortBy(_.name))
 
@@ -123,10 +120,9 @@ private[sql] object InferSchema {
         // If this array is not empty in other JSON objects, we can resolve
         // the type as we pass through all JSON objects.
         var elementType: DataType = NullType
-        while (nextUntil(parser, END_ARRAY)) {
+        while (nextUntil(parser, END_ARRAY))
           elementType =
             compatibleType(elementType, inferField(parser, configOptions))
-        }
 
         ArrayType(elementType)
 
@@ -151,9 +147,8 @@ private[sql] object InferSchema {
             if (configOptions.floatAsBigDecimal) {
               val v = parser.getDecimalValue
               DecimalType(v.precision(), v.scale())
-            } else {
+            } else
               DoubleType
-            }
         }
 
       case VALUE_TRUE | VALUE_FALSE => BooleanType
@@ -167,25 +162,20 @@ private[sql] object InferSchema {
     case at @ ArrayType(elementType, _) =>
       for {
         canonicalType <- canonicalizeType(elementType)
-      } yield {
-        at.copy(canonicalType)
-      }
+      } yield at.copy(canonicalType)
 
     case StructType(fields) =>
       val canonicalFields: Array[StructField] = for {
         field <- fields
         if field.name.length > 0
         canonicalType <- canonicalizeType(field.dataType)
-      } yield {
-        field.copy(dataType = canonicalType)
-      }
+      } yield field.copy(dataType = canonicalType)
 
-      if (canonicalFields.length > 0) {
+      if (canonicalFields.length > 0)
         Some(StructType(canonicalFields))
-      } else {
+      else
         // per SPARK-8093: empty structs should be deleted
         None
-      }
 
     case NullType => Some(StringType)
     case other    => Some(other)
@@ -194,14 +184,13 @@ private[sql] object InferSchema {
   private def withCorruptField(
       struct: StructType,
       columnNameOfCorruptRecords: String): StructType =
-    if (!struct.fieldNames.contains(columnNameOfCorruptRecords)) {
+    if (!struct.fieldNames.contains(columnNameOfCorruptRecords))
       // If this given struct does not have a column used for corrupt records,
       // add this field.
       struct.add(columnNameOfCorruptRecords, StringType, nullable = true)
-    } else {
+    else
       // Otherwise, just return this struct.
       struct
-    }
 
   /**
     * Remove top-level ArrayType wrappers and merge the remaining schemas
@@ -249,12 +238,11 @@ private[sql] object InferSchema {
         case (t1: DecimalType, t2: DecimalType) =>
           val scale = math.max(t1.scale, t2.scale)
           val range = math.max(t1.precision - t1.scale, t2.precision - t2.scale)
-          if (range + scale > 38) {
+          if (range + scale > 38)
             // DecimalType can't support precision > 38
             DoubleType
-          } else {
+          else
             DecimalType(range + scale, scale)
-          }
 
         case (StructType(fields1), StructType(fields2)) =>
           val newFields =

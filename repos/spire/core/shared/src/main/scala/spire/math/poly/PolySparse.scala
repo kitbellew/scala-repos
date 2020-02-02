@@ -49,9 +49,9 @@ case class PolySparse[@sp(Double) C] private[spire] (
   }
 
   def coeffsArray(implicit ring: Semiring[C]): Array[C] =
-    if (isZero) {
+    if (isZero)
       new Array[C](0)
-    } else {
+    else {
       val cs = new Array[C](degree + 1)
       cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = ring.zero }
       cfor(0)(_ < exp.length, _ + 1) { i => cs(exp(i)) = coeff(i) }
@@ -72,9 +72,9 @@ case class PolySparse[@sp(Double) C] private[spire] (
       ct: ClassTag[C]): Polynomial[C] = {
     var i = coeff.length - 2
     while (i >= 0 && coeff(i) === ring.zero) i -= 1
-    if (i < 0) {
+    if (i < 0)
       new PolySparse(new Array[Int](0), new Array[C](0))
-    } else {
+    else {
       val len = i + 1
       val es = new Array[Int](len)
       val cs = new Array[C](len)
@@ -117,11 +117,11 @@ case class PolySparse[@sp(Double) C] private[spire] (
     exp.isEmpty
 
   def apply(x: C)(implicit ring: Semiring[C]): C =
-    if (isZero) {
+    if (isZero)
       ring.zero
-    } else if (exp.length == 1) {
+    else if (exp.length == 1)
       if (exp(0) != 0) coeff(0) * (x pow exp(0)) else coeff(0)
-    } else {
+    else {
       // TODO: Rewrite this to be more like PolyDense.
       val bits = expBits(x)
       val e0 = exp(0)
@@ -192,9 +192,9 @@ case class PolySparse[@sp(Double) C] private[spire] (
   }
 
   def *:(k: C)(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C] =
-    if (k === ring.zero) {
+    if (k === ring.zero)
       PolySparse.zero[C]
-    } else {
+    else {
       val cs = new Array[C](coeff.length)
       cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = k * coeff(i) }
       new PolySparse(exp, cs)
@@ -219,9 +219,9 @@ object PolySparse {
         len += 1
     }
 
-    if (len == coeff.length) {
+    if (len == coeff.length)
       new PolySparse(exp, coeff)
-    } else {
+    else {
       val es = new Array[Int](len)
       val cs = new Array[C](len)
       @tailrec def loop(i: Int, j: Int): PolySparse[C] =
@@ -231,9 +231,8 @@ object PolySparse {
             es(j) = exp(i)
             cs(j) = c
             loop(i + 1, j + 1)
-          } else {
+          } else
             loop(i + 1, j)
-          }
         } else new PolySparse(es, cs)
       loop(0, 0)
     }
@@ -321,9 +320,8 @@ object PolySparse {
         if (cmp == 0) loop(i + 1, j + 1, count + 1)
         else if (cmp < 0) loop(i + 1, j, count + 1)
         else loop(i, j + 1, count + 1)
-      } else {
+      } else
         count + (lexp.length - i) + (rexp.length - j)
-      }
 
     loop(0, 0, 0)
   }

@@ -59,10 +59,11 @@ final class TriangularArray[T: ClassTag](val dimension: Int)
   override def toString = {
     val buffer = new StringBuilder()
     for (r <- 0 until dimension) {
-      val columns = for (c <- 0 until dimension) yield {
-        if (c <= r) "----"
-        else Option(apply(r, c)).map(_.toString).getOrElse("null")
-      }
+      val columns =
+        for (c <- 0 until dimension)
+          yield
+            if (c <= r) "----"
+            else Option(apply(r, c)).map(_.toString).getOrElse("null")
       buffer ++= columns.mkString("[", ", ", "]\n")
     }
     buffer.toString()
@@ -73,17 +74,15 @@ object TriangularArray {
 
   def tabulate[T: ClassTag](dim: Int)(fill: (Int, Int) => T) = {
     val array = new TriangularArray[T](dim)
-    for (c <- 0 until dim; r <- 0 to c) {
+    for (c <- 0 until dim; r <- 0 to c)
       array.data(index(r, c)) = fill(r, c)
-    }
     array
   }
 
   def fill[T: ClassTag](dim: Int)(fill: => T) = {
     val array = new TriangularArray[T](dim)
-    for (c <- 0 until dim; r <- 0 to c) {
+    for (c <- 0 until dim; r <- 0 to c)
       array.data(index(r, c)) = fill
-    }
     array
   }
 

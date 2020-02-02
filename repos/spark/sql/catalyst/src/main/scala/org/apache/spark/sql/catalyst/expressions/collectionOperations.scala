@@ -86,15 +86,14 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
 
     new Comparator[Any]() {
       override def compare(o1: Any, o2: Any): Int =
-        if (o1 == null && o2 == null) {
+        if (o1 == null && o2 == null)
           0
-        } else if (o1 == null) {
+        else if (o1 == null)
           -1
-        } else if (o2 == null) {
+        else if (o2 == null)
           1
-        } else {
+        else
           ordering.compare(o1, o2)
-        }
     }
   }
 
@@ -111,25 +110,23 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
 
     new Comparator[Any]() {
       override def compare(o1: Any, o2: Any): Int =
-        if (o1 == null && o2 == null) {
+        if (o1 == null && o2 == null)
           0
-        } else if (o1 == null) {
+        else if (o1 == null)
           1
-        } else if (o2 == null) {
+        else if (o2 == null)
           -1
-        } else {
+        else
           -ordering.compare(o1, o2)
-        }
     }
   }
 
   override def nullSafeEval(array: Any, ascending: Any): Any = {
     val elementType = base.dataType.asInstanceOf[ArrayType].elementType
     val data = array.asInstanceOf[ArrayData].toArray[AnyRef](elementType)
-    if (elementType != NullType) {
+    if (elementType != NullType)
       java.util.Arrays
         .sort(data, if (ascending.asInstanceOf[Boolean]) lt else gt)
-    }
     new GenericArrayData(data.asInstanceOf[Array[Any]])
   }
 
@@ -155,18 +152,17 @@ case class ArrayContains(left: Expression, right: Expression)
   }
 
   override def checkInputDataTypes(): TypeCheckResult =
-    if (right.dataType == NullType) {
+    if (right.dataType == NullType)
       TypeCheckResult.TypeCheckFailure(
         "Null typed values cannot be used as arguments")
-    } else if (!left.dataType.isInstanceOf[ArrayType]
-               || left.dataType
-                 .asInstanceOf[ArrayType]
-                 .elementType != right.dataType) {
+    else if (!left.dataType.isInstanceOf[ArrayType]
+             || left.dataType
+               .asInstanceOf[ArrayType]
+               .elementType != right.dataType)
       TypeCheckResult.TypeCheckFailure(
         "Arguments must be an array followed by a value of same type as the array members")
-    } else {
+    else
       TypeCheckResult.TypeCheckSuccess
-    }
 
   override def nullable: Boolean =
     left.nullable || right.nullable || left.dataType
@@ -180,16 +176,15 @@ case class ArrayContains(left: Expression, right: Expression)
       .foreach(
         right.dataType,
         (i, v) =>
-          if (v == null) {
+          if (v == null)
             hasNull = true
-          } else if (v == value) {
+          else if (v == value)
             return true
-          })
-    if (hasNull) {
+      )
+    if (hasNull)
       null
-    } else {
+    else
       false
-    }
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String =

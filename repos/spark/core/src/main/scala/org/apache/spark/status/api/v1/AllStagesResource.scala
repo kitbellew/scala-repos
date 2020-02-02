@@ -44,11 +44,10 @@ private[v1] class AllStagesResource(ui: SparkUI) {
     val listener = ui.jobProgressListener
     val stageAndStatus = AllStagesResource.stagesAndStatus(ui)
     val adjStatuses = {
-      if (statuses.isEmpty()) {
+      if (statuses.isEmpty())
         Arrays.asList(StageStatus.values(): _*)
-      } else {
+      else
         statuses
-      }
     }
     for {
       (status, stageList) <- stageAndStatus
@@ -56,13 +55,11 @@ private[v1] class AllStagesResource(ui: SparkUI) {
       stageUiData: StageUIData <- listener.synchronized {
         listener.stageIdToData.get((stageInfo.stageId, stageInfo.attemptId))
       }
-    } yield {
-      AllStagesResource.stageUiToStageData(
-        status,
-        stageInfo,
-        stageUiData,
-        includeDetails = false)
-    }
+    } yield AllStagesResource.stageUiToStageData(
+      status,
+      stageInfo,
+      stageUiData,
+      includeDetails = false)
   }
 }
 
@@ -77,35 +74,35 @@ private[v1] object AllStagesResource {
       stageUiData.taskData.values.map(_.taskInfo.launchTime).filter(_ > 0)
 
     val firstTaskLaunchedTime: Option[Date] =
-      if (taskLaunchTimes.nonEmpty) {
+      if (taskLaunchTimes.nonEmpty)
         Some(new Date(taskLaunchTimes.min))
-      } else {
+      else
         None
-      }
 
-    val taskData = if (includeDetails) {
-      Some(stageUiData.taskData.map { case (k, v) => k -> convertTaskData(v) })
-    } else {
-      None
-    }
-    val executorSummary = if (includeDetails) {
-      Some(stageUiData.executorSummary.map {
-        case (k, summary) =>
-          k -> new ExecutorStageSummary(
-            taskTime = summary.taskTime,
-            failedTasks = summary.failedTasks,
-            succeededTasks = summary.succeededTasks,
-            inputBytes = summary.inputBytes,
-            outputBytes = summary.outputBytes,
-            shuffleRead = summary.shuffleRead,
-            shuffleWrite = summary.shuffleWrite,
-            memoryBytesSpilled = summary.memoryBytesSpilled,
-            diskBytesSpilled = summary.diskBytesSpilled
-          )
-      })
-    } else {
-      None
-    }
+    val taskData =
+      if (includeDetails)
+        Some(
+          stageUiData.taskData.map { case (k, v) => k -> convertTaskData(v) })
+      else
+        None
+    val executorSummary =
+      if (includeDetails)
+        Some(stageUiData.executorSummary.map {
+          case (k, summary) =>
+            k -> new ExecutorStageSummary(
+              taskTime = summary.taskTime,
+              failedTasks = summary.failedTasks,
+              succeededTasks = summary.succeededTasks,
+              inputBytes = summary.inputBytes,
+              outputBytes = summary.outputBytes,
+              shuffleRead = summary.shuffleRead,
+              shuffleWrite = summary.shuffleWrite,
+              memoryBytesSpilled = summary.memoryBytesSpilled,
+              diskBytesSpilled = summary.diskBytesSpilled
+            )
+        })
+      else
+        None
 
     val accumulableInfo = stageUiData.accumulables.values.map {
       convertAccumulableInfo
@@ -344,9 +341,8 @@ private[v1] abstract class MetricHelper[I, O](
     Distribution(data.map { d => f(d) }).get.getQuantiles(quantiles)
 
   def metricOption: Option[O] =
-    if (data.isEmpty) {
+    if (data.isEmpty)
       None
-    } else {
+    else
       Some(build)
-    }
 }

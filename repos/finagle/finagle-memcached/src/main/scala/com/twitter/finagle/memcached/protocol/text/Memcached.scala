@@ -89,7 +89,7 @@ private class MemcachedTracingFilter extends SimpleFilter[Command, Response] {
     Trace.record(Annotation.ClientSend())
 
     val response = service(command)
-    if (Trace.isActivelyTracing) {
+    if (Trace.isActivelyTracing)
       response onSuccess {
         case Values(values) =>
           command match {
@@ -111,7 +111,6 @@ private class MemcachedTracingFilter extends SimpleFilter[Command, Response] {
       } ensure {
         Trace.record(Annotation.ClientRecv())
       }
-    }
     response
   }
 }

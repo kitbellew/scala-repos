@@ -259,12 +259,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val hasGeneratedAgg = df.queryExecution.sparkPlan.collect {
       case _: aggregate.TungstenAggregate => true
     }.nonEmpty
-    if (!hasGeneratedAgg) {
+    if (!hasGeneratedAgg)
       fail(s"""
            |Codegen is enabled, but query $sqlText does not have TungstenAggregate in the plan.
            |${df.queryExecution.simpleString}
          """.stripMargin)
-    }
     // Then, check results.
     checkAnswer(df, expectedResults)
   }
@@ -337,9 +336,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       testCodeGen(
         "SELECT  sum('a'), avg('a'), count(null) FROM testData",
         Row(null, null, 0) :: Nil)
-    } finally {
-      sqlContext.dropTempTable("testData3x")
-    }
+    } finally sqlContext.dropTempTable("testData3x")
   }
 
   test("Add Parser of SQL COALESCE()") {
@@ -1185,10 +1182,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       if (isInvalidQuery) {
         val e = intercept[AnalysisException](sql(query).queryExecution.analyzed)
         assert(e.getMessage contains "group by")
-      } else {
+      } else
         // Should not throw
         sql(query).queryExecution.analyzed
-      }
     }
 
     checkAggregation("SELECT key, COUNT(*) FROM testData")

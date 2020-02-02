@@ -30,9 +30,8 @@ object PrinterHelper {
       wrap: Boolean = false,
       printRoot: Boolean = false) = {
     def toolboxTree(tree: => Tree) =
-      try {
-        tree
-      } catch {
+      try tree
+      catch {
         case e: scala.tools.reflect.ToolBoxError =>
           throw new Exception(e.getMessage + ": " + code, e)
       }
@@ -46,7 +45,7 @@ object PrinterHelper {
       |  class foo3[Af, Bf](a: scala.Int)(b: scala.Float, c: PrintersContext.this.foo1[Af, Bf]) extends scala.annotation.Annotation with scala.annotation.StaticAnnotation;
       |  trait A1;
       |  trait B1;
-      |${source.trim.lines map { "  " + _ } mkString s"$LF"}
+      |${source.trim.lines map "  " + _ mkString s"$LF"}
       |}"""
 
       if (wrap) context.trim() else source.trim
@@ -68,17 +67,16 @@ object PrinterHelper {
   }
 
   def assertTreeCode(tree: Tree, typecheck: Boolean = false)(code: String) =
-    if (typecheck) {
+    if (typecheck)
       assertEquals(
         "using quasiquote or given tree (typechecked)" + LF,
         code.trim,
         normalizeEOL(showCode(toolbox.typecheck(tree))))
-    } else {
+    else
       assertEquals(
         "using quasiquote or given tree" + LF,
         code.trim,
         normalizeEOL(showCode(tree)))
-    }
 
   def assertPrintedCode(
       source: String,

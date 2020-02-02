@@ -71,15 +71,13 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
     assert(map.size === 1001)
     assert(map(null) === -1)
 
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       assert(map(i.toString) === i)
-    }
 
     // Test iterator
     val set = new HashSet[(String, Int)]
-    for ((k, v) <- map) {
+    for ((k, v) <- map)
       set.add((k, v))
-    }
     val expected = (1 to 1000).map(x => (x.toString, x)) :+ (null
       .asInstanceOf[String], -1)
     assert(set === expected.toSet)
@@ -100,15 +98,13 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
     assert(map.size === 1001)
     assert(map(null) === "-1")
 
-    for (i <- 1 to 1000) {
+    for (i <- 1 to 1000)
       assert(map(i.toString) === i.toString)
-    }
 
     // Test iterator
     val set = new HashSet[(String, String)]
-    for ((k, v) <- map) {
+    for ((k, v) <- map)
       set.add((k, v))
-    }
     val expected = (1 to 1000).map(_.toString).map(x => (x, x)) :+ (null
       .asInstanceOf[String], "-1")
     assert(set === expected.toSet)
@@ -116,9 +112,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
 
   test("null keys") {
     val map = new OpenHashMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map(i.toString) = i.toString
-    }
     assert(map.size === 100)
     assert(map(null) === null)
     map(null) = "hello"
@@ -128,9 +123,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
 
   test("null values") {
     val map = new OpenHashMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map(i.toString) = null
-    }
     assert(map.size === 100)
     assert(map("1") === null)
     assert(map(null) === null)
@@ -142,9 +136,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
 
   test("changeValue") {
     val map = new OpenHashMap[String, String]()
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map(i.toString) = i.toString
-    }
     assert(map.size === 100)
     for (i <- 1 to 100) {
       val res = map.changeValue(i.toString, { assert(false); "" }, v => {
@@ -174,13 +167,11 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
 
   test("inserting in capacity-1 map") {
     val map = new OpenHashMap[String, String](1)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       map(i.toString) = i.toString
-    }
     assert(map.size === 100)
-    for (i <- 1 to 100) {
+    for (i <- 1 to 100)
       assert(map(i.toString) === i.toString)
-    }
   }
 
   test("contains") {
@@ -196,9 +187,8 @@ class OpenHashMapSuite extends SparkFunSuite with Matchers {
   test("support for more than 12M items") {
     val cnt = 12000000 // 12M
     val map = new OpenHashMap[Int, Int](cnt)
-    for (i <- 0 until cnt) {
+    for (i <- 0 until cnt)
       map(i) = 1
-    }
     val numInvalidValues = map.iterator.count(_._2 == 0)
     assertResult(0)(numInvalidValues)
   }

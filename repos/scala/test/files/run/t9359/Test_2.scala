@@ -21,7 +21,6 @@ object Test extends BytecodeTest {
     t.getText.get(0);
   }
   def show(): Unit =
-    for (n <- loadClassNode("C").innerClasses.asScala.toList.sortBy(_.name)) {
+    for (n <- loadClassNode("C").innerClasses.asScala.toList.sortBy(_.name))
       println(tost(n))
-    }
 }

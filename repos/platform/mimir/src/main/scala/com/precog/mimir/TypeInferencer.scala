@@ -132,7 +132,7 @@ trait TypeInferencer extends DAG {
               splits,
               left)
 
-          case Join(WrapObject, Cross(_), ConstString(str), right) => {
+          case Join(WrapObject, Cross(_), ConstString(str), right) =>
             val jtpe2 = jtpe map {
               case JObjectFixedT(map) =>
                 map get str getOrElse universe
@@ -141,9 +141,8 @@ trait TypeInferencer extends DAG {
             }
 
             inner(jtpe2, typing, splits, right)
-          }
 
-          case Join(ArraySwap, Cross(_), left, right) => {
+          case Join(ArraySwap, Cross(_), left, right) =>
             val jtpe2 = jtpe flatMap {
               case JArrayFixedT(_) => jtpe
               case _               => Some(JArrayUnfixedT)
@@ -154,7 +153,6 @@ trait TypeInferencer extends DAG {
               inner(jtpe2, typing, splits, left),
               splits,
               right)
-          }
 
           case Join(op: BinaryOperation, _, left, right) =>
             inner(
@@ -200,19 +198,17 @@ trait TypeInferencer extends DAG {
               child)
 
           // not using extractors due to bug
-          case s: SplitGroup => {
+          case s: SplitGroup =>
             val Split(spec, _, _) = splits(s.parentId)
             findGroup(spec, s.id) map { inner(jtpe, typing, splits, _) } getOrElse typing
-          }
 
           // not using extractors due to bug
-          case s: SplitParam => {
+          case s: SplitParam =>
             val Split(spec, _, _) = splits(s.parentId)
 
             findParams(spec, s.id).foldLeft(typing) { (typing, graph) =>
               inner(jtpe, typing, splits, graph)
             }
-          }
         }
       }
 

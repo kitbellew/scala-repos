@@ -76,9 +76,8 @@ class UnsafeFixedWidthAggregationMapSuite
           taskMemoryManager = taskMemoryManager,
           metricsSystem = null))
 
-      try {
-        f
-      } catch {
+      try f
+      catch {
         case NonFatal(e) =>
           Try(cleanup())
           throw e
@@ -171,9 +170,8 @@ class UnsafeFixedWidthAggregationMapSuite
 
     val seenKeys = new mutable.HashSet[String]
     val iter = map.iterator()
-    while (iter.next()) {
+    while (iter.next())
       seenKeys += iter.getKey.getString(0)
-    }
     assert(seenKeys.size === groupKeys.size)
     assert(seenKeys === groupKeys)
     map.free()
@@ -350,11 +348,8 @@ class UnsafeFixedWidthAggregationMapSuite
     try {
       sorter = map.destructAndCreateExternalSorter()
       map.free()
-    } finally {
-      if (sorter != null) {
-        sorter.cleanupResources()
-      }
-    }
+    } finally if (sorter != null)
+      sorter.cleanupResources()
   }
 
 }

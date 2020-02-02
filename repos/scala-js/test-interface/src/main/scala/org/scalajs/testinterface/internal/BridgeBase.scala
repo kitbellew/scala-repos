@@ -28,9 +28,8 @@ abstract class BridgeBase(frameworkName: String) {
       else
         msg.substring(pos + 1)
 
-    try {
-      handleMsgImpl(cmd, strArg)
-    } catch {
+    try handleMsgImpl(cmd, strArg)
+    catch {
       case NonFatal(t) =>
         val data = js.JSON.stringify(ThrowableSerializer.serialize(t))
         Com.send("bad:" + data)

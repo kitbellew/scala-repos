@@ -49,20 +49,20 @@ class ScValueDeclarationImpl private (
 
   def typeElement: Option[ScTypeElement] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub.asInstanceOf[ScValueStub].getTypeElement
-    } else findChild(classOf[ScTypeElement])
+    else findChild(classOf[ScTypeElement])
   }
 
   def getIdList: ScIdList = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub
         .getChildrenByType(
           ScalaElementTypes.IDENTIFIER_LIST,
           JavaArrayFactoryUtil.ScIdListFactory)
         .apply(0)
-    } else findChildByClass(classOf[ScIdList])
+    else findChildByClass(classOf[ScIdList])
   }
 
   override def accept(visitor: ScalaElementVisitor) {

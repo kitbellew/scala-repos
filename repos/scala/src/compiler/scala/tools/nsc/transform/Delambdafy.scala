@@ -201,9 +201,9 @@ abstract class Delambdafy
           val body = localTyper.typedPos(originalFunction.pos) {
             val newTarget = Select(gen.mkAttributedThis(oldClass), target)
             val args: List[Tree] = mapWithIndex(bridgeParams) { (param, i) =>
-              if (i < numCaptures) {
+              if (i < numCaptures)
                 gen.mkAttributedRef(param)
-              } else {
+              else {
                 val functionParam = functionParamTypes(i - numCaptures)
                 val targetParam = targetParams(i)
                 if (enteringErasure(
@@ -479,7 +479,7 @@ abstract class Delambdafy
         val lambdaTarget =
           if (isSpecialized)
             target
-          else {
+          else
             createBoxingBridgeMethod(functionParamTypes, functionResultType) match {
               case EmptyTree =>
                 target
@@ -487,7 +487,6 @@ abstract class Delambdafy
                 boxingBridgeMethods += bridge
                 bridge.symbol
             }
-          }
 
         // We then apply this symbol to the captures.
         val apply = localTyper
@@ -706,11 +705,11 @@ abstract class Delambdafy
     val paramTps :+ restpe = functionType.typeArgs
     val arity = paramTps.length
     val isSpecialized = name1.toTypeName != sym.name
-    val functionalInterface = if (!isSpecialized) {
-      currentRun.runDefinitions.Scala_Java8_CompatPackage_JFunction(arity)
-    } else {
-      pack.info.decl(name1.toTypeName.prepend("J"))
-    }
+    val functionalInterface =
+      if (!isSpecialized)
+        currentRun.runDefinitions.Scala_Java8_CompatPackage_JFunction(arity)
+      else
+        pack.info.decl(name1.toTypeName.prepend("J"))
     (functionalInterface, isSpecialized)
   }
 }

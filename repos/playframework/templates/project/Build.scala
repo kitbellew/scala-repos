@@ -133,9 +133,8 @@ object Templates {
           val newContents = allParams.foldLeft(contents) { (str, param) =>
             str.replace("%" + param._1 + "%", param._2)
           }
-          if (newContents != contents) {
+          if (newContents != contents)
             IO.write(file, newContents)
-          }
         case _ =>
       }
 
@@ -246,31 +245,29 @@ object Templates {
             resp <- clientCall(statusUrl)
               .withHeaders("Accept" -> "application/json,text/html;q=0.9")
               .get()
-          } yield {
-            resp.header("Content-Type") match {
-              case Some(json) if json.startsWith("application/json") =>
-                val js = resp.json
-                (js \ "status").as[String] match {
-                  case "pending"   => TemplatePending(uuid)
-                  case "validated" => TemplateValidated(uuid)
-                  case "failed" =>
-                    TemplateFailed(uuid, (js \ "errors").as[Seq[String]])
-                }
-              case _ =>
-                val body = resp.body
-                body match {
-                  case pending
-                      if body.contains("This template is being processed.") =>
-                    TemplatePending(uuid)
-                  case validated
-                      if body.contains(
-                        "This template was published successfully!") =>
-                    TemplateValidated(uuid)
-                  case failed
-                      if body.contains("This template failed to publish.") =>
-                    TemplateFailed(uuid, extractErrors(body))
-                }
-            }
+          } yield resp.header("Content-Type") match {
+            case Some(json) if json.startsWith("application/json") =>
+              val js = resp.json
+              (js \ "status").as[String] match {
+                case "pending"   => TemplatePending(uuid)
+                case "validated" => TemplateValidated(uuid)
+                case "failed" =>
+                  TemplateFailed(uuid, (js \ "errors").as[Seq[String]])
+              }
+            case _ =>
+              val body = resp.body
+              body match {
+                case pending
+                    if body.contains("This template is being processed.") =>
+                  TemplatePending(uuid)
+                case validated
+                    if body.contains(
+                      "This template was published successfully!") =>
+                  TemplateValidated(uuid)
+                case failed
+                    if body.contains("This template failed to publish.") =>
+                  TemplateFailed(uuid, extractErrors(body))
+              }
           }
 
           status.flatMap {

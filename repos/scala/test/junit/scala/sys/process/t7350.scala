@@ -27,9 +27,8 @@ class PipedProcessTest {
     var destroyCount = 0
     def isAlive() = false
     def exitValue(): Int = {
-      if (error) {
+      if (error)
         throw new InterruptedException()
-      }
       0
     }
     def destroy(): Unit = destroyCount += 1
@@ -38,9 +37,8 @@ class PipedProcessTest {
   class ProcessBuilderMock(process: Process, error: Boolean)
       extends ProcessBuilder.AbstractBuilder {
     override def run(io: ProcessIO): Process = {
-      if (error) {
+      if (error)
         throw new IOException()
-      }
       process
     }
   }
@@ -215,9 +213,8 @@ class PipeSourceSinkTest {
 
   class PipeSink extends Process.PipeSink("TestPipeSink") {
     def ensureRunloopStarted() =
-      while (sink.size() > 0) {
+      while (sink.size() > 0)
         Thread.sleep(1)
-      }
     def isReleased = {
       val field = classOf[Process.PipeSink].getDeclaredField("pipe")
       field.setAccessible(true)
@@ -228,9 +225,8 @@ class PipeSourceSinkTest {
 
   class PipeSource extends Process.PipeSource("TestPipeSource") {
     def ensureRunloopStarted() =
-      while (source.size() > 0) {
+      while (source.size() > 0)
         Thread.sleep(1)
-      }
     def isReleased = {
       val field = classOf[Process.PipeSource].getDeclaredField("pipe")
       field.setAccessible(true)

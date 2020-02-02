@@ -48,11 +48,10 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
     * If the RDD is not checkpointed yet, return None.
     */
   def getCheckpointDir: Option[String] = RDDCheckpointData.synchronized {
-    if (isCheckpointed) {
+    if (isCheckpointed)
       Some(cpDir.toString)
-    } else {
+    else
       None
-    }
   }
 
   /**
@@ -65,11 +64,10 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
     // Optionally clean our checkpoint files if the reference is out of scope
     if (rdd.conf.getBoolean(
           "spark.cleaner.referenceTracking.cleanCheckpoints",
-          false)) {
+          false))
       rdd.context.cleaner.foreach { cleaner =>
         cleaner.registerRDDCheckpointDataForCleanup(newRDD, rdd.id)
       }
-    }
 
     logInfo(
       s"Done checkpointing RDD ${rdd.id} to $cpDir, new parent is RDD ${newRDD.id}")
@@ -88,10 +86,8 @@ private[spark] object ReliableRDDCheckpointData extends Logging {
   def cleanCheckpoint(sc: SparkContext, rddId: Int): Unit =
     checkpointPath(sc, rddId).foreach { path =>
       val fs = path.getFileSystem(sc.hadoopConfiguration)
-      if (fs.exists(path)) {
-        if (!fs.delete(path, true)) {
+      if (fs.exists(path))
+        if (!fs.delete(path, true))
           logWarning(s"Error deleting ${path.toString()}")
-        }
-      }
     }
 }

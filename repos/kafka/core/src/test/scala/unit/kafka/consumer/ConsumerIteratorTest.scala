@@ -123,9 +123,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
       val message = iter.next
       assertEquals(message.offset, i + consumedOffset)
 
-      try {
-        message.message // should fail
-      } catch {
+      try message.message // should fail
+      catch {
         case e: UnsupportedOperationException => // this is ok
         case e2: Throwable =>
           fail(

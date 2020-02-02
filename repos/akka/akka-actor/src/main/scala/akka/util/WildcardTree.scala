@@ -15,9 +15,9 @@ private[akka] final case class WildcardTree[T](
     children: Map[String, WildcardTree[T]] = HashMap[String, WildcardTree[T]]()) {
 
   def insert(elems: Iterator[String], d: T): WildcardTree[T] =
-    if (!elems.hasNext) {
+    if (!elems.hasNext)
       copy(data = Some(d))
-    } else {
+    else {
       val e = elems.next()
       copy(children = children
         .updated(e, children.get(e).getOrElse(WildcardTree()).insert(elems, d)))
@@ -25,10 +25,9 @@ private[akka] final case class WildcardTree[T](
 
   @tailrec final def find(elems: Iterator[String]): WildcardTree[T] =
     if (!elems.hasNext) this
-    else {
+    else
       (children.get(elems.next()) orElse children.get("*")) match {
         case Some(branch) ⇒ branch.find(elems)
         case None ⇒ WildcardTree()
       }
-    }
 }

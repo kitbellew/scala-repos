@@ -57,7 +57,7 @@ trait IndexControllerBase extends ControllerBase {
 
   get("/") {
     val loginAccount = context.loginAccount
-    if (loginAccount.isEmpty) {
+    if (loginAccount.isEmpty)
       gitbucket.core.html.index(
         getRecentActivities(),
         getVisibleRepositories(loginAccount, withoutPhysicalInfo = true),
@@ -67,7 +67,7 @@ trait IndexControllerBase extends ControllerBase {
           }
           .getOrElse(Nil)
       )
-    } else {
+    else {
       val loginUserName = loginAccount.get.userName
       val loginUserGroups = getGroupsByUserName(loginUserName)
       var visibleOwnerSet: Set[String] = Set(loginUserName)
@@ -88,9 +88,8 @@ trait IndexControllerBase extends ControllerBase {
 
   get("/signin") {
     val redirect = params.get("redirect")
-    if (redirect.isDefined && redirect.get.startsWith("/")) {
+    if (redirect.isDefined && redirect.get.startsWith("/"))
       flash += Keys.Flash.Redirect -> redirect.get
-    }
     gitbucket.core.html.signin()
   }
 
@@ -118,19 +117,17 @@ trait IndexControllerBase extends ControllerBase {
     session.setAttribute(Keys.Session.LoginAccount, account)
     updateLastLoginDate(account.userName)
 
-    if (LDAPUtil.isDummyMailAddress(account)) {
+    if (LDAPUtil.isDummyMailAddress(account))
       redirect("/" + account.userName + "/_edit")
-    }
 
     flash
       .get(Keys.Flash.Redirect)
       .asInstanceOf[Option[String]]
       .map { redirectUrl =>
-        if (redirectUrl.stripSuffix("/") == request.getContextPath) {
+        if (redirectUrl.stripSuffix("/") == request.getContextPath)
           redirect("/")
-        } else {
+        else
           redirect(redirectUrl)
-        }
       }
       .getOrElse {
         redirect("/")

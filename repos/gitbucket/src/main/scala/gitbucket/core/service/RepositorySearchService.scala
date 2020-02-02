@@ -43,9 +43,9 @@ trait RepositorySearchService { self: IssuesService =>
       repository: String,
       query: String): List[FileSearchResult] =
     using(Git.open(getRepositoryDir(owner, repository))) { git =>
-      if (JGitUtil.isEmpty(git)) {
+      if (JGitUtil.isEmpty(git))
         Nil
-      } else {
+      else {
         val files = searchRepositoryFiles(git, query)
         val commits =
           JGitUtil.getLatestCommitFromPaths(git, files.map(_._1), "HEAD")
@@ -76,19 +76,17 @@ trait RepositorySearchService { self: IssuesService =>
 
     while (treeWalk.next()) {
       val mode = treeWalk.getFileMode(0)
-      if (mode == FileMode.REGULAR_FILE || mode == FileMode.EXECUTABLE_FILE) {
+      if (mode == FileMode.REGULAR_FILE || mode == FileMode.EXECUTABLE_FILE)
         JGitUtil.getContentFromId(git, treeWalk.getObjectId(0), false).foreach {
           bytes =>
             if (FileUtil.isText(bytes)) {
               val text = StringUtil.convertFromByteArray(bytes)
               val lowerText = text.toLowerCase
               val indices = keywords.map(lowerText.indexOf _)
-              if (!indices.exists(_ < 0)) {
+              if (!indices.exists(_ < 0))
                 list.append((treeWalk.getPathString, text))
-              }
             }
         }
-      }
     }
     treeWalk.close()
     revWalk.close()
@@ -116,9 +114,8 @@ object RepositorySearchService {
           "(?i)(" + keywords.map("\\Q" + _ + "\\E").mkString("|") + ")",
           "<span class=\"highlight\">$1</span>")
       (highlightText, lineNumber + 1)
-    } else {
+    } else
       (content.split("\n").take(5).mkString("\n"), 1)
-    }
   }
 
   case class SearchResult(

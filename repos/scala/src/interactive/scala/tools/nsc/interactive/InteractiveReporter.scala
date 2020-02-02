@@ -25,9 +25,9 @@ abstract class InteractiveReporter extends Reporter {
     try {
       severity.count += 1
       val problems =
-        if (compiler eq null) {
+        if (compiler eq null)
           otherProblems
-        } else if (pos.isDefined) {
+        else if (pos.isDefined)
           compiler.getUnit(pos.source) match {
             case Some(unit) =>
               compiler.debugLog(
@@ -38,7 +38,7 @@ abstract class InteractiveReporter extends Reporter {
                 pos.source.file.name + "[not loaded] :" + pos.line + ": " + msg)
               otherProblems
           }
-        } else {
+        else {
           compiler.debugLog("[no position] :" + msg)
           otherProblems
         }

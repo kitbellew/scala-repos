@@ -107,11 +107,11 @@ trait LogisticRegressionLibModule[M[+_]]
           value
 
       def cost(seq: Seq[ColumnValues], theta: Theta): Double =
-        if (seq.isEmpty) {
+        if (seq.isEmpty)
           sys.error("empty sequence should never occur")
-        } else {
+        else {
           val result = seq.foldLeft(0d) {
-            case (sum, colVal) => {
+            case (sum, colVal) =>
               val xs = java.util.Arrays.copyOf(colVal, colVal.length - 1)
               val y = colVal.last
 
@@ -125,21 +125,19 @@ trait LogisticRegressionLibModule[M[+_]]
                 val result = log(1 - sigmoid(dotProduct(theta, xs)))
 
                 sum + checkValue(result)
-              } else {
+              } else
                 sys.error("unreachable case")
-              }
-            }
           }
 
           -result
         }
 
       def gradient(seq: Seq[ColumnValues], theta: Theta, alpha: Double): Theta =
-        if (seq.isEmpty) {
+        if (seq.isEmpty)
           sys.error("empty sequence should never occur")
-        } else {
+        else
           seq.foldLeft(theta) {
-            case (theta, colVal) => {
+            case (theta, colVal) =>
               val xs = colVal.take(colVal.length - 1)
               val y = colVal.last
 
@@ -153,9 +151,7 @@ trait LogisticRegressionLibModule[M[+_]]
                 .map(checkValue)
 
               result.toArray
-            }
           }
-        }
 
       def reduceDouble(seq0: Seq[ColumnValues]): Result = {
         val seq = seq0 filter { arr => arr.last == 0 || arr.last == 1 }
@@ -195,23 +191,22 @@ trait LogisticRegressionLibModule[M[+_]]
         val diffs = theta0.zip(theta) map { case (t0, t) => math.abs(t0 - t) }
         val sum = diffs.sum
 
-        if (sum / theta.length < 0.01) {
+        if (sum / theta.length < 0.01)
           theta
-        } else if (cost(seq, theta) > cost(seq, theta0)) {
+        else if (cost(seq, theta) > cost(seq, theta0))
           if (alpha > Double.MinValue * 2.0)
             gradloop(seq, theta0, alpha / 2.0)
           else
             theta0
-        } else {
+        else
           gradloop(seq, theta, alpha)
-        }
       }
 
       def extract(res: Result, jtype: JType): Table = {
         val cpaths = Schema.cpath(jtype)
 
         res map {
-          case seq => {
+          case seq =>
             val initialTheta: Theta = {
               val thetaLength = seq.headOption map { _.length } getOrElse sys
                 .error("unreachable: `res` would have been None")
@@ -220,14 +215,13 @@ trait LogisticRegressionLibModule[M[+_]]
 
               val (result, _) =
                 (thetas.tail).foldLeft((thetas.head, cost(seq, thetas.head))) {
-                  case ((theta0, cost0), theta) => {
+                  case ((theta0, cost0), theta) =>
                     val costnew = cost(seq, theta)
 
                     if (costnew < cost0)
                       (theta, costnew)
                     else
                       (theta0, cost0)
-                  }
                 }
 
               result
@@ -260,7 +254,6 @@ trait LogisticRegressionLibModule[M[+_]]
 
             valueTable.cross(keyTable)(
               InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
-          }
         } getOrElse Table.empty
       }
 
@@ -295,9 +288,7 @@ trait LogisticRegressionLibModule[M[+_]]
           val tablesWithType: M[Seq[(Table, JType)]] = for {
             samples <- sampleTables
             jtypes <- schemas
-          } yield {
-            samples zip jtypes
-          }
+          } yield samples zip jtypes
 
           val tableReducer: (Table, JType) => M[Table] =
             (table, jtype) =>

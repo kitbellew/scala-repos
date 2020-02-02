@@ -28,11 +28,11 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
       implicit
       semigroup: Semigroup[V],
       eq: Eq[V]): Map[K, V] = {
-    val (big, small, bigOnLeft) = if (x.size > y.size) {
-      (x, y, true)
-    } else {
-      (y, x, false)
-    }
+    val (big, small, bigOnLeft) =
+      if (x.size > y.size)
+        (x, y, true)
+      else
+        (y, x, false)
     small.foldLeft(big) { (oldMap, kv) =>
       val newV = big
         .get(kv._1)
@@ -88,15 +88,14 @@ class MapSemigroupBenchmarks extends MyBenchmark with BenchmarkData {
   }
 
   override protected def setUp(): Unit =
-    if (mapType == "random") {
+    if (mapType == "random")
       maps = genMaps { i => (nextInt, nextInt) }
-    } else if (mapType == "sparse") {
+    else if (mapType == "sparse")
       maps = genMaps { i => (nextInt(mapSize), nextInt) }
-    } else if (mapType == "dense") {
+    else if (mapType == "dense")
       maps = genMaps { i => (i, nextInt) }
-    } else {
+    else
       sys.error("What are you doing to me!")
-    }
 
   implicit val semigroup = new Semigroup[Int] {
     def op(x: Int, y: Int): Int = x + y

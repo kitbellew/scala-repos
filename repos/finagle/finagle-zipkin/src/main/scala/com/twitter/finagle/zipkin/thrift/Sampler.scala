@@ -31,10 +31,9 @@ class Sampler {
     * How much to let through? For everything, use 1 = 100.00%
     */
   def setSampleRate(sampleRate: Float) = {
-    if (!validSampleRate(sampleRate)) {
+    if (!validSampleRate(sampleRate))
       throw new IllegalArgumentException(
         "Sample rate not within the valid range of 0-1, was " + sampleRate)
-    }
     sr = sampleRate
   }
 

@@ -35,17 +35,16 @@ object MarathonSchedulerDriver {
     // Set the ID, if provided
     frameworkId.foreach(frameworkInfoBuilder.setId)
 
-    if (config.webuiUrl.isSupplied) {
+    if (config.webuiUrl.isSupplied)
       frameworkInfoBuilder.setWebuiUrl(config.webuiUrl())
-    } else if (httpConfig.sslKeystorePath.isDefined) {
+    else if (httpConfig.sslKeystorePath.isDefined)
       // ssl enabled, use https
       frameworkInfoBuilder.setWebuiUrl(
         s"https://${config.hostname()}:${httpConfig.httpsPort()}")
-    } else {
+    else
       // ssl disabled, use http
       frameworkInfoBuilder.setWebuiUrl(
         s"http://${config.hostname()}:${httpConfig.httpPort()}")
-    }
 
     // set the authentication principal, if provided
     config.mesosAuthenticationPrincipal.get

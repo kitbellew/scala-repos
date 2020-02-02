@@ -28,9 +28,8 @@ class CreateApplyQuickFix(td: ScTypeDefinition, call: ScMethodCall) extends {
       builder: TemplateBuilder) = {
     for (aType <- methodType;
          typeElement <- method.children.findByType(
-           classOf[ScSimpleTypeElement])) {
+           classOf[ScSimpleTypeElement]))
       builder.replaceElement(typeElement, aType)
-    }
 
     addParametersToTemplate(method, builder)
     addQmarksToTemplate(method, builder)

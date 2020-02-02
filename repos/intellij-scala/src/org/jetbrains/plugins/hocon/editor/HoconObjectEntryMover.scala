@@ -264,9 +264,8 @@ class HoconObjectEntryMover extends LineMover {
         val caretModel = editor.getCaretModel
         val shouldMoveCaret = length == 0 && caretModel.getOffset == offset
         editor.getDocument.replaceString(offset, offset + length, replacement)
-        if (shouldMoveCaret) {
+        if (shouldMoveCaret)
           caretModel.moveToOffset(caretModel.getOffset + replacement.length)
-        }
     }
 }
 

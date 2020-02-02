@@ -28,13 +28,13 @@ class ScIdListImpl private (
 
   def fieldIds: Seq[ScFieldId] = {
     val stub = getStub
-    if (stub != null) {
+    if (stub != null)
       stub
         .getChildrenByType(
           ScalaElementTypes.FIELD_ID,
           JavaArrayFactoryUtil.ScFieldIdFactory)
         .toSeq
-    } else findChildrenByClass(classOf[ScFieldId]).toSeq
+    else findChildrenByClass(classOf[ScFieldId]).toSeq
   }
 
   override def toString: String = "ListOfIdentifiers"

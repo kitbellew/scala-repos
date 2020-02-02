@@ -169,11 +169,10 @@ object ResolveUtils {
       scope: GlobalSearchScope = null,
       returnType: Option[ScType] = None): NonValueType =
     if (m.getTypeParameters.isEmpty) javaMethodType(m, s, scope, returnType)
-    else {
+    else
       ScTypePolymorphicType(
         javaMethodType(m, s, scope, returnType),
         m.getTypeParameters.map(new TypeParameter(_)))
-    }
 
   def isAccessible(
       memb: PsiMember,
@@ -194,7 +193,7 @@ object ResolveUtils {
         }
       case _ =>
     }
-    if (place.getLanguage == JavaLanguage.INSTANCE) {
+    if (place.getLanguage == JavaLanguage.INSTANCE)
       return JavaResolveUtil.isAccessible(
         memb,
         memb.containingClass,
@@ -202,7 +201,6 @@ object ResolveUtils {
         place,
         null,
         null)
-    }
 
     import org.jetbrains.plugins.scala.lang.psi.ScalaPsiUtil.getPlaceTd
     //this is to make place and member on same level (resolve from library source)
@@ -239,11 +237,10 @@ object ResolveUtils {
       var placeTd: ScTemplateDefinition = getPlaceTd(place, isConstr)
       if (isConstr) {
         if (placeTd != null && !placeTd
-              .isInstanceOf[ScTypeDefinition] && placeTd.extendsBlock.templateBody == None) {
+              .isInstanceOf[ScTypeDefinition] && placeTd.extendsBlock.templateBody == None)
           placeTd = getPlaceTd(placeTd)
-        } else if (placeTd != null) {
+        else if (placeTd != null)
           if (td != null && isInheritorOrSelfOrSame(placeTd, td)) return true
-        }
         while (placeTd != null) {
           if (td == placeTd) return true
           val companion: ScTemplateDefinition = ScalaPsiUtil
@@ -272,7 +269,7 @@ object ResolveUtils {
           case None => true
           case Some(am: ScAccessModifier) =>
             if (am.isPrivate) {
-              if (am.access == ScAccessModifier.Type.THIS_PRIVATE) {
+              if (am.access == ScAccessModifier.Type.THIS_PRIVATE)
                 /*
               ScalaRefernce.pdf:
                 A member M marked with this modifier can be accessed only from
@@ -328,7 +325,6 @@ object ResolveUtils {
                       place,
                       false)
                 }
-              }
               val ref = am.getReference
               if (ref != null) {
                 val bind = ref.resolve
@@ -482,7 +478,7 @@ object ResolveUtils {
               assert(
                 enclosing != null,
                 s"Enclosing is null in file ${scMember.getContainingFile.getName}:\n${scMember.getContainingFile.getText}")
-              if (am.isThis) {
+              if (am.isThis)
                 place match {
                   case ref: ScReferenceElement =>
                     ref.qualifier match {
@@ -502,7 +498,6 @@ object ResolveUtils {
                     }
                   case _ =>
                 }
-              }
               enclosing match {
                 case td: ScTypeDefinition =>
                   if (PsiTreeUtil.isContextAncestor(td, place, false) ||
@@ -568,12 +563,12 @@ object ResolveUtils {
       superRef: ScSuperReference,
       processor: BaseProcessor,
       place: ScalaPsiElement) {
-    if (superRef.isHardCoded) {
+    if (superRef.isHardCoded)
       superRef.drvTemplate match {
         case Some(c) => processor.processType(ScThisType(c), place)
         case None    =>
       }
-    } else {
+    else
       superRef.staticSuper match {
         case Some(t) => processor.processType(t, place)
         case None =>
@@ -589,7 +584,6 @@ object ResolveUtils {
             case None =>
           }
       }
-    }
   }
 
   def getPlacePackage(place: PsiElement): String = {
@@ -621,9 +615,8 @@ object ResolveUtils {
             }
             te.getType(TypingContext.empty) match {
               case Success(ctp: ScCompoundType, _) =>
-                for (tp <- ctp.components) {
+                for (tp <- ctp.components)
                   if (isInheritorOrSame(tp)) return true
-                }
               case Success(tp: ScType, _) =>
                 if (isInheritorOrSame(tp)) return true
               case _ =>
@@ -661,7 +654,7 @@ object ResolveUtils {
       case base: BaseProcessor =>
         val nameHint = base.getHint(NameHint.KEY)
         val name = if (nameHint == null) "" else nameHint.getName(state)
-        if (name != null && name != "" && base.getClassKind) {
+        if (name != null && name != "" && base.getClassKind)
           try {
             base.setClassKind(classKind = false)
 
@@ -684,13 +677,11 @@ object ResolveUtils {
                       if (ScalaNamesUtil.isKeyword(s)) s"`$s`" else s
                     }
                     .mkString(".")
-                  if (improvedFqn != fqn) {
+                  if (improvedFqn != fqn)
                     classes = manager.getCachedClasses(scope, improvedFqn)
-                  }
                 }
-                for (clazz <- classes if clazz.containingClass == null) {
+                for (clazz <- classes if clazz.containingClass == null)
                   if (!processor.execute(clazz, state)) return false
-                }
                 true
               }
               if (!calcForName(name)) return false
@@ -718,15 +709,12 @@ object ResolveUtils {
                 .instance(psiPack.getProject)
                 .getCachedPackage(subpackageQName)
                 .orNull
-              if (subPackage != null) {
+              if (subPackage != null)
                 if (!processor.execute(subPackage, state)) return false
-              }
               true
             } else true
-          } finally {
-            base.setClassKind(classKind = true)
-          }
-        } else {
+          } finally base.setClassKind(classKind = true)
+        else
           try {
             if (base.getClassKindInner) {
               base.setClassKind(classKind = false)
@@ -744,7 +732,7 @@ object ResolveUtils {
               }
             }
 
-            if (base.kinds.contains(ResolveTargets.PACKAGE)) {
+            if (base.kinds.contains(ResolveTargets.PACKAGE))
               //process subpackages
               pack match {
                 case s: ScPackageImpl =>
@@ -756,11 +744,8 @@ object ResolveUtils {
                 case _ =>
                   pack.processDeclarations(processor, state, lastParent, place)
               }
-            } else true
-          } finally {
-            base.setClassKind(classKind = true)
-          }
-        }
+            else true
+          } finally base.setClassKind(classKind = true)
       case _ => pack.processDeclarations(processor, state, lastParent, place)
     }
   }

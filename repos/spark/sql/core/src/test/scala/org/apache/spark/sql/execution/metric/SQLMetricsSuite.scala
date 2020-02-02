@@ -107,19 +107,17 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
         val (expectedNodeName, expectedMetricsMap) = expectedMetrics(nodeId)
         val (actualNodeName, actualMetricsMap) = actualMetrics(nodeId)
         assert(expectedNodeName === actualNodeName)
-        for (metricName <- expectedMetricsMap.keySet) {
+        for (metricName <- expectedMetricsMap.keySet)
           assert(
             expectedMetricsMap(metricName).toString === actualMetricsMap(
               metricName))
-        }
       }
-    } else {
+    } else
       // TODO Remove this "else" once we fix the race condition that missing the JobStarted event.
       // Since we cannot track all jobs, the metric values could be wrong and we should not check
       // them.
       logWarning(
         "Due to a race condition, we miss some jobs and cannot verify the metric values")
-    }
   }
 
   test("Filter metrics") {
@@ -398,10 +396,9 @@ private class BoxingFinder(
       desc: String,
       sig: String,
       exceptions: Array[String]): MethodVisitor = {
-    if (method != null && (method.name != name || method.desc != desc)) {
+    if (method != null && (method.name != name || method.desc != desc))
       // If method is specified, skip other methods.
       return new MethodVisitor(ASM5) {}
-    }
 
     new MethodVisitor(ASM5) {
       override def visitMethodInsn(
@@ -411,10 +408,9 @@ private class BoxingFinder(
           desc: String,
           itf: Boolean) {
         if (op == INVOKESPECIAL && name == "<init>" || op == INVOKESTATIC && name == "valueOf") {
-          if (primitiveBoxingClassName.contains(owner)) {
+          if (primitiveBoxingClassName.contains(owner))
             // Find boxing methods, e.g, new java.lang.Long(l) or java.lang.Long.valueOf(l)
             boxingInvokes.add(s"$owner.$name")
-          }
         } else {
           // scalastyle:off classforname
           val classOfMethodOwner = Class.forName(

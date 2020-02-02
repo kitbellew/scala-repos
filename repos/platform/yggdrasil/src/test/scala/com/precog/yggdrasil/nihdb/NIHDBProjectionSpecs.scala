@@ -95,9 +95,8 @@ class NIHDBProjectionSpecs
     val workDir =
       new File(baseDir, "nihdbspec%03d".format(dirSeq.getAndIncrement))
 
-    if (!workDir.mkdirs) {
+    if (!workDir.mkdirs)
       throw new Exception("Failed to create work directory! " + workDir)
-    }
 
     var nihdb = newNihdb(workDir)
 

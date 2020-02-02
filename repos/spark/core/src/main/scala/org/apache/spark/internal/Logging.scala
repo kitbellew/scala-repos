@@ -94,13 +94,11 @@ private[spark] trait Logging {
     log.isTraceEnabled
 
   protected def initializeLogIfNecessary(isInterpreter: Boolean): Unit =
-    if (!Logging.initialized) {
+    if (!Logging.initialized)
       Logging.initLock.synchronized {
-        if (!Logging.initialized) {
+        if (!Logging.initialized)
           initializeLogging(isInterpreter)
-        }
       }
-    }
 
   private def initializeLogging(isInterpreter: Boolean): Unit = {
     // Don't use a logger in here, as this is itself occurring during initialization of a logger
@@ -159,9 +157,8 @@ private object Logging {
     bridgeClass.getMethod("removeHandlersForRootLogger").invoke(null)
     val installed =
       bridgeClass.getMethod("isInstalled").invoke(null).asInstanceOf[Boolean]
-    if (!installed) {
+    if (!installed)
       bridgeClass.getMethod("install").invoke(null)
-    }
   } catch {
     case e: ClassNotFoundException => // can't log anything yet so just fail silently
   }

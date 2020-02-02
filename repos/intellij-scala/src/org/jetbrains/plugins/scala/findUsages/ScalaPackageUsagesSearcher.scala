@@ -46,9 +46,9 @@ class ScalaPackageUsagesSearcher
         offsetInElement: Int,
         consumer: Processor[PsiReference]): Boolean = inReadAction {
       val reference: PsiReference = element.getReference
-      if (reference == null || !reference.isReferenceTo(myTarget)) {
+      if (reference == null || !reference.isReferenceTo(myTarget))
         true
-      } else consumer.process(reference)
+      else consumer.process(reference)
     }
   }
 }

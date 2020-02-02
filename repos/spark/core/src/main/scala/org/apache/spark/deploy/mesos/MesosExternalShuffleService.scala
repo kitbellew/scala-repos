@@ -67,11 +67,10 @@ private[mesos] class MesosExternalShuffleBlockHandler(
         logInfo(
           s"Received registration request from app $appId (remote address $address, " +
             s"heartbeat timeout $timeout ms).")
-        if (connectedApps.containsKey(appId)) {
+        if (connectedApps.containsKey(appId))
           logWarning(
             s"Received a registration request from app $appId, but it was already " +
               s"registered")
-        }
         connectedApps.put(appId, appState)
         callback.onSuccess(ByteBuffer.allocate(0))
       case Heartbeat(appId) =>

@@ -56,10 +56,8 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
       "new E(new Z[Int])",
       "new Alias[Int](0)"
     )
-    for { code <- codes } {
-      assertMatches(messages(code)) {
-        case Nil =>
-      }
+    for { code <- codes } assertMatches(messages(code)) {
+      case Nil =>
     }
   }
 
@@ -129,8 +127,6 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
       }
 
       mock.annotations
-    } finally {
-      Compatibility.seqClass = None
-    }
+    } finally Compatibility.seqClass = None
   }
 }

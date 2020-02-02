@@ -38,9 +38,8 @@ object CachedInsidePsiElement {
 
     annottees.toList match {
       case DefDef(mods, name, tpParams, paramss, retTp, rhs) :: Nil =>
-        if (retTp.isEmpty) {
+        if (retTp.isEmpty)
           abort("You must specify return type")
-        }
 
         //generated names
         val cachedFunName = generateTermName("cachedFun")

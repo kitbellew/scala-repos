@@ -107,13 +107,12 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
         log.debug(
           s"Ignoring health check HTTP response ${response.status.intValue} for ${task.taskId}")
         None
-      } else {
+      } else
         Some(
           Unhealthy(
             task.taskId,
             launched.appVersion,
             response.status.toString()))
-      }
     }
   }
 

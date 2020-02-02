@@ -234,12 +234,11 @@ private[concurrent] object Promise {
       val target = linked.asInstanceOf[DefaultPromise[T]].root
       if (linked eq target) target
       else if (compareAndSet(linked, target)) target
-      else {
+      else
         get() match {
           case newLinked: DefaultPromise[_] => compressedRoot(newLinked)
           case _                            => this
         }
-      }
     }
 
     /** Get the promise at the root of the chain of linked promises. Used by `compressedRoot()`.
@@ -367,23 +366,23 @@ private[concurrent] object Promise {
       *  promise's result to the target promise.
       */
     @tailrec
-    private def link(target: DefaultPromise[T]): Unit = if (this ne target) {
-      get() match {
-        case r: Try[_] =>
-          if (!target.tryComplete(r.asInstanceOf[Try[T]]))
-            throw new IllegalStateException(
-              "Cannot link completed promises together")
-        case dp: DefaultPromise[_] =>
-          compressedRoot(dp).link(target)
-        case listeners: List[_] if compareAndSet(listeners, target) =>
-          if (listeners.nonEmpty)
-            listeners
-              .asInstanceOf[List[CallbackRunnable[T]]]
-              .foreach(target.dispatchOrAddCallback(_))
-        case _ =>
-          link(target)
-      }
-    }
+    private def link(target: DefaultPromise[T]): Unit =
+      if (this ne target)
+        get() match {
+          case r: Try[_] =>
+            if (!target.tryComplete(r.asInstanceOf[Try[T]]))
+              throw new IllegalStateException(
+                "Cannot link completed promises together")
+          case dp: DefaultPromise[_] =>
+            compressedRoot(dp).link(target)
+          case listeners: List[_] if compareAndSet(listeners, target) =>
+            if (listeners.nonEmpty)
+              listeners
+                .asInstanceOf[List[CallbackRunnable[T]]]
+                .foreach(target.dispatchOrAddCallback(_))
+          case _ =>
+            link(target)
+        }
   }
 
   /** An already completed Future is given its result at creation.

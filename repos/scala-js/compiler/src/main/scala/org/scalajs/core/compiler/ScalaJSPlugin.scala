@@ -26,14 +26,13 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
   val name = "scalajs"
   val description = "Compile to JavaScript"
   val components = {
-    if (global.forScaladoc) {
+    if (global.forScaladoc)
       List[NscPluginComponent](PrepInteropComponent)
-    } else {
+    else
       List[NscPluginComponent](
         PreTyperComponentComponent,
         PrepInteropComponent,
         GenCodeComponent)
-    }
   }
 
   /** Called when the JS ASTs are generated. Override for testing */
@@ -98,16 +97,15 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
     import ScalaJSOptions.URIMap
     import scalaJSOpts._
 
-    for (option <- options) {
-      if (option == "fixClassOf") {
+    for (option <- options)
+      if (option == "fixClassOf")
         fixClassOf = true
-
-      } else if (option.startsWith("mapSourceURI:")) {
+      else if (option.startsWith("mapSourceURI:")) {
         val uris = option.stripPrefix("mapSourceURI:").split("->")
 
-        if (uris.length != 1 && uris.length != 2) {
+        if (uris.length != 1 && uris.length != 2)
           error("relocateSourceMap needs one or two URIs as argument.")
-        } else {
+        else
           try {
             val from = new URI(uris.head)
             val to = uris.lift(1).map(str => new URI(str))
@@ -116,27 +114,22 @@ class ScalaJSPlugin(val global: Global) extends NscPlugin {
             case e: URISyntaxException =>
               error(s"${e.getInput} is not a valid URI")
           }
-        }
 
         // The following options are deprecated (how do we show this to the user?)
       } else if (option.startsWith("relSourceMap:")) {
         val uriStr = option.stripPrefix("relSourceMap:")
-        try {
-          relSourceMap = Some(new URI(uriStr))
-        } catch {
+        try relSourceMap = Some(new URI(uriStr))
+        catch {
           case e: URISyntaxException => error(s"$uriStr is not a valid URI")
         }
       } else if (option.startsWith("absSourceMap:")) {
         val uriStr = option.stripPrefix("absSourceMap:")
-        try {
-          absSourceMap = Some(new URI(uriStr))
-        } catch {
+        try absSourceMap = Some(new URI(uriStr))
+        catch {
           case e: URISyntaxException => error(s"$uriStr is not a valid URI")
         }
-      } else {
+      } else
         error("Option not understood: " + option)
-      }
-    }
 
     // Verify constraints
     if (_sourceURIMaps.nonEmpty && relSourceMap.isDefined)

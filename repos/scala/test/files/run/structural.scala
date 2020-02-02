@@ -161,9 +161,8 @@ object test3 {
   }
 
   def m(r: { def f: Nothing }) =
-    try {
-      r.f
-    } catch {
+    try r.f
+    catch {
       case e: Exc       => println("caught")
       case e: Throwable => println(e)
     }

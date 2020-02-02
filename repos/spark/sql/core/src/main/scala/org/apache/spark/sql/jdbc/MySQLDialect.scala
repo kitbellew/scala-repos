@@ -40,9 +40,9 @@ private case object MySQLDialect extends JdbcDialect {
       // byte arrays instead of longs.
       md.putLong("binarylong", 1)
       Option(LongType)
-    } else if (sqlType == Types.BIT && typeName.equals("TINYINT")) {
+    } else if (sqlType == Types.BIT && typeName.equals("TINYINT"))
       Option(BooleanType)
-    } else None
+    else None
 
   override def quoteIdentifier(colName: String): String =
     s"`$colName`"

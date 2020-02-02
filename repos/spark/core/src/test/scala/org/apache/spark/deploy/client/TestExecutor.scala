@@ -22,8 +22,7 @@ private[spark] object TestExecutor {
     // scalastyle:off println
     println("Hello world!")
     // scalastyle:on println
-    while (true) {
+    while (true)
       Thread.sleep(1000)
-    }
   }
 }

@@ -7,13 +7,12 @@ class Foo {
     import scala.util.control.Breaks.{break, breakable}
     println("START for " + xs)
     breakable {
-      for (x <- xs) {
+      for (x <- xs)
         x match {
           case L.One   => println("ONE"); return
           case L.Two   => println("TWO")
           case L.Three => println("THREE"); break
         }
-      }
     }
     println("FINISH")
   }

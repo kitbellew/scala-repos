@@ -117,7 +117,7 @@ class CompletionProcessor(
           }
         } else addResult(result)
         signature.foreach(sign => signatures += ((sign, forImplicit)))
-      } else {
+      } else
         signature match {
           case Some(sign) =>
             signatures.get(sign) match {
@@ -126,9 +126,8 @@ class CompletionProcessor(
                 while (iterator.hasNext) {
                   val next = iterator.next()
                   if (getQualifiedName(next) == getQualifiedName(result) && next.element != result.element &&
-                      signature == getSignature(next.element, next.substitutor)) {
+                      signature == getSignature(next.element, next.substitutor))
                     iterator.remove()
-                  }
                 }
               case Some(false) => //do nothing
               case None =>
@@ -143,7 +142,6 @@ class CompletionProcessor(
               }
             } else addResult(result)
         }
-      }
     }
 
     element match {
@@ -175,7 +173,7 @@ class CompletionProcessor(
           case _ =>
         }
       case named: PsiNamedElement =>
-        if (kindMatches(element)) {
+        if (kindMatches(element))
           element match {
             case method: PsiMethod =>
               val result = new ScalaResolveResult(
@@ -211,7 +209,6 @@ class CompletionProcessor(
                 prefixCompletion = prefixCompletion)
               _addResult(result)
           }
-        }
     }
     true
   }

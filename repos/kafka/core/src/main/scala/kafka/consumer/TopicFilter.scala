@@ -29,9 +29,8 @@ sealed abstract class TopicFilter(rawRegex: String) extends Logging {
     .replaceAll("""^["']+""", "")
     .replaceAll("""["']+$""", "") // property files may bring quotes
 
-  try {
-    Pattern.compile(regex)
-  } catch {
+  try Pattern.compile(regex)
+  catch {
     case e: PatternSyntaxException =>
       throw new RuntimeException(regex + " is an invalid regex.")
   }

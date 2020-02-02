@@ -179,7 +179,7 @@ trait ShardService
             get {
               produce(application / json)(
                 new BrowseServiceHandler[ByteChunk](state.platform.vfs) map {
-                  _ map { _ map { _ map { jvalueToChunk } } }
+                  _ map { _ map { _ map jvalueToChunk } }
                 }
               )(
                 ResponseModifier.responseFG[
@@ -198,7 +198,7 @@ trait ShardService
                 new BrowseServiceHandler[ByteChunk](
                   state.platform.vfs,
                   legacy = true) map {
-                  _ map { _ map { _ map { jvalueToChunk } } }
+                  _ map { _ map { _ map jvalueToChunk } }
                 }
               )(
                 ResponseModifier.responseFG[

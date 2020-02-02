@@ -226,9 +226,8 @@ private[kafka] class KafkaTestUtils extends Logging {
   // dependency
   def eventually[T](timeout: Time, interval: Time)(func: => T): T = {
     def makeAttempt(): Either[Throwable, T] =
-      try {
-        Right(func)
-      } catch {
+      try Right(func)
+      catch {
         case e if NonFatal(e) => Left(e)
       }
 
@@ -239,11 +238,10 @@ private[kafka] class KafkaTestUtils extends Logging {
         case Right(result) => result
         case Left(e) =>
           val duration = System.currentTimeMillis() - startTime
-          if (duration < timeout.milliseconds) {
+          if (duration < timeout.milliseconds)
             Thread.sleep(interval.milliseconds)
-          } else {
+          else
             throw new TimeoutException(e.getMessage)
-          }
 
           tryAgain(attempt + 1)
       }

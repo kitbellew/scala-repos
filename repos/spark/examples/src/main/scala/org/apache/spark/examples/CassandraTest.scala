@@ -100,9 +100,8 @@ object CassandraTest {
 
     // Let us first get all the paragraphs from the retrieved rows
     val paraRdd = casRdd.map {
-      case (key, value) => {
+      case (key, value) =>
         ByteBufferUtil.string(value.get(ByteBufferUtil.bytes("para")).value())
-      }
     }
 
     // Lets get the word count in paras
@@ -117,7 +116,7 @@ object CassandraTest {
 
     counts
       .map {
-        case (word, count) => {
+        case (word, count) =>
           val colWord = new org.apache.cassandra.thrift.Column()
           colWord.setName(ByteBufferUtil.bytes("word"))
           colWord.setValue(ByteBufferUtil.bytes(word))
@@ -137,7 +136,6 @@ object CassandraTest {
           mutations.get(1).setColumn_or_supercolumn(new ColumnOrSuperColumn())
           mutations.get(1).column_or_supercolumn.setColumn(colCount)
           (outputkey, mutations)
-        }
       }
       .saveAsNewAPIHadoopFile(
         "casDemo",

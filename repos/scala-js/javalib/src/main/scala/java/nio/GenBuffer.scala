@@ -52,15 +52,14 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
     src.position(srcLimit)
 
     val srcArray = src._array // even if read-only
-    if (srcArray != null) {
+    if (srcArray != null)
       store(selfPos, srcArray, src._arrayOffset + srcPos, length)
-    } else {
+    else
       while (srcPos != srcLimit) {
         store(selfPos, src.load(srcPos))
         srcPos += 1
         selfPos += 1
       }
-    }
 
     self
   }
@@ -118,9 +117,9 @@ private[nio] final class GenBuffer[B <: Buffer](val self: B) extends AnyVal {
   def generic_compareTo(that: BufferType)(
       compare: (ElementType, ElementType) => Int): Int =
     // scalastyle:off return
-    if (self eq that) {
+    if (self eq that)
       0
-    } else {
+    else {
       val thisStart = self.position
       val thisRemaining = self.limit - thisStart
       val thatStart = that.position

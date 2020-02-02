@@ -498,9 +498,8 @@ class SQLListenerMemoryLeakSuite extends SparkFunSuite {
             (2, 2)
           ).toDF()
           df.collect()
-          try {
-            df.foreach(_ => throw new RuntimeException("Oops"))
-          } catch {
+          try df.foreach(_ => throw new RuntimeException("Oops"))
+          catch {
             case e: SparkException => // This is expected for a failed job
           }
         }
@@ -511,9 +510,7 @@ class SQLListenerMemoryLeakSuite extends SparkFunSuite {
         assert(sqlContext.listener.executionIdToData.size <= 100)
         assert(sqlContext.listener.jobIdToExecutionId.size <= 100)
         assert(sqlContext.listener.stageIdToStageMetrics.size <= 100)
-      } finally {
-        sc.stop()
-      }
+      } finally sc.stop()
     }
   }
 }

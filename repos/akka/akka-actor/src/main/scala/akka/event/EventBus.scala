@@ -375,11 +375,8 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
       }
     }
 
-    try {
-      dissociateAsMonitored(actor)
-    } finally {
-      dissociateAsMonitor(actor)
-    }
+    try dissociateAsMonitored(actor)
+    finally dissociateAsMonitor(actor)
   }
 
   @tailrec
@@ -394,13 +391,11 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
         val removed = current.remove(monitored, monitor)
         val removedMonitors = removed.get(monitored)
 
-        if (monitors.isEmpty || monitors == removedMonitors) {
+        if (monitors.isEmpty || monitors == removedMonitors)
           false
-        } else {
-          if (mappings.compareAndSet(current, removed))
-            unregisterFromUnsubscriber(monitor, removed.seqNr)
-          else dissociate(monitored, monitor)
-        }
+        else if (mappings.compareAndSet(current, removed))
+          unregisterFromUnsubscriber(monitor, removed.seqNr)
+        else dissociate(monitored, monitor)
     }
   }
 
@@ -479,12 +474,10 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
     current match {
       case null ⇒
         if (monitored.isTerminated) false
-        else {
-          if (mappings.putIfAbsent(monitored, empty + monitor) ne null)
-            associate(monitored, monitor)
-          else if (monitored.isTerminated) !dissociate(monitored, monitor)
-          else true
-        }
+        else if (mappings.putIfAbsent(monitored, empty + monitor) ne null)
+          associate(monitored, monitor)
+        else if (monitored.isTerminated) !dissociate(monitored, monitor)
+        else true
       case raw: immutable.TreeSet[_] ⇒
         val v = raw.asInstanceOf[immutable.TreeSet[ActorRef]]
         if (monitored.isTerminated) false
@@ -529,11 +522,8 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
       }
     }
 
-    try {
-      dissociateAsMonitored(monitored)
-    } finally {
-      dissociateAsMonitor(monitored)
-    }
+    try dissociateAsMonitored(monitored)
+    finally dissociateAsMonitor(monitored)
   }
 
   @tailrec
@@ -547,14 +537,12 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
         val v = raw.asInstanceOf[immutable.TreeSet[ActorRef]]
         val removed = v - monitor
         if (removed eq raw) false
-        else if (removed.isEmpty) {
+        else if (removed.isEmpty)
           if (!mappings.remove(monitored, v)) dissociate(monitored, monitor)
           else true
-        } else {
-          if (!mappings.replace(monitored, v, removed))
-            dissociate(monitored, monitor)
-          else true
-        }
+        else if (!mappings.replace(monitored, v, removed))
+          dissociate(monitored, monitor)
+        else true
     }
   }
 
@@ -570,7 +558,7 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
 
   def publish(event: Event): Unit = mappings.get(classify(event)) match {
     case null ⇒ ()
-    case some ⇒ some foreach { _ ! event }
+    case some ⇒ some foreach _ ! event
   }
 
   def subscribe(subscriber: Subscriber, to: Classifier): Boolean =

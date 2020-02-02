@@ -54,11 +54,9 @@ private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
     * Write this buffer to a channel.
     */
   def writeFully(channel: WritableByteChannel): Unit =
-    for (bytes <- getChunks()) {
-      while (bytes.remaining > 0) {
+    for (bytes <- getChunks())
+      while (bytes.remaining > 0)
         channel.write(bytes)
-      }
-    }
 
   /**
     * Wrap this buffer to view it as a Netty ByteBuf.
@@ -72,10 +70,9 @@ private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
     * @throws UnsupportedOperationException if this buffer's size exceeds the maximum array size.
     */
   def toArray: Array[Byte] = {
-    if (size >= Integer.MAX_VALUE) {
+    if (size >= Integer.MAX_VALUE)
       throw new UnsupportedOperationException(
         s"cannot call toArray because buffer size ($size bytes) exceeds maximum array size")
-    }
     val byteChannel = new ByteArrayWritableChannel(size.toInt)
     writeFully(byteChannel)
     byteChannel.close()
@@ -88,11 +85,10 @@ private[spark] class ChunkedByteBuffer(var chunks: Array[ByteBuffer]) {
     * @throws UnsupportedOperationException if this buffer's size exceeds the max ByteBuffer size.
     */
   def toByteBuffer: ByteBuffer =
-    if (chunks.length == 1) {
+    if (chunks.length == 1)
       chunks.head.duplicate()
-    } else {
+    else
       ByteBuffer.wrap(toArray)
-    }
 
   /**
     * Creates an input stream to read data from this ChunkedByteBuffer.
@@ -147,29 +143,26 @@ private class ChunkedByteBufferInputStream(
 
   private[this] var chunks = chunkedByteBuffer.getChunks().iterator
   private[this] var currentChunk: ByteBuffer = {
-    if (chunks.hasNext) {
+    if (chunks.hasNext)
       chunks.next()
-    } else {
+    else
       null
-    }
   }
 
   override def read(): Int = {
-    if (currentChunk != null && !currentChunk.hasRemaining && chunks.hasNext) {
+    if (currentChunk != null && !currentChunk.hasRemaining && chunks.hasNext)
       currentChunk = chunks.next()
-    }
-    if (currentChunk != null && currentChunk.hasRemaining) {
+    if (currentChunk != null && currentChunk.hasRemaining)
       UnsignedBytes.toInt(currentChunk.get())
-    } else {
+    else {
       close()
       -1
     }
   }
 
   override def read(dest: Array[Byte], offset: Int, length: Int): Int = {
-    if (currentChunk != null && !currentChunk.hasRemaining && chunks.hasNext) {
+    if (currentChunk != null && !currentChunk.hasRemaining && chunks.hasNext)
       currentChunk = chunks.next()
-    }
     if (currentChunk != null && currentChunk.hasRemaining) {
       val amountToGet = math.min(currentChunk.remaining(), length)
       currentChunk.get(dest, offset, amountToGet)
@@ -184,22 +177,18 @@ private class ChunkedByteBufferInputStream(
     if (currentChunk != null) {
       val amountToSkip = math.min(bytes, currentChunk.remaining).toInt
       currentChunk.position(currentChunk.position + amountToSkip)
-      if (currentChunk.remaining() == 0) {
-        if (chunks.hasNext) {
+      if (currentChunk.remaining() == 0)
+        if (chunks.hasNext)
           currentChunk = chunks.next()
-        } else {
+        else
           close()
-        }
-      }
       amountToSkip
-    } else {
+    } else
       0L
-    }
 
   override def close(): Unit = {
-    if (chunkedByteBuffer != null && dispose) {
+    if (chunkedByteBuffer != null && dispose)
       chunkedByteBuffer.dispose()
-    }
     chunkedByteBuffer = null
     chunks = null
     currentChunk = null

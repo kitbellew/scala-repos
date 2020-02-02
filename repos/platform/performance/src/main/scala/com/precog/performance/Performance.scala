@@ -54,9 +54,8 @@ class Performance(
         val (t, r) = time(result.repCount, test)
         parameters.restBetweenTests foreach { Thread.sleep }
         benchmark(test, result.add(t, r))
-      } else {
+      } else
         result
-      }
 
     def attemptGC() = {
       import System.gc
@@ -67,11 +66,10 @@ class Performance(
 
     def repeatsRequired(reps: Int = 1): Int = {
       val (t, _) = time(reps, test)
-      if (t < parameters.runMillisGoal * 1000000L) {
+      if (t < parameters.runMillisGoal * 1000000L)
         repeatsRequired(reps * 2)
-      } else {
+      else
         reps
-      }
     }
 
     def noop = ()
@@ -81,9 +79,8 @@ class Performance(
         noop,
         BenchmarkResults(0, 10, 0, Vector.empty[Long], Vector.empty[Unit]))
       baseline.meanRepTime()
-    } else {
+    } else
       0.0
-    }
 
     benchmark(
       test,
@@ -100,9 +97,8 @@ class Performance(
       if (r < repeat - 1) {
         f
         rep(r + 1)
-      } else {
+      } else
         f
-      }
     val start = System.nanoTime()
     val r = rep()
     val t = System.nanoTime() - start

@@ -48,11 +48,8 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
   }
 
   override def afterEach(): Unit =
-    try {
-      Utils.deleteRecursively(tempDir)
-    } finally {
-      super.afterEach()
-    }
+    try Utils.deleteRecursively(tempDir)
+    finally super.afterEach()
 
   test(
     "SortShuffleManager properly cleans up files for shuffles that use the serialized path") {
@@ -98,8 +95,7 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
     Set("shuffle_0_0_0.data", "shuffle_0_0_0.index")
     // Check that the cleanup actually removes the files
     sc.env.blockManager.master.removeShuffle(0, blocking = true)
-    for (file <- filesCreatedByShuffle) {
+    for (file <- filesCreatedByShuffle)
       assert(!file.exists(), s"Shuffle file $file was not cleaned up")
-    }
   }
 }

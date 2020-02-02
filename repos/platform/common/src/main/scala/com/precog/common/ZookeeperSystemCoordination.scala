@@ -174,23 +174,20 @@ class ZookeeperSystemCoordination(
       retries: Int = defaultRetries,
       delay: Int = defaultDelay): Validation[Error, Unit] = {
     val activePath = base + delimeter + active
-    if (retries < 0) {
+    if (retries < 0)
       Failure(Invalid("Unable to acquire relay agent lock"))
+    else if (!zkc.exists(activePath)) {
+      if (!zkc.exists(base))
+        zkc.createPersistent(base, true)
+      zkc.createEphemeral(activePath)
+      logger.info("Acquired lock")
+      Success(())
     } else {
-      if (!zkc.exists(activePath)) {
-        if (!zkc.exists(base)) {
-          zkc.createPersistent(base, true)
-        }
-        zkc.createEphemeral(activePath)
-        logger.info("Acquired lock")
-        Success(())
-      } else {
-        Thread.sleep(delay)
-        logger.debug(
-          "Active path [%s] already registered, retrying in case of stale registration.(%d remain)"
-            .format(base, retries))
-        acquireActivePath(base, retries - 1, delay)
-      }
+      Thread.sleep(delay)
+      logger.debug(
+        "Active path [%s] already registered, retrying in case of stale registration.(%d remain)"
+          .format(base, retries))
+      acquireActivePath(base, retries - 1, delay)
     }
   }
 
@@ -272,18 +269,15 @@ class ZookeeperSystemCoordination(
             val checkpoint = fromNodeData(bytes).validated[YggCheckpoint]
             logger.debug("yggCheckpoint %s: RESTORED".format(checkpoint))
             checkpoint
-          } else {
-            if (createOk) {
-              logger.warn("Creating initial ingest checkpoint!")
-              val checkpoint = YggCheckpoint.Empty
-              saveYggCheckpoint(bifrost, checkpoint)
-              Success(checkpoint)
-            } else {
-              // this case MUST return a failure - if a checkpoint is missing for a bifrost,
-              // it must be created manually via Ratatoskr
-              Failure(Invalid("No checkpoint information found in Zookeeper!"))
-            }
-          }
+          } else if (createOk) {
+            logger.warn("Creating initial ingest checkpoint!")
+            val checkpoint = YggCheckpoint.Empty
+            saveYggCheckpoint(bifrost, checkpoint)
+            Success(checkpoint)
+          } else
+            // this case MUST return a failure - if a checkpoint is missing for a bifrost,
+            // it must be created manually via Ratatoskr
+            Failure(Invalid("No checkpoint information found in Zookeeper!"))
         }
       )
     } else {
@@ -310,9 +304,8 @@ class ZookeeperSystemCoordination(
       )
 
       logger.debug("%s: SAVE".format(checkpoint))
-    } else {
+    } else
       logger.debug("Skipping yggCheckpoint save")
-    }
 
   def relayAgentExists(agent: String) = zkc.exists(relayAgentPath(agent))
 

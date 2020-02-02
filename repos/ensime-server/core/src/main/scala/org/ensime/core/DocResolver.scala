@@ -35,7 +35,7 @@ class DocResolver(
     // On initialisation, do a fast scan (< 1s for 50 jars) to determine
     // the package contents of each jar, and whether it's a javadoc or
     // scaladoc.
-    for (jarFile <- config.allDocJars if jarFile.exists()) {
+    for (jarFile <- config.allDocJars if jarFile.exists())
       try {
         val jar = new JarFile(jarFile)
         val jarFileName = jarFile.getName
@@ -47,9 +47,8 @@ class DocResolver(
           if (!entry.isDirectory) {
             val f = new File(entry.getName)
             val dir = f.getParent
-            if (dir != null) {
+            if (dir != null)
               htmlToJar += entry.getName -> jarFile
-            }
             // Check for javadocs
             if (entry.getName == "index.html") {
               val bytes = ByteStreams.toByteArray(jar.getInputStream(entry))
@@ -69,19 +68,17 @@ class DocResolver(
           // continue regardless
           log.error("Failed to process doc jar: " + jarFile.getName, e)
       }
-    }
 
   private def javaFqnToPath(fqn: DocFqn): String =
-    if (fqn.typeName == "package") {
+    if (fqn.typeName == "package")
       fqn.pack.replace(".", "/") + "/package-summary.html"
-    } else {
+    else
       fqn.pack.replace(".", "/") + "/" + fqn.typeName + ".html"
-    }
 
   def scalaFqnToPath(fqn: DocFqn): String =
-    if (fqn.typeName == "package") {
+    if (fqn.typeName == "package")
       fqn.pack.replace(".", "/") + "/package.html"
-    } else fqn.pack.replace(".", "/") + "/" + fqn.typeName + ".html"
+    else fqn.pack.replace(".", "/") + "/" + fqn.typeName + ".html"
 
   private def makeLocalUri(jar: File, sig: DocSigPair): String = {
     val jarName = jar.getName

@@ -40,28 +40,25 @@ object TemplateBody {
           builder error ScalaBundle.message("rbrace.expected")
           true
         case _ =>
-          if (TemplateStat parse builder) {
+          if (TemplateStat parse builder)
             builder.getTokenType match {
-              case ScalaTokenTypes.tRBRACE => {
+              case ScalaTokenTypes.tRBRACE =>
                 builder.advanceLexer() //Ate }
                 true
-              }
-              case ScalaTokenTypes.tSEMICOLON => {
+              case ScalaTokenTypes.tSEMICOLON =>
                 while (builder.getTokenType == ScalaTokenTypes.tSEMICOLON)
                   builder
                     .advanceLexer()
                 subparse()
-              }
-              case _ => {
+              case _ =>
                 if (builder.newlineBeforeCurrentToken) subparse()
                 else {
                   builder error ScalaBundle.message("semi.expected")
                   builder.advanceLexer() //Ate something
                   subparse()
                 }
-              }
             }
-          } else {
+          else {
             builder error ScalaBundle.message("def.dcl.expected")
             builder.advanceLexer() //Ate something
             subparse()

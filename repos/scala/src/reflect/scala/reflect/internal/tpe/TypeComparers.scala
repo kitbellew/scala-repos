@@ -79,12 +79,10 @@ trait TypeComparers {
       undoLog undo { // undo type constraints that arise from operations in this block
         !isSameType1(tp1, tp2)
       }
-    } finally {
-      subsametypeRecursions -= 1
-      // XXX AM TODO: figure out when it is safe and needed to clear the log -- the commented approach below is too eager (it breaks #3281, #3866)
-      // it doesn't help to keep separate recursion counts for the three methods that now share it
-      // if (subsametypeRecursions == 0) undoLog.clear()
-    }
+    } finally subsametypeRecursions -= 1
+  // XXX AM TODO: figure out when it is safe and needed to clear the log -- the commented approach below is too eager (it breaks #3281, #3866)
+  // it doesn't help to keep separate recursion counts for the three methods that now share it
+  // if (subsametypeRecursions == 0) undoLog.clear()
 
   def isDifferentTypeConstructor(tp1: Type, tp2: Type) =
     !isSameTypeConstructor(tp1, tp2)
@@ -114,16 +112,13 @@ trait TypeComparers {
 
       val before = undoLog.log
       var result = false
-      try {
-        result = isSameType1(tp1, tp2)
-      } finally if (!result) undoLog.undoTo(before)
+      try result = isSameType1(tp1, tp2)
+      finally if (!result) undoLog.undoTo(before)
       result
-    } finally {
-      subsametypeRecursions -= 1
-      // XXX AM TODO: figure out when it is safe and needed to clear the log -- the commented approach below is too eager (it breaks #3281, #3866)
-      // it doesn't help to keep separate recursion counts for the three methods that now share it
-      // if (subsametypeRecursions == 0) undoLog.clear()
-    }
+    } finally subsametypeRecursions -= 1
+  // XXX AM TODO: figure out when it is safe and needed to clear the log -- the commented approach below is too eager (it breaks #3281, #3866)
+  // it doesn't help to keep separate recursion counts for the three methods that now share it
+  // if (subsametypeRecursions == 0) undoLog.clear()
 
   // @pre: at least one argument has annotations
   private def sameAnnotatedTypes(tp1: Type, tp2: Type) = (
@@ -325,7 +320,7 @@ trait TypeComparers {
       val before = undoLog.log
       var result = false
 
-      try result = { // if subtype test fails, it should not affect constraints on typevars
+      try result = // if subtype test fails, it should not affect constraints on typevars
         if (subsametypeRecursions >= LogPendingSubTypesThreshold) {
           val p = new SubTypePair(tp1, tp2)
           if (pendingSubTypes(p))
@@ -334,21 +329,16 @@ trait TypeComparers {
             try {
               pendingSubTypes += p
               isSubType1(tp1, tp2, depth)
-            } finally {
-              pendingSubTypes -= p
-            }
-        } else {
+            } finally pendingSubTypes -= p
+        } else
           isSubType1(tp1, tp2, depth)
-        }
-      } finally if (!result) undoLog.undoTo(before)
+      finally if (!result) undoLog.undoTo(before)
 
       result
-    } finally {
-      subsametypeRecursions -= 1
-      // XXX AM TODO: figure out when it is safe and needed to clear the log -- the commented approach below is too eager (it breaks #3281, #3866)
-      // it doesn't help to keep separate recursion counts for the three methods that now share it
-      // if (subsametypeRecursions == 0) undoLog.clear()
-    }
+    } finally subsametypeRecursions -= 1
+  // XXX AM TODO: figure out when it is safe and needed to clear the log -- the commented approach below is too eager (it breaks #3281, #3866)
+  // it doesn't help to keep separate recursion counts for the three methods that now share it
+  // if (subsametypeRecursions == 0) undoLog.clear()
 
   /** Check whether the subtype or type equivalence relationship
     *  between the argument is predetermined. Returns a tri-state
@@ -537,9 +527,7 @@ trait TypeComparers {
         try {
           skolemizationLevel += 1
           isSubType(tp1.skolemizeExistential, tp2, depth)
-        } finally {
-          skolemizationLevel -= 1
-        }
+        } finally skolemizationLevel -= 1
       case _ =>
         thirdTry
     }

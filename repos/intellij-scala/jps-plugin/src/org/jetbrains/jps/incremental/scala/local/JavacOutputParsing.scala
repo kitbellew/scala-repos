@@ -51,11 +51,10 @@ trait JavacOutputParsing extends Logger {
       case TotalsPattern() =>
       // do nothing
       case _ =>
-        if (header.isDefined) {
+        if (header.isDefined)
           lines :+= line
-        } else {
+        else
           client.message(kind, line)
-        }
     }
   }
 }

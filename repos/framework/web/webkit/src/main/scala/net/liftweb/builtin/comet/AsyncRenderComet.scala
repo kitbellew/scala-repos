@@ -109,9 +109,7 @@ object AsyncRenderComet {
     for {
       session <- S.session ?~ "Asynchronous rendering requires a session context."
       renderer <- pageAsyncRenderer.is ?~! "Failed to create async renderer."
-    } yield {
-      renderer ! Compute(session.buildDeferredFunction(renderFunction))
-    }
+    } yield renderer ! Compute(session.buildDeferredFunction(renderFunction))
 
   /**
     * Similar to `asyncRender`, but any wrapping of the function in a request

@@ -205,22 +205,19 @@ case class RawBuffer(
   @volatile private var outStream: OutputStream = _
 
   private[play] def push(chunk: ByteString) {
-    if (inMemory != null) {
+    if (inMemory != null)
       if (chunk.length + inMemory.size > memoryThreshold) {
         backToTemporaryFile()
         outStream.write(chunk.toArray)
-      } else {
+      } else
         inMemory = inMemory ++ chunk
-      }
-    } else {
+    else
       outStream.write(chunk.toArray)
-    }
   }
 
   private[play] def close() {
-    if (outStream != null) {
+    if (outStream != null)
       outStream.close()
-    }
   }
 
   private[play] def backToTemporaryFile() {
@@ -248,15 +245,14 @@ case class RawBuffer(
     * @return None if the content is greater than maxLength, otherwise, the data as bytes.
     */
   def asBytes(maxLength: Long = memoryThreshold): Option[ByteString] =
-    if (size <= maxLength) {
-      Some(if (inMemory != null) {
-        inMemory
-      } else {
-        ByteString(PlayIO.readFile(backedByTemporaryFile.file))
-      })
-    } else {
+    if (size <= maxLength)
+      Some(
+        if (inMemory != null)
+          inMemory
+        else
+          ByteString(PlayIO.readFile(backedByTemporaryFile.file)))
+    else
       None
-    }
 
   /**
     * Returns the buffer content as File.
@@ -641,11 +637,10 @@ trait BodyParsers {
       */
     def default(maxLength: Option[Long]): BodyParser[AnyContent] = using {
       request =>
-        if (request.method == HttpVerbs.PATCH || request.method == HttpVerbs.POST || request.method == HttpVerbs.PUT) {
+        if (request.method == HttpVerbs.PATCH || request.method == HttpVerbs.POST || request.method == HttpVerbs.PUT)
           anyContent(maxLength)
-        } else {
+        else
           ignore(AnyContentAsEmpty)
-        }
     }
 
     /**
@@ -783,9 +778,9 @@ trait BodyParsers {
         parser: BodyParser[A],
         badResult: RequestHeader => Future[Result]): BodyParser[A] =
       BodyParser("conditional, wrapping=" + parser.toString) { request =>
-        if (predicate(request)) {
+        if (predicate(request))
           parser(request)
-        } else {
+        else {
           import play.api.libs.iteratee.Execution.Implicits.trampoline
           Accumulator.done(badResult(request).map(Left.apply))
         }
@@ -849,9 +844,8 @@ trait BodyParsers {
             Sink.fold[ByteString, ByteString](ByteString.empty)((state, bs) =>
               state ++ bs)
           ) mapFuture { bytes =>
-            try {
-              Future.successful(Right(parser(request, bytes)))
-            } catch {
+            try Future.successful(Right(parser(request, bytes)))
+            catch {
               case NonFatal(e) =>
                 logger.debug(errorMessage, e)
                 createBadResult(errorMessage + ": " + e.getMessage)(request)
@@ -911,9 +905,8 @@ object BodyParsers extends BodyParsers {
                 status.success(MaxSizeExceeded(maxLength))
                 // Make sure we fail the stream, this will ensure downstream body parsers don't try to parse it
                 failStage(new MaxLengthLimitAttained)
-              } else {
+              } else
                 push(out, chunk)
-              }
             }
             override def onUpstreamFinish(): Unit = {
               status.success(MaxSizeNotExceeded)

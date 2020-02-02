@@ -92,10 +92,9 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
       if (i == num) Success(in, result)
       else
         rule(in) match {
-          case Success(out, a) => {
+          case Success(out, a) =>
             result(i) = a
             rep(i + 1, out)
-          }
           case Failure       => Failure
           case err: Error[_] => err
         }

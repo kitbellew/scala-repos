@@ -60,13 +60,12 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
             case _ =>
           }
 
-          if (highlightInfoHolder.hasErrorResults) {
+          if (highlightInfoHolder.hasErrorResults)
             holder.registerProblem(
               element,
               "Error detected",
               ProblemHighlightType.ERROR,
               null: TextRange)
-          }
         } else {
           val annotator = new ScalaAnnotator {
             override def isAdvancedHighlightingEnabled(
@@ -149,36 +148,33 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
             def createErrorAnnotation(
                 range: TextRange,
                 message: String): Annotation = {
-              if (message != null) {
+              if (message != null)
                 holder.registerProblem(
                   element,
                   s"Error detected: $message",
                   ProblemHighlightType.ERROR)
-              }
               FakeAnnotation
             }
 
             def createErrorAnnotation(
                 node: ASTNode,
                 message: String): Annotation = {
-              if (message != null) {
+              if (message != null)
                 holder.registerProblem(
                   element,
                   s"Error detected: $message",
                   ProblemHighlightType.ERROR)
-              }
               FakeAnnotation
             }
 
             def createErrorAnnotation(
                 elt: PsiElement,
                 message: String): Annotation = {
-              if (message != null) {
+              if (message != null)
                 holder.registerProblem(
                   element,
                   s"Error detected: $message",
                   ProblemHighlightType.ERROR)
-              }
               FakeAnnotation
             }
 

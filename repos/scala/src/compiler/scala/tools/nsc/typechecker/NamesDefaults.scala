@@ -218,9 +218,9 @@ trait NamesDefaults { self: Analyzer =>
       def moduleQual(pos: Position, classType: Type) = {
         // prefix does 'normalize', which fixes #3384
         val pre = classType.prefix
-        if (pre == NoType) {
+        if (pre == NoType)
           None
-        } else {
+        else {
           val module = companionSymbolOf(baseFun.symbol.owner, context)
           if (module == NoSymbol) None
           else {
@@ -314,12 +314,11 @@ trait NamesDefaults { self: Analyzer =>
                 case WildcardStarArg(expr) => expr.tpe
                 case _                     => seqType(arg.tpe)
               }
-              else {
+              else
                 // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
                 //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
                 //      which is important for (at least) macros.
                 arg.tpe
-              }
             ).widen // have to widen or types inferred from literal defaults will be singletons
             val s = context.owner.newValue(
               unit.freshTermName(nme.NAMEDARG_PREFIX),
@@ -351,9 +350,9 @@ trait NamesDefaults { self: Analyzer =>
     }
 
     // begin transform
-    if (isNamedApplyBlock(tree)) {
+    if (isNamedApplyBlock(tree))
       context.namedApplyBlockInfo.get._1
-    } else
+    else
       tree match {
         // `fun` is typed. `namelessArgs` might be typed or not, if they are types are kept.
         case Apply(fun, namelessArgs) =>
@@ -535,16 +534,14 @@ trait NamesDefaults { self: Analyzer =>
       if (param.owner.isConstructor) {
         val mod = companionSymbolOf(param.owner.owner, context)
         mod.info.member(defGetterName)
-      } else {
-        // isClass also works for methods in objects, owner is the ModuleClassSymbol
-        if (param.owner.owner.isClass) {
-          param.owner.owner.info.member(defGetterName)
-        } else {
-          // the owner of the method is another method. find the default
-          // getter in the context.
-          context.lookup(defGetterName, param.owner.owner)
-        }
-      }
+      } else
+      // isClass also works for methods in objects, owner is the ModuleClassSymbol
+      if (param.owner.owner.isClass)
+        param.owner.owner.info.member(defGetterName)
+      else
+        // the owner of the method is another method. find the default
+        // getter in the context.
+        context.lookup(defGetterName, param.owner.owner)
     } else NoSymbol
   }
 

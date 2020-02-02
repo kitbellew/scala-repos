@@ -142,12 +142,12 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
           case Some(cls) =>
             val loadingMirror = currentMirror.mirrorDefining(cls)
             val (_, module) =
-              if (loadingMirror eq currentMirror) {
+              if (loadingMirror eq currentMirror)
                 initAndEnterClassAndModule(
                   pkgClass,
                   name.toTypeName,
                   new TopClassCompleter(_, _))
-              } else {
+              else {
                 val origOwner =
                   loadingMirror.packageNameToScala(pkgClass.fullName)
                 val clazz = origOwner.info decl name.toTypeName

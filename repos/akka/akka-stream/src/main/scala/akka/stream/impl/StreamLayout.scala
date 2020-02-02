@@ -322,11 +322,11 @@ object StreamLayout {
 
       val mat = {
         val comp =
-          if (f == scaladsl.Keep.left) {
+          if (f == scaladsl.Keep.left)
             if (IgnorableMatValComp(matCompRight)) matCompLeft else null
-          } else if (f == scaladsl.Keep.right) {
+          else if (f == scaladsl.Keep.right)
             if (IgnorableMatValComp(matCompLeft)) matCompRight else null
-          } else null
+          else null
         if (comp == null)
           Combine(f.asInstanceOf[(Any, Any) ⇒ Any], matCompLeft, matCompRight)
         else comp
@@ -850,9 +850,9 @@ private[impl] class VirtualPublisher[T]
       get() match {
         case null => if (!compareAndSet(null, subscriber)) rec()
         case pub: Publisher[_] =>
-          if (compareAndSet(pub, Inert.subscriber)) {
+          if (compareAndSet(pub, Inert.subscriber))
             pub.asInstanceOf[Publisher[T]].subscribe(subscriber)
-          } else rec()
+          else rec()
         case _: Subscriber[_] =>
           rejectAdditionalSubscriber(
             subscriber,

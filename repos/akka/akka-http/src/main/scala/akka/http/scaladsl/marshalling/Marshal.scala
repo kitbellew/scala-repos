@@ -53,7 +53,7 @@ class Marshal[A](val value: A) {
             ContentNegotiator.Alternative(mt)
         }(collection.breakOut)
       val bestMarshal = {
-        if (supportedAlternatives.nonEmpty) {
+        if (supportedAlternatives.nonEmpty)
           ctn.pickContentType(supportedAlternatives).flatMap {
             case best @ (_: ContentType.Binary |
                 _: ContentType.WithFixedCharset) ⇒
@@ -67,7 +67,7 @@ class Marshal[A](val value: A) {
                   () ⇒ marshal(bestCS)
               }
           }
-        } else None
+        else None
       } orElse {
         marshallings collectFirst { case Marshalling.Opaque(marshal) ⇒ marshal }
       } getOrElse {

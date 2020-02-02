@@ -89,9 +89,9 @@ object JSLibResolveException {
     val msg = new StringBuilder
     msg.append("Some references to JS libraries could not be resolved:\n")
     for (p <- problems) {
-      if (p.isMissing) {
+      if (p.isMissing)
         msg.append(s"- Missing JS library: ${p.resourceName}\n")
-      } else {
+      else {
         msg.append(
           s"- Ambiguous reference to a JS library: ${p.resourceName}\n")
         msg.append("  Possible paths found on the classpath:\n")

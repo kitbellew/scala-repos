@@ -71,12 +71,11 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
       (1 to 10).map(n => Row(f(n * 0.1)))
     )
 
-    if (f(-1) === math.log1p(-1)) {
+    if (f(-1) === math.log1p(-1))
       checkAnswer(
         nnDoubleData.select(c('b)),
         (1 to 9).map(n => Row(f(n * -0.1))) :+ Row(null)
       )
-    }
 
     checkAnswer(
       nnDoubleData.select(c(lit(null))),

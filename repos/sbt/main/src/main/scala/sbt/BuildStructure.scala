@@ -204,7 +204,7 @@ final class DetectedPlugins(
     val allDetected = autoPlugins.toList map { _.value }
     val detected = p match {
       case _: GeneratedRootProject =>
-        allDetected filterNot { _ == sbt.plugins.IvyPlugin }
+        allDetected filterNot _ == sbt.plugins.IvyPlugin
       case _ => allDetected
     }
     Plugins.deducer(detected)(ps0, log)

@@ -556,10 +556,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             reportUnreachable(cd.body.pos)) isEmpty
 
           if (!allReachable) Nil
-          else if (noGuards(caseDefsWithGuards)) {
+          else if (noGuards(caseDefsWithGuards))
             if (isDefault(caseDefsWithGuards.last)) caseDefsWithGuards
             else caseDefsWithGuards :+ defaultCase()
-          } else {
+          else {
             // collapse identical cases with different guards, push guards into body for all guarded cases
             // this translation is only sound if there are no unreachable (duplicate) cases
             // it should only be run if there are guarded cases, and on failure it returns Nil
@@ -579,10 +579,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                 else cd
 
               val last = collapsed.last
-              if (isDefault(last)) {
+              if (isDefault(last))
                 if (!needDefaultLabel) collapsed
                 else collapsed.init :+ wrapInDefaultLabelDef(last)
-              } else collapsed :+ wrapInDefaultLabelDef(defaultCase())
+              else collapsed :+ wrapInDefaultLabelDef(defaultCase())
             }
           }
         }

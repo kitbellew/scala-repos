@@ -20,12 +20,10 @@ class CaseClassParamInspection
         paramClause <- c.allClauses.take(1)
         classParam @ (__ : ScClassParameter) <- paramClause.parameters
         if classParam.isVal && classParam.isCaseClassVal
-      } {
-        holder.registerProblem(
-          classParam,
-          ScalaBundle.message("val.on.case.class.param.redundant"),
-          ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-          new RemoveValQuickFix(classParam))
-      }
+      } holder.registerProblem(
+        classParam,
+        ScalaBundle.message("val.on.case.class.param.redundant"),
+        ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+        new RemoveValQuickFix(classParam))
   }
 }

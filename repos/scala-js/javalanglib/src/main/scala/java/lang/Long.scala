@@ -128,11 +128,10 @@ object Long {
       // It's a signed int32
       import js.JSNumberOps.enableJSNumberOps
       lo.toString(radix)
-    } else if (hi < 0) {
+    } else if (hi < 0)
       "-" + toUnsignedStringInternalLarge(-i, radix)
-    } else {
+    else
       toUnsignedStringInternalLarge(i, radix)
-    }
   }
 
   // Must be called only with valid radix
@@ -141,9 +140,8 @@ object Long {
       // It's an unsigned int32
       import js.JSNumberOps._
       i.toInt.toUint.toString(radix)
-    } else {
+    } else
       toUnsignedStringInternalLarge(i, radix)
-    }
 
   // Must be called only with valid radix
   private def toUnsignedStringInternalLarge(
@@ -227,9 +225,9 @@ object Long {
     val length = s.length
 
     if (start >= length || radix < Character.MIN_RADIX ||
-        radix > Character.MAX_RADIX) {
+        radix > Character.MAX_RADIX)
       parseLongError(s)
-    } else {
+    else {
       val radixInfo = StringRadixInfos(radix)
       val chunkLen = radixInfo.chunkLength
 
@@ -270,18 +268,18 @@ object Long {
       val firstChunkEnd = firstChunkStart + firstChunkLength
       val firstResult = parseChunk(firstChunkStart, firstChunkEnd)
 
-      if (firstChunkEnd == length) {
+      if (firstChunkEnd == length)
         firstResult
-      } else {
+      else {
         // Second chunk. Still cannot overflow.
         val multiplier = radixInfo.radixPowLength
         val secondChunkEnd = firstChunkEnd + chunkLen
         val secondResult =
           firstResult * multiplier + parseChunk(firstChunkEnd, secondChunkEnd)
 
-        if (secondChunkEnd == length) {
+        if (secondChunkEnd == length)
           secondResult
-        } else {
+        else {
           // Third and final chunk. This one can overflow
           assert(secondChunkEnd + chunkLen == length)
 

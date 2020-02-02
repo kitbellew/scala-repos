@@ -41,7 +41,7 @@ class TableDump(maxColumnWidth: Int = 20) {
       } + cCyan + "..."
       else s + spaces.substring(0, len - slen)
     }
-    for ((line, lno) <- texts.zipWithIndex) {
+    for ((line, lno) <- texts.zipWithIndex)
       if (lno < headers.length) {
         val color = if (lno % 2 == 0) cYellow else cGreen
         buf += (line, widths).zipped
@@ -51,12 +51,10 @@ class TableDump(maxColumnWidth: Int = 20) {
           buf += cBlue + widths
             .map(l => dashes.substring(0, l + 2))
             .mkString(box(4), box(5), box(6)) + cNormal
-      } else {
+      } else
         buf += (line, widths).zipped
           .map((s, len) => cNormal + " " + pad(s, len) + " ")
           .mkString(cBlue + box(10), cBlue + box(10), cBlue + box(10) + cNormal)
-      }
-    }
     buf += cBlue + widths
       .map(l => dashes.substring(0, l + 2))
       .mkString(box(7), box(8), box(9)) + cNormal
@@ -74,9 +72,8 @@ class TableDump(maxColumnWidth: Int = 20) {
         b.append(c)
         b.append(s.charAt(i + 1))
         i += 1
-      } else {
+      } else
         b.append(c)
-      }
       cps += 1
       i += 1
     }

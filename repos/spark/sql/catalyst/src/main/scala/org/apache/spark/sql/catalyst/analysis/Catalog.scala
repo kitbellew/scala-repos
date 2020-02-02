@@ -61,17 +61,15 @@ trait Catalog {
   protected def getTableName(tableIdent: TableIdentifier): String = {
     // It is not allowed to specify database name for temporary tables.
     // We check it here and throw exception if database is defined.
-    if (tableIdent.database.isDefined) {
+    if (tableIdent.database.isDefined)
       throw new AnalysisException(
         "Specifying database name or other qualifiers are not allowed " +
           "for temporary tables. If the table name has dots (.) in it, please quote the " +
           "table name with backticks (`).")
-    }
-    if (conf.caseSensitiveAnalysis) {
+    if (conf.caseSensitiveAnalysis)
       tableIdent.table
-    } else {
+    else
       tableIdent.table.toLowerCase
-    }
   }
 }
 
@@ -97,9 +95,8 @@ class SimpleCatalog(val conf: CatalystConf) extends Catalog {
       alias: Option[String] = None): LogicalPlan = {
     val tableName = getTableName(tableIdent)
     val table = tables.get(tableName)
-    if (table == null) {
+    if (table == null)
       throw new AnalysisException("Table not found: " + tableName)
-    }
     val tableWithQualifiers = SubqueryAlias(tableName, table)
 
     // If an alias was specified by the lookup, wrap the plan in a subquery so that attributes are
@@ -127,11 +124,10 @@ trait OverrideCatalog extends Catalog {
 
   private def getOverriddenTable(
       tableIdent: TableIdentifier): Option[LogicalPlan] =
-    if (tableIdent.database.isDefined) {
+    if (tableIdent.database.isDefined)
       None
-    } else {
+    else
       Option(overrides.get(getTableName(tableIdent)))
-    }
 
   abstract override def tableExists(tableIdent: TableIdentifier): Boolean =
     getOverriddenTable(tableIdent) match {
@@ -167,9 +163,8 @@ trait OverrideCatalog extends Catalog {
     overrides.put(getTableName(tableIdent), plan)
 
   override def unregisterTable(tableIdent: TableIdentifier): Unit =
-    if (tableIdent.database.isEmpty) {
+    if (tableIdent.database.isEmpty)
       overrides.remove(getTableName(tableIdent))
-    }
 
   override def unregisterAllTables(): Unit =
     overrides.clear()

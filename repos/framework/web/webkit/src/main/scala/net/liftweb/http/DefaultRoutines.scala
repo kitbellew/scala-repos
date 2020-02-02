@@ -60,11 +60,10 @@ object DefaultRoutines {
       val key = loc.toString -> path
       resourceMap.get(key) match {
         case Full(x) => x
-        case _ => {
+        case _ =>
           val res = rawResBundle(loc, path)
           if (!Props.devMode) resourceMap(key) = res
           res
-        }
 
       }
     }

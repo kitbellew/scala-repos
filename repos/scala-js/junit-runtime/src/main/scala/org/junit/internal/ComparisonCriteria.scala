@@ -28,24 +28,21 @@ abstract class ComparisonCriteria {
         val expected = get(expecteds, i)
         val actual = get(actuals, i)
 
-        if (isArray(expected) && isArray(actual)) {
-          try {
-            arrayEquals(message, expected, actual, false)
-          } catch {
+        if (isArray(expected) && isArray(actual))
+          try arrayEquals(message, expected, actual, false)
+          catch {
             case e: ArrayComparisonFailure =>
               e.addDimension(i)
               throw e
             case e: AssertionError =>
               throw new ArrayComparisonFailure(header, e, i)
           }
-        } else {
-          try {
-            assertElementsEqual(expected, actual)
-          } catch {
+        else
+          try assertElementsEqual(expected, actual)
+          catch {
             case e: AssertionError =>
               throw new ArrayComparisonFailure(header, e, i)
           }
-        }
       }
     }
 
@@ -62,12 +59,11 @@ abstract class ComparisonCriteria {
       Assert.fail(header + "actual array was null")
     val actualsLength = actuals.asInstanceOf[Array[_]].length
     val expectedsLength = expecteds.asInstanceOf[Array[_]].length
-    if (actualsLength != expectedsLength) {
+    if (actualsLength != expectedsLength)
       Assert.fail(
         header +
           "array lengths differed, expected.length=" + expectedsLength +
           " actual.length=" + actualsLength)
-    }
     expectedsLength
   }
 

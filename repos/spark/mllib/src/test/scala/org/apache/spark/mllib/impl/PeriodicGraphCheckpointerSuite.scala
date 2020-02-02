@@ -109,14 +109,12 @@ private object PeriodicGraphCheckpointerSuite {
     * @param iteration  Total number of graphs inserted into checkpointer.
     */
   def checkPersistence(graph: Graph[_, _], gIndex: Int, iteration: Int): Unit =
-    try {
-      if (gIndex + 2 < iteration) {
-        assert(graph.vertices.getStorageLevel == StorageLevel.NONE)
-        assert(graph.edges.getStorageLevel == StorageLevel.NONE)
-      } else {
-        assert(graph.vertices.getStorageLevel != StorageLevel.NONE)
-        assert(graph.edges.getStorageLevel != StorageLevel.NONE)
-      }
+    try if (gIndex + 2 < iteration) {
+      assert(graph.vertices.getStorageLevel == StorageLevel.NONE)
+      assert(graph.edges.getStorageLevel == StorageLevel.NONE)
+    } else {
+      assert(graph.vertices.getStorageLevel != StorageLevel.NONE)
+      assert(graph.edges.getStorageLevel != StorageLevel.NONE)
     } catch {
       case _: AssertionError =>
         throw new Exception(
@@ -158,27 +156,22 @@ private object PeriodicGraphCheckpointerSuite {
       gIndex: Int,
       iteration: Int,
       checkpointInterval: Int): Unit =
-    try {
-      if (gIndex % checkpointInterval == 0) {
-        // We allow 2 checkpoint intervals since we perform an action (checkpointing a second graph)
-        // only AFTER PeriodicGraphCheckpointer decides whether to remove the previous checkpoint.
-        if (iteration - 2 * checkpointInterval < gIndex && gIndex <= iteration) {
-          assert(graph.isCheckpointed, "Graph should be checkpointed")
-          assert(
-            graph.getCheckpointFiles.length == 2,
-            "Graph should have 2 checkpoint files")
-        } else {
-          confirmCheckpointRemoved(graph)
-        }
-      } else {
-        // Graph should never be checkpointed
+    try if (gIndex % checkpointInterval == 0)
+      // We allow 2 checkpoint intervals since we perform an action (checkpointing a second graph)
+      // only AFTER PeriodicGraphCheckpointer decides whether to remove the previous checkpoint.
+      if (iteration - 2 * checkpointInterval < gIndex && gIndex <= iteration) {
+        assert(graph.isCheckpointed, "Graph should be checkpointed")
         assert(
-          !graph.isCheckpointed,
-          "Graph should never have been checkpointed")
-        assert(
-          graph.getCheckpointFiles.isEmpty,
-          "Graph should not have any checkpoint files")
-      }
+          graph.getCheckpointFiles.length == 2,
+          "Graph should have 2 checkpoint files")
+      } else
+        confirmCheckpointRemoved(graph)
+    else {
+      // Graph should never be checkpointed
+      assert(!graph.isCheckpointed, "Graph should never have been checkpointed")
+      assert(
+        graph.getCheckpointFiles.isEmpty,
+        "Graph should not have any checkpoint files")
     } catch {
       case e: AssertionError =>
         throw new Exception(

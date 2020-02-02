@@ -95,9 +95,8 @@ abstract class PlayableConnector(activity: SActivity) {
 
   def onServiceConnected() {
     runOnUiThread(updateUI(ON_CONNECTED))
-    if (playable.fold(false)(_.running)) {
+    if (playable.fold(false)(_.running))
       startTimer()
-    }
   }
 
   def updateUI(event: UpdateEvent)

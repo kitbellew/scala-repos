@@ -27,7 +27,7 @@ import net.liftweb.http.SHtml
 trait AjaxEditableField[FieldType, OwnerType <: Mapper[OwnerType]]
     extends MappedField[FieldType, OwnerType] {
   override def asHtml: Node =
-    if (editableField) {
+    if (editableField)
       <xml:group>{
         toForm.map { form =>
           SHtml.ajaxEditable(super.asHtml, form, () => {
@@ -35,9 +35,8 @@ trait AjaxEditableField[FieldType, OwnerType <: Mapper[OwnerType]]
           })
         } openOr super.asHtml
       }</xml:group>
-    } else {
+    else
       super.asHtml
-    }
 
   /** This method is called when the element's data are saved. The default is to do nothing */
   def onSave {}

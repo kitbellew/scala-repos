@@ -41,9 +41,8 @@ class ScalaChainLookupElement(
     element.someSmartCompletion = old
     presentation.setItemText(
       prefixPresentation.getItemText + "." + presentation.getItemText)
-    if (element.someSmartCompletion) {
+    if (element.someSmartCompletion)
       presentation.setItemText("Some(" + presentation.getItemText + ")")
-    }
   }
 
   override def handleInsert(context: InsertionContext) {
@@ -58,10 +57,9 @@ class ScalaChainLookupElement(
     val document = context.getDocument
     val status = ScalaInsertHandler.getItemParametersAndAccessorStatus(prefix)
     val addParams = status._1 >= 0 && (status._1 > 0 || !status._3)
-    if (addParams) {
+    if (addParams)
       document.insertString(offsetForPrefix, "()")
-      //      val offset = editor.getCaretModel.getOffset
-      //      editor.getCaretModel.moveToOffset(offset + 2)
-    }
+    //      val offset = editor.getCaretModel.getOffset
+    //      editor.getCaretModel.moveToOffset(offset + 2)
   }
 }

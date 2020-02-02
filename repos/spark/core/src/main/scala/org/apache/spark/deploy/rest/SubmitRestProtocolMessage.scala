@@ -69,9 +69,8 @@ private[rest] abstract class SubmitRestProtocolMessage {
     * If the validation fails, throw a [[SubmitRestProtocolException]].
     */
   final def validate(): Unit =
-    try {
-      doValidate()
-    } catch {
+    try doValidate()
+    catch {
       case e: Exception =>
         throw new SubmitRestProtocolException(
           s"Validation of message $messageType failed!",
@@ -80,26 +79,23 @@ private[rest] abstract class SubmitRestProtocolMessage {
 
   /** Assert the validity of the message */
   protected def doValidate(): Unit =
-    if (action == null) {
+    if (action == null)
       throw new SubmitRestMissingFieldException(
         s"The action field is missing in $messageType")
-    }
 
   /** Assert that the specified field is set in this message. */
   protected def assertFieldIsSet[T](value: T, name: String): Unit =
-    if (value == null) {
+    if (value == null)
       throw new SubmitRestMissingFieldException(
         s"'$name' is missing in message $messageType.")
-    }
 
   /**
     * Assert a condition when validating this message.
     * If the assertion fails, throw a [[SubmitRestProtocolException]].
     */
   protected def assert(condition: Boolean, failMessage: String): Unit =
-    if (!condition) {
+    if (!condition)
       throw new SubmitRestProtocolException(failMessage)
-    }
 }
 
 /**

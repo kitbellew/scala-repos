@@ -243,17 +243,15 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         val rs1 =
           statement.executeQuery("SELECT key FROM test_table ORDER BY KEY DESC")
         val buf1 = new collection.mutable.ArrayBuffer[Int]()
-        while (rs1.next()) {
+        while (rs1.next())
           buf1 += rs1.getInt(1)
-        }
         rs1.close()
 
         val rs2 =
           statement.executeQuery("SELECT key FROM test_map ORDER BY KEY DESC")
         val buf2 = new collection.mutable.ArrayBuffer[Int]()
-        while (rs2.next()) {
+        while (rs2.next())
           buf2 += rs2.getInt(1)
-        }
         rs2.close()
 
         assert(buf1 === buf2)
@@ -327,9 +325,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         val rs =
           statement.executeQuery("SELECT key FROM test_map ORDER BY KEY DESC")
         val buf = new collection.mutable.ArrayBuffer[Int]()
-        while (rs.next()) {
+        while (rs.next())
           buf += rs.getInt(1)
-        }
         rs.close()
         assert(buf === data)
       },
@@ -411,12 +408,9 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
           rs2.next()
           assert(rs2.getInt(1) === 5)
           rs2.close()
-        } finally {
-          statement.executeQuery("SET spark.sql.hive.thriftServer.async=true")
-        }
-      } finally {
-        ec.shutdownNow()
-      }
+        } finally statement.executeQuery(
+          "SET spark.sql.hive.thriftServer.async=true")
+      } finally ec.shutdownNow()
     }
   }
 
@@ -450,17 +444,15 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         val actualResult =
           statement.executeQuery("SELECT key FROM addJar")
         val actualResultBuffer = new collection.mutable.ArrayBuffer[String]()
-        while (actualResult.next()) {
+        while (actualResult.next())
           actualResultBuffer += actualResult.getString(1)
-        }
         actualResult.close()
 
         val expectedResult =
           statement.executeQuery("SELECT 'k1'")
         val expectedResultBuffer = new collection.mutable.ArrayBuffer[String]()
-        while (expectedResult.next()) {
+        while (expectedResult.next())
           expectedResultBuffer += expectedResult.getString(1)
-        }
         expectedResult.close()
 
         assert(expectedResultBuffer === actualResultBuffer)
@@ -476,9 +468,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
       val resultSet = statement.executeQuery("SET -v")
 
       val conf = mutable.Map.empty[String, String]
-      while (resultSet.next()) {
+      while (resultSet.next())
         conf += resultSet.getString(1) -> resultSet.getString(2)
-      }
 
       assert(conf.get("spark.sql.hive.version") === Some("1.2.1"))
     }
@@ -489,9 +480,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
       val resultSet = statement.executeQuery("SET")
 
       val conf = mutable.Map.empty[String, String]
-      while (resultSet.next()) {
+      while (resultSet.next())
         conf += resultSet.getString(1) -> resultSet.getString(2)
-      }
 
       assert(conf.get("spark.sql.hive.version") === Some("1.2.1"))
     }
@@ -637,15 +627,14 @@ abstract class HiveThriftJdbcTest extends HiveThriftServer2Test {
   Utils.classForName(classOf[HiveDriver].getCanonicalName)
 
   private def jdbcUri =
-    if (mode == ServerMode.http) {
+    if (mode == ServerMode.http)
       s"""jdbc:hive2://localhost:$serverPort/
        |default?
        |hive.server2.transport.mode=http;
        |hive.server2.thrift.http.path=cliservice
      """.stripMargin.split("\n").mkString.trim
-    } else {
+    else
       s"jdbc:hive2://localhost:$serverPort/"
-    }
 
   def withMultipleConnectionJdbcStatement(fs: (Statement => Unit)*) {
     val user = System.getProperty("user.name")
@@ -654,9 +643,7 @@ abstract class HiveThriftJdbcTest extends HiveThriftServer2Test {
     }
     val statements = connections.map(_.createStatement())
 
-    try {
-      statements.zip(fs).foreach { case (s, f) => f(s) }
-    } finally {
+    try statements.zip(fs).foreach { case (s, f) => f(s) } finally {
       statements.foreach(_.close())
       connections.foreach(_.close())
     }
@@ -701,11 +688,11 @@ abstract class HiveThriftServer2Test
   protected def extraConf: Seq[String] = Nil
 
   protected def serverStartCommand(port: Int) = {
-    val portConf = if (mode == ServerMode.binary) {
-      ConfVars.HIVE_SERVER2_THRIFT_PORT
-    } else {
-      ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT
-    }
+    val portConf =
+      if (mode == ServerMode.binary)
+        ConfVars.HIVE_SERVER2_THRIFT_PORT
+      else
+        ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT
 
     val driverClassPath = {
       // Writes a temporary log4j.properties and prepend it to driver classpath, so that it
@@ -819,9 +806,8 @@ abstract class HiveThriftServer2Test
           diagnosisBuffer += line
 
           successLines.foreach { r =>
-            if (line.contains(r)) {
+            if (line.contains(r))
               serverStarted.trySuccess(())
-            }
           }
         }
 
@@ -899,7 +885,5 @@ abstract class HiveThriftServer2Test
     try {
       stopThriftServer()
       logInfo("HiveThriftServer2 stopped")
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 }

@@ -91,7 +91,7 @@ class ScalaPatternParameterInfoHandler
         val buffer: StringBuilder = new StringBuilder("")
         p match {
           //todo: join this match statement with same in FunctionParameterHandler to fix code duplicate.
-          case (sign: PhysicalSignature, i: Int) => {
+          case (sign: PhysicalSignature, i: Int) =>
             //i  can be -1 (it's update method)
             val methodName = sign.method.name
 
@@ -116,7 +116,7 @@ class ScalaPatternParameterInfoHandler
             if (params.length == 0)
               buffer.append(
                 CodeInsightBundle.message("parameter.info.no.parameters"))
-            else {
+            else
               buffer.append(
                 params
                   .map {
@@ -135,18 +135,15 @@ class ScalaPatternParameterInfoHandler
                       }
                       val isBold =
                         if (o == index || (isSeq && o <= index)) true
-                        else {
+                        else
                           //todo: check type
                           false
-                        }
                       val paramTypeText = buffer.toString()
                       val paramText = paramTextFor(sign, o, paramTypeText)
 
                       if (isBold) "<b>" + paramText + "</b>" else paramText
                   }
                   .mkString(", "))
-            }
-          }
           case _ =>
         }
         val isGrey = buffer.indexOf("<g>")
@@ -179,7 +176,7 @@ class ScalaPatternParameterInfoHandler
       sign: PhysicalSignature,
       o: Int,
       paramTypeText: String): String =
-    if (sign.method.name == "unapply") {
+    if (sign.method.name == "unapply")
       sign.method match {
         case fun: ScFunction
             if fun.parameters.headOption.exists(_.name == "x$0") =>
@@ -197,11 +194,10 @@ class ScalaPatternParameterInfoHandler
             case Some(cls) =>
               ScalaPsiUtil.nthConstructorParam(cls, o) match {
                 case Some(param) =>
-                  if (param.isRepeatedParameter) {
+                  if (param.isRepeatedParameter)
                     paramTypeText // Not handled yet.
-                  } else {
+                  else
                     param.name + ": " + paramTypeText // SCL-3006
-                  }
                 case None => paramTypeText
               }
             case None => paramTypeText
@@ -221,7 +217,7 @@ class ScalaPatternParameterInfoHandler
         case _ =>
           paramTypeText
       }
-    } else paramTypeText
+    else paramTypeText
 
   def showParameterInfo(
       element: ScPatternArgumentList,
@@ -250,11 +246,11 @@ class ScalaPatternParameterInfoHandler
     if (element == null) return null
     val args: ScPatternArgumentList =
       PsiTreeUtil.getParentOfType(element, getArgumentListClass)
-    if (args != null) {
+    if (args != null)
       context match {
         case context: CreateParameterInfoContext =>
           args.getParent match {
-            case constr: ScConstructorPattern => {
+            case constr: ScConstructorPattern =>
               val ref: ScStableCodeReferenceElement = constr.ref
               val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
               if (ref != null) {
@@ -309,7 +305,6 @@ class ScalaPatternParameterInfoHandler
                 }
               }
               context.setItemsToShow(res.toArray)
-            }
             case _ =>
           }
         case context: UpdateParameterInfoContext =>
@@ -321,7 +316,6 @@ class ScalaPatternParameterInfoHandler
           context.setHighlightedParameter(el)
         case _ =>
       }
-    }
     args
   }
 }

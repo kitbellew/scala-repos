@@ -150,9 +150,8 @@ class ThreadLazy[TheType](theFunc: => TheType) extends LoanWrapper {
   def apply[T](f: => T): T = {
     val old = value.value
     calced.set(false)
-    try {
-      f
-    } finally {
+    try f
+    finally {
       calced.set(false)
       value.set(old)
     }

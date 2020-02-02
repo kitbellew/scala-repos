@@ -73,13 +73,11 @@ class BoundedBlockingQueue[E <: AnyRef](
   def offer(e: E): Boolean = { //Tries to do it immediately, if fail return false
     if (e eq null) throw new NullPointerException
     lock.lock()
-    try {
-      if (backing.size() == maxCapacity) false
-      else {
-        require(backing.offer(e)) //Should never fail
-        notEmpty.signal()
-        true
-      }
+    try if (backing.size() == maxCapacity) false
+    else {
+      require(backing.offer(e)) //Should never fail
+      notEmpty.signal()
+      true
     } finally lock.unlock()
   }
 
@@ -105,10 +103,9 @@ class BoundedBlockingQueue[E <: AnyRef](
         backing.poll() match {
           case null if remainingNanos <= 0 ⇒ null.asInstanceOf[E]
           case null ⇒ pollElement(notEmpty.awaitNanos(remainingNanos))
-          case e ⇒ {
+          case e ⇒
             notFull.signal()
             e
-          }
         }
       pollElement(unit.toNanos(timeout))
     } finally lock.unlock()
@@ -116,25 +113,22 @@ class BoundedBlockingQueue[E <: AnyRef](
 
   def poll(): E = { //Tries to remove the head of the queue immediately, if fail, return null
     lock.lock()
-    try {
-      backing.poll() match {
-        case null ⇒ null.asInstanceOf[E]
-        case e ⇒
-          notFull.signal()
-          e
-      }
+    try backing.poll() match {
+      case null ⇒ null.asInstanceOf[E]
+      case e ⇒
+        notFull.signal()
+        e
     } finally lock.unlock()
   }
 
   override def remove(e: AnyRef): Boolean = { //Tries to do it immediately, if fail, return false
     if (e eq null) throw new NullPointerException
     lock.lock()
-    try {
-      if (backing remove e) {
-        notFull.signal()
-        true
-      } else false
-    } finally lock.unlock()
+    try if (backing remove e) {
+      notFull.signal()
+      true
+    } else false
+    finally lock.unlock()
   }
 
   override def contains(e: AnyRef): Boolean = {
@@ -154,9 +148,8 @@ class BoundedBlockingQueue[E <: AnyRef](
 
   def remainingCapacity(): Int = {
     lock.lock()
-    try {
-      maxCapacity - backing.size()
-    } finally lock.unlock()
+    try maxCapacity - backing.size()
+    finally lock.unlock()
   }
 
   def size(): Int = {
@@ -182,12 +175,12 @@ class BoundedBlockingQueue[E <: AnyRef](
       lock.lock()
       try {
         @tailrec def drainOne(n: Int = 0): Int =
-          if (n < maxElements) {
+          if (n < maxElements)
             backing.poll() match {
               case null ⇒ n
               case e ⇒ c add e; drainOne(n + 1)
             }
-          } else n
+          else n
         val n = drainOne()
         if (n > 0) notFull.signalAll()
         n
@@ -203,26 +196,24 @@ class BoundedBlockingQueue[E <: AnyRef](
 
   override def removeAll(c: Collection[_]): Boolean = {
     lock.lock()
-    try {
-      if (backing.removeAll(c)) {
-        val sz = backing.size()
-        if (sz < maxCapacity) notFull.signal()
-        if (sz > 0) notEmpty.signal()
-        true
-      } else false
-    } finally lock.unlock()
+    try if (backing.removeAll(c)) {
+      val sz = backing.size()
+      if (sz < maxCapacity) notFull.signal()
+      if (sz > 0) notEmpty.signal()
+      true
+    } else false
+    finally lock.unlock()
   }
 
   override def retainAll(c: Collection[_]): Boolean = {
     lock.lock()
-    try {
-      if (backing.retainAll(c)) {
-        val sz = backing.size()
-        if (sz < maxCapacity) notFull.signal()
-        if (sz > 0) notEmpty.signal()
-        true
-      } else false
-    } finally lock.unlock()
+    try if (backing.retainAll(c)) {
+      val sz = backing.size()
+      if (sz < maxCapacity) notFull.signal()
+      if (sz > 0) notEmpty.signal()
+      true
+    } else false
+    finally lock.unlock()
   }
 
   def iterator(): Iterator[E] = {
@@ -250,12 +241,11 @@ class BoundedBlockingQueue[E <: AnyRef](
           try {
             @tailrec def removeTarget(
                 i: Iterator[E] = backing.iterator()): Unit =
-              if (i.hasNext) {
+              if (i.hasNext)
                 if (i.next eq target) {
                   i.remove()
                   notFull.signal()
                 } else removeTarget(i)
-              }
 
             removeTarget()
           } finally lock.unlock()

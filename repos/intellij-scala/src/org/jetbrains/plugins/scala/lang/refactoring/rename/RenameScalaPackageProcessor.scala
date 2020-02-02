@@ -23,9 +23,8 @@ class RenameScalaPackageProcessor
         val po = ScalaShortNamesCacheManager
           .getInstance(element.getProject)
           .getPackageObjectByName(p.getQualifiedName, element.getResolveScope)
-        if (po != null && po.name != "`package`") {
+        if (po != null && po.name != "`package`")
           allRenames.put(po, newName)
-        }
       case _ =>
     }
   }

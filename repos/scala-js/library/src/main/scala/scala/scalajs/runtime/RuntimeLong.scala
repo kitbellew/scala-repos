@@ -86,22 +86,21 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     val lo = this.lo
     val hi = this.hi
 
-    if (isInt32(lo, hi)) {
+    if (isInt32(lo, hi))
       lo.toString()
-    } else if (hi < 0) {
+    else if (hi < 0) {
       val (absLo, absHi) = inline_unary_-(lo, hi)
       "-" + toUnsignedString(absLo, absHi)
-    } else {
+    } else
       toUnsignedString(lo, hi)
-    }
   }
 
   private def toUnsignedString(lo: Int, hi: Int): String =
     // This is called only if (lo, hi) is not an Int32
-    if (isUnsignedSafeDouble(hi)) {
+    if (isUnsignedSafeDouble(hi))
       // (lo, hi) is small enough to be a Double, use that directly
       asUnsignedSafeDouble(lo, hi).toString
-    } else {
+    else {
       /* We divide (lo, hi) once by 10^9 and keep the remainder.
        *
        * The remainder must then be < 10^9, and is therefore an int32.
@@ -141,9 +140,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (hi < 0) {
       val (abslo, abshi) = inline_unary_-(lo, hi)
       -(abshi.toUint * TwoPow32 + abslo.toUint) // abshi.toUint for MinValue
-    } else {
+    } else
       hi * TwoPow32 + lo.toUint
-    }
   }
 
   // java.lang.Number
@@ -166,10 +164,8 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       if (alo == blo) 0
       else if (inlineUnsignedInt_<(alo, blo)) -1
       else 1
-    } else {
-      if (ahi < bhi) -1
-      else 1
-    }
+    } else if (ahi < bhi) -1
+    else 1
   }
 
   def compareTo(that: java.lang.Long): Int =
@@ -363,16 +359,15 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (isZero(blo, bhi))
       throw new ArithmeticException("/ by zero")
 
-    if (isInt32(alo, ahi)) {
-      if (isInt32(blo, bhi)) {
+    if (isInt32(alo, ahi))
+      if (isInt32(blo, bhi))
         if (alo == Int.MinValue && blo == -1) new RuntimeLong(Int.MinValue, 0)
         else new RuntimeLong(alo / blo)
-      } else {
-        // Either a == Int.MinValue && b == (Int.MaxValue + 1), or (abs(b) > abs(a))
-        if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0)) MinusOne
-        else Zero // because abs(b) > abs(a)
-      }
-    } else {
+      else
+      // Either a == Int.MinValue && b == (Int.MaxValue + 1), or (abs(b) > abs(a))
+      if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0)) MinusOne
+      else Zero // because abs(b) > abs(a)
+    else {
       val (aNeg, aAbsLo, aAbsHi) = inline_abs(alo, ahi)
       val (bNeg, bAbsLo, bAbsHi) = inline_abs(blo, bhi)
       val absR = unsigned_/(aAbsLo, aAbsHi, bAbsLo, bAbsHi)
@@ -391,43 +386,37 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (isZero(blo, bhi))
       throw new ArithmeticException("/ by zero")
 
-    if (isUInt32(ahi)) {
-      if (isUInt32(bhi)) {
+    if (isUInt32(ahi))
+      if (isUInt32(bhi))
         // Integer.divideUnsigned(alo, blo), inaccessible when compiling on JDK < 8
         new RuntimeLong(rawToInt(alo.toUint / blo.toUint), 0)
-      } else {
+      else
         // a < b
         Zero
-      }
-    } else {
+    else
       unsigned_/(alo, ahi, blo, bhi)
-    }
   }
 
   private def unsigned_/(alo: Int, ahi: Int, blo: Int, bhi: Int): RuntimeLong =
     // This method is not called if isInt32(alo, ahi) nor if isZero(blo, bhi)
-    if (isUnsignedSafeDouble(ahi)) {
+    if (isUnsignedSafeDouble(ahi))
       if (isUnsignedSafeDouble(bhi)) {
         val aDouble = asUnsignedSafeDouble(alo, ahi)
         val bDouble = asUnsignedSafeDouble(blo, bhi)
         val rDouble = aDouble / bDouble
         fromUnsignedSafeDouble(rDouble)
-      } else {
+      } else
         Zero // because b > a
-      }
-    } else {
-      if (bhi == 0 && isPowerOfTwo_IKnowItsNot0(blo)) {
-        val pow = log2OfPowerOfTwo(blo)
-        if (pow == 0) new RuntimeLong(alo, ahi)
-        else new RuntimeLong((alo >>> pow) | (ahi << -pow), ahi >>> pow)
-      } else if (blo == 0 && isPowerOfTwo_IKnowItsNot0(bhi)) {
-        val pow = log2OfPowerOfTwo(bhi)
-        new RuntimeLong(ahi >>> pow, 0)
-      } else {
-        unsignedDivModHelper(alo, ahi, blo, bhi, AskQuotient)
-          .asInstanceOf[RuntimeLong]
-      }
-    }
+    else if (bhi == 0 && isPowerOfTwo_IKnowItsNot0(blo)) {
+      val pow = log2OfPowerOfTwo(blo)
+      if (pow == 0) new RuntimeLong(alo, ahi)
+      else new RuntimeLong((alo >>> pow) | (ahi << -pow), ahi >>> pow)
+    } else if (blo == 0 && isPowerOfTwo_IKnowItsNot0(bhi)) {
+      val pow = log2OfPowerOfTwo(bhi)
+      new RuntimeLong(ahi >>> pow, 0)
+    } else
+      unsignedDivModHelper(alo, ahi, blo, bhi, AskQuotient)
+        .asInstanceOf[RuntimeLong]
 
   def %(b: RuntimeLong): RuntimeLong = {
     val alo = a.lo
@@ -438,16 +427,15 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (isZero(blo, bhi))
       throw new ArithmeticException("/ by zero")
 
-    if (isInt32(alo, ahi)) {
-      if (isInt32(blo, bhi)) {
+    if (isInt32(alo, ahi))
+      if (isInt32(blo, bhi))
         if (blo != -1) new RuntimeLong(alo % blo)
         else Zero // Work around https://github.com/ariya/phantomjs/issues/12198
-      } else {
-        // Either a == Int.MinValue && b == (Int.MaxValue + 1), or (abs(b) > abs(a))
-        if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0)) Zero
-        else a // because abs(b) > abs(a)
-      }
-    } else {
+      else
+      // Either a == Int.MinValue && b == (Int.MaxValue + 1), or (abs(b) > abs(a))
+      if (alo == Int.MinValue && (blo == 0x80000000 && bhi == 0)) Zero
+      else a // because abs(b) > abs(a)
+    else {
       val (aNeg, aAbsLo, aAbsHi) = inline_abs(alo, ahi)
       val (_, bAbsLo, bAbsHi) = inline_abs(blo, bhi)
       val absR = unsigned_%(aAbsLo, aAbsHi, bAbsLo, bAbsHi)
@@ -466,40 +454,34 @@ final class RuntimeLong(val lo: Int, val hi: Int)
     if (isZero(blo, bhi))
       throw new ArithmeticException("/ by zero")
 
-    if (isUInt32(ahi)) {
-      if (isUInt32(bhi)) {
+    if (isUInt32(ahi))
+      if (isUInt32(bhi))
         // Integer.remainderUnsigned(alo, blo), inaccessible when compiling on JDK < 8
         new RuntimeLong(rawToInt(alo.toUint % blo.toUint), 0)
-      } else {
+      else
         // a < b
         a
-      }
-    } else {
+    else
       unsigned_%(alo, ahi, blo, bhi)
-    }
   }
 
   private def unsigned_%(alo: Int, ahi: Int, blo: Int, bhi: Int): RuntimeLong =
     // This method is not called if isInt32(alo, ahi) nor if isZero(blo, bhi)
-    if (isUnsignedSafeDouble(ahi)) {
+    if (isUnsignedSafeDouble(ahi))
       if (isUnsignedSafeDouble(bhi)) {
         val aDouble = asUnsignedSafeDouble(alo, ahi)
         val bDouble = asUnsignedSafeDouble(blo, bhi)
         val rDouble = aDouble % bDouble
         fromUnsignedSafeDouble(rDouble)
-      } else {
+      } else
         new RuntimeLong(alo, ahi) // because b > a
-      }
-    } else {
-      if (bhi == 0 && isPowerOfTwo_IKnowItsNot0(blo)) {
-        new RuntimeLong(alo & (blo - 1), 0)
-      } else if (blo == 0 && isPowerOfTwo_IKnowItsNot0(bhi)) {
-        new RuntimeLong(alo, ahi & (bhi - 1))
-      } else {
-        unsignedDivModHelper(alo, ahi, blo, bhi, AskRemainder)
-          .asInstanceOf[RuntimeLong]
-      }
-    }
+    else if (bhi == 0 && isPowerOfTwo_IKnowItsNot0(blo))
+      new RuntimeLong(alo & (blo - 1), 0)
+    else if (blo == 0 && isPowerOfTwo_IKnowItsNot0(bhi))
+      new RuntimeLong(alo, ahi & (bhi - 1))
+    else
+      unsignedDivModHelper(alo, ahi, blo, bhi, AskRemainder)
+        .asInstanceOf[RuntimeLong]
 
   private def unsignedDivModHelper(
       alo: Int,
@@ -689,13 +671,13 @@ object RuntimeLong {
   def fromDouble(value: Double): RuntimeLong = {
     import Utils._
 
-    if (value.isNaN) {
+    if (value.isNaN)
       Zero
-    } else if (value < -TwoPow53) {
+    else if (value < -TwoPow53)
       MinValue
-    } else if (value >= TwoPow53) {
+    else if (value >= TwoPow53)
       MaxValue
-    } else {
+    else {
       val neg = value < 0
       val absValue = if (neg) -value else value
       val lo = rawToInt(absValue)

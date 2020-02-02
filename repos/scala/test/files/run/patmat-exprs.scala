@@ -217,7 +217,7 @@ trait Pattern {
         case Add(Seq(Add(x), Add(y))) => Add(x.toList ::: y.toList).simplify
         case Add(Seq(Add(x), y))      => Add(y :: x.toList).simplify
         case Add(Seq(x, Add(y)))      => Add(x :: y.toList).simplify
-        case Add(x) => {
+        case Add(x) =>
           val noZeros = x.filter(_ != Zero[T])
           val noOnes = noZeros.map {
             case y: One[_] => Const(num.one); case y => y
@@ -235,7 +235,6 @@ trait Pattern {
             case 3 => Add3(args(0), args(1), args(2))
             case _ => Add(args)
           }
-        }
         case Sub(x: Zero[_], y)                    => Neg(y)
         case Sub(x, y: Zero[_])                    => x
         case Sub(x, y) if x == y                   => Zero[T]

@@ -9,11 +9,10 @@ object LongRational {
 
   def apply(n: Long, d: Long): LongRational = {
     val div = gcd(n, d)
-    if (d < 0) {
+    if (d < 0)
       new LongRational(-n / div, -d / div)
-    } else {
+    else
       new LongRational(n / div, d / div)
-    }
   }
 
   @inline final def gcd(a: Long, b: Long) = spire.math.gcd(a, b)
@@ -26,9 +25,9 @@ final class LongRational private (val n: Long, val d: Long) {
 
   def +(r: LongRational): LongRational = {
     val dgcd: Long = gcd(d, r.d)
-    if (dgcd == 1) {
+    if (dgcd == 1)
       new LongRational(r.d * n + r.n * d, r.d * d)
-    } else {
+    else {
       val lden: Long = d / dgcd
       val rden: Long = r.d / dgcd
       val num: Long = rden * n + r.n * lden
@@ -42,9 +41,9 @@ final class LongRational private (val n: Long, val d: Long) {
 
   def -(r: LongRational): LongRational = {
     val dgcd: Long = gcd(d, r.d)
-    if (dgcd == 1) {
+    if (dgcd == 1)
       new LongRational(r.d * n - r.n * d, r.d * d)
-    } else {
+    else {
       val lden: Long = d / dgcd
       val rden: Long = r.d / dgcd
       val num: Long = rden * n - r.n * lden
@@ -67,23 +66,21 @@ final class LongRational private (val n: Long, val d: Long) {
     val b = gcd(d, r.d)
     val num = (n / a) * (r.d / b)
     val den = (d / b) * (r.n / a)
-    if (den < 0L) {
+    if (den < 0L)
       new LongRational(-num, -den)
-    } else {
+    else
       new LongRational(num, den)
-    }
   }
 
   def pow(exp: Int): LongRational =
-    if (exp == 0) {
+    if (exp == 0)
       LongRational.One
-    } else if (exp < 0) {
+    else if (exp < 0)
       new LongRational(
         d pow java.lang.Math.abs(exp),
         n pow java.lang.Math.abs(exp))
-    } else {
+    else
       new LongRational(n pow exp, d pow exp)
-    }
 
   def compare(r: LongRational): Int = {
     val dgcd = gcd(d, r.d)

@@ -172,13 +172,12 @@ class BucketedReadSuite
         .bucketBy(numBuckets, "j")
         .saveAsTable("bucketed_table")
 
-      for (j <- 0 until 13) {
+      for (j <- 0 until 13)
         checkPrunedAnswers(
           bucketSpec,
           bucketValues = j :: Nil,
           filterCondition = $"j" === j,
           df)
-      }
     }
   }
 

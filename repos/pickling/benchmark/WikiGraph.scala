@@ -106,9 +106,8 @@ object GraphReader extends RegexParsers {
             graph.addVertex(new Vertex(names(targetLabel), List()))
           vertices.put(targetLabel, newVertex)
           newVertex
-        } else {
+        } else
           vertexOpt.get
-        }
       }
 
       firstVertex.neighbors = targetVertices
@@ -121,9 +120,8 @@ object GraphReader extends RegexParsers {
   def printGraph(g: Graph): Unit =
     for (v <- g.vertices) {
       print(v.label + ":")
-      for (to <- v.neighbors) {
+      for (to <- v.neighbors)
         print(" " + to.label)
-      }
       println()
     }
 }

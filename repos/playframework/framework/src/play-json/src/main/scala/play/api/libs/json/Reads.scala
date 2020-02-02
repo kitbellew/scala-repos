@@ -351,9 +351,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     // REMEMBER THAT SIMPLEDATEFORMAT IS NOT THREADSAFE
     val df = new java.text.SimpleDateFormat(pattern)
     df.setLenient(false)
-    try {
-      Some(df.parse(input))
-    } catch {
+    try Some(df.parse(input))
+    catch {
       case x: java.text.ParseException =>
         None
     }
@@ -382,9 +381,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[LocalDateTime] =
       new TemporalParser[LocalDateTime] {
         def parse(input: String): Option[LocalDateTime] =
-          try {
-            Some(LocalDateTime.parse(input, formatter))
-          } catch {
+          try Some(LocalDateTime.parse(input, formatter))
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -400,9 +398,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[OffsetDateTime] =
       new TemporalParser[OffsetDateTime] {
         def parse(input: String): Option[OffsetDateTime] =
-          try {
-            Some(OffsetDateTime.parse(input, formatter))
-          } catch {
+          try Some(OffsetDateTime.parse(input, formatter))
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -417,9 +414,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[LocalDate] =
       new TemporalParser[LocalDate] {
         def parse(input: String): Option[LocalDate] =
-          try {
-            Some(LocalDate.parse(input, formatter))
-          } catch {
+          try Some(LocalDate.parse(input, formatter))
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -435,9 +431,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[Instant] =
       new TemporalParser[Instant] {
         def parse(input: String): Option[Instant] =
-          try {
-            Some(Instant.from(formatter.parse(input)))
-          } catch {
+          try Some(Instant.from(formatter.parse(input)))
+          catch {
             case _: DateTimeException                => None
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
@@ -454,9 +449,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         formatter: DateTimeFormatter): TemporalParser[ZonedDateTime] =
       new TemporalParser[ZonedDateTime] {
         def parse(input: String): Option[ZonedDateTime] =
-          try {
-            Some(ZonedDateTime.parse(input, formatter))
-          } catch {
+          try Some(ZonedDateTime.parse(input, formatter))
+          catch {
             case _: DateTimeParseException           => None
             case _: UnsupportedTemporalTypeException => None
           }
@@ -1019,8 +1013,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
       implicit fmtv: Reads[V]): Reads[collection.immutable.Map[String, V]] =
     new Reads[collection.immutable.Map[String, V]] {
       def reads(json: JsValue) = json match {
-        case JsObject(m) => {
-
+        case JsObject(m) =>
           type Errors = Seq[(JsPath, Seq[ValidationError])]
           def locate(e: Errors, key: String) = e.map {
             case (p, valerr) => (JsPath \ key) ++ p -> valerr
@@ -1036,7 +1029,6 @@ trait DefaultReads extends LowPriorityDefaultReads {
                 }
             }
             .fold(JsError.apply, res => JsSuccess(res.toMap))
-        }
         case _ =>
           JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.jsobject"))))
@@ -1062,20 +1054,18 @@ trait DefaultReads extends LowPriorityDefaultReads {
     def parseUuid(s: String): Option[UUID] = {
       val uncheckedUuid = Try(UUID.fromString(s)).toOption
 
-      if (checkUuuidValidity) {
+      if (checkUuuidValidity)
         uncheckedUuid filter check(s)
-      } else {
+      else
         uncheckedUuid
-      }
     }
 
     def reads(json: JsValue) = json match {
-      case JsString(s) => {
+      case JsString(s) =>
         parseUuid(s)
           .map(JsSuccess(_))
           .getOrElse(JsError(
             Seq(JsPath() -> Seq(ValidationError("error.expected.uuid")))))
-      }
       case _ =>
         JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.uuid"))))
     }

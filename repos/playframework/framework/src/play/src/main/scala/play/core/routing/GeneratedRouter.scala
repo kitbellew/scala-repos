@@ -25,13 +25,12 @@ object Route {
   def apply(method: String, pathPattern: PathPattern) = new ParamsExtractor {
 
     def unapply(request: RequestHeader): Option[RouteParams] =
-      if (method == request.method) {
+      if (method == request.method)
         pathPattern(request.path).map { groups =>
           RouteParams(groups, request.queryString)
         }
-      } else {
+      else
         None
-      }
 
   }
 

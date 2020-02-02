@@ -138,13 +138,12 @@ class ScForStatementImpl(node: ASTNode)
             .append(
               gen.pattern.bindings.map(b => b.name).mkString("(", ", ", ")"))
             .append(s" $arrow ")
-          if (forDisplay) {
+          if (forDisplay)
             exprText.append(guard.expr.map(_.getText).getOrElse("true"))
-          } else {
+          else
             exprText
               .append(guard.expr.map(_.getText).getOrElse("true"))
               .append(";true")
-          }
           exprText.append("})")
 
           next = nextEnumerator(next)
@@ -199,11 +198,11 @@ class ScForStatementImpl(node: ASTNode)
           gen.pattern.desugarizedPatternIndex = exprText.length
           exprText.append(gen.pattern.getText)
 
-          val (freshName1, freshName2) = if (forDisplay) {
-            ("x$1", "x$2")
-          } else {
-            ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2")
-          }
+          val (freshName1, freshName2) =
+            if (forDisplay)
+              ("x$1", "x$2")
+            else
+              ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2")
 
           exprText
             .append(") <- (for (")
@@ -251,14 +250,13 @@ class ScForStatementImpl(node: ASTNode)
     val res = getDesugarizedExprText(forDisplay = false) match {
       case Some(text) =>
         if (text == "") None
-        else {
-          try {
-            Option(ScalaPsiElementFactory
+        else
+          try Option(
+            ScalaPsiElementFactory
               .createExpressionWithContextFromText(text, this.getContext, this))
-          } catch {
+          catch {
             case e: Throwable => None
           }
-        }
       case _ => None
     }
 
@@ -276,14 +274,13 @@ class ScForStatementImpl(node: ASTNode)
                        (!element
                          .isInstanceOf[ScPattern] && element.getTextLength == patt.getTextLength)))
                   element = element.getParent
-                if (element != null && element.getText == patt.getText) {
+                if (element != null && element.getText == patt.getText)
                   element match {
                     case p: ScPattern =>
                       analogMap.put(p, patt)
                       patt.analog = p
                     case _ =>
                   }
-                }
               }
             })
       case _ =>
@@ -298,12 +295,10 @@ class ScForStatementImpl(node: ASTNode)
       for {
         enums <- f.enumerators
         gen <- enums.generators
-      } {
-        analogMap.get(gen.pattern) match {
-          case Some(oldElem) =>
-            oldElem.analog = gen.pattern.analog
-          case _ =>
-        }
+      } analogMap.get(gen.pattern) match {
+        case Some(oldElem) =>
+          oldElem.analog = gen.pattern.analog
+        case _ =>
       }
     }
     if ((enums.isEmpty && guards.isEmpty && gens.length == 1) || gens.isEmpty || res.isEmpty)

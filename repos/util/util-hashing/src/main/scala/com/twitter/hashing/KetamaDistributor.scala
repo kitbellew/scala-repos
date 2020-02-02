@@ -32,9 +32,8 @@ class KetamaDistributor[A](
 
       for (i <- 0 until pointsOnRing) {
         val key = node.identifier + "-" + i
-        for (k <- 0 until 4) {
+        for (k <- 0 until 4)
           continuum.put(computeHash(key, k), node)
-        }
       }
     }
 

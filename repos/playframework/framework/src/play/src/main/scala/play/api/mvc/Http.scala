@@ -132,9 +132,8 @@ package play.api.mvc {
     /**
       * @return The media types list of the request’s Accept header, sorted by preference (preferred first).
       */
-    lazy val acceptedTypes: Seq[play.api.http.MediaRange] = {
+    lazy val acceptedTypes: Seq[play.api.http.MediaRange] =
       headers.get(HeaderNames.ACCEPT).toSeq.flatMap(MediaRange.parse.apply)
-    }
 
     /**
       * Check if this request accepts a given media type.
@@ -269,11 +268,9 @@ package play.api.mvc {
         header <- headers.get(headerName).toList
         value0 <- header.split(',')
         value = value0.trim
-      } yield {
-        RequestHeader.qPattern.findFirstMatchIn(value) match {
-          case Some(m) => (m.group(1).toDouble, m.before.toString)
-          case None    => (1.0, value) // “The default value is q=1.”
-        }
+      } yield RequestHeader.qPattern.findFirstMatchIn(value) match {
+        case Some(m) => (m.group(1).toDouble, m.before.toString)
+        case None    => (1.0, value) // “The default value is q=1.”
       }
   }
 
@@ -614,26 +611,24 @@ package play.api.mvc {
       // This method intentionally runs in constant time if the two strings have the same length.
       // If it didn't, it would be vulnerable to a timing attack.
       def safeEquals(a: String, b: String) =
-        if (a.length != b.length) {
+        if (a.length != b.length)
           false
-        } else {
+        else {
           var equal = 0
-          for (i <- Array.range(0, a.length)) {
+          for (i <- Array.range(0, a.length))
             equal |= a(i) ^ b(i)
-          }
           equal == 0
         }
 
-      try {
-        if (isSigned) {
-          val splitted = data.split("-", 2)
-          val message = splitted.tail.mkString("-")
-          if (safeEquals(splitted(0), cookieSigner.sign(message)))
-            urldecode(message)
-          else
-            Map.empty[String, String]
-        } else urldecode(data)
-      } catch {
+      try if (isSigned) {
+        val splitted = data.split("-", 2)
+        val message = splitted.tail.mkString("-")
+        if (safeEquals(splitted(0), cookieSigner.sign(message)))
+          urldecode(message)
+        else
+          Map.empty[String, String]
+      } else urldecode(data)
+      catch {
         // fail gracefully is the session cookie is corrupted
         case NonFatal(_) => Map.empty[String, String]
       }
@@ -662,9 +657,8 @@ package play.api.mvc {
         val extractedCookie: Cookie = cookie.get
         if (extractedCookie.name != COOKIE_NAME)
           emptyCookie /* can this happen? */
-        else {
+        else
           deserialize(decode(extractedCookie.value))
-        }
       }
 
     def discard = DiscardingCookie(COOKIE_NAME, path, domain, secure)

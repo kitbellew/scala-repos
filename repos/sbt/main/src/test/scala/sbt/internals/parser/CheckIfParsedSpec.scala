@@ -27,11 +27,10 @@ abstract class CheckIfParsedSpec(
   }
 
   private def shouldContains(b: Boolean) =
-    s"""Should ${if (b) {
+    s"""Should ${if (b)
       "contain"
-    } else {
-      "not contain"
-    }}"""
+    else
+      "not contain"}"""
 
   protected val files: Seq[(String, String, Boolean, Boolean)]
 

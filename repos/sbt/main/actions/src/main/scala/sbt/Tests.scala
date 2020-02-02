@@ -162,7 +162,7 @@ object Tests {
     val testListeners = new ListBuffer[TestReportListener]
     val undefinedFrameworks = new ListBuffer[String]
 
-    for (option <- config.options) {
+    for (option <- config.options)
       option match {
         case Filter(include) => testFilters += include
         case Filters(includes) =>
@@ -175,7 +175,6 @@ object Tests {
         case Cleanup(cleanupFunction) => cleanup += cleanupFunction
         case a: Argument              => // now handled by whatever constructs `runners`
       }
-    }
 
     if (excludeTestsSet.nonEmpty)
       log.debug(excludeTestsSet.mkString("Excluding tests: \n\t", "\n\t", ""))

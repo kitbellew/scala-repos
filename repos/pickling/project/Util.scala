@@ -28,9 +28,8 @@ object Util {
             "Failed to load Maven settings from " + mavenSettingsFile + ": " + ex)
           Nil
       }
-    } else {
+    } else
       // println("Sonatype credentials cannot be loaded: -Dmaven.settings.file is not specified.")
       Nil
-    }
   }
 }

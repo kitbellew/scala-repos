@@ -19,9 +19,7 @@ object Threads {
     try {
       thread.setContextClassLoader(classloader)
       b
-    } finally {
-      thread.setContextClassLoader(oldLoader)
-    }
+    } finally thread.setContextClassLoader(oldLoader)
   }
 
 }

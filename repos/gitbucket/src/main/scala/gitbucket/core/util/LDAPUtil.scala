@@ -80,7 +80,7 @@ object LDAPUtil {
       keystore = ldapSettings.keystore.getOrElse(""),
       error = "User LDAP Authentication Failed."
     ) { conn =>
-      if (ldapSettings.mailAttribute.getOrElse("").isEmpty) {
+      if (ldapSettings.mailAttribute.getOrElse("").isEmpty)
         Right(
           LDAPUserInfo(
             userName = userName,
@@ -96,7 +96,7 @@ object LDAPUtil {
               .getOrElse(userName),
             mailAddress = createDummyMailAddress(userName)
           ))
-      } else {
+      else
         findMailAddress(
           conn,
           userDN,
@@ -121,7 +121,6 @@ object LDAPUtil {
               ))
           case None => Left("Can't find mail address.")
         }
-      }
     }
 
   private def getUserNameFromMailAddress(userName: String): String =
@@ -144,28 +143,25 @@ object LDAPUtil {
       // Dynamically set Sun as the security provider
       Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider())
 
-      if (keystore.compareTo("") != 0) {
+      if (keystore.compareTo("") != 0)
         // Dynamically set the property that JSSE uses to identify
         // the keystore that holds trusted root certificates
         System.setProperty("javax.net.ssl.trustStore", keystore)
-      }
     }
 
     val conn: LDAPConnection =
-      if (ssl) {
+      if (ssl)
         new LDAPConnection(new LDAPJSSESecureSocketFactory())
-      } else {
+      else
         new LDAPConnection(new LDAPJSSEStartTLSFactory())
-      }
 
     try {
       // Connect to the server
       conn.connect(host, port)
 
-      if (tls) {
+      if (tls)
         // Secure the connection
         conn.startTLS()
-      }
 
       // Bind to the server
       conn.bind(LDAP_VERSION, dn, password.getBytes)
@@ -174,16 +170,14 @@ object LDAPUtil {
       f(conn)
 
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         // Provide more information if something goes wrong
         logger.info("" + e)
 
-        if (conn.isConnected) {
+        if (conn.isConnected)
           conn.disconnect()
-        }
         // Returns an error message
         Left(error)
-      }
     }
   }
 
@@ -200,19 +194,17 @@ object LDAPUtil {
     def getEntries(
         results: LDAPSearchResults,
         entries: List[Option[LDAPEntry]] = Nil): List[LDAPEntry] =
-      if (results.hasMore) {
+      if (results.hasMore)
         getEntries(
           results,
-          entries :+ (try {
-            Option(results.next)
-          } catch {
+          entries :+ (try Option(results.next)
+          catch {
             case ex: LDAPReferralException =>
               None // NOTE(tanacasino): Referral follow is off. so ignores it.(for AD)
           })
         )
-      } else {
+      else
         entries.flatten
-      }
 
     val filterCond = additionalFilterCondition.getOrElse("") match {
       case "" => userNameAttribute + "=" + userName
@@ -239,9 +231,9 @@ object LDAPUtil {
         userNameAttribute + "=" + userName,
         Array[String](mailAttribute),
         false)) { results =>
-      if (results.hasMore) {
+      if (results.hasMore)
         Option(results.next.getAttribute(mailAttribute)).map(_.getStringValue)
-      } else None
+      else None
     }
 
   private def findFullName(
@@ -257,9 +249,9 @@ object LDAPUtil {
         userNameAttribute + "=" + userName,
         Array[String](nameAttribute),
         false)) { results =>
-      if (results.hasMore) {
+      if (results.hasMore)
         Option(results.next.getAttribute(nameAttribute)).map(_.getStringValue)
-      } else None
+      else None
     }
 
   case class LDAPUserInfo(

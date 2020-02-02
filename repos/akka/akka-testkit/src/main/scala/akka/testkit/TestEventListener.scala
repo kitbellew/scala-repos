@@ -612,9 +612,8 @@ class TestEventListener extends Logging.DefaultLogger {
 
   def filter(event: LogEvent): Boolean =
     filters exists (f ⇒
-      try {
-        f(event)
-      } catch { case e: Exception ⇒ false })
+      try f(event)
+      catch { case e: Exception ⇒ false })
 
   def addFilter(filter: EventFilter): Unit = filters ::= filter
 

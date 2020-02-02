@@ -195,9 +195,8 @@ class GraphStageDocSpec extends AkkaSpec {
             if (lastElem.isDefined) {
               push(out, lastElem.get)
               lastElem = None
-            } else {
+            } else
               pull(in)
-            }
         })
       }
   }
@@ -474,16 +473,14 @@ class GraphStageDocSpec extends AkkaSpec {
                   val bufferedElem = buffer.dequeue()
                   push(out, bufferedElem)
                 }
-                if (!bufferFull) {
+                if (!bufferFull)
                   pull(in)
-                }
               }
 
               override def onUpstreamFinish(): Unit = {
-                if (buffer.nonEmpty) {
+                if (buffer.nonEmpty)
                   // emit the rest if possible
                   emitMultiple(out, buffer.toIterator)
-                }
                 completeStage()
               }
             }
@@ -493,15 +490,14 @@ class GraphStageDocSpec extends AkkaSpec {
             out,
             new OutHandler {
               override def onPull(): Unit = {
-                if (buffer.isEmpty) {
+                if (buffer.isEmpty)
                   downstreamWaiting = true
-                } else {
+                else {
                   val elem = buffer.dequeue
                   push(out, elem)
                 }
-                if (!bufferFull && !hasBeenPulled(in)) {
+                if (!bufferFull && !hasBeenPulled(in))
                   pull(in)
-                }
               }
             }
           )

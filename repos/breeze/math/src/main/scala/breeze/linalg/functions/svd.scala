@@ -412,11 +412,10 @@ object svd extends UFunc {
       */
     def apply(mt: CSCMatrix[Double], k: Int): DenseSVD = {
       val tol = 1e-6
-      if (k >= mt.cols || k >= mt.rows) {
+      if (k >= mt.cols || k >= mt.rows)
         throw new IllegalArgumentException(
           "The desired number of singular values is greater " +
             "than or equal to min(mt.cols, mt.rows). Please use the full svd.")
-      }
 
       val svdImpl = svd.Svd_Sparse_Impl[CSCMatrix[Double], CSCMatrix[Double]]
       val isSlimMatrix = mt.rows > mt.cols

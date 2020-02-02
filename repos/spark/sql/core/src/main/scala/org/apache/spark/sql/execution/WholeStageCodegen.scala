@@ -120,9 +120,8 @@ trait CodegenSupport extends SparkPlan {
       ctx: CodegenContext,
       input: Seq[ExprCode],
       row: String = null): String = {
-    if (input != null) {
+    if (input != null)
       assert(input.length == output.length)
-    }
     parent.consumeChild(ctx, this, input, row)
   }
 
@@ -186,17 +185,15 @@ trait CodegenSupport extends SparkPlan {
           case (attr, i) =>
             BoundReference(i, attr.dataType, attr.nullable).gen(ctx)
         }
-      } else {
+      } else
         input
-      }
 
     val evaluated =
-      if (row != null && preferUnsafeRow) {
+      if (row != null && preferUnsafeRow)
         // Current plan can consume UnsafeRows directly.
         ""
-      } else {
+      else
         evaluateRequiredVariables(child.output, inputVars, usedInputs)
-      }
 
     s"""
        |
@@ -353,7 +350,7 @@ case class WholeStageCodegen(child: SparkPlan)
 
     val rdds = child.asInstanceOf[CodegenSupport].upstreams()
     assert(rdds.size <= 2, "Up to two upstream RDDs can be supported")
-    if (rdds.length == 1) {
+    if (rdds.length == 1)
       rdds.head.mapPartitions { iter =>
         val clazz = CodeGenerator.compile(cleanedSource)
         val buffer =
@@ -364,7 +361,7 @@ case class WholeStageCodegen(child: SparkPlan)
           override def next: InternalRow = buffer.next()
         }
       }
-    } else {
+    else
       // Right now, we support up to two upstreams.
       rdds.head.zipPartitions(rdds(1)) { (leftIter, rightIter) =>
         val clazz = CodeGenerator.compile(cleanedSource)
@@ -376,7 +373,6 @@ case class WholeStageCodegen(child: SparkPlan)
           override def next: InternalRow = buffer.next()
         }
       }
-    }
   }
 
   override def upstreams(): Seq[RDD[InternalRow]] =
@@ -391,17 +387,17 @@ case class WholeStageCodegen(child: SparkPlan)
       input: Seq[ExprCode],
       row: String = null): String = {
 
-    val doCopy = if (ctx.copyResult) {
-      ".copy()"
-    } else {
-      ""
-    }
-    if (row != null) {
+    val doCopy =
+      if (ctx.copyResult)
+        ".copy()"
+      else
+        ""
+    if (row != null)
       // There is an UnsafeRow already
       s"""
          |append($row$doCopy);
        """.stripMargin.trim
-    } else {
+    else {
       assert(input != null)
       if (input.nonEmpty) {
         val colExprs = output.zipWithIndex.map {
@@ -417,12 +413,11 @@ case class WholeStageCodegen(child: SparkPlan)
            |${code.code.trim}
            |append(${code.value}$doCopy);
          """.stripMargin.trim
-      } else {
+      } else
         // There is no columns
         s"""
            |append(unsafeRow);
          """.stripMargin.trim
-      }
     }
   }
 
@@ -490,9 +485,8 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
   }
 
   def apply(plan: SparkPlan): SparkPlan =
-    if (conf.wholeStageEnabled) {
+    if (conf.wholeStageEnabled)
       insertWholeStageCodegen(plan)
-    } else {
+    else
       plan
-    }
 }

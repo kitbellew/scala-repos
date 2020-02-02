@@ -51,9 +51,7 @@ class PartitionBatchPruningSuite
       sqlContext.setConf(
         SQLConf.IN_MEMORY_PARTITION_PRUNING,
         originalInMemoryPartitionPruning)
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -70,11 +68,8 @@ class PartitionBatchPruningSuite
   }
 
   override protected def afterEach(): Unit =
-    try {
-      sqlContext.uncacheTable("pruningData")
-    } finally {
-      super.afterEach()
-    }
+    try sqlContext.uncacheTable("pruningData")
+    finally super.afterEach()
 
   // Comparisons
   checkBatchPruning("SELECT key FROM pruningData WHERE key = 1", 1, 1)(Seq(1))

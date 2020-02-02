@@ -436,28 +436,26 @@ trait CaseClassMacros extends ReprTypes {
 
           val suffix = ownerChain(sym).dropWhile(_ != basePre.typeSymbol)
           val ctor =
-            if (suffix.isEmpty) {
+            if (suffix.isEmpty)
               if (sym.isModuleClass) {
                 val moduleSym = sym.asClass.module
                 val modulePre = prefix(moduleSym.typeSignature)
                 c.internal.singleType(modulePre, moduleSym)
               } else
                 appliedType(sym.toTypeIn(basePre), substituteArgs)
+            else if (sym.isModuleClass) {
+              val path = suffix.tail.map(_.name.toTermName)
+              val (modulePre, moduleSym) = mkDependentRef(basePre, path)
+              c.internal.singleType(modulePre, moduleSym)
+            } else if (isAnonOrRefinement(sym)) {
+              val path = suffix.tail.init.map(_.name.toTermName)
+              val (valPre, valSym) = mkDependentRef(basePre, path)
+              c.internal.singleType(valPre, valSym)
             } else {
-              if (sym.isModuleClass) {
-                val path = suffix.tail.map(_.name.toTermName)
-                val (modulePre, moduleSym) = mkDependentRef(basePre, path)
-                c.internal.singleType(modulePre, moduleSym)
-              } else if (isAnonOrRefinement(sym)) {
-                val path = suffix.tail.init.map(_.name.toTermName)
-                val (valPre, valSym) = mkDependentRef(basePre, path)
-                c.internal.singleType(valPre, valSym)
-              } else {
-                val path = suffix.tail.init
-                  .map(_.name.toTermName) :+ suffix.last.name.toTypeName
-                val (subTpePre, subTpeSym) = mkDependentRef(basePre, path)
-                c.internal.typeRef(subTpePre, subTpeSym, substituteArgs)
-              }
+              val path = suffix.tail.init
+                .map(_.name.toTermName) :+ suffix.last.name.toTypeName
+              val (subTpePre, subTpeSym) = mkDependentRef(basePre, path)
+              c.internal.typeRef(subTpePre, subTpeSym, substituteArgs)
             }
           if (!isAccessible(ctor))
             abort(s"$tpe has an inaccessible subtype $ctor")

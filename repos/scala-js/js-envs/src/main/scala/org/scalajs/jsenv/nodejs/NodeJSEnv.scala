@@ -215,9 +215,7 @@ class NodeJSEnv private (
         case e: SocketTimeoutException =>
           js2jvm.reset()
           throw new TimeoutException("Timeout expired")
-      } finally {
-        comSocket.setSoTimeout(savedSoTimeout)
-      }
+      } finally comSocket.setSoTimeout(savedSoTimeout)
     }
 
     def close(): Unit = {
@@ -235,7 +233,7 @@ class NodeJSEnv private (
       */
     private def awaitConnection(): Boolean = {
       serverSocket.setSoTimeout(acceptTimeout)
-      while (comSocket == null && isRunning) {
+      while (comSocket == null && isRunning)
         try {
           comSocket = serverSocket.accept()
           jvm2js = new DataOutputStream(
@@ -245,7 +243,6 @@ class NodeJSEnv private (
         } catch {
           case to: SocketTimeoutException =>
         }
-      }
 
       comSocket != null
     }

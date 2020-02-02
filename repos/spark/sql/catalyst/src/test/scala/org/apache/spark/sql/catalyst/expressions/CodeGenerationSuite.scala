@@ -56,10 +56,9 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
       plan(new GenericMutableRow(length)).toSeq(expressions.map(_.dataType))
     val expected = Seq.fill(length)(true)
 
-    if (!checkResult(actual, expected)) {
+    if (!checkResult(actual, expected))
       fail(
         s"Incorrect Evaluation: expressions: $expressions, actual: $actual, expected: $expected")
-    }
   }
 
   test(

@@ -53,12 +53,11 @@ class AuditExecutor(
   def activeSize = activeThreadCount.get
 
   def execute(task: Runnable): Unit = {
-    if (!workQueue.offer(task)) {
+    if (!workQueue.offer(task))
       throw new RejectedExecutionException()
-    }
 
     // We may be able to allocate a new WorkerThread if all threads are currently active and we have room to grow
-    if (activeThreadCount.get == threadCount.get) {
+    if (activeThreadCount.get == threadCount.get)
       threadUpdateLock.synchronized {
         if (threadCount.get < maxThreads) {
           val worker = new WorkerThread(threadCount.incrementAndGet)
@@ -66,7 +65,6 @@ class AuditExecutor(
           worker.start()
         }
       }
-    }
   }
 
   def cpuDelta: Long = {
@@ -89,20 +87,17 @@ class AuditExecutor(
     */
   private def shouldContinue: Boolean = {
     val currentCount = threadCount.get
-    if (currentCount > minThreads) {
+    if (currentCount > minThreads)
       threadUpdateLock.synchronized {
-        try {
-          // If this is the first thread to volunteer for reaping, let it go
-          if (threadCount.compareAndSet(currentCount, currentCount - 1)) {
-            false
-          } else {
-            true
-          }
-        }
+        try
+        // If this is the first thread to volunteer for reaping, let it go
+        if (threadCount.compareAndSet(currentCount, currentCount - 1))
+          false
+        else
+          true
       }
-    } else {
+    else
       true
-    }
   }
 
   private class WorkerThread(id: Int) extends Thread(name + "-" + id) {
@@ -122,20 +117,14 @@ class AuditExecutor(
           val nextJob = workQueue.poll(idleTimeout, TimeUnit.MILLISECONDS)
           if (nextJob != null) {
             activeThreadCount.incrementAndGet()
-            try {
-              nextJob.run()
-            } finally {
-              activeThreadCount.decrementAndGet()
-            }
+            try nextJob.run()
+            finally activeThreadCount.decrementAndGet()
             processQueue
-          } else if (shouldContinue) {
+          } else if (shouldContinue)
             processQueue
-          }
         }
 
         processQueue
-      } finally {
-        workerFinished(this)
-      }
+      } finally workerFinished(this)
   }
 }

@@ -151,9 +151,8 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
   def isUpdateCall: Boolean = false
 
   protected override def innerType(ctx: TypingContext): TypeResult[ScType] =
-    try {
-      tryToGetInnerType(ctx, useExpectedType = true)
-    } catch {
+    try tryToGetInnerType(ctx, useExpectedType = true)
+    catch {
       case _: SafeCheckException =>
         tryToGetInnerType(ctx, useExpectedType = false)
     }
@@ -223,7 +222,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
         })
         dependentSubst.subst(c._1)
       }
-      if (c._2.nonEmpty) {
+      if (c._2.nonEmpty)
         ScalaPsiUtil
           .tuplizy(
             exprs,
@@ -246,7 +245,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             }
           }
           .getOrElse(tail)
-      } else tail
+      else tail
     }
 
     def functionParams(params: Seq[ScType]): Seq[Parameter] = {
@@ -312,7 +311,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
       def default: Seq[ScExpression] =
         if (includeUpdateCall) argumentExpressionsIncludeUpdateCall
         else argumentExpressions
-      if (isNamedDynamic) {
+      if (isNamedDynamic)
         default.map { expr =>
           val actualExpr = expr match {
             case a: ScAssignStmt =>
@@ -351,7 +350,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
             }
           }
         }
-      } else default
+      else default
     }
 
     def isApplyDynamicNamed: Boolean =
@@ -381,10 +380,9 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                   None,
                   this.applyOrUpdateElement)
               }
-          if (useExpectedType) {
+          if (useExpectedType)
             updateAccordingToExpectedType(Success(processedType, None)).foreach(
               x => processedType = x)
-          }
           setApplyOrUpdate(applyOrUpdateResult)
           setImportsUsed(importsUsed)
           setImplicitFunction(implicitFunction)

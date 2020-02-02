@@ -118,7 +118,7 @@ private[timer] class TimingWheel(
 
   private[this] def addOverflowWheel(): Unit =
     synchronized {
-      if (overflowWheel == null) {
+      if (overflowWheel == null)
         overflowWheel = new TimingWheel(
           tickMs = interval,
           wheelSize = wheelSize,
@@ -126,33 +126,31 @@ private[timer] class TimingWheel(
           taskCounter = taskCounter,
           queue
         )
-      }
     }
 
   def add(timerTaskEntry: TimerTaskEntry): Boolean = {
     val expiration = timerTaskEntry.timerTask.expirationMs
 
-    if (timerTaskEntry.cancelled) {
+    if (timerTaskEntry.cancelled)
       // Cancelled
       false
-    } else if (expiration < currentTime + tickMs) {
+    else if (expiration < currentTime + tickMs)
       // Already expired
       false
-    } else if (expiration < currentTime + interval) {
+    else if (expiration < currentTime + interval) {
       // Put in its own bucket
       val virtualId = expiration / tickMs
       val bucket = buckets((virtualId % wheelSize.toLong).toInt)
       bucket.add(timerTaskEntry)
 
       // Set the bucket expiration time
-      if (bucket.setExpiration(virtualId * tickMs)) {
+      if (bucket.setExpiration(virtualId * tickMs))
         // The bucket needs to be enqueued because it was an expired bucket
         // We only need to enqueue the bucket when its expiration time has changed, i.e. the wheel has advanced
         // and the previous buckets gets reused; further calls to set the expiration within the same wheel cycle
         // will pass in the same value and hence return false, thus the bucket with the same expiration will not
         // be enqueued multiple times.
         queue.offer(bucket)
-      }
       true
     } else {
       // Out of the interval. Put it into the parent timer

@@ -26,7 +26,7 @@ object Enumerator {
     val enumMarker = builder.mark
 
     def parseNonGuard(f: Boolean): Boolean = {
-      if (!Pattern1.parse(builder)) {
+      if (!Pattern1.parse(builder))
         if (!f) {
           builder error ErrMsg("wrong.pattern")
           enumMarker.done(ScalaElementTypes.ENUMERATOR)
@@ -38,7 +38,6 @@ object Enumerator {
           enumMarker.drop()
           return true
         }
-      }
       builder.getTokenType match {
         case ScalaTokenTypes.tASSIGN =>
           builder.advanceLexer() //Ate =
@@ -55,9 +54,8 @@ object Enumerator {
             return Guard.parse(builder, noIf = true)
           }
       }
-      if (!Expr.parse(builder)) {
+      if (!Expr.parse(builder))
         builder error ErrMsg("wrong.expression")
-      }
       enumMarker.done(ScalaElementTypes.ENUMERATOR)
       true
     }

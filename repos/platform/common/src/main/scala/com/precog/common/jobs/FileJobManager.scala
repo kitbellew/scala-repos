@@ -81,10 +81,9 @@ class FileJobManager[M[+_]] private[FileJobManager] (
     Cache.simple[JobId, FileJobState](
       ExpireAfterAccess(Duration(5, "minutes")),
       OnRemoval({ (jobId, job, reason) =>
-        if (reason != RemovalCause.REPLACED) {
+        if (reason != RemovalCause.REPLACED)
           // Make sure to save expired entries
           saveJob(jobId, job)
-        }
         PrecogUnit
       })
     )
@@ -111,7 +110,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
 
   private[this] def loadJob(jobId: JobId): Option[FileJobState] =
     cache.get(jobId) orElse {
-      if (jobFile(jobId).exists) {
+      if (jobFile(jobId).exists)
         JParser
           .parseFromFile(jobFile(jobId))
           .bimap(Extractor.Thrown(_), j => j)
@@ -121,9 +120,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
               "Error loading job for %s: %s".format(jobId, error.message))
           }, j => j)
           .toOption
-      } else {
+      else
         None
-      }
     }
 
   def createJob(
@@ -276,9 +274,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
         val length = chunks.foldLeft(0)(_ + _.length)
         output.writeInt(length)
         chunks.foreach { bytes => output.write(bytes) }
-      } finally {
-        output.close()
-      }
+      } finally output.close()
     }
 
   def load(file: String): M[Option[FileData[M]]] = M.point {
@@ -293,25 +289,20 @@ class FileJobManager[M[+_]] private[FileJobManager] (
 
         val length = input.readInt
         val data = new Array[Byte](length)
-        if (input.read(data) != length) {
+        if (input.read(data) != length)
           throw new IOException("Incomplete data in " + resultFile(file))
-        }
 
         Some(FileData(mime, data :: StreamT.empty[M, Array[Byte]]))
-      } finally {
-        input.close()
-      }
-    } else {
+      } finally input.close()
+    } else
       None
-    }
   }
 
   def remove(file: String): M[Unit] = M.point {
     val target = resultFile(file)
-    if (target.exists && !target.delete) {
+    if (target.exists && !target.delete)
       throw new IOException(
         "Failed to delete job file: " + target.getCanonicalPath)
-    }
   }
 }
 

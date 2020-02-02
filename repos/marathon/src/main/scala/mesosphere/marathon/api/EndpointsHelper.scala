@@ -27,11 +27,10 @@ object EndpointsHelper {
       if (servicePorts.isEmpty) {
         sb.append(cleanId).append(delimiter).append(' ').append(delimiter)
         for (task <- tasks
-             if task.getStatus.getState == TaskState.TASK_RUNNING) {
+             if task.getStatus.getState == TaskState.TASK_RUNNING)
           sb.append(task.getHost).append(' ')
-        }
         sb.append('\n')
-      } else {
+      } else
         for ((port, i) <- servicePorts.zipWithIndex) {
           sb.append(cleanId).append(delimiter).append(port).append(delimiter)
 
@@ -46,7 +45,6 @@ object EndpointsHelper {
           }
           sb.append('\n')
         }
-      }
     }
     sb.toString()
   }

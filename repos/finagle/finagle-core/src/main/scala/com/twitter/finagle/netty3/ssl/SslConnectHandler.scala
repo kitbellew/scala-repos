@@ -36,11 +36,10 @@ private[netty3] class SslListenerConnectionHandler(
       .handshake()
       .addListener(new ChannelFutureListener {
         override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
+          if (f.isSuccess)
             SslListenerConnectionHandler.super.channelConnected(ctx, e)
-          } else {
+          else
             Channels.close(ctx.getChannel)
-          }
       })
 
   override def exceptionCaught(
@@ -98,9 +97,8 @@ class SslConnectHandler(
         val wrappedConnectFuture = Channels.future(de.getChannel, true)
         de.getFuture.addListener(new ChannelFutureListener {
           override def operationComplete(f: ChannelFuture): Unit =
-            if (f.isCancelled) {
+            if (f.isCancelled)
               wrappedConnectFuture.cancel()
-            }
         })
 
         // Proxy failures here so that if the connect fails, it is
@@ -138,16 +136,15 @@ class SslConnectHandler(
     // proxy cancellations again.
     connectFuture.get.addListener(new ChannelFutureListener {
       override def operationComplete(f: ChannelFuture): Unit =
-        if (f.isCancelled) {
+        if (f.isCancelled)
           fail(ctx.getChannel, new ChannelClosedException(_))
-        }
     })
 
     sslHandler
       .handshake()
       .addListener(new ChannelFutureListener {
         override def operationComplete(f: ChannelFuture): Unit =
-          if (f.isSuccess) {
+          if (f.isSuccess)
             sessionError(sslHandler.getEngine.getSession) match {
               case Some(t) =>
                 fail(ctx.getChannel, t)
@@ -155,11 +152,10 @@ class SslConnectHandler(
                 connectFuture.get.setSuccess()
                 SslConnectHandler.super.channelConnected(ctx, e)
             }
-          } else if (f.isCancelled) {
+          else if (f.isCancelled)
             fail(ctx.getChannel, new InconsistentStateException(_))
-          } else {
+          else
             fail(ctx.getChannel, new SslHandshakeException(f.getCause, _))
-          }
       })
   }
 }
@@ -183,8 +179,7 @@ object SslConnectHandler {
     }
 
     if (isValid) None
-    else {
+    else
       Some(new SslHostVerificationException(session.getPeerPrincipal.getName))
-    }
   }
 }

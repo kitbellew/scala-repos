@@ -116,9 +116,8 @@ private[spark] object Accumulators extends Logging {
     * [[org.apache.spark.executor.TaskMetrics]] from accumulator updates.
     */
   def register(a: Accumulable[_, _]): Unit = synchronized {
-    if (!originals.contains(a.id)) {
+    if (!originals.contains(a.id))
       originals(a.id) = new WeakReference[Accumulable[_, _]](a)
-    }
   }
 
   /**

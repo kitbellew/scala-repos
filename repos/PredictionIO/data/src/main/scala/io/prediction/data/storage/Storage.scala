@@ -153,9 +153,8 @@ object Storage extends Logging {
     }
   }
 
-  if (repositoryKeys.size == 0) {
+  if (repositoryKeys.size == 0)
     warn("There is no properly configured repository.")
-  }
 
   private val requiredRepositories = Seq(MetaDataRepository)
 
@@ -172,9 +171,9 @@ object Storage extends Logging {
           val keyedPath = repositoriesPrefixPath(r)
           val name = sys.env(prefixPath(keyedPath, "NAME"))
           val sourceName = sys.env(prefixPath(keyedPath, "SOURCE"))
-          if (sourceKeys.contains(sourceName)) {
+          if (sourceKeys.contains(sourceName))
             r -> DataObjectMeta(sourceName = sourceName, namespace = name)
-          } else {
+          else {
             error(s"$sourceName is not a configured storage source.")
             r -> DataObjectMeta("", "")
           }
@@ -212,13 +211,12 @@ object Storage extends Logging {
       clientConfig: StorageClientConfig,
       pkg: String): BaseStorageClient = {
     val className = "io.prediction.data.storage." + pkg + ".StorageClient"
-    try {
-      Class
-        .forName(className)
-        .getConstructors()(0)
-        .newInstance(clientConfig)
-        .asInstanceOf[BaseStorageClient]
-    } catch {
+    try Class
+      .forName(className)
+      .getConstructors()(0)
+      .newInstance(clientConfig)
+      .asInstanceOf[BaseStorageClient]
+    catch {
       case e: ClassNotFoundException =>
         val originalClassName = pkg + ".StorageClient"
         Class
@@ -234,9 +232,9 @@ object Storage extends Logging {
   /** Get the StorageClient config data from PIO Framework's environment variables */
   def getConfig(sourceName: String): Option[StorageClientConfig] =
     if (s2cm.contains(sourceName) && s2cm.get(sourceName).nonEmpty
-        && s2cm.get(sourceName).get.nonEmpty) {
+        && s2cm.get(sourceName).get.nonEmpty)
       Some(s2cm.get(sourceName).get.get.config)
-    } else None
+    else None
 
   private def updateS2CM(
       k: String,
@@ -293,13 +291,11 @@ object Storage extends Logging {
     val rawClassName = sourceType + "." + classPrefix + originalClassName.last
     val className = "io.prediction.data.storage." + rawClassName
     val clazz =
-      try {
-        Class.forName(className)
-      } catch {
+      try Class.forName(className)
+      catch {
         case e: ClassNotFoundException =>
-          try {
-            Class.forName(rawClassName)
-          } catch {
+          try Class.forName(rawClassName)
+          catch {
             case e: ClassNotFoundException =>
               throw new StorageClientException(
                 "No storage backend " +
@@ -309,9 +305,8 @@ object Storage extends Logging {
           }
       }
     val constructor = clazz.getConstructors()(0)
-    try {
-      constructor.newInstance(ctorArgs: _*).asInstanceOf[T]
-    } catch {
+    try constructor.newInstance(ctorArgs: _*).asInstanceOf[T]
+    catch {
       case e: IllegalArgumentException =>
         error(
           "Unable to instantiate data object with class '" +

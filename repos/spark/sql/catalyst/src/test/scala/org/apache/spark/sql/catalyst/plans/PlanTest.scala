@@ -62,13 +62,12 @@ abstract class PlanTest extends SparkFunSuite with PredicateHelper {
   protected def comparePlans(plan1: LogicalPlan, plan2: LogicalPlan) {
     val normalized1 = normalizeFilters(normalizeExprIds(plan1))
     val normalized2 = normalizeFilters(normalizeExprIds(plan2))
-    if (normalized1 != normalized2) {
+    if (normalized1 != normalized2)
       fail(s"""
           |== FAIL: Plans do not match ===
           |${sideBySide(normalized1.treeString, normalized2.treeString)
                 .mkString("\n")}
          """.stripMargin)
-    }
   }
 
   /** Fails the test if the two expressions do not match */

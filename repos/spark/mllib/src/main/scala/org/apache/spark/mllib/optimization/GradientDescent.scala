@@ -185,11 +185,10 @@ object GradientDescent extends Logging {
       convergenceTol: Double): (Vector, Array[Double]) = {
 
     // convergenceTol should be set with non minibatch settings
-    if (miniBatchFraction < 1.0 && convergenceTol > 0.0) {
+    if (miniBatchFraction < 1.0 && convergenceTol > 0.0)
       logWarning(
         "Testing against a convergenceTol when using miniBatchFraction " +
           "< 1.0 can be unstable because of the stochasticity in sampling.")
-    }
 
     val stochasticLossHistory = new ArrayBuffer[Double](numIterations)
     // Record previous weight and current one to calculate solution vector difference
@@ -206,9 +205,8 @@ object GradientDescent extends Logging {
       return (initialWeights, stochasticLossHistory.toArray)
     }
 
-    if (numExamples * miniBatchFraction < 1) {
+    if (numExamples * miniBatchFraction < 1)
       logWarning("The miniBatchFraction is too small")
-    }
 
     // Initialize weights as a column vector
     var weights = Vectors.dense(initialWeights.toArray)
@@ -260,14 +258,12 @@ object GradientDescent extends Logging {
 
         previousWeights = currentWeights
         currentWeights = Some(weights)
-        if (previousWeights != None && currentWeights != None) {
+        if (previousWeights != None && currentWeights != None)
           converged =
             isConverged(previousWeights.get, currentWeights.get, convergenceTol)
-        }
-      } else {
+      } else
         logWarning(
           s"Iteration ($i/$numIterations). The size of sampled batch is zero")
-      }
       i += 1
     }
 

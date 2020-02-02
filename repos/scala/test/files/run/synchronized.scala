@@ -7,15 +7,13 @@ import scala.collection.mutable.StringBuilder
 object Util {
   def checkLocks(held: AnyRef*)(notHeld: AnyRef*) = {
     val sb = new StringBuilder
-    for (lock <- held) {
+    for (lock <- held)
       sb.append(if (holdsLock(lock)) '.' else '!')
-    }
     print("%5s|" format sb)
 
     sb.clear()
-    for (lock <- notHeld) {
+    for (lock <- notHeld)
       sb.append(if (holdsLock(lock)) '!' else '.')
-    }
     print("%-15s " format sb)
 
     (held forall holdsLock) && !(notHeld exists holdsLock)

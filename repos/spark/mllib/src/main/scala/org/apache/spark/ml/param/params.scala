@@ -627,9 +627,8 @@ trait Params extends Identifiable with Serializable {
       val defaultValueStr = getDefault(param).map("default: " + _)
       val currentValueStr = get(param).map("current: " + _)
       (defaultValueStr ++ currentValueStr).mkString("(", ", ", ")")
-    } else {
+    } else
       "(undefined)"
-    }
     s"${param.name}: ${param.doc} $valueStr"
   }
 
@@ -827,13 +826,11 @@ trait Params extends Identifiable with Serializable {
     val map = paramMap ++ extra
     params.foreach { param =>
       // copy default Params
-      if (defaultParamMap.contains(param) && to.hasParam(param.name)) {
+      if (defaultParamMap.contains(param) && to.hasParam(param.name))
         to.defaultParamMap.put(to.getParam(param.name), defaultParamMap(param))
-      }
       // copy explicitly set Params
-      if (map.contains(param) && to.hasParam(param.name)) {
+      if (map.contains(param) && to.hasParam(param.name))
         to.set(param.name, map(param))
-      }
     }
     to
   }

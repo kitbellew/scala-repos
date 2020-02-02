@@ -93,9 +93,8 @@ class JSFileBuilderWithSourceMapWriter(
           offsets += selectedCount
           selectedLineLengths += line.length
           selectedCount += 1
-        } else {
+        } else
           offsets += NotSelected
-        }
         line = br.readLine()
       }
 
@@ -115,9 +114,7 @@ class JSFileBuilderWithSourceMapWriter(
           sourceMapWriter.nextLine()
         }
       }
-    } finally {
-      br.close()
-    }
+    } finally br.close()
   }
 
   override def addJSTree(tree: Trees.Tree): Unit = {

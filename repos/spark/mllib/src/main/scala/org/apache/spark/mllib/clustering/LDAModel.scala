@@ -383,9 +383,9 @@ class LocalLDAModel private[spark] (
 
     documents.map {
       case (id: Long, termCounts: Vector) =>
-        if (termCounts.numNonzeros == 0) {
+        if (termCounts.numNonzeros == 0)
           (id, Vectors.zeros(k))
-        } else {
+        else {
           val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
             termCounts,
             expElogbetaBc.value,
@@ -408,9 +408,9 @@ class LocalLDAModel private[spark] (
     val k = this.k
 
     (termCounts: Vector) =>
-      if (termCounts.numNonzeros == 0) {
+      if (termCounts.numNonzeros == 0)
         Vectors.zeros(k)
-      } else {
+      else {
         val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
           termCounts,
           expElogbetaBc.value,
@@ -435,9 +435,9 @@ class LocalLDAModel private[spark] (
   def topicDistribution(document: Vector): Vector = {
     val expElogbeta = exp(
       LDAUtils.dirichletExpectation(topicsMatrix.toBreeze.toDenseMatrix.t).t)
-    if (document.numNonzeros == 0) {
+    if (document.numNonzeros == 0)
       Vectors.zeros(this.k)
-    } else {
+    else {
       val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
         document,
         expElogbeta,
@@ -771,11 +771,10 @@ class DistributedLDAModel private[clustering] (
   /** Java-friendly version of [[topicAssignments]] */
   @Since("1.5.0")
   lazy val javaTopicAssignments
-      : JavaRDD[(java.lang.Long, Array[Int], Array[Int])] = {
+      : JavaRDD[(java.lang.Long, Array[Int], Array[Int])] =
     topicAssignments
       .asInstanceOf[RDD[(java.lang.Long, Array[Int], Array[Int])]]
       .toJavaRDD()
-  }
 
   // TODO
   // override def logLikelihood(documents: RDD[(Long, Vector)]): Double = ???
@@ -877,11 +876,11 @@ class DistributedLDAModel private[clustering] (
       case (docID, topicCounts) =>
         val topIndices = argtopk(topicCounts, k)
         val sumCounts = sum(topicCounts)
-        val weights = if (sumCounts != 0) {
-          topicCounts(topIndices) / sumCounts
-        } else {
-          topicCounts(topIndices)
-        }
+        val weights =
+          if (sumCounts != 0)
+            topicCounts(topIndices) / sumCounts
+          else
+            topicCounts(topIndices)
         (docID.toLong, topIndices.toArray, weights.toArray)
     }
 

@@ -158,10 +158,9 @@ final class VectorSlicer(override val uid: String)
       s"VectorSlicer requires that at least one feature be selected.")
     SchemaUtils.checkColumnType(schema, $(inputCol), new VectorUDT)
 
-    if (schema.fieldNames.contains($(outputCol))) {
+    if (schema.fieldNames.contains($(outputCol)))
       throw new IllegalArgumentException(
         s"Output column ${$(outputCol)} already exists.")
-    }
     val numFeaturesSelected = $(indices).length + $(names).length
     val outputAttr = new AttributeGroup($(outputCol), numFeaturesSelected)
     val outputFields = schema.fields :+ outputAttr.toStructField()
@@ -176,11 +175,10 @@ object VectorSlicer extends DefaultParamsReadable[VectorSlicer] {
 
   /** Return true if given feature indices are valid */
   private[feature] def validIndices(indices: Array[Int]): Boolean =
-    if (indices.isEmpty) {
+    if (indices.isEmpty)
       true
-    } else {
+    else
       indices.length == indices.distinct.length && indices.forall(_ >= 0)
-    }
 
   /** Return true if given feature names are valid */
   private[feature] def validNames(names: Array[String]): Boolean =

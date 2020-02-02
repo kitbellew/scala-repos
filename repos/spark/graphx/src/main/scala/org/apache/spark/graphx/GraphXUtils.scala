@@ -64,9 +64,9 @@ object GraphXUtils {
       mapFunc(ctx.toEdgeTriplet).foreach { kv =>
         val id = kv._1
         val msg = kv._2
-        if (id == ctx.srcId) {
+        if (id == ctx.srcId)
           ctx.sendToSrc(msg)
-        } else {
+        else {
           assert(id == ctx.dstId)
           ctx.sendToDst(msg)
         }

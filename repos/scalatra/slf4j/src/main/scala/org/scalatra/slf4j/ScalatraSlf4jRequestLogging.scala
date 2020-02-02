@@ -57,11 +57,8 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
       .map(_.multiParams)
       .getOrElse(Map.empty)
     fillMdc()
-    try {
-      thunk
-    } finally {
-      request(MultiParamsKey) = originalParams
-    }
+    try thunk
+    finally request(MultiParamsKey) = originalParams
   }
 
   private[this] def fillMdc() { // Do this twice so that we get all the route params if they are available and applicable
@@ -128,9 +125,8 @@ trait ScalatraSlf4jRequestLogging extends ScalatraBase with Handler {
       transformers: Seq[_root_.org.scalatra.RouteTransformer],
       action: => Any): Route = {
     val newAction = () => {
-      try {
-        logRequest()
-      } catch { case _: Throwable => }
+      try logRequest()
+      catch { case _: Throwable => }
       action
     }
     val route = Route(

@@ -30,7 +30,7 @@ object Assert {
     fail(null)
 
   def assertEquals(message: String, expected: Any, actual: Any): Unit =
-    if (!equalsRegardingNull(expected, actual)) {
+    if (!equalsRegardingNull(expected, actual))
       (expected, actual) match {
         case (expectedString: String, actualString: String) =>
           val cleanMsg: String = if (message == null) "" else message
@@ -39,7 +39,6 @@ object Assert {
         case _ =>
           failNotEquals(message, expected, actual)
       }
-    }
 
   @inline
   private def equalsRegardingNull(expected: Any, actual: Any): Boolean =
@@ -198,18 +197,16 @@ object Assert {
       expected: Double,
       actual: Double,
       delta: Double): Unit =
-    if (doubleIsDifferent(expected, actual, delta)) {
+    if (doubleIsDifferent(expected, actual, delta))
       failNotEquals(message, expected, actual)
-    }
 
   def assertEquals(
       message: String,
       expected: Float,
       actual: Float,
       delta: Float): Unit =
-    if (floatIsDifferent(expected, actual, delta)) {
+    if (floatIsDifferent(expected, actual, delta))
       failNotEquals(message, expected, actual)
-    }
 
   def assertNotEquals(
       message: String,
@@ -296,9 +293,8 @@ object Assert {
       val expectedFormatted = formatClassAndValue(expected, expectedString)
       val actualFormatted = formatClassAndValue(actual, actualString)
       s"${formatted}expected: $expectedFormatted but was: $actualFormatted"
-    } else {
+    } else
       s"${formatted}expected:<$expectedString> but was:<$actualString>"
-    }
   }
 
   private def formatClassAndValue(value: Any, valueString: String): String = {

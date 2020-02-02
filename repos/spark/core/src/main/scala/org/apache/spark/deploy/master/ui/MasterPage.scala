@@ -64,9 +64,8 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       val killFlag =
         Option(request.getParameter("terminate")).getOrElse("false").toBoolean
       val id = Option(request.getParameter("id"))
-      if (id.isDefined && killFlag) {
+      if (id.isDefined && killFlag)
         action(id.get)
-      }
 
       Thread.sleep(100)
     }
@@ -163,14 +162,13 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
 
         <div>
           {
-        if (hasDrivers) {
+        if (hasDrivers)
           <div class="row-fluid">
                <div class="span12">
                  <h4> Running Drivers </h4>
                  {activeDriversTable}
                </div>
              </div>
-        }
       }
         </div>
 
@@ -183,14 +181,13 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
 
         <div>
           {
-        if (hasDrivers) {
+        if (hasDrivers)
           <div class="row-fluid">
                 <div class="span12">
                   <h4> Completed Drivers </h4>
                   {completedDriversTable}
                 </div>
               </div>
-        }
       }
         </div>;
 

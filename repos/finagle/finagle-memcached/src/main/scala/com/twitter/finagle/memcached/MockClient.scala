@@ -67,9 +67,8 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         if (!map.contains(key)) {
           map(key) = value
           true
-        } else {
+        } else
           false
-        }
       }
     )
 
@@ -126,9 +125,8 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         if (map.contains(key)) {
           map(key) = value
           true
-        } else {
+        } else
           false
-        }
       }
     )
 
@@ -164,9 +162,8 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
         if (map.contains(key)) {
           map.remove(key)
           true
-        } else {
+        } else
           false
-        }
       }
     )
 

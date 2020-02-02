@@ -124,9 +124,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     val maxCompileTime = 6000
     var i = 0
     while (!semaphore.waitFor(100) && i < maxCompileTime) {
-      if (SwingUtilities.isEventDispatchThread) {
+      if (SwingUtilities.isEventDispatchThread)
         UIUtil.dispatchAllInvocationEvents()
-      }
       i += 1
     }
     Assert.assertTrue(
@@ -150,24 +149,19 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
         warnings: Int,
         compileContext: CompileContext) {
       try {
-        for (category <- CompilerMessageCategory.values) {
+        for (category <- CompilerMessageCategory.values)
           for (message <- compileContext.getMessages(category)) {
             val msg: String = message.getMessage
             if (category != CompilerMessageCategory.INFORMATION || !msg
-                  .startsWith("Compilation completed successfully")) {
+                  .startsWith("Compilation completed successfully"))
               myMessages += (category + ": " + msg)
-            }
           }
-        }
-        if (errors > 0) {
+        if (errors > 0)
           Assert.fail("Compiler errors occurred! " + myMessages.mkString("\n"))
-        }
         Assert.assertFalse("Code did not compile!", aborted)
       } catch {
         case t: Throwable => myError = t
-      } finally {
-        semaphore.up()
-      }
+      } finally semaphore.up()
     }
 
     def hasError = myError != null

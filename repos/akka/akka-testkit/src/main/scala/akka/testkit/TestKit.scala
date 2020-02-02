@@ -346,11 +346,10 @@ trait TestKitBase {
     assert(
       min <= diff,
       s"block took ${format(min.unit, diff)}, should at least have been $min")
-    if (!lastWasNoMsg) {
+    if (!lastWasNoMsg)
       assert(
         diff <= max_diff,
         s"block took ${format(_max.unit, diff)}, exceeding ${format(_max.unit, max_diff)}")
-    }
 
     ret
   }
@@ -772,13 +771,12 @@ trait TestKitBase {
     */
   def receiveOne(max: Duration): AnyRef = {
     val message =
-      if (max == 0.seconds) {
+      if (max == 0.seconds)
         queue.pollFirst
-      } else if (max.isFinite) {
+      else if (max.isFinite)
         queue.pollFirst(max.length, max.unit)
-      } else {
+      else
         queue.takeFirst
-      }
     lastWasNoMsg = false
     message match {
       case null ⇒
@@ -871,10 +869,10 @@ object TestKit {
     def poll(): Boolean =
       if (!p) {
         val toSleep = stop - now
-        if (toSleep <= Duration.Zero) {
+        if (toSleep <= Duration.Zero)
           if (noThrow) false
           else throw new AssertionError(s"timeout $max expired")
-        } else {
+        else {
           Thread.sleep((toSleep min interval).toMillis)
           poll()
         }

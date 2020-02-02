@@ -189,17 +189,15 @@ trait EvaluatorModule[M[+_]]
 
             val commonIds = findCommonIds(left, right)
             val keySpec = buildKeySpec(commonIds)
-          } yield {
-            for {
-              leftRes <- leftSpec
-              rightRes <- rightSpec
-            } yield GroupingAlignment(
-              keySpec,
-              keySpec,
-              leftRes,
-              rightRes,
-              GroupingSpec.Union)
-          }
+          } yield for {
+            leftRes <- leftSpec
+            rightRes <- rightSpec
+          } yield GroupingAlignment(
+            keySpec,
+            keySpec,
+            leftRes,
+            rightRes,
+            GroupingSpec.Union)
 
         case IntersectBucketSpec(left, right) =>
           for {
@@ -208,17 +206,15 @@ trait EvaluatorModule[M[+_]]
 
             val commonIds = findCommonIds(left, right)
             val keySpec = buildKeySpec(commonIds)
-          } yield {
-            for {
-              leftRes <- leftSpec
-              rightRes <- rightSpec
-            } yield GroupingAlignment(
-              keySpec,
-              keySpec,
-              leftRes,
-              rightRes,
-              GroupingSpec.Intersection)
-          }
+          } yield for {
+            leftRes <- leftSpec
+            rightRes <- rightSpec
+          } yield GroupingAlignment(
+            keySpec,
+            keySpec,
+            leftRes,
+            rightRes,
+            GroupingSpec.Intersection)
 
         case dag.Group(id, target, forest) =>
           val common = findCommonality(enumerateGraphs(forest) + target)
@@ -333,7 +329,7 @@ trait EvaluatorModule[M[+_]]
             graph: DepGraph,
             f: DepGraph => StateT[N, EvaluatorState, PendingTable]) = {
           def memoizedResult = graph match {
-            case graph: StagingPoint => {
+            case graph: StagingPoint =>
               for {
                 pending <- f(graph)
                 _ <- monadState.modify { state =>
@@ -342,7 +338,6 @@ trait EvaluatorModule[M[+_]]
                       state.assume + (graph -> (pending.table, pending.sort)))
                 }
               } yield pending
-            }
 
             case _ => f(graph)
           }
@@ -475,12 +470,12 @@ trait EvaluatorModule[M[+_]]
           }
 
           def identityJoinSpec(ids: Vector[Int]): TransSpec1 =
-            if (ids.isEmpty) {
+            if (ids.isEmpty)
               trans.ConstLiteral(
                 CEmptyArray,
                 SourceKey.Single
               ) // join with undefined, probably
-            } else {
+            else {
               val components =
                 for (i <- ids)
                   yield trans.WrapArray(DerefArrayStatic(
@@ -773,13 +768,11 @@ trait EvaluatorModule[M[+_]]
                     pendingTable.table.transform(
                       liftToValues(pendingTable.trans)),
                     MorphContext(ctx, graph)))
-              } yield {
-                PendingTable(
-                  back,
-                  graph,
-                  TransSpec1.Id,
-                  findMorphOrder(mor.idPolicy, pendingTable.sort))
-              }
+              } yield PendingTable(
+                back,
+                graph,
+                TransSpec1.Id,
+                findMorphOrder(mor.idPolicy, pendingTable.sort))
 
             // TODO: There are many thigns wrong. Morph2 needs to get join info from compiler, which
             // isn't possible currently. We special case "Match" when they don't match to deal with it,
@@ -885,9 +878,11 @@ trait EvaluatorModule[M[+_]]
                 table = pending.table.transform(liftToValues(pending.trans))
                 distinct = table.distinct(valueSpec)
                 result = distinct.transform(idSpec)
-              } yield {
-                PendingTable(result, graph, TransSpec1.Id, IdentityOrder(graph))
-              }
+              } yield PendingTable(
+                result,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             /**
           returns an array (to be dereferenced later) containing the result of each reduction
@@ -944,13 +939,11 @@ trait EvaluatorModule[M[+_]]
                     reductions = state.reductions + (m -> rvalue)
                   )
                 }
-              } yield {
-                PendingTable(
-                  wrapped,
-                  graph,
-                  TransSpec1.Id,
-                  IdentityOrder(graph))
-              }
+              } yield PendingTable(
+                wrapped,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             case r @ dag.Reduce(red, parent) =>
               for {
@@ -995,9 +988,7 @@ trait EvaluatorModule[M[+_]]
                       fullEval(rewritten, splits2, id :: splits.keys.toList)
                     back.eval(state)
                 })
-              } yield {
-                result.transform(idSpec)
-              }
+              } yield result.transform(idSpec)
 
               table map {
                 PendingTable(_, graph, TransSpec1.Id, IdentityOrder(graph))
@@ -1017,15 +1008,14 @@ trait EvaluatorModule[M[+_]]
                   predTable.reduce(Forall reducer MorphContext(ctx, graph))(
                     Forall.monoid))
 
-                assertion = if (truthiness getOrElse false) {
+                assertion = if (truthiness getOrElse false)
                   N.point(())
-                } else {
+                else
                   for {
                     _ <- report.error(graph.loc, "Assertion failed")
                     _ <- report
                       .die() // Arrrrrrrgggghhhhhhhhhhhhhh........ *gurgle*
                   } yield ()
-                }
                 _ <- transState liftM assertion
 
                 result = childPending.table transform liftToValues(
@@ -1062,20 +1052,21 @@ trait EvaluatorModule[M[+_]]
                 pair <- zip(leftSortedM, rightSortedM)
                 (leftSorted, rightSorted) = pair
 
-                result = if (union) {
+                result = if (union)
                   leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
                     Leaf(Source),
                     Leaf(Source),
                     Leaf(SourceLeft))
-                } else {
+                else
                   leftSorted.cogroup(keyValueSpec, keyValueSpec, rightSorted)(
                     TransSpec1.DeleteKeyValue,
                     TransSpec1.DeleteKeyValue,
                     TransSpec2.LeftId)
-                }
-              } yield {
-                PendingTable(result, graph, TransSpec1.Id, IdentityOrder(graph))
-              }
+              } yield PendingTable(
+                result,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             // TODO unify with IUI
             case Diff(left, right) =>
@@ -1108,9 +1099,11 @@ trait EvaluatorModule[M[+_]]
                   TransSpec1.Id,
                   TransSpec1.DeleteKeyValue,
                   TransSpec2.DeleteKeyValueLeft)
-              } yield {
-                PendingTable(result, graph, TransSpec1.Id, IdentityOrder(graph))
-              }
+              } yield PendingTable(
+                result,
+                graph,
+                TransSpec1.Id,
+                IdentityOrder(graph))
 
             case j @ Join(op, Cross(hint), left, right) =>
               cross(graph, left, right, hint)(
@@ -1126,9 +1119,9 @@ trait EvaluatorModule[M[+_]]
               val valueSpec = DerefObjectStatic(
                 DerefObjectStatic(Leaf(Source), paths.Value),
                 CPathField(valueField))
-              if (parent.valueKeys contains id) {
+              if (parent.valueKeys contains id)
                 prepareEval(parent, splits)
-              } else {
+              else
                 for {
                   pending <- prepareEval(parent, splits)
                   table = pending.table.transform(liftToValues(pending.trans))
@@ -1149,10 +1142,7 @@ trait EvaluatorModule[M[+_]]
 
                     table.transform(spec)
                   }
-                } yield {
-                  PendingTable(result, graph, TransSpec1.Id, pending.sort)
-                }
-              }
+                } yield PendingTable(result, graph, TransSpec1.Id, pending.sort)
 
             case Memoize(parent, _) =>
               for {
@@ -1160,9 +1150,7 @@ trait EvaluatorModule[M[+_]]
                 table = pending.table.transform(liftToValues(pending.trans))
 
                 result <- transState liftM mn(table.force)
-              } yield {
-                PendingTable(result, graph, TransSpec1.Id, pending.sort)
-              }
+              } yield PendingTable(result, graph, TransSpec1.Id, pending.sort)
           }
 
         val back = memoized(graph, evalTransSpecable)
@@ -1294,9 +1282,9 @@ trait EvaluatorModule[M[+_]]
         case dag.UnfixedSolution(_, solution) => Set(solution)
         case dag.Extra(expr)                  => Set(expr)
       }
-      if (queue.isEmpty) {
+      if (queue.isEmpty)
         acc
-      } else {
+      else {
         val (graph, queue2) = queue.dequeue
 
         val (queue3, addend) = {
@@ -1393,19 +1381,17 @@ trait EvaluatorModule[M[+_]]
             Kernel(nodes3, k.seen ++ nodes3)
           }
 
-          if (kernels2 forall { _.nodes.isEmpty }) {
+          if (kernels2 forall { _.nodes.isEmpty })
             Set()
-          } else {
+          else
             bfs(kernels2)
-          }
-        } else {
+        } else
           results
-        }
       }
 
-      if (nodes.size == 1) {
+      if (nodes.size == 1)
         nodes.headOption
-      } else {
+      else {
         val kernels = nodes map { n => Kernel(Set(n), Set(n)) }
         val results = bfs(kernels)
 

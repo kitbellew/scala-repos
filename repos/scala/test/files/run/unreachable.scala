@@ -53,42 +53,34 @@ object Test extends App {
 
   def unreachableTryCatchFinally: Int = {
     return 42
-    try {
-      return 0
-    } catch {
+    try return 0
+    catch {
       case x: Throwable => return 1
-    } finally {
-      return 2
-    }
+    } finally return 2
     return 3
   }
 
   def unreachableAfterTry: Int = {
-    try {
-      return 42
-    } catch {
+    try return 42
+    catch {
       case x: Throwable => return 2
     }
     return 3
   }
 
   def unreachableAfterCatch: Int = {
-    try {
-      error("haha")
-    } catch {
+    try error("haha")
+    catch {
       case x: Throwable => return 42
     }
     return 3
   }
 
   def unreachableAfterFinally: Int = {
-    try {
-      return 1
-    } catch {
+    try return 1
+    catch {
       case x: Throwable => return 2
-    } finally {
-      return 42
-    }
+    } finally return 42
     return 3
   }
 

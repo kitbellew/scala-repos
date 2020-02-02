@@ -75,9 +75,8 @@ object BufCodecBenchmark {
     def encode(values: Seq[ChannelBuffer]): ChannelBuffer = {
       var iter = values.iterator
       var size = 0
-      while (iter.hasNext) {
+      while (iter.hasNext)
         size += iter.next().readableBytes + 4
-      }
       val cb = ChannelBuffers.buffer(size)
       iter = values.iterator
       while (iter.hasNext) {
@@ -102,18 +101,16 @@ object BufCodecBenchmark {
     def encode(values: Seq[Buf]): Buf = {
       var size = 0
       var iter = values.iterator
-      while (iter.hasNext) {
+      while (iter.hasNext)
         size += iter.next().length + 4
-      }
       val bw = BufWriter.fixed(size)
       iter = values.iterator
-      while (iter.hasNext) {
+      while (iter.hasNext)
         iter.next() match {
           case v =>
             bw.writeIntBE(v.length)
               .writeBytes(Buf.ByteArray.Owned.extract(v))
         }
-      }
       bw.owned()
     }
 

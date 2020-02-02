@@ -27,11 +27,10 @@ class AtomicStateTransformer[T](initState: T) {
   final def updateWithState[S](oper: T => (S, T)): (S, T) = {
     val oldState = curState.get
     val (s, newState) = oper(oldState)
-    if (curState.compareAndSet(oldState, newState)) {
+    if (curState.compareAndSet(oldState, newState))
       (s, newState)
-    } else {
+    else
       updateWithState(oper)
-    }
   }
 
   final def update(oper: T => T): T =
@@ -57,9 +56,8 @@ case class InputState[T](state: T) {
   case class State(counter: Int, failed: Boolean) {
     def fail = this.copy(failed = true, counter = counter - 1)
     def decrBy(by: Int) = {
-      if (counter - by < 0) {
+      if (counter - by < 0)
         throw new Exception("Invalid decrement counter cannot be less than 0")
-      }
       this.copy(counter = counter - by)
     }
     def incrBy(by: Int) = {
@@ -85,10 +83,9 @@ case class InputState[T](state: T) {
     val newS = stateTracking.update(_.incrBy(incrementAmount))
     // If we incremented on something that was 0 or negative
     // And not in a failed state, then this is an error
-    if ((newS.counter - incrementAmount <= 0) && !newS.failed) {
+    if ((newS.counter - incrementAmount <= 0) && !newS.failed)
       throw new Exception(
         "Invalid call on an inputstate, we had already decremented to 0 and not failed.")
-    }
     this
   }
 
@@ -98,9 +95,8 @@ case class InputState[T](state: T) {
     if (newState.doAck) {
       InflightTuples.decr
       Some(fn(state))
-    } else {
+    } else
       None
-    }
   }
 
   def fail[U](fn: (T => U)): U = {

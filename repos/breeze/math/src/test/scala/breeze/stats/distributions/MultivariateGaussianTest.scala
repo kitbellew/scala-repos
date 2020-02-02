@@ -69,9 +69,8 @@ class MultivariateGaussianTest extends FunSuite with Checkers {
       if (norm(m - distr.mean, Double.PositiveInfinity) > 1e-1) {
         println("MExpected " + distr.mean + " but got " + m)
         false
-      } else {
+      } else
         true
-      }
 
     })
   }

@@ -96,13 +96,12 @@ trait PullRequestsControllerBase extends ControllerBase {
 
   get("/:owner/:repository/pulls")(referrersOnly { repository =>
     val q = request.getParameter("q")
-    if (Option(q).exists(_.contains("is:issue"))) {
+    if (Option(q).exists(_.contains("is:issue")))
       redirect(
         s"/${repository.owner}/${repository.name}/issues?q=" + StringUtil
           .urlEncode(q))
-    } else {
+    else
       searchPullRequests(None, repository)
-    }
   })
 
   get("/:owner/:repository/pull/:id")(referrersOnly { repository =>
@@ -208,7 +207,7 @@ trait PullRequestsControllerBase extends ControllerBase {
       issueId =>
         val branchName = multiParams("splat").head
         val userName = context.loginAccount.get.userName
-        if (repository.repository.defaultBranch != branchName) {
+        if (repository.repository.defaultBranch != branchName)
           using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
             git =>
               git
@@ -222,7 +221,6 @@ trait PullRequestsControllerBase extends ControllerBase {
                 userName,
                 branchName)
           }
-        }
         createComment(
           repository.owner,
           repository.name,
@@ -249,17 +247,16 @@ trait PullRequestsControllerBase extends ControllerBase {
       } yield {
         val branchProtection =
           getProtectedBranchInfo(owner, name, pullreq.requestBranch)
-        if (branchProtection.needStatusCheck(loginAccount.userName)) {
+        if (branchProtection.needStatusCheck(loginAccount.userName))
           flash += "error" -> s"branch ${pullreq.requestBranch} is protected need status check."
-        } else {
+        else {
           val repository = getRepository(owner, name).get
           LockUtil.lock(s"$owner/$name") {
             val alias =
-              if (pullreq.repositoryName == pullreq.requestRepositoryName && pullreq.userName == pullreq.requestUserName) {
+              if (pullreq.repositoryName == pullreq.requestRepositoryName && pullreq.userName == pullreq.requestUserName)
                 pullreq.branch
-              } else {
+              else
                 s"${pullreq.userName}:${pullreq.branch}"
-              }
             val existIds =
               using(Git.open(Directory.getRepositoryDir(owner, name))) { git =>
                 JGitUtil.getAllCommitIds(git)
@@ -295,9 +292,8 @@ trait PullRequestsControllerBase extends ControllerBase {
                       .toList
 
                     commits.foreach { commit =>
-                      if (!existIds.contains(commit.id)) {
+                      if (!existIds.contains(commit.id))
                         createIssueComment(owner, name, commit)
-                      }
                     }
 
                     // record activity
@@ -309,7 +305,7 @@ trait PullRequestsControllerBase extends ControllerBase {
                       commits)
 
                     // close issue by commit message
-                    if (pullreq.requestBranch == repository.repository.defaultBranch) {
+                    if (pullreq.requestBranch == repository.repository.defaultBranch)
                       commits.map { commit =>
                         closeIssuesFromMessage(
                           commit.fullMessage,
@@ -317,7 +313,6 @@ trait PullRequestsControllerBase extends ControllerBase {
                           owner,
                           name)
                       }
-                    }
 
                     // call web hook
                     callPullRequestWebHookByRequestBranch(
@@ -329,17 +324,15 @@ trait PullRequestsControllerBase extends ControllerBase {
                     callWebHookOf(owner, name, WebHook.Push) {
                       for {
                         ownerAccount <- getAccountByUserName(owner)
-                      } yield {
-                        WebHookService.WebHookPushPayload(
-                          git,
-                          loginAccount,
-                          pullreq.requestBranch,
-                          repository,
-                          commits,
-                          ownerAccount,
-                          oldId = oldId,
-                          newId = newCommitId)
-                      }
+                      } yield WebHookService.WebHookPushPayload(
+                        git,
+                        loginAccount,
+                        pullreq.requestBranch,
+                        repository,
+                        commits,
+                        ownerAccount,
+                        oldId = oldId,
+                        newId = newCommitId)
                     }
                 }
                 flash += "info" -> s"Merge branch '$alias' into ${pullreq.requestBranch}"
@@ -461,7 +454,7 @@ trait PullRequestsControllerBase extends ControllerBase {
     (
       forkedRepository.repository.originUserName,
       forkedRepository.repository.originRepositoryName) match {
-      case (Some(originUserName), Some(originRepositoryName)) => {
+      case (Some(originUserName), Some(originRepositoryName)) =>
         getRepository(originUserName, originRepositoryName).map {
           originRepository =>
             using(
@@ -481,8 +474,7 @@ trait PullRequestsControllerBase extends ControllerBase {
                   s"/${forkedRepository.owner}/${forkedRepository.name}/compare/$originUserName:$oldBranch...$newBranch")
             }
         } getOrElse NotFound
-      }
-      case _ => {
+      case _ =>
         using(
           Git.open(
             getRepositoryDir(forkedRepository.owner, forkedRepository.name))) {
@@ -496,40 +488,42 @@ trait PullRequestsControllerBase extends ControllerBase {
               redirect(s"/${forkedRepository.owner}/${forkedRepository.name}")
             }
         }
-      }
     }
   })
 
-  get("/:owner/:repository/compare/*...*")(referrersOnly { forkedRepository =>
-    val Seq(origin, forked) = multiParams("splat")
-    val (originOwner, originId) =
-      parseCompareIdentifie(origin, forkedRepository.owner)
-    val (forkedOwner, forkedId) =
-      parseCompareIdentifie(forked, forkedRepository.owner)
+  get("/:owner/:repository/compare/*...*")(referrersOnly {
+    forkedRepository =>
+      val Seq(origin, forked) = multiParams("splat")
+      val (originOwner, originId) =
+        parseCompareIdentifie(origin, forkedRepository.owner)
+      val (forkedOwner, forkedId) =
+        parseCompareIdentifie(forked, forkedRepository.owner)
 
-    (for (originRepositoryName <- if (originOwner == forkedOwner) {
-            // Self repository
-            Some(forkedRepository.name)
-          } else if (forkedRepository.repository.originUserName.isEmpty) {
-            // when ForkedRepository is the original repository
-            getForkedRepositories(forkedRepository.owner, forkedRepository.name)
-              .find(_._1 == originOwner)
-              .map(_._2)
-          } else if (Some(originOwner) == forkedRepository.repository.originUserName) {
-            // Original repository
-            forkedRepository.repository.originRepositoryName
-          } else {
-            // Sibling repository
-            getUserRepositories(originOwner)
-              .find { x =>
-                x.repository.originUserName == forkedRepository.repository.originUserName &&
-                x.repository.originRepositoryName == forkedRepository.repository.originRepositoryName
-              }
-              .map(_.repository.repositoryName)
-          };
-          originRepository <- getRepository(originOwner, originRepositoryName))
-      yield {
-        using(
+      (for (originRepositoryName <- if (originOwner == forkedOwner)
+              // Self repository
+              Some(forkedRepository.name)
+            else if (forkedRepository.repository.originUserName.isEmpty)
+              // when ForkedRepository is the original repository
+              getForkedRepositories(
+                forkedRepository.owner,
+                forkedRepository.name)
+                .find(_._1 == originOwner)
+                .map(_._2)
+            else if (Some(originOwner) == forkedRepository.repository.originUserName)
+              // Original repository
+              forkedRepository.repository.originRepositoryName
+            else
+              // Sibling repository
+              getUserRepositories(originOwner)
+                .find { x =>
+                  x.repository.originUserName == forkedRepository.repository.originUserName &&
+                  x.repository.originRepositoryName == forkedRepository.repository.originRepositoryName
+                }
+                .map(_.repository.repositoryName);
+            originRepository <- getRepository(
+              originOwner,
+              originRepositoryName))
+        yield using(
           Git.open(
             getRepositoryDir(originRepository.owner, originRepository.name)),
           Git.open(
@@ -554,15 +548,14 @@ trait PullRequestsControllerBase extends ControllerBase {
                 (
                   Option(oldGit.getRepository.resolve(rootId)),
                   Option(newGit.getRepository.resolve(forkedId)))
-              } else {
+              } else
                 // Commit id
                 (
                   Option(oldGit.getRepository.resolve(originId)),
                   Option(newGit.getRepository.resolve(forkedId)))
-              }
 
             (oldId, newId) match {
-              case (Some(oldId), Some(newId)) => {
+              case (Some(oldId), Some(newId)) =>
                 val (commits, diffs) = getRequestCompareInfo(
                   originRepository.owner,
                   originRepository.name,
@@ -616,15 +609,13 @@ trait PullRequestsControllerBase extends ControllerBase {
                   getMilestones(originRepository.owner, originRepository.name),
                   getLabels(originRepository.owner, originRepository.name)
                 )
-              }
               case (oldId, newId) =>
                 redirect(
                   s"/${forkedRepository.owner}/${forkedRepository.name}/compare/" +
                     s"$originOwner:${oldId.map(_ => originId).getOrElse(originRepository.repository.defaultBranch)}..." +
                     s"$forkedOwner:${newId.map(_ => forkedId).getOrElse(forkedRepository.repository.defaultBranch)}")
             }
-        }
-      }) getOrElse NotFound
+        }) getOrElse NotFound
   })
 
   ajaxGet("/:owner/:repository/compare/*...*/mergecheck")(collaboratorsOnly {
@@ -635,46 +626,43 @@ trait PullRequestsControllerBase extends ControllerBase {
       val (forkedOwner, tmpForkedBranch) =
         parseCompareIdentifie(forked, forkedRepository.owner)
 
-      (for (originRepositoryName <- if (originOwner == forkedOwner) {
+      (for (originRepositoryName <- if (originOwner == forkedOwner)
               Some(forkedRepository.name)
-            } else {
+            else
               forkedRepository.repository.originRepositoryName.orElse {
                 getForkedRepositories(
                   forkedRepository.owner,
                   forkedRepository.name).find(_._1 == originOwner).map(_._2)
-              }
-            };
+              };
             originRepository <- getRepository(
               originOwner,
               originRepositoryName))
-        yield {
-          using(
-            Git.open(
-              getRepositoryDir(originRepository.owner, originRepository.name)),
-            Git.open(
-              getRepositoryDir(forkedRepository.owner, forkedRepository.name))
-          ) {
-            case (oldGit, newGit) =>
-              val originBranch = JGitUtil
-                .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
-                .get
-                ._2
-              val forkedBranch = JGitUtil
-                .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
-                .get
-                ._2
-              val conflict = LockUtil.lock(
-                s"${originRepository.owner}/${originRepository.name}") {
-                checkConflict(
-                  originRepository.owner,
-                  originRepository.name,
-                  originBranch,
-                  forkedRepository.owner,
-                  forkedRepository.name,
-                  forkedBranch)
-              }
-              html.mergecheck(conflict)
-          }
+        yield using(
+          Git.open(
+            getRepositoryDir(originRepository.owner, originRepository.name)),
+          Git.open(
+            getRepositoryDir(forkedRepository.owner, forkedRepository.name))
+        ) {
+          case (oldGit, newGit) =>
+            val originBranch = JGitUtil
+              .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
+              .get
+              ._2
+            val forkedBranch = JGitUtil
+              .getDefaultBranch(newGit, forkedRepository, tmpForkedBranch)
+              .get
+              ._2
+            val conflict = LockUtil.lock(
+              s"${originRepository.owner}/${originRepository.name}") {
+              checkConflict(
+                originRepository.owner,
+                originRepository.name,
+                originBranch,
+                forkedRepository.owner,
+                forkedRepository.name,
+                forkedBranch)
+            }
+            html.mergecheck(conflict)
         }) getOrElse NotFound
   })
 
@@ -709,7 +697,7 @@ trait PullRequestsControllerBase extends ControllerBase {
           )
 
           // insert labels
-          if (writable) {
+          if (writable)
             form.labelNames.map { value =>
               val labels = getLabels(owner, name)
               value.split(",").foreach { labelName =>
@@ -722,7 +710,6 @@ trait PullRequestsControllerBase extends ControllerBase {
                 }
               }
             }
-          }
 
           // fetch requested branch
           fetchAsPullRequest(
@@ -783,9 +770,8 @@ trait PullRequestsControllerBase extends ControllerBase {
     if (value.contains(':')) {
       val array = value.split(":")
       (array(0), array(1))
-    } else {
+    } else
       (defaultOwner, value)
-    }
 
   private def getRequestCompareInfo(
       userName: String,
@@ -845,11 +831,10 @@ trait PullRequestsControllerBase extends ControllerBase {
             PullRequestLimit,
             owner -> repoName),
           page,
-          if (!getAccountByUserName(owner).exists(_.isGroupAccount)) {
+          if (!getAccountByUserName(owner).exists(_.isGroupAccount))
             (getCollaborators(owner, repoName) :+ owner).sorted
-          } else {
-            getCollaborators(owner, repoName)
-          },
+          else
+            getCollaborators(owner, repoName),
           getMilestones(owner, repoName),
           getLabels(owner, repoName),
           countIssue(condition.copy(state = "open"), true, owner -> repoName),

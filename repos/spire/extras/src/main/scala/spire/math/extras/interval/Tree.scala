@@ -79,15 +79,14 @@ private[interval] object Tree {
       val a_p = a.prefix
       val b_p = b.prefix
       val level = levelAbove(a_p, b_p)
-      if (zeroAt(a_p, level)) {
+      if (zeroAt(a_p, level))
         // a is before b, so it is overlapped by b0
         // b is behind a, so it is overlapped by a0 ^ a.sign
         overlapA(a0, a, b0) && overlapB(a0 ^ a.sign, b0, b)
-      } else {
+      else
         // b is before a, so it is overlapped by a0
         // a is behind b, so it is overlapped by b0 ^ b.sign
         overlapB(a0, b0, b) && overlapA(a0, a, b0 ^ b.sign)
-      }
     }
 
     protected def op(a: Boolean, b: Boolean): Boolean
@@ -138,67 +137,63 @@ private[interval] object Tree {
       val b_l = b.level
       val b_p = b.prefix
 
-      if (a_l > b_l) {
+      if (a_l > b_l)
         // a is larger => a must be a branch
-        if (!hasMatchAt(b_p, a_p, a_l)) {
+        if (!hasMatchAt(b_p, a_p, a_l))
           // the prefix of a and b is different. We don't care if a is a branch or a leaf
           disjoint(a0, a, b0, b)
-        } else
+        else
           a match {
             case a: Branch =>
               val am = a0 ^ a.left.sign
-              if (zeroAt(b_p, a_l)) {
+              if (zeroAt(b_p, a_l))
                 // b fits into the left child of a
                 op(a0, a.left, b0, b) && overlapA(am, a.right, b0 ^ b.sign)
-              } else {
+              else
                 // b fits into the right child of a
                 overlapA(a0, a.left, b0) && op(am, a.right, b0, b)
-              }
             // $COVERAGE-OFF$
             case _ => unreachable
             // $COVERAGE-ON$
           }
-      } else if (b_l > a_l) {
+      else if (b_l > a_l)
         // b is larger => b must be a branch
-        if (!hasMatchAt(a_p, b_p, b_l)) {
+        if (!hasMatchAt(a_p, b_p, b_l))
           // the prefix of a and b is different. We don't care if b is a branch or a leaf
           disjoint(a0, a, b0, b)
-        } else
+        else
           b match {
             case b: Branch =>
               val bm = b0 ^ b.left.sign
-              if (zeroAt(a_p, b_l)) {
+              if (zeroAt(a_p, b_l))
                 // a fits into the left child of b
                 op(a0, a, b0, b.left) && overlapB(a0 ^ a.sign, bm, b.right)
-              } else {
+              else
                 // a fits into the right child of b
                 overlapB(a0, b0, b.left) && op(a0, a, bm, b.right)
-              }
             // $COVERAGE-OFF$
             case _ => unreachable
             // $COVERAGE-ON$
           }
-      } else {
-        // a_l == b_l, trees are the same size
-        if (a_p == b_p) {
-          (a, b) match {
-            case (a: Branch, b: Branch) =>
-              val am = a0 ^ a.left.sign
-              val bm = b0 ^ b.left.sign
-              // same prefix. leaves have to be merged
-              // todo: check if we can return b unchanged
-              op(a0, a.left, b0, b.left) && op(am, a.right, bm, b.right)
-            case (a: Leaf, b: Leaf) =>
-              collision(a0, a, b0, b)
-            // $COVERAGE-OFF$
-            case _ => unreachable
-            // $COVERAGE-ON$
-          }
-        } else {
-          // same mask, different prefix
-          disjoint(a0, a, b0, b)
+      else
+      // a_l == b_l, trees are the same size
+      if (a_p == b_p)
+        (a, b) match {
+          case (a: Branch, b: Branch) =>
+            val am = a0 ^ a.left.sign
+            val bm = b0 ^ b.left.sign
+            // same prefix. leaves have to be merged
+            // todo: check if we can return b unchanged
+            op(a0, a.left, b0, b.left) && op(am, a.right, bm, b.right)
+          case (a: Leaf, b: Leaf) =>
+            collision(a0, a, b0, b)
+          // $COVERAGE-OFF$
+          case _ => unreachable
+          // $COVERAGE-ON$
         }
-      }
+      else
+        // same mask, different prefix
+        disjoint(a0, a, b0, b)
     }
 
     final def apply(a0: Boolean, a: Tree, b0: Boolean, b: Tree): Boolean =
@@ -293,67 +288,63 @@ private[interval] object Tree {
       val b_l = b.level
       val b_p = b.prefix
 
-      if (a_l > b_l) {
+      if (a_l > b_l)
         // a is larger => a must be a branch
-        if (!hasMatchAt(b_p, a_p, a_l)) {
+        if (!hasMatchAt(b_p, a_p, a_l))
           // the prefix of a and b is different. We don't care if a is a branch or a leaf
           join(a0, a, b0, b)
-        } else
+        else
           a match {
             case a: Branch =>
               val am = a0 ^ a.left.sign
-              if (zeroAt(b_p, a_l)) {
+              if (zeroAt(b_p, a_l))
                 // b fits into the left child of a
                 a.lr(op(a0, a.left, b0, b), overlapA(am, a.right, b0 ^ b.sign))
-              } else {
+              else
                 // b fits into the right child of a
                 a.lr(overlapA(a0, a.left, b0), op(am, a.right, b0, b))
-              }
             // $COVERAGE-OFF$
             case _ => unreachable
             // $COVERAGE-ON$
           }
-      } else if (b_l > a_l) {
+      else if (b_l > a_l)
         // b is larger => b must be a branch
-        if (!hasMatchAt(a_p, b_p, b_l)) {
+        if (!hasMatchAt(a_p, b_p, b_l))
           // the prefix of a and b is different. We don't care if b is a branch or a leaf
           join(a0, a, b0, b)
-        } else
+        else
           b match {
             case b: Branch =>
               val bm = b0 ^ b.left.sign
-              if (zeroAt(a_p, b_l)) {
+              if (zeroAt(a_p, b_l))
                 // a fits into the left child of b
                 b.lr(op(a0, a, b0, b.left), overlapB(a0 ^ a.sign, bm, b.right))
-              } else {
+              else
                 // a fits into the right child of b
                 b.lr(overlapB(a0, b0, b.left), op(a0, a, bm, b.right))
-              }
             // $COVERAGE-OFF$
             case _ => unreachable
             // $COVERAGE-ON$
           }
-      } else {
-        // a_l == b_l, trees are the same size
-        if (a_p == b_p) {
-          (a, b) match {
-            case (a: Branch, b: Branch) =>
-              val am = a0 ^ a.left.sign
-              val bm = b0 ^ b.left.sign
-              // same prefix. leaves have to be merged
-              // todo: check if we can return b unchanged
-              a.lr(op(a0, a.left, b0, b.left), op(am, a.right, bm, b.right))
-            case (a: Leaf, b: Leaf) =>
-              collision(a0, a, b0, b)
-            // $COVERAGE-OFF$
-            case _ => unreachable
-            // $COVERAGE-ON$
-          }
-        } else {
-          // same mask, different prefix
-          join(a0, a, b0, b)
+      else
+      // a_l == b_l, trees are the same size
+      if (a_p == b_p)
+        (a, b) match {
+          case (a: Branch, b: Branch) =>
+            val am = a0 ^ a.left.sign
+            val bm = b0 ^ b.left.sign
+            // same prefix. leaves have to be merged
+            // todo: check if we can return b unchanged
+            a.lr(op(a0, a.left, b0, b.left), op(am, a.right, bm, b.right))
+          case (a: Leaf, b: Leaf) =>
+            collision(a0, a, b0, b)
+          // $COVERAGE-OFF$
+          case _ => unreachable
+          // $COVERAGE-ON$
         }
-      }
+      else
+        // same mask, different prefix
+        join(a0, a, b0, b)
     }
 
     final def apply(a0: Boolean, a: Tree, b0: Boolean, b: Tree) =
@@ -500,13 +491,12 @@ private[interval] object Tree {
             a0 ^ a.sign // after
           else
             a0 // before
-        } else {
-          // key is within a
-          if (zeroAt(value, level))
-            op(a0, a.left, value)
-          else
-            op(a0 ^ a.left.sign, a.right, value)
-        }
+        } else
+        // key is within a
+        if (zeroAt(value, level))
+          op(a0, a.left, value)
+        else
+          op(a0 ^ a.left.sign, a.right, value)
       case a: Leaf =>
         if (a.prefix == value)
           onLeaf(a0, a)

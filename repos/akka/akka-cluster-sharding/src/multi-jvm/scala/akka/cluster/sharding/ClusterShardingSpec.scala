@@ -932,9 +932,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
 
     "ensure rebalance restarts shards" in within(50.seconds) {
       runOn(fourth) {
-        for (i ← 2 to 12) {
+        for (i ← 2 to 12)
           rebalancingPersistentRegion ! EntityEnvelope(i, Increment)
-        }
 
         for (i ← 2 to 12) {
           rebalancingPersistentRegion ! Get(i)

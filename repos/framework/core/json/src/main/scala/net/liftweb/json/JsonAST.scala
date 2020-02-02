@@ -858,11 +858,10 @@ object JsonAST {
       }
 
       // Use Char version of append if we can, as it's cheaper.
-      if (strReplacement.isEmpty) {
+      if (strReplacement.isEmpty)
         buf.append(c)
-      } else {
+      else
         buf.append(strReplacement)
-      }
     }
   }
 
@@ -1001,20 +1000,18 @@ object JsonAST {
     buf.append('[') //open array
 
     if (!values.isEmpty) {
-      if (settings.lineBreaks_?) {
+      if (settings.lineBreaks_?)
         buf.append('\n')
-      }
 
       values.foreach { elem =>
         if (elem != JNothing) {
-          if (firstEntry) {
+          if (firstEntry)
             firstEntry = false
-          } else {
+          else {
             buf.append(',')
 
-            if (settings.lineBreaks_?) {
+            if (settings.lineBreaks_?)
               buf.append('\n')
-            }
           }
 
           (0 until currentIndent).foreach(_ => buf.append(' '))
@@ -1022,9 +1019,8 @@ object JsonAST {
         }
       }
 
-      if (settings.lineBreaks_?) {
+      if (settings.lineBreaks_?)
         buf.append('\n')
-      }
 
       (0 until indentLevel).foreach(_ => buf.append(' '))
     }
@@ -1044,37 +1040,33 @@ object JsonAST {
     buf.append('{') //open bracket
 
     if (!fields.isEmpty) {
-      if (settings.lineBreaks_?) {
+      if (settings.lineBreaks_?)
         buf.append('\n')
-      }
 
       fields.foreach {
         case JField(name, value) if value != JNothing =>
-          if (firstEntry) {
+          if (firstEntry)
             firstEntry = false
-          } else {
+          else {
             buf.append(',')
 
-            if (settings.lineBreaks_?) {
+            if (settings.lineBreaks_?)
               buf.append('\n')
-            }
           }
 
           (0 until currentIndent).foreach(_ => buf.append(' '))
 
           bufQuote(name, buf, settings)
           buf.append(':')
-          if (settings.spaceAfterFieldName) {
+          if (settings.spaceAfterFieldName)
             buf.append(' ')
-          }
           bufRender(value, buf, settings, currentIndent)
 
         case _ => // omit fields with value of JNothing
       }
 
-      if (settings.lineBreaks_?) {
+      if (settings.lineBreaks_?)
         buf.append('\n')
-      }
 
       (0 until indentLevel).foreach(_ => buf.append(' '))
     }

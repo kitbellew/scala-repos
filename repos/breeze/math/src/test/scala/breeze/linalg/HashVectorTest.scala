@@ -250,12 +250,10 @@ class HashVectorOps_DoubleTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          HashVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
-          HashVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
-          HashVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
-      }
+      } yield (
+        HashVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
+        HashVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
+        HashVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
     }
 
   def genScalar: Arbitrary[Double] =
@@ -283,15 +281,10 @@ class HashVectorOps_FloatTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Float].map { _ % 100 }
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          HashVector(N)(
-            xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
-          HashVector(N)(
-            yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
-          HashVector(N)(
-            zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
-      }
+      } yield (
+        HashVector(N)(xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
+        HashVector(N)(yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
+        HashVector(N)(zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
     }
 
   def genScalar: Arbitrary[Float] =
@@ -318,15 +311,10 @@ class HashVectorOps_IntTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Int].map { _ % 100 }
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          HashVector(N)(
-            xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
-          HashVector(N)(
-            yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
-          HashVector(N)(
-            zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
-      }
+      } yield (
+        HashVector(N)(xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
+        HashVector(N)(yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
+        HashVector(N)(zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
     }
 
   def genScalar: Arbitrary[Int] =
@@ -349,12 +337,10 @@ class HashVectorOps_ComplexTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Complex]
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          HashVector(N)(xl.map(i => (i % N).abs -> (math.random * x)): _*),
-          HashVector(N)(yl.map(i => (i % N).abs -> (math.random * y)): _*),
-          HashVector(N)(zl.map(i => (i % N).abs -> (math.random * z)): _*))
-      }
+      } yield (
+        HashVector(N)(xl.map(i => (i % N).abs -> (math.random * x)): _*),
+        HashVector(N)(yl.map(i => (i % N).abs -> (math.random * y)): _*),
+        HashVector(N)(zl.map(i => (i % N).abs -> (math.random * z)): _*))
     }
 
   implicit def genScalar: Arbitrary[Complex] = Arbitrary {

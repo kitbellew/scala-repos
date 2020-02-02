@@ -45,12 +45,11 @@ private[deploy] object IvyTestUtils {
     val groupDirs = artifact.groupId.replace(".", File.separator)
     val artifactDirs = artifact.artifactId
     val artifactPath =
-      if (!useIvyLayout) {
+      if (!useIvyLayout)
         Seq(groupDirs, artifactDirs, artifact.version).mkString(File.separator)
-      } else {
+      else
         Seq(artifact.groupId, artifactDirs, artifact.version, ext + "s")
           .mkString(File.separator)
-      }
     new File(prefix, artifactPath)
   }
 
@@ -59,21 +58,19 @@ private[deploy] object IvyTestUtils {
       artifact: MavenCoordinate,
       useIvyLayout: Boolean,
       ext: String = ".jar"): String =
-    if (!useIvyLayout) {
+    if (!useIvyLayout)
       s"${artifact.artifactId}-${artifact.version}$ext"
-    } else {
+    else
       s"${artifact.artifactId}$ext"
-    }
 
   /** Returns the directory for the given groupId based on standard ivy or maven format. */
   private def getBaseGroupDirectory(
       artifact: MavenCoordinate,
       useIvyLayout: Boolean): String =
-    if (!useIvyLayout) {
+    if (!useIvyLayout)
       artifact.groupId.replace(".", File.separator)
-    } else {
+    else
       artifact.groupId
-    }
 
   /** Write the contents to a file to the supplied directory. */
   private[deploy] def writeFile(
@@ -338,9 +335,7 @@ private[deploy] object IvyTestUtils {
       val descriptor =
         createDescriptor(tempPath, artifact, dependencies, useIvyLayout)
       assert(descriptor.exists(), "Problem creating Pom file")
-    } finally {
-      FileUtils.deleteDirectory(root)
-    }
+    } finally FileUtils.deleteDirectory(root)
     tempPath
   }
 
@@ -408,9 +403,8 @@ private[deploy] object IvyTestUtils {
       useIvyLayout,
       withPython,
       withR)
-    try {
-      f(repo.toURI.toString)
-    } finally {
+    try f(repo.toURI.toString)
+    finally {
       // Clean up
       if (repo.toString.contains(".m2") || repo.toString.contains(".ivy2")) {
         val groupDir = getBaseGroupDirectory(artifact, useIvyLayout)
@@ -422,9 +416,8 @@ private[deploy] object IvyTestUtils {
               new File(repo, getBaseGroupDirectory(dep, useIvyLayout)))
           }
         }
-      } else {
+      } else
         FileUtils.deleteDirectory(repo)
-      }
       purgeLocalIvyCache(artifact, deps, ivySettings)
     }
   }

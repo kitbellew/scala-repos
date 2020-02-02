@@ -357,9 +357,8 @@ class SparseVectorTest extends FunSuite {
     def foo(fill: Int) {
       val vb = new VectorBuilder[Int](421337)
 
-      for (i ← 0 to fill) {
+      for (i ← 0 to fill)
         vb.add(i, i)
-      }
 
       val sv = vb.toSparseVector
 
@@ -395,12 +394,10 @@ class SparseVectorOps_DoubleTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
-          SparseVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
-          SparseVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
-      }
+      } yield (
+        SparseVector(N)(xl.map(i => (i % N).abs -> math.random * x): _*),
+        SparseVector(N)(yl.map(i => (i % N).abs -> math.random * y): _*),
+        SparseVector(N)(zl.map(i => (i % N).abs -> math.random * z): _*))
     }
 
   def genScalar: Arbitrary[Double] =
@@ -428,15 +425,13 @@ class SparseVectorOps_FloatTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Float].map { _ % 100 }
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          SparseVector(N)(
-            xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
-          SparseVector(N)(
-            yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
-          SparseVector(N)(
-            zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
-      }
+      } yield (
+        SparseVector(N)(
+          xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
+        SparseVector(N)(
+          yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
+        SparseVector(N)(
+          zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
     }
 
   def genScalar: Arbitrary[Float] =
@@ -464,15 +459,13 @@ class SparseVectorOps_IntTest
         yl <- Arbitrary.arbitrary[List[Int]]
         z <- Arbitrary.arbitrary[Int].map { _ % 100 }
         zl <- Arbitrary.arbitrary[List[Int]]
-      } yield {
-        (
-          SparseVector(N)(
-            xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
-          SparseVector(N)(
-            yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
-          SparseVector(N)(
-            zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
-      }
+      } yield (
+        SparseVector(N)(
+          xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
+        SparseVector(N)(
+          yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
+        SparseVector(N)(
+          zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
     }
 
   def genScalar: Arbitrary[Int] =

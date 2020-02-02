@@ -56,14 +56,13 @@ trait Role {
     * in the tree.
     */
   def addRoles(roles: Role*) = {
-    for (role <- roles) {
+    for (role <- roles)
       getRoleByName(role.name) match {
         case Empty =>
           childs = role :: childs
           role.parent = Full(this)
         case _ =>
       }
-    }
     this
   }
 
@@ -125,9 +124,8 @@ trait Role {
 
   override def toString = {
     var str = "Role(" + name;
-    for (role <- childs) {
+    for (role <- childs)
       str = str + ", " + role.toString
-    }
     str + ")"
   }
 }

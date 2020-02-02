@@ -860,9 +860,8 @@ class FutureTest
                 // Note that these are sequenced so that interrupts
                 // will be delivered before inner's handler is cleared.
                 ran = true
-                try {
-                  inner.update(Return(1))
-                } catch {
+                try inner.update(Return(1))
+                catch {
                   case e: Throwable => assert(true == false)
                 }
               }

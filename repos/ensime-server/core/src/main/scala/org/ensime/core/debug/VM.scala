@@ -163,23 +163,19 @@ class VM(
         request.enable()
       }
       true
-    } else {
+    } else
       false
-    }
   }
 
   def clearAllBreakpoints(): Unit =
     erm.deleteAllBreakpoints()
 
   def clearBreakpoints(bps: Iterable[Breakpoint]): Unit =
-    for (bp <- bps) {
+    for (bp <- bps)
       for (req <- erm.breakpointRequests();
-           pos <- sourceMap.locToPos(req.location())) {
-        if (pos.file == bp.file && pos.line == bp.line) {
+           pos <- sourceMap.locToPos(req.location()))
+        if (pos.file == bp.file && pos.line == bp.line)
           req.disable()
-        }
-      }
-    }
 
   def typeAdded(t: ReferenceType): Unit =
     try {
@@ -193,9 +189,8 @@ class VM(
     }
 
   def initLocationMap() =
-    for (t <- vm.allClasses) {
+    for (t <- vm.allClasses)
       typeAdded(t)
-    }
 
   def locations(file: File, line: Int): Set[Location] = {
 
@@ -214,22 +209,18 @@ class VM(
 
     val buf = mutable.HashSet[LocationClass]()
     val key = file.getName
-    for (types <- fileToUnits.get(key)) {
+    for (types <- fileToUnits.get(key))
       for (t <- types) {
-        for (m <- t.methods()) {
-          try {
-            buf ++= m.locationsOfLine(line).map(LocationClass.apply)
-          } catch {
+        for (m <- t.methods())
+          try buf ++= m.locationsOfLine(line).map(LocationClass.apply)
+          catch {
             case e: AbsentInformationException =>
           }
-        }
-        try {
-          buf ++= t.locationsOfLine(line).map(LocationClass.apply)
-        } catch {
+        try buf ++= t.locationsOfLine(line).map(LocationClass.apply)
+        catch {
           case e: AbsentInformationException =>
         }
       }
-    }
     buf.map(_.loc).toSet
   }
 
@@ -310,9 +301,8 @@ class VM(
         var result: Option[Field] = None
         var tpe = tpeIn
         while (tpe != null && result.isEmpty) {
-          for (f <- tpe.fields()) {
+          for (f <- tpe.fields())
             if (f.name() == name) result = Some(f)
-          }
           tpe = tpe.superclass
         }
         result
@@ -354,23 +344,22 @@ class VM(
 
   private def makeDebugValue(value: Value): DebugValue =
     if (value == null) makeDebugNull()
-    else {
+    else
       value match {
         case v: ArrayReference  => makeDebugArr(v)
         case v: StringReference => makeDebugStr(v)
         case v: ObjectReference => makeDebugObj(v)
         case v: PrimitiveValue  => makeDebugPrim(v)
       }
-    }
 
   def locationForName(
       thread: ThreadReference,
       name: String): Option[DebugLocation] = {
     val stackFrame = thread.frame(0)
     val objRef = stackFrame.thisObject()
-    if (name == "this") {
+    if (name == "this")
       Some(DebugObjectReference(remember(objRef).uniqueID))
-    } else {
+    else
       stackSlotForName(thread, name)
         .map({ slot =>
           DebugStackSlot(
@@ -383,7 +372,6 @@ class VM(
             Some(DebugObjectField(DebugObjectId(objRef.uniqueID), f.name))
           }
         )
-    }
   }
 
   private def valueAtLocation(location: DebugLocation): Option[Value] =
@@ -471,9 +459,7 @@ class VM(
       objectId: DebugObjectId,
       name: String): Option[Value] =
     for (obj <- savedObjects.get(objectId);
-         f <- fieldByName(obj, name)) yield {
-      remember(obj.getValue(f))
-    }
+         f <- fieldByName(obj, name)) yield remember(obj.getValue(f))
 
   private def valueForIndex(
       objectId: DebugObjectId,
@@ -506,9 +492,8 @@ class VM(
       val visVars = stackFrame.visibleVariables()
       var offset = 0
       while (offset < visVars.length) {
-        if (visVars(offset).name == name) {
+        if (visVars(offset).name == name)
           result = Some(StackSlot(frame, offset))
-        }
         offset += 1
       }
       frame += 1
@@ -517,9 +502,8 @@ class VM(
   }
 
   def ignoreErr[T](action: => T, orElse: => T): T =
-    try {
-      action
-    } catch { case e: Exception => orElse }
+    try action
+    catch { case e: Exception => orElse }
 
   private def makeStackFrame(index: Int, frame: StackFrame): DebugStackFrame = {
     val locals = ignoreErr({
@@ -574,7 +558,7 @@ class VM(
 
   private def mirrorFromString(tpe: Type, toMirror: String): Option[Value] = {
     val s = toMirror.trim
-    if (s.length > 0) {
+    if (s.length > 0)
       tpe match {
         case tpe: BooleanType => Some(vm.mirrorOf(s.toBoolean))
         case tpe: ByteType    => Some(vm.mirrorOf(s.toByte))
@@ -585,12 +569,12 @@ class VM(
         case tpe: LongType    => Some(vm.mirrorOf(s.toLong))
         case tpe: ShortType   => Some(vm.mirrorOf(s.toShort))
         case tpe: ReferenceType if tpe.name == "java.lang.String" =>
-          if (s.startsWith("\"") && s.endsWith("\"")) {
+          if (s.startsWith("\"") && s.endsWith("\""))
             Some(vm.mirrorOf(s.substring(1, s.length - 1)))
-          } else Some(vm.mirrorOf(s))
+          else Some(vm.mirrorOf(s))
         case _ => None
       }
-    } else None
+    else None
   }
 
   def setStackVar(

@@ -37,7 +37,7 @@ object Delegates extends Properties("delegates") {
       val global = nonProject.dropWhile {
         case Select(_: BuildRef) => true; case _ => false
       }
-      global forall { _ == Global }
+      global forall _ == Global
     }
   }
   property("Initial scope present with all combinations of Global axes") =

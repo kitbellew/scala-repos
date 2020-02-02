@@ -90,11 +90,10 @@ class Configuration {
         selector: String): Seq[java.util.Date] = {
       import scala.collection.JavaConversions._
 
-      try {
-        rootElement
-          .select(selector)
-          .flatMap(item => safeParseISO8601Date(item.attr("content")))
-      } catch {
+      try rootElement
+        .select(selector)
+        .flatMap(item => safeParseISO8601Date(item.attr("content")))
+      catch {
         case e: Exception =>
           Nil
       }

@@ -36,7 +36,7 @@ class MarathonApp extends App {
     // so we wait to proceed until one is available
     var connectedToZk = false
 
-    while (!connectedToZk) {
+    while (!connectedToZk)
       try {
         log.info("Connecting to ZooKeeper...")
         client.get
@@ -45,7 +45,6 @@ class MarathonApp extends App {
         case t: Throwable =>
           log.warn("Unable to connect to ZooKeeper, retrying...")
       }
-    }
     client
   }
 
@@ -128,9 +127,8 @@ class MarathonApp extends App {
     */
   private[this] def setConcurrentContextDefaults(): Unit = {
     def setIfNotDefined(property: String, value: String): Unit =
-      if (!sys.props.contains(property)) {
+      if (!sys.props.contains(property))
         sys.props += property -> value
-      }
 
     setIfNotDefined("scala.concurrent.context.minThreads", "5")
     setIfNotDefined("scala.concurrent.context.numThreads", "x2")

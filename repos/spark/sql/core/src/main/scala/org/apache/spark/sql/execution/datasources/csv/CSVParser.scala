@@ -88,9 +88,8 @@ private[sql] class LineCsvWriter(params: CSVOptions, headers: Seq[String])
     val outputWriter = new OutputStreamWriter(buffer, StandardCharsets.UTF_8)
     val writer = new CsvWriter(outputWriter, writerSettings)
 
-    if (includeHeader) {
+    if (includeHeader)
       writer.writeHeaders()
-    }
     writer.writeRow(row.toArray: _*)
     writer.close()
     buffer.toString.stripLineEnd
@@ -143,11 +142,10 @@ private[sql] class BulkCsvReader(
     */
   override def next(): Array[String] = {
     val curRecord = nextRecord
-    if (curRecord != null) {
+    if (curRecord != null)
       nextRecord = parser.parseNext()
-    } else {
+    else
       throw new NoSuchElementException("next record is null")
-    }
     curRecord
   }
 
@@ -174,24 +172,22 @@ private class StringIteratorReader(val iter: Iterator[String])
     * pretend there is a new line at the end of every string we get from from iter
     */
   private def refill(): Unit =
-    if (length == next) {
+    if (length == next)
       if (iter.hasNext) {
         str = iter.next()
         start = length
         length += (str.length + 1) // allowance for newline removed by SparkContext.textFile()
-      } else {
+      } else
         str = null
-      }
-    }
 
   /**
     * read the next character, if at end of string pretend there is a new line
     */
   override def read(): Int = {
     refill()
-    if (next >= length) {
+    if (next >= length)
       -1
-    } else {
+    else {
       val cur = next - start
       next += 1
       if (cur == str.length) '\n' else str.charAt(cur.toInt)
@@ -205,34 +201,27 @@ private class StringIteratorReader(val iter: Iterator[String])
     refill()
     var n = 0
     if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-        ((off + len) > cbuf.length) || ((off + len) < 0)) {
+        ((off + len) > cbuf.length) || ((off + len) < 0))
       throw new IndexOutOfBoundsException()
-    } else if (len == 0) {
+    else if (len == 0)
       n = 0
-    } else {
-      if (next >= length) { // end of input
-        n = -1
-      } else {
-        n = Math.min(length - next, len).toInt // lesser of amount of input available or buf size
-        if (n == length - next) {
-          str.getChars(
-            (next - start).toInt,
-            (next - start + n - 1).toInt,
-            cbuf,
-            off)
-          cbuf(off + n - 1) = '\n'
-        } else {
-          str.getChars(
-            (next - start).toInt,
-            (next - start + n).toInt,
-            cbuf,
-            off)
-        }
-        next += n
-        if (n < len) {
-          val m = read(cbuf, off + n, len - n) // have more space, fetch more input from iter
-          if (m != -1) n += m
-        }
+    else if (next >= length) // end of input
+      n = -1
+    else {
+      n = Math.min(length - next, len).toInt // lesser of amount of input available or buf size
+      if (n == length - next) {
+        str.getChars(
+          (next - start).toInt,
+          (next - start + n - 1).toInt,
+          cbuf,
+          off)
+        cbuf(off + n - 1) = '\n'
+      } else
+        str.getChars((next - start).toInt, (next - start + n).toInt, cbuf, off)
+      next += n
+      if (n < len) {
+        val m = read(cbuf, off + n, len - n) // have more space, fetch more input from iter
+        if (m != -1) n += m
       }
     }
 

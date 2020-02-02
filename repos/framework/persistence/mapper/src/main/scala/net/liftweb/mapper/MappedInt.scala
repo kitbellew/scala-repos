@@ -274,9 +274,8 @@ abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
 
   def convertKey(in: AnyRef): Box[Int] = {
     if ((in eq null) || (in eq None)) None
-    try {
-      convertKey(in.toString)
-    } catch {
+    try convertKey(in.toString)
+    catch {
       case _: Exception => Empty
     }
   }

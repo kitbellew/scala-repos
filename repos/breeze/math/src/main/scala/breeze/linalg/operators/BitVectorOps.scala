@@ -113,14 +113,13 @@ trait BitVectorOps {
       }
     }
 
-  implicit val canDot_BV_BV: OpMulInner.Impl2[BitVector, BitVector, Boolean] = {
+  implicit val canDot_BV_BV: OpMulInner.Impl2[BitVector, BitVector, Boolean] =
     new breeze.linalg.operators.OpMulInner.Impl2[BitVector, BitVector, Boolean] {
       def apply(a: BitVector, b: BitVector): Boolean = {
         require(a.lengthsMatch(b), "Vectors must be the same length!")
         a.data intersects b.data
       }
     }
-  }
   @expand
   @expand.valify
   implicit def canDot_BV_DenseVector[@expand.args(Double, Float, Int, Long) T](

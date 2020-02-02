@@ -41,12 +41,11 @@ object GzipFlow {
 
     def onPull(ctx: Context[ByteString]) =
       // If finished, push the last ByteString
-      if (ctx.isFinishing) {
+      if (ctx.isFinishing)
         ctx.pushAndFinish(builder.result())
-      } else {
+      else
         // Otherwise request more demand from upstream
         ctx.pull()
-      }
 
     override def onUpstreamFinish(ctx: Context[ByteString]) = {
       // Absorb termination, so we can send the last chunk out of the gzip output stream on the next pull

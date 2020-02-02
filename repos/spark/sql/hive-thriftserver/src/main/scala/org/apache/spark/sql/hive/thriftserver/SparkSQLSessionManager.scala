@@ -43,9 +43,8 @@ private[hive] class SparkSQLSessionManager(
     setSuperField(this, "hiveConf", hiveConf)
 
     // Create operation log root directory, if operation logging is enabled
-    if (hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_LOGGING_OPERATION_ENABLED)) {
+    if (hiveConf.getBoolVar(ConfVars.HIVE_SERVER2_LOGGING_OPERATION_ENABLED))
       invoke(classOf[SessionManager], this, "initOperationLogRootDir")
-    }
 
     val backgroundPoolSize =
       hiveConf.getIntVar(ConfVars.HIVE_SERVER2_ASYNC_EXEC_THREADS)
@@ -84,11 +83,11 @@ private[hive] class SparkSQLSessionManager(
       session.getIpAddress,
       sessionHandle.getSessionId.toString,
       session.getUsername)
-    val ctx = if (hiveContext.hiveThriftServerSingleSession) {
-      hiveContext
-    } else {
-      hiveContext.newSession()
-    }
+    val ctx =
+      if (hiveContext.hiveThriftServerSingleSession)
+        hiveContext
+      else
+        hiveContext.newSession()
     ctx.setConf("spark.sql.hive.version", HiveContext.hiveExecutionVersion)
     sparkSqlOperationManager.sessionToContexts += sessionHandle -> ctx
     sessionHandle

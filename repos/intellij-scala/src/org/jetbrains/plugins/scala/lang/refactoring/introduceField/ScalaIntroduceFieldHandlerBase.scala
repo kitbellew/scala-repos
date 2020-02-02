@@ -106,13 +106,12 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
             aClass.extendsBlock.templateBody.orNull,
             commonParent,
             false)) null
-      else {
+      else
         aClass.extendsBlock match {
           case ScExtendsBlock.EarlyDefinitions(earlyDef) =>
             earlyDef.lastChild.orNull
           case extBl => extBl.templateParents.orNull
         }
-      }
     }
   }
 }
@@ -142,12 +141,11 @@ object ScalaIntroduceFieldHandlerBase {
       (Iterator(container) ++ new ParentsIterator(container))
         .exists(stmtsAndMmbrs.contains(_))
     if (!containerIsLocal) false
-    else {
+    else
       ifc.element match {
         case expr: ScExpression => checkForwardReferences(expr, parExpr)
         case _                  => false
       }
-    }
   }
 
   def anchorForInitializer(

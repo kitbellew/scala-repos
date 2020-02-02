@@ -52,9 +52,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   val clock = {
     val clockClass = ssc.sc.conf
       .get("spark.streaming.clock", "org.apache.spark.util.SystemClock")
-    try {
-      Utils.classForName(clockClass).newInstance().asInstanceOf[Clock]
-    } catch {
+    try Utils.classForName(clockClass).newInstance().asInstanceOf[Clock]
+    catch {
       case e: ClassNotFoundException
           if clockClass.startsWith("org.apache.spark.streaming") =>
         val newClockClass =
@@ -74,15 +73,15 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   private lazy val shouldCheckpoint =
     ssc.checkpointDuration != null && ssc.checkpointDir != null
 
-  private lazy val checkpointWriter = if (shouldCheckpoint) {
-    new CheckpointWriter(
-      this,
-      ssc.conf,
-      ssc.checkpointDir,
-      ssc.sparkContext.hadoopConfiguration)
-  } else {
-    null
-  }
+  private lazy val checkpointWriter =
+    if (shouldCheckpoint)
+      new CheckpointWriter(
+        this,
+        ssc.conf,
+        ssc.checkpointDir,
+        ssc.sparkContext.hadoopConfiguration)
+    else
+      null
 
   // eventLoop is created when generator starts.
   // This not being null means the scheduler has been started and not stopped
@@ -108,11 +107,10 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     }
     eventLoop.start()
 
-    if (ssc.isCheckpointPresent) {
+    if (ssc.isCheckpointPresent)
       restart()
-    } else {
+    else
       startFirstTime()
-    }
   }
 
   /**
@@ -135,10 +133,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       def hasTimedOut: Boolean = {
         val timedOut = (System
           .currentTimeMillis() - timeWhenStopStarted) > stopTimeoutMs
-        if (timedOut) {
+        if (timedOut)
           logWarning(
             "Timed out while stopping the job generator (timeout = " + stopTimeoutMs + ")")
-        }
         timedOut
       }
 
@@ -146,9 +143,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       // been consumed by network input DStreams, and jobs have been generated with them
       logInfo(
         "Waiting for all received blocks to be consumed for job generation")
-      while (!hasTimedOut && jobScheduler.receiverTracker.hasUnallocatedBlocks) {
+      while (!hasTimedOut && jobScheduler.receiverTracker.hasUnallocatedBlocks)
         Thread.sleep(pollTime)
-      }
       logInfo(
         "Waited for all received blocks to be consumed for job generation")
 
@@ -161,9 +157,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
       def haveAllBatchesBeenProcessed: Boolean =
         lastProcessedBatch != null && lastProcessedBatch.milliseconds == stopTime
       logInfo("Waiting for jobs to be processed and checkpoints to be written")
-      while (!hasTimedOut && !haveAllBatchesBeenProcessed) {
+      while (!hasTimedOut && !haveAllBatchesBeenProcessed)
         Thread.sleep(pollTime)
-      }
       logInfo("Waited for jobs to be processed and checkpoints to be written")
     } else {
       logInfo("Stopping JobGenerator immediately")
@@ -189,9 +184,8 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     * Callback called when the checkpoint of a batch has been written.
     */
   def onCheckpointCompletion(time: Time, clearCheckpointDataLater: Boolean) {
-    if (clearCheckpointDataLater) {
+    if (clearCheckpointDataLater)
       eventLoop.post(ClearCheckpointData(time))
-    }
   }
 
   /** Processes all events */
@@ -297,9 +291,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
     // If checkpointing is enabled, then checkpoint,
     // else mark batch to be fully processed
-    if (shouldCheckpoint) {
+    if (shouldCheckpoint)
       eventLoop.post(DoCheckpoint(time, clearCheckpointDataLater = true))
-    } else {
+    else {
       // If checkpointing is not enabled, then delete metadata information about
       // received blocks (block data not saved in any case). Otherwise, wait for
       // checkpointing of this batch to complete.

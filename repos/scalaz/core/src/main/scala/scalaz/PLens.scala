@@ -119,10 +119,9 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
     State(a =>
       run(a) match {
         case None => (a, None)
-        case Some(w) => {
+        case Some(w) =>
           val r = f(w.pos)
           (w put r, Some(r))
-        }
       })
 
   def :=[A >: A2 <: A1](b: => B2): PState[A, B2] =
@@ -135,10 +134,9 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
     State(a =>
       run(a) match {
         case None => (a, None)
-        case Some(w) => {
+        case Some(w) =>
           val r = s.run(w.pos): (B2, C)
           (w put r._1, Some(r._2))
-        }
       })
 
   def >-[A >: A2 <: A1, C](f: B1 => C): PState[A, C] =

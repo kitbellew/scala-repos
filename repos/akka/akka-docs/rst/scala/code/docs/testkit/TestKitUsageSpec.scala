@@ -147,11 +147,10 @@ object TestKitUsageSpec {
       tail: immutable.Seq[String])
       extends Actor {
     def receive = {
-      case msg => {
-        head foreach { next ! _ }
+      case msg =>
+        head foreach next ! _
         next ! msg
-        tail foreach { next ! _ }
-      }
+        tail foreach next ! _
     }
   }
 }

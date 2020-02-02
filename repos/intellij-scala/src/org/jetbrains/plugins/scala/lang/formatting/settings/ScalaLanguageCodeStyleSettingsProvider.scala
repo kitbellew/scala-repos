@@ -49,7 +49,7 @@ class ScalaLanguageCodeStyleSettingsProvider
 
     val buffer: ArrayBuffer[String] = new ArrayBuffer
     //spacing
-    if (settingsType == SettingsType.SPACING_SETTINGS) {
+    if (settingsType == SettingsType.SPACING_SETTINGS)
       buffer ++= Seq(
         "SPACE_AFTER_COMMA",
         "SPACE_BEFORE_IF_PARENTHESES",
@@ -76,10 +76,9 @@ class ScalaLanguageCodeStyleSettingsProvider
         "SPACE_AFTER_SEMICOLON",
         "SPACE_BEFORE_ELSE_LBRACE"
       )
-    }
 
     //blank lines
-    if (settingsType == SettingsType.BLANK_LINES_SETTINGS) {
+    if (settingsType == SettingsType.BLANK_LINES_SETTINGS)
       buffer ++= Seq(
         "KEEP_BLANK_LINES_IN_CODE",
         "BLANK_LINES_AFTER_CLASS_HEADER",
@@ -97,7 +96,6 @@ class ScalaLanguageCodeStyleSettingsProvider
         "BLANK_LINES_AROUND_METHOD",
         "BLANK_LINES_BEFORE_METHOD_BODY"
       )
-    }
 
     if (settingsType == SettingsType.WRAPPING_AND_BRACES_SETTINGS) {
       consumer.renameStandardOption(

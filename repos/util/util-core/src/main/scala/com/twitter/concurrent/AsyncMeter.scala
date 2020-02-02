@@ -215,10 +215,9 @@ class AsyncMeter private[concurrent] (
       }
       restartTimerIfDead()
       p
-    } else {
+    } else
       Future.exception(new RejectedExecutionException(
         "Tried to wait when there were already the maximum number of waiters."))
-    }
   }
 
   private[this] def updateAndGet(tokens: Int): Boolean = {

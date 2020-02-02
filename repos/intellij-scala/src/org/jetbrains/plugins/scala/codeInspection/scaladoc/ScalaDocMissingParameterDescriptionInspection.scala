@@ -28,16 +28,13 @@ class ScalaDocMissingParameterDescriptionInspection
     new ScalaElementVisitor {
       override def visitTag(s: ScDocTag) {
         if (!ScalaDocMissingParameterDescriptionInspection.OurTags.contains(
-              s.name) || s.getValueElement == null) {
+              s.name) || s.getValueElement == null)
           return
-        }
 
         val children = s.findChildrenByType(ScalaDocTokenType.DOC_COMMENT_DATA)
-        for (child <- children) {
-          if (child.getText.length() > 1 && child.getText.split(" ").nonEmpty) {
+        for (child <- children)
+          if (child.getText.length() > 1 && child.getText.split(" ").nonEmpty)
             return
-          }
-        }
 
         holder.registerProblem(
           holder.getManager.createProblemDescriptor(

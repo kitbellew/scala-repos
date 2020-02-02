@@ -23,11 +23,10 @@ trait TwemcacheClient extends Client {
 
   def getv(keys: Iterable[String]): Future[Map[String, (Buf, Buf)]] =
     getvResult(keys) flatMap { result =>
-      if (result.failures.nonEmpty) {
+      if (result.failures.nonEmpty)
         Future.exception(result.failures.values.head)
-      } else {
+      else
         Future.value(result.valuesWithTokens)
-      }
     }
 
   /**
@@ -77,13 +76,11 @@ trait TwemcacheConnectedClient extends TwemcacheClient {
       expiry: Time,
       value: Buf,
       version: Buf): Future[JBoolean] =
-    try {
-      service(Upsert(Buf.Utf8(key), flags, expiry, value, version)).map {
-        case Stored() => true
-        case Exists() => false
-        case Error(e) => throw e
-        case _        => throw new IllegalStateException
-      }
+    try service(Upsert(Buf.Utf8(key), flags, expiry, value, version)).map {
+      case Stored() => true
+      case Exists() => false
+      case Error(e) => throw e
+      case _        => throw new IllegalStateException
     } catch {
       case t: IllegalArgumentException =>
         Future.exception(new ClientError(t.getMessage))
@@ -112,13 +109,12 @@ trait TwemcachePartitionedClient extends TwemcacheClient {
     clientOf(key).asInstanceOf[TwemcacheClient]
 
   def getvResult(keys: Iterable[String]) =
-    if (keys.nonEmpty) {
+    if (keys.nonEmpty)
       withKeysGroupedByClient(keys) {
         _.getvResult(_)
       }.map { GetResult.merged(_) }
-    } else {
+    else
       Future.value(GetsResult(GetResult()))
-    }
 
   def upsert(key: String, flags: Int, expiry: Time, value: Buf, version: Buf) =
     twemcacheClientOf(key).upsert(key, flags, expiry, value, version)

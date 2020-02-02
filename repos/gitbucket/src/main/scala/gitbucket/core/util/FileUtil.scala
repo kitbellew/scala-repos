@@ -18,11 +18,10 @@ object FileUtil {
 
   def getContentType(name: String, bytes: Array[Byte]): String =
     defining(getMimeType(name)) { mimeType =>
-      if (mimeType == "application/octet-stream" && isText(bytes)) {
+      if (mimeType == "application/octet-stream" && isText(bytes))
         "text/plain"
-      } else {
+      else
         mimeType
-      }
     }
 
   def isImage(name: String): Boolean = getMimeType(name).startsWith("image/")
@@ -44,14 +43,10 @@ object FileUtil {
     }
 
   def withTmpDir[A](dir: File)(action: File => A): A = {
-    if (dir.exists()) {
+    if (dir.exists())
       FileUtils.deleteDirectory(dir)
-    }
-    try {
-      action(dir)
-    } finally {
-      FileUtils.deleteDirectory(dir)
-    }
+    try action(dir)
+    finally FileUtils.deleteDirectory(dir)
   }
 
   val mimeTypeWhiteList: Array[String] = Array(

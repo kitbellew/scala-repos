@@ -205,19 +205,17 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       }
       outputStream.output.asScala.map(_.flatten).toSeq
 
-    } finally {
-      ssc.stop(stopSparkContext = stopSparkContext)
-    }
+    } finally ssc.stop(stopSparkContext = stopSparkContext)
 
   private def assertOutput[V: ClassTag](
       output: Seq[Seq[V]],
       expectedOutput: Seq[Seq[V]],
       beforeRestart: Boolean): Unit = {
-    val expectedPartialOutput = if (beforeRestart) {
-      expectedOutput.take(output.size)
-    } else {
-      expectedOutput.takeRight(output.size)
-    }
+    val expectedPartialOutput =
+      if (beforeRestart)
+        expectedOutput.take(output.size)
+      else
+        expectedOutput.takeRight(output.size)
     val setComparison = output.zip(expectedPartialOutput).forall {
       case (o, e) => o.toSet === e.toSet
     }
@@ -251,13 +249,10 @@ class CheckpointSuite
 
   override def afterFunction() {
     try {
-      if (ssc != null) {
+      if (ssc != null)
         ssc.stop()
-      }
       Utils.deleteRecursively(new File(checkpointDir))
-    } finally {
-      super.afterFunction()
-    }
+    } finally super.afterFunction()
   }
 
   test("basic rdd checkpoints + dstream graph checkpoint recovery") {
@@ -299,12 +294,11 @@ class CheckpointSuite
       !stateStream.checkpointData.currentCheckpointFiles.isEmpty,
       "No checkpointed RDDs in state stream before first failure")
     stateStream.checkpointData.currentCheckpointFiles.foreach {
-      case (time, file) => {
+      case (time, file) =>
         assert(
           fs.exists(new Path(file)),
           "Checkpoint file '" + file + "' for time " + time +
             " for state stream before first failure does not exist")
-      }
     }
 
     // Run till a further time such that previous checkpoint files in the stream would be deleted
@@ -336,12 +330,11 @@ class CheckpointSuite
       !stateStream.checkpointData.currentCheckpointFiles.isEmpty,
       "No checkpointed RDDs in state stream before second failure")
     stateStream.checkpointData.currentCheckpointFiles.foreach {
-      case (time, file) => {
+      case (time, file) =>
         assert(
           fs.exists(new Path(file)),
           "Checkpoint file '" + file + "' for time " + time +
             " for state stream before seconds failure does not exist")
-      }
     }
     ssc.stop()
 
@@ -412,9 +405,7 @@ class CheckpointSuite
         newCpConf.get("spark.app.name") === originalConf.get("spark.app.name"))
       ssc = new StreamingContext(null, newCp, null)
       assert(ssc.sparkContext.master === newMaster)
-    } finally {
-      System.clearProperty("spark.master")
-    }
+    } finally System.clearProperty("spark.master")
   }
 
   // This tests if "spark.driver.host" and "spark.driver.port" is set by user, can be recovered
@@ -507,72 +498,66 @@ class CheckpointSuite
 
   test("recovery with saveAsHadoopFiles operation") {
     val tempDir = Utils.createTempDir()
-    try {
-      testCheckpointedOperation(
-        Seq(
-          Seq("a", "a", "b"),
-          Seq("", ""),
-          Seq(),
-          Seq("a", "a", "b"),
-          Seq("", ""),
-          Seq()),
-        (s: DStream[String]) => {
-          val output = s.map(x => (x, 1)).reduceByKey(_ + _)
-          output.saveAsHadoopFiles(
-            tempDir.toURI.toString,
-            "result",
-            classOf[Text],
-            classOf[IntWritable],
-            classOf[TextOutputFormat[Text, IntWritable]])
-          output
-        },
-        Seq(
-          Seq(("a", 2), ("b", 1)),
-          Seq(("", 2)),
-          Seq(),
-          Seq(("a", 2), ("b", 1)),
-          Seq(("", 2)),
-          Seq()),
-        3
-      )
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    try testCheckpointedOperation(
+      Seq(
+        Seq("a", "a", "b"),
+        Seq("", ""),
+        Seq(),
+        Seq("a", "a", "b"),
+        Seq("", ""),
+        Seq()),
+      (s: DStream[String]) => {
+        val output = s.map(x => (x, 1)).reduceByKey(_ + _)
+        output.saveAsHadoopFiles(
+          tempDir.toURI.toString,
+          "result",
+          classOf[Text],
+          classOf[IntWritable],
+          classOf[TextOutputFormat[Text, IntWritable]])
+        output
+      },
+      Seq(
+        Seq(("a", 2), ("b", 1)),
+        Seq(("", 2)),
+        Seq(),
+        Seq(("a", 2), ("b", 1)),
+        Seq(("", 2)),
+        Seq()),
+      3
+    )
+    finally Utils.deleteRecursively(tempDir)
   }
 
   test("recovery with saveAsNewAPIHadoopFiles operation") {
     val tempDir = Utils.createTempDir()
-    try {
-      testCheckpointedOperation(
-        Seq(
-          Seq("a", "a", "b"),
-          Seq("", ""),
-          Seq(),
-          Seq("a", "a", "b"),
-          Seq("", ""),
-          Seq()),
-        (s: DStream[String]) => {
-          val output = s.map(x => (x, 1)).reduceByKey(_ + _)
-          output.saveAsNewAPIHadoopFiles(
-            tempDir.toURI.toString,
-            "result",
-            classOf[Text],
-            classOf[IntWritable],
-            classOf[NewTextOutputFormat[Text, IntWritable]])
-          output
-        },
-        Seq(
-          Seq(("a", 2), ("b", 1)),
-          Seq(("", 2)),
-          Seq(),
-          Seq(("a", 2), ("b", 1)),
-          Seq(("", 2)),
-          Seq()),
-        3
-      )
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    try testCheckpointedOperation(
+      Seq(
+        Seq("a", "a", "b"),
+        Seq("", ""),
+        Seq(),
+        Seq("a", "a", "b"),
+        Seq("", ""),
+        Seq()),
+      (s: DStream[String]) => {
+        val output = s.map(x => (x, 1)).reduceByKey(_ + _)
+        output.saveAsNewAPIHadoopFiles(
+          tempDir.toURI.toString,
+          "result",
+          classOf[Text],
+          classOf[IntWritable],
+          classOf[NewTextOutputFormat[Text, IntWritable]])
+        output
+      },
+      Seq(
+        Seq(("a", 2), ("b", 1)),
+        Seq(("", 2)),
+        Seq(),
+        Seq(("a", 2), ("b", 1)),
+        Seq(("", 2)),
+        Seq()),
+      3
+    )
+    finally Utils.deleteRecursively(tempDir)
   }
 
   test("recovery with saveAsHadoopFile inside transform operation") {
@@ -592,37 +577,34 @@ class CheckpointSuite
     // After SPARK-5079 is addressed, should be able to remove this test since a strengthened
     // version of the other saveAsHadoopFile* tests would prevent regressions for this issue.
     val tempDir = Utils.createTempDir()
-    try {
-      testCheckpointedOperation(
-        Seq(
-          Seq("a", "a", "b"),
-          Seq("", ""),
-          Seq(),
-          Seq("a", "a", "b"),
-          Seq("", ""),
-          Seq()),
-        (s: DStream[String]) =>
-          s.transform { (rdd, time) =>
-            val output = rdd.map(x => (x, 1)).reduceByKey(_ + _)
-            output.saveAsHadoopFile(
-              new File(tempDir, "result-" + time.milliseconds).getAbsolutePath,
-              classOf[Text],
-              classOf[IntWritable],
-              classOf[TextOutputFormat[Text, IntWritable]])
-            output
-          },
-        Seq(
-          Seq(("a", 2), ("b", 1)),
-          Seq(("", 2)),
-          Seq(),
-          Seq(("a", 2), ("b", 1)),
-          Seq(("", 2)),
-          Seq()),
-        3
-      )
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    try testCheckpointedOperation(
+      Seq(
+        Seq("a", "a", "b"),
+        Seq("", ""),
+        Seq(),
+        Seq("a", "a", "b"),
+        Seq("", ""),
+        Seq()),
+      (s: DStream[String]) =>
+        s.transform { (rdd, time) =>
+          val output = rdd.map(x => (x, 1)).reduceByKey(_ + _)
+          output.saveAsHadoopFile(
+            new File(tempDir, "result-" + time.milliseconds).getAbsolutePath,
+            classOf[Text],
+            classOf[IntWritable],
+            classOf[TextOutputFormat[Text, IntWritable]])
+          output
+        },
+      Seq(
+        Seq(("a", 2), ("b", 1)),
+        Seq(("", 2)),
+        Seq(),
+        Seq(("a", 2), ("b", 1)),
+        Seq(("", 2)),
+        Seq()),
+      3
+    )
+    finally Utils.deleteRecursively(tempDir)
   }
 
   // This tests whether the StateDStream's RDD checkpoints works correctly such
@@ -724,11 +706,9 @@ class CheckpointSuite
         CheckpointSuite.batchThreeShouldBlockIndefinitely = true
         val mappedStream = fileStream.map { s =>
           val i = s.toInt
-          if (i == 3) {
-            while (CheckpointSuite.batchThreeShouldBlockIndefinitely) {
+          if (i == 3)
+            while (CheckpointSuite.batchThreeShouldBlockIndefinitely)
               Thread.sleep(Long.MaxValue)
-            }
-          }
           i
         }
 
@@ -748,12 +728,11 @@ class CheckpointSuite
           // Advance the clock after creating the file to avoid a race when
           // setting its modification time
           clock.advance(batchDuration.milliseconds)
-          if (i != 3) {
+          if (i != 3)
             // Since we want to shut down while the 3rd batch is processing
             eventually(eventuallyTimeout) {
               assert(batchCounter.getNumCompletedBatches === i)
             }
-          }
         }
         eventually(eventuallyTimeout) {
           // Wait until all files have been recorded and all batches have started
@@ -838,9 +817,7 @@ class CheckpointSuite
         val expectedOutput = Seq(1, 3, 6, 10, 15, 21, 28, 36, 45)
         assert(outputBuffer.asScala.flatten.toSet === expectedOutput.toSet)
       }
-    } finally {
-      Utils.deleteRecursively(testDir)
-    }
+    } finally Utils.deleteRecursively(testDir)
   }
 
   test("DStreamCheckpointData.restore invoking times") {
@@ -993,11 +970,10 @@ class CheckpointSuite
         def findAllMarkedRDDs(rdd: RDD[_]): List[RDD[_]] = {
           val markedRDDs =
             rdd.dependencies.flatMap(dep => findAllMarkedRDDs(dep.rdd)).toList
-          if (rdd.checkpointData.isDefined) {
+          if (rdd.checkpointData.isDefined)
             rdd :: markedRDDs
-          } else {
+          else
             markedRDDs
-          }
         }
 
         shouldCheckpointAllMarkedRDDs = Option(

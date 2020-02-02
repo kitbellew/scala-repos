@@ -52,7 +52,7 @@ object CanFilterBPBS {
     *
     */
   implicit val dvDouble1DFilterBPBS
-      : CanFilterBPBS[DenseVector[Double], DenseVector[Double]] = {
+      : CanFilterBPBS[DenseVector[Double], DenseVector[Double]] =
     new CanFilterBPBS[DenseVector[Double], DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],
@@ -72,10 +72,9 @@ object CanFilterBPBS {
               DenseVector[Double](omega._1, omega._2),
               zeroPass = bandStop,
               nyquist = sampleRate / 2d)
-          case x => {
+          case x =>
             require(false, "Cannot handle option value " + x)
             new FIRKernel1D[Double](DenseVector[Double](), 1d, "null kernel!")
-          }
         }
 //        println(kernel)
 //        println(kernel.kernel)
@@ -83,7 +82,6 @@ object CanFilterBPBS {
         filter(data, kernel, overhang, padding)
       }
     }
-  }
 
 }
 
@@ -93,7 +91,7 @@ object CanFilterLPHP {
     *
     */
   implicit val dvDouble1DFilterLPHP
-      : CanFilterLPHP[DenseVector[Double], DenseVector[Double]] = {
+      : CanFilterLPHP[DenseVector[Double], DenseVector[Double]] =
     new CanFilterLPHP[DenseVector[Double], DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],
@@ -113,15 +111,13 @@ object CanFilterLPHP {
               DenseVector[Double](omega),
               zeroPass = lowPass,
               nyquist = sampleRate / 2d)
-          case x => {
+          case x =>
             require(false, "Cannot handle option value " + x)
             new FIRKernel1D[Double](DenseVector[Double](), 1d, "null kernel!")
-          }
         }
 
         filter(data, kernel, overhang, padding)
       }
     }
-  }
 
 }

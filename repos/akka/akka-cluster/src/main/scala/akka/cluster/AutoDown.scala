@@ -123,9 +123,9 @@ private[cluster] abstract class AutoDownBase(
       scheduleUnreachable(m.uniqueAddress)
 
   def scheduleUnreachable(node: UniqueAddress): Unit =
-    if (autoDownUnreachableAfter == Duration.Zero) {
+    if (autoDownUnreachableAfter == Duration.Zero)
       downOrAddPending(node)
-    } else {
+    else {
       val task = scheduler.scheduleOnce(
         autoDownUnreachableAfter,
         self,
@@ -134,13 +134,12 @@ private[cluster] abstract class AutoDownBase(
     }
 
   def downOrAddPending(node: UniqueAddress): Unit =
-    if (leader) {
+    if (leader)
       down(node.address)
-    } else {
+    else
       // it's supposed to be downed by another node, current leader, but if that crash
       // a new leader must pick up these
       pendingUnreachable += node
-    }
 
   def remove(node: UniqueAddress): Unit = {
     scheduledUnreachable.get(node) foreach { _.cancel }

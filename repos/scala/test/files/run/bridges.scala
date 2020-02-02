@@ -6133,11 +6133,10 @@ object Test {
         errors = errors + 1;
       }
     } catch {
-      case exception: Throwable => {
+      case exception: Throwable =>
         Console.print(name + " raised exception " + exception);
         Console.println;
         errors = errors + 1;
-      }
     }
 
   def main(args: Array[String]): Unit = {

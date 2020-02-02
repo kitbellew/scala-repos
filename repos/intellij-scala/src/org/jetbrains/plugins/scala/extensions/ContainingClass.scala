@@ -7,9 +7,9 @@ import com.intellij.psi.{PsiClass, PsiMember}
   */
 object ContainingClass {
   def unapply(e: PsiMember): Option[PsiClass] =
-    if (e == null) {
+    if (e == null)
       None
-    } else {
+    else {
       val aClass = e.containingClass
       Option(aClass)
     }

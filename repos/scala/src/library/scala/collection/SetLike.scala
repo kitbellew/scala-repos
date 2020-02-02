@@ -202,13 +202,12 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
 
     def hasNext = len <= elms.size || itr.hasNext
     def next = {
-      if (!itr.hasNext) {
+      if (!itr.hasNext)
         if (len > elms.size) Iterator.empty.next()
         else {
           itr = new SubsetsItr(elms, len)
           len += 1
         }
-      }
 
       itr.next()
     }

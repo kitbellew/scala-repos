@@ -240,21 +240,22 @@ object FastTypeTag {
     val elemClass = clazz.getComponentType()
     // debug(s"creating tag for array with element type '${elemClass.getName}'")
 
-    val (elemTpe, elemKey) = if (elemClass.isArray) {
-      mkRawArrayTypeAndKey(elemClass, mirror)
-    } else {
-      val elemClassSymbol =
-        try {
-          mirror.classSymbol(elemClass)
-        } catch {
-          case t: Throwable =>
-            sys.error(
-              s"error: could not find class '${elemClass.getName}' in runtime mirror")
-        }
-      val primitiveTag: FastTypeTag[_] = raw.getOrElse(elemClass, null)
-      val k = if (primitiveTag == null) elemClass.getName else primitiveTag.key
-      (elemClassSymbol.asType.toType, k)
-    }
+    val (elemTpe, elemKey) =
+      if (elemClass.isArray)
+        mkRawArrayTypeAndKey(elemClass, mirror)
+      else {
+        val elemClassSymbol =
+          try mirror.classSymbol(elemClass)
+          catch {
+            case t: Throwable =>
+              sys.error(
+                s"error: could not find class '${elemClass.getName}' in runtime mirror")
+          }
+        val primitiveTag: FastTypeTag[_] = raw.getOrElse(elemClass, null)
+        val k =
+          if (primitiveTag == null) elemClass.getName else primitiveTag.key
+        (elemClassSymbol.asType.toType, k)
+      }
 
     val tpe = ru.appliedType(ru.definitions.ArrayClass.toType, List(elemTpe))
     val key = "scala.Array[" + elemKey + "]"
@@ -269,24 +270,23 @@ object FastTypeTag {
   def mkRaw(clazz: Class[_], mirror: ru.Mirror): FastTypeTag[_] =
     if (clazz == null) FastTypeTag.Null
     else
-      try {
-        raw.getOrElse(
-          clazz, {
-            // debug(s"!!! could not find primitive tag for class ${clazz.getName} !!!")
-            // handle arrays of non-primitive element type
-            if (clazz.isArray) mkRawArray(clazz, mirror)
-            else {
-              val clazzName0 = clazz.getName()
-              val clazzName =
-                if (clazzName0.contains("anonfun$") || clazzName0.contains(
-                      "$colon$colon") || clazzName0.endsWith("$") || clazzName0
-                      .endsWith("$sp")) clazzName0
-                else clazzName0.replace('$', '.')
-              apply(mirror, clazzName)
-            }
+      try raw.getOrElse(
+        clazz, {
+          // debug(s"!!! could not find primitive tag for class ${clazz.getName} !!!")
+          // handle arrays of non-primitive element type
+          if (clazz.isArray) mkRawArray(clazz, mirror)
+          else {
+            val clazzName0 = clazz.getName()
+            val clazzName =
+              if (clazzName0.contains("anonfun$") || clazzName0.contains(
+                    "$colon$colon") || clazzName0.endsWith("$") || clazzName0
+                    .endsWith("$sp")) clazzName0
+              else clazzName0.replace('$', '.')
+            apply(mirror, clazzName)
           }
-        )
-      } catch {
+        }
+      )
+      catch {
         case t: Throwable =>
           sys.error(
             s"error: could not create FastTypeTag for class '${clazz.getName}'")

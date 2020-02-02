@@ -119,10 +119,9 @@ abstract class TreeBrowsers {
     * @version 1.0
     */
   class BrowserFrame(phaseName: String = "unknown") {
-    try {
-      UIManager.setLookAndFeel(
-        "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
-    } catch {
+    try UIManager.setLookAndFeel(
+      "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
+    catch {
       case _: Throwable =>
         UIManager.setLookAndFeel(
           UIManager.getCrossPlatformLookAndFeelClassName())
@@ -151,11 +150,10 @@ abstract class TreeBrowsers {
           val childPath = path pathByAddingChild child
           _setExpansionState(root, childPath)
         }
-        if (expand) {
+        if (expand)
           jTree expandPath path
-        } else {
+        else
           jTree collapsePath path
-        }
       }
       _setExpansionState(root, new TreePath(root.getModel.getRoot))
     }
@@ -398,11 +396,10 @@ abstract class TreeBrowsers {
       case DocDef(comment, definition) =>
         List(definition)
 
-      case ClassDef(mods, name, tparams, impl) => {
+      case ClassDef(mods, name, tparams, impl) =>
         var children: List[Tree] = List()
         children = tparams ::: children
         mods.annotations ::: impl :: children
-      }
 
       case PackageDef(pid, stats) =>
         stats

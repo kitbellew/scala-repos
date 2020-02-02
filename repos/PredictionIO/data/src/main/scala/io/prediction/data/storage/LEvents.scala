@@ -208,12 +208,12 @@ trait LEvents {
       eventNames = Some(LEventAggregator.eventNames)
     ).map { eventIt =>
       val dm = LEventAggregator.aggregateProperties(eventIt)
-      if (required.isDefined) {
+      if (required.isDefined)
         dm.filter {
           case (k, v) =>
             required.get.map(v.contains(_)).reduce(_ && _)
         }
-      } else dm
+      else dm
     }
 
   /**
@@ -349,26 +349,26 @@ trait LEvents {
       reversed: Option[Boolean] = None,
       timeout: Duration = defaultTimeout)(
       implicit ec: ExecutionContext): Either[StorageError, Iterator[Event]] =
-    try {
-      // return Either for legacy usage
-      Right(
-        Await.result(
-          futureFind(
-            appId = appId,
-            channelId = channelId,
-            startTime = startTime,
-            untilTime = untilTime,
-            entityType = entityType,
-            entityId = entityId,
-            eventNames = eventNames,
-            targetEntityType = targetEntityType,
-            targetEntityId = targetEntityId,
-            limit = limit,
-            reversed = reversed
-          ),
-          timeout
-        ))
-    } catch {
+    try
+    // return Either for legacy usage
+    Right(
+      Await.result(
+        futureFind(
+          appId = appId,
+          channelId = channelId,
+          startTime = startTime,
+          untilTime = untilTime,
+          entityType = entityType,
+          entityId = entityId,
+          eventNames = eventNames,
+          targetEntityType = targetEntityType,
+          targetEntityId = targetEntityId,
+          limit = limit,
+          reversed = reversed
+        ),
+        timeout
+      ))
+    catch {
       case e: TimeoutException => Left(StorageError(s"$e"))
       case e: Exception        => Left(StorageError(s"$e"))
     }

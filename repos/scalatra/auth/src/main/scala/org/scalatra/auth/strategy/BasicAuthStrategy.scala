@@ -40,9 +40,8 @@ trait BasicAuthSupport[UserType <: AnyRef] {
       response.setHeader("WWW-Authenticate", "Basic realm=\"%s\"" format realm)
       halt(401, "Unauthenticated")
     }
-    if (!baReq.isBasicAuth) {
+    if (!baReq.isBasicAuth)
       halt(400, "Bad Request")
-    }
     scentry.authenticate("Basic")
   }
 

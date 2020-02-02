@@ -39,11 +39,10 @@ trait StartingBehavior { this: Actor with ActorLogging =>
   def initializeStart(): Unit
 
   final override def preStart(): Unit = {
-    if (withHealthChecks) {
+    if (withHealthChecks)
       eventBus.subscribe(self, classOf[MarathonHealthCheckEvent])
-    } else {
+    else
       eventBus.subscribe(self, classOf[MesosStatusUpdateEvent])
-    }
 
     initializeStart()
     checkFinished()
@@ -129,9 +128,8 @@ trait StartingBehavior { this: Actor with ActorLogging =>
     val started =
       if (withHealthChecks) atLeastOnceHealthyTasks.size
       else startedRunningTasks.size
-    if (started == nrToStart) {
+    if (started == nrToStart)
       success()
-    }
   }
 
   def success(): Unit

@@ -42,9 +42,8 @@ private[io] class TcpOutgoingConnection(
     stopWith(CloseInformation(Set(commander), connect.failureMessage))
 
   private def reportConnectFailure(thunk: ⇒ Unit): Unit =
-    try {
-      thunk
-    } catch {
+    try thunk
+    catch {
       case NonFatal(e) ⇒
         log.debug(
           "Could not establish connection to [{}] due to {}",
@@ -66,9 +65,8 @@ private[io] class TcpOutgoingConnection(
                 new InetSocketAddress(resolved.addr, remoteAddress.getPort),
                 registration)
           }
-        } else {
+        } else
           register(remoteAddress, registration)
-        }
       }
   }
 
@@ -105,18 +103,16 @@ private[io] class TcpOutgoingConnection(
             context.setReceiveTimeout(Duration.Undefined) // Clear the timeout
           log.debug("Connection established to [{}]", remoteAddress)
           completeConnect(registration, commander, options)
+        } else if (remainingFinishConnectRetries > 0) {
+          context.system.scheduler.scheduleOnce(1.millisecond) {
+            channelRegistry.register(channel, SelectionKey.OP_CONNECT)
+          }(context.dispatcher)
+          context.become(
+            connecting(registration, remainingFinishConnectRetries - 1))
         } else {
-          if (remainingFinishConnectRetries > 0) {
-            context.system.scheduler.scheduleOnce(1.millisecond) {
-              channelRegistry.register(channel, SelectionKey.OP_CONNECT)
-            }(context.dispatcher)
-            context.become(
-              connecting(registration, remainingFinishConnectRetries - 1))
-          } else {
-            log.debug("Could not establish connection because finishConnect " +
-              "never returned true (consider increasing akka.io.tcp.finish-connect-retries)")
-            stop()
-          }
+          log.debug("Could not establish connection because finishConnect " +
+            "never returned true (consider increasing akka.io.tcp.finish-connect-retries)")
+          stop()
         }
       }
 

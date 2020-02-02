@@ -50,10 +50,9 @@ object RichPipe extends java.io.Serializable {
         .setProperty(REDUCER_KEY, reducers.toString)
       p.getStepConfigDef()
         .setProperty(Config.WithReducersSetExplicitly, "true")
-    } else if (reducers != -1) {
+    } else if (reducers != -1)
       throw new IllegalArgumentException(
         s"Number of reducers must be non-negative. Got: $reducers")
-    }
     p
   }
 
@@ -239,13 +238,12 @@ class RichPipe(val pipe: Pipe)
     * Merge or Concatenate several pipes together with this one:
     */
   def ++(that: Pipe): Pipe =
-    if (this.pipe == that) {
+    if (this.pipe == that)
       // Cascading fails on self merge:
       // solution by Jack Guo
       new Merge(assignName(this.pipe), assignName(new Each(that, new Identity)))
-    } else {
+    else
       new Merge(assignName(this.pipe), assignName(that))
-    }
 
   /**
     * Group all tuples down to one reducer.
@@ -688,11 +686,10 @@ class RichPipe(val pipe: Pipe)
     */
   def normalize(f: Fields, useTiny: Boolean = true): Pipe = {
     val total = groupAll { _.sum[Double](f -> '__total_for_normalize__) }
-    (if (useTiny) {
+    (if (useTiny)
        crossWithTiny(total)
-     } else {
-       crossWithSmaller(total)
-     })
+     else
+       crossWithSmaller(total))
       .map(Fields.merge(f, '__total_for_normalize__) -> f) {
         args: (Double, Double) => args._1 / args._2
       }
@@ -783,9 +780,8 @@ class RichPipe(val pipe: Pipe)
     case class ToVisit[T](queue: Queue[T], inQueue: Set[T]) {
       def maybeAdd(t: T): ToVisit[T] =
         if (inQueue(t)) this
-        else {
+        else
           ToVisit(queue :+ t, inQueue + t)
-        }
       def next: Option[(T, ToVisit[T])] =
         if (inQueue.isEmpty) None
         else Some((queue.head, ToVisit(queue.tail, inQueue - queue.head)))

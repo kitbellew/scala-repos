@@ -40,16 +40,15 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
     if (sourceElement == null) return null
     if (sourceElement.getLanguage != ScalaFileType.SCALA_LANGUAGE) return null
 
-    if (sourceElement.getNode.getElementType == ScalaTokenTypes.tASSIGN) {
+    if (sourceElement.getNode.getElementType == ScalaTokenTypes.tASSIGN)
       return sourceElement.getParent match {
         case assign: ScAssignStmt =>
           val elem = assign.assignNavigationElement
           Option(elem).toArray
         case _ => null
       }
-    }
 
-    if (sourceElement.getNode.getElementType == ScalaTokenTypes.kTHIS) {
+    if (sourceElement.getNode.getElementType == ScalaTokenTypes.kTHIS)
       sourceElement.getParent match {
         case self: ScSelfInvocation =>
           self.bind match {
@@ -58,7 +57,6 @@ class ScalaGoToDeclarationHandler extends GotoDeclarationHandler {
           }
         case _ => return null
       }
-    }
 
     if (sourceElement.getNode.getElementType == ScalaTokenTypes.tIDENTIFIER) {
       val file = sourceElement.getContainingFile

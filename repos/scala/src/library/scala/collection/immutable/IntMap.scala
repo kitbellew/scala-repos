@@ -129,15 +129,13 @@ private[immutable] abstract class IntMapIterator[V, T](it: IntMap[V])
   def hasNext = index != 0
   final def next: T =
     pop match {
-      case IntMap.Bin(_, _, t @ IntMap.Tip(_, _), right) => {
+      case IntMap.Bin(_, _, t @ IntMap.Tip(_, _), right) =>
         push(right)
         valueOf(t)
-      }
-      case IntMap.Bin(_, _, left, right) => {
+      case IntMap.Bin(_, _, left, right) =>
         push(right)
         push(left)
         next
-      }
       case t @ IntMap.Tip(_, _) => valueOf(t)
       // This should never happen. We don't allow IntMap.Nil in subtrees of the IntMap
       // and don't return an IntMapIterator for IntMap.Nil.
@@ -203,7 +201,7 @@ sealed abstract class IntMap[+T]
     * Loops over the key, value pairs of the map in unsigned order of the keys.
     */
   override final def foreach[U](f: ((Int, T)) => U): Unit = this match {
-    case IntMap.Bin(_, _, left, right) => { left.foreach(f); right.foreach(f) }
+    case IntMap.Bin(_, _, left, right) => left.foreach(f); right.foreach(f)
     case IntMap.Tip(key, value)        => f((key, value))
     case IntMap.Nil                    =>
   }
@@ -220,9 +218,8 @@ sealed abstract class IntMap[+T]
     * @param f The loop body
     */
   final def foreachKey(f: Int => Unit): Unit = this match {
-    case IntMap.Bin(_, _, left, right) => {
+    case IntMap.Bin(_, _, left, right) =>
       left.foreachKey(f); right.foreachKey(f)
-    }
     case IntMap.Tip(key, _) => f(key)
     case IntMap.Nil         =>
   }
@@ -239,9 +236,8 @@ sealed abstract class IntMap[+T]
     * @param f The loop body
     */
   final def foreachValue(f: T => Unit): Unit = this match {
-    case IntMap.Bin(_, _, left, right) => {
+    case IntMap.Bin(_, _, left, right) =>
       left.foreachValue(f); right.foreachValue(f)
-    }
     case IntMap.Tip(_, value) => f(value)
     case IntMap.Nil           =>
   }
@@ -251,11 +247,10 @@ sealed abstract class IntMap[+T]
   override def isEmpty = this == IntMap.Nil
 
   override def filter(f: ((Int, T)) => Boolean): IntMap[T] = this match {
-    case IntMap.Bin(prefix, mask, left, right) => {
+    case IntMap.Bin(prefix, mask, left, right) =>
       val (newleft, newright) = (left.filter(f), right.filter(f))
       if ((left eq newleft) && (right eq newright)) this
       else bin(prefix, mask, newleft, newright)
-    }
     case IntMap.Tip(key, value) =>
       if (f((key, value))) this
       else IntMap.Nil
@@ -396,7 +391,7 @@ sealed abstract class IntMap[+T]
   def unionWith[S >: T](that: IntMap[S], f: (Int, S, S) => S): IntMap[S] =
     (this, that) match {
       case (IntMap.Bin(p1, m1, l1, r1), that @ (IntMap.Bin(p2, m2, l2, r2))) =>
-        if (shorter(m1, m2)) {
+        if (shorter(m1, m2))
           if (!hasMatch(p2, p1, m1))
             join[S](
               p1,
@@ -406,7 +401,7 @@ sealed abstract class IntMap[+T]
             ) // TODO: remove [S] when SI-5548 is fixed
           else if (zero(p2, m1)) IntMap.Bin(p1, m1, l1.unionWith(that, f), r1)
           else IntMap.Bin(p1, m1, l1, r1.unionWith(that, f))
-        } else if (shorter(m2, m1)) {
+        else if (shorter(m2, m1))
           if (!hasMatch(p1, p2, m2))
             join[S](
               p1,
@@ -416,17 +411,15 @@ sealed abstract class IntMap[+T]
             ) // TODO: remove [S] when SI-5548 is fixed
           else if (zero(p1, m2)) IntMap.Bin(p2, m2, this.unionWith(l2, f), r2)
           else IntMap.Bin(p2, m2, l2, this.unionWith(r2, f))
-        } else {
-          if (p1 == p2)
-            IntMap.Bin(p1, m1, l1.unionWith(l2, f), r1.unionWith(r2, f))
-          else
-            join[S](
-              p1,
-              this,
-              p2,
-              that
-            ) // TODO: remove [S] when SI-5548 is fixed
-        }
+        else if (p1 == p2)
+          IntMap.Bin(p1, m1, l1.unionWith(l2, f), r1.unionWith(r2, f))
+        else
+          join[S](
+            p1,
+            this,
+            p2,
+            that
+          ) // TODO: remove [S] when SI-5548 is fixed
       case (IntMap.Tip(key, value), x) =>
         x.updateWith[S](key, value, (x, y) => f(key, y, x))
       case (x, IntMap.Tip(key, value)) =>
@@ -449,17 +442,15 @@ sealed abstract class IntMap[+T]
   def intersectionWith[S, R](that: IntMap[S], f: (Int, T, S) => R): IntMap[R] =
     (this, that) match {
       case (IntMap.Bin(p1, m1, l1, r1), that @ IntMap.Bin(p2, m2, l2, r2)) =>
-        if (shorter(m1, m2)) {
+        if (shorter(m1, m2))
           if (!hasMatch(p2, p1, m1)) IntMap.Nil
           else if (zero(p2, m1)) l1.intersectionWith(that, f)
           else r1.intersectionWith(that, f)
-        } else if (m1 == m2)
+        else if (m1 == m2)
           bin(p1, m1, l1.intersectionWith(l2, f), r1.intersectionWith(r2, f))
-        else {
-          if (!hasMatch(p1, p2, m2)) IntMap.Nil
-          else if (zero(p1, m2)) this.intersectionWith(l2, f)
-          else this.intersectionWith(r2, f)
-        }
+        else if (!hasMatch(p1, p2, m2)) IntMap.Nil
+        else if (zero(p1, m2)) this.intersectionWith(l2, f)
+        else this.intersectionWith(r2, f)
       case (IntMap.Tip(key, value), that) =>
         that.get(key) match {
           case None         => IntMap.Nil

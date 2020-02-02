@@ -71,22 +71,19 @@ abstract class CurrencyZone {
   def make(x: BigDecimal): Currency
 
   def apply(x: String): Currency =
-    try {
-      make(BigDecimal(x)) // try normal number
-    } catch {
-      case e: java.lang.NumberFormatException => {
-        try {
-          make(
-            BigDecimal("" + NumberFormat.getNumberInstance(locale).parse(x))
-          ) // try with grouping separator
-        } catch {
-          case e: java.text.ParseException => {
+    try make(BigDecimal(x)) // try normal number
+    catch {
+      case e: java.lang.NumberFormatException =>
+        try make(
+          BigDecimal("" + NumberFormat.getNumberInstance(locale).parse(x))
+        ) // try with grouping separator
+        catch {
+          case e: java.text.ParseException =>
             make(
               BigDecimal(
                 "" + NumberFormat.getCurrencyInstance(locale).parse(x)))
-          } // try with currency symbol and grouping separator
+          // try with currency symbol and grouping separator
         }
-      }
     }
 
   def apply(x: BigDecimal): Currency = make(x)

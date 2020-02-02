@@ -98,9 +98,7 @@ class MarathonSchedulerTest
       assert(msg.master == masterInfo.getHostname)
       assert(msg.eventType == "scheduler_registered_event")
       assert(mesosLeaderInfo.currentLeaderUrl.get == "http://some_host:5050/")
-    } finally {
-      eventBus.unsubscribe(probe.ref)
-    }
+    } finally eventBus.unsubscribe(probe.ref)
   }
 
   test("Publishes event when reregistered") {
@@ -123,9 +121,7 @@ class MarathonSchedulerTest
       assert(msg.master == masterInfo.getHostname)
       assert(msg.eventType == "scheduler_reregistered_event")
       assert(mesosLeaderInfo.currentLeaderUrl.get == "http://some_host:5050/")
-    } finally {
-      eventBus.unsubscribe(probe.ref)
-    }
+    } finally eventBus.unsubscribe(probe.ref)
   }
 
   // Currently does not work because of the injection used in MarathonScheduler.callbacks
@@ -140,9 +136,7 @@ class MarathonSchedulerTest
       val msg = probe.expectMsgType[SchedulerDisconnectedEvent]
 
       assert(msg.eventType == "scheduler_disconnected_event")
-    } finally {
-      eventBus.unsubscribe(probe.ref)
-    }
+    } finally eventBus.unsubscribe(probe.ref)
   }
 
   test("Suicide with an unknown error will not remove the framework id") {

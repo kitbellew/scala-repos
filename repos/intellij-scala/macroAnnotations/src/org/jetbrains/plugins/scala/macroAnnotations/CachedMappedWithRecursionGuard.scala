@@ -51,9 +51,8 @@ object CachedMappedWithRecursionGuard {
 
     annottees.toList match {
       case DefDef(mods, name, tpParams, paramss, retTp, rhs) :: Nil =>
-        if (retTp.isEmpty) {
+        if (retTp.isEmpty)
           abort("You must specify return type")
-        }
 
         //some more generated names
         val keyId: String = c.freshName(name + "cacheKey")
@@ -178,9 +177,9 @@ object CachedMappedWithRecursionGuard {
         """
 
         val cacheStatsField =
-          if (analyzeCaches) {
+          if (analyzeCaches)
             q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
-          } else EmptyTree
+          else EmptyTree
 
         val updatedDef =
           DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)

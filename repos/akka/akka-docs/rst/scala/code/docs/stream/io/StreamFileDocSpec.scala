@@ -35,11 +35,9 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
     ) // needs a statement here for valid syntax and to avoid "unused" warnings
   }
 
-  {
-    //#file-source
-    val file = new File("example.csv")
-    //#file-source
-  }
+  //#file-source
+  val file = new File("example.csv")
+  //#file-source
 
   "read data from a file" in {
     //#file-source

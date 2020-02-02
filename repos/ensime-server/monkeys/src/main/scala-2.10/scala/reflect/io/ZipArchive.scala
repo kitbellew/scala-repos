@@ -38,9 +38,8 @@ object ZipArchive {
     */
   def fromFile(file: File): FileZipArchive = fromFile(file.jfile)
   def fromFile(file: JFile): FileZipArchive =
-    try {
-      new FileZipArchive(file)
-    } catch { case _: IOException => null }
+    try new FileZipArchive(file)
+    catch { case _: IOException => null }
 
   /**
     * @param   url  the url of a zip file
@@ -144,9 +143,8 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
     val root = new DirEntry("/")
     val dirs = mutable.HashMap[String, DirEntry]("/" -> root)
     def openZipFile(): ZipFile =
-      try {
-        new ZipFile(file)
-      } catch {
+      try new ZipFile(file)
+      catch {
         case ioe: IOException =>
           throw new IOException("Error accessing " + file.getPath, ioe)
       }
@@ -154,30 +152,28 @@ final class FileZipArchive(file: JFile) extends ZipArchive(file) {
     val zipFile = openZipFile()
     val enum = zipFile.entries()
 
-    try {
-      while (enum.hasMoreElements) {
-        val zipEntry = enum.nextElement
-        val dir = getDir(dirs, zipEntry)
-        if (zipEntry.isDirectory) dir
-        else {
-          class FileEntry() extends Entry(zipEntry.getName) {
-            override def getArchive = openZipFile
-            override def lastModified = zipEntry.getTime()
-            override def input = {
-              val zipFile = getArchive
-              val delegate = zipFile getInputStream zipEntry
-              new FilterInputStream(delegate) {
-                override def close(): Unit = {
-                  delegate.close()
-                  zipFile.close()
-                }
+    try while (enum.hasMoreElements) {
+      val zipEntry = enum.nextElement
+      val dir = getDir(dirs, zipEntry)
+      if (zipEntry.isDirectory) dir
+      else {
+        class FileEntry() extends Entry(zipEntry.getName) {
+          override def getArchive = openZipFile
+          override def lastModified = zipEntry.getTime()
+          override def input = {
+            val zipFile = getArchive
+            val delegate = zipFile getInputStream zipEntry
+            new FilterInputStream(delegate) {
+              override def close(): Unit = {
+                delegate.close()
+                zipFile.close()
               }
             }
-            override def sizeOption = Some(zipEntry.getSize().toInt)
           }
-          val f = new FileEntry()
-          dir.entries(f.name) = f
+          override def sizeOption = Some(zipEntry.getSize().toInt)
         }
+        val f = new FileEntry()
+        dir.entries(f.name) = f
       }
     } finally zipFile.close()
     (root, dirs)

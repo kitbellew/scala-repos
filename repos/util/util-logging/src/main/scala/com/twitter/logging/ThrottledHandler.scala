@@ -84,9 +84,8 @@ class ThrottledHandler(
         if (!expired) {
           count += 1
           (count <= maxToDisplay, true)
-        } else {
+        } else
           (false, false)
-        }
       }
 
       if (shouldPublish) doPublish(record)
@@ -141,9 +140,8 @@ class ThrottledHandler(
     val now = Time.now
     val last = lastFlushCheck.get
 
-    if (now - last > 1.second && lastFlushCheck.compareAndSet(last, now)) {
+    if (now - last > 1.second && lastFlushCheck.compareAndSet(last, now))
       flushThrottled()
-    }
 
     val key = record match {
       case r: LazyLogRecordUnformatted => r.preformatted

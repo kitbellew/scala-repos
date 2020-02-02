@@ -73,18 +73,15 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
             val event = eventQueue.poll
             if (event == null) {
               // Get out of the while loop and shutdown the daemon thread
-              if (!stopped.get) {
+              if (!stopped.get)
                 throw new IllegalStateException(
                   "Polling `null` from eventQueue means" +
                     " the listener bus has been stopped. So `stopped` must be true")
-              }
               return
             }
             postToAll(event)
-          } finally {
-            self.synchronized {
-              processingEvent = false
-            }
+          } finally self.synchronized {
+            processingEvent = false
           }
         }
       }
@@ -104,9 +101,8 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
     if (started.compareAndSet(false, true)) {
       sparkContext = sc
       listenerThread.start()
-    } else {
+    } else
       throw new IllegalStateException(s"$name already started!")
-    }
 
   def post(event: SparkListenerEvent): Unit = {
     if (stopped.get) {
@@ -115,11 +111,10 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
       return
     }
     val eventAdded = eventQueue.offer(event)
-    if (eventAdded) {
+    if (eventAdded)
       eventLock.release()
-    } else {
+    else
       onDropEvent(event)
-    }
   }
 
   /**
@@ -132,10 +127,9 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
   def waitUntilEmpty(timeoutMillis: Long): Unit = {
     val finishTime = System.currentTimeMillis + timeoutMillis
     while (!queueIsEmpty) {
-      if (System.currentTimeMillis > finishTime) {
+      if (System.currentTimeMillis > finishTime)
         throw new TimeoutException(
           s"The event queue is not empty after $timeoutMillis milliseconds")
-      }
       /* Sleep rather than using wait/notify, because this is used only for testing and
        * wait/notify add overhead in the general case. */
       Thread.sleep(10)
@@ -163,10 +157,9 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
     * new events after stopping.
     */
   def stop(): Unit = {
-    if (!started.get()) {
+    if (!started.get())
       throw new IllegalStateException(
         s"Attempted to stop $name that has not yet started!")
-    }
     if (stopped.compareAndSet(false, true)) {
       // Call eventLock.release() so that listenerThread will poll `null` from `eventQueue` and know
       // `stop` is called.
@@ -184,13 +177,12 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
     * Note: `onDropEvent` can be called in any thread.
     */
   def onDropEvent(event: SparkListenerEvent): Unit =
-    if (logDroppedEvent.compareAndSet(false, true)) {
+    if (logDroppedEvent.compareAndSet(false, true))
       // Only log the following message once to avoid duplicated annoying logs.
       logError(
         "Dropping SparkListenerEvent because no remaining room in event queue. " +
           "This likely means one of the SparkListeners is too slow and cannot keep up with " +
           "the rate at which tasks are being started by the scheduler.")
-    }
 }
 
 private[spark] object LiveListenerBus {

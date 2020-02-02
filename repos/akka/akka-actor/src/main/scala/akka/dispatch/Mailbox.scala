@@ -256,11 +256,9 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   }
 
   override final def run(): Unit =
-    try {
-      if (!isClosed) { //Volatile read, needed here
-        processAllSystemMessages() //First, deal with any system messages
-        processMailbox() //Then deal with messages
-      }
+    try if (!isClosed) { //Volatile read, needed here
+      processAllSystemMessages() //First, deal with any system messages
+      processMailbox() //Then deal with messages
     } finally {
       setAsIdle() //Volatile write, needed here
       dispatcher.registerForExecution(this, false, false)
@@ -518,11 +516,9 @@ private[akka] trait DefaultSystemMessageQueue { self: Mailbox ⇒
       if (actor ne null)
         actor.dispatcher.mailboxes.deadLetterMailbox
           .systemEnqueue(receiver, message)
-    } else {
-      if (!systemQueuePut(currentList, message :: currentList)) {
-        message.unlink()
-        systemEnqueue(receiver, message)
-      }
+    } else if (!systemQueuePut(currentList, message :: currentList)) {
+      message.unlink()
+      systemEnqueue(receiver, message)
     }
   }
 
@@ -1107,7 +1103,7 @@ object BoundedControlAwareMailbox {
       val count = size.get()
 
       // if both queues are empty return null
-      if (count > 0) {
+      if (count > 0)
         // if there are messages try to fetch the current head
         // or retry if other consumer dequeued in the mean time
         if (size.compareAndSet(count, count - 1)) {
@@ -1116,22 +1112,17 @@ object BoundedControlAwareMailbox {
           if (size.get < capacity) signalNotFull()
 
           item
-        } else {
+        } else
           dequeue()
-        }
-      } else {
+      else
         null
-      }
     }
 
     private def signalNotFull() {
       putLock.lock()
 
-      try {
-        notFull.signal()
-      } finally {
-        putLock.unlock()
-      }
+      try notFull.signal()
+      finally putLock.unlock()
     }
 
     private final def enqueueWithTimeout(
@@ -1149,9 +1140,9 @@ object BoundedControlAwareMailbox {
             stop = remaining <= 0
           }
 
-          if (stop) {
+          if (stop)
             false
-          } else {
+          else {
             q.add(envelope)
             val c = size.incrementAndGet()
 
@@ -1159,11 +1150,9 @@ object BoundedControlAwareMailbox {
 
             true
           }
-        } finally {
-          putLock.unlock()
-        }
+        } finally putLock.unlock()
 
-      if (!inserted) {
+      if (!inserted)
         receiver
           .asInstanceOf[InternalActorRef]
           .provider
@@ -1171,7 +1160,6 @@ object BoundedControlAwareMailbox {
           .tell(
             DeadLetter(envelope.message, envelope.sender, receiver),
             envelope.sender)
-      }
     }
   }
 }

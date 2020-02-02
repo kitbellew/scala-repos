@@ -57,14 +57,13 @@ object ImageUtils extends Logging {
     val imageInfo = execToString(Array(identifyProgram, filePath))
     val imageDetails: ImageDetails = new ImageDetails
     if (imageInfo == null || imageInfo.contains(
-          "no decode delegate for this image format")) {
+          "no decode delegate for this image format"))
       throw new IOException(
         "Unable to get Image Information (no decode delegate) for: " + filePath + "\n\tcommand '" + identifyProgram + " " + filePath + "' returned: " + imageInfo)
-    }
     val infoParts = spaceRegex.split(imageInfo)
     val mimeType = infoParts.lift(1).getOrElse(string.empty)
     val (width, height) = infoParts.lift(2) match {
-      case Some(dimensions) => {
+      case Some(dimensions) =>
         val pair = xRegex.split(dimensions)
         if (pair.length > 1) {
           val wStr = pair(0)
@@ -73,10 +72,8 @@ object ImageUtils extends Logging {
           (
             string.tryToInt(wStr).getOrElse(0),
             string.tryToInt(hStr).getOrElse(0))
-        } else {
+        } else
           (0, 0)
-        }
-      }
       case None => (0, 0)
     }
     imageDetails.setMimeType(mimeType)
@@ -101,19 +98,14 @@ object ImageUtils extends Logging {
       results.put("width", image.getWidth)
       results
     } catch {
-      case e: CMMException => {
+      case e: CMMException =>
         logger.error("ERROR READING FILE: " + filePath + " \n", e)
         throw new IOException("Unable to read file: " + filePath)
+    } finally if (image != null)
+      try image.flush
+      catch {
+        case e: Exception =>
       }
-    } finally {
-      if (image != null) {
-        try {
-          image.flush
-        } catch {
-          case e: Exception => {}
-        }
-      }
-    }
   }
 
   /**
@@ -134,24 +126,19 @@ object ImageUtils extends Logging {
       p.waitFor
       return line
     } catch {
-      case e: IOException => {
+      case e: IOException =>
         logger.error(e.toString, e)
-      }
-      case e: InterruptedException => {
+      case e: InterruptedException =>
         logger.error(e.toString, e)
         throw new RuntimeException(e)
-      }
     } finally {
-      if (in != null) {
-        try {
-          in.close()
-        } catch {
-          case e: IOException => {}
+      if (in != null)
+        try in.close()
+        catch {
+          case e: IOException =>
         }
-      }
-      if (p != null) {
+      if (p != null)
         p.destroy()
-      }
     }
     null
   }
@@ -168,16 +155,15 @@ object ImageUtils extends Logging {
     try {
       // check for a cache hit already on disk
       readExistingFileInfo(linkhash, imageSrc, config) match {
-        case Some(locallyStoredImage) => {
+        case Some(locallyStoredImage) =>
           trace("Image already cached on disk: " + imageSrc)
           return Some(locallyStoredImage)
-        }
         case None =>
       }
 
       trace("Not found locally...starting to download image: " + imageSrc)
       fetchEntity(httpClient, imageSrc, config) match {
-        case Some(entity) => {
+        case Some(entity) =>
           trace("Got entity for " + imageSrc)
           writeEntityContentsToDisk(entity, linkhash, imageSrc, config) match {
             case Some(locallyStoredImage) =>
@@ -185,14 +171,12 @@ object ImageUtils extends Logging {
             case None =>
               trace("Unable to write contents to disk: " + imageSrc); None
           }
-        }
         case None => trace("Unable to fetch entity for: " + imageSrc); None
       }
     } catch {
-      case e: Exception => {
+      case e: Exception =>
         info(e, e.toString)
         None
-      }
     }
 
   /**
@@ -216,7 +200,7 @@ object ImageUtils extends Logging {
       config: Configuration): Option[LocallyStoredImage] = {
     val localImageName = getLocalFileName(linkhash, imageSrc, config)
     val imageFile = new File(localImageName)
-    if (imageFile.exists()) {
+    if (imageFile.exists())
       try {
         trace("Reading image from disk: " + localImageName)
         val imageDetails =
@@ -232,14 +216,12 @@ object ImageUtils extends Logging {
             imageDetails.getHeight,
             imageDetails.getWidth))
       } catch {
-        case e: Exception => {
+        case e: Exception =>
           trace(e, "Unable to get image file dimensions & extension name!")
           None
-        }
       }
-    } else {
+    else
       None
-    }
 
   }
 
@@ -258,14 +240,12 @@ object ImageUtils extends Logging {
       trace(fileCopyBytes + " bytes copied to disk")
     } catch {
       case e: Exception => info(e, e.toString)
-    } finally {
-      try {
-        outstream.flush()
-        outstream.close()
-        instream.close()
-      } catch {
-        case e: Exception => info(e, e.toString)
-      }
+    } finally try {
+      outstream.flush()
+      outstream.close()
+      instream.close()
+    } catch {
+      case e: Exception => info(e, e.toString)
     }
     //    entity.writeTo(outstream)
     EntityUtils.consume(entity)
@@ -290,35 +270,30 @@ object ImageUtils extends Logging {
       imageSrc: String,
       config: Configuration): Option[HttpEntity] =
     URLHelper.tryToHttpGet(imageSrc) match {
-      case Some(httpget) => {
+      case Some(httpget) =>
         val localContext: HttpContext = new BasicHttpContext
         localContext.setAttribute(
           ClientContext.COOKIE_STORE,
           HtmlFetcher.emptyCookieStore)
         val response =
-          try {
-            config.getHtmlFetcher.getHttpClient.execute(httpget, localContext)
-          } catch {
+          try config.getHtmlFetcher.getHttpClient.execute(httpget, localContext)
+          catch {
             case ex: Exception => throw new ImageFetchException(imageSrc, ex)
           }
 
         val respStatus = response.getStatusLine.getStatusCode
 
-        if (respStatus != 200) {
+        if (respStatus != 200)
           None
-        } else {
-          try {
-            Option(response.getEntity)
-          } catch {
+        else
+          try Option(response.getEntity)
+          catch {
             case e: Exception => warn(e, e.toString); httpget.abort(); None
           }
-        }
 
-      }
-      case None => {
+      case None =>
         warn("Unable to parse imageSrc: '" + imageSrc + "' into HttpGet")
         None
-      }
     }
 
 }

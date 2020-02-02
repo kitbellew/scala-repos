@@ -27,7 +27,7 @@ class CaseClassPickling(
   private def checkConstructorImpl(
       tpe: IrClass,
       logger: AlgorithmLogger): AlgorithmResult =
-    if (tpe.isCaseClass) {
+    if (tpe.isCaseClass)
       tpe.primaryConstructor match {
         case Some(c) if c.isPublic =>
           val names = c.parameterNames.flatten.toSet
@@ -37,10 +37,9 @@ class CaseClassPickling(
           }
           // TODO - Allow us to DISABLE serialziing these vars.
           // TODO - Allow us to ERROR on classes like this.
-          if (!standAloneVars.isEmpty) {
+          if (!standAloneVars.isEmpty)
             logger.warn(
               s"Warning: ${tpe.className} has a member var not represented in the constructor.  Pickling is not guaranteed to handle this correctly.")
-          }
 
           // Here we need to unify the fields with the constructor names.  We assume they have the same name.
           val fields = for {
@@ -102,7 +101,7 @@ class CaseClassPickling(
         case _ =>
           AlgorithmFailure("case-class constructor is not public")
       }
-    } else AlgorithmFailure("class is not a case class")
+    else AlgorithmFailure("class is not a case class")
 
   def checkFactoryImpl(tpe: IrClass, logger: AlgorithmLogger): AlgorithmResult =
     // THis should be accurate, because all case calsses have companions
@@ -119,10 +118,9 @@ class CaseClassPickling(
         m.isVar && !(names contains m.methodName)
       }
       // TODO - We should have this be configured to be a failure or silenced.  Also, we should copy the var options from above.
-      if (hasStandaloneVar) {
+      if (hasStandaloneVar)
         logger.warn(
           s"Warning: ${tpe.className} has a member var not represented in the constructor.  Pickling is not guaranteed to handle this correctly.")
-      }
       val fieldNameList = factoryMethod.parameterNames.flatten.toSeq
       val fields = for {
         name <- fieldNameList
@@ -158,7 +156,7 @@ class CaseClassPickling(
     if (tpe.isCaseClass && !tpe.isScalaModule) {
       val behavior =
         (checkConstructorImpl(tpe, logger) join checkFactoryImpl(tpe, logger))
-      if (careAboutSubclasses && !tpe.isFinal) {
+      if (careAboutSubclasses && !tpe.isFinal)
         // TODO - We need a different flag to say if we'll use runtime picklers *VS* reflection. The two features are not the same.
         tpe.closedSubclasses match {
           case scala.util.Success(subs) =>
@@ -220,7 +218,7 @@ class CaseClassPickling(
                 .asInstanceOf[PickleUnpickleImplementation]
             }
         }
-      } else behavior
+      else behavior
     } else
       AlgorithmFailure(
         s"Cannot use case-class algorithm on non-case class $tpe")

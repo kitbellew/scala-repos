@@ -226,9 +226,8 @@ private[orc] class OrcOutputWriter(
   }
 
   override def close(): Unit =
-    if (recordWriterInstantiated) {
+    if (recordWriterInstantiated)
       recordWriter.close(Reporter.NULL)
-    }
 }
 
 private[orc] case class OrcTableScan(
@@ -276,11 +275,10 @@ private[orc] case class OrcTableScan(
           var i = 0
           while (i < fieldRefs.length) {
             val fieldValue = soi.getStructFieldData(raw, fieldRefs(i))
-            if (fieldValue == null) {
+            if (fieldValue == null)
               mutableRow.setNullAt(fieldOrdinals(i))
-            } else {
+            else
               unwrappers(i)(fieldValue, mutableRow, fieldOrdinals(i))
-            }
             i += 1
           }
           unsafeProjection(mutableRow)
@@ -296,12 +294,11 @@ private[orc] case class OrcTableScan(
     val conf = job.getConfiguration
 
     // Tries to push down filters if ORC filter push-down is enabled
-    if (sqlContext.conf.orcFilterPushDown) {
+    if (sqlContext.conf.orcFilterPushDown)
       OrcFilters.createFilter(filters).foreach { f =>
         conf.set(OrcTableScan.SARG_PUSHDOWN, f.toKryo)
         conf.setBoolean(ConfVars.HIVEOPTINDEXFILTER.varname, true)
       }
-    }
 
     // Figure out the actual schema from the ORC source (without partition columns) so that we
     // can pick the correct ordinals.  Note that this assumes that all files have the same schema.
@@ -313,10 +310,9 @@ private[orc] case class OrcTableScan(
     // Sets requested columns
     addColumnIds(dataSchema, attributes, conf)
 
-    if (inputPaths.isEmpty) {
+    if (inputPaths.isEmpty)
       // the input path probably be pruned, return an empty RDD.
       return sqlContext.sparkContext.emptyRDD[InternalRow]
-    }
     FileInputFormat.setInputPaths(job, inputPaths.map(_.getPath): _*)
 
     val inputFormatClass =

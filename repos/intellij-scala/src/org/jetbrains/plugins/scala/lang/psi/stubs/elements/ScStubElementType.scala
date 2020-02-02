@@ -19,9 +19,8 @@ abstract class ScStubElementType[S <: StubElement[T], T <: PsiElement](
 
   def isCompiled(stub: S) = {
     var parent = stub
-    while (!parent.isInstanceOf[PsiFileStub[_ <: PsiFile]]) {
+    while (!parent.isInstanceOf[PsiFileStub[_ <: PsiFile]])
       parent = parent.getParentStub.asInstanceOf[S]
-    }
     parent.asInstanceOf[ScFileStub].isCompiled
   }
 

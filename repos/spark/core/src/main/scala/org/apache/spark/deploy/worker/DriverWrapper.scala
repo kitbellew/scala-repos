@@ -57,11 +57,10 @@ object DriverWrapper {
         val loader =
           if (sys.props
                 .getOrElse("spark.driver.userClassPathFirst", "false")
-                .toBoolean) {
+                .toBoolean)
             new ChildFirstURLClassLoader(Array(userJarUrl), currentLoader)
-          } else {
+          else
             new MutableURLClassLoader(Array(userJarUrl), currentLoader)
-          }
         Thread.currentThread.setContextClassLoader(loader)
 
         // Delegate to supplied main class

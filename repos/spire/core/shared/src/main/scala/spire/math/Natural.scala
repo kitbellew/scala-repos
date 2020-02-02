@@ -396,11 +396,10 @@ sealed abstract class Natural
                 lhs
               case 1 =>
                 val p = rhs.powerOfTwo
-                if (p >= 0) {
+                if (p >= 0)
                   lhs >> p
-                } else {
+                else
                   longdiv(lhs, rhs)._1
-                }
             }
         }
     }
@@ -444,9 +443,8 @@ sealed abstract class Natural
                 if (p >= 0) {
                   val mask = (Natural(1) << p) - UInt(1)
                   (lhs >> p, lhs & mask)
-                } else {
+                } else
                   longdiv(lhs, rhs)
-                }
             }
         }
     }
@@ -466,9 +464,8 @@ sealed abstract class Natural
         rem -= shifted
         remBits = rem.getNumBits
         shift = remBits - denomBits
-      } else {
+      } else
         shift -= 1
-      }
     }
 
     (quo, rem)
@@ -489,14 +486,13 @@ sealed abstract class Natural
 
   def chop(n: Int): Natural = {
     @tailrec def recur(next: Natural, n: Int): Natural =
-      if (n <= 0) {
+      if (n <= 0)
         next
-      } else {
+      else
         next match {
           case End(d)         => End(UInt(0))
           case Digit(d, tail) => recur(tail, n - 1)
         }
-      }
     recur(this, n)
   }
 
@@ -601,9 +597,9 @@ object Natural extends NaturalInstances {
   private val ten18 = Natural(1000000000000000000L)
   def apply(s: String): Natural = {
     def parse(sofar: Natural, s: String, m: Natural): Natural =
-      if (s.length <= 18) {
+      if (s.length <= 18)
         Natural(s.toLong) * m + sofar
-      } else {
+      else {
         val p = s.substring(s.length - 18, s.length)
         val r = s.substring(0, s.length - 18)
         parse(Natural(p.toLong) * m + sofar, r, m * ten18)
@@ -621,17 +617,17 @@ object Natural extends NaturalInstances {
     def tail: Natural = tl
 
     def +(n: UInt): Natural =
-      if (n == UInt(0)) {
+      if (n == UInt(0))
         this
-      } else {
+      else {
         val t = d.toLong + n.toLong
         Digit(UInt(t), tail + UInt(t >> 32))
       }
 
     def -(n: UInt): Natural =
-      if (n == UInt(0)) {
+      if (n == UInt(0))
         this
-      } else {
+      else {
         val t = d.toLong - n.toLong
         Digit(UInt(t), tail - UInt(-(t >> 32)))
       }
@@ -665,11 +661,11 @@ object Natural extends NaturalInstances {
         }
       }
 
-      if (n == UInt(0)) {
+      if (n == UInt(0))
         throw new IllegalArgumentException("/ by zero")
-      } else if (n == UInt(1)) {
+      else if (n == UInt(1))
         (this, Natural(UInt(0)))
-      } else {
+      else
         reversed match {
           case Digit(d, tail) =>
             val q = d / n
@@ -678,7 +674,6 @@ object Natural extends NaturalInstances {
           case _ =>
             throw new IllegalArgumentException("bug in reversed")
         }
-      }
     }
   }
 
@@ -687,9 +682,9 @@ object Natural extends NaturalInstances {
     def digit: UInt = d
 
     def +(n: UInt): Natural =
-      if (n == UInt(0)) {
+      if (n == UInt(0))
         this
-      } else {
+      else {
         val t = d.toLong + n.toLong
         if (t <= 0xFFFFFFFFL)
           End(UInt(t))
@@ -698,9 +693,9 @@ object Natural extends NaturalInstances {
       }
 
     def -(n: UInt): Natural =
-      if (n == UInt(0)) {
+      if (n == UInt(0))
         this
-      } else {
+      else {
         val t = d.toLong - n.toLong
         if (t >= 0L)
           End(UInt(t.toInt))

@@ -113,9 +113,8 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
       case t: NumberFormatException => onError
     }
 
-    if (cleanAfterAction) {
+    if (cleanAfterAction)
       field.text = ""
-    }
 
   }
 
@@ -131,9 +130,8 @@ abstract class PropertiesNodes[T](target: T, title: String) extends TitledPane {
       case t: NumberFormatException => onError
     }
 
-    if (cleanAfterAction) {
+    if (cleanAfterAction)
       field.text = ""
-    }
 
   }
 

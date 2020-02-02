@@ -47,9 +47,9 @@ trait NIHDBSnapshot {
   val logger = LoggerFactory.getLogger("com.precog.niflheim.NIHDBSnapshot")
 
   protected[this] def findReader(id0: Option[Long]): Option[StorageReader] =
-    if (readers.isEmpty) {
+    if (readers.isEmpty)
       None
-    } else {
+    else {
       val i = id0.map(Arrays.binarySearch(blockIds, _)) getOrElse 0
       if (i >= 0) Some(readers(i)) else None
     }
@@ -59,11 +59,10 @@ trait NIHDBSnapshot {
     // be careful! the semantics of findReaderAfter are somewhat subtle
     val i = id0.map(Arrays.binarySearch(blockIds, _)) getOrElse -1
     val j = if (i < 0) -i - 1 else i + 1
-    if (logger.isTraceEnabled) {
+    if (logger.isTraceEnabled)
       logger.trace(
         "findReaderAfter(%s) has i = %d, j = %d with blockIds.length = %d"
           .format(id0, i, j, blockIds.length))
-    }
     if (j >= blockIds.length) None else Some(readers(j))
   }
 
@@ -76,7 +75,7 @@ trait NIHDBSnapshot {
     findReaderAfter(id0)
       .map { reader =>
         val snapshot = reader.snapshotRef(cols)
-        if (logger.isTraceEnabled) {
+        if (logger.isTraceEnabled)
           logger.trace(
             "Block after %s, %s (%s)\nSnapshot on %s:\n  %s".format(
               id0,
@@ -84,13 +83,11 @@ trait NIHDBSnapshot {
               reader.hashCode,
               cols,
               snapshot.segments.map(_.toString).mkString("\n  ")))
-        }
         snapshot
       }
       .orElse {
-        if (logger.isTraceEnabled) {
+        if (logger.isTraceEnabled)
           logger.trace("No block after " + id0)
-        }
         None
       }
 

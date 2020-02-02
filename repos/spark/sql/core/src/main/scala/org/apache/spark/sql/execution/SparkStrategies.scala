@@ -132,11 +132,10 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     */
   object CanBroadcast {
     def unapply(plan: LogicalPlan): Option[LogicalPlan] =
-      if (plan.statistics.sizeInBytes <= conf.autoBroadcastJoinThreshold) {
+      if (plan.statistics.sizeInBytes <= conf.autoBroadcastJoinThreshold)
         Some(plan)
-      } else {
+      else
         None
-      }
   }
 
   /**
@@ -233,11 +232,10 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           if !conf.preferSortMergeJoin && shouldShuffleHashJoin(left, right) ||
             !RowOrdering.isOrderable(leftKeys) =>
         val buildSide =
-          if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes) {
+          if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes)
             BuildRight
-          } else {
+          else
             BuildLeft
-          }
         Seq(
           joins.ShuffledHashJoin(
             leftKeys,
@@ -392,13 +390,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         if (functionsWithDistinct
               .map(_.aggregateFunction.children)
               .distinct
-              .length > 1) {
+              .length > 1)
           // This is a sanity check. We should not reach here when we have multiple distinct
           // column sets. Our MultipleDistinctRewriter should take care this case.
           sys.error(
             "You hit a query analyzer bug. Please report your query to " +
               "Spark user mailing list.")
-        }
 
         val namedGroupingExpressions = groupingExpressions.map {
           case ne: NamedExpression => ne -> ne
@@ -442,26 +439,25 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
         val aggregateOperator =
           if (aggregateExpressions
                 .map(_.aggregateFunction)
-                .exists(!_.supportsPartial)) {
-            if (functionsWithDistinct.nonEmpty) {
+                .exists(!_.supportsPartial))
+            if (functionsWithDistinct.nonEmpty)
               sys.error("Distinct columns cannot exist in Aggregate operator containing " +
                 "aggregate functions which don't support partial aggregation.")
-            } else {
+            else
               aggregate.Utils.planAggregateWithoutPartial(
                 namedGroupingExpressions.map(_._2),
                 aggregateExpressions,
                 aggregateFunctionToAttribute,
                 rewrittenResultExpressions,
                 planLater(child))
-            }
-          } else if (functionsWithDistinct.isEmpty) {
+          else if (functionsWithDistinct.isEmpty)
             aggregate.Utils.planAggregateWithoutDistinct(
               namedGroupingExpressions.map(_._2),
               aggregateExpressions,
               aggregateFunctionToAttribute,
               rewrittenResultExpressions,
               planLater(child))
-          } else {
+          else
             aggregate.Utils.planAggregateWithOneDistinct(
               namedGroupingExpressions.map(_._2),
               functionsWithDistinct,
@@ -470,7 +466,6 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               rewrittenResultExpressions,
               planLater(child)
             )
-          }
 
         aggregateOperator
 
@@ -521,11 +516,10 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
       case logical.Join(left, right, joinType, condition) =>
         val buildSide =
-          if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes) {
+          if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes)
             joins.BuildRight
-          } else {
+          else
             joins.BuildLeft
-          }
         // This join could be very slow or even hang forever
         joins.BroadcastNestedLoopJoin(
           planLater(left),
@@ -599,13 +593,12 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           planLater(right)) :: Nil
 
       case logical.Repartition(numPartitions, shuffle, child) =>
-        if (shuffle) {
+        if (shuffle)
           ShuffleExchange(
             RoundRobinPartitioning(numPartitions),
             planLater(child)) :: Nil
-        } else {
+        else
           execution.Coalesce(numPartitions, planLater(child)) :: Nil
-        }
       case logical.SortPartitions(sortExprs, child) =>
         // This sort only sorts tuples within a partition. Its requiredDistribution will be
         // an UnspecifiedDistribution.

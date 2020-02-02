@@ -52,9 +52,9 @@ abstract class AbstractDecoder extends FrameDecoder {
       needsData: Seq[ChannelBuffer] => Int
   )(continue: Seq[ChannelBuffer] => Decoding): Decoding = {
     val frameLength = buffer.bytesBefore(FindCRLF)
-    if (frameLength < 0) {
+    if (frameLength < 0)
       null
-    } else {
+    else {
       val frame = buffer.slice(buffer.readerIndex, frameLength)
       buffer.skipBytes(frameLength + DelimiterLength)
 

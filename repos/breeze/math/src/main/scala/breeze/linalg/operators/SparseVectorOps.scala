@@ -301,17 +301,16 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
         val stride: Int = a.stride
 
         var i = 0
-        if (stride == 1 && aoff == 0) {
+        if (stride == 1 && aoff == 0)
           while (i < bsize) {
             result += adata(bi(i)) * bd(i)
             i += 1
           }
-        } else {
+        else
           while (i < bsize) {
             result += adata(aoff + bi(i) * stride) * bd(i)
             i += 1
           }
-        }
         result
       }
       implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulInner.type, T]]
@@ -469,9 +468,8 @@ trait SparseVectorOps { this: SparseVector.type =>
               val bv: T = b.valueAt(boff)
               boff += 1
               bv
-            } else {
+            } else
               q
-            }
           resultI(resultOff) = a.indexAt(aoff)
           resultV(resultOff) = op(a.valueAt(aoff), bvalue)
           resultOff += 1
@@ -485,15 +483,14 @@ trait SparseVectorOps { this: SparseVector.type =>
           boff += 1
         }
 
-        if (resultOff != resultI.length) {
+        if (resultOff != resultI.length)
           new SparseVector[T](
             util.Arrays.copyOf(resultI, resultOff),
             util.Arrays.copyOf(resultV, resultOff),
             resultOff,
             a.length)
-        } else {
+        else
           new SparseVector[T](resultI, resultV, resultOff, a.length)
-        }
       }
       implicitly[BinaryRegistry[Vector[T], Vector[T], Op.type, Vector[T]]]
         .register(this)
@@ -533,9 +530,8 @@ trait SparseVectorOps { this: SparseVector.type =>
               val bv: T = b.valueAt(boff)
               boff += 1
               bv
-            } else {
+            } else
               q
-            }
           resultI(resultOff) = a.indexAt(aoff)
           resultV(resultOff) = r.-(a.valueAt(aoff), bvalue)
           resultOff += 1
@@ -557,9 +553,8 @@ trait SparseVectorOps { this: SparseVector.type =>
             dat,
             resultOff,
             a.length)
-        } else {
+        } else
           new SparseVector[T](resultI, resultV, resultOff, a.length)
-        }
       }
     }
 
@@ -597,9 +592,8 @@ trait SparseVectorOps { this: SparseVector.type =>
               val bv: T = b.valueAt(boff)
               boff += 1
               bv
-            } else {
+            } else
               q
-            }
           resultI(resultOff) = a.indexAt(aoff)
           resultV(resultOff) = r.+(a.valueAt(aoff), bvalue)
           resultOff += 1
@@ -621,9 +615,8 @@ trait SparseVectorOps { this: SparseVector.type =>
             dat,
             resultOff,
             a.length)
-        } else {
+        } else
           new SparseVector[T](resultI, resultV, resultOff, a.length)
-        }
       }
     }
 
@@ -637,9 +630,9 @@ trait SparseVectorOps { this: SparseVector.type =>
       : OpMulScalar.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] =
     new OpMulScalar.Impl2[SparseVector[T], SparseVector[T], SparseVector[T]] {
       def apply(a: SparseVector[T], b: SparseVector[T]): SparseVector[T] =
-        if (b.activeSize < a.activeSize) {
+        if (b.activeSize < a.activeSize)
           apply(b, a)
-        } else {
+        else {
           require(b.length == a.length, "Vectors must be the same length!")
           val asize: Int = a.activeSize
           val bsize: Int = b.activeSize
@@ -666,10 +659,10 @@ trait SparseVectorOps { this: SparseVector.type =>
               aind)
             if (boff < 0) {
               boff = ~boff
-              if (boff == bsize) {
+              if (boff == bsize)
                 // we're through the b array, so we're done.
                 aoff = asize
-              } else {
+              else {
                 // fast forward a until we get to the b we just got to
                 val bind = b.indexAt(boff)
                 var newAoff = util.Arrays.binarySearch(
@@ -697,15 +690,14 @@ trait SparseVectorOps { this: SparseVector.type =>
             }
           }
 
-          if (resultOff != resultI.length) {
+          if (resultOff != resultI.length)
             new SparseVector[T](
               util.Arrays.copyOf(resultI, resultOff),
               util.Arrays.copyOf(resultV, resultOff),
               resultOff,
               a.length)
-          } else {
+          else
             new SparseVector[T](resultI, resultV, resultOff, a.length)
-          }
         }
 
       implicitly[
@@ -762,9 +754,13 @@ trait SparseVectorOps { this: SparseVector.type =>
   @expand
   implicit def implOpSVT_Field_SVT[
       @expand.args(OpAdd, OpSub, OpDiv, OpMod, OpPow) Op <: OpType,
-      T: Field: ClassTag](implicit @expand.sequence[Op]({ f.+(_, _) }, {
-    f.-(_, _)
-  }, { f./(_, _) }, { f.%(_, _) }, { f.pow(_, _) }) op: Op.Impl2[T, T, T])
+      T: Field: ClassTag](
+      implicit @expand.sequence[Op](
+        f.+(_, _),
+        f.-(_, _),
+        f./(_, _),
+        f.%(_, _),
+        f.pow(_, _)) op: Op.Impl2[T, T, T])
       : Op.Impl2[SparseVector[T], T, SparseVector[T]] =
     new Op.Impl2[SparseVector[T], T, SparseVector[T]] {
       def apply(a: SparseVector[T], b: T): SparseVector[T] = {
@@ -961,15 +957,14 @@ trait SparseVectorOps { this: SparseVector.type =>
     new OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] {
       def apply(a: SparseVector[T], b: SparseVector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
-        if (b.activeSize < a.activeSize) {
+        if (b.activeSize < a.activeSize)
           apply(b, a)
-        } else if (a.activeSize == 0) {
+        else if (a.activeSize == 0)
           zero
-        } else if (b.activeSize <= 32) { // b is bigger than a
+        else if (b.activeSize <= 32) // b is bigger than a
           smallVectors(a, b)
-        } else {
+        else
           bigVectors(a, b)
-        }
       }
 
       def smallVectors(a: SparseVector[T], b: SparseVector[T]): T = {
@@ -980,7 +975,7 @@ trait SparseVectorOps { this: SparseVector.type =>
         var aoff: Int = 0
         var boff: Int = 0
 
-        while (aoff < asize && boff < bsize) {
+        while (aoff < asize && boff < bsize)
           if (a.indexAt(aoff) < b.indexAt(boff))
             aoff += 1
           else if (b.indexAt(boff) < a.indexAt(aoff))
@@ -990,7 +985,6 @@ trait SparseVectorOps { this: SparseVector.type =>
             aoff += 1
             boff += 1
           }
-        }
         result
       }
 
@@ -1019,10 +1013,10 @@ trait SparseVectorOps { this: SparseVector.type =>
           boff = ArrayUtil.gallopSearch(b.index, boff, bMax, aind)
           if (boff < 0) {
             boff = ~boff
-            if (boff == bsize) {
+            if (boff == bsize)
               // we're through the b array, so we're done.
               aoff = asize
-            } else {
+            else {
               // fast forward a until we get to the b we just got to
               val bind: Int = b.indexAt(boff)
 //              bLastOff = boff
@@ -1058,9 +1052,9 @@ trait SparseVectorOps { this: SparseVector.type =>
     new OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] {
       val s = implicitly[Semiring[T]]
       def apply(a: SparseVector[T], b: SparseVector[T]): T =
-        if (b.activeSize < a.activeSize) {
+        if (b.activeSize < a.activeSize)
           apply(b, a)
-        } else {
+        else {
           require(b.length == a.length, "Vectors must be the same length!")
           val asize: Int = a.activeSize
           val bsize: Int = b.activeSize
@@ -1084,10 +1078,10 @@ trait SparseVectorOps { this: SparseVector.type =>
               aind)
             if (boff < 0) {
               boff = ~boff
-              if (boff == bsize) {
+              if (boff == bsize)
                 // we're through the b array, so we're done.
                 aoff = asize
-              } else {
+              else {
                 // fast forward a until we get to the b we just got to
                 val bind: Int = b.indexAt(boff)
                 var newAoff: Int = util.Arrays.binarySearch(
@@ -1152,9 +1146,8 @@ trait SparseVectorOps { this: SparseVector.type =>
                 val bv: T = a * x.valueAt(boff)
                 boff += 1
                 bv
-              } else {
+              } else
                 zero
-              }
             resultI(resultOff) = y.indexAt(aoff)
             resultV(resultOff) = y.valueAt(aoff) + bvalue
             resultOff += 1
@@ -1168,14 +1161,13 @@ trait SparseVectorOps { this: SparseVector.type =>
             boff += 1
           }
 
-          if (resultOff != resultI.length) {
+          if (resultOff != resultI.length)
             y.use(
               util.Arrays.copyOf(resultI, resultOff),
               util.Arrays.copyOf(resultV, resultOff),
               resultOff)
-          } else {
+          else
             y.use(resultI, resultV, resultOff)
-          }
         }
       }
       implicitly[TernaryUpdateRegistry[Vector[T], T, Vector[T], scaleAdd.type]]
@@ -1217,9 +1209,8 @@ trait SparseVectorOps { this: SparseVector.type =>
                 val bv: T = f.*(a, x.valueAt(boff))
                 boff += 1
                 bv
-              } else {
+              } else
                 f.zero
-              }
             resultI(resultOff) = y.indexAt(aoff)
             resultV(resultOff) = f.+(y.valueAt(aoff), bvalue)
             resultOff += 1
@@ -1233,14 +1224,13 @@ trait SparseVectorOps { this: SparseVector.type =>
             boff += 1
           }
 
-          if (resultOff != resultI.length) {
+          if (resultOff != resultI.length)
             y.use(
               util.Arrays.copyOf(resultI, resultOff),
               ArrayUtil.copyOf[T](resultV, resultOff),
               resultOff)
-          } else {
+          else
             y.use(resultI, resultV, resultOff)
-          }
         }
       }
     }

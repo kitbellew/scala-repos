@@ -124,9 +124,8 @@ package com.twitter.scalding {
       val partialfn = lockedFn.get
       val args = conv(functionCall.getArguments)
 
-      if (partialfn.isDefinedAt(args)) {
+      if (partialfn.isDefinedAt(args))
         functionCall.getOutputCollector.add(set(partialfn(args)))
-      }
     }
   }
 
@@ -624,9 +623,8 @@ package com.twitter.scalding {
         // Make sure to drop the reference to the lastValue as soon as possible (it may be big)
         call.setContext(null)
         call.getOutputCollector.add(set(mrfn.get(lastValue)))
-      } else {
+      } else
         throw new Exception("MRMAggregator completed without any args")
-      }
     }
   }
 
@@ -670,9 +668,9 @@ package com.twitter.scalding {
     }
 
     override final def complete(flowProcess: FlowProcess[_], context: Tuple) =
-      if (null == context) {
+      if (null == context)
         throw new Exception("FoldFunctor completed with any aggregate calls")
-      } else {
+      else {
         val res = context.getObject(0).asInstanceOf[X]
         // Make sure we remove the ref to the context ASAP:
         context.set(0, null)

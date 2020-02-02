@@ -121,9 +121,8 @@ object ThriftMuxResponseClassifier {
             Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
           if (deserCtx eq NoDeserializeCtx)
             throw new MatchError("No DeserializeCtx found")
-          try {
-            classifier(deserialized(deserCtx, rep.body))
-          } catch {
+          try classifier(deserialized(deserCtx, rep.body))
+          catch {
             case NonFatal(e) => throw new MatchError(e)
           }
         case e => throw new MatchError(e)
@@ -147,14 +146,13 @@ object ThriftMuxResponseClassifier {
           case Return(rep: mux.Response) =>
             val deserCtx =
               Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
-            if (deserCtx ne NoDeserializeCtx) {
+            if (deserCtx ne NoDeserializeCtx)
               try {
                 val bytes = Buf.ByteArray.Owned.extract(rep.body)
                 deserCtx.deserialize(bytes)
               } catch {
                 case _: Throwable =>
               }
-            }
           case _ =>
         }
 

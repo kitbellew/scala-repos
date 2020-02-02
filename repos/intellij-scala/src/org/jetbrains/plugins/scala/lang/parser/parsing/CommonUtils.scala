@@ -21,10 +21,10 @@ object CommonUtils {
       else ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE)
     val patternArgsMarker = builder.mark()
     while (!builder
-             .eof() && builder.getTokenType != ScalaTokenTypes.tINTERPOLATED_STRING_END) {
+             .eof() && builder.getTokenType != ScalaTokenTypes.tINTERPOLATED_STRING_END)
       if (builder.getTokenType == ScalaTokenTypes.tINTERPOLATED_STRING_INJECTION) {
         builder.advanceLexer()
-        if (isPattern) {
+        if (isPattern)
           if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER) {
             val idMarker = builder.mark()
             builder.advanceLexer()
@@ -39,25 +39,22 @@ object CommonUtils {
                 () => (),
                 braceReported = true)
             } else builder.advanceLexer()
-          }
-        } else if (!BlockExpr.parse(builder)) {
-          if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER) {
-            val idMarker = builder.mark()
-            builder.advanceLexer()
-            idMarker.done(ScalaElementTypes.REFERENCE_EXPRESSION)
-          } else if (builder.getTokenType == ScalaTokenTypes.kTHIS) {
-            val literalMarker = builder.mark()
-            builder.advanceLexer()
-            literalMarker.done(ScalaElementTypes.THIS_REFERENCE)
-          } else if (!builder.getTokenText.startsWith("$"))
-            builder.error("Bad interpolated string injection")
-        }
+          } else if (!BlockExpr.parse(builder))
+            if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER) {
+              val idMarker = builder.mark()
+              builder.advanceLexer()
+              idMarker.done(ScalaElementTypes.REFERENCE_EXPRESSION)
+            } else if (builder.getTokenType == ScalaTokenTypes.kTHIS) {
+              val literalMarker = builder.mark()
+              builder.advanceLexer()
+              literalMarker.done(ScalaElementTypes.THIS_REFERENCE)
+            } else if (!builder.getTokenText.startsWith("$"))
+              builder.error("Bad interpolated string injection")
       } else {
         if (builder.getTokenType == ScalaTokenTypes.tWRONG_STRING)
           builder.error("Wrong string literal")
         builder.advanceLexer()
       }
-    }
     if (isPattern) patternArgsMarker.done(ScalaElementTypes.PATTERN_ARGS)
     else patternArgsMarker.drop()
     if (!builder.eof()) builder.advanceLexer()

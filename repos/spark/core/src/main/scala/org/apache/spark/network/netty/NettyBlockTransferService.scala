@@ -121,7 +121,7 @@ class NettyBlockTransferService(
       }
 
       val maxRetries = transportConf.maxIORetries()
-      if (maxRetries > 0) {
+      if (maxRetries > 0)
         // Note this Fetcher will correctly handle maxRetries == 0; we avoid it just in case there's
         // a bug in this code. We should remove the if statement once we're sure of the stability.
         new RetryingBlockFetcher(
@@ -129,9 +129,8 @@ class NettyBlockTransferService(
           blockFetchStarter,
           blockIds,
           listener).start()
-      } else {
+      else
         blockFetchStarter.createAndStart(blockIds, listener)
-      }
     } catch {
       case e: Exception =>
         logError("Exception while beginning fetchBlocks", e)
@@ -179,11 +178,9 @@ class NettyBlockTransferService(
   }
 
   override def close(): Unit = {
-    if (server != null) {
+    if (server != null)
       server.close()
-    }
-    if (clientFactory != null) {
+    if (clientFactory != null)
       clientFactory.close()
-    }
   }
 }

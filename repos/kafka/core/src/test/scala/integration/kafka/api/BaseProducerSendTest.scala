@@ -139,9 +139,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
           }
           assertNotEquals(metadata.checksum(), 0)
           offset += 1
-        } else {
+        } else
           fail("Send callback returns the following exception", exception)
-        }
       }
     }
 
@@ -217,9 +216,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         numRecords + 4L,
         producer.send(record0, callback).get.offset)
 
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   @Test
@@ -283,9 +280,8 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
           assertEquals(partition, metadata.partition())
           offset += 1
           timestampDiff += 1
-        } else {
+        } else
           fail("Send callback returns the following exception", exception)
-        }
       }
     }
 
@@ -314,9 +310,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         s"Should have offset $numRecords but only successfully sent ${callback.offset}",
         numRecords,
         callback.offset)
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   /**
@@ -355,9 +349,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         numRecords.toLong,
         response0.get.offset)
 
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   /**
@@ -403,17 +395,17 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       }
 
       // make sure the fetched messages also respect the partitioning and ordering
-      val fetchResponse1 = if (leader1.get == configs(0).brokerId) {
-        consumer1.fetch(
-          new FetchRequestBuilder()
-            .addFetch(topic, partition, 0, Int.MaxValue)
-            .build())
-      } else {
-        consumer2.fetch(
-          new FetchRequestBuilder()
-            .addFetch(topic, partition, 0, Int.MaxValue)
-            .build())
-      }
+      val fetchResponse1 =
+        if (leader1.get == configs(0).brokerId)
+          consumer1.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, partition, 0, Int.MaxValue)
+              .build())
+        else
+          consumer2.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, partition, 0, Int.MaxValue)
+              .build())
       val messageSet1 =
         fetchResponse1.messageSet(topic, partition).iterator.toBuffer
       assertEquals(
@@ -431,9 +423,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
           messageSet1(i).message)
         assertEquals(i.toLong, messageSet1(i).offset)
       }
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   /**
@@ -457,9 +447,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       // double check that the topic is created with leader elected
       TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0)
 
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   /**
@@ -478,9 +466,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         producer.flush()
         assertTrue("All requests are complete.", responses.forall(_.isDone()))
       }
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
   }
 
   /**
@@ -517,13 +503,17 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
               e.getMessage)
         }
       }
-      val fetchResponse = if (leader0.get == configs(0).brokerId) {
-        consumer1.fetch(
-          new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue).build())
-      } else {
-        consumer2.fetch(
-          new FetchRequestBuilder().addFetch(topic, 0, 0, Int.MaxValue).build())
-      }
+      val fetchResponse =
+        if (leader0.get == configs(0).brokerId)
+          consumer1.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, 0, 0, Int.MaxValue)
+              .build())
+        else
+          consumer2.fetch(
+            new FetchRequestBuilder()
+              .addFetch(topic, 0, 0, Int.MaxValue)
+              .build())
       assertEquals(
         "Fetch response should have no message returned.",
         0,
@@ -573,26 +563,24 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
         producer.flush()
         assertTrue("All request are complete.", responses.forall(_.isDone()))
         // Check the messages received by broker.
-        val fetchResponse = if (leader.get == configs(0).brokerId) {
-          consumer1.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
-              .build())
-        } else {
-          consumer2.fetch(
-            new FetchRequestBuilder()
-              .addFetch(topic, 0, 0, Int.MaxValue)
-              .build())
-        }
+        val fetchResponse =
+          if (leader.get == configs(0).brokerId)
+            consumer1.fetch(
+              new FetchRequestBuilder()
+                .addFetch(topic, 0, 0, Int.MaxValue)
+                .build())
+          else
+            consumer2.fetch(
+              new FetchRequestBuilder()
+                .addFetch(topic, 0, 0, Int.MaxValue)
+                .build())
         val expectedNumRecords = (i + 1) * numRecords
         assertEquals(
           "Fetch response to partition 0 should have %d messages.".format(
             expectedNumRecords),
           expectedNumRecords,
           fetchResponse.messageSet(topic, 0).size)
-      } finally {
-        producer.close()
-      }
+      } finally producer.close()
     }
   }
 
@@ -619,9 +607,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     } catch {
       case e: ExecutionException =>
         assertTrue(e.getCause.isInstanceOf[InvalidTimestampException])
-    } finally {
-      producer.close()
-    }
+    } finally producer.close()
 
     // Test compressed messages.
     val producerProps = new Properties()
@@ -642,9 +628,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     } catch {
       case e: ExecutionException =>
         assertTrue(e.getCause.isInstanceOf[InvalidTimestampException])
-    } finally {
-      compressedProducer.close()
-    }
+    } finally compressedProducer.close()
   }
 
 }

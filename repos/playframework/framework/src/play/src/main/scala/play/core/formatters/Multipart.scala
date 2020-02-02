@@ -60,9 +60,8 @@ object Multipart {
     if (length < 1 && length > 70)
       throw new IllegalArgumentException(
         "length can't be greater than 70 or less than 1")
-    val bytes: Seq[Byte] = for (byte <- 1 to length) yield {
-      alphabet(random.nextInt(alphabet.length))
-    }
+    val bytes: Seq[Byte] =
+      for (byte <- 1 to length) yield alphabet(random.nextInt(alphabet.length))
     new String(bytes.toArray, US_ASCII)
   }
 
@@ -190,11 +189,10 @@ object Multipart {
           val f = new ByteStringFormatter(boundary.length + 4)
           renderFinalBoundary(f, boundary)
           ctx.pushAndFinish(Source.single(f.get))
-        } else if (finishing) {
+        } else if (finishing)
           ctx.finish()
-        } else {
+        else
           ctx.pull()
-        }
       }
 
       override def onUpstreamFinish(

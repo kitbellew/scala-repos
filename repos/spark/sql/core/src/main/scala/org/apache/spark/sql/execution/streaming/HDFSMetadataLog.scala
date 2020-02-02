@@ -48,17 +48,15 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
   private val metadataPath = new Path(path)
 
   private val fc =
-    if (metadataPath.toUri.getScheme == null) {
+    if (metadataPath.toUri.getScheme == null)
       FileContext.getFileContext(sqlContext.sparkContext.hadoopConfiguration)
-    } else {
+    else
       FileContext.getFileContext(
         metadataPath.toUri,
         sqlContext.sparkContext.hadoopConfiguration)
-    }
 
-  if (!fc.util().exists(metadataPath)) {
+  if (!fc.util().exists(metadataPath))
     fc.mkdir(metadataPath, FsPermission.getDirDefault, true)
-  }
 
   /**
     * A `PathFilter` to filter only batch files
@@ -109,11 +107,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       fc.deleteOnExit(tempPath)
       try {
         val output = fc.create(tempPath, EnumSet.of(CreateFlag.CREATE))
-        try {
-          output.write(bytes)
-        } finally {
-          output.close()
-        }
+        try output.write(bytes)
+        finally output.close()
         try {
           // Try to commit the batch
           // It will fail if there is an existing file (someone has committed the batch)
@@ -165,9 +160,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       val input = fc.open(batchMetadataFile)
       val bytes = IOUtils.toByteArray(input)
       Some(serializer.deserialize[T](ByteBuffer.wrap(bytes)))
-    } else {
+    } else
       None
-    }
   }
 
   override def get(startId: Option[Long], endId: Long): Array[(Long, T)] = {
@@ -196,9 +190,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       .reverse
     for (batchId <- batchIds) {
       val batch = get(batchId)
-      if (batch.isDefined) {
+      if (batch.isDefined)
         return Some((batchId, batch.get))
-      }
     }
     None
   }

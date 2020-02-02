@@ -152,21 +152,21 @@ object Syntax {
       * we will go ahead and bind each argument to a val just to be
       * safe.
       */
-    val tree = if (util.isClean(test, next, body)) {
-      q"""
+    val tree =
+      if (util.isClean(test, next, body))
+        q"""
       var $index = $init
       while ($test($index)) {
         $body($index)
         $index = $next($index)
       }
       """
+      else {
+        val testName = util.name("test")
+        val nextName = util.name("next")
+        val bodyName = util.name("body")
 
-    } else {
-      val testName = util.name("test")
-      val nextName = util.name("next")
-      val bodyName = util.name("body")
-
-      q"""
+        q"""
       val $testName: Int => Boolean = $test
       val $nextName: Int => Int = $next
       val $bodyName: Int => Unit = $body
@@ -176,7 +176,7 @@ object Syntax {
         $index = $nextName($index)
       }
       """
-    }
+      }
 
     /**
       * Instead of just returning 'tree', we will go ahead and inline

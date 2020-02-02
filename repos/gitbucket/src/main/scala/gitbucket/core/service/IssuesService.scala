@@ -117,9 +117,9 @@ trait IssuesService {
 
   def getCommitStatues(issueList: Seq[(String, String, Int)])(
       implicit s: Session): Map[(String, String, Int), CommitStatusInfo] =
-    if (issueList.isEmpty) {
+    if (issueList.isEmpty)
       Map.empty
-    } else {
+    else {
       import scala.slick.jdbc._
       val issueIdQuery = issueList
         .map(i => "(PR.USER_NAME=? AND PR.REPOSITORY_NAME=? AND PR.ISSUE_ID=?)")
@@ -592,11 +592,11 @@ trait IssuesService {
       loginAccount: Account)(implicit s: Session) =
     StringUtil.extractIssueId(message).foreach { issueId =>
       val content = fromIssue.issueId + ":" + fromIssue.title
-      if (getIssue(owner, repository, issueId).isDefined) {
+      if (getIssue(owner, repository, issueId).isDefined)
         // Not add if refer comment already exist.
         if (!getComments(owner, repository, issueId.toInt).exists { x =>
               x.action == "refer" && x.content == content
-            }) {
+            })
           createComment(
             owner,
             repository,
@@ -604,14 +604,12 @@ trait IssuesService {
             issueId.toInt,
             content,
             "refer")
-        }
-      }
     }
 
   def createIssueComment(owner: String, repository: String, commit: CommitInfo)(
       implicit s: Session) =
     StringUtil.extractIssueId(commit.fullMessage).foreach { issueId =>
-      if (getIssue(owner, repository, issueId).isDefined) {
+      if (getIssue(owner, repository, issueId).isDefined)
         getAccountByMailAddress(commit.committerEmailAddress).foreach {
           account =>
             createComment(
@@ -622,7 +620,6 @@ trait IssuesService {
               commit.fullMessage + " " + commit.id,
               "commit")
         }
-      }
     }
 
 }

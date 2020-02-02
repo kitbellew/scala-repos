@@ -74,9 +74,8 @@ trait Builder[-Elem, +To] extends Growable[Elem] {
     *  @param coll  the collection which serves as a hint for the result's size.
     */
   def sizeHint(coll: TraversableLike[_, _]) {
-    if (coll.isInstanceOf[collection.IndexedSeqLike[_, _]]) {
+    if (coll.isInstanceOf[collection.IndexedSeqLike[_, _]])
       sizeHint(coll.size)
-    }
   }
 
   /** Gives a hint that one expects the `result` of this builder
@@ -93,9 +92,8 @@ trait Builder[-Elem, +To] extends Growable[Elem] {
     *  @param delta a correction to add to the `coll.size` to produce the size hint.
     */
   def sizeHint(coll: TraversableLike[_, _], delta: Int) {
-    if (coll.isInstanceOf[collection.IndexedSeqLike[_, _]]) {
+    if (coll.isInstanceOf[collection.IndexedSeqLike[_, _]])
       sizeHint(coll.size + delta)
-    }
   }
 
   /** Gives a hint how many elements are expected to be added

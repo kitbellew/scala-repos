@@ -228,10 +228,9 @@ class EventTest extends FunSuite {
 
     for (i <- 0 until 100) e1.notify(i)
     for (i <- 100 until 200) e2.notify(i)
-    for (i <- 200 until 300) {
+    for (i <- 200 until 300)
       if (i % 2 == 0) e1.notify(i)
       else e2.notify(i)
-    }
 
     assert(ref.get == Seq.range(0, 300))
   }

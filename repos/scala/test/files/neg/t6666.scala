@@ -118,7 +118,7 @@ class C14(a: Any) {
 class COuter
     extends C({
       def foo = 0
-      class CInner extends C({ foo })
+      class CInner extends C(foo)
     })
 
 class CEarly(a: Any) extends {

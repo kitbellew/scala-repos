@@ -102,9 +102,8 @@ private[spark] class BlockManagerMaster(
       case e: Exception =>
         logWarning(s"Failed to remove RDD $rddId - ${e.getMessage}", e)
     }(ThreadUtils.sameThread)
-    if (blocking) {
+    if (blocking)
       timeout.awaitResult(future)
-    }
   }
 
   /** Remove all blocks belonging to the given shuffle. */
@@ -115,9 +114,8 @@ private[spark] class BlockManagerMaster(
       case e: Exception =>
         logWarning(s"Failed to remove shuffle $shuffleId - ${e.getMessage}", e)
     }(ThreadUtils.sameThread)
-    if (blocking) {
+    if (blocking)
       timeout.awaitResult(future)
-    }
   }
 
   /** Remove all blocks belonging to the given broadcast. */
@@ -134,9 +132,8 @@ private[spark] class BlockManagerMaster(
             s" with removeFromMaster = $removeFromMaster - ${e.getMessage}",
           e)
     }(ThreadUtils.sameThread)
-    if (blocking) {
+    if (blocking)
       timeout.awaitResult(future)
-    }
   }
 
   /**
@@ -181,10 +178,9 @@ private[spark] class BlockManagerMaster(
     val blockStatus =
       timeout.awaitResult(Future.sequence[Option[BlockStatus], Iterable](
         futures)(cbf, ThreadUtils.sameThread))
-    if (blockStatus == null) {
+    if (blockStatus == null)
       throw new SparkException(
         "BlockManager returned null for BlockStatus query: " + blockId)
-    }
     blockManagerIds
       .zip(blockStatus)
       .flatMap {
@@ -228,10 +224,9 @@ private[spark] class BlockManagerMaster(
 
   /** Send a one-way message to the master endpoint, to which we expect it to reply with true. */
   private def tell(message: Any) {
-    if (!driverEndpoint.askWithRetry[Boolean](message)) {
+    if (!driverEndpoint.askWithRetry[Boolean](message))
       throw new SparkException(
         "BlockManagerMasterEndpoint returned false, expected true.")
-    }
   }
 
 }

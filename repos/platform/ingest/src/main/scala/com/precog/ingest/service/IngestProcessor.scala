@@ -170,7 +170,7 @@ class DefaultIngestProcessingSelectors(
         request: HttpRequest[_]): Option[IngestProcessing] = {
       val (AsyncParse(errors, values), parser) =
         AsyncParser.stream().apply(More(ByteBuffer.wrap(partialData)))
-      if (errors.isEmpty && !values.isEmpty) {
+      if (errors.isEmpty && !values.isEmpty)
         request.headers
           .header[`Content-Type`]
           .toSeq
@@ -193,9 +193,8 @@ class DefaultIngestProcessingSelectors(
               maxFields,
               ingestStore))
         }
-      } else {
+      else
         None
-      }
     }
   }
 

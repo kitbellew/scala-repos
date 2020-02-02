@@ -83,16 +83,15 @@ object ClientUtils extends Logging {
         producer.close()
       }
     }
-    if (!fetchMetaDataSucceeded) {
+    if (!fetchMetaDataSucceeded)
       throw new KafkaException(
         "fetching topic metadata for topics [%s] from broker [%s] failed"
           .format(topics, shuffledBrokers),
         t)
-    } else {
+    else
       debug(
         "Successfully fetched metadata for %d topic(s) %s"
           .format(topics.size, topics))
-    }
     topicMetadataResponse
   }
 
@@ -188,7 +187,7 @@ object ClientUtils extends Logging {
 
       var coordinatorOpt: Option[BrokerEndPoint] = None
 
-      while (!coordinatorOpt.isDefined) {
+      while (!coordinatorOpt.isDefined)
         try {
           if (!queryChannel.isConnected)
             queryChannel = channelToAnyBroker(zkUtils)
@@ -220,12 +219,11 @@ object ClientUtils extends Logging {
                 .format(queryChannel.host, queryChannel.port))
             queryChannel.disconnect()
         }
-      }
 
       val coordinator = coordinatorOpt.get
-      if (coordinator.host == queryChannel.host && coordinator.port == queryChannel.port) {
+      if (coordinator.host == queryChannel.host && coordinator.port == queryChannel.port)
         offsetManagerChannelOpt = Some(queryChannel)
-      } else {
+      else {
         val connectString = "%s:%d".format(coordinator.host, coordinator.port)
         var offsetManagerChannel: BlockingChannel = null
         try {

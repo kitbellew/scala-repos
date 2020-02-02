@@ -83,11 +83,10 @@ sealed abstract class Attribute extends Serializable {
     * attributes, the type info is included.
     */
   private[attribute] def toMetadataImpl(): Metadata =
-    if (attrType == AttributeType.Numeric) {
+    if (attrType == AttributeType.Numeric)
       toMetadataImpl(withType = false)
-    } else {
+    else
       toMetadataImpl(withType = true)
-    }
 
   /** Converts to ML metadata with some existing metadata. */
   def toMetadata(existingMetadata: Metadata): Metadata =
@@ -138,14 +137,12 @@ private[attribute] trait AttributeFactory {
     val mlAttr = AttributeKeys.ML_ATTR
     if (metadata.contains(mlAttr)) {
       val attr = fromMetadata(metadata.getMetadata(mlAttr))
-      if (preserveName) {
+      if (preserveName)
         attr
-      } else {
+      else
         attr.withName(field.name)
-      }
-    } else {
+    } else
       UnresolvedAttribute
-    }
   }
 
   /**
@@ -164,25 +161,24 @@ object Attribute extends AttributeFactory {
   private[attribute] override def fromMetadata(
       metadata: Metadata): Attribute = {
     import org.apache.spark.ml.attribute.AttributeKeys._
-    val attrType = if (metadata.contains(TYPE)) {
-      metadata.getString(TYPE)
-    } else {
-      AttributeType.Numeric.name
-    }
+    val attrType =
+      if (metadata.contains(TYPE))
+        metadata.getString(TYPE)
+      else
+        AttributeType.Numeric.name
     getFactory(attrType).fromMetadata(metadata)
   }
 
   /** Gets the attribute factory given the attribute type name. */
   private def getFactory(attrType: String): AttributeFactory =
-    if (attrType == AttributeType.Numeric.name) {
+    if (attrType == AttributeType.Numeric.name)
       NumericAttribute
-    } else if (attrType == AttributeType.Nominal.name) {
+    else if (attrType == AttributeType.Nominal.name)
       NominalAttribute
-    } else if (attrType == AttributeType.Binary.name) {
+    else if (attrType == AttributeType.Binary.name)
       BinaryAttribute
-    } else {
+    else
       throw new IllegalArgumentException(s"Cannot recognize type $attrType.")
-    }
 }
 
 /**
@@ -368,9 +364,8 @@ class NominalAttribute private[ml] (
 
   override def isNominal: Boolean = true
 
-  private lazy val valueToIndex: Map[String, Int] = {
+  private lazy val valueToIndex: Map[String, Int] =
     values.map(_.zipWithIndex.toMap).getOrElse(Map.empty)
-  }
 
   /** Index of a specific value. */
   def indexOf(value: String): Int =
@@ -415,13 +410,12 @@ class NominalAttribute private[ml] (
     * Return None if unknown.
     */
   def getNumValues: Option[Int] =
-    if (numValues.nonEmpty) {
+    if (numValues.nonEmpty)
       numValues
-    } else if (values.nonEmpty) {
+    else if (values.nonEmpty)
       Some(values.get.length)
-    } else {
+    else
       None
-    }
 
   /** Creates a copy of this attribute with optional changes. */
   private def copy(

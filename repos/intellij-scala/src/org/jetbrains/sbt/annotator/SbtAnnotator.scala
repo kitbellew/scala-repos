@@ -62,16 +62,14 @@ class SbtAnnotator extends Annotator {
     private def annotateTypeMismatch(expression: ScExpression): Unit =
       expression.getType(TypingContext.empty).foreach { expressionType =>
         if (expressionType.equiv(types.Nothing) || expressionType.equiv(
-              types.Null)) {
+              types.Null))
           holder.createErrorAnnotation(
             expression,
             SbtBundle("sbt.annotation.expectedExpressionType"))
-        } else {
-          if (!isTypeAllowed(expression, expressionType))
-            holder.createErrorAnnotation(
-              expression,
-              SbtBundle("sbt.annotation.expressionMustConform", expressionType))
-        }
+        else if (!isTypeAllowed(expression, expressionType))
+          holder.createErrorAnnotation(
+            expression,
+            SbtBundle("sbt.annotation.expressionMustConform", expressionType))
       }
 
     private def findTypeByText(

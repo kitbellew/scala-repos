@@ -170,29 +170,27 @@ class Interaction @Since("1.6.0") (override val uid: String)
       val encodedAttrs = f.dataType match {
         case _: NumericType | BooleanType =>
           val attr = Attribute.decodeStructField(f, preserveName = true)
-          if (attr == UnresolvedAttribute) {
+          if (attr == UnresolvedAttribute)
             encodedFeatureAttrs(
               Seq(NumericAttribute.defaultAttr.withName(f.name)),
               None)
-          } else if (!attr.name.isDefined) {
+          else if (!attr.name.isDefined)
             encodedFeatureAttrs(Seq(attr.withName(f.name)), None)
-          } else {
+          else
             encodedFeatureAttrs(Seq(attr), None)
-          }
         case _: VectorUDT =>
           val group = AttributeGroup.fromStructField(f)
           encodedFeatureAttrs(group.attributes.get, Some(group.name))
       }
-      if (featureAttrs.isEmpty) {
+      if (featureAttrs.isEmpty)
         featureAttrs = encodedAttrs
-      } else {
+      else
         featureAttrs = encodedAttrs.flatMap { head =>
           featureAttrs.map { tail =>
             NumericAttribute.defaultAttr.withName(
               head.name.get + ":" + tail.name.get)
           }
         }
-      }
     }
     new AttributeGroup($(outputCol), featureAttrs.toArray)
   }
@@ -220,15 +218,14 @@ class Interaction @Since("1.6.0") (override val uid: String)
 
     inputAttrs.zipWithIndex.flatMap {
       case (nominal: NominalAttribute, i) =>
-        if (nominal.values.isDefined) {
+        if (nominal.values.isDefined)
           nominal.values.get.map(v =>
             BinaryAttribute.defaultAttr.withName(
               format(i, nominal.name, Some(v))))
-        } else {
+        else
           Array.tabulate(nominal.getNumValues.get)(j =>
             BinaryAttribute.defaultAttr.withName(
               format(i, nominal.name, Some(j.toString))))
-        }
       case (a: Attribute, i) =>
         Seq(NumericAttribute.defaultAttr.withName(format(i, a.name, None)))
     }
@@ -290,9 +287,8 @@ private[ml] class FeatureEncoder(numFeatures: Array[Int]) extends Serializable {
             d >= 0.0 && d == d.toInt && d < numOutputCols,
             s"Values from column must be indices, but got $d.")
           f(d.toInt, 1.0)
-        } else {
+        } else
           f(0, d)
-        }
       case vec: Vector =>
         assert(
           numFeatures.length == vec.size,
@@ -304,9 +300,8 @@ private[ml] class FeatureEncoder(numFeatures: Array[Int]) extends Serializable {
               v >= 0.0 && v == v.toInt && v < numOutputCols,
               s"Values from column must be indices, but got $v.")
             f(outputOffsets(i) + v.toInt, 1.0)
-          } else {
+          } else
             f(outputOffsets(i), v)
-          }
         }
       case null =>
         throw new SparkException("Values to interact cannot be null.")

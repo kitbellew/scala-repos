@@ -128,7 +128,7 @@ abstract class LazyVals
                 sym)
               sym.resetFlag((if (lazyUnit(sym)) 0 else LAZY) | ACCESSOR)
               (rhs1, sDef)
-            } else if (sym.hasAllFlags(MODULE | METHOD) && !sym.owner.isTrait) {
+            } else if (sym.hasAllFlags(MODULE | METHOD) && !sym.owner.isTrait)
               rhs match {
                 case b @ Block((assign @ Assign(moduleRef, _)) :: Nil, expr) =>
                   def cond =
@@ -151,18 +151,17 @@ abstract class LazyVals
                     "Unexpected tree on the RHS of a module accessor: " + rhs)
                   (rhs, EmptyTree)
               }
-            } else {
+            else
               (transform(rhs), EmptyTree)
-            }
 
             val ddef1 = deriveDefDef(tree)(_ =>
               if (LocalLazyValFinder.find(res)) typed(addBitmapDefs(sym, res))
               else res)
-            if (slowPathDef != EmptyTree) {
+            if (slowPathDef != EmptyTree)
               // The contents of this block are flattened into the enclosing statement sequence, see flattenThickets
               // This is a poor man's version of dotty's Thicket: https://github.com/lampepfl/dotty/blob/d5280358d1/src/dotty/tools/dotc/ast/Trees.scala#L707
               Block(slowPathDef, ddef1)
-            } else ddef1
+            else ddef1
           }
 
         case Template(_, _, body) =>

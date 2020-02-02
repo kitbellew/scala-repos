@@ -61,23 +61,23 @@ case class ScExistentialType(
               element match {
                 case a: ScTypeAlias
                     if a.getContext.isInstanceOf[ScExistentialClause] =>
-                  if (!rejected.contains(a.name)) {
+                  if (!rejected.contains(a.name))
                     wildcards.find(_.name == a.name) match {
                       case Some(arg) =>
                         (true, unpacked.getOrElse(arg, tp), rejected)
                       case _ => (true, tp, rejected)
                     }
-                  } else (true, tp, rejected)
+                  else (true, tp, rejected)
                 case _ => (true, tp, rejected)
               }
             case ScTypeVariable(name) =>
-              if (!rejected.contains(name)) {
+              if (!rejected.contains(name))
                 wildcards.find(_.name == name) match {
                   case Some(arg) =>
                     (true, unpacked.getOrElse(arg, tp), rejected)
                   case _ => (true, tp, rejected)
                 }
-              } else (true, tp, rejected)
+              else (true, tp, rejected)
             case c @ ScCompoundType(components, _, typeMap) =>
               val newSet = rejected ++ typeMap.map(_._1)
               (false, c, newSet)
@@ -91,9 +91,9 @@ case class ScExistentialType(
       )
 
     def unpack(ex: ScExistentialArgument, deep: Int = 2): ScSkolemizedType =
-      if (deep == 0) {
+      if (deep == 0)
         ScSkolemizedType(ex.name, ex.args, types.Nothing, types.Any)
-      } else {
+      else {
         val unpacked: Map[ScExistentialArgument, ScSkolemizedType] =
           wildcards.map(w => (w, unpack(w, deep - 1))).toMap
         ScSkolemizedType(
@@ -115,21 +115,19 @@ case class ScExistentialType(
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     val newVisited = visited + this
     update(this) match {
       case (true, res) => res
       case _ =>
-        try {
-          ScExistentialType(
-            quantified.recursiveUpdate(update, newVisited),
-            wildcards.map(_.recursiveUpdate(update, newVisited)))
-        } catch {
+        try ScExistentialType(
+          quantified.recursiveUpdate(update, newVisited),
+          wildcards.map(_.recursiveUpdate(update, newVisited)))
+        catch {
           case cce: ClassCastException => throw new RecursiveUpdateException
         }
     }
@@ -142,13 +140,12 @@ case class ScExistentialType(
     update(this, variance, data) match {
       case (true, res, _) => res
       case (_, _, newData) =>
-        try {
-          ScExistentialType(
-            quantified
-              .recursiveVarianceUpdateModifiable(newData, update, variance),
-            wildcards.map(
-              _.recursiveVarianceUpdateModifiable(newData, update, variance)))
-        } catch {
+        try ScExistentialType(
+          quantified
+            .recursiveVarianceUpdateModifiable(newData, update, variance),
+          wildcards.map(
+            _.recursiveVarianceUpdateModifiable(newData, update, variance)))
+        catch {
           case cce: ClassCastException => throw new RecursiveUpdateException
         }
     }
@@ -267,18 +264,16 @@ case class ScExistentialType(
           elem match {
             case ta: ScTypeAlias if ta.isExistentialTypeAlias =>
               wildcards.foreach(arg =>
-                if (arg.name == ta.name && !rejected.contains(arg.name)) {
+                if (arg.name == ta.name && !rejected.contains(arg.name))
                   res.update(
                     arg,
-                    res.getOrElse(arg, Seq.empty[ScType]) ++ Seq(tp))
-                })
+                    res.getOrElse(arg, Seq.empty[ScType]) ++ Seq(tp)))
             case _ =>
           }
         case ScTypeVariable(name) =>
           wildcards.foreach(arg =>
-            if (arg.name == name && !rejected.contains(arg.name)) {
-              res.update(arg, res.getOrElse(arg, Seq.empty[ScType]) ++ Seq(tp))
-            })
+            if (arg.name == name && !rejected.contains(arg.name))
+              res.update(arg, res.getOrElse(arg, Seq.empty[ScType]) ++ Seq(tp)))
         case ex: ScExistentialType =>
           var newSet =
             if (ex ne this) rejected ++ ex.wildcards.map(_.name) else rejected
@@ -439,21 +434,21 @@ case class ScExistentialType(
       case ScDesignatorType(element) =>
         element match {
           case a: ScTypeAlias if a.isExistentialTypeAlias =>
-            if (!rejected.contains(a.name)) {
+            if (!rejected.contains(a.name))
               wildcards.find(_.name == a.name) match {
                 case Some(arg) => update(variance, arg, tp)
                 case _         => tp
               }
-            } else tp
+            else tp
           case _ => tp
         }
       case ScTypeVariable(name) =>
-        if (!rejected.contains(name)) {
+        if (!rejected.contains(name))
           wildcards.find(_.name == name) match {
             case Some(arg) => update(variance, arg, tp)
             case _         => tp
           }
-        } else tp
+        else tp
       case ScTypeParameterType(name, args, lower, upper, param) =>
         //should return TypeParameterType (for undefined type)
         tp
@@ -571,12 +566,12 @@ case class ScExistentialType(
           case _ => tp
         }
     }
-    if (updated) {
+    if (updated)
       res match {
         case ex: ScExistentialType if ex != this => ex.simplify()
         case _                                   => res
       }
-    } else this
+    else this
   }
 
   def visitType(visitor: ScalaTypeVisitor) {
@@ -589,21 +584,21 @@ case class ScExistentialType(
         case typeParam =>
           val boundsDepth =
             typeParam.lower.v.typeDepth.max(typeParam.upper.v.typeDepth)
-          if (typeParam.args.nonEmpty) {
+          if (typeParam.args.nonEmpty)
             (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
-          } else boundsDepth
+          else boundsDepth
       }.max
 
     val quantDepth = quantified.typeDepth
-    if (wildcards.nonEmpty) {
+    if (wildcards.nonEmpty)
       (wildcards.map { wildcard =>
         val boundsDepth =
           wildcard.lowerBound.typeDepth.max(wildcard.upperBound.typeDepth)
-        if (wildcard.args.nonEmpty) {
+        if (wildcard.args.nonEmpty)
           (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
-        } else boundsDepth
+        else boundsDepth
       }.max + 1).max(quantDepth)
-    } else quantDepth
+    else quantDepth
   }
 }
 
@@ -697,12 +692,11 @@ case class ScSkolemizedType(
   override def recursiveUpdate(
       update: ScType => (Boolean, ScType),
       visited: HashSet[ScType]): ScType = {
-    if (visited.contains(this)) {
+    if (visited.contains(this))
       return update(this) match {
         case (true, res) => res
         case _           => this
       }
-    }
     val newVisited = visited + this
     update(this) match {
       case (true, res) => res

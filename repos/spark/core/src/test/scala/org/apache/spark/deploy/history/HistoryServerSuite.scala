@@ -164,15 +164,12 @@ class HistoryServerSuite
         // so here we skip checking the lastUpdated field's value (setting it as "").
         val json = if (jsonOrg.indexOf("lastUpdated") >= 0) {
           val subStrings = jsonOrg.split(",")
-          for (i <- subStrings.indices) {
-            if (subStrings(i).indexOf("lastUpdated") >= 0) {
+          for (i <- subStrings.indices)
+            if (subStrings(i).indexOf("lastUpdated") >= 0)
               subStrings(i) = "\"lastUpdated\":\"\""
-            }
-          }
           subStrings.mkString(",")
-        } else {
+        } else
           jsonOrg
-        }
 
         val exp = IOUtils.toString(
           new FileInputStream(
@@ -217,11 +214,10 @@ class HistoryServerSuite
     val zipStream = new ZipInputStream(inputStream.get)
     var entry = zipStream.getNextEntry
     entry should not be null
-    val totalFiles = {
+    val totalFiles =
       attemptId
         .map { x => 1 }
         .getOrElse(2)
-    }
     var filesCompared = 0
     while (entry != null) {
       if (!entry.isDirectory) {
@@ -343,12 +339,11 @@ class HistoryServerSuite
     // assert that a metric has a value; if not dump the whole metrics instance
     def assertMetric(name: String, counter: Counter, expected: Long): Unit = {
       val actual = counter.getCount
-      if (actual != expected) {
+      if (actual != expected)
         // this is here because Scalatest loses stack depth
         fail(
           s"Wrong $name value - expected $expected but got $actual" +
             s" in metrics\n$metrics")
-      }
     }
 
     // build a URL for an app or app/attempt plus a page underneath
@@ -532,9 +527,7 @@ object HistoryServerSuite {
         case (name, path) =>
           suite.generateExpectation(name, path)
       }
-    } finally {
-      suite.stop()
-    }
+    } finally suite.stop()
   }
 
   def getContentAndCode(url: URL): (Int, Option[String], Option[String]) = {
@@ -550,9 +543,8 @@ object HistoryServerSuite {
     connection.connect()
     val code = connection.getResponseCode()
     val inStream =
-      try {
-        Option(connection.getInputStream())
-      } catch {
+      try Option(connection.getInputStream())
+      catch {
         case io: IOException => None
       }
     val errString =
@@ -571,11 +563,10 @@ object HistoryServerSuite {
 
   def getUrl(path: URL): String = {
     val (code, resultOpt, error) = getContentAndCode(path)
-    if (code == 200) {
+    if (code == 200)
       resultOpt.get
-    } else {
+    else
       throw new RuntimeException(
         "got code: " + code + " when getting " + path + " w/ error: " + error)
-    }
   }
 }

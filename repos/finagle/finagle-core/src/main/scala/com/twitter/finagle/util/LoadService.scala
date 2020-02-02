@@ -72,9 +72,8 @@ private object ClassPath {
 
     loader match {
       case urlLoader: URLClassLoader =>
-        for (url <- urlLoader.getURLs) {
+        for (url <- urlLoader.getURLs)
           ents += (url.toURI -> loader)
-        }
       case _ =>
     }
 
@@ -156,11 +155,9 @@ private object ClassPath {
         val lines = readLines(source)
         buf += Info(n, iface, lines)
       }
-    } finally {
-      try jarFile.close()
-      catch {
-        case _: IOException =>
-      }
+    } finally try jarFile.close()
+    catch {
+      case _: IOException =>
     }
   }
 
@@ -188,18 +185,14 @@ private object ClassPath {
     }
 
   private[util] def readLines(source: Source): Seq[String] =
-    try {
-      source.getLines().toArray.flatMap { line =>
-        val commentIdx = line.indexOf('#')
-        val end = if (commentIdx != -1) commentIdx else line.length
-        val str = line.substring(0, end).trim
-        if (str.isEmpty) Nil else Seq(str)
-      }
+    try source.getLines().toArray.flatMap { line =>
+      val commentIdx = line.indexOf('#')
+      val end = if (commentIdx != -1) commentIdx else line.length
+      val str = line.substring(0, end).trim
+      if (str.isEmpty) Nil else Seq(str)
     } catch {
       case ex: MalformedInputException => Nil /* skip malformed files (e.g. non UTF-8) */
-    } finally {
-      source.close()
-    }
+    } finally source.close()
 }
 
 object loadServiceIgnoredPaths

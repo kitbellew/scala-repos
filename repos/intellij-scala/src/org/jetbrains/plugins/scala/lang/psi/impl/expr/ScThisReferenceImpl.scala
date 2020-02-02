@@ -46,7 +46,7 @@ class ScThisReferenceImpl(node: ASTNode)
           Some(td)
         case _ => None
       }
-    case None => {
+    case None =>
       val encl =
         PsiTreeUtil.getContextOfType(this, false, classOf[ScTemplateBody])
       if (encl != null)
@@ -54,7 +54,6 @@ class ScThisReferenceImpl(node: ASTNode)
           PsiTreeUtil
             .getContextOfType(encl, false, classOf[ScTemplateDefinition]))
       else None
-    }
   }
 
   override def accept(visitor: ScalaElementVisitor) {

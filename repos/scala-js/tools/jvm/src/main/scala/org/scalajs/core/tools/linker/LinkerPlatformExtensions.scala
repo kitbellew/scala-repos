@@ -48,13 +48,12 @@ trait LinkerPlatformExtensions { this: Linker.type =>
           outputMode == OutputMode.ECMAScript51Isolated,
           s"Cannot use output mode $outputMode with the Closure Compiler")
         new ClosureLinkerBackend(semantics, withSourceMap, backendConfig)
-      } else {
+      } else
         new BasicLinkerBackend(
           semantics,
           outputMode,
           withSourceMap,
           backendConfig)
-      }
     }
 
     new Linker(frontend, backend)

@@ -24,7 +24,6 @@ private object LoggerMacros {
 // was:    if (level.splice.id < 4) // TODO Remove hack!
     if (c.eval(level).id < 4) // TODO Remove hack!
       c.universe.reify(())
-    else {
+    else
       c.universe.reify(println(message.splice))
-    }
 }

@@ -46,9 +46,7 @@ object Reloader {
           try {
             thread.setContextClassLoader(classOf[Reloader].getClassLoader)
             f
-          } finally {
-            thread.setContextClassLoader(oldLoader)
-          }
+          } finally thread.setContextClassLoader(oldLoader)
       },
       accessControlContext
     )
@@ -61,9 +59,8 @@ object Reloader {
     javaOptions.collect { case SystemProperty(key, value) => key -> value }
 
   def parsePort(portString: String): Int =
-    try {
-      Integer.parseInt(portString)
-    } catch {
+    try Integer.parseInt(portString)
+    catch {
       case e: NumberFormatException =>
         sys.error("Invalid port argument: " + portString)
     }
@@ -344,18 +341,16 @@ object Reloader {
       case e: Throwable =>
         // Let hooks clean up
         runHooks.foreach { hook =>
-          try {
-            hook.onError()
-          } catch {
+          try hook.onError()
+          catch {
             case e: Throwable => // Swallow any exceptions so that all `onError`s get called.
           }
         }
         // Convert play-server exceptions to our to our ServerStartException
         def getRootCause(t: Throwable): Throwable =
           if (t.getCause == null) t else getRootCause(t.getCause)
-        if (getRootCause(e).getClass.getName == "play.core.server.ServerListenException") {
+        if (getRootCause(e).getClass.getName == "play.core.server.ServerListenException")
           throw new ServerStartException(e)
-        }
         throw e
     }
   }
@@ -449,14 +444,12 @@ class Reloader(
                 val loader = createClassLoader(name, urls, baseLoader)
                 currentApplicationClassLoader = Some(loader)
                 loader
-              } else {
+              } else
                 null // null means nothing changed
-              }
           }
         }
-      } else {
+      } else
         null // null means nothing changed
-      }
     }
 
   lazy val settings = {

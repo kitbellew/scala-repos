@@ -39,13 +39,13 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
   def remove(o: Any): Boolean = {
     @tailrec
     def findAndRemove(iter: Iterator[E]): Boolean =
-      if (iter.hasNext) {
+      if (iter.hasNext)
         if (iter.next() === o) {
           iter.remove()
           true
         } else
           findAndRemove(iter)
-      } else
+      else
         false
     findAndRemove(iterator())
   }
@@ -68,12 +68,11 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
   private def removeWhere(p: Any => Boolean): Boolean = {
     val iter = iterator()
     var changed = false
-    while (iter.hasNext) {
+    while (iter.hasNext)
       if (p(iter.next())) {
         iter.remove()
         changed = true
       }
-    }
     changed
   }
 

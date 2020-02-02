@@ -106,12 +106,12 @@ object MatCols {
     val half = len / 2
     val maxf = (a: Int, b: String) => a.max(b.length)
 
-    if (numCols <= len) {
+    if (numCols <= len)
       Range(0, numCols) zip cols.map { v =>
         val takeCol = v.head(half) concat v.tail(half)
         takeCol.map(k => v.scalarTag.show(k)).foldLeft(2)(maxf)
       }
-    } else {
+    else {
       val colnums = Range(0, half) ++ Range(numCols - half, numCols)
       colnums zip (cols.take(half) ++ cols.takeRight(half)).map { v =>
         val takeCol = v.head(half) concat v.tail(half)

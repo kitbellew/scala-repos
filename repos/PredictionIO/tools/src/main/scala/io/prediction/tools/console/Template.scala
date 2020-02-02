@@ -72,9 +72,8 @@ object Template extends Logging {
       val jsonString =
         Source.fromFile(templateJson)(scala.io.Codec.ISO8859).mkString
       val json =
-        try {
-          parse(jsonString)
-        } catch {
+        try parse(jsonString)
+        catch {
           case e: org.json4s.ParserUtil.ParseException =>
             warn(
               s"$templateJson cannot be parsed. Template metadata will not be available.")
@@ -97,9 +96,8 @@ object Template extends Logging {
     */
   def httpOptionalProxy(url: String): HttpRequest = {
     val gitProxy =
-      try {
-        Some(Process("git config --global http.proxy").lines.toList(0))
-      } catch {
+      try Some(Process("git config --global http.proxy").lines.toList(0))
+      catch {
         case e: Throwable => None
       }
 
@@ -111,9 +109,8 @@ object Template extends Logging {
     } getOrElse {
       (sys.props.get("http.proxyHost"), sys.props.get("http.proxyPort").map {
         p =>
-          try {
-            Some(p.toInt)
-          } catch {
+          try Some(p.toInt)
+          catch {
             case e: NumberFormatException => None
           }
       } getOrElse None)
@@ -137,29 +134,28 @@ object Template extends Logging {
       } catch {
         case e: Throwable => Map[String, GitHubCache]()
       }
-    val newReposCache = reposCache ++ (try {
-      repos.map { repo =>
-        val url = s"https://api.github.com/repos/$repo/$apiType"
-        val http = httpOptionalProxy(url)
-        val response = reposCache.get(repo).map { cache =>
-          cache.headers.get("ETag").map { etag =>
-            http.header("If-None-Match", etag).asString
-          } getOrElse {
-            http.asString
-          }
+    val newReposCache = reposCache ++ (try repos.map { repo =>
+      val url = s"https://api.github.com/repos/$repo/$apiType"
+      val http = httpOptionalProxy(url)
+      val response = reposCache.get(repo).map { cache =>
+        cache.headers.get("ETag").map { etag =>
+          http.header("If-None-Match", etag).asString
         } getOrElse {
           http.asString
         }
+      } getOrElse {
+        http.asString
+      }
 
-        val body = if (response.code == 304) {
+      val body =
+        if (response.code == 304)
           reposCache(repo).body
-        } else {
+        else
           response.body
-        }
 
-        repo -> GitHubCache(headers = response.headers, body = body)
-      }.toMap
-    } catch {
+      repo -> GitHubCache(headers = response.headers, body = body)
+    }.toMap
+    catch {
       case e: ConnectException =>
         githubConnectErrorMessage(e)
         Map()
@@ -174,19 +170,18 @@ object Template extends Logging {
   def sub(repo: String, name: String, email: String, org: String): Unit = {
     val data =
       Map("repo" -> repo, "name" -> name, "email" -> email, "org" -> org)
-    try {
-      httpOptionalProxy("http://update.prediction.io/templates.subscribe")
-        .postData("json=" + write(data))
-        .asString
-    } catch {
+    try httpOptionalProxy("http://update.prediction.io/templates.subscribe")
+      .postData("json=" + write(data))
+      .asString
+    catch {
       case e: Throwable => error("Unable to subscribe.")
     }
   }
 
   def meta(repo: String, name: String, org: String): Unit =
-    try {
-      httpOptionalProxy(s"http://meta.prediction.io/templates/$repo/$org/$name").asString
-    } catch {
+    try httpOptionalProxy(
+      s"http://meta.prediction.io/templates/$repo/$org/$name").asString
+    catch {
       case e: Throwable => debug("Template metadata unavailable.")
     }
 
@@ -226,9 +221,8 @@ object Template extends Logging {
       getGitHubRepos(Seq(ca.template.repository), "tags", ".templates-cache")
 
     repos.get(ca.template.repository).map { repo =>
-      try {
-        read[List[GitHubTag]](repo.body)
-      } catch {
+      try read[List[GitHubTag]](repo.body)
+      catch {
         case e: MappingException =>
           error(
             s"Either ${ca.template.repository} is not a valid GitHub " +
@@ -241,9 +235,8 @@ object Template extends Logging {
     }
 
     val name = ca.template.name getOrElse {
-      try {
-        Process("git config --global user.name").lines.toList(0)
-      } catch {
+      try Process("git config --global user.name").lines.toList(0)
+      catch {
         case e: Throwable =>
           readLine("Please enter author's name: ")
       }
@@ -255,9 +248,8 @@ object Template extends Logging {
     }
 
     val email = ca.template.email getOrElse {
-      try {
-        Process("git config --global user.email").lines.toList(0)
-      } catch {
+      try Process("git config --global user.email").lines.toList(0)
+      catch {
         case e: Throwable =>
           readLine("Please enter author's e-mail address: ")
       }
@@ -272,18 +264,16 @@ object Template extends Logging {
         "fixes and security updates of this template? (Y/n) ")
     var valid = false
 
-    do {
-      subscribe match {
-        case "" | "Y" | "y" =>
-          sub(ca.template.repository, name, email, organization)
-          valid = true
-        case "n" | "N" =>
-          meta(ca.template.repository, name, organization)
-          valid = true
-        case _ =>
-          println("Please answer 'y' or 'n'")
-          subscribe = readLine("(Y/n)? ")
-      }
+    do subscribe match {
+      case "" | "Y" | "y" =>
+        sub(ca.template.repository, name, email, organization)
+        valid = true
+      case "n" | "N" =>
+        meta(ca.template.repository, name, organization)
+        valid = true
+      case _ =>
+        println("Please answer 'y' or 'n'")
+        subscribe = readLine("(Y/n)? ")
     } while (!valid)
 
     val repo = repos(ca.template.repository)
@@ -309,20 +299,18 @@ object Template extends Logging {
       s"https://github.com/${ca.template.repository}/archive/${tag.name}.zip"
     println(s"Going to download $url")
     val trial =
-      try {
-        httpOptionalProxy(url).asBytes
-      } catch {
+      try httpOptionalProxy(url).asBytes
+      catch {
         case e: ConnectException =>
           githubConnectErrorMessage(e)
           return 1
       }
     val finalTrial =
-      try {
-        trial.location.map { loc =>
-          println(s"Redirecting to $loc")
-          httpOptionalProxy(loc).asBytes
-        } getOrElse trial
-      } catch {
+      try trial.location.map { loc =>
+        println(s"Redirecting to $loc")
+        httpOptionalProxy(loc).asBytes
+      } getOrElse trial
+      catch {
         case e: ConnectException =>
           githubConnectErrorMessage(e)
           return 1
@@ -339,9 +327,9 @@ object Template extends Logging {
       val filenameSegments = ze.getName.split(File.separatorChar)
       val destFilename = (ca.template.directory +: filenameSegments.tail)
         .mkString(File.separator)
-      if (ze.isDirectory) {
+      if (ze.isDirectory)
         new File(destFilename).mkdirs
-      } else {
+      else {
         val os = new BufferedOutputStream(
           new FileOutputStream(destFilename),
           bufferSize)
@@ -359,9 +347,8 @@ object Template extends Logging {
         if (organization != "" &&
             (nameOnly.endsWith(".scala") ||
             nameOnly == "build.sbt" ||
-            nameOnly == "engine.json")) {
+            nameOnly == "engine.json"))
           filesToModify += destFilename
-        }
       }
       ze = zis.getNextEntry
     }
@@ -372,9 +359,8 @@ object Template extends Logging {
       new File(ca.template.directory, "engine.json")
 
     val engineJson =
-      try {
-        Some(parse(Source.fromFile(engineJsonFile).mkString))
-      } catch {
+      try Some(parse(Source.fromFile(engineJsonFile).mkString))
+      catch {
         case e: java.io.IOException =>
           error(
             "Unable to read engine.json. Skipping automatic package " +

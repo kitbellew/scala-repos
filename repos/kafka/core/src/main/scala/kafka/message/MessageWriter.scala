@@ -47,9 +47,9 @@ class MessageWriter(segmentSize: Int)
       if (magicValue > MagicValue_V0)
         writeLong(timestamp)
       // write the key
-      if (key == null) {
+      if (key == null)
         writeInt(-1)
-      } else {
+      else {
         writeInt(key.length)
         write(key, 0, key.length)
       }
@@ -183,9 +183,8 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
         offset += amount
         remaining -= amount
       }
-    } else {
+    } else
       throw new IndexOutOfBoundsException()
-    }
   }
 
   def write(in: InputStream): Unit = {
@@ -217,9 +216,8 @@ class BufferingOutputStream(segmentSize: Int) extends OutputStream {
         currentSegment.written += amount
         remaining -= amount
       }
-    } else {
+    } else
       throw new IndexOutOfBoundsException()
-    }
 
   def reserve(len: Int): ReservedOutput = {
     val out = new ReservedOutput(currentSegment, currentSegment.written, len)

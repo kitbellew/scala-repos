@@ -34,13 +34,12 @@ object Test extends CompilerTest {
         mixinPhase,
         cleanupPhase
       )
-      for (phase <- phases) {
+      for (phase <- phases)
         enteringPhase(phase) {
           val error = t.exists(t => t.symbol == NoSymbol)
           val errorStr = if (error) "!!!" else " - "
           println(f"$phase%18s [$msg%12s] $errorStr $t")
         }
-      }
       println("")
     }
     import rootMirror._

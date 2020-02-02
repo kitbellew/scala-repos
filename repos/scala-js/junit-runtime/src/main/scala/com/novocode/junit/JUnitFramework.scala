@@ -50,7 +50,7 @@ final class JUnitFramework extends Framework {
     var logExceptionClass = true
     var ignoreRunners = "org.junit.runners.Suite"
     var runListener: String = null
-    for (str <- args) {
+    for (str <- args)
       str match {
         case "-q" => quiet = true
         case "-v" => verbose = true
@@ -85,8 +85,7 @@ final class JUnitFramework extends Framework {
 
         case _ =>
       }
-    }
-    for (s <- args) {
+    for (s <- args)
       s match {
         case "+q" => quiet = false
         case "+v" => verbose = false
@@ -96,7 +95,6 @@ final class JUnitFramework extends Framework {
         case "+c" => logExceptionClass = false
         case _    =>
       }
-    }
     new RunSettings(
       !noColor,
       decodeScalaNames,

@@ -90,18 +90,16 @@ object CatalystTypeConverters {
       * and Options.
       */
     final def toCatalyst(@Nullable maybeScalaValue: Any): CatalystType =
-      if (maybeScalaValue == null) {
+      if (maybeScalaValue == null)
         null.asInstanceOf[CatalystType]
-      } else if (maybeScalaValue.isInstanceOf[Option[ScalaInputType]]) {
+      else if (maybeScalaValue.isInstanceOf[Option[ScalaInputType]]) {
         val opt = maybeScalaValue.asInstanceOf[Option[ScalaInputType]]
-        if (opt.isDefined) {
+        if (opt.isDefined)
           toCatalystImpl(opt.get)
-        } else {
+        else
           null.asInstanceOf[CatalystType]
-        }
-      } else {
+      } else
         toCatalystImpl(maybeScalaValue.asInstanceOf[ScalaInputType])
-      }
 
     /**
       * Given a Catalyst row, convert the value at column `column` to its Scala equivalent.
@@ -173,11 +171,11 @@ object CatalystTypeConverters {
       }
 
     override def toScala(catalystValue: ArrayData): Seq[Any] =
-      if (catalystValue == null) {
+      if (catalystValue == null)
         null
-      } else if (isPrimitive(elementType)) {
+      else if (isPrimitive(elementType))
         catalystValue.toArray[Any](elementType)
-      } else {
+      else {
         val result = new Array[Any](catalystValue.numElements())
         catalystValue.foreach(
           elementType,
@@ -226,9 +224,9 @@ object CatalystTypeConverters {
     }
 
     override def toScala(catalystValue: MapData): Map[Any, Any] =
-      if (catalystValue == null) {
+      if (catalystValue == null)
         null
-      } else {
+      else {
         val keys = catalystValue.keyArray().toArray[Any](keyType)
         val values = catalystValue.valueArray().toArray[Any](valueType)
         val convertedKeys =
@@ -274,9 +272,9 @@ object CatalystTypeConverters {
       }
 
     override def toScala(row: InternalRow): Row =
-      if (row == null) {
+      if (row == null)
         null
-      } else {
+      else {
         val ar = new Array[Any](row.numFields)
         var idx = 0
         while (idx < row.numFields) {
@@ -332,11 +330,10 @@ object CatalystTypeConverters {
         case d: JavaBigDecimal => Decimal(d)
         case d: Decimal        => d
       }
-      if (decimal.changePrecision(dataType.precision, dataType.scale)) {
+      if (decimal.changePrecision(dataType.precision, dataType.scale))
         decimal
-      } else {
+      else
         null
-      }
     }
     override def toScala(catalystValue: Decimal): JavaBigDecimal =
       if (catalystValue == null) null
@@ -403,15 +400,13 @@ object CatalystTypeConverters {
       // a measurable performance impact. Note that this optimization will be unnecessary if we
       // use code generation to construct Scala Row -> Catalyst Row converters.
       def convert(maybeScalaValue: Any): Any =
-        if (maybeScalaValue.isInstanceOf[Option[Any]]) {
+        if (maybeScalaValue.isInstanceOf[Option[Any]])
           maybeScalaValue.asInstanceOf[Option[Any]].orNull
-        } else {
+        else
           maybeScalaValue
-        }
       convert
-    } else {
+    } else
       getConverterForType(dataType).toCatalyst
-    }
 
   /**
     * Creates a converter function that will convert Catalyst types to Scala type.
@@ -419,11 +414,10 @@ object CatalystTypeConverters {
     * call this function once to get a converter, and apply it to every row.
     */
   private[sql] def createToScalaConverter(dataType: DataType): Any => Any =
-    if (isPrimitive(dataType)) {
+    if (isPrimitive(dataType))
       identity
-    } else {
+    else
       getConverterForType(dataType).toScala
-    }
 
   /**
     *  Converts Scala objects to Catalyst rows / types.

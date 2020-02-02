@@ -60,22 +60,20 @@ trait BlockLoadSpec[M[+_]]
 
     val M = self.M
     val Some((idCount, schema)) = sampleData.schema
-    val actualSchema = inferSchema(sampleData.data map { _ \ "value" })
+    val actualSchema = inferSchema(sampleData.data map _ \ "value")
 
     val projections = List(actualSchema).map { subschema =>
       val stream = sampleData.data flatMap { jv =>
         val back = subschema.foldLeft[JValue](
           JObject(JField("key", jv \ "key") :: Nil)) {
-          case (obj, (jpath, ctype)) => {
+          case (obj, (jpath, ctype)) =>
             val vpath = JPath(JPathField("value") :: jpath.nodes)
             val valueAtPath = jv.get(vpath)
 
-            if (compliesWithSchema(valueAtPath, ctype)) {
+            if (compliesWithSchema(valueAtPath, ctype))
               obj.set(vpath, valueAtPath)
-            } else {
+            else
               obj
-            }
-          }
         }
 
         if (back \ "value" == JUndefined)
@@ -95,16 +93,14 @@ trait BlockLoadSpec[M[+_]]
     val expected = sample.data flatMap { jv =>
       val back = module.schema
         .foldLeft[JValue](JObject(JField("key", jv \ "key") :: Nil)) {
-          case (obj, (jpath, ctype)) => {
+          case (obj, (jpath, ctype)) =>
             val vpath = JPath(JPathField("value") :: jpath.nodes)
             val valueAtPath = jv.get(vpath)
 
-            if (module.compliesWithSchema(valueAtPath, ctype)) {
+            if (module.compliesWithSchema(valueAtPath, ctype))
               obj.set(vpath, valueAtPath)
-            } else {
+            else
               obj
-            }
-          }
         }
 
       (back \ "value" != JUndefined).option(back)

@@ -92,16 +92,15 @@ object JDBCColumnarTableModule {
 
     val parts = initial.split("PCUPPER")
 
-    if (parts.length > 1) {
+    if (parts.length > 1)
       parts.head.toLowerCase + parts.tail
         .map { ucSeg =>
           val (ucChar, rest) = ucSeg.splitAt(1)
           ucChar.toUpperCase + rest.toLowerCase
         }
         .mkString("")
-    } else {
+    else
       parts.head.toLowerCase
-    }
   }
 }
 
@@ -137,11 +136,10 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
   protected def unescapeColumnNames: Boolean
 
   private def truncateString(input: String) =
-    if (input.length > 43) {
+    if (input.length > 43)
       input.take(40) + "..."
-    } else {
+    else
       input
-    }
 
   private def metaToColumn(meta: ResultSetMetaData, index: Int): DBColumns = {
     val columnName = meta.getColumnLabel(index)
@@ -154,94 +152,83 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       case BIT | BOOLEAN =>
         val column = ArrayBoolColumn.empty
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getBoolean(index))
-          }
         SingleDBColumn(ColumnRef(selector, CBoolean), column, update)
 
       case CHAR | LONGNVARCHAR | LONGVARCHAR | NCHAR | NVARCHAR | VARCHAR =>
         val column = ArrayStrColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getString(index))
-          }
         SingleDBColumn(ColumnRef(selector, CString), column, update)
 
       case TINYINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getByte(index))
-          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case SMALLINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getShort(index))
-          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case INTEGER =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getInt(index))
-          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case BIGINT =>
         val column = ArrayLongColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getLong(index))
-          }
         SingleDBColumn(ColumnRef(selector, CLong), column, update)
 
       case REAL =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getFloat(index))
-          }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DOUBLE | FLOAT =>
         val column = ArrayDoubleColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getDouble(index))
-          }
         SingleDBColumn(ColumnRef(selector, CDouble), column, update)
 
       case DECIMAL | NUMERIC =>
         val column = ArrayNumColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, rs.getBigDecimal(index))
-          }
         SingleDBColumn(ColumnRef(selector, CNum), column, update)
 
       case DATE =>
         val column = ArrayDateColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, new DateTime(rs.getDate(index).getTime))
-          }
         SingleDBColumn(ColumnRef(selector, CDate), column, update)
 
       case TIMESTAMP =>
         val column = ArrayDateColumn.empty(yggConfig.maxSliceSize)
         val update = (rs: ResultSet, rowId: Int) =>
-          if (notNull(rs, index)) {
+          if (notNull(rs, index))
             column.update(rowId, new DateTime(rs.getTimestamp(index).getTime))
-          }
         SingleDBColumn(ColumnRef(selector, CDate), column, update)
 
       case OTHER =>
         // Here's where things get tricky. We support postgresql for now, but this code needs changed if we want to support something else
-        if (meta.getClass.toString.contains("postgresql")) {
+        if (meta.getClass.toString.contains("postgresql"))
           new DBColumns {
             private[this] var buildColumns =
               Map.empty[ColumnRef, ArrayColumn[_]]
@@ -301,9 +288,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             }
 
           }
-        } else {
+        else
           EmptyDBColumn
-        }
 
       case other =>
         logger.warn(
@@ -344,11 +330,11 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         fields
           .map {
             case (name, childType) =>
-              val newPaths = if (current.nonEmpty) {
-                current.map { s => s + "." + name }
-              } else {
-                Set(name)
-              }
+              val newPaths =
+                if (current.nonEmpty)
+                  current.map { s => s + "." + name }
+                else
+                  Set(name)
               jTypeToProperties(childType, newPaths)
           }
           .toSet
@@ -358,16 +344,16 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     }
 
     case class Query(expr: String, limit: Int) {
-      private val baseQuery = if (limit > 0) {
-        expr + " LIMIT " + limit
-      } else {
-        expr
-      }
+      private val baseQuery =
+        if (limit > 0)
+          expr + " LIMIT " + limit
+        else
+          expr
 
       def atOffset(offset: Long) =
-        if (offset > 0) {
+        if (offset > 0)
           baseQuery + " OFFSET " + offset
-        } else baseQuery
+        else baseQuery
     }
 
     sealed trait LoadState
@@ -407,35 +393,33 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
               path.elements.toList match {
                 case dbName :: tableName :: Nil =>
                   M.point {
-                    try {
-                      databaseMap.get(dbName).map {
-                        url =>
-                          // Extra split/take at the end is because we can only map to column level. While hstore and json column types
-                          // will end up with deepeer paths, they cannot be queried against in PostgreSQL
-                          val columns = jTypeToProperties(tpe, Set()).map { c =>
-                            c.split('.').head
-                          }
-                          val query = Query(
-                            "SELECT %s FROM %s".format(
-                              if (columns.isEmpty) "*"
-                              else columns.mkString(","),
-                              tableName),
-                            yggConfig.maxSliceSize)
+                    try databaseMap.get(dbName).map {
+                      url =>
+                        // Extra split/take at the end is because we can only map to column level. While hstore and json column types
+                        // will end up with deepeer paths, they cannot be queried against in PostgreSQL
+                        val columns = jTypeToProperties(tpe, Set()).map { c =>
+                          c.split('.').head
+                        }
+                        val query = Query(
+                          "SELECT %s FROM %s".format(
+                            if (columns.isEmpty) "*"
+                            else columns.mkString(","),
+                            tableName),
+                          yggConfig.maxSliceSize)
 
-                          logger.debug("Running query: " + query)
+                        logger.debug("Running query: " + query)
 
-                          val connGen = () => DriverManager.getConnection(url)
+                        val connGen = () => DriverManager.getConnection(url)
 
-                          val (slice, nextSkip) = makeSlice(connGen, query, 0)
-                          Some(
-                            slice,
-                            nextSkip
-                              .map(InLoad(connGen, query, _, xs))
-                              .getOrElse(InitialLoad(xs)))
-                      } getOrElse {
-                        throw new Exception(
-                          "Database %s is not configured" format dbName)
-                      }
+                        val (slice, nextSkip) = makeSlice(connGen, query, 0)
+                        Some(
+                          slice,
+                          nextSkip
+                            .map(InLoad(connGen, query, _, xs))
+                            .getOrElse(InitialLoad(xs)))
+                    } getOrElse {
+                      throw new Exception(
+                        "Database %s is not configured" format dbName)
                     } catch {
                       case t =>
                         logger.error(
@@ -487,16 +471,14 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             val columns = valColumns.flatMap(_.columns).toMap
           }
 
-          val nextSkip = if (rowIndex == yggConfig.maxSliceSize) {
-            Some(skip + yggConfig.maxSliceSize)
-          } else {
-            None
-          }
+          val nextSkip =
+            if (rowIndex == yggConfig.maxSliceSize)
+              Some(skip + yggConfig.maxSliceSize)
+            else
+              None
 
           (slice, nextSkip)
-        } finally {
-          conn.close()
-        }
+        } finally conn.close()
       }
     }
   }

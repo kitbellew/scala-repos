@@ -70,11 +70,10 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
         throw new IllegalStateException(
           "fold invoked while already waiting for demand")
       case Demand(n) =>
-        if (n == 1) {
+        if (n == 1)
           state = NoDemand
-        } else {
+        else
           state = Demand(n - 1)
-        }
         demand(promise, folder, pec)
       case Cancelled =>
         cancelled(promise, folder, pec)
@@ -129,11 +128,10 @@ private[streams] class SubscriberIteratee[T](subscriber: Subscriber[T])
       state = Demand(n)
     case AwaitingDemand(demand, _) =>
       demand()
-      if (n == 1) {
+      if (n == 1)
         state = NoDemand
-      } else {
+      else
         state = Demand(n - 1)
-      }
     case Demand(old) =>
       state = Demand(old + n)
     case Cancelled =>

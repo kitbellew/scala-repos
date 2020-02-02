@@ -58,9 +58,8 @@ private[storage] class BlockManagerSlaveEndpoint(
 
     case RemoveShuffle(shuffleId) =>
       doAsync[Boolean]("removing shuffle " + shuffleId, context) {
-        if (mapOutputTracker != null) {
+        if (mapOutputTracker != null)
           mapOutputTracker.unregisterShuffle(shuffleId)
-        }
         SparkEnv.get.shuffleManager.unregisterShuffle(shuffleId)
       }
 

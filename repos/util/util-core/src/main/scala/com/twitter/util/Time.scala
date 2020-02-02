@@ -163,13 +163,12 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
     */
   def inTimeUnit: (Long, TimeUnit) =
     // allow for APIs that may treat TimeUnit differently if measured in very tiny units.
-    if (inNanoseconds % Duration.NanosPerSecond == 0) {
+    if (inNanoseconds % Duration.NanosPerSecond == 0)
       (inSeconds, TimeUnit.SECONDS)
-    } else if (inNanoseconds % Duration.NanosPerMillisecond == 0) {
+    else if (inNanoseconds % Duration.NanosPerMillisecond == 0)
       (inMilliseconds, TimeUnit.MILLISECONDS)
-    } else {
+    else
       (inNanoseconds, TimeUnit.NANOSECONDS)
-    }
 
   /**
     * Adds `delta` to this `TimeLike`. Adding `Duration.Top` results
@@ -520,11 +519,10 @@ class TimeFormat(
   def parse(str: String): Time = {
     // SimpleDateFormat is not thread-safe
     val date = format.synchronized(format.parse(str))
-    if (date == null) {
+    if (date == null)
       throw new Exception("Unable to parse date-time: " + str)
-    } else {
+    else
       Time.fromMilliseconds(date.getTime())
-    }
   }
 
   def format(time: Time): String =
@@ -551,11 +549,10 @@ sealed class Time private[util] (protected val nanos: Long) extends {
     // in order to ensure that the sentinels are only equal
     // to themselves, we need to make sure we only compare nanos
     // when both instances are `Time`s and not a sentinel subclass.
-    if (other != null && (other.getClass eq getClass)) {
+    if (other != null && (other.getClass eq getClass))
       other.asInstanceOf[Time].nanos == nanos
-    } else {
+    else
       false
-    }
 
   override def hashCode: Int =
     // inline java.lang.Long.hashCode to avoid the BoxesRunTime.boxToLong

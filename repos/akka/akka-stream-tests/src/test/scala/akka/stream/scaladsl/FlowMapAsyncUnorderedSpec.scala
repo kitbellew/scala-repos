@@ -112,12 +112,11 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
       val p = Source(1 to 5)
         .mapAsyncUnordered(4)(n ⇒
           if (n == 3) throw new RuntimeException("err2") with NoStackTrace
-          else {
+          else
             Future {
               Await.ready(latch, 10.seconds)
               n
-            }
-          })
+            })
         .to(Sink.fromSubscriber(c))
         .run()
       val sub = c.expectSubscription()
@@ -274,9 +273,7 @@ class FlowMapAsyncUnorderedSpec extends AkkaSpec {
           .mapAsyncUnordered(parallelism)(i ⇒ deferred())
           .runFold(0)((c, _) ⇒ c + 1)
           .futureValue(PatienceConfig(3.seconds)) should ===(N)
-      } finally {
-        timer.interrupt()
-      }
+      } finally timer.interrupt()
     }
 
   }

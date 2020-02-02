@@ -41,12 +41,11 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
       }
 
       assert(operators.size === 1)
-      if (operators(0).getClass() != c) {
+      if (operators(0).getClass() != c)
         fail(s"""$analyzeCommand expected command: $c, but got ${operators(0)}
              |parsed command:
              |$parsed
            """.stripMargin)
-      }
     }
 
     assertAnalyzeCommand(

@@ -431,16 +431,13 @@ class FilteredScanSuite
             .unhandledFilters(FiltersPushed.list.toArray)
             .toSet === expectedUnhandledFilters)
 
-        if (rawCount != expectedCount) {
+        if (rawCount != expectedCount)
           fail(
             s"Wrong # of results for pushed filter. Got $rawCount, Expected $expectedCount\n" +
               s"Filters pushed: ${FiltersPushed.list.mkString(",")}\n" +
               queryExecution)
-        }
-      } finally {
-        caseInsensitiveContext.conf.setConf(
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
-          SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
-      }
+      } finally caseInsensitiveContext.conf.setConf(
+        SQLConf.WHOLESTAGE_CODEGEN_ENABLED,
+        SQLConf.WHOLESTAGE_CODEGEN_ENABLED.defaultValue.get)
     }
 }

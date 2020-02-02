@@ -754,11 +754,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
             done = true
             ctx.session.endInTransaction(ctx.session.conn.commit())
             res
-          } finally {
-            if (!done)
-              try ctx.session.endInTransaction(ctx.session.conn.rollback())
-              catch ignoreFollowOnError
-          }
+          } finally if (!done)
+            try ctx.session.endInTransaction(ctx.session.conn.rollback())
+            catch ignoreFollowOnError
         } else f
       }
 

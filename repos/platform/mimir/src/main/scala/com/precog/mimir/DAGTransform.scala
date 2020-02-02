@@ -123,11 +123,10 @@ trait DAGTransform extends DAG {
         case graph @ Distinct(parent) =>
           f(Distinct(transformAux(parent))(graph.loc))
 
-        case s @ Split(spec, child, id) => {
+        case s @ Split(spec, child, id) =>
           val spec2 = transformSpec(spec)
           val child2 = transformAux(child)
           f(Split(spec2, child2, id)(s.loc))
-        }
 
         // not using extractors due to bug
         case s: SplitGroup =>

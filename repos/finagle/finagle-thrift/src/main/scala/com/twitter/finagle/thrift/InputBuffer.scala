@@ -37,12 +37,11 @@ private[finagle] class InputBuffer(
     memoryTransport.getBufferPosition match {
       case 0                => bytes
       case l if l == length => InputBuffers.EmptyBytes
-      case position => {
+      case position =>
         val diff = length - position
         val newBytes = new Array[Byte](diff)
         System.arraycopy(bytes, position, newBytes, 0, diff)
         newBytes
-      }
     }
   }
 }

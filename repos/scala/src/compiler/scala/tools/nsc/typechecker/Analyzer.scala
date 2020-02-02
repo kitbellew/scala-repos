@@ -59,9 +59,8 @@ trait Analyzer
       val openPackageObjectsTraverser = new Traverser {
         override def traverse(tree: Tree): Unit = tree match {
           case ModuleDef(_, _, _) =>
-            if (tree.symbol.name == nme.PACKAGEkw) {
+            if (tree.symbol.name == nme.PACKAGEkw)
               openPackageModule(tree.symbol, tree.symbol.owner)
-            }
           case ClassDef(_, _, _, _) => () // make it fast
           case _                    => super.traverse(tree)
         }
@@ -108,9 +107,7 @@ trait Analyzer
             warnUnusedImports(unit)
           if (settings.warnUnused)
             typer checkUnused unit
-        } finally {
-          unit.toCheck.clear()
-        }
+        } finally unit.toCheck.clear()
       }
     }
   }

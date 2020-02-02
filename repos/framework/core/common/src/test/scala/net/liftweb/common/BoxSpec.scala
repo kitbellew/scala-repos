@@ -108,22 +108,22 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       Full(1) or Full(2) must_== Full(1)
     }
     "define an 'exists' method returning true if the Box value satisfies the function" in {
-      Full(1) exists { _ > 0 } must beTrue
+      Full(1) exists _ > 0 must beTrue
     }
     "define an exists method returning false if the Box value doesn't satisfy the function" in {
-      Full(0) exists { _ > 0 } must beFalse
+      Full(0) exists _ > 0 must beFalse
     }
     "define a forall method returning true if the Box value satisfies the function" in {
-      Full(1) forall { _ > 0 } must beTrue
+      Full(1) forall _ > 0 must beTrue
     }
     "define a forall method returning false if the Box value doesn't satisfy the function" in {
-      Full(0) forall { _ > 0 } must beFalse
+      Full(0) forall _ > 0 must beFalse
     }
     "define a 'filter' method, returning a Full Box if the filter is satisfied" in {
-      Full(1) filter { _ > 0 } must_== Full(1)
+      Full(1) filter _ > 0 must_== Full(1)
     }
     "define a 'filter' method, returning Empty if the filter is not satisfied" in {
-      Full(1) filter { _ == 0 } must beEmpty
+      Full(1) filter _ == 0 must beEmpty
     }
     "define a 'filterMsg' method, returning a Failure if the filter predicate is not satisfied" in {
       Full(1).filterMsg("not equal to 0")(_ == 0) must_== Failure(
@@ -256,15 +256,15 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     }
     "define an 'exists' method returning false" in {
       val empty: Box[Int] = Empty
-      empty exists { _ > 0 } must beFalse
+      empty exists _ > 0 must beFalse
     }
     "define a 'forall' method returning true" in {
       val empty: Box[Int] = Empty
-      empty forall { _ > 0 } must beTrue
+      empty forall _ > 0 must beTrue
     }
     "define a 'filter' method, returning Empty" in {
       val empty: Box[Int] = Empty
-      empty filter { _ > 0 } must beEmpty
+      empty filter _ > 0 must beEmpty
     }
     "define a 'filterMsg' method, returning a Failure" in {
       Empty.filterMsg("not equal to 0")(_ == 0) must_== Failure(

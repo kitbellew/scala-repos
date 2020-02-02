@@ -47,9 +47,8 @@ class StreamTests extends CatsSuite {
         // consistent values independent of internal state.
         unevaluatedStream.tail
         initialShow should ===(unevaluatedStream.show)
-      } else {
+      } else
         stream.show should ===(stream.toString)
-      }
     }
   }
 }

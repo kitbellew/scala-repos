@@ -422,20 +422,18 @@ private[columnar] trait DirectCopyColumnType[JvmType]
         .asInstanceOf[MutableUnsafeRow]
         .writer
         .write(ordinal, buffer.array(), buffer.arrayOffset() + cursor, numBytes)
-    } else {
+    } else
       setField(row, ordinal, extract(buffer))
-    }
 
   // copy the bytes from UnsafeRow to ByteBuffer
   override def append(
       row: InternalRow,
       ordinal: Int,
       buffer: ByteBuffer): Unit =
-    if (row.isInstanceOf[UnsafeRow]) {
+    if (row.isInstanceOf[UnsafeRow])
       row.asInstanceOf[UnsafeRow].writeFieldTo(ordinal, buffer)
-    } else {
+    else
       super.append(row, ordinal, buffer)
-    }
 }
 
 private[columnar] object STRING
@@ -461,11 +459,10 @@ private[columnar] object STRING
       row: MutableRow,
       ordinal: Int,
       value: UTF8String): Unit =
-    if (row.isInstanceOf[MutableUnsafeRow]) {
+    if (row.isInstanceOf[MutableUnsafeRow])
       row.asInstanceOf[MutableUnsafeRow].writer.write(ordinal, value)
-    } else {
+    else
       row.update(ordinal, value.clone())
-    }
 
   override def getField(row: InternalRow, ordinal: Int): UTF8String =
     row.getUTF8String(ordinal)
@@ -491,12 +488,11 @@ private[columnar] case class COMPACT_DECIMAL(precision: Int, scale: Int)
       buffer: ByteBuffer,
       row: MutableRow,
       ordinal: Int): Unit =
-    if (row.isInstanceOf[MutableUnsafeRow]) {
+    if (row.isInstanceOf[MutableUnsafeRow])
       // copy it as Long
       row.setLong(ordinal, ByteBufferHelper.getLong(buffer))
-    } else {
+    else
       setField(row, ordinal, extract(buffer))
-    }
 
   override def append(v: Decimal, buffer: ByteBuffer): Unit =
     buffer.putLong(v.toUnscaledLong)
@@ -505,12 +501,11 @@ private[columnar] case class COMPACT_DECIMAL(precision: Int, scale: Int)
       row: InternalRow,
       ordinal: Int,
       buffer: ByteBuffer): Unit =
-    if (row.isInstanceOf[UnsafeRow]) {
+    if (row.isInstanceOf[UnsafeRow])
       // copy it as Long
       buffer.putLong(row.getLong(ordinal))
-    } else {
+    else
       append(getField(row, ordinal), buffer)
-    }
 
   override def getField(row: InternalRow, ordinal: Int): Decimal =
     row.getDecimal(ordinal, precision, scale)

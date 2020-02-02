@@ -90,9 +90,8 @@ object DebuggerUtil {
         def getName(process: DebugProcessImpl): String = {
           if (myName == null) {
             var name: String = ""
-            for (nameEvaluator <- buffer) {
+            for (nameEvaluator <- buffer)
               name += nameEvaluator.getName(process)
-            }
             myName = name
           }
           myName
@@ -101,9 +100,8 @@ object DebuggerUtil {
         def getDisplayName(debugProcess: DebugProcessImpl): String = {
           if (myDisplayName == null) {
             var displayName: String = ""
-            for (nameEvaluator <- buffer) {
+            for (nameEvaluator <- buffer)
               displayName += nameEvaluator.getDisplayName(debugProcess)
-            }
             myDisplayName = displayName
           }
           myDisplayName
@@ -405,9 +403,8 @@ object DebuggerUtil {
       sourcePosition: SourcePosition,
       debugProcess: DebugProcess): Option[ReferenceType] = {
     val allClasses =
-      try {
-        debugProcess.getPositionManager.getAllClasses(sourcePosition)
-      } catch {
+      try debugProcess.getPositionManager.getAllClasses(sourcePosition)
+      catch {
         case e: NoDataException => return None
       }
 
@@ -458,13 +455,11 @@ object DebuggerUtil {
       if (node != null) node.getChildren(null) else Array.empty[ASTNode]
     if (children.isEmpty) {
       val position = SourcePosition.createFromElement(elem)
-      if (!lines.exists(_.getLine == position.getLine)) {
+      if (!lines.exists(_.getLine == position.getLine))
         lines += position
-      }
     }
-    for (child <- children) {
+    for (child <- children)
       getSourcePositions(child.getPsi, lines)
-    }
     lines.toSet
   }
 

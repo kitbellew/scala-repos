@@ -103,9 +103,8 @@ class ScalaDirectClassInheritorsSearcher
           case Some(inheritor) =>
             if (!consumer.process(inheritor)) return false
           case _ if clazzJar == null => //this is possible during completion
-            for (inheritor <- sameNameInheritors) {
+            for (inheritor <- sameNameInheritors)
               if (!consumer.process(inheritor)) return false
-            }
           case _ =>
             val closestClass = sameNameInheritors.maxBy { inheritor =>
               val jarFile = getJarFile(inheritor)
@@ -120,11 +119,9 @@ class ScalaDirectClassInheritorsSearcher
       }
     }
 
-    if (anonymousClasses.nonEmpty && queryParameters.includeAnonymous()) {
-      for (clazz <- anonymousClasses) {
+    if (anonymousClasses.nonEmpty && queryParameters.includeAnonymous())
+      for (clazz <- anonymousClasses)
         if (!consumer.process(clazz)) return false
-      }
-    }
 
     true
   }

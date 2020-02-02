@@ -25,7 +25,7 @@ class ScalaIfEvaluator(
         if (v.booleanValue) {
           value = ifBranch.evaluate(context)
           modifier = ifBranch.getModifier
-        } else {
+        } else
           elseBranch match {
             case Some(branch) =>
               value = branch.evaluate(context)
@@ -34,7 +34,6 @@ class ScalaIfEvaluator(
             case None =>
               modifier = null
           }
-        }
       case _ => throw EvaluateExceptionUtil.BOOLEAN_EXPECTED
     }
 

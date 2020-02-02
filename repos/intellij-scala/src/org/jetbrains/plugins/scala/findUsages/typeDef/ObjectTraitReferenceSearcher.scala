@@ -46,26 +46,23 @@ class ObjectTraitReferenceSearcher
           def execute(element: PsiElement, offsetInElement: Int): Boolean = {
             val references = inReadAction(element.getReferences)
             for (ref <- references
-                 if ref.getRangeInElement.contains(offsetInElement)) {
+                 if ref.getRangeInElement.contains(offsetInElement))
               inReadAction {
-                if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
+                if (ref.isReferenceTo(elem) || ref.resolve() == elem)
                   if (!consumer.process(ref)) return false
-                }
               }
-            }
             true
           }
         }
         val helper: PsiSearchHelper =
           PsiSearchHelper.SERVICE.getInstance(queryParameters.getProject)
-        try {
-          helper.processElementsWithWord(
-            processor,
-            scope,
-            name,
-            UsageSearchContext.IN_CODE,
-            true)
-        } catch {
+        try helper.processElementsWithWord(
+          processor,
+          scope,
+          name,
+          UsageSearchContext.IN_CODE,
+          true)
+        catch {
           case ignore: IndexNotReadyException =>
           case ignore: AssertionError
               if ignore.getMessage endsWith "has null range" =>

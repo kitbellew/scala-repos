@@ -38,16 +38,15 @@ final class JUnitExecuteTest(
       taskSkipped()
     } else {
       def runWithOrWithoutQuietMode[T](block: => T): T =
-        if (runner.runSettings.quiet) {
+        if (runner.runSettings.quiet)
           scala.Console.withOut(new ByteArrayOutputStream()) {
             block
           }
-        } else {
+        else
           block
-        }
 
       runWithOrWithoutQuietMode {
-        for (method <- jUnitMetadata.testMethods) {
+        for (method <- jUnitMetadata.testMethods)
           method.getIgnoreAnnotation match {
             case Some(ign) =>
               logFormattedInfo(method.name, "ignored")
@@ -56,7 +55,6 @@ final class JUnitExecuteTest(
             case None =>
               executeTestMethod(classMetadata, method)
           }
-        }
       }
 
       for (method <- jUnitMetadata.afterClassMethod)
@@ -112,16 +110,15 @@ final class JUnitExecuteTest(
         }
       }
 
-      if (!testMethodFailed) {
+      if (!testMethodFailed)
         try {
           for (method <- jUnitMetadata.afterMethod)
             classMetadata.invoke(testClassInstance, method.name)
 
-          if (testAnnotation.timeout != 0 && testAnnotation.timeout <= timeInSeconds) {
+          if (testAnnotation.timeout != 0 && testAnnotation.timeout <= timeInSeconds)
             richLogger.warn(
               "Timeout: took " + timeInSeconds + " sec, expected " +
                 (testAnnotation.timeout.toDouble / 1000) + " sec")
-          }
         } catch {
           case ex: Throwable =>
             logFormattedError(
@@ -133,7 +130,6 @@ final class JUnitExecuteTest(
             eventHandler.handle(
               new JUnitEvent(taskDef, Status.Failure, selector))
         }
-      }
     }
   }
 
@@ -176,9 +172,9 @@ final class JUnitExecuteTest(
       if (ex.isInstanceOf[AssertionError] && runner.runSettings.logAssert) {
         failedMsg ++= "java.lang." ++= c("AssertionError", ERRMSG) ++= ": "
         failedMsg ++= ex.getMessage
-      } else if (runner.runSettings.logExceptionClass) {
+      } else if (runner.runSettings.logExceptionClass)
         failedMsg ++= ex.getMessage
-      } else {
+      else {
         failedMsg ++= ex.getClass.toString ++= " expected<"
         failedMsg ++= testAnnotation.expected.toString ++= "> but was<"
         failedMsg ++= ex.getClass.toString += '>'

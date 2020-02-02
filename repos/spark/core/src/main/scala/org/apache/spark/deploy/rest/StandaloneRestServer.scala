@@ -208,10 +208,9 @@ private[rest] class StandaloneSubmitRequestServlet(
         submitResponse.submissionId = response.driverId.orNull
         val unknownFields =
           findUnknownFields(requestMessageJson, requestMessage)
-        if (unknownFields.nonEmpty) {
+        if (unknownFields.nonEmpty)
           // If there are fields that the server does not know about, warn the client
           submitResponse.unknownFields = unknownFields
-        }
         submitResponse
       case unexpected =>
         responseServlet.setStatus(HttpServletResponse.SC_BAD_REQUEST)

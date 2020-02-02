@@ -146,12 +146,11 @@ class ExecuteRequestTest extends FunSuite {
   test("null bits") {
     val bytesAsBigEndian = bytes.reverse
     val bits = BigInt(bytesAsBigEndian)
-    for (i <- 0 until params.size) {
+    for (i <- 0 until params.size)
       if (params(i) == null)
         assert(bits.testBit(i) == true)
       else
         assert(bits.testBit(i) == false)
-    }
   }
 
   val hasNewParams = br.readByte() == 1

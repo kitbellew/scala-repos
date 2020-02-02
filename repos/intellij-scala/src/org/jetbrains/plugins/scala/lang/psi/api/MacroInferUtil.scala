@@ -29,9 +29,8 @@ object MacroInferUtil {
       place: PsiElement): Option[ScType] = {
     if (!f.isInstanceOf[ScMacroDefinition] && !f
           .hasAnnotation("scala.reflect.macros.internal.macroImpl")
-          .isDefined) {
+          .isDefined)
       return None
-    }
 
     class Checker(l: List[() => Option[ScType]] = List.empty) {
       def withCheck(checker: () => Option[ScType]): Checker =
@@ -45,10 +44,8 @@ object MacroInferUtil {
           else {
             val clazz = f.containingClass
             if (clazz == null) None
-            else {
-              if (clazz.qualifiedName != classFqn) None
-              else typeEval()
-            }
+            else if (clazz.qualifiedName != classFqn) None
+            else typeEval()
           }
         }
 

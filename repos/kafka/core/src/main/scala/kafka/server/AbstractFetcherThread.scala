@@ -126,7 +126,7 @@ abstract class AbstractFetcherThread(
     }
     fetcherStats.requestRate.mark()
 
-    if (responseData.nonEmpty) {
+    if (responseData.nonEmpty)
       // process fetched data
       inLock(partitionMapLock) {
 
@@ -138,7 +138,7 @@ abstract class AbstractFetcherThread(
               .foreach(currentPartitionFetchState =>
                 // we append to the log if the current offset is defined and it is the same as the offset requested during fetch
                 if (fetchRequest
-                      .offset(topicAndPartition) == currentPartitionFetchState.offset) {
+                      .offset(topicAndPartition) == currentPartitionFetchState.offset)
                   Errors.forCode(partitionData.errorCode) match {
                     case Errors.NONE =>
                       try {
@@ -211,11 +211,9 @@ abstract class AbstractFetcherThread(
                             partitionData.exception.get))
                         partitionsWithError += topicAndPartition
                       }
-                  }
-                })
+                  })
         }
       }
-    }
 
     if (partitionsWithError.nonEmpty) {
       debug("handling partitions with error for %s".format(partitionsWithError))
@@ -226,7 +224,7 @@ abstract class AbstractFetcherThread(
   def addPartitions(partitionAndOffsets: Map[TopicAndPartition, Long]) {
     partitionMapLock.lockInterruptibly()
     try {
-      for ((topicAndPartition, offset) <- partitionAndOffsets) {
+      for ((topicAndPartition, offset) <- partitionAndOffsets)
         // If the partitionMap already has the topic/partition, then do not update the map with the old offset
         if (!partitionMap.contains(topicAndPartition))
           partitionMap.put(
@@ -235,7 +233,6 @@ abstract class AbstractFetcherThread(
               new PartitionFetchState(handleOffsetOutOfRange(topicAndPartition))
             else new PartitionFetchState(offset)
           )
-      }
       partitionMapCond.signalAll()
     } finally partitionMapLock.unlock()
   }
@@ -243,7 +240,7 @@ abstract class AbstractFetcherThread(
   def delayPartitions(partitions: Iterable[TopicAndPartition], delay: Long) {
     partitionMapLock.lockInterruptibly()
     try {
-      for (partition <- partitions) {
+      for (partition <- partitions)
         partitionMap
           .get(partition)
           .foreach(currentPartitionFetchState =>
@@ -253,7 +250,6 @@ abstract class AbstractFetcherThread(
                 new PartitionFetchState(
                   currentPartitionFetchState.offset,
                   new DelayedItem(delay))))
-      }
       partitionMapCond.signalAll()
     } finally partitionMapLock.unlock()
   }

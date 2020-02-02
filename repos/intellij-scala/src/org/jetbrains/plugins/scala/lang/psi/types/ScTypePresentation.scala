@@ -244,7 +244,7 @@ trait ScTypePresentation {
         case (s: Signature, rt: ScType)
             if s.namedElement.isInstanceOf[ScTypedDefinition] =>
           if (s.paramLength.sum > 0) Seq.empty
-          else {
+          else
             s.namedElement match {
               case bp: ScBindingPattern =>
                 val b = ScBindingPattern.getCompoundCopy(rt, bp)
@@ -258,7 +258,6 @@ trait ScTypePresentation {
                     rt))
               case _ => Seq.empty
             }
-          }
         case (s: String, sign: TypeAliasSignature) =>
           val ta = ScTypeAlias.getCompoundCopy(sign, sign.ta)
           val paramsText =

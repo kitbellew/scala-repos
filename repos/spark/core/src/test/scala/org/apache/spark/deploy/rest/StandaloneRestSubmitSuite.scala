@@ -46,9 +46,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     try {
       rpcEnv.foreach(_.shutdown())
       server.foreach(_.stop())
-    } finally {
-      super.afterEach()
-    }
+    } finally super.afterEach()
   }
 
   test("construct submit request") {
@@ -470,21 +468,20 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val fakeMasterRef =
       _rpcEnv.setupEndpoint("fake-master", makeFakeMaster(_rpcEnv))
     val _server =
-      if (faulty) {
+      if (faulty)
         new FaultyStandaloneRestServer(
           localhost,
           0,
           conf,
           fakeMasterRef,
           "spark://fake:7077")
-      } else {
+      else
         new StandaloneRestServer(
           localhost,
           0,
           conf,
           fakeMasterRef,
           "spark://fake:7077")
-      }
     val port = _server.start()
     // set these to clean them up after every test
     rpcEnv = Some(_rpcEnv)
@@ -643,9 +640,8 @@ private class SmarterMaster(override val rpcEnv: RpcEnv)
 
     case RequestKillDriver(driverId) =>
       val success = submittedDrivers.contains(driverId)
-      if (success) {
+      if (success)
         submittedDrivers(driverId) = KILLED
-      }
       context.reply(KillDriverResponse(self, driverId, success, "killed"))
 
     case RequestDriverStatus(driverId) =>

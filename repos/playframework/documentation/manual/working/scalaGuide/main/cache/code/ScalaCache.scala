@@ -205,11 +205,10 @@ package scalaguide.cache {
       //#cached-action-control
       def get(index: Int) = cached.status(_ => "/resource/" + index, 200) {
         Action {
-          if (index > 0) {
+          if (index > 0)
             Ok(Json.obj("id" -> index))
-          } else {
+          else
             NotFound
-          }
         }
       }
       //#cached-action-control
@@ -223,11 +222,10 @@ package scalaguide.cache {
 
         caching {
           Action {
-            if (index % 2 == 1) {
+            if (index % 2 == 1)
               Ok(Json.obj("id" -> index))
-            } else {
+            else
               NotFound
-            }
           }
         }
       }

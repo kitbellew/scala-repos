@@ -34,9 +34,8 @@ class Breaks {
     * exact same instance of `Breaks`.
     */
   def breakable(op: => Unit) {
-    try {
-      op
-    } catch {
+    try op
+    catch {
       case ex: BreakControl =>
         if (ex ne breakException) throw ex
     }
@@ -60,9 +59,8 @@ class Breaks {
     */
   def tryBreakable[T](op: => T) = new TryBlock[T] {
     def catchBreak(onBreak: => T) =
-      try {
-        op
-      } catch {
+      try op
+      catch {
         case ex: BreakControl =>
           if (ex ne breakException) throw ex
           onBreak

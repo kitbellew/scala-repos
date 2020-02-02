@@ -114,11 +114,10 @@ object LzoGenericScheme {
       overrideConf: Boolean = false): Unit =
     if ((conf.get(confKey) == null) || overrideConf) {
       val extern = Externalizer(conv)
-      try {
-        ExternalizerSerializer.inj
-          .invert(ExternalizerSerializer.inj(extern))
-          .get
-      } catch {
+      try ExternalizerSerializer.inj
+        .invert(ExternalizerSerializer.inj(extern))
+        .get
+      catch {
         case e: Exception =>
           throw new RuntimeException(
             "Unable to roundtrip the BinaryConverter in the Externalizer.",

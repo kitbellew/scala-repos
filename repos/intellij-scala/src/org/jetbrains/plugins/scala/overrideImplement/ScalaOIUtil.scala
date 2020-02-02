@@ -115,12 +115,11 @@ object ScalaOIUtil {
       val elements = chooser.getSelectedElements
       if (elements != null) selectedMembers ++= elements
       if (selectedMembers.size == 0) return
-    } else {
+    } else
       selectedMembers ++= classMembers.find {
         case named: ScalaNamedMember if named.name == methodName => true
         case _                                                   => false
       }.toSeq
-    }
 
     runAction(selectedMembers, isImplement, clazz, editor)
   }
@@ -235,15 +234,14 @@ object ScalaOIUtil {
         if (method match {
               case x: ScFunction => x.parameters.length == 0
               case _             => method.getParameterList.getParametersCount == 0
-            }) {
-          for (pair <- clazz.allVals; v = pair._1) if (v.name == method.name) {
-            ScalaPsiUtil.nameContext(v) match {
-              case x: ScValue if x.containingClass == clazz    => flag = true
-              case x: ScVariable if x.containingClass == clazz => flag = true
-              case _                                           =>
-            }
-          }
-        }
+            })
+          for (pair <- clazz.allVals; v = pair._1)
+            if (v.name == method.name)
+              ScalaPsiUtil.nameContext(v) match {
+                case x: ScValue if x.containingClass == clazz    => flag = true
+                case x: ScVariable if x.containingClass == clazz => flag = true
+                case _                                           =>
+              }
         !flag
     }
 
@@ -299,7 +297,7 @@ object ScalaOIUtil {
         }
         var flag = false
         for (signe <- clazz.allMethods
-             if signe.method.containingClass == clazz) {
+             if signe.method.containingClass == clazz)
           //containingClass == clazz so we sure that this is ScFunction (it is safe cast)
           signe.method match {
             case fun: ScFunction =>
@@ -307,14 +305,13 @@ object ScalaOIUtil {
                     _.name == fun.name)) flag = true
             case _ => //todo: ScPrimaryConstructor?
           }
-        }
-        for (pair <- clazz.allVals; v = pair._1) if (v.name == named.name) {
-          ScalaPsiUtil.nameContext(v) match {
-            case x: ScValue if x.containingClass == clazz    => flag = true
-            case x: ScVariable if x.containingClass == clazz => flag = true
-            case _                                           =>
-          }
-        }
+        for (pair <- clazz.allVals; v = pair._1)
+          if (v.name == named.name)
+            ScalaPsiUtil.nameContext(v) match {
+              case x: ScValue if x.containingClass == clazz    => flag = true
+              case x: ScVariable if x.containingClass == clazz => flag = true
+              case _                                           =>
+            }
         !flag
       case x: ScTypeAliasDefinition if x.containingClass != clazz => true
       case _                                                      => false

@@ -77,12 +77,11 @@ private[spark] class Executor(
   // Make sure the local hostname we report matches the cluster scheduler's name for this host
   Utils.setCustomHostname(executorHostname)
 
-  if (!isLocal) {
+  if (!isLocal)
     // Setup an uncaught exception handler for non-local mode.
     // Make any thread terminations due to uncaught exceptions kill the entire
     // executor process to avoid surprising stalls.
     Thread.setDefaultUncaughtExceptionHandler(SparkUncaughtExceptionHandler)
-  }
 
   // Start worker thread pool
   private val threadPool =
@@ -160,9 +159,8 @@ private[spark] class Executor(
 
   def killTask(taskId: Long, interruptThread: Boolean): Unit = {
     val tr = runningTasks.get(taskId)
-    if (tr != null) {
+    if (tr != null)
       tr.kill(interruptThread)
-    }
   }
 
   def stop(): Unit = {
@@ -170,9 +168,8 @@ private[spark] class Executor(
     heartbeater.shutdown()
     heartbeater.awaitTermination(10, TimeUnit.SECONDS)
     threadPool.shutdown()
-    if (!isLocal) {
+    if (!isLocal)
       env.stop()
-    }
   }
 
   /** Returns the total amount of time this JVM process has spent in garbage collection. */
@@ -204,9 +201,8 @@ private[spark] class Executor(
     def kill(interruptThread: Boolean): Unit = {
       logInfo(s"Executor is trying to kill $taskName (TID $taskId)")
       killed = true
-      if (task != null) {
+      if (task != null)
         task.kill(interruptThread)
-      }
     }
 
     override def run(): Unit = {
@@ -230,13 +226,12 @@ private[spark] class Executor(
 
         // If this task has been killed before we deserialized it, let's quit now. Otherwise,
         // continue executing the task.
-        if (killed) {
+        if (killed)
           // Throw an exception rather than returning, because returning within a try{} block
           // causes a NonLocalReturnControl exception to be thrown. The NonLocalReturnControl
           // exception will be caught by the catch block, leading to an incorrect ExceptionFailure
           // for the task.
           throw new TaskKilledException
-        }
 
         logDebug("Task " + taskId + "'s epoch is " + task.epoch)
         env.mapOutputTracker.updateEpoch(task.epoch)
@@ -259,30 +254,27 @@ private[spark] class Executor(
             if (freedMemory > 0) {
               val errMsg =
                 s"Managed memory leak detected; size = $freedMemory bytes, TID = $taskId"
-              if (conf.getBoolean("spark.unsafe.exceptionOnMemoryLeak", false) && !threwException) {
+              if (conf.getBoolean("spark.unsafe.exceptionOnMemoryLeak", false) && !threwException)
                 throw new SparkException(errMsg)
-              } else {
+              else
                 logError(errMsg)
-              }
             }
 
             if (releasedLocks.nonEmpty) {
               val errMsg =
                 s"${releasedLocks.size} block locks were not released by TID = $taskId:\n" +
                   releasedLocks.mkString("[", ", ", "]")
-              if (conf.getBoolean("spark.storage.exceptionOnPinLeak", false) && !threwException) {
+              if (conf.getBoolean("spark.storage.exceptionOnPinLeak", false) && !threwException)
                 throw new SparkException(errMsg)
-              } else {
+              else
                 logError(errMsg)
-              }
             }
           }
         val taskFinish = System.currentTimeMillis()
 
         // If the task has been killed, let's fail it.
-        if (task.killed) {
+        if (task.killed)
           throw new TaskKilledException
-        }
 
         val resultSer = env.serializer.newInstance()
         val beforeSerialization = System.currentTimeMillis()
@@ -373,14 +365,12 @@ private[spark] class Executor(
                 m.setJvmGCTime(computeTotalGcTime() - startGCTime)
               }
               task.collectAccumulatorUpdates(taskFailed = true)
-            } else {
+            } else
               Seq.empty[AccumulableInfo]
-            }
 
           val serializedTaskEndReason = {
-            try {
-              ser.serialize(new ExceptionFailure(t, accumulatorUpdates))
-            } catch {
+            try ser.serialize(new ExceptionFailure(t, accumulatorUpdates))
+            catch {
               case _: NotSerializableException =>
                 // t is not serializable so just send the stacktrace
                 ser.serialize(
@@ -397,13 +387,10 @@ private[spark] class Executor(
 
           // Don't forcibly exit unless the exception was inherently fatal, to avoid
           // stopping other tasks unnecessarily.
-          if (Utils.isFatalError(t)) {
+          if (Utils.isFatalError(t))
             SparkUncaughtExceptionHandler.uncaughtException(t)
-          }
 
-      } finally {
-        runningTasks.remove(taskId)
-      }
+      } finally runningTasks.remove(taskId)
     }
   }
 
@@ -425,11 +412,10 @@ private[spark] class Executor(
     val urls = userClassPath.toArray ++ currentJars.keySet.map { uri =>
       new File(uri.split("/").last).toURI.toURL
     }
-    if (userClassPathFirst) {
+    if (userClassPathFirst)
       new ChildFirstURLClassLoader(urls, currentLoader)
-    } else {
+    else
       new MutableURLClassLoader(urls, currentLoader)
-    }
   }
 
   /**
@@ -464,9 +450,8 @@ private[spark] class Executor(
           System.exit(1)
           null
       }
-    } else {
+    } else
       parent
-    }
   }
 
   /**
@@ -529,15 +514,13 @@ private[spark] class Executor(
     val accumUpdates = new ArrayBuffer[(Long, Seq[AccumulableInfo])]()
     val curGCTime = computeTotalGcTime()
 
-    for (taskRunner <- runningTasks.values().asScala) {
-      if (taskRunner.task != null) {
+    for (taskRunner <- runningTasks.values().asScala)
+      if (taskRunner.task != null)
         taskRunner.task.metrics.foreach { metrics =>
           metrics.mergeShuffleReadMetrics()
           metrics.setJvmGCTime(curGCTime - taskRunner.startGCTime)
           accumUpdates += ((taskRunner.taskId, metrics.accumulatorUpdates()))
         }
-      }
-    }
 
     val message = Heartbeat(
       executorId,

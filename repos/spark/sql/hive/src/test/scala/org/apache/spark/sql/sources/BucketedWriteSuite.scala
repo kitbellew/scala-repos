@@ -126,9 +126,8 @@ class BucketedWriteSuite
 
       // If we specified sort columns while writing bucket table, make sure the data in this
       // bucket file is already sorted.
-      if (sortCols.nonEmpty) {
+      if (sortCols.nonEmpty)
         checkAnswer(readBack.sort(sortCols.map(col): _*), readBack.collect())
-      }
 
       // Go through all rows in this bucket file, calculate bucket id according to bucket column
       // values, and make sure it equals to the expected bucket id that inferred from file name.
@@ -146,7 +145,7 @@ class BucketedWriteSuite
   }
 
   test("write bucketed data") {
-    for (source <- Seq("parquet", "json", "orc")) {
+    for (source <- Seq("parquet", "json", "orc"))
       withTable("bucketed_table") {
         df.write
           .format(source)
@@ -154,15 +153,13 @@ class BucketedWriteSuite
           .bucketBy(8, "j", "k")
           .saveAsTable("bucketed_table")
 
-        for (i <- 0 until 5) {
+        for (i <- 0 until 5)
           testBucketing(new File(tableDir, s"i=$i"), source, 8, Seq("j", "k"))
-        }
       }
-    }
   }
 
   test("write bucketed data with sortBy") {
-    for (source <- Seq("parquet", "json", "orc")) {
+    for (source <- Seq("parquet", "json", "orc"))
       withTable("bucketed_table") {
         df.write
           .format(source)
@@ -171,16 +168,14 @@ class BucketedWriteSuite
           .sortBy("k")
           .saveAsTable("bucketed_table")
 
-        for (i <- 0 until 5) {
+        for (i <- 0 until 5)
           testBucketing(
             new File(tableDir, s"i=$i"),
             source,
             8,
             Seq("j"),
             Seq("k"))
-        }
       }
-    }
   }
 
   test(
@@ -203,7 +198,7 @@ class BucketedWriteSuite
   }
 
   test("write bucketed data without partitionBy") {
-    for (source <- Seq("parquet", "json", "orc")) {
+    for (source <- Seq("parquet", "json", "orc"))
       withTable("bucketed_table") {
         df.write
           .format(source)
@@ -212,11 +207,10 @@ class BucketedWriteSuite
 
         testBucketing(tableDir, source, 8, Seq("i", "j"))
       }
-    }
   }
 
   test("write bucketed data without partitionBy with sortBy") {
-    for (source <- Seq("parquet", "json", "orc")) {
+    for (source <- Seq("parquet", "json", "orc"))
       withTable("bucketed_table") {
         df.write
           .format(source)
@@ -226,13 +220,12 @@ class BucketedWriteSuite
 
         testBucketing(tableDir, source, 8, Seq("i", "j"), Seq("k"))
       }
-    }
   }
 
   test("write bucketed data with bucketing disabled") {
     // The configuration BUCKETING_ENABLED does not affect the writing path
     withSQLConf(SQLConf.BUCKETING_ENABLED.key -> "false") {
-      for (source <- Seq("parquet", "json", "orc")) {
+      for (source <- Seq("parquet", "json", "orc"))
         withTable("bucketed_table") {
           df.write
             .format(source)
@@ -240,11 +233,9 @@ class BucketedWriteSuite
             .bucketBy(8, "j", "k")
             .saveAsTable("bucketed_table")
 
-          for (i <- 0 until 5) {
+          for (i <- 0 until 5)
             testBucketing(new File(tableDir, s"i=$i"), source, 8, Seq("j", "k"))
-          }
         }
-      }
     }
   }
 }

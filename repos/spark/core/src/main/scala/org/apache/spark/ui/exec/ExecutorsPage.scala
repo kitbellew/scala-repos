@@ -71,7 +71,7 @@ private[ui] class ExecutorsPage(
     val execInfoSorted = execInfo.sortBy(_.id)
     val logsExist = execInfo.filter(_.executorLogs.nonEmpty).nonEmpty
 
-    val execTable = {
+    val execTable =
       <table class={UIUtils.TABLE_CLASS_STRIPED_SORTABLE}>
         <thead>
           <th>Executor ID</th>
@@ -108,7 +108,6 @@ private[ui] class ExecutorsPage(
           {execInfoSorted.map(execRow(_, logsExist))}
         </tbody>
       </table>
-    }
 
     val content =
       <div class="row">
@@ -133,11 +132,10 @@ private[ui] class ExecutorsPage(
     val memoryUsed = info.memoryUsed
     val diskUsed = info.diskUsed
     val executorStatus =
-      if (info.isActive) {
+      if (info.isActive)
         "Active"
-      } else {
+      else
         "Dead"
-      }
 
     <tr>
       <td>{info.id}</td>
@@ -174,7 +172,7 @@ private[ui] class ExecutorsPage(
         {Utils.bytesToString(info.totalShuffleWrite)}
       </td>
       {
-      if (logsExist) {
+      if (logsExist)
         <td>
             {
           info.executorLogs.map {
@@ -187,21 +185,18 @@ private[ui] class ExecutorsPage(
           }
         }
           </td>
-      }
     }
       {
-      if (threadDumpEnabled) {
+      if (threadDumpEnabled)
         if (info.isActive) {
           val encodedId = URLEncoder.encode(info.id, "UTF-8")
           <td>
               <a href={s"threadDump/?executorId=$encodedId"}>Thread Dump</a>
             </td>
-        } else {
+        } else
           <td> </td>
-        }
-      } else {
+      else
         Seq.empty
-      }
     }
     </tr>
   }
@@ -300,50 +295,44 @@ private[ui] class ExecutorsPage(
     // Determine Color Opacity from 0.5-1
     // activeTasks range from 0 to maxTasks
     val activeTasksAlpha =
-      if (maxTasks > 0) {
+      if (maxTasks > 0)
         (activeTasks.toDouble / maxTasks) * 0.5 + 0.5
-      } else {
+      else
         1
-      }
     // failedTasks range max at 10% failure, alpha max = 1
     val failedTasksAlpha =
-      if (totalTasks > 0) {
+      if (totalTasks > 0)
         math.min(10 * failedTasks.toDouble / totalTasks, 1) * 0.5 + 0.5
-      } else {
+      else
         1
-      }
     // totalDuration range from 0 to 50% GC time, alpha max = 1
     val totalDurationAlpha =
-      if (totalDuration > 0) {
+      if (totalDuration > 0)
         math.min(totalGCTime.toDouble / totalDuration + 0.5, 1)
-      } else {
+      else
         1
-      }
 
     val tableData =
       <td style={
-        if (activeTasks > 0) {
+        if (activeTasks > 0)
           "background:hsla(240, 100%, 50%, " + activeTasksAlpha + ");color:white"
-        } else {
+        else
           ""
-        }
       }>{activeTasks}</td>
     <td style={
-        if (failedTasks > 0) {
+        if (failedTasks > 0)
           "background:hsla(0, 100%, 50%, " + failedTasksAlpha + ");color:white"
-        } else {
+        else
           ""
-        }
       }>{failedTasks}</td>
     <td>{completedTasks}</td>
     <td>{totalTasks}</td>
     <td sorttable_customkey={totalDuration.toString} style={
         // Red if GC time over GCTimePercent of total time
-        if (totalGCTime > GCTimePercent * totalDuration) {
+        if (totalGCTime > GCTimePercent * totalDuration)
           "background:hsla(0, 100%, 50%, " + totalDurationAlpha + ");color:white"
-        } else {
+        else
           ""
-        }
       }>
       {Utils.msDurationToString(totalDuration)}
       ({Utils.msDurationToString(totalGCTime)})
@@ -360,11 +349,11 @@ private[spark] object ExecutorsPage {
       listener: ExecutorsListener,
       statusId: Int,
       isActive: Boolean): ExecutorSummary = {
-    val status = if (isActive) {
-      listener.activeStorageStatusList(statusId)
-    } else {
-      listener.deadStorageStatusList(statusId)
-    }
+    val status =
+      if (isActive)
+        listener.activeStorageStatusList(statusId)
+      else
+        listener.deadStorageStatusList(statusId)
     val execId = status.blockManagerId.executorId
     val hostPort = status.blockManagerId.hostPort
     val rddBlocks = status.numBlocks

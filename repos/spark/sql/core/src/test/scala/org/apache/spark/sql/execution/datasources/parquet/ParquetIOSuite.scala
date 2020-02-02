@@ -150,7 +150,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
 
     val combinations =
       Seq((5, 2), (1, 0), (1, 1), (18, 10), (18, 17), (19, 0), (38, 37))
-    for ((precision, scale) <- combinations) {
+    for ((precision, scale) <- combinations)
       withTempPath { dir =>
         val data = makeDecimalRDD(DecimalType(precision, scale))
         data.write.parquet(dir.getCanonicalPath)
@@ -158,7 +158,6 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
           checkAnswer(df, data.collect().toSeq)
         }
       }
-    }
   }
 
   test("date type") {
@@ -751,9 +750,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
             result += v
           }
           assert(data == result)
-        } finally {
-          reader.close()
-        }
+        } finally reader.close()
       }
 
       // Project just one column
@@ -767,9 +764,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
             result += row.getString(0)
           }
           assert(data.map(_._2) == result)
-        } finally {
-          reader.close()
-        }
+        } finally reader.close()
       }
 
       // Project columns in opposite order
@@ -786,9 +781,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
           assert(data.map { x =>
             (x._2, x._1)
           } == result)
-        } finally {
-          reader.close()
-        }
+        } finally reader.close()
       }
 
       // Empty projection
@@ -797,13 +790,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         try {
           reader.initialize(file, List[String]().asJava)
           var result = 0
-          while (reader.nextKeyValue()) {
+          while (reader.nextKeyValue())
             result += 1
-          }
           assert(result == data.length)
-        } finally {
-          reader.close()
-        }
+        } finally reader.close()
       }
     }
   }

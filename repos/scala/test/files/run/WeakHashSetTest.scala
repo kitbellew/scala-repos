@@ -89,16 +89,14 @@ package scala.reflect.internal.util {
       elements foreach (hs += _)
       // don't throw the following into a retained collection so gc
       // can remove them
-      for (i <- 0 until size) {
+      for (i <- 0 until size)
         hs += Collider("b" + i)
-      }
       System.gc()
       Thread.sleep(1000)
       assert(hs.size == 200)
       elements foreach { i => assert(hs contains i) }
-      for (i <- 0 until size) {
+      for (i <- 0 until size)
         assert(!(hs contains Collider("b" + i)))
-      }
       hs.diagnostics.fullyValidate
     }
 
@@ -108,11 +106,10 @@ package scala.reflect.internal.util {
       val hs = new WeakHashSet[Collider]()
       val elements = (0 until size).toList map { x => Collider("a" + x) }
       elements foreach { x => assert(hs findEntryOrUpdate x eq x) }
-      for (i <- 0 until size) {
+      for (i <- 0 until size)
         // when we do a lookup the result should be the same reference we
         // original put in
         assert(hs findEntryOrUpdate (Collider("a" + i)) eq elements(i))
-      }
       hs.diagnostics.fullyValidate
     }
 

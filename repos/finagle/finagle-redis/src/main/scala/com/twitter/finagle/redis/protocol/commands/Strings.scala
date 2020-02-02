@@ -44,9 +44,9 @@ case class BitCount(
 }
 object BitCount {
   def apply(args: Seq[Array[Byte]]) =
-    if (args != null && args.size == 1) {
+    if (args != null && args.size == 1)
       new BitCount(ChannelBuffers.wrappedBuffer(args(0)))
-    } else {
+    else {
       val list = trimList(args, 3, "BITCOUNT")
       val start = RequireClientProtocol.safe {
         NumberFormat.toInt(BytesToString(list(1)))
@@ -95,9 +95,8 @@ object BitOp {
         args.size == 3,
         "BITOP expected 3 elements when op is NOT, found %d".format(args.size))
       new BitOp(list(0), list(1), Seq(list(2)))
-    } else {
+    } else
       new BitOp(list(0), list(1), list.drop(2))
-    }
   }
 }
 
@@ -352,7 +351,7 @@ object Set {
     def run(args: Seq[Array[Byte]], set: Set): Set =
       args.headOption match {
         case None => set
-        case Some(bytes) => {
+        case Some(bytes) =>
           val flag = CBToString(ChannelBuffers.wrappedBuffer(bytes)).toUpperCase
           flag match {
             case Ex =>
@@ -380,7 +379,6 @@ object Set {
             case Xx => run(args.tail, set.copy(xx = true))
             case _  => throw ClientError("Invalid syntax for SET")
           }
-        }
       }
 
     run(args.drop(2), set)

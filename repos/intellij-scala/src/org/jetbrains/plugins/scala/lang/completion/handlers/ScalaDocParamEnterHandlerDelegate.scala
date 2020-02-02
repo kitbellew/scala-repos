@@ -20,40 +20,35 @@ class ScalaDocParamEnterHandlerDelegate extends EnterHandlerDelegateAdapter {
       file: PsiFile,
       editor: Editor,
       dataContext: DataContext): Result = {
-    if (!file.isInstanceOf[ScalaFile]) {
+    if (!file.isInstanceOf[ScalaFile])
       return Result.Continue
-    }
 
     val scalaFile = file.asInstanceOf[ScalaFile]
     val caretOffset = editor.getCaretModel.getOffset
 
-    if (scalaFile.elementAt(caretOffset).isEmpty) {
+    if (scalaFile.elementAt(caretOffset).isEmpty)
       return Result.Continue
-    }
 
     var nextParent = scalaFile.elementAt(caretOffset).get
     val document = editor.getDocument
 
     while (!nextParent.isInstanceOf[ScDocTag]) {
       nextParent = nextParent.getParent
-      if (nextParent == null || nextParent.isInstanceOf[ScalaFile]) {
+      if (nextParent == null || nextParent.isInstanceOf[ScalaFile])
         return Result.Continue
-      }
     }
     val tagParent = nextParent.asInstanceOf[ScDocTag]
     val tagValueElement = tagParent.getValueElement
     val tagNameElement = tagParent.getNameElement
 
-    if (tagParent.getNameElement == null) {
+    if (tagParent.getNameElement == null)
       return Result.Continue
-    }
 
     val probData =
       if (tagValueElement != null) tagValueElement.getNextSibling
       else tagNameElement.getNextSibling
-    if (probData == null) {
+    if (probData == null)
       return Result.Continue
-    }
     val nextProbData =
       if (probData.getNextSibling != null) probData.getNextSibling.getNode
       else null

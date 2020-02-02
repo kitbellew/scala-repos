@@ -68,9 +68,8 @@ object Utils {
     )
     def hex2Int(hex: String): Int = {
       var res = 0
-      for (i <- 0 until hex.length) {
+      for (i <- 0 until hex.length)
         res += hexChars.indexOf(hex(i)) << (4 * (7 - i))
-      }
       res
     }
     def hex2Ints(hex: String): Array[Int] = {

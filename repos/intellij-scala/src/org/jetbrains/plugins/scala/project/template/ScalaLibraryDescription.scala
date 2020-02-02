@@ -49,15 +49,14 @@ object ScalaLibraryDescription extends ScalaLibraryDescription {
   }
 
   private def systemAppRoots: Seq[String] =
-    if (SystemInfo.isWindows) {
+    if (SystemInfo.isWindows)
       env("ProgramFiles").toSeq ++ env("ProgramFiles(x86)").toSeq
-    } else if (SystemInfo.isMac) {
+    else if (SystemInfo.isMac)
       Seq("/opt/")
-    } else if (SystemInfo.isLinux) {
+    else if (SystemInfo.isLinux)
       Seq("/usr/share/java/")
-    } else {
+    else
       Seq.empty
-    }
 
   private def env(name: String): Option[String] = Option(System.getenv(name))
 

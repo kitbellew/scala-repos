@@ -26,7 +26,7 @@ class LatencyHistogramTest extends FunSuite with Matchers {
 
     val epsilon = if (err == 0.0) 0 else range * err / 2
     val sorted = input.sorted
-    for (q <- 0 until 100) {
+    for (q <- 0 until 100)
       withClue(s"quantile $q: ") {
         val actual = histo.quantile(q)
         val ideal = sorted(q * N / 100)
@@ -35,7 +35,6 @@ class LatencyHistogramTest extends FunSuite with Matchers {
         else
           actual.toDouble should be(ideal.toDouble +- epsilon)
       }
-    }
   }
 
   val tests = Seq(

@@ -127,7 +127,7 @@ trait ReductionFinderModule[M[+_]]
       node mapDown { recurse =>
         {
           case graph @ dag.Reduce(red, parent)
-              if st.ancestorByReduce contains graph => {
+              if st.ancestorByReduce contains graph =>
             val ancestor = st.ancestorByReduce(graph)
             val members = st.buildMembers(ancestor)
 
@@ -152,7 +152,6 @@ trait ReductionFinderModule[M[+_]]
                 Const(CLong(firstIndex))(graph.loc))(graph.loc),
               Const(CLong(secondIndex))(graph.loc)
             )(graph.loc)
-          }
         }
       }
     }

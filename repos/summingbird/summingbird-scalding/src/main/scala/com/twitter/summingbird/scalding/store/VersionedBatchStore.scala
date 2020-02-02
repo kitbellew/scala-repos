@@ -172,10 +172,9 @@ class VersionedBatchStore[K, V, K2, V2](
       lastVals
         .map(pack(batchID, _))
         .write(target)
-    } else {
+    } else
       logger.warn(
         s"Versioned batched store version for $this @ $newVersion already exists! Will skip adding to plan.")
-    }
   }
 
   /**

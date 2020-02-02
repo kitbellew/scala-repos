@@ -29,7 +29,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         _.map { case (id, data) => (id, data.mkString) }.toSet)
       _ = r1 shouldBe Set((1, "123"), (2, "45"))
     } yield ()
-    if (implicitly[ColumnType[Array[Byte]]].hasLiteralForm) {
+    if (implicitly[ColumnType[Array[Byte]]].hasLiteralForm)
       as1 >> ts
         .filter(_.data === Array[Byte](4, 5))
         .map(_.data)
@@ -37,7 +37,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         .result
         .map(_.map(_.mkString))
         .map(_ shouldBe Set("45"))
-    } else as1
+    else as1
   }
 
   def testByteArrayOption = {

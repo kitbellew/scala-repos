@@ -56,16 +56,14 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   private val settings = new ConcurrentHashMap[String, String]()
 
-  if (loadDefaults) {
+  if (loadDefaults)
     loadFromSystemProperties(false)
-  }
 
   private[spark] def loadFromSystemProperties(silent: Boolean): SparkConf = {
     // Load any spark.* system properties
     for ((key, value) <- Utils.getSystemProperties
-         if key.startsWith("spark.")) {
+         if key.startsWith("spark."))
       set(key, value, silent)
-    }
     this
   }
 
@@ -77,15 +75,12 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
       key: String,
       value: String,
       silent: Boolean): SparkConf = {
-    if (key == null) {
+    if (key == null)
       throw new NullPointerException("null key")
-    }
-    if (value == null) {
+    if (value == null)
       throw new NullPointerException("null value for " + key)
-    }
-    if (!silent) {
+    if (!silent)
       logDeprecationWarning(key)
-    }
     settings.put(key, value)
     this
   }
@@ -138,9 +133,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * (for example spark.executorEnv.PATH) but this method makes them easier to set.
     */
   def setExecutorEnv(variables: Seq[(String, String)]): SparkConf = {
-    for ((k, v) <- variables) {
+    for ((k, v) <- variables)
       setExecutorEnv(k, v)
-    }
     this
   }
 
@@ -165,27 +159,24 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
   /** Set a parameter if it isn't already configured */
   def setIfMissing(key: String, value: String): SparkConf = {
-    if (settings.putIfAbsent(key, value) == null) {
+    if (settings.putIfAbsent(key, value) == null)
       logDeprecationWarning(key)
-    }
     this
   }
 
   private[spark] def setIfMissing[T](
       entry: ConfigEntry[T],
       value: T): SparkConf = {
-    if (settings.putIfAbsent(entry.key, entry.stringConverter(value)) == null) {
+    if (settings.putIfAbsent(entry.key, entry.stringConverter(value)) == null)
       logDeprecationWarning(entry.key)
-    }
     this
   }
 
   private[spark] def setIfMissing[T](
       entry: OptionalConfigEntry[T],
       value: T): SparkConf = {
-    if (settings.putIfAbsent(entry.key, entry.rawStringConverter(value)) == null) {
+    if (settings.putIfAbsent(entry.key, entry.rawStringConverter(value)) == null)
       logDeprecationWarning(entry.key)
-    }
     this
   }
 
@@ -212,11 +203,10 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     * record serializer can decrease network IO
     */
   def registerAvroSchemas(schemas: Schema*): SparkConf = {
-    for (schema <- schemas) {
+    for (schema <- schemas)
       set(
         avroNamespace + SchemaNormalization.parsingFingerprint64(schema),
         schema.toString)
-    }
     this
   }
 
@@ -465,10 +455,9 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
         deprecatedMemoryKeys
     for (key <- memoryKeys) {
       val value = getDouble(key, 0.5)
-      if (value > 1 || value < 0) {
+      if (value > 1 || value < 0)
         throw new IllegalArgumentException(
           s"$key should be between 0 and 1 (was '$value').")
-      }
     }
 
     // Warn against deprecated memory fractions (unless legacy memory management mode is enabled)
@@ -477,14 +466,13 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     if (!legacyMemoryManagement) {
       val keyset = deprecatedMemoryKeys.toSet
       val detected = settings.keys().asScala.filter(keyset.contains)
-      if (detected.nonEmpty) {
+      if (detected.nonEmpty)
         logWarning(
           "Detected deprecated memory fraction settings: " +
             detected.mkString("[", ", ", "]") + ". As of Spark 1.6, execution and storage " +
             "memory management are unified. All memory fractions used in the old model are " +
             "now deprecated and no longer read. If you wish to use the old memory management, " +
             s"you may explicitly enable `$legacyMemoryManagementKey` (not recommended).")
-      }
     }
 
     // Check for legacy configs
@@ -502,15 +490,14 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
         """.stripMargin
       logWarning(warning)
 
-      for (key <- Seq(executorOptsKey, driverOptsKey)) {
-        if (getOption(key).isDefined) {
+      for (key <- Seq(executorOptsKey, driverOptsKey))
+        if (getOption(key).isDefined)
           throw new SparkException(
             s"Found both $key and SPARK_JAVA_OPTS. Use only the former.")
-        } else {
+        else {
           logWarning(s"Setting '$key' to '$value' as a work-around.")
           set(key, value)
         }
-      }
     }
 
     sys.env.get("SPARK_CLASSPATH").foreach { value =>
@@ -525,18 +512,17 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
         """.stripMargin
       logWarning(warning)
 
-      for (key <- Seq(executorClasspathKey, driverClassPathKey)) {
-        if (getOption(key).isDefined) {
+      for (key <- Seq(executorClasspathKey, driverClassPathKey))
+        if (getOption(key).isDefined)
           throw new SparkException(
             s"Found both $key and SPARK_CLASSPATH. Use only the former.")
-        } else {
+        else {
           logWarning(s"Setting '$key' to '$value' as a work-around.")
           set(key, value)
         }
-      }
     }
 
-    if (!contains(sparkExecutorInstances)) {
+    if (!contains(sparkExecutorInstances))
       sys.env.get("SPARK_WORKER_INSTANCES").foreach { value =>
         val warning =
           s"""
@@ -552,7 +538,6 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
         set("spark.executor.instances", value)
       }
-    }
 
     if (contains("spark.master") && get("spark.master").startsWith("yarn-")) {
       val warning =
@@ -572,7 +557,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
       }
     }
 
-    if (contains("spark.submit.deployMode")) {
+    if (contains("spark.submit.deployMode"))
       get("spark.submit.deployMode") match {
         case "cluster" | "client" =>
         case e =>
@@ -580,7 +565,6 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
             "spark.submit.deployMode can only be \"cluster\" or " +
               "\"client\".")
       }
-    }
   }
 
   /**
@@ -691,11 +675,10 @@ private[spark] object SparkConf extends Logging {
     *
     * Maps the deprecated config name to a 2-tuple (new config name, alternate config info).
     */
-  private val allAlternatives: Map[String, (String, AlternateConfig)] = {
+  private val allAlternatives: Map[String, (String, AlternateConfig)] =
     configsWithAlternatives.keys.flatMap { key =>
       configsWithAlternatives(key).map { cfg => (cfg.key -> (key -> cfg)) }
     }.toMap
-  }
 
   /**
     * Return whether the given config should be passed to an executor on start-up.
@@ -747,11 +730,10 @@ private[spark] object SparkConf extends Logging {
             s"may be removed in the future. Please use the new key '$newKey' instead.")
         return
     }
-    if (key.startsWith("spark.akka") || key.startsWith("spark.ssl.akka")) {
+    if (key.startsWith("spark.akka") || key.startsWith("spark.ssl.akka"))
       logWarning(
         s"The configuration key $key is not supported any more " +
           s"because Spark doesn't use Akka since 2.0")
-    }
   }
 
   /**

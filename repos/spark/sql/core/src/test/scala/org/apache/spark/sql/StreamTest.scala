@@ -214,11 +214,10 @@ trait StreamTest extends QueryTest with Timeouts {
       actions.zipWithIndex
         .map {
           case (a, i) =>
-            if ((pos == i && startedManually) || (pos == (i + 1) && !startedManually)) {
+            if ((pos == i && startedManually) || (pos == (i + 1) && !startedManually))
               "=> " + a.toString
-            } else {
+            else
               "   " + a.toString
-            }
         }
         .mkString("\n")
 
@@ -250,18 +249,15 @@ trait StreamTest extends QueryTest with Timeouts {
          """.stripMargin
 
     def verify(condition: => Boolean, message: String): Unit =
-      try {
-        Assertions.assert(condition)
-      } catch {
+      try Assertions.assert(condition)
+      catch {
         case NonFatal(e) =>
           failTest(message, e)
       }
 
     def eventually[T](message: String)(func: => T): T =
-      try {
-        Eventually.eventually(Timeout(streamingTimeout)) {
-          func
-        }
+      try Eventually.eventually(Timeout(streamingTimeout)) {
+        func
       } catch {
         case NonFatal(e) =>
           failTest(message, e)
@@ -273,13 +269,12 @@ trait StreamTest extends QueryTest with Timeouts {
       def exceptionToString(e: Throwable, prefix: String = ""): String = {
         val base = s"$prefix${e.getMessage}" +
           e.getStackTrace.take(10).mkString(s"\n$prefix", s"\n$prefix\t", "\n")
-        if (e.getCause != null) {
+        if (e.getCause != null)
           base + s"\n$prefix\tCaused by: " + exceptionToString(
             e.getCause,
             s"$prefix\t")
-        } else {
+        else
           base
-        }
       }
       val c = Option(cause).map(exceptionToString(_))
       val m = if (message != null && message.size > 0) Some(message) else None
@@ -426,11 +421,8 @@ trait StreamTest extends QueryTest with Timeouts {
         failTest("Stream Thread Died")
       case _: org.scalatest.exceptions.TestFailedDueToTimeoutException =>
         failTest("Timed out waiting for stream")
-    } finally {
-      if (currentStream != null && currentStream.microBatchThread.isAlive) {
-        currentStream.stop()
-      }
-    }
+    } finally if (currentStream != null && currentStream.microBatchThread.isAlive)
+      currentStream.stop()
   }
 
   /**
@@ -460,7 +452,7 @@ trait StreamTest extends QueryTest with Timeouts {
 
     (1 to iterations).foreach { i =>
       val rand = Random.nextDouble()
-      if (!running) {
+      if (!running)
         rand match {
           case r if r < 0.7 => // AddData
             addRandomData()
@@ -469,7 +461,7 @@ trait StreamTest extends QueryTest with Timeouts {
             actions += StartStream
             running = true
         }
-      } else {
+      else
         rand match {
           case r if r < 0.1 =>
             addCheck()
@@ -482,11 +474,9 @@ trait StreamTest extends QueryTest with Timeouts {
             actions += StopStream
             running = false
         }
-      }
     }
-    if (!running) {
+    if (!running)
       actions += StartStream
-    }
     addCheck()
     testStream(ds)(actions: _*)
   }

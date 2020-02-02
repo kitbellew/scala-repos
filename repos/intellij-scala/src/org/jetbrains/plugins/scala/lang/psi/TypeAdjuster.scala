@@ -124,9 +124,7 @@ object TypeAdjuster extends ApplicationAdapter {
             oldRes <- info.resolve
             newRes <- newResolve
             if ScEquivalenceUtil.smartEquivalence(oldRes, newRes)
-          } yield {
-            info.withNewText(withoutThisType)
-          }
+          } yield info.withNewText(withoutThisType)
         } else None
       }
     }
@@ -143,12 +141,12 @@ object TypeAdjuster extends ApplicationAdapter {
           val newTypeEl = newTypeElem(text, info.origTypeElem)
           val subTypeElems =
             collectAdjustableTypeElements(newTypeEl).filter(_ != newTypeEl)
-          if (subTypeElems.isEmpty) {
+          if (subTypeElems.isEmpty)
             Some(
               ReplacementInfo
                 .initial(newTypeEl)
                 .copy(origTypeElem = info.origTypeElem))
-          } else
+          else
             Some(
               CompoundInfo(
                 info.origTypeElem,
@@ -255,9 +253,7 @@ object TypeAdjuster extends ApplicationAdapter {
     for {
       info <- rInfos
       path <- info.pathsToImport
-    } {
-      byPath.update(path, byPath.getOrElseUpdate(path, Set.empty) + info)
-    }
+    } byPath.update(path, byPath.getOrElseUpdate(path, Set.empty) + info)
 
     val withMaxHolders = byPath.values.map(infos => findMaxHolders(infos))
     withMaxHolders.flatten.toMap
@@ -288,9 +284,8 @@ object TypeAdjuster extends ApplicationAdapter {
       }
     }
 
-    for ((holder, paths) <- holderToPaths) {
+    for ((holder, paths) <- holderToPaths)
       holder.addImportsForPaths(paths.toSeq, null)
-    }
   }
 
   private def availableTypeAliasFor(
@@ -389,9 +384,8 @@ object TypeAdjuster extends ApplicationAdapter {
       extends ReplacementInfo {
 
     if (childInfos.isEmpty || childInfos.exists(i =>
-          !tempTypeElem.isAncestorOf(i.origTypeElem))) {
+          !tempTypeElem.isAncestorOf(i.origTypeElem)))
       throw new IllegalArgumentException("Wrong usage of CompoundInfo")
-    }
 
     override def checkReplacementResolve: Boolean =
       childInfos.forall(_.checkReplacementResolve)

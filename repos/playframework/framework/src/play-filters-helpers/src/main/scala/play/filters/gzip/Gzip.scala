@@ -52,16 +52,14 @@ object Gzip {
     new CheckDoneBytes {
 
       def step[A](state: State, k: K[Bytes, A]): K[Bytes, Iteratee[Bytes, A]] = {
-        case Input.EOF => {
+        case Input.EOF =>
           state.deflater.finish()
           deflateUntilFinished(state, k)
-        }
 
-        case Input.El(bytes) => {
+        case Input.El(bytes) =>
           state.crc.update(bytes)
           state.deflater.setInput(bytes)
           deflateUntilNeedsInput(state, k)
-        }
 
         case in @ Input.Empty => feedEmpty(state, k)
       }
@@ -80,18 +78,17 @@ object Gzip {
           state.buffer,
           state.pos,
           bufferSize - state.pos)
-        if (numBytes == 0) {
-          if (state.deflater.needsInput()) {
+        if (numBytes == 0)
+          if (state.deflater.needsInput())
             // Deflater needs more input, so continue
             Cont(step(state, k))
-          } else {
+          else
             deflateUntilNeedsInput(state, k)
-          }
-        } else {
+        else {
           state.pos += numBytes
-          if (state.pos < bufferSize) {
+          if (state.pos < bufferSize)
             deflateUntilNeedsInput(state, k)
-          } else {
+          else {
             // We've filled our buffer, feed it into the k function
             val buffer = state.buffer
             state.reset()
@@ -109,18 +106,17 @@ object Gzip {
           state.buffer,
           state.pos,
           bufferSize - state.pos)
-        if (numBytes == 0) {
-          if (state.deflater.finished()) {
+        if (numBytes == 0)
+          if (state.deflater.finished())
             // Deflater is finished, send the trailer
             feedTrailer(state, k)
-          } else {
+          else
             deflateUntilFinished(state, k)
-          }
-        } else {
+        else {
           state.pos += numBytes
-          if (state.pos < bufferSize) {
+          if (state.pos < bufferSize)
             deflateUntilFinished(state, k)
-          } else {
+          else {
             val buffer = state.buffer
             state.reset()
             new CheckDoneBytes {
@@ -227,14 +223,12 @@ object Gzip {
     new CheckDoneBytes {
 
       def step[A](state: State, k: K[Bytes, A]): K[Bytes, Iteratee[Bytes, A]] = {
-        case Input.EOF => {
+        case Input.EOF =>
           Error("Premature end of gzip stream", Input.EOF)
-        }
 
-        case Input.El(bytes) => {
+        case Input.El(bytes) =>
           state.inflater.setInput(bytes)
           inflateUntilNeedsInput(state, k, bytes)
-        }
 
         case in @ Input.Empty => feedEmpty(state, k)
       }
@@ -257,30 +251,29 @@ object Gzip {
           state.buffer,
           state.pos,
           bufferSize - state.pos)
-        if (numBytes == 0) {
+        if (numBytes == 0)
           if (state.inflater.finished()) {
             // Feed the current buffer
-            val buffer = if (state.buffer.length > state.pos) {
-              state.buffer.take(state.pos)
-            } else {
-              state.buffer
-            }
+            val buffer =
+              if (state.buffer.length > state.pos)
+                state.buffer.take(state.pos)
+              else
+                state.buffer
             state.crc.update(buffer)
             new CheckDoneBytes {
               def continue[B](k: K[Bytes, B]) = finish(state, k, input)
             } &> k(Input.El(buffer))
 
-          } else if (state.inflater.needsInput()) {
+          } else if (state.inflater.needsInput())
             // Inflater needs more input, so continue
             Cont(step(state, k))
-          } else {
+          else
             inflateUntilNeedsInput(state, k, input)
-          }
-        } else {
+        else {
           state.pos += numBytes
-          if (state.pos < bufferSize) {
+          if (state.pos < bufferSize)
             inflateUntilNeedsInput(state, k, input)
-          } else {
+          else {
             // We've filled our buffer, feed it into the k function
             val buffer = state.buffer
             state.crc.update(buffer)
@@ -305,11 +298,11 @@ object Gzip {
           k: K[Bytes, A],
           input: Bytes): Iteratee[Bytes, Iteratee[Bytes, A]] = {
         // Get the left over bytes from the inflater
-        val leftOver = if (input.length > state.inflater.getRemaining) {
-          Done(Unit, Input.El(input.takeRight(state.inflater.getRemaining)))
-        } else {
-          done()
-        }
+        val leftOver =
+          if (input.length > state.inflater.getRemaining)
+            Done(Unit, Input.El(input.takeRight(state.inflater.getRemaining)))
+          else
+            done()
 
         // Read the trailer, before sending an EOF
         for {
@@ -386,16 +379,12 @@ object Gzip {
       def readShort(crc: CRC32): Iteratee[Bytes, Int] =
         for {
           bytes <- take(2, "Not enough bytes for extra field length", crc)
-        } yield {
-          littleEndianToShort(bytes)
-        }
+        } yield littleEndianToShort(bytes)
 
       def readInt(error: String, crc: CRC32): Iteratee[Bytes, Int] =
         for {
           bytes <- take(4, error, crc)
-        } yield {
-          littleEndianToInt(bytes)
-        }
+        } yield littleEndianToInt(bytes)
 
       def take(
           n: Int,
@@ -404,7 +393,7 @@ object Gzip {
           bytes: Bytes = new Bytes(0)): Iteratee[Bytes, Bytes] = Cont {
         case Input.EOF   => Error(error, Input.EOF)
         case Input.Empty => take(n, error, crc, bytes)
-        case Input.El(b) => {
+        case Input.El(b) =>
           val splitted = b.splitAt(n)
           crc.update(splitted._1)
           splitted match {
@@ -413,7 +402,6 @@ object Gzip {
             case (partial, _) =>
               take(n - partial.length, error, crc, bytes ++ partial)
           }
-        }
       }
 
       def drop(n: Int, error: String, crc: CRC32): Iteratee[Bytes, Unit] =

@@ -60,7 +60,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     val nums = sc.parallelize(1 to 10, 2)
     val sem = new Semaphore(0)
     @volatile var ok = true
-    for (i <- 0 until 10) {
+    for (i <- 0 until 10)
       new Thread {
         override def run() {
           val answer1 = nums.reduce(_ + _)
@@ -76,11 +76,9 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           sem.release()
         }
       }.start()
-    }
     sem.acquire(10)
-    if (!ok) {
+    if (!ok)
       fail("One or more threads got the wrong answer from an RDD operation")
-    }
   }
 
   test("accessing multi-threaded SparkContext form multiple threads") {
@@ -88,7 +86,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     val nums = sc.parallelize(1 to 10, 2)
     val sem = new Semaphore(0)
     @volatile var ok = true
-    for (i <- 0 until 10) {
+    for (i <- 0 until 10)
       new Thread {
         override def run() {
           val answer1 = nums.reduce(_ + _)
@@ -104,11 +102,9 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           sem.release()
         }
       }.start()
-    }
     sem.acquire(10)
-    if (!ok) {
+    if (!ok)
       fail("One or more threads got the wrong answer from an RDD operation")
-    }
   }
 
   test("parallel job execution") {
@@ -119,7 +115,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     val sem = new Semaphore(0)
     ThreadingSuiteState.clear()
     var throwable: Option[Throwable] = None
-    for (i <- 0 until 2) {
+    for (i <- 0 until 2)
       new Thread {
         override def run() {
           try {
@@ -129,12 +125,10 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
                 running.getAndIncrement()
                 val time = System.currentTimeMillis()
                 while (running.get() != 4 && System
-                         .currentTimeMillis() < time + 1000) {
+                         .currentTimeMillis() < time + 1000)
                   Thread.sleep(100)
-                }
-                if (running.get() != 4) {
+                if (running.get() != 4)
                   ThreadingSuiteState.failed.set(true)
-                }
                 number
               }
               .collect()
@@ -142,12 +136,9 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           } catch {
             case t: Throwable =>
               throwable = Some(t)
-          } finally {
-            sem.release()
-          }
+          } finally sem.release()
         }
       }.start()
-    }
     sem.acquire(2)
     throwable.foreach { t => throw improveStackTrace(t) }
     if (ThreadingSuiteState.failed.get()) {
@@ -171,9 +162,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           } catch {
             case t: Throwable =>
               throwable = Some(t)
-          } finally {
-            sem.release()
-          }
+          } finally sem.release()
         }
       }
     }
@@ -200,9 +189,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
           } catch {
             case t: Throwable =>
               throwable = Some(t)
-          } finally {
-            sem.release()
-          }
+          } finally sem.release()
         }
       }
     }
@@ -223,9 +210,8 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
     var throwable: Option[Throwable] = None
     val thread = new Thread {
       override def run(): Unit =
-        try {
-          threadTestValue = sc.getLocalProperty("test")
-        } catch {
+        try threadTestValue = sc.getLocalProperty("test")
+        catch {
           case t: Throwable =>
             throwable = Some(t)
         }

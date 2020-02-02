@@ -103,21 +103,20 @@ object Multipart {
       case fu: multipart.FileUpload =>
         val buf =
           files.getOrElseUpdate(fu.getName, mutable.ListBuffer[FileUpload]())
-        if (fu.isInMemory) {
+        if (fu.isInMemory)
           buf += InMemoryFileUpload(
             Buf.ByteArray.Owned(fu.get()),
             fu.getContentType,
             fu.getFilename,
             fu.getContentTransferEncoding
           )
-        } else {
+        else
           buf += OnDiskFileUpload(
             fu.getFile,
             fu.getContentType,
             fu.getFilename,
             fu.getContentTransferEncoding
           )
-        }
 
       case _ => // ignore everything else
     }

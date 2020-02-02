@@ -646,13 +646,12 @@ object Enumeratee {
 
           case in @ Input.El(e) =>
             Iteratee.flatten(Future {
-              if (transformer.isDefinedAt(e)) {
+              if (transformer.isDefinedAt(e))
                 new CheckDone[From, To] {
                   def continue[A](k: K[To, A]) = Cont(step(k))
                 } &> k(Input.El(transformer(e)))
-              } else {
+              else
                 Cont(step(k))
-              }
             }(pec))
 
           case Input.Empty =>
@@ -773,13 +772,12 @@ object Enumeratee {
         def stepNoBreak(inner: Iteratee[E, A])(
             in: Input[E]): Iteratee[E, Iteratee[E, A]] =
           inner.pureFlatFold {
-            case Step.Cont(k) => {
+            case Step.Cont(k) =>
               val next = k(in)
               next.pureFlatFold {
                 case Step.Cont(k) => Cont(step(next))
                 case _            => Done(inner, in)
               }(dec)
-            }
             case _ => Done(inner, in)
           }(dec)
         Cont(step(inner))

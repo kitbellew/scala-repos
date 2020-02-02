@@ -78,16 +78,14 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
   override protected def startProcess: OSProcessHandler = {
     val handler: OSProcessHandler =
       JavaCommandLineStateUtil.startProcess(createCommandLine)
-    if (showInBrowser) {
+    if (showInBrowser)
       handler.addProcessListener(new ProcessAdapter {
         override def processTerminated(event: ProcessEvent) {
           val url: File = new File(outputDir, "index.html")
-          if (url.exists && event.getExitCode == 0) {
+          if (url.exists && event.getExitCode == 0)
             BrowserUtil.browse(url.getPath)
-          }
         }
       })
-    }
     handler
   }
 
@@ -103,19 +101,15 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         acc: mutable.MutableList[VirtualFile] = mutable
           .MutableList[VirtualFile]()): mutable.MutableList[VirtualFile] = {
       if (file == null) return acc
-      if (file.isDirectory) {
-        for (c <- file.getChildren) {
+      if (file.isDirectory)
+        for (c <- file.getChildren)
           visitInner(c, scope, acc)
+      else if (file.getExtension == "scala" && file.isValid && scope.contains(
+                 file))
+        PsiManager.getInstance(project).findFile(file) match {
+          case f: ScalaFile if !f.isScriptFile() => acc += file
+          case _                                 => // do nothing
         }
-      } else {
-        if (file.getExtension == "scala" && file.isValid && scope.contains(
-              file)) {
-          PsiManager.getInstance(project).findFile(file) match {
-            case f: ScalaFile if !f.isScriptFile() => acc += file
-            case _                                 => // do nothing
-          }
-        }
-      }
 
       acc
     }
@@ -147,9 +141,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
     (params + " ").foldLeft((false, new StringBuilder(""))) {
       case ((flag, acc), ' ') =>
-        if (flag) {
+        if (flag)
           acc.append(' ')
-        } else {
+        else {
           result += acc.toString
           acc.clear()
         }
@@ -187,9 +181,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     jp.setMainClass(MAIN_CLASS)
 
     val vmParamList = jp.getVMParametersList
-    if (maxHeapSize.length > 0) {
+    if (maxHeapSize.length > 0)
       vmParamList.add("-Xmx" + maxHeapSize + "m")
-    }
 
     val paramList = jp.getProgramParametersList
 
@@ -232,19 +225,17 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
       val allEntries = MutableHashSet.apply[String]()
       val allSourceEntries = MutableHashSet.apply[String]()
 
-      if (modulesNeeded.nonEmpty) {
-        for (module <- modulesNeeded) {
+      if (modulesNeeded.nonEmpty)
+        for (module <- modulesNeeded)
           collectCPSources(
             OrderEnumerator.orderEntries(module),
             allEntries,
             allSourceEntries)
-        }
-      } else {
+      else
         collectCPSources(
           OrderEnumerator.orderEntries(project),
           allEntries,
           allSourceEntries)
-      }
       allEntries.foreach(a => classpathWithFacet.append(a))
       allSourceEntries.foreach(a => sourcepathWithFacet.append(a))
     }
@@ -260,11 +251,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           case None    =>
         }
       case AnalysisScope.MODULES =>
-        for (module <- modules) {
-          if (scope.containsModule(module)) {
+        for (module <- modules)
+          if (scope.containsModule(module))
             modulesNeeded += module
-          }
-        }
       case _ => needFilter = true
     }
 
@@ -273,13 +262,11 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
       for (c <- children) {
         val documentableFiles = visitAll(c, scope)
-        if (needFilter) {
+        if (needFilter)
           filterModulesList(documentableFiles: _*)
-        }
 
-        for (docFile <- documentableFiles) {
+        for (docFile <- documentableFiles)
           documentableFilesList += docFile.getPath
-        }
       }
     }
 
@@ -294,20 +281,18 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     paramListSimple += "-sourcepath"
     paramListSimple += sourcepathWithFacet.mkString(classpathDelimeter)
 
-    if (verbose) {
+    if (verbose)
       paramListSimple += "-verbose"
-    }
 
     paramListSimple += "-doc-title"
     paramListSimple += docTitle
 
-    if (additionalScaladocFlags.length() > 0) {
+    if (additionalScaladocFlags.length() > 0)
       paramListSimple.addAll(processAdditionalParams(additionalScaladocFlags))
-    }
 
     paramListSimple ++= documentableFilesList
 
-    if (JdkUtil.useDynamicClasspath(project)) {
+    if (JdkUtil.useDynamicClasspath(project))
       try {
         val tempParamsFile: File =
           File.createTempFile("scaladocfileargs", ".tmp")
@@ -317,9 +302,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         for (param <- paramListSimple) {
           var paramEsc = param
           if (param.contains(" ") && !(param.startsWith("\"") && param.endsWith(
-                "\""))) {
+                "\"")))
             paramEsc = "\"" + param + "\""
-          }
 
           pw.println(paramEsc)
         }
@@ -329,9 +313,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
       } catch {
         case e: IOException => throw new ExecutionException("I/O Error", e)
       }
-    } else {
+    else
       paramList.addAll(paramListSimple)
-    }
 
     jp
   }

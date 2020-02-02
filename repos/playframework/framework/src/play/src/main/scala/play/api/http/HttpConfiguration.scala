@@ -120,9 +120,8 @@ object HttpConfiguration {
     val context = {
       val ctx =
         config.getDeprecated[String]("play.http.context", "application.context")
-      if (!ctx.startsWith("/")) {
+      if (!ctx.startsWith("/"))
         throw configuration.globalError("play.http.context must start with a /")
-      }
       ctx
     }
 

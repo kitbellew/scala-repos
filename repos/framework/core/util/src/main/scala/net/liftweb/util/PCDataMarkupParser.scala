@@ -388,11 +388,9 @@ class PCDataXmlParser(val input: Source)
       case _ => findIt(base, what.next)
     }
 
-    if (!aMap.wellformed(scope)) {
-      if (findIt(aMap, aMap.next) != Null) {
+    if (!aMap.wellformed(scope))
+      if (findIt(aMap, aMap.next) != Null)
         reportSyntaxError("double attribute")
-      }
-    }
 
     (aMap, scope)
   }
@@ -409,9 +407,8 @@ class PCDataXmlParser(val input: Source)
     val col = ScalaPosition.column(pos)
     val report = curInput.descr + ":" + line + ":" + col + ": " + msg
     System.err.println(report)
-    try {
-      System.err.println(curInput.getLines().toIndexedSeq(line))
-    } catch {
+    try System.err.println(curInput.getLines().toIndexedSeq(line))
+    catch {
       case e: Exception => // ignore
     }
     var i = 1
@@ -447,9 +444,8 @@ object PCDataXmlParser {
     var pos = 0
     val len = in.length
     def moveToLT() {
-      while (pos < len && in.charAt(pos) != '<') {
+      while (pos < len && in.charAt(pos) != '<')
         pos += 1
-      }
     }
 
     moveToLT()
@@ -603,7 +599,7 @@ object AltXML {
         case '\r' => sb.append('\r')
         case '\t' => sb.append('\t')
         case c =>
-          if (reverse) {
+          if (reverse)
             HtmlEntities.revMap.get(c) match {
               case Some(str) =>
                 sb.append('&')
@@ -613,7 +609,7 @@ object AltXML {
                 if (c >= ' ' && c != '\u0085' && !(c >= '\u007f' && c <= '\u0095'))
                   sb.append(c)
             }
-          } else if (c >= ' ' && c != '\u0085' && !(c >= '\u007f' && c <= '\u0095'))
+          else if (c >= ' ' && c != '\u0085' && !(c >= '\u007f' && c <= '\u0095'))
             sb.append(c)
       }
 
@@ -723,7 +719,7 @@ object AltXML {
       convertAmp: Boolean,
       legacyIeCompatibilityMode: Boolean): Unit = {
     val it = children.iterator
-    while (it.hasNext) {
+    while (it.hasNext)
       toXML(
         it.next,
         pscope,
@@ -731,7 +727,6 @@ object AltXML {
         stripComment,
         convertAmp,
         legacyIeCompatibilityMode)
-    }
   }
 
   /**
@@ -747,9 +742,8 @@ object AltXML {
       stripComment: Boolean,
       convertAmp: Boolean): Unit = {
     val it = children.iterator
-    while (it.hasNext) {
+    while (it.hasNext)
       toXML(it.next, pscope, sb, stripComment, convertAmp)
-    }
   }
 
 }

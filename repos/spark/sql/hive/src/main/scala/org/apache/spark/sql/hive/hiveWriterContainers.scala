@@ -143,9 +143,8 @@ private[hive] class SparkHiveWriterContainer(
   }
 
   def abortTask(): Unit = {
-    if (committer != null) {
+    if (committer != null)
       committer.abortTask(taskContext)
-    }
     logError(s"Task attempt $taskContext aborted.")
   }
 
@@ -222,14 +221,12 @@ private[hive] class SparkHiveWriterContainer(
 
 private[hive] object SparkHiveWriterContainer {
   def createPathFromString(path: String, conf: JobConf): Path = {
-    if (path == null) {
+    if (path == null)
       throw new IllegalArgumentException("Output path is null")
-    }
     val outputPath = new Path(path)
     val fs = outputPath.getFileSystem(conf)
-    if (outputPath == null || fs == null) {
+    if (outputPath == null || fs == null)
       throw new IllegalArgumentException("Incorrectly formatted output path")
-    }
     outputPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
   }
 }
@@ -331,33 +328,27 @@ private[spark] class SparkHiveDynamicPartitionWriterContainer(
       val sortedIterator = sorter.sortedIterator()
       var currentKey: InternalRow = null
       var currentWriter: FileSinkOperator.RecordWriter = null
-      try {
-        while (sortedIterator.next()) {
-          if (currentKey != sortedIterator.getKey) {
-            if (currentWriter != null) {
-              currentWriter.close(false)
-            }
-            currentKey = sortedIterator.getKey.copy()
-            logDebug(s"Writing partition: $currentKey")
-            currentWriter = newOutputWriter(currentKey)
-          }
+      try while (sortedIterator.next()) {
+        if (currentKey != sortedIterator.getKey) {
+          if (currentWriter != null)
+            currentWriter.close(false)
+          currentKey = sortedIterator.getKey.copy()
+          logDebug(s"Writing partition: $currentKey")
+          currentWriter = newOutputWriter(currentKey)
+        }
 
-          var i = 0
-          while (i < fieldOIs.length) {
-            outputData(i) = if (sortedIterator.getValue.isNullAt(i)) {
+        var i = 0
+        while (i < fieldOIs.length) {
+          outputData(i) =
+            if (sortedIterator.getValue.isNullAt(i))
               null
-            } else {
+            else
               wrappers(i)(sortedIterator.getValue.get(i, dataTypes(i)))
-            }
-            i += 1
-          }
-          currentWriter.write(serializer.serialize(outputData, standardOI))
+          i += 1
         }
-      } finally {
-        if (currentWriter != null) {
-          currentWriter.close(false)
-        }
-      }
+        currentWriter.write(serializer.serialize(outputData, standardOI))
+      } finally if (currentWriter != null)
+        currentWriter.close(false)
       commit()
     } catch {
       case cause: Throwable =>

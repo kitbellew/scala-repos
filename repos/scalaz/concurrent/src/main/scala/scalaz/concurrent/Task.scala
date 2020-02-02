@@ -168,7 +168,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     })(Strategy.Sequential)
 
     get.unsafePerformAsyncInterruptibly(r => a ! Some(r), completed)
-    () => { a ! None }
+    () => a ! None
   }
 
   @deprecated("use unsafePerformAsyncInterruptibly", "7.2")
@@ -479,10 +479,10 @@ object Task {
                     @annotation.tailrec
                     def firstFailure: Boolean = {
                       val current = togo.get
-                      if (current > 0) {
+                      if (current > 0)
                         if (togo.compareAndSet(current, 0)) true
                         else firstFailure
-                      } else false
+                      else false
                     }
 
                     if (firstFailure) // invoke `cb`, then cancel any computation not running yet

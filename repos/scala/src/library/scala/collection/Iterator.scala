@@ -259,13 +259,12 @@ object Iterator {
     private var dropping = start
     @inline private def unbounded = remaining < 0
     private def skip(): Unit =
-      while (dropping > 0) {
+      while (dropping > 0)
         if (underlying.hasNext) {
           underlying.next()
           dropping -= 1
         } else
           dropping = 0
-      }
     def hasNext = { skip(); remaining != 0 && underlying.hasNext }
     def next() = {
       skip()
@@ -591,12 +590,11 @@ trait Iterator[+A] extends TraversableOnce[A] {
       private[this] var status = 0 /*Seek*/
 
       def hasNext = {
-        while (status == 0 /*Seek*/ ) {
+        while (status == 0 /*Seek*/ )
           if (self.hasNext) {
             hd = self.next()
             if (pf.isDefinedAt(hd)) status = 1 /*Found*/
           } else status = -1 /*Empty*/
-        }
         status == 1 /*Found*/
       }
       def next() =
@@ -688,9 +686,8 @@ trait Iterator[+A] extends TraversableOnce[A] {
       var other: PartitionIterator = _
       val lookahead = new mutable.Queue[A]
       def skip() =
-        while (self.hasNext && !p(self.head)) {
+        while (self.hasNext && !p(self.head))
           other.lookahead += self.next
-        }
       def hasNext = !lookahead.isEmpty || { skip(); self.hasNext }
       def next() =
         if (!lookahead.isEmpty) lookahead.dequeue()
@@ -744,11 +741,11 @@ trait Iterator[+A] extends TraversableOnce[A] {
           status > 0
         }
       def next() =
-        if (hasNext) {
+        if (hasNext)
           if (status == 1) {
             status = 0; hd
           } else lookahead.dequeue()
-        } else empty.next()
+        else empty.next()
       def finish(): Boolean =
         if (status == -1) false
         else if (status == -2) {
@@ -781,19 +778,17 @@ trait Iterator[+A] extends TraversableOnce[A] {
       private[this] var status = -1
       def hasNext =
         if (status > 0) self.hasNext
-        else {
-          if (status == 0) true
-          else if (myLeading.finish()) {
-            status = 0
-            true
-          } else {
-            status = 1
-            myLeading = null
-            self.hasNext
-          }
+        else if (status == 0) true
+        else if (myLeading.finish()) {
+          status = 0
+          true
+        } else {
+          status = 1
+          myLeading = null
+          self.hasNext
         }
       def next() =
-        if (hasNext) {
+        if (hasNext)
           if (status > 0) self.next()
           else {
             status = 1
@@ -801,7 +796,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
             myLeading = null
             ans
           }
-        } else Iterator.empty.next()
+        else Iterator.empty.next()
 
       override def toString = "unknown-if-empty iterator"
     }
@@ -837,13 +832,13 @@ trait Iterator[+A] extends TraversableOnce[A] {
         false
       }
     def next() =
-      if (hasNext) {
+      if (hasNext)
         if (status == 1) self.next()
         else {
           status = 1
           fst
         }
-      } else Iterator.empty.next()
+      else Iterator.empty.next()
   }
 
   /** Creates an iterator formed from this iterator and another iterator
@@ -935,13 +930,11 @@ trait Iterator[+A] extends TraversableOnce[A] {
       thatElem: B1): Iterator[(A1, B1)] = new AbstractIterator[(A1, B1)] {
     def hasNext = self.hasNext || that.hasNext
     def next(): (A1, B1) =
-      if (self.hasNext) {
+      if (self.hasNext)
         if (that.hasNext) (self.next(), that.next())
         else (self.next(), thatElem)
-      } else {
-        if (that.hasNext) (thisElem, that.next())
-        else empty.next()
-      }
+      else if (that.hasNext) (thisElem, that.next())
+      else empty.next()
   }
 
   /** Applies a function `f` to all values produced by this iterator.
@@ -1367,17 +1360,15 @@ trait Iterator[+A] extends TraversableOnce[A] {
         origElems = origElems drop replaced
         i = -1
       }
-      if (i < 0) {
+      if (i < 0)
         if (patchElems.hasNext) patchElems.next()
         else origElems.next()
+      else if (origElems.hasNext) {
+        i -= 1
+        origElems.next()
       } else {
-        if (origElems.hasNext) {
-          i -= 1
-          origElems.next()
-        } else {
-          i = -1
-          patchElems.next()
-        }
+        i = -1
+        patchElems.next()
       }
     }
   }

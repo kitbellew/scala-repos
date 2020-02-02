@@ -207,9 +207,8 @@ class ComplexFutureAction[T](run: JobSubmitter => Future[T])
           resultFunc)
         subActions = job :: subActions
         job
-      } else {
+      } else
         throw new SparkException("Action has been cancelled")
-      }
     }
   }
 
@@ -262,12 +261,11 @@ private[spark] class JavaFutureActionWrapper[S, T](
     futureAction.value.get match {
       case scala.util.Success(value) => converter(value)
       case scala.util.Failure(exception) =>
-        if (isCancelled) {
+        if (isCancelled)
           throw new CancellationException("Job cancelled").initCause(exception)
-        } else {
+        else
           // java.util.Future.get() wraps exceptions in ExecutionException
           throw new ExecutionException("Exception thrown by job", exception)
-        }
     }
   }
 
@@ -277,10 +275,10 @@ private[spark] class JavaFutureActionWrapper[S, T](
     getImpl(Duration.fromNanos(unit.toNanos(timeout)))
 
   override def cancel(mayInterruptIfRunning: Boolean): Boolean = synchronized {
-    if (isDone) {
+    if (isDone)
       // According to java.util.Future's Javadoc, this should return false if the task is completed.
       false
-    } else {
+    else {
       // We're limited in terms of the semantics we can provide here; our cancellation is
       // asynchronous and doesn't provide a mechanism to not cancel if the job is running.
       futureAction.cancel()

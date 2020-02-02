@@ -22,10 +22,9 @@ private[finagle] object SocketAddressResolver {
         if (addresses.nonEmpty) {
           val index = Rng.threadLocal.nextInt(addresses.length)
           Right(addresses(index))
-        } else {
+        } else
           // Shouldn't reach here.
           Left(new UnknownHostException(hostName))
-        }
       } catch {
         case t: Throwable =>
           Left(t)

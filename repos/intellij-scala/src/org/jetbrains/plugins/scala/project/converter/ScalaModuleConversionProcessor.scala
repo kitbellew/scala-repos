@@ -67,10 +67,9 @@ object ScalaModuleConversionProcessor {
   def transform(name: String): String = {
     val name0 = name.toLowerCase
 
-    if (BuildTools.exists(name0.startsWith)) {
+    if (BuildTools.exists(name0.startsWith))
       name
-    } else {
+    else
       name.replaceFirst("library", "sdk")
-    }
   }
 }

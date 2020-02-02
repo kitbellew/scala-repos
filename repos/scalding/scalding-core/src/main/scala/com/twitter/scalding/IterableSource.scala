@@ -44,9 +44,9 @@ case class IterableSource[+T](
     with Mappable[T] {
 
   def fields =
-    if (inFields.isNone && set.arity > 0) {
+    if (inFields.isNone && set.arity > 0)
       Dsl.intFields(0 until set.arity)
-    } else inFields
+    else inFields
 
   override def converter[U >: T] = TupleConverter.asSuperConverter[T, U](conv)
 
@@ -58,9 +58,8 @@ case class IterableSource[+T](
 
   override def createTap(readOrWrite: AccessMode)(
       implicit mode: Mode): Tap[_, _, _] = {
-    if (readOrWrite == Write) {
+    if (readOrWrite == Write)
       sys.error("IterableSource is a Read-only Source")
-    }
     mode match {
       case Local(_) =>
         new MemoryTap[InputStream, OutputStream](

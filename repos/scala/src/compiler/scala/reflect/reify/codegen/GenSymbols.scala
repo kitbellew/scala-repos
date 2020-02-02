@@ -104,12 +104,11 @@ trait GenSymbols {
         } else
           mirrorBuildCall(nme.selectTerm, rowner, rname)
       }
-    } else {
-      // todo. make sure that free methods work correctly
-      if (sym.isExistential) reifySymDef(sym)
-      else if (sym.isTerm) reifyFreeTerm(Ident(sym))
-      else reifyFreeType(Ident(sym)) // TODO: reify refinement classes
-    }
+    } else
+    // todo. make sure that free methods work correctly
+    if (sym.isExistential) reifySymDef(sym)
+    else if (sym.isTerm) reifyFreeTerm(Ident(sym))
+    else reifyFreeType(Ident(sym)) // TODO: reify refinement classes
   }
 
   def reifyFreeTerm(binding: Tree): Tree =
@@ -163,7 +162,7 @@ trait GenSymbols {
             mirrorBuildCall(nme.FlagsRepr, reify(sym.flags)),
             reify(origin(sym)))
         )
-      } else {
+      } else
         Reification(
           name,
           binding,
@@ -173,7 +172,6 @@ trait GenSymbols {
             binding,
             mirrorBuildCall(nme.FlagsRepr, reify(sym.flags)),
             reify(origin(sym))))
-      }
     }
 
   def reifyFreeType(binding: Tree): Tree =

@@ -971,36 +971,31 @@ class LogisticRegressionSuite
       // Let's over-sample the positive samples twice.
       val data1 = testData.flatMap {
         case labeledPoint: LabeledPoint =>
-          if (labeledPoint.label == 1.0) {
+          if (labeledPoint.label == 1.0)
             Iterator(labeledPoint, labeledPoint)
-          } else {
+          else
             Iterator(labeledPoint)
-          }
       }
 
       val rnd = new Random(8392)
       val data2 = testData.flatMap {
         case LabeledPoint(label: Double, features: Vector) =>
-          if (rnd.nextGaussian() > 0.0) {
-            if (label == 1.0) {
+          if (rnd.nextGaussian() > 0.0)
+            if (label == 1.0)
               Iterator(
                 Instance(label, 1.2, features),
                 Instance(label, 0.8, features),
                 Instance(0.0, 0.0, features))
-            } else {
+            else
               Iterator(
                 Instance(label, 0.3, features),
                 Instance(1.0, 0.0, features),
                 Instance(label, 0.1, features),
                 Instance(label, 0.6, features))
-            }
-          } else {
-            if (label == 1.0) {
-              Iterator(Instance(label, 2.0, features))
-            } else {
-              Iterator(Instance(label, 1.0, features))
-            }
-          }
+          else if (label == 1.0)
+            Iterator(Instance(label, 2.0, features))
+          else
+            Iterator(Instance(label, 1.0, features))
       }
 
       (

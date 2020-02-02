@@ -57,16 +57,14 @@ object ScalaStubsUtil {
       if (stub != null) {
         if (stub.getParentStub.getStubType
               .isInstanceOf[ScTemplateDefinitionElementType[
-                _ <: ScTemplateDefinition]]) {
+                _ <: ScTemplateDefinition]])
           inheritors += stub.getParentStub.getPsi
             .asInstanceOf[ScTemplateDefinition]
-        }
-      } else {
+      } else
         extendsBlock.getParent match {
           case tp: ScTemplateDefinition => inheritors += tp
           case _                        =>
         }
-      }
     }
     inheritors.toSeq
   }

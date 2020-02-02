@@ -75,10 +75,9 @@ case class NativeConnector(
     serialized {
       connection match {
         case None => Future.Unit
-        case Some(c) => {
+        case Some(c) =>
           connection = None
           c.release()
-        }
       }
     }.flatten
 }

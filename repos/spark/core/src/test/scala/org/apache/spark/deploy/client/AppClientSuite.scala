@@ -86,9 +86,7 @@ class AppClientSuite
       masterRpcEnv = null
       workers = null
       master = null
-    } finally {
-      super.afterAll()
-    }
+    } finally super.afterAll()
 
   test("interface methods of AppClient using local Master") {
     val ci = new AppClientInst(masterRpcEnv.address.toSparkURL)

@@ -150,11 +150,10 @@ package object time {
 
     protected def extractor(unit: Long, range: Long): Vec[Int] = times.map {
       (t: Long) =>
-        if (t >= 0L) {
+        if (t >= 0L)
           ((t / unit) % range).toInt
-        } else {
+        else
           (range - 1L + (((t + 1L) / unit) % range)).toInt
-        }
     }
 
     /**
@@ -177,9 +176,8 @@ package object time {
   implicit def vecTimeAccessors(vec: Vec[DateTime]): TimeAccessors[Vec[Int]] = {
     val (times, chrono: Chronology) = vec match {
       case tv: VecTime => (tv.times, tv.chrono)
-      case _ => {
+      case _ =>
         val tmp = new VecTime(vec.map(_.getMillis)); (tmp.times, tmp.chrono)
-      }
     }
     new TimeAccessors(times, chrono, identity)
   }
@@ -191,10 +189,9 @@ package object time {
       ix: Index[DateTime]): TimeAccessors[Index[Int]] = {
     val (times, chrono: Chronology) = ix match {
       case tv: IndexTime => (tv.times.toVec, tv.chrono)
-      case _ => {
+      case _ =>
         val tmp = new IndexTime(ix.map(_.getMillis));
         (tmp.times.toVec, tmp.chrono)
-      }
     }
 
     new TimeAccessors(times, chrono, Index(_))

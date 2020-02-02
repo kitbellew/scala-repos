@@ -118,14 +118,14 @@ trait CacheConditionDirectives {
             case None ⇒ step4()
           }
         def step4(): Route =
-          if (isGetOrHead) {
+          if (isGetOrHead)
             header[`If-Modified-Since`] match {
               case Some(`If-Modified-Since`(ims))
                   if lastModified.isDefined && unmodified(ims) ⇒
                 complete304()
               case _ ⇒ step5()
             }
-          } else step5()
+          else step5()
         def step5(): Route =
           if (method == GET && header[Range].isDefined)
             header[`If-Range`] match {

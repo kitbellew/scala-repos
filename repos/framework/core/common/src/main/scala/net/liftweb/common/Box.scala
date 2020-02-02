@@ -103,9 +103,8 @@ object Box extends BoxTrait with Tryo {
           Full(failureChain),
           theListOfBoxes
         )
-      } else {
+      } else
         Full(theListOfBoxes.flatten)
-      }
   }
 
 }

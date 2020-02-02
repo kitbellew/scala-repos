@@ -42,14 +42,14 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
   }
 
   def checkError(): Boolean =
-    if (closed) {
+    if (closed)
       /* Just check the error flag.
        * Common sense would tell us to look at the underlying writer's
        * checkError() result too (like we do in the not closed case below).
        * But the JDK does not behave like that. So we don't either.
        */
       errorFlag
-    } else {
+    else {
       flush()
       /* If the underlying writer is also a PrintWriter, we also check its
        * checkError() result. This is not clearly specified by the JavaDoc,
@@ -137,9 +137,8 @@ class PrintWriter(protected[io] var out: Writer, autoFlush: Boolean)
   }
 
   @inline private[this] def trapIOExceptions(body: => Unit): Unit =
-    try {
-      body
-    } catch {
+    try body
+    catch {
       case _: IOException => setError()
     }
 

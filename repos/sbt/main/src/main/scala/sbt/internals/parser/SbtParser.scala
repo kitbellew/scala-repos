@@ -76,17 +76,17 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
     val fileName = file.getAbsolutePath
 
     val parsed =
-      try {
-        toolbox.parse(content)
-      } catch {
+      try toolbox.parse(content)
+      catch {
         case e: ToolBoxError =>
           val seq = toolbox.frontEnd.infos.map { i =>
             s"""[$fileName]:${i.pos.line}: ${i.msg}"""
           }
           val errorMessage = seq.mkString(EOL)
 
-          val error = if (errorMessage.contains(XML_ERROR)) {
-            s"""
+          val error =
+            if (errorMessage.contains(XML_ERROR))
+              s"""
                |$errorMessage
                |Probably problem with parsing xml group, please add parens or semicolons:
                |Replace:
@@ -97,9 +97,8 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
                |val xmlGroup = <a/><b/>;
                |
              """.stripMargin
-          } else {
-            errorMessage
-          }
+            else
+              errorMessage
           throw new MessageOnlyException(error)
       }
     val parsedTrees = parsed match {
@@ -271,10 +270,9 @@ private[sbt] object MissingBracketHandler {
       content: String,
       from: Int): Option[Int] = {
     val index = content.indexWhere(c => c == '}' || c == ')', from)
-    if (index == NOT_FOUND_INDEX) {
+    if (index == NOT_FOUND_INDEX)
       None
-    } else {
+    else
       Some(index)
-    }
   }
 }

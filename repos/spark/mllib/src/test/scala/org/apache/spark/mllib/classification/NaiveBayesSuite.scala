@@ -116,18 +116,15 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
     def closeFit(d1: Double, d2: Double, precision: Double): Boolean =
       (d1 - d2).abs <= precision
     val modelIndex = (0 until piData.length).zip(model.labels.map(_.toInt))
-    for (i <- modelIndex) {
+    for (i <- modelIndex)
       assert(closeFit(math.exp(piData(i._2)), math.exp(model.pi(i._1)), 0.05))
-    }
-    for (i <- modelIndex) {
-      for (j <- 0 until thetaData(i._2).length) {
+    for (i <- modelIndex)
+      for (j <- 0 until thetaData(i._2).length)
         assert(
           closeFit(
             math.exp(thetaData(i._2)(j)),
             math.exp(model.theta(i._1)(j)),
             0.05))
-      }
-    }
   }
 
   test("model types") {
@@ -357,9 +354,7 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
         assert(model.pi === sameModel.pi)
         assert(model.theta === sameModel.theta)
         assert(model.modelType === sameModel.modelType)
-      } finally {
-        Utils.deleteRecursively(tempDir)
-      }
+      } finally Utils.deleteRecursively(tempDir)
     }
   }
 
@@ -379,9 +374,7 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       assert(model.pi === sameModel.pi)
       assert(model.theta === sameModel.theta)
       assert(model.modelType === Multinomial)
-    } finally {
-      Utils.deleteRecursively(tempDir)
-    }
+    } finally Utils.deleteRecursively(tempDir)
   }
 }
 

@@ -67,9 +67,9 @@ private[spark] class HttpServer(
   }
 
   def start() {
-    if (server != null) {
+    if (server != null)
       throw new ServerStateException("Server is already started")
-    } else {
+    else {
       logInfo("Starting HTTP Server")
       val (actualServer, actualPort) =
         Utils
@@ -153,9 +153,8 @@ private[spark] class HttpServer(
     val hashLogin = new HashLoginService()
 
     val userCred = new Password(securityMgr.getSecretKey())
-    if (userCred == null) {
+    if (userCred == null)
       throw new Exception("Error: secret key is null with authentication on")
-    }
     hashLogin.putUser(securityMgr.getHttpUser(), userCred, Array("user"))
     sh.setLoginService(hashLogin)
     sh.setAuthenticator(new DigestAuthenticator());
@@ -164,9 +163,9 @@ private[spark] class HttpServer(
   }
 
   def stop() {
-    if (server == null) {
+    if (server == null)
       throw new ServerStateException("Server is already stopped")
-    } else {
+    else {
       server.stop()
       port = -1
       server = null
@@ -177,9 +176,9 @@ private[spark] class HttpServer(
     * Get the URI of this HTTP server (http://host:port or https://host:port)
     */
   def uri: String =
-    if (server == null) {
+    if (server == null)
       throw new ServerStateException("Server is not started")
-    } else {
+    else {
       val scheme =
         if (securityManager.fileServerSSLOptions.enabled) "https" else "http"
       s"$scheme://${Utils.localHostNameForURI()}:$port"

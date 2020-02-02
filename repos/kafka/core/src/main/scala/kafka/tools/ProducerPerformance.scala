@@ -58,7 +58,7 @@ object ProducerPerformance extends Logging {
         "start.time, end.time, compression, message.size, batch.size, total.data.sent.in.MB, MB.sec, " +
           "total.data.sent.in.nMsg, nMsg.sec")
 
-    for (i <- 0 until config.numThreads) {
+    for (i <- 0 until config.numThreads)
       executor.execute(
         new ProducerThread(
           i,
@@ -67,7 +67,6 @@ object ProducerPerformance extends Logging {
           totalMessagesSent,
           allDone,
           rand))
-    }
 
     allDone.await()
     val endMs = System.currentTimeMillis
@@ -346,9 +345,8 @@ object ProducerPerformance extends Logging {
         val seqId =
           config.initialMessageId + (messagesPerThread * threadId) + messageId
         generateMessageWithSeqId(topic, seqId, msgSize)
-      } else {
+      } else
         new Array[Byte](msgSize)
-      }
     }
 
     override def run {
@@ -358,24 +356,21 @@ object ProducerPerformance extends Logging {
       var message: Array[Byte] = null
 
       while (i < messagesPerThread) {
-        try {
-          config.topics.foreach { topic =>
-            message = generateProducerData(topic, i)
-            producer.send(topic, BigInteger.valueOf(i).toByteArray, message)
-            bytesSent += message.size
-            nSends += 1
-            if (config.messageSendGapMs > 0)
-              Thread.sleep(config.messageSendGapMs)
-          }
+        try config.topics.foreach { topic =>
+          message = generateProducerData(topic, i)
+          producer.send(topic, BigInteger.valueOf(i).toByteArray, message)
+          bytesSent += message.size
+          nSends += 1
+          if (config.messageSendGapMs > 0)
+            Thread.sleep(config.messageSendGapMs)
         } catch {
           case e: Throwable =>
             error("Error when sending message " + new String(message), e)
         }
         i += 1
       }
-      try {
-        producer.close()
-      } catch {
+      try producer.close()
+      catch {
         case e: Throwable => error("Error when closing producer", e)
       }
       totalBytesSent.addAndGet(bytesSent)

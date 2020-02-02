@@ -41,11 +41,8 @@ class JobCancellationSuite
     with LocalSparkContext {
 
   override def afterEach() {
-    try {
-      resetSparkContext()
-    } finally {
-      super.afterEach()
-    }
+    try resetSparkContext()
+    finally super.afterEach()
   }
 
   test("local mode, FIFO scheduler") {

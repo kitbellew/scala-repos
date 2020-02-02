@@ -69,9 +69,8 @@ private[spark] class MapOutputTrackerMasterEndpoint(
         val exception = new SparkException(msg)
         logError(msg, exception)
         context.sendFailure(exception)
-      } else {
+      } else
         context.reply(mapOutputStatuses)
-      }
 
     case StopMapOutputTracker =>
       logInfo("MapOutputTrackerMasterEndpoint stopped!")
@@ -118,9 +117,8 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
     * throw a SparkException if this fails.
     */
   protected def askTracker[T: ClassTag](message: Any): T =
-    try {
-      trackerEndpoint.askWithRetry[T](message)
-    } catch {
+    try trackerEndpoint.askWithRetry[T](message)
+    catch {
       case e: Exception =>
         logError("Error communicating with MapOutputTracker", e)
         throw new SparkException("Error communicating with MapOutputTracker", e)
@@ -129,10 +127,9 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
   /** Send a one-way message to the trackerEndpoint, to which we expect it to reply with true. */
   protected def sendTracker(message: Any) {
     val response = askTracker[Boolean](message)
-    if (response != true) {
+    if (response != true)
       throw new SparkException(
         "Error reply received from MapOutputTracker. Expecting true, got " + response.toString)
-    }
   }
 
   /**
@@ -182,11 +179,9 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
     // Synchronize on the returned array because, on the driver, it gets mutated in place
     statuses.synchronized {
       val totalSizes = new Array[Long](dep.partitioner.numPartitions)
-      for (s <- statuses) {
-        for (i <- 0 until totalSizes.length) {
+      for (s <- statuses)
+        for (i <- 0 until totalSizes.length)
           totalSizes(i) += s.getSizeForBlock(i)
-        }
-      }
       new MapOutputStatistics(dep.shuffleId, totalSizes)
     }
   }
@@ -206,21 +201,18 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
       var fetchedStatuses: Array[MapStatus] = null
       fetching.synchronized {
         // Someone else is fetching it; wait for them to be done
-        while (fetching.contains(shuffleId)) {
-          try {
-            fetching.wait()
-          } catch {
+        while (fetching.contains(shuffleId))
+          try fetching.wait()
+          catch {
             case e: InterruptedException =>
           }
-        }
 
         // Either while we waited the fetch happened successfully, or
         // someone fetched it in between the get and the fetching.synchronized.
         fetchedStatuses = mapStatuses.get(shuffleId).orNull
-        if (fetchedStatuses == null) {
+        if (fetchedStatuses == null)
           // We have to do the fetch, get others to wait for us.
           fetching += shuffleId
-        }
       }
 
       if (fetchedStatuses == null) {
@@ -234,29 +226,26 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
             MapOutputTracker.deserializeMapStatuses(fetchedBytes)
           logInfo("Got the output locations")
           mapStatuses.put(shuffleId, fetchedStatuses)
-        } finally {
-          fetching.synchronized {
-            fetching -= shuffleId
-            fetching.notifyAll()
-          }
+        } finally fetching.synchronized {
+          fetching -= shuffleId
+          fetching.notifyAll()
         }
       }
       logDebug(
         s"Fetching map output statuses for shuffle $shuffleId took " +
           s"${System.currentTimeMillis - startTime} ms")
 
-      if (fetchedStatuses != null) {
+      if (fetchedStatuses != null)
         return fetchedStatuses
-      } else {
+      else {
         logError("Missing all output locations for shuffle " + shuffleId)
         throw new MetadataFetchFailedException(
           shuffleId,
           -1,
           "Missing all output locations for shuffle " + shuffleId)
       }
-    } else {
+    } else
       return statuses
-    }
   }
 
   /** Called to get current epoch number. */
@@ -322,10 +311,9 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
     new ConcurrentHashMap[Int, Array[Byte]]().asScala
 
   def registerShuffle(shuffleId: Int, numMaps: Int) {
-    if (mapStatuses.put(shuffleId, new Array[MapStatus](numMaps)).isDefined) {
+    if (mapStatuses.put(shuffleId, new Array[MapStatus](numMaps)).isDefined)
       throw new IllegalArgumentException(
         "Shuffle ID " + shuffleId + " registered twice")
-    }
   }
 
   def registerMapOutput(shuffleId: Int, mapId: Int, status: MapStatus) {
@@ -341,9 +329,8 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
       statuses: Array[MapStatus],
       changeEpoch: Boolean = false) {
     mapStatuses.put(shuffleId, Array[MapStatus]() ++ statuses)
-    if (changeEpoch) {
+    if (changeEpoch)
       incrementEpoch()
-    }
   }
 
   /** Unregister map output information of the given shuffle, mapper and block manager */
@@ -355,15 +342,13 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
     if (arrayOpt.isDefined && arrayOpt.get != null) {
       val array = arrayOpt.get
       array.synchronized {
-        if (array(mapId) != null && array(mapId).location == bmAddress) {
+        if (array(mapId) != null && array(mapId).location == bmAddress)
           array(mapId) = null
-        }
       }
       incrementEpoch()
-    } else {
+    } else
       throw new SparkException(
         "unregisterMapOutput called for nonexistent shuffle ID")
-    }
   }
 
   /** Unregister shuffle data */
@@ -395,14 +380,12 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
         partitionId,
         dep.partitioner.numPartitions,
         REDUCER_PREF_LOCS_FRACTION)
-      if (blockManagerIds.nonEmpty) {
+      if (blockManagerIds.nonEmpty)
         blockManagerIds.get.map(_.host)
-      } else {
+      else
         Nil
-      }
-    } else {
+    } else
       Nil
-    }
 
   /**
     * Return a list of locations that each have fraction of map output greater than the specified
@@ -421,7 +404,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
       fractionThreshold: Double): Option[Array[BlockManagerId]] = {
 
     val statuses = mapStatuses.get(shuffleId).orNull
-    if (statuses != null) {
+    if (statuses != null)
       statuses.synchronized {
         if (statuses.nonEmpty) {
           // HashMap to add up sizes of all blocks at the same location
@@ -449,12 +432,10 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
               size.toDouble / totalOutputSize >= fractionThreshold
           }
           // Return if we have any locations which satisfy the required threshold
-          if (topLocs.nonEmpty) {
+          if (topLocs.nonEmpty)
             return Some(topLocs.keys.toArray)
-          }
         }
       }
-    }
     None
   }
 
@@ -489,9 +470,8 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
         .format(shuffleId, bytes.length))
     // Add them into the table only if the epoch hasn't changed while we were working
     epochLock.synchronized {
-      if (epoch == epochGotten) {
+      if (epoch == epochGotten)
         cachedSerializedStatuses(shuffleId) = bytes
-      }
     }
     bytes
   }
@@ -571,7 +551,7 @@ private[spark] object MapOutputTracker extends Logging {
     assert(statuses != null)
     val splitsByAddress =
       new HashMap[BlockManagerId, ArrayBuffer[(BlockId, Long)]]
-    for ((status, mapId) <- statuses.zipWithIndex) {
+    for ((status, mapId) <- statuses.zipWithIndex)
       if (status == null) {
         val errorMessage = s"Missing an output location for shuffle $shuffleId"
         logError(errorMessage)
@@ -579,16 +559,13 @@ private[spark] object MapOutputTracker extends Logging {
           shuffleId,
           startPartition,
           errorMessage)
-      } else {
-        for (part <- startPartition until endPartition) {
+      } else
+        for (part <- startPartition until endPartition)
           splitsByAddress.getOrElseUpdate(status.location, ArrayBuffer()) +=
             (
               (
                 ShuffleBlockId(shuffleId, mapId, part),
                 status.getSizeForBlock(part)))
-        }
-      }
-    }
 
     splitsByAddress.toSeq
   }

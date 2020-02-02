@@ -77,7 +77,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
 
   @expand
   implicit def canOpInto_V_V[@expand.args(OpAdd, OpSub) Op, T: Ring: ClassTag](
-      implicit @expand.sequence[Op]((x => x), { r.negate(_) }) op: Q)
+      implicit @expand.sequence[Op]((x => x), r.negate(_)) op: Q)
       : Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] =
     new Op.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       val r = implicitly[Ring[T]]
@@ -98,7 +98,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
 
   @expand
   implicit def canOpInto_V_S[@expand.args(OpAdd, OpSub) Op, T: Ring: ClassTag](
-      implicit @expand.sequence[Op]((x => x), { r.negate(_) }) op: Q)
+      implicit @expand.sequence[Op]((x => x), r.negate(_)) op: Q)
       : Op.InPlaceImpl2[VectorBuilder[T], T] =
     new Op.InPlaceImpl2[VectorBuilder[T], T] {
       val r = implicitly[Ring[T]]
@@ -161,9 +161,9 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
         require(
           a.length < 0 || b.length < 0 || a.length == b.length,
           "Dimension mismatch!")
-        if (a eq b) {
+        if (a eq b)
           a :*= (1 + s)
-        } else {
+        else {
           val bActiveSize: Int = b.activeSize
           a.reserve(bActiveSize + a.activeSize)
           var i = 0
@@ -185,9 +185,9 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
           a.length < 0 || b.length < 0 || a.length == b.length,
           "Dimension mismatch!")
 
-        if (a eq b) {
+        if (a eq b)
           a :*= sr.+(sr.one, s)
-        } else {
+        else {
           val bActiveSize: Int = b.activeSize
           a.reserve(bActiveSize + a.activeSize)
           var i = 0
@@ -261,9 +261,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
           case _ =>
             a.reserve(a.activeSize + b.activeSize)
             require(a.length == b.length, "Dimension mismatch!")
-            for ((i, v) <- b.activeIterator) {
+            for ((i, v) <- b.activeIterator)
               a.add(i, v)
-            }
         }
 
       }
@@ -288,9 +287,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
           case _ =>
             a.reserve(a.activeSize + b.activeSize)
             require(a.length == b.length, "Dimension mismatch!")
-            for ((i, v) <- b.activeIterator) {
+            for ((i, v) <- b.activeIterator)
               a.add(i, ring.negate(v))
-            }
         }
 
       }

@@ -28,10 +28,9 @@ object PublishSubscribe {
     def endpointUri = uri
 
     def receive = {
-      case msg: CamelMessage => {
+      case msg: CamelMessage =>
         publisher ! msg.bodyAs[String]
         sender() ! ("message published")
-      }
     }
   }
 

@@ -86,9 +86,8 @@ class BTypesTest extends ClearAfterClass {
 
   @Test
   def toAsmTypeTest() {
-    for (t <- List(o, s, oArr, method, INT, UNIT, DOUBLE)) {
+    for (t <- List(o, s, oArr, method, INT, UNIT, DOUBLE))
       assertEquals(o.descriptor, o.toASMType.getDescriptor)
-    }
   }
 
   // TODO @lry do more tests

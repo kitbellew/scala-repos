@@ -76,9 +76,8 @@ trait Timer {
       if (pending) {
         pending = false
         true
-      } else {
+      } else
         false
-      }
     }
 
     val task = schedule(time) {

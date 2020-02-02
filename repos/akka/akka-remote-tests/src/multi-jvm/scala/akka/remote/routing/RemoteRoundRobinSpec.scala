@@ -99,9 +99,8 @@ class RemoteRoundRobinSpec
         val connectionCount = 3
         val iterationCount = 10
 
-        for (i ← 0 until iterationCount; k ← 0 until connectionCount) {
+        for (i ← 0 until iterationCount; k ← 0 until connectionCount)
           actor ! "hit"
-        }
 
         val replies: Map[Address, Int] = (receiveWhile(
           5 seconds,
@@ -198,9 +197,8 @@ class RemoteRoundRobinSpec
         val connectionCount = 3
         val iterationCount = 10
 
-        for (i ← 0 until iterationCount; k ← 0 until connectionCount) {
+        for (i ← 0 until iterationCount; k ← 0 until connectionCount)
           actor ! "hit"
-        }
 
         val replies: Map[Address, Int] = (receiveWhile(
           5 seconds,

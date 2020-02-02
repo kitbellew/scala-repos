@@ -6,9 +6,8 @@ private[concurrent] object RunNowExecutionContext
     extends ExecutionContextExecutor {
 
   def execute(runnable: Runnable): Unit =
-    try {
-      runnable.run()
-    } catch {
+    try runnable.run()
+    catch {
       case t: Throwable => reportFailure(t)
     }
 

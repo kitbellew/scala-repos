@@ -78,14 +78,13 @@ private[mesos] class MesosClusterDispatcherArguments(
     case ("--help") :: tail =>
       printUsageAndExit(0)
 
-    case Nil => {
+    case Nil =>
       if (masterUrl == null) {
         // scalastyle:off println
         System.err.println("--master is required")
         // scalastyle:on println
         printUsageAndExit(1)
       }
-    }
 
     case _ =>
       printUsageAndExit(1)

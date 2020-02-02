@@ -464,10 +464,9 @@ final case class NodeMetrics(
       address == that.address,
       s"merge only allowed for same address, [$address] != [$that.address]")
     if (timestamp >= that.timestamp) this // that is older
-    else {
+    else
       // equality is based on the name of the Metric and Set doesn't replace existing element
       copy(metrics = that.metrics union metrics, timestamp = that.timestamp)
-    }
   }
 
   def metric(key: String): Option[Metric] = metrics.collectFirst {
@@ -920,7 +919,7 @@ private[cluster] object MetricsCollector {
       settings: ClusterSettings): MetricsCollector = {
     import settings.{MetricsCollectorClass ⇒ fqcn}
     def log = Logging(system, getClass.getName)
-    if (fqcn == classOf[SigarMetricsCollector].getName) {
+    if (fqcn == classOf[SigarMetricsCollector].getName)
       Try(new SigarMetricsCollector(system)) match {
         case Success(sigarCollector) ⇒ sigarCollector
         case Failure(e) ⇒
@@ -930,8 +929,7 @@ private[cluster] object MetricsCollector {
             e.toString)
           new JmxMetricsCollector(system)
       }
-
-    } else {
+    else
       system.dynamicAccess
         .createInstanceFor[MetricsCollector](
           fqcn,
@@ -942,6 +940,5 @@ private[cluster] object MetricsCollector {
               "Could not create custom metrics collector [" + fqcn + "] due to:" + e.toString)
         }
         .get
-    }
   }
 }

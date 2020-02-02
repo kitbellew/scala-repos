@@ -69,10 +69,9 @@ abstract class SessionVar[T](dflt: => T)
   override protected def findFunc(name: String): Box[T] = S.session match {
     case Full(s) => s.get(name)
     case _ =>
-      if (LiftRules.throwOnOutOfScopeVarAccess) {
+      if (LiftRules.throwOnOutOfScopeVarAccess)
         throw new IllegalAccessException(
           "Access to SessionVar outside a request or comet actor scope")
-      }
 
       if (showWarningWhenAccessedOutOfSessionScope_?)
         logger
@@ -102,10 +101,9 @@ abstract class SessionVar[T](dflt: => T)
 
       case Full(s) => s.set(name, value)
       case _ =>
-        if (LiftRules.throwOnOutOfScopeVarAccess) {
+        if (LiftRules.throwOnOutOfScopeVarAccess)
           throw new IllegalAccessException(
             "Access to SessionVar outside a request or comet actor scope")
-        }
 
         if (showWarningWhenAccessedOutOfSessionScope_?)
           logger.warn(
@@ -198,14 +196,13 @@ abstract class ContainerVar[T](dflt: => T)(
     with LazyLoggable {
 
   override protected def findFunc(name: String): Box[T] = S.session match {
-    case Full(session) => {
+    case Full(session) =>
       localGet(session, name) match {
         case Full(array: Array[Byte]) =>
           Full(containerSerializer.deserialize(array))
         case _ => Empty
       }
-    }
-    case _ => {
+    case _ =>
       if (showWarningWhenAccessedOutOfSessionScope_?)
         logger
           .warn(
@@ -213,7 +210,6 @@ abstract class ContainerVar[T](dflt: => T)(
           ) // added warning per issue 188
 
       Empty
-    }
   }
 
   private def localSet(session: LiftSession, name: String, value: Any): Unit =
@@ -236,9 +232,8 @@ abstract class ContainerVar[T](dflt: => T)(
           "setting a SessionVar in a " +
             "stateless session: " + getClass.getName)
 
-      case Full(session) => {
+      case Full(session) =>
         localSet(session, name, containerSerializer.serialize(value))
-      }
 
       case _ =>
         if (showWarningWhenAccessedOutOfSessionScope_?)
@@ -603,10 +598,9 @@ private[http] trait CoreRequestVarHandler {
       : Box[ConcurrentHashMap[String, (MyType, Any, Boolean)]] =
     vals.value match {
       case null =>
-        if (LiftRules.throwOnOutOfScopeVarAccess) {
+        if (LiftRules.throwOnOutOfScopeVarAccess)
           throw new IllegalAccessException(
             "Access to Var outside a request or comet actor scope")
-        }
         None
       case x => Full(x)
     }
@@ -616,10 +610,9 @@ private[http] trait CoreRequestVarHandler {
       ht <- backingStore
       (rvInstance, value, unread) <- Box !! ht.get(name)
     } yield {
-      if (unread) {
+      if (unread)
         // Flag the variable as no longer being set-but-unread
         ht(name) = (rvInstance: MyType, value.asInstanceOf[T], false)
-      }
       value.asInstanceOf[T]
     }
 
@@ -650,7 +643,7 @@ private[http] trait CoreRequestVarHandler {
 
       sessionThing.set(session)
       f
-    } else {
+    } else
       isIn.doWith("in")(
         vals.doWith(new ConcurrentHashMap)(
           cleanup.doWith(new ListBuffer) {
@@ -660,7 +653,7 @@ private[http] trait CoreRequestVarHandler {
               cleanup.value.toList.foreach(clean =>
                 Helpers.tryo(clean(sessionThing.value)))
 
-              if (Props.devMode && LiftRules.logUnreadRequestVars) {
+              if (Props.devMode && LiftRules.logUnreadRequestVars)
                 vals.value.keys
                   .filter(!_.startsWith(VarConstants.varPrefix + "net.liftweb"))
                   .filter(!_.endsWith(VarConstants.initedSuffix))
@@ -671,14 +664,12 @@ private[http] trait CoreRequestVarHandler {
                           key.replace(VarConstants.varPrefix, "")))
                       case _ =>
                     })
-              }
 
               ret
             }
           }
         )
       )
-    }
 }
 
 object AnyVar {

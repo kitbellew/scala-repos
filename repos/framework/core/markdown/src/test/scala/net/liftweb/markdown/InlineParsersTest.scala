@@ -37,14 +37,12 @@ class InlineParsersTest
   // Inline parsing Tests                                      //
   ///////////////////////////////////////////////////////////////
   def runSucceedingParsingTests(p: Parser[String], l: List[(String, String)]) {
-    for ((a, b) <- l) {
-      try {
-        apply(p, a) should equal(b)
-      } catch {
+    for ((a, b) <- l)
+      try apply(p, a) should equal(b)
+      catch {
         case e: Throwable =>
           println("Input causing the failure was: '" + a + "'."); throw e;
       }
-    }
   }
 
   def runExceptionParsingTests(p: Parser[String], l: List[String]) {

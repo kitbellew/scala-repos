@@ -132,9 +132,8 @@ class PrefixSpan private (
   @Since("1.5.0")
   def run[Item: ClassTag](
       data: RDD[Array[Array[Item]]]): PrefixSpanModel[Item] = {
-    if (data.getStorageLevel == StorageLevel.NONE) {
+    if (data.getStorageLevel == StorageLevel.NONE)
       logWarning("Input data is not cached.")
-    }
 
     val totalCount = data.count()
     logInfo(s"number of sequences: $totalCount")
@@ -169,9 +168,8 @@ class PrefixSpan private (
         itemsets.foreach { itemsets =>
           val items = mutable.ArrayBuilder.make[Int]
           itemsets.foreach { item =>
-            if (itemToInt.contains(item)) {
+            if (itemToInt.contains(item))
               items += itemToInt(item) + 1 // using 1-indexing in internal format
-            }
           }
           val result = items.result()
           if (result.nonEmpty) {
@@ -180,11 +178,10 @@ class PrefixSpan private (
           }
           allItems += 0
         }
-        if (containsFreqItems) {
+        if (containsFreqItems)
           Iterator.single(allItems.result())
-        } else {
+        else
           Iterator.empty
-        }
       }
       .persist(StorageLevel.MEMORY_AND_DISK)
 
@@ -204,11 +201,10 @@ class PrefixSpan private (
         if (x == 0) {
           sequenceBuilder += itemsetBuilder.result()
           itemsetBuilder.clear()
-        } else {
+        } else
           itemsetBuilder += freqItems(
             x - 1
           ) // using 1-indexing in internal format
-        }
         i += 1
       }
       sequenceBuilder.result()
@@ -259,9 +255,8 @@ object PrefixSpan extends Logging {
       maxLocalProjDBSize: Long): RDD[(Array[Int], Long)] = {
     val sc = data.sparkContext
 
-    if (data.getStorageLevel == StorageLevel.NONE) {
+    if (data.getStorageLevel == StorageLevel.NONE)
       logWarning("Input data is not cached.")
-    }
 
     val postfixes = data.map(items => new Postfix(items))
 
@@ -275,14 +270,13 @@ object PrefixSpan extends Logging {
     while (largePrefixes.nonEmpty) {
       val numLocalFreqPatterns = localFreqPatterns.length
       logInfo(s"number of local frequent patterns: $numLocalFreqPatterns")
-      if (numLocalFreqPatterns > 1000000) {
+      if (numLocalFreqPatterns > 1000000)
         logWarning(s"""
              | Collected $numLocalFreqPatterns local frequent patterns. You may want to consider:
              |   1. increase minSupport,
              |   2. decrease maxPatternLength,
              |   3. increase maxLocalProjDBSize.
            """.stripMargin)
-      }
       logInfo(s"number of small prefixes: ${smallPrefixes.size}")
       logInfo(s"number of large prefixes: ${largePrefixes.size}")
       val largePrefixArray = largePrefixes.values.toArray
@@ -306,13 +300,11 @@ object PrefixSpan extends Logging {
         case ((id, item), (count, projDBSize)) =>
           val newPrefix = largePrefixes(id) :+ item
           localFreqPatterns += ((newPrefix.items :+ 0, count))
-          if (newPrefix.length < maxPatternLength) {
-            if (projDBSize > maxLocalProjDBSize) {
+          if (newPrefix.length < maxPatternLength)
+            if (projDBSize > maxLocalProjDBSize)
               newLargePrefixes += newPrefix.id -> newPrefix
-            } else {
+            else
               smallPrefixes += newPrefix.id -> newPrefix
-            }
-          }
       }
       largePrefixes = newLargePrefixes
     }
@@ -364,11 +356,10 @@ object PrefixSpan extends Logging {
     /** Expands this prefix by the input item. */
     def :+(item: Int): Prefix = {
       require(item != 0)
-      if (item < 0) {
+      if (item < 0)
         new Prefix(items :+ -item, length + 1)
-      } else {
+      else
         new Prefix(items ++ Array(0, item), length + 1)
-      }
     }
   }
 
@@ -414,22 +405,20 @@ object PrefixSpan extends Logging {
     require(
       items.last == 0,
       s"The last item in a postfix must be zero, but got ${items.last}.")
-    if (partialStarts.nonEmpty) {
+    if (partialStarts.nonEmpty)
       require(
         partialStarts.head >= start,
         "The first partial start cannot be smaller than the start index," +
           s"but got partialStarts.head = ${partialStarts.head} < start = $start."
       )
-    }
 
     /**
       * Start index of the first full itemset contained in this postfix.
       */
     private[this] def fullStart: Int = {
       var i = start
-      while (items(i) != 0) {
+      while (items(i) != 0)
         i += 1
-      }
       i
     }
 
@@ -457,9 +446,8 @@ object PrefixSpan extends Logging {
         var i = start
         var x = -items(i)
         while (x != 0) {
-          if (!prefixes.contains(x)) {
+          if (!prefixes.contains(x))
             prefixes(x) = n1 - i
-          }
           i += 1
           x = -items(i)
         }
@@ -468,9 +456,8 @@ object PrefixSpan extends Logging {
       var i = fullStart
       while (i < n1) {
         val x = items(i)
-        if (x != 0 && !prefixes.contains(x)) {
+        if (x != 0 && !prefixes.contains(x))
           prefixes(x) = n1 - i
-        }
         i += 1
       }
       prefixes.toIterator
@@ -507,9 +494,8 @@ object PrefixSpan extends Logging {
               newStart = i
               matched = true
             }
-            if (items(i) != 0) {
+            if (items(i) != 0)
               newPartialStarts += i
-            }
           }
         }
       } else {
@@ -525,9 +511,8 @@ object PrefixSpan extends Logging {
               newStart = i
               matched = true
             }
-            if (items(i + 1) != 0) {
+            if (items(i + 1) != 0)
               newPartialStarts += i + 1
-            }
           }
           i += 1
         }
@@ -545,15 +530,13 @@ object PrefixSpan extends Logging {
       val np = prefix.length
       while (i < np && cur.nonEmpty) {
         val x = prefix(i)
-        if (x == 0) {
+        if (x == 0)
           partial = false
-        } else {
-          if (partial) {
-            cur = cur.project(-x)
-          } else {
-            cur = cur.project(x)
-            partial = true
-          }
+        else if (partial)
+          cur = cur.project(-x)
+        else {
+          cur = cur.project(x)
+          partial = true
         }
         i += 1
       }
@@ -569,14 +552,13 @@ object PrefixSpan extends Logging {
       * Returns the same sequence with compressed storage if possible.
       */
     def compressed: Postfix =
-      if (start > 0) {
+      if (start > 0)
         new Postfix(
           items.slice(start, items.length),
           0,
           partialStarts.map(_ - start))
-      } else {
+      else
         this
-      }
   }
 
   /**

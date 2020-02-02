@@ -55,12 +55,11 @@ final class DataForm(
       case body: play.api.mvc.AnyContent if body.asFormUrlEncoded.isDefined =>
         (body.asFormUrlEncoded.get collect {
           case (key, msgs) if key startsWith "key_" =>
-            msgs.headOption map { key.drop(4) -> _ }
+            msgs.headOption map key.drop(4) -> _
         }).flatten.toMap
-      case body => {
+      case body =>
         logger.warn("Can't parse translation request body: " + body)
         Map.empty
-      }
     }
 
   private def sanitize(message: String) = message.replace("""\n""", " ").trim

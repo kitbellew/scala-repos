@@ -261,13 +261,12 @@ object HiveTypeCoercion {
       val targetTypes: Seq[DataType] =
         getWidestTypes(children, attrIndex = 0, mutable.Queue[DataType]())
 
-      if (targetTypes.nonEmpty) {
+      if (targetTypes.nonEmpty)
         // Add an extra Project if the targetTypes are different from the original types.
         children.map(widenTypes(_, targetTypes))
-      } else {
+      else
         // Unable to find a target type to widen, then just return the original set.
         children
-      }
     }
 
     /** Get the widest type for each attribute in all the children */
@@ -570,17 +569,17 @@ object HiveTypeCoercion {
             var changed = false
             val newBranches = c.branches.map {
               case (condition, value) =>
-                if (value.dataType.sameType(commonType)) {
+                if (value.dataType.sameType(commonType))
                   (condition, value)
-                } else {
+                else {
                   changed = true
                   (condition, Cast(value, commonType))
                 }
             }
             val newElseValue = c.elseValue.map { value =>
-              if (value.dataType.sameType(commonType)) {
+              if (value.dataType.sameType(commonType))
                 value
-              } else {
+              else {
                 changed = true
                 Cast(value, commonType)
               }
@@ -662,10 +661,9 @@ object HiveTypeCoercion {
                 if (right.dataType == commonType) right
                 else Cast(right, commonType)
               b.withNewChildren(Seq(newLeft, newRight))
-            } else {
+            } else
               // Otherwise, don't do anything with the expression.
               b
-            }
           }
           .getOrElse(
             b
@@ -684,11 +682,10 @@ object HiveTypeCoercion {
         // general implicit casting.
         val children: Seq[Expression] = e.children.zip(e.inputTypes).map {
           case (in, expected) =>
-            if (in.dataType == NullType && !expected.acceptsType(NullType)) {
+            if (in.dataType == NullType && !expected.acceptsType(NullType))
               Literal.create(null, expected.defaultConcreteType)
-            } else {
+            else
               in
-            }
         }
         e.withNewChildren(children)
     }

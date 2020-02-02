@@ -37,23 +37,21 @@ case class ASTNode(
   /** Line in which the ASTNode starts. */
   lazy val line: Int = {
     val line = token.getLine
-    if (line == 0) {
+    if (line == 0)
       if (children.nonEmpty) children.head.line
       else 0
-    } else {
+    else
       line
-    }
   }
 
   /** Position of the Character at which ASTNode starts. */
   lazy val positionInLine: Int = {
     val line = token.getCharPositionInLine
-    if (line == -1) {
+    if (line == -1)
       if (children.nonEmpty) children.head.positionInLine
       else 0
-    } else {
+    else
       line
-    }
   }
 
   /** Origin of the ASTNode. */
@@ -84,17 +82,16 @@ case class ASTNode(
       val r = f(other)
       (l == null && r == null) || l.equals(r)
     }
-    if (other == null) {
+    if (other == null)
       false
-    } else if (!check(_.token.getType)
-               || !check(_.token.getText)
-               || !check(_.numChildren)) {
+    else if (!check(_.token.getType)
+             || !check(_.token.getText)
+             || !check(_.numChildren))
       false
-    } else {
+    else
       children.zip(other.children).forall {
         case (l, r) => l treeEquals r
       }
-    }
   }
 
   override def simpleString: String =

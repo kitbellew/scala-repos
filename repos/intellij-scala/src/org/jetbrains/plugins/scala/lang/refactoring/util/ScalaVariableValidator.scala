@@ -106,10 +106,10 @@ class ScalaVariableValidator(
     buf ++= validateReference(selectedElement, name)
     var cl = container
     while (cl != null && !cl.isInstanceOf[ScTypeDefinition]) cl = cl.getParent
-    if (cl != null) {
+    if (cl != null)
       cl match {
         case x: ScTypeDefinition =>
-          for (member <- x.members) {
+          for (member <- x.members)
             member match {
               case x: ScVariable =>
                 for (el <- x.declaredElements if el.name == name)
@@ -119,23 +119,18 @@ class ScalaVariableValidator(
                   buf += ((el, messageForMember(el.name)))
               case _ =>
             }
-          }
-          for (function <- x.functions; if function.name == name) {
+          for (function <- x.functions; if function.name == name)
             buf += ((x, messageForMember(function.name)))
-          }
           x match {
             case scClass: ScClass =>
               for {
                 constructor <- scClass.constructor
                 parameter <- constructor.parameters
                 if parameter.name == name
-              } {
-                buf += ((parameter, messageForClassParameter(parameter.name)))
-              }
+              } buf += ((parameter, messageForClassParameter(parameter.name)))
             case _ =>
           }
       }
-    }
     buf.toArray
   }
 
@@ -166,7 +161,7 @@ class ScalaVariableValidator(
       allOcc: Boolean): Seq[(PsiNamedElement, String)] = {
     val container = enclosingContainer(allOcc)
     val buf = new ArrayBuffer[(PsiNamedElement, String)]
-    for (child <- element.getChildren) {
+    for (child <- element.getChildren)
       child match {
         case x: ScClassParameter if x.name == name =>
           buf += ((x, messageForClassParameter(x.name)))
@@ -180,18 +175,16 @@ class ScalaVariableValidator(
                   else (x, messageForLocal(x.name)))
         case _ =>
       }
-    }
     if (element != container)
-      for (child <- element.getChildren) {
+      for (child <- element.getChildren)
         buf ++= validateDown(child, name, allOcc)
-      }
     else {
       var from = {
-        var parent: PsiElement = if (allOcc) {
-          selectedElement //todo:
-        } else {
-          selectedElement
-        }
+        var parent: PsiElement =
+          if (allOcc)
+            selectedElement //todo:
+          else
+            selectedElement
         if (PsiTreeUtil.isAncestor(container, parent, true))
           while (parent.getParent != null && parent.getParent != container)
             parent = parent.getParent

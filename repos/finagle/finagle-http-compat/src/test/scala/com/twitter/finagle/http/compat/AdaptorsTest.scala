@@ -60,7 +60,7 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     chunked <- arbitrary[Boolean]
     headers <- Gen.containerOf[Seq, (String, String)](arbHeader)
     body <- arbitrary[String]
-  } yield {
+  } yield
     if (chunked) {
       val res = Response(version, Status(code), Reader.fromBuf(Buf.Utf8(body)))
       headers foreach { case (k, v) => res.headerMap.add(k, v) }
@@ -72,7 +72,6 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
       res.contentString = body
       (res, body)
     }
-  }
 
   val arbRequest = for {
     method <- arbMethod

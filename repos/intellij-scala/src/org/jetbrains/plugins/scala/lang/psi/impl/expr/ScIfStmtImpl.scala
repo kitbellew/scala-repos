@@ -88,9 +88,7 @@ class ScIfStmtImpl(node: ASTNode)
     (thenBranch, elseBranch) match {
       case (Some(t), Some(e)) =>
         for (tt <- t.getType(TypingContext.empty);
-             et <- e.getType(TypingContext.empty)) yield {
-          Bounds.weakLub(tt, et)
-        }
+             et <- e.getType(TypingContext.empty)) yield Bounds.weakLub(tt, et)
       case (Some(t), None) =>
         t.getType(TypingContext.empty).map(tt => Bounds.weakLub(tt, types.Unit))
       case _ => Failure(ScalaBundle.message("nothing.to.type"), Some(this))

@@ -147,16 +147,16 @@ private[hive] case class HiveTableScan(
   protected override def doExecute(): RDD[InternalRow] = {
     // Using dummyCallSite, as getCallSite can turn out to be expensive with
     // with multiple partitions.
-    val rdd = if (!relation.hiveQlTable.isPartitioned) {
-      Utils.withDummyCallSite(sqlContext.sparkContext) {
-        hadoopReader.makeRDDForTable(relation.hiveQlTable)
-      }
-    } else {
-      Utils.withDummyCallSite(sqlContext.sparkContext) {
-        hadoopReader.makeRDDForPartitionedTable(
-          prunePartitions(relation.getHiveQlPartitions(partitionPruningPred)))
-      }
-    }
+    val rdd =
+      if (!relation.hiveQlTable.isPartitioned)
+        Utils.withDummyCallSite(sqlContext.sparkContext) {
+          hadoopReader.makeRDDForTable(relation.hiveQlTable)
+        }
+      else
+        Utils.withDummyCallSite(sqlContext.sparkContext) {
+          hadoopReader.makeRDDForPartitionedTable(
+            prunePartitions(relation.getHiveQlPartitions(partitionPruningPred)))
+        }
     val numOutputRows = longMetric("numOutputRows")
     rdd.mapPartitionsInternal { iter =>
       val proj = UnsafeProjection.create(schema)

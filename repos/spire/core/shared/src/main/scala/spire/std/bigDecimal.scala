@@ -37,11 +37,10 @@ trait BigDecimalIsField extends Field[BigDecimal] {
         prime: BigInteger,
         shift: Int = 0): (Int, BigInteger) = {
       val Array(div, rem) = n.divideAndRemainder(prime)
-      if (n == BigInteger.ZERO || rem != BigInteger.ZERO) {
+      if (n == BigInteger.ZERO || rem != BigInteger.ZERO)
         (shift, n)
-      } else {
+      else
         reduce0(div, prime, shift + 1)
-      }
     }
 
     def reduce(n: BigInteger): (Int, Int, BigInteger) = {

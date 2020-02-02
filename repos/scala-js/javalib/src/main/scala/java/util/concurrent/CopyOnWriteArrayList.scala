@@ -143,21 +143,19 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
     val iter = iterator()
     clear()
     var modified = false
-    for (elem <- iter) {
+    for (elem <- iter)
       if (c.contains(elem))
         innerPush(elem)
       else
         modified = true
-    }
     modified
   }
 
   def addAllAbsent(c: Collection[_ <: E]): Int = {
     var added = 0
-    for (e <- c.iterator()) {
+    for (e <- c.iterator())
       if (addIfAbsent(e))
         added += 1
-    }
     added
   }
 
@@ -180,16 +178,15 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
     iterator().mkString("[", ",", "]")
 
   override def equals(obj: Any): Boolean =
-    if (obj.asInstanceOf[AnyRef] eq this) {
+    if (obj.asInstanceOf[AnyRef] eq this)
       true
-    } else {
+    else
       obj match {
         case obj: List[_] =>
           val oIter = obj.listIterator
           this.forall(oIter.hasNext && _ === oIter.next()) && !oIter.hasNext
         case _ => false
       }
-    }
 
   override def hashCode(): Int =
     iterator().foldLeft(1) { (prev, elem) =>
@@ -298,9 +295,9 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
     }
 
     override protected def innerPush(elem: E): Unit =
-      if (toIndex < self.size) {
+      if (toIndex < self.size)
         innerSplice(size, 0, elem)
-      } else {
+      else {
         changeSize(1)
         self.innerPush(elem)
       }

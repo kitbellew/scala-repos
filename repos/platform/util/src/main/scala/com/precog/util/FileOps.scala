@@ -45,15 +45,13 @@ object FilesystemFileOps extends FileOps {
 
   def rename(src: File, dest: File) = IO { src.renameTo(dest) }
   def moveDir(src: File, dest: File) = IO {
-    if (!src.isDirectory) {
+    if (!src.isDirectory)
       throw new IOException(
         "Source for moveDir (%s) is not a directory".format(src))
-    }
 
-    if (!dest.getParentFile.isDirectory) {
+    if (!dest.getParentFile.isDirectory)
       throw new IOException(
         "Destination parent for moveDir (%s) is not a directory".format(dest))
-    }
 
     Files.move(src, dest)
 

@@ -1133,11 +1133,10 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
           .zip(parts)
           .map {
             case (k, v) =>
-              if (v == "NULL") {
+              if (v == "NULL")
                 s"$k=${ConfVars.DEFAULTPARTITIONNAME.defaultStrVal}"
-              } else {
+              else
                 s"$k=$v"
-              }
           }
           .mkString("/")
 

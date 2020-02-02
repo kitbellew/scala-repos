@@ -22,11 +22,10 @@ class SyntheticVariablesHolderEvaluator(parentEvaluator: CodeFragmentEvaluator)
     }
 
   override def setInitialValue(localName: String, value: scala.Any): Unit = {
-    if (mySyntheticLocals.contains(localName)) {
+    if (mySyntheticLocals.contains(localName))
       throw EvaluateExceptionUtil.createEvaluateException(
         DebuggerBundle
           .message("evaluation.error.variable.already.declared", localName))
-    }
     mySyntheticLocals.put(localName, NonInitializedValue)
   }
 

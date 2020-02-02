@@ -57,13 +57,12 @@ object NamedCometListener extends Loggable {
       Schedule { () =>
         val ret = disptchers.get(name) match {
           case Some(actor) => actor
-          case None => {
+          case None =>
             val ret = new NamedCometDispatcher(str)
             disptchers += name -> ret
             logger.debug(
               "Our map of NamedCometDispatchers is: %s".format(disptchers));
             ret
-          }
         }
         liftActor.satisfy(ret)
       }

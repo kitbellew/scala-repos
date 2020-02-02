@@ -95,9 +95,8 @@ trait HttpComponentsClient extends Client {
   protected def createClient = {
     val builder = HttpClientBuilder.create()
     builder.disableRedirectHandling()
-    if (_cookieStore.value != null) {
+    if (_cookieStore.value != null)
       builder.setDefaultCookieStore(_cookieStore.value)
-    }
     builder.build()
   }
 
@@ -132,13 +131,12 @@ trait HttpComponentsClient extends Client {
         r.setEntity(new ByteArrayEntity(body))
 
       case _ =>
-        if (body.length > 0) {
+        if (body.length > 0)
           throw new IllegalArgumentException(
             """|HTTP %s does not support enclosing an entity.
                |Please remove the value from `body` parameter
                |or use POST/PUT/PATCH instead.""".stripMargin.format(
               req.getMethod))
-        }
     }
   }
 
@@ -147,9 +145,8 @@ trait HttpComponentsClient extends Client {
       params: Iterable[(String, String)],
       files: Iterable[(String, Any)]) {
 
-    if (params.isEmpty && files.isEmpty) {
+    if (params.isEmpty && files.isEmpty)
       return
-    }
 
     req match {
       case r: HttpEntityEnclosingRequestBase =>

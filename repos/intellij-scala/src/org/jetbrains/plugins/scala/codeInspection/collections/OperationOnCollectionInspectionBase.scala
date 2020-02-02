@@ -72,14 +72,13 @@ abstract class OperationOnCollectionInspectionBase
 
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case expr: ScExpression =>
-      for (s <- simplifications(expr)) {
+      for (s <- simplifications(expr))
         holder.registerProblem(
           s.exprToReplace.getElement,
           s.hint,
           highlightType,
           s.rangeInParent,
           new OperationOnCollectionQuickFix(expr, s))
-      }
   }
 
   def highlightType: ProblemHighlightType =
@@ -113,12 +112,11 @@ abstract class OperationOnCollectionInspectionBase
     likeOptionKey -> getLikeOptionClasses _
   )
 
-  private val setPatternLists = {
+  private val setPatternLists =
     Map(
       likeCollectionKey -> setLikeCollectionClasses _,
       likeOptionKey -> setLikeOptionClasses _
     )
-  }
 
   override def createOptionsPanel: JComponent = {
     def checkBoxesPanel(): JComponent = {

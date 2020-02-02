@@ -35,9 +35,8 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
 
   override def afterFunction() {
     super.afterFunction()
-    if (ssc != null) {
+    if (ssc != null)
       ssc.stop()
-    }
   }
 
   private def createJobStart(
@@ -202,10 +201,9 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
         None,
         Map.empty)
 
-    for (_ <- 0 until (limit + 10)) {
+    for (_ <- 0 until (limit + 10))
       listener.onBatchCompleted(
         StreamingListenerBatchCompleted(batchInfoCompleted))
-    }
 
     listener.retainedCompletedBatches.size should be(limit)
     listener.numTotalCompletedBatches should be(limit + 10)

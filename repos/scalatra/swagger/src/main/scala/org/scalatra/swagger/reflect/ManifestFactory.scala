@@ -17,11 +17,10 @@ private[swagger] object ManifestFactory {
       val clazz = manifestOf(pt.getRawType).runtimeClass
       val typeArgs = pt.getActualTypeArguments map manifestOf
 
-      if (pt.getOwnerType == null) {
+      if (pt.getOwnerType == null)
         manifestOf(clazz, typeArgs)
-      } else {
+      else
         Manifest.classType(manifestOf(pt.getOwnerType), clazz, typeArgs: _*)
-      }
 
     case at: GenericArrayType =>
       val componentManifest = manifestOf(at.getGenericComponentType)
@@ -43,9 +42,9 @@ private[swagger] object ManifestFactory {
   }
 
   def manifestOf(erasure: Class[_], typeArgs: Seq[Manifest[_]]): Manifest[_] =
-    if (typeArgs.size == 0) {
+    if (typeArgs.size == 0)
       fromClass(erasure)
-    } else {
+    else {
       val normalizedErasure =
         if (erasure.getName == "scala.Array")
           typeArgs(0).arrayManifest.runtimeClass

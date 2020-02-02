@@ -172,13 +172,12 @@ class FutureSpec
       // is executed in the context of p
       val result = {
         implicit val ec = A
-        p.future map { _ + Thread.currentThread().getName() }
+        p.future map _ + Thread.currentThread().getName()
       }
 
       p.completeWith(Future { "Hi " }(B))
-      try {
-        Await.result(result, timeout.duration) should ===("Hi A")
-      } finally {
+      try Await.result(result, timeout.duration) should ===("Hi A")
+      finally {
         A.shutdown()
         B.shutdown()
       }

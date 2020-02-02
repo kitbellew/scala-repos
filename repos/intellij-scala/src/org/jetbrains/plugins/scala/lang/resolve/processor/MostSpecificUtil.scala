@@ -120,9 +120,8 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
         var callByName = false
         def checkCallByName(clauses: Seq[ScParameterClause]): Unit =
           if (clauses.length > 0 && clauses(0).parameters.length == 1 && clauses(
-                0).parameters(0).isCallByNameParameter) {
+                0).parameters(0).isCallByNameParameter)
             callByName = true
-          }
         r.element match {
           case f: ScFunction => checkCallByName(f.paramClauses.clauses)
           case f: ScPrimaryConstructor =>
@@ -328,21 +327,19 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                 typeParams.foreach { tp =>
                   if (tp.lowerType() != types.Nothing) {
                     val substedLower = uSubst.subst(tp.lowerType())
-                    if (!hasRecursiveTypeParameters(tp.lowerType())) {
+                    if (!hasRecursiveTypeParameters(tp.lowerType()))
                       u = u.addLower(
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
                         substedLower,
                         additional = true)
-                    }
                   }
                   if (tp.upperType() != types.Any) {
                     val substedUpper = uSubst.subst(tp.upperType())
-                    if (!hasRecursiveTypeParameters(tp.upperType())) {
+                    if (!hasRecursiveTypeParameters(tp.upperType()))
                       u = u.addUpper(
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
                         substedUpper,
                         additional = true)
-                    }
                   }
                 }
               case None => return false

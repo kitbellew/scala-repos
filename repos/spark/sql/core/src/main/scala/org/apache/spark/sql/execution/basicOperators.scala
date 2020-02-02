@@ -101,11 +101,10 @@ case class Filter(condition: Expression, child: SparkPlan)
 
   override def output: Seq[Attribute] =
     child.output.map { a =>
-      if (a.nullable && notNullAttributes.contains(a)) {
+      if (a.nullable && notNullAttributes.contains(a))
         a.withNullability(false)
-      } else {
+      else
         a
-      }
     }
 
   private[sql] override lazy val metrics = Map(
@@ -138,11 +137,11 @@ case class Filter(condition: Expression, child: SparkPlan)
         val bound = ExpressionCanonicalizer.execute(
           BindReferences.bindReference(e, output))
         val ev = bound.gen(ctx)
-        val nullCheck = if (bound.nullable) {
-          s"${ev.isNull} || "
-        } else {
-          s""
-        }
+        val nullCheck =
+          if (bound.nullable)
+            s"${ev.isNull} || "
+          else
+            s""
         s"""
          |${ev.code}
          |if ($nullCheck!${ev.value}) continue;
@@ -154,9 +153,8 @@ case class Filter(condition: Expression, child: SparkPlan)
     // generate better code (remove dead branches).
     val resultVars = input.zipWithIndex.map {
       case (ev, i) =>
-        if (notNullAttributes.contains(child.output(i))) {
+        if (notNullAttributes.contains(child.output(i)))
           ev.isNull = "false"
-        }
         ev
     }
     s"""
@@ -202,7 +200,7 @@ case class Sample(
   override def output: Seq[Attribute] = child.output
 
   protected override def doExecute(): RDD[InternalRow] =
-    if (withReplacement) {
+    if (withReplacement)
       // Disable gap sampling since the gap sampling method buffers two rows internally,
       // requiring us to copy the row, which is more expensive than the random number generator.
       new PartitionwiseSampledRDD[InternalRow, InternalRow](
@@ -212,9 +210,8 @@ case class Sample(
           useGapSamplingIfPossible = false),
         preservesPartitioning = true,
         seed)
-    } else {
+    else
       child.execute().randomSampleWithRange(lowerBound, upperBound, seed)
-    }
 }
 
 case class Range(
@@ -254,11 +251,11 @@ case class Range(
     val value = ctx.freshName("value")
     val ev = ExprCode("", "false", value)
     val BigInt = classOf[java.math.BigInteger].getName
-    val checkEnd = if (step > 0) {
-      s"$number < $partitionEnd"
-    } else {
-      s"$number > $partitionEnd"
-    }
+    val checkEnd =
+      if (step > 0)
+        s"$number < $partitionEnd"
+      else
+        s"$number > $partitionEnd"
 
     ctx.addNewFunction(
       "initRange",
@@ -330,13 +327,12 @@ case class Range(
         val partitionStart = (i * numElements) / numSlices * step + start
         val partitionEnd = (((i + 1) * numElements) / numSlices) * step + start
         def getSafeMargin(bi: BigInt): Long =
-          if (bi.isValidLong) {
+          if (bi.isValidLong)
             bi.toLong
-          } else if (bi > 0) {
+          else if (bi > 0)
             Long.MaxValue
-          } else {
+          else
             Long.MinValue
-          }
         val safePartitionStart = getSafeMargin(partitionStart)
         val safePartitionEnd = getSafeMargin(partitionEnd)
         val rowSize = UnsafeRow
@@ -348,23 +344,21 @@ case class Range(
           private[this] var overflow: Boolean = false
 
           override def hasNext =
-            if (!overflow) {
-              if (step > 0) {
+            if (!overflow)
+              if (step > 0)
                 number < safePartitionEnd
-              } else {
+              else
                 number > safePartitionEnd
-              }
-            } else false
+            else false
 
           override def next() = {
             val ret = number
             number += step
-            if (number < ret ^ step < 0) {
+            if (number < ret ^ step < 0)
               // we have Long.MaxValue + Long.MaxValue < Long.MaxValue
               // and Long.MinValue + Long.MinValue > Long.MinValue, so iff the step causes a step
               // back, we are pretty sure that we have an overflow.
               overflow = true
-            }
 
             numOutputRows += 1
             unsafeRow.setLong(0, ret)

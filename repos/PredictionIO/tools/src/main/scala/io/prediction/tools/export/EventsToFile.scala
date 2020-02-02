@@ -75,9 +75,9 @@ object EventsToFile extends Logging {
       val events = Storage.getPEvents()
       val eventsRdd = events.find(appId = args.appId, channelId = channelId)(sc)
       val jsonStringRdd = eventsRdd.map(write(_))
-      if (args.format == "json") {
+      if (args.format == "json")
         jsonStringRdd.saveAsTextFile(args.outputPath)
-      } else {
+      else {
         val jsonRdd = sqlContext.jsonRDD(jsonStringRdd)
         jsonRdd.saveAsParquetFile(args.outputPath)
       }

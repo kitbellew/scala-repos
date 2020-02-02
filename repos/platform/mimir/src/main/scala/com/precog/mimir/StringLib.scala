@@ -103,7 +103,7 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       try {
         num.toIntExact; true
       } catch {
-        case e: java.lang.ArithmeticException => { false }
+        case e: java.lang.ArithmeticException => false
       }
 
     class Op1SS(name: String, f: String => String)
@@ -186,7 +186,7 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       lazy val prepare = UnifyStrDate
 
       val mapper = CF2Array[String, M]("std::string::regexMatch") {
-        case (target: StrColumn, regex: StrColumn, range) => {
+        case (target: StrColumn, regex: StrColumn, range) =>
           val table = new Array[Array[String]](range.length)
           val defined = new BitSet(range.length)
 
@@ -198,7 +198,7 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 val reg = regex(i).r
 
                 str match {
-                  case reg(capture @ _*) => {
+                  case reg(capture @ _*) =>
                     val capture2 = capture map { str =>
                       if (str == null)
                         ""
@@ -208,7 +208,6 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
                     table(i) = capture2.toArray
                     defined.set(i)
-                  }
 
                   case _ =>
                 }
@@ -219,7 +218,6 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           }
 
           (CString, table, defined)
-        }
       }
     }
 
@@ -413,7 +411,7 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val tpe = UnaryOperationType(JNumberT, JTextT)
       def f1(ctx: MorphContext): F1 = CF1P("builtin::str::numToString") {
         case c: LongColumn => new StrFrom.L(c, _ => true, _.toString)
-        case c: DoubleColumn => {
+        case c: DoubleColumn =>
           new StrFrom.D(c, _ => true, { d =>
             val back = d.toString
             if (back.endsWith(".0"))
@@ -421,7 +419,6 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             else
               back
           })
-        }
         case c: NumColumn => new StrFrom.N(c, _ => true, _.toString)
       }
     }
@@ -470,12 +467,12 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
     def splitMapper(quote: Boolean) =
       CF2Array[String, M]("std::string::split(%s)".format(quote)) {
-        case (left: StrColumn, right: StrColumn, range) => {
+        case (left: StrColumn, right: StrColumn, range) =>
           val result = new Array[Array[String]](range.length)
           val defined = new BitSet(range.length)
 
           RangeUtil.loop(range) { row =>
-            if (left.isDefinedAt(row) && right.isDefinedAt(row)) {
+            if (left.isDefinedAt(row) && right.isDefinedAt(row))
               try {
                 val pattern =
                   if (quote) Pattern.quote(right(row)) else right(row)
@@ -487,11 +484,9 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               } catch {
                 case _: PatternSyntaxException =>
               }
-            }
           }
 
           (CString, result, defined)
-        }
       }
 
     val UnifyStrDate = CF1P("builtin::str::unifyStrDate")({

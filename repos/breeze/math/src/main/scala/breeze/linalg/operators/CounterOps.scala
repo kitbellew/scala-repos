@@ -35,9 +35,8 @@ trait CounterOps {
     new OpAdd.InPlaceImpl2[Counter[K1, V], Counter[K1, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: Counter[K1, V]) {
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = field.+(a(k), v)
-        }
       }
     }
 
@@ -46,9 +45,8 @@ trait CounterOps {
     new scaleAdd.InPlaceImpl3[Counter[K1, V], V, Counter[K1, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], s: V, b: Counter[K1, V]) {
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = field.+(a(k), field.*(s, v))
-        }
       }
     }
 
@@ -61,9 +59,8 @@ trait CounterOps {
     new OpAdd.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.+(v, b)
-        }
       }
     }
 
@@ -76,9 +73,8 @@ trait CounterOps {
     new OpSub.InPlaceImpl2[Counter[K1, V], Counter[K1, V]] {
       val field = implicitly[Ring[V]]
       def apply(a: Counter[K1, V], b: Counter[K1, V]) {
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = field.-(a(k), v)
-        }
       }
     }
 
@@ -90,9 +86,8 @@ trait CounterOps {
     new OpSub.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Ring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.-(v, b)
-        }
       }
     }
 
@@ -105,9 +100,8 @@ trait CounterOps {
     new OpMulScalar.InPlaceImpl2[Counter[K1, V], Counter[K2, V]] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: Counter[K2, V]) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.*(v, b(k))
-        }
       }
     }
 
@@ -130,9 +124,8 @@ trait CounterOps {
     new OpMulScalar.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.*(v, b)
-        }
       }
     }
 
@@ -141,9 +134,8 @@ trait CounterOps {
     new OpMulMatrix.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field.*(v, b)
-        }
       }
     }
 
@@ -178,9 +170,8 @@ trait CounterOps {
     new OpDiv.InPlaceImpl2[Counter[K1, V], Counter[K1, V]] {
       val field = implicitly[Field[V]]
       def apply(a: Counter[K1, V], b: Counter[K1, V]) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field./(v, b(k))
-        }
       }
     }
 
@@ -218,9 +209,8 @@ trait CounterOps {
     new OpDiv.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Field[V]]
       def apply(a: Counter[K1, V], b: V) {
-        for ((k, v) <- a.activeIterator) {
+        for ((k, v) <- a.activeIterator)
           a(k) = field./(v, b)
-        }
       }
     }
 
@@ -229,18 +219,16 @@ trait CounterOps {
     new OpSet.InPlaceImpl2[Counter[K1, V], Counter[K2, V]] {
       def apply(a: Counter[K1, V], b: Counter[K2, V]) {
         a.data.clear()
-        for ((k, v) <- b.activeIterator) {
+        for ((k, v) <- b.activeIterator)
           a(k) = v
-        }
       }
     }
 
   implicit def canSetIntoVS[K1, V]: OpSet.InPlaceImpl2[Counter[K1, V], V] =
     new OpSet.InPlaceImpl2[Counter[K1, V], V] {
       def apply(a: Counter[K1, V], b: V) {
-        for (k <- a.keysIterator) {
+        for (k <- a.keysIterator)
           a(k) = b
-        }
       }
     }
 
@@ -312,9 +300,8 @@ trait CounterOps {
     /**Maps all corresponding values from the two collection. */
     def map(from: Counter[K, V], from2: Counter[K, V], fn: (V, V) => RV) = {
       val result = Counter[K, RV]()
-      for (k <- (from.keySet ++ from2.keySet)) {
+      for (k <- (from.keySet ++ from2.keySet))
         result(k) = fn(from(k), from2(k))
-      }
       result
     }
 
@@ -329,9 +316,8 @@ trait CounterOps {
     /**Maps all corresponding values from the two collection. */
     def map(from: Counter[K, V], from2: Counter[K, V], fn: (K, V, V) => RV) = {
       val result = Counter[K, RV]()
-      for (k <- (from.keySet ++ from2.keySet)) {
+      for (k <- (from.keySet ++ from2.keySet))
         result(k) = fn(k, from(k), from2(k))
-      }
       result
     }
 
@@ -348,9 +334,8 @@ trait CounterOps {
   implicit def canTransformValues[L, V]: CanTransformValues[Counter[L, V], V] =
     new CanTransformValues[Counter[L, V], V] {
       def transform(from: Counter[L, V], fn: (V) => V) {
-        for ((k, v) <- from.activeIterator) {
+        for ((k, v) <- from.activeIterator)
           from(k) = fn(v)
-        }
       }
 
       def transformActive(from: Counter[L, V], fn: (V) => V) {

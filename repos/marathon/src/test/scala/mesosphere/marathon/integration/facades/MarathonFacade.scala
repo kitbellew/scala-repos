@@ -366,10 +366,9 @@ class MarathonFacade(
 object MarathonFacade {
   def extractDeploymentIds(
       app: RestResult[AppDefinition]): scala.collection.Seq[String] =
-    try {
-      for (deployment <- (app.entityJson \ "deployments").as[JsArray].value)
-        yield (deployment \ "id").as[String]
-    } catch {
+    try for (deployment <- (app.entityJson \ "deployments").as[JsArray].value)
+      yield (deployment \ "id").as[String]
+    catch {
       case NonFatal(e) =>
         throw new RuntimeException(
           s"while parsing:\n${app.entityPrettyJsonString}",

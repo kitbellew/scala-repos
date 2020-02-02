@@ -91,11 +91,11 @@ private[classification] object GLMClassificationModel {
         case Row(weights: Vector, intercept: Double, _) =>
           (weights, intercept)
       }
-      val threshold = if (data.isNullAt(2)) {
-        None
-      } else {
-        Some(data.getDouble(2))
-      }
+      val threshold =
+        if (data.isNullAt(2))
+          None
+        else
+          Some(data.getDouble(2))
       Data(weights, intercept, threshold)
     }
   }

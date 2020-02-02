@@ -146,18 +146,15 @@ trait StreamInstances {
       import Ordering._
       @annotation.tailrec
       override final def order(a: Stream[A], b: Stream[A]): Ordering =
-        if (a.isEmpty) {
+        if (a.isEmpty)
           if (b.isEmpty) EQ
           else LT
-        } else {
-          if (b.isEmpty) GT
-          else {
-            A.order(a.head, b.head) match {
-              case EQ => order(a.tail, b.tail)
-              case x  => x
-            }
+        else if (b.isEmpty) GT
+        else
+          A.order(a.head, b.head) match {
+            case EQ => order(a.tail, b.tail)
+            case x  => x
           }
-        }
     }
   implicit def streamShow[A](implicit A0: Show[A]) =
     new Show[Stream[A]] {

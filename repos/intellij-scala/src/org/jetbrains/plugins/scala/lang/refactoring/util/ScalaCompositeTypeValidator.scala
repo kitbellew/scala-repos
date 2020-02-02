@@ -59,17 +59,13 @@ class ScalaCompositeTypeValidator(
       case _ => null
     }
 
-    for (file <- filesToSearchIn) {
-      if (buf.isEmpty) {
+    for (file <- filesToSearchIn)
+      if (buf.isEmpty)
         buf ++= getForbiddenNamesInBlock(file, name)
-      }
-    }
 
-    for (validator <- validators) {
-      if (buf.isEmpty) {
+    for (validator <- validators)
+      if (buf.isEmpty)
         buf ++= getForbiddenNames(validator.enclosingContainer(allOcc), name)
-      }
-    }
 
     buf.toArray
   }

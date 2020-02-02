@@ -74,9 +74,8 @@ object LevenshteinSpecs extends Specification with ScalaCheck {
 
         // find hammming distance
         var h = 0
-        for (i <- 0 until s.length) {
+        for (i <- 0 until s.length)
           if (s.charAt(i) != t.charAt(i)) h += 1
-        }
         Levenshtein.distance(s, t) must beLessThanOrEqualTo(h)
     }
 

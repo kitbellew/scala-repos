@@ -53,15 +53,14 @@ case class BroadcastNestedLoopJoin(
   }
 
   private[this] def genResultProjection: InternalRow => InternalRow =
-    if (joinType == LeftSemi) {
+    if (joinType == LeftSemi)
       UnsafeProjection.create(output, output)
-    } else {
+    else
       // Always put the stream side on left to simplify implementation
       // both of left and right side could be null
       UnsafeProjection.create(
         output,
         (streamed.output ++ broadcast.output).map(_.withNullability(true)))
-    }
 
   override def outputPartitioning: Partitioning = streamed.outputPartitioning
 
@@ -84,9 +83,9 @@ case class BroadcastNestedLoopJoin(
     }
 
   @transient private lazy val boundCondition = {
-    if (condition.isDefined) {
+    if (condition.isDefined)
       newPredicate(condition.get, streamed.output ++ broadcast.output)
-    } else { (r: InternalRow) => true }
+    else { (r: InternalRow) => true }
   }
 
   /**
@@ -100,11 +99,10 @@ case class BroadcastNestedLoopJoin(
 
       streamedIter.flatMap { streamedRow =>
         val joinedRows = buildRows.iterator.map(r => joinedRow(streamedRow, r))
-        if (condition.isDefined) {
+        if (condition.isDefined)
           joinedRows.filter(boundCondition)
-        } else {
+        else
           joinedRows
-        }
       }
     }
 
@@ -134,9 +132,8 @@ case class BroadcastNestedLoopJoin(
 
         private def findNextMatch(): Boolean = {
           if (streamRow == null) {
-            if (!streamedIter.hasNext) {
+            if (!streamedIter.hasNext)
               return false
-            }
             streamRow = streamedIter.next()
             nextIndex = 0
             foundMatch = false
@@ -182,12 +179,11 @@ case class BroadcastNestedLoopJoin(
       val buildRows = relation.value
       val joinedRow = new JoinedRow
 
-      if (condition.isDefined) {
+      if (condition.isDefined)
         streamedIter.filter(l =>
           buildRows.exists(r => boundCondition(joinedRow(l, r))))
-      } else {
+      else
         streamedIter.filter(r => !buildRows.isEmpty)
-      }
     }
   }
 
@@ -213,9 +209,8 @@ case class BroadcastNestedLoopJoin(
       streamedIter.foreach { streamedRow =>
         var i = 0
         while (i < buildRows.length) {
-          if (boundCondition(joinedRow(streamedRow, buildRows(i)))) {
+          if (boundCondition(joinedRow(streamedRow, buildRows(i))))
             matched.set(i)
-          }
           i += 1
         }
       }
@@ -232,9 +227,8 @@ case class BroadcastNestedLoopJoin(
       var i = 0
       val rel = relation.value
       while (i < rel.length) {
-        if (matchedBroadcastRows.get(i)) {
+        if (matchedBroadcastRows.get(i))
           buf += rel(i).copy()
-        }
         i += 1
       }
       return sparkContext.makeRDD(buf.toSeq)
@@ -258,9 +252,8 @@ case class BroadcastNestedLoopJoin(
           i += 1
         }
 
-        if (!foundMatch && joinType == FullOuter) {
+        if (!foundMatch && joinType == FullOuter)
           matchedRows += joinedRow(streamedRow, nulls).copy()
-        }
         matchedRows.iterator
       }
     }
@@ -273,9 +266,8 @@ case class BroadcastNestedLoopJoin(
       val joinedRow = new JoinedRow
       joinedRow.withLeft(nulls)
       while (i < buildRows.length) {
-        if (!matchedBroadcastRows.get(i)) {
+        if (!matchedBroadcastRows.get(i))
           buf += joinedRow.withRight(buildRows(i)).copy()
-        }
         i += 1
       }
       buf.toSeq

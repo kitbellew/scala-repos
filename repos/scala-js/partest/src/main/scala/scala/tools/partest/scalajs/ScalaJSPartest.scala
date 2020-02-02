@@ -39,11 +39,10 @@ class ScalaJSRunner(
     options: ScalaJSPartestOptions)
     extends nest.Runner(testFile, suiteRunner) {
 
-  private val compliantSems: List[String] = {
+  private val compliantSems: List[String] =
     scalaJSConfigFile("sem").fold(List.empty[String]) { file =>
       Source.fromFile(file).getLines.toList
     }
-  }
 
   override val checkFile: File = {
     scalaJSConfigFile("check") getOrElse {
@@ -148,11 +147,11 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
   private lazy val testFilter: String => Boolean = {
     import ScalaJSPartestOptions._
     options.testFilter match {
-      case UnknownTests => { absPath =>
-        !blacklistedTestFileNames.contains(absPath) &&
-        !whitelistedTestFileNames.contains(absPath) &&
-        !buglistedTestFileNames.contains(absPath)
-      }
+      case UnknownTests =>
+        absPath =>
+          !blacklistedTestFileNames.contains(absPath) &&
+            !whitelistedTestFileNames.contains(absPath) &&
+            !buglistedTestFileNames.contains(absPath)
       case BlacklistedTests => blacklistedTestFileNames
       case BuglistedTests   => buglistedTestFileNames
       case WhitelistedTests => whitelistedTestFileNames

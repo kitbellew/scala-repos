@@ -53,14 +53,14 @@ object LabeledPoint {
     */
   @Since("1.1.0")
   def parse(s: String): LabeledPoint =
-    if (s.startsWith("(")) {
+    if (s.startsWith("("))
       NumericParser.parse(s) match {
         case Seq(label: Double, numeric: Any) =>
           LabeledPoint(label, Vectors.parseNumeric(numeric))
         case other =>
           throw new SparkException(s"Cannot parse $other.")
       }
-    } else { // dense format used before v1.0
+    else { // dense format used before v1.0
       val parts = s.split(',')
       val label = java.lang.Double.parseDouble(parts(0))
       val features = Vectors.dense(

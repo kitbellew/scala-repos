@@ -205,9 +205,9 @@ object StepWise {
                 s"timeout of $t expired while waiting for $c messages (got only $count)")
             case Msg(_, msg) ⇒
               val nextCount = count + 1
-              if (nextCount == c) {
+              if (nextCount == c)
                 run(ctx, tail, f((msg :: acc).reverse, value))
-              } else behavior(nextCount, msg :: acc)
+              else behavior(nextCount, msg :: acc)
             case Sig(_, other) ⇒
               throwIllegalState(
                 trace,

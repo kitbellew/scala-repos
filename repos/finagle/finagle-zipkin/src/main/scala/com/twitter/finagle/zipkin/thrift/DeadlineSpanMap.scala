@@ -34,9 +34,9 @@ private class DeadlineSpanMap(
   def update(traceId: TraceId)(f: MutableSpan => Unit): Unit = {
     val span: MutableSpan = {
       val span = spanMap.get(traceId)
-      if (span != null) {
+      if (span != null)
         span
-      } else {
+      else {
         val newSpan = new MutableSpan(traceId, Time.now)
         val prev = spanMap.putIfAbsent(traceId, newSpan)
         if (prev == null) newSpan else prev

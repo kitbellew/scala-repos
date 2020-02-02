@@ -41,7 +41,7 @@ class ScalaInheritedMembersNodeProvider
         try {
           if (!clazz.isValid) return children
           val signs = clazz.allSignatures
-          for (sign <- signs) {
+          for (sign <- signs)
             sign match {
               case sign: PhysicalSignature =>
                 sign.method match {
@@ -73,7 +73,6 @@ class ScalaInheritedMembersNodeProvider
                   case _ =>
                 }
             }
-          }
           val types = clazz.allTypeAliases
           for {
             typex <- types

@@ -203,11 +203,11 @@ trait SymbolTables {
           val isFreeTerm = FreeTermDef.unapply(currtab.symDef(sym)).isDefined
           // SI-6204 don't reify signatures for incomplete symbols, because this might lead to cyclic reference errors
           val signature =
-            if (sym.isInitialized) {
+            if (sym.isInitialized)
               if (sym.isCapturedVariable) capturedVariableType(sym)
               else if (isFreeTerm) sym.tpe
               else sym.info
-            } else NoType
+            else NoType
           val rset = reifier.mirrorBuildCall(
             nme.setInfo,
             currtab.symRef(sym),
@@ -256,9 +256,7 @@ trait SymbolTables {
         })
 
         withAliases.toList
-      } finally {
-        reifier.state.restore(backup)
-      }
+      } finally reifier.state.restore(backup)
     }
   }
 }

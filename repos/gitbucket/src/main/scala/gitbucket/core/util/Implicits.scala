@@ -34,12 +34,11 @@ object Implicits {
     private def split[A](list: Seq[A], result: Seq[Seq[A]] = Nil)(
         condition: (A, A) => Boolean): Seq[Seq[A]] =
       list match {
-        case x :: xs => {
+        case x :: xs =>
           xs.span(condition(x, _)) match {
             case (matched, remained) =>
               split(remained, result :+ (x :: matched))(condition)
           }
-        }
         case Nil => result
       }
   }
@@ -57,9 +56,8 @@ object Implicits {
           case None    => sb.append(m.matched)
         }
       }
-      if (i < value.length) {
+      if (i < value.length)
         sb.append(value.substring(i))
-      }
       sb.toString
     }
 
@@ -103,9 +101,8 @@ object Implicits {
 
     def getAndRemove[T](key: String): Option[T] = {
       val value = session.getAttribute(key).asInstanceOf[T]
-      if (value == null) {
+      if (value == null)
         session.removeAttribute(key)
-      }
       Option(value)
     }
   }

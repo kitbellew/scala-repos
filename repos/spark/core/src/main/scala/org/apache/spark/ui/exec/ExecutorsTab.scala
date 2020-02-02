@@ -34,9 +34,8 @@ private[ui] class ExecutorsTab(parent: SparkUI)
     sc.isDefined && parent.conf.getBoolean("spark.ui.threadDumpsEnabled", true)
 
   attachPage(new ExecutorsPage(this, threadDumpEnabled))
-  if (threadDumpEnabled) {
+  if (threadDumpEnabled)
     attachPage(new ExecutorThreadDumpPage(this))
-  }
 }
 
 /**

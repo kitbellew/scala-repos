@@ -44,9 +44,9 @@ abstract class ForwardingWarmUpFilter[Req, Rep](
   def bypassForward: Boolean
 
   final override def apply(request: Req, service: Service[Req, Rep]) =
-    if (warmupComplete || bypassForward) {
+    if (warmupComplete || bypassForward)
       service(request)
-    } else {
+    else {
       val start = startTime.inMillis
 
       val timePassed = math.max(Time.now.inMillis - start, 0)
@@ -58,15 +58,14 @@ abstract class ForwardingWarmUpFilter[Req, Rep](
         service(request)
       } else {
         val r = rng.nextFloat()
-        if (percentWarm > r) {
+        if (percentWarm > r)
           Stat.timeFuture(localLatency)(service(request)) onFailure { _ =>
             localFailureCounter.incr()
           }
-        } else {
+        else
           Stat.timeFuture(forwardLatency)(forwardTo(request)) onFailure { _ =>
             forwardFailureCounter.incr()
           }
-        }
       }
     }
 }

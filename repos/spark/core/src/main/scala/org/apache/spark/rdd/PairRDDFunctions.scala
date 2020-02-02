@@ -97,32 +97,29 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
         "mergeCombiners must be defined"
       ) // required as of Spark 0.9.0
       if (keyClass.isArray) {
-        if (mapSideCombine) {
+        if (mapSideCombine)
           throw new SparkException(
             "Cannot use map-side combining with array keys.")
-        }
-        if (partitioner.isInstanceOf[HashPartitioner]) {
+        if (partitioner.isInstanceOf[HashPartitioner])
           throw new SparkException(
             "Default partitioner cannot partition array keys.")
-        }
       }
       val aggregator = new Aggregator[K, V, C](
         self.context.clean(createCombiner),
         self.context.clean(mergeValue),
         self.context.clean(mergeCombiners))
-      if (self.partitioner == Some(partitioner)) {
+      if (self.partitioner == Some(partitioner))
         self.mapPartitions(iter => {
           val context = TaskContext.get()
           new InterruptibleIterator(
             context,
             aggregator.combineValuesByKey(iter, context))
         }, preservesPartitioning = true)
-      } else {
+      else
         new ShuffledRDD[K, V, C](self, partitioner)
           .setSerializer(serializer)
           .setAggregator(aggregator)
           .setMapSideCombine(mapSideCombine)
-      }
     }
 
   /**
@@ -309,13 +306,13 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
 
     require(fractions.values.forall(v => v >= 0.0), "Negative sampling rates.")
 
-    val samplingFunc = if (withReplacement) {
-      StratifiedSamplingUtils
-        .getPoissonSamplingFunction(self, fractions, false, seed)
-    } else {
-      StratifiedSamplingUtils
-        .getBernoulliSamplingFunction(self, fractions, false, seed)
-    }
+    val samplingFunc =
+      if (withReplacement)
+        StratifiedSamplingUtils
+          .getPoissonSamplingFunction(self, fractions, false, seed)
+      else
+        StratifiedSamplingUtils
+          .getBernoulliSamplingFunction(self, fractions, false, seed)
     self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
   }
 
@@ -341,13 +338,13 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
 
     require(fractions.values.forall(v => v >= 0.0), "Negative sampling rates.")
 
-    val samplingFunc = if (withReplacement) {
-      StratifiedSamplingUtils
-        .getPoissonSamplingFunction(self, fractions, true, seed)
-    } else {
-      StratifiedSamplingUtils
-        .getBernoulliSamplingFunction(self, fractions, true, seed)
-    }
+    val samplingFunc =
+      if (withReplacement)
+        StratifiedSamplingUtils
+          .getPoissonSamplingFunction(self, fractions, true, seed)
+      else
+        StratifiedSamplingUtils
+          .getBernoulliSamplingFunction(self, fractions, true, seed)
     self.mapPartitionsWithIndex(samplingFunc, preservesPartitioning = true)
   }
 
@@ -389,10 +386,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
   def reduceByKeyLocally(func: (V, V) => V): Map[K, V] = self.withScope {
     val cleanedF = self.sparkContext.clean(func)
 
-    if (keyClass.isArray) {
+    if (keyClass.isArray)
       throw new SparkException(
         "reduceByKeyLocally() does not support array keys")
-    }
 
     val reducePartition = (iter: Iterator[(K, V)]) =>
       {
@@ -586,15 +582,13 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     * Return a copy of the RDD partitioned using the specified partitioner.
     */
   def partitionBy(partitioner: Partitioner): RDD[(K, V)] = self.withScope {
-    if (keyClass.isArray && partitioner.isInstanceOf[HashPartitioner]) {
+    if (keyClass.isArray && partitioner.isInstanceOf[HashPartitioner])
       throw new SparkException(
         "Default partitioner cannot partition array keys.")
-    }
-    if (self.partitioner == Some(partitioner)) {
+    if (self.partitioner == Some(partitioner))
       self
-    } else {
+    else
       new ShuffledRDD[K, V, V](self, partitioner)
-    }
   }
 
   /**
@@ -620,11 +614,10 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (V, Option[W]))] = self.withScope {
     this.cogroup(other, partitioner).flatMapValues { pair =>
-      if (pair._2.isEmpty) {
+      if (pair._2.isEmpty)
         pair._1.iterator.map(v => (v, None))
-      } else {
+      else
         for (v <- pair._1.iterator; w <- pair._2.iterator) yield (v, Some(w))
-      }
     }
   }
 
@@ -638,11 +631,10 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (Option[V], W))] = self.withScope {
     this.cogroup(other, partitioner).flatMapValues { pair =>
-      if (pair._1.isEmpty) {
+      if (pair._1.isEmpty)
         pair._2.iterator.map(w => (None, w))
-      } else {
+      else
         for (v <- pair._1.iterator; w <- pair._2.iterator) yield (Some(v), w)
-      }
     }
   }
 
@@ -863,10 +855,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       partitioner: Partitioner)
       : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2], Iterable[W3]))] =
     self.withScope {
-      if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray) {
+      if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray)
         throw new SparkException(
           "Default partitioner cannot partition array keys.")
-      }
       val cg =
         new CoGroupedRDD[K](Seq(self, other1, other2, other3), partitioner)
       cg.mapValues {
@@ -887,10 +878,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other: RDD[(K, W)],
       partitioner: Partitioner): RDD[(K, (Iterable[V], Iterable[W]))] =
     self.withScope {
-      if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray) {
+      if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray)
         throw new SparkException(
           "Default partitioner cannot partition array keys.")
-      }
       val cg = new CoGroupedRDD[K](Seq(self, other), partitioner)
       cg.mapValues {
         case Array(vs, w1s) =>
@@ -907,10 +897,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       other2: RDD[(K, W2)],
       partitioner: Partitioner)
       : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] = self.withScope {
-    if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray) {
+    if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray)
       throw new SparkException(
         "Default partitioner cannot partition array keys.")
-    }
     val cg = new CoGroupedRDD[K](Seq(self, other1, other2), partitioner)
     cg.mapValues {
       case Array(vs, w1s, w2s) =>
@@ -1059,9 +1048,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
         val process = (it: Iterator[(K, V)]) =>
           {
             val buf = new ArrayBuffer[V]
-            for (pair <- it if pair._1 == key) {
+            for (pair <- it if pair._1 == key)
               buf += pair._2
-            }
             buf
           }: Seq[V]
         val res = self.context.runJob(self, process, Array(index))
@@ -1189,9 +1177,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
       }
 
       // Use configured output committer if already set
-      if (conf.getOutputCommitter == null) {
+      if (conf.getOutputCommitter == null)
         hadoopConf.setOutputCommitter(classOf[FileOutputCommitter])
-      }
 
       // When speculation is on and output committer class name contains "Direct", we should warn
       // users that they may loss data if they are using a direct output committer.
@@ -1236,10 +1223,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     val outfmt = job.getOutputFormatClass
     val jobFormat = outfmt.newInstance
 
-    if (isOutputSpecValidationEnabled) {
+    if (isOutputSpecValidationEnabled)
       // FileOutputFormat ignores the filesystem parameter
       jobFormat.checkOutputSpecs(job)
-    }
 
     val writeShard = (context: TaskContext, iter: Iterator[(K, V)]) =>
       {
@@ -1328,15 +1314,12 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
     val outputFormatInstance = hadoopConf.getOutputFormat
     val keyClass = hadoopConf.getOutputKeyClass
     val valueClass = hadoopConf.getOutputValueClass
-    if (outputFormatInstance == null) {
+    if (outputFormatInstance == null)
       throw new SparkException("Output format class not set")
-    }
-    if (keyClass == null) {
+    if (keyClass == null)
       throw new SparkException("Output key class not set")
-    }
-    if (valueClass == null) {
+    if (valueClass == null)
       throw new SparkException("Output value class not set")
-    }
     SparkHadoopUtil.get.addCredentials(hadoopConf)
 
     logDebug(
@@ -1409,13 +1392,12 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(
   private def maybeUpdateOutputMetrics(
       outputMetricsAndBytesWrittenCallback: Option[(OutputMetrics, () => Long)],
       recordsWritten: Long): Unit =
-    if (recordsWritten % PairRDDFunctions.RECORDS_BETWEEN_BYTES_WRITTEN_METRIC_UPDATES == 0) {
+    if (recordsWritten % PairRDDFunctions.RECORDS_BETWEEN_BYTES_WRITTEN_METRIC_UPDATES == 0)
       outputMetricsAndBytesWrittenCallback.foreach {
         case (om, callback) =>
           om.setBytesWritten(callback())
           om.setRecordsWritten(recordsWritten)
       }
-    }
 
   /**
     * Return an RDD with the keys of each tuple.

@@ -72,9 +72,8 @@ class Eval(target: Option[File]) {
   import Eval.jvmId
 
   private lazy val compilerPath =
-    try {
-      classPathOfClass("scala.tools.nsc.Interpreter")
-    } catch {
+    try classPathOfClass("scala.tools.nsc.Interpreter")
+    catch {
       case e: Throwable =>
         throw new RuntimeException(
           "Unable to load Scala interpreter from classpath (scala-compiler jar is missing?)",
@@ -82,9 +81,8 @@ class Eval(target: Option[File]) {
     }
 
   private lazy val libPath =
-    try {
-      classPathOfClass("scala.AnyVal")
-    } catch {
+    try classPathOfClass("scala.AnyVal")
+    catch {
       case e: Throwable =>
         throw new RuntimeException(
           "Unable to load scala base object from classpath (scala-library jar is missing?)",
@@ -160,11 +158,11 @@ class Eval(target: Option[File]) {
       val processed = sourceForString(unprocessedSource)
       val sourceChecksum = uniqueId(processed, None)
       val checksumFile = new File(targetDir, "checksum")
-      val lastChecksum = if (checksumFile.exists) {
-        Source.fromFile(checksumFile).getLines().take(1).toList.head
-      } else {
-        -1
-      }
+      val lastChecksum =
+        if (checksumFile.exists)
+          Source.fromFile(checksumFile).getLines().take(1).toList.head
+        else
+          -1
 
       if (lastChecksum != sourceChecksum) {
         compiler.reset()
@@ -179,11 +177,10 @@ class Eval(target: Option[File]) {
       val cleanBaseName = fileToClassName(files(0))
       val className = "Evaluator__%s_%s".format(cleanBaseName, sourceChecksum)
       applyProcessed(className, processed, false)
-    } else {
+    } else
       apply(
         files.map { scala.io.Source.fromFile(_).mkString }.mkString("\n"),
         true)
-    }
 
   /**
     * val i: Int = new Eval()(getClass.getResourceAsStream("..."))
@@ -376,19 +373,17 @@ class Eval(target: Option[File]) {
                             val nestedClassPath =
                               new JarFile(jarFile).getManifest.getMainAttributes
                                 .getValue("Class-Path")
-                            if (nestedClassPath eq null) {
+                            if (nestedClassPath eq null)
                               Nil
-                            } else {
+                            else
                               nestedClassPath
                                 .split(" ")
                                 .map { f =>
                                   new File(relativeRoot, f).getAbsolutePath
                                 }
                                 .toList
-                            }
-                          } else {
-                            Nil
-                          }) ::: classPath.tail.flatten
+                          } else
+                            Nil) ::: classPath.tail.flatten
   }
 
   trait Preprocessor {
@@ -448,22 +443,19 @@ class Eval(target: Option[File]) {
         if (tokens.length == 2 && tokens(0).equals("#include")) {
           val path = tokens(1)
           resolvers find { resolver: Resolver => resolver.resolvable(path) } match {
-            case Some(r: Resolver) => {
+            case Some(r: Resolver) =>
               // recursively process includes
-              if (maxDepth == 0) {
+              if (maxDepth == 0)
                 throw new IllegalStateException(
                   "Exceeded maximum recusion depth")
-              } else {
+              else
                 apply(StreamIO.buffer(r.get(path)).toString, maxDepth - 1)
-              }
-            }
             case _ =>
               throw new IllegalStateException(
                 "No resolver could find '%s'".format(path))
           }
-        } else {
+        } else
           line
-        }
       }
       lines.mkString("\n")
     }
@@ -514,19 +506,17 @@ class Eval(target: Option[File]) {
         }
         // the line number is not always available
         val lineMessage =
-          try {
-            "line " + (pos.line - lineOffset)
-          } catch {
+          try "line " + (pos.line - lineOffset)
+          catch {
             case _: Throwable => ""
           }
         messages += (severityName + lineMessage + ": " + message) ::
-          (if (pos.isDefined) {
+          (if (pos.isDefined)
              pos.inUltimateSource(pos.source).lineContent.stripLineEnd ::
                (" " * (pos.column - 1) + "^") ::
                Nil
-           } else {
-             Nil
-           })
+           else
+             Nil)
       }
 
       def displayPrompt {
@@ -550,17 +540,14 @@ class Eval(target: Option[File]) {
 
     def reset() {
       targetDir match {
-        case None => {
+        case None =>
           target.asInstanceOf[VirtualDirectory].clear()
-        }
-        case Some(t) => {
+        case Some(t) =>
           target.foreach { abstractFile =>
             if (abstractFile.file == null || abstractFile.file.getName.endsWith(
-                  ".class")) {
+                  ".class"))
               abstractFile.delete()
-            }
           }
-        }
       }
       cache.clear()
       reporter.reset()

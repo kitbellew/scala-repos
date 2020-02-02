@@ -52,12 +52,11 @@ class LoadGenerator[Req, Rep](
     // sort of a hack
     def removeInterstices(end: Time, ctl: TimeControl) {
       val removees = endTimes.rangeImpl(None, Some(end))
-      for (ts <- removees) {
+      for (ts <- removees)
         if (ts - cur > Duration.Zero) {
           forward(ts - cur, ctl)
           cur = ts
         }
-      }
       endTimes --= removees
       forward(end - cur, ctl)
       cur = end
@@ -67,9 +66,8 @@ class LoadGenerator[Req, Rep](
     Time.withTimeAt(cur) { ctl =>
       history foreach { evt =>
         val diff = (evt.start - cur)
-        if (diff > Duration.Zero) {
+        if (diff > Duration.Zero)
           removeInterstices(evt.start, ctl)
-        }
         cur = evt.start
         endTimes += (evt.finish)
         recorder(evt.length, svc(evt))

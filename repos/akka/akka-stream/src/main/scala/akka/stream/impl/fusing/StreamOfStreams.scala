@@ -79,9 +79,8 @@ final class FlattenMerge[T, M](breadth: Int)
           if (isAvailable(out)) {
             push(out, sinkIn.grab())
             sinkIn.pull()
-          } else {
+          } else
             q.enqueue(sinkIn)
-          }
         override def onUpstreamFinish(): Unit =
           if (!sinkIn.isAvailable) removeSource(sinkIn)
       })
@@ -179,9 +178,9 @@ final class PrefixAndTail[T](n: Int)
     }
 
     override def onPush(): Unit =
-      if (prefixComplete) {
+      if (prefixComplete)
         tailSource.push(grab(in))
-      } else {
+      else {
         builder += grab(in)
         left -= 1
         if (left == 0) {
@@ -196,10 +195,10 @@ final class PrefixAndTail[T](n: Int)
       } else pull(in)
 
     override def onUpstreamFinish(): Unit =
-      if (!prefixComplete) {
+      if (!prefixComplete)
         // This handles the unpulled out case as well
         emit(out, (builder.result, Source.empty), () ⇒ completeStage())
-      } else {
+      else {
         if (!tailSource.isClosed) tailSource.complete()
         completeStage()
       }
@@ -371,27 +370,24 @@ final class Split[T](
 
         override def onDownstreamFinish(): Unit = {
           substreamCancelled = true
-          if (isClosed(in) || propagateSubstreamCancel) {
+          if (isClosed(in) || propagateSubstreamCancel)
             completeStage()
-          } else {
-            // Start draining
-            if (!hasBeenPulled(in)) pull(in)
-          }
+          else
+          // Start draining
+          if (!hasBeenPulled(in)) pull(in)
         }
 
         override def onPush(): Unit = {
           val elem = grab(in)
-          try {
-            if (p(elem)) {
-              val handler = new SubstreamHandler
-              closeThis(handler, elem)
-              handOver(handler)
-            } else {
-              // Drain into the void
-              if (substreamCancelled) pull(in)
-              else substreamSource.push(elem)
-            }
-          } catch {
+          try if (p(elem)) {
+            val handler = new SubstreamHandler
+            closeThis(handler, elem)
+            handOver(handler)
+          } else
+          // Drain into the void
+          if (substreamCancelled) pull(in)
+          else substreamSource.push(elem)
+          catch {
             case NonFatal(ex) ⇒ onUpstreamFailure(ex)
           }
         }

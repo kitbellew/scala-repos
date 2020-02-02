@@ -151,10 +151,9 @@ object JavaResultExtractor {
   def withHeader(
       responseHeader: ResponseHeader,
       nameValues: String*): ResponseHeader = {
-    if (nameValues.length % 2 != 0) {
+    if (nameValues.length % 2 != 0)
       throw new IllegalArgumentException(
         "Unmatched name - withHeaders must be invoked with an even number of string arguments")
-    }
     val toAdd = nameValues.grouped(2).map(pair => pair(0) -> pair(1))
     responseHeader.copy(headers = responseHeader.headers ++ toAdd)
   }

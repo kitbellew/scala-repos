@@ -84,11 +84,10 @@ case class SetSimilarity(intersection: Int, sizeLeft: Int, sizeRight: Int) {
       Some(0.0)
     else {
       val denom = scala.math.sqrt(sizeLeft.toDouble * sizeRight.toDouble)
-      if (denom == 0.0) {
+      if (denom == 0.0)
         None
-      } else {
+      else
         Some(intersection.toDouble / denom)
-      }
     }
 }
 
@@ -181,13 +180,13 @@ object TypedSimilarity extends Serializable {
                     val weight =
                       1.0 / scala.math.sqrt(deg1.toDouble * deg2.toDouble)
                     val prob = oversample * weight
-                    if (prob >= 1.0) {
+                    if (prob >= 1.0)
                       // Small degree case, just output all of them:
                       Iterator(((node1, node2), weight))
-                    } else if (rnd.nextDouble < prob) {
+                    else if (rnd.nextDouble < prob)
                       // Sample
                       Iterator(((node1, node2), 1.0 / oversample))
-                    } else
+                    else
                       Iterator.empty
                 }
             }
@@ -224,14 +223,14 @@ object TypedSimilarity extends Serializable {
                   case (node2, weight2, norm2) =>
                     val weight = 1.0 / (norm1.toDouble * norm2.toDouble)
                     val prob = oversample * weight
-                    if (prob >= 1.0) {
+                    if (prob >= 1.0)
                       // Small degree case, just output all of them:
                       Iterator(((node1, node2), weight * weight1 * weight2))
-                    } else if (rnd.nextDouble < prob) {
+                    else if (rnd.nextDouble < prob)
                       // Sample
                       Iterator(
                         ((node1, node2), 1.0 / oversample * weight1 * weight2))
-                    } else
+                    else
                       Iterator.empty
                 }
             }

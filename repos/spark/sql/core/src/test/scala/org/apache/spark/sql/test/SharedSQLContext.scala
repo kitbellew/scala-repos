@@ -42,9 +42,8 @@ trait SharedSQLContext extends SQLTestUtils {
     */
   protected override def beforeAll(): Unit = {
     SQLContext.clearSqlListener()
-    if (_ctx == null) {
+    if (_ctx == null)
       _ctx = new TestSQLContext
-    }
     // Ensure we have initialized the context before calling parent code
     super.beforeAll()
   }
@@ -53,12 +52,8 @@ trait SharedSQLContext extends SQLTestUtils {
     * Stop the underlying [[org.apache.spark.SparkContext]], if any.
     */
   protected override def afterAll(): Unit =
-    try {
-      if (_ctx != null) {
-        _ctx.sparkContext.stop()
-        _ctx = null
-      }
-    } finally {
-      super.afterAll()
-    }
+    try if (_ctx != null) {
+      _ctx.sparkContext.stop()
+      _ctx = null
+    } finally super.afterAll()
 }

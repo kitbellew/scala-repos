@@ -228,9 +228,9 @@ private[niflheim] object NIHDBActor extends Logging {
       implicit actorSystem: ActorSystem): IO[Validation[Error, ActorRef]] = {
     val descriptorFile = new File(baseDir, descriptorFilename)
     val currentState: IO[Validation[Error, ProjectionState]] =
-      if (descriptorFile.exists) {
+      if (descriptorFile.exists)
         ProjectionState.fromFile(descriptorFile)
-      } else {
+      else {
         val state = ProjectionState.empty(authorities)
         for {
           _ <- IO {
@@ -238,9 +238,7 @@ private[niflheim] object NIHDBActor extends Logging {
               "No current descriptor found for " + baseDir + "; " + authorities + ", creating fresh descriptor")
           }
           _ <- ProjectionState.toFile(state, descriptorFile)
-        } yield {
-          success(state)
-        }
+        } yield success(state)
       }
 
     currentState map {
@@ -255,9 +253,9 @@ private[niflheim] object NIHDBActor extends Logging {
   final def readDescriptor(
       baseDir: File): IO[Option[Validation[Error, ProjectionState]]] = {
     val descriptorFile = new File(baseDir, descriptorFilename)
-    if (descriptorFile.exists) {
+    if (descriptorFile.exists)
       ProjectionState.fromFile(descriptorFile) map { Some(_) }
-    } else {
+    else {
       logger.warn("No projection found at " + baseDir)
       IO { None }
     }
@@ -330,11 +328,9 @@ private[niflheim] class NIHDBActor private (
   }
 
   private def initDirs(f: File) = IO {
-    if (!f.isDirectory) {
-      if (!f.mkdirs) {
+    if (!f.isDirectory)
+      if (!f.mkdirs)
         throw new Exception("Failed to create dir: " + f)
-      }
-    }
   }
 
   private def initActorState = IO {
@@ -349,14 +345,12 @@ private[niflheim] class NIHDBActor private (
     val (currentLog, rawLogOffsets) = if (currentRawFile.exists) {
       val (handler, offsets, ok) =
         RawHandler.load(txLog.currentBlockId, currentRawFile)
-      if (!ok) {
+      if (!ok)
         logger.warn(
           "Corruption detected and recovery performed on " + currentRawFile)
-      }
       (handler, offsets)
-    } else {
+    } else
       (RawHandler.empty(txLog.currentBlockId, currentRawFile), Seq.empty[Long])
-    }
 
     rawLogOffsets.sortBy(-_).headOption.foreach { newMaxOffset =>
       maxOffset = maxOffset max newMaxOffset
@@ -364,10 +358,9 @@ private[niflheim] class NIHDBActor private (
 
     val pendingCooks = txLog.pendingCookIds.map { id =>
       val (reader, offsets, ok) = RawHandler.load(id, rawFileFor(id))
-      if (!ok) {
+      if (!ok)
         logger.warn(
           "Corruption detected and recovery performed on " + currentRawFile)
-      }
       maxOffset = math.max(maxOffset, offsets.max)
       (id, reader)
     }.toMap

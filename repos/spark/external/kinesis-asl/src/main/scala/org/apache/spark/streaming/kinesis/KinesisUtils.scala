@@ -523,15 +523,13 @@ private class KinesisUtilsPythonHelper {
       awsAccessKeyId: String,
       awsSecretKey: String
   ): JavaReceiverInputDStream[Array[Byte]] = {
-    if (awsAccessKeyId == null && awsSecretKey != null) {
+    if (awsAccessKeyId == null && awsSecretKey != null)
       throw new IllegalArgumentException(
         "awsSecretKey is set but awsAccessKeyId is null")
-    }
-    if (awsAccessKeyId != null && awsSecretKey == null) {
+    if (awsAccessKeyId != null && awsSecretKey == null)
       throw new IllegalArgumentException(
         "awsAccessKeyId is set but awsSecretKey is null")
-    }
-    if (awsAccessKeyId == null && awsSecretKey == null) {
+    if (awsAccessKeyId == null && awsSecretKey == null)
       KinesisUtils.createStream(
         jssc,
         kinesisAppName,
@@ -541,7 +539,7 @@ private class KinesisUtilsPythonHelper {
         getInitialPositionInStream(initialPositionInStream),
         checkpointInterval,
         storageLevel)
-    } else {
+    else
       KinesisUtils.createStream(
         jssc,
         kinesisAppName,
@@ -554,7 +552,6 @@ private class KinesisUtilsPythonHelper {
         awsAccessKeyId,
         awsSecretKey
       )
-    }
   }
 
 }

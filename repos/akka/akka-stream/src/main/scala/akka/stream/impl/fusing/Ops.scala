@@ -79,9 +79,8 @@ private[akka] final case class DropWhile[T](
     if (taking || !p(elem)) {
       taking = true
       ctx.push(elem)
-    } else {
+    } else
       ctx.pull()
-    }
 
   override def decide(t: Throwable): Supervision.Directive = decider(t)
 }
@@ -359,11 +358,11 @@ private[akka] final case class Sliding[T](n: Int, step: Int)
       elem: T,
       ctx: Context[immutable.Seq[T]]): SyncDirective = {
     buf :+= elem
-    if (buf.size < n) {
+    if (buf.size < n)
       ctx.pull()
-    } else if (buf.size == n) {
+    else if (buf.size == n)
       ctx.push(buf)
-    } else if (step > n) {
+    else if (step > n) {
       if (buf.size == step)
         buf = Vector.empty
       ctx.pull()
@@ -496,7 +495,7 @@ private[akka] final case class Batch[In, Out](
           push(out, agg)
           left = max
         }
-        if (pending != null) {
+        if (pending != null)
           try {
             agg = seed(pending)
             left -= costFn(pending)
@@ -510,9 +509,8 @@ private[akka] final case class Batch[In, Out](
                   pending = null.asInstanceOf[In]
               }
           }
-        } else {
+        else
           agg = null.asInstanceOf[Out]
-        }
       }
 
       override def preStart() = pull(in)
@@ -525,7 +523,7 @@ private[akka] final case class Batch[In, Out](
             val elem = grab(in)
             val cost = costFn(elem)
 
-            if (agg == null) {
+            if (agg == null)
               try {
                 agg = seed(elem)
                 left -= cost
@@ -538,9 +536,9 @@ private[akka] final case class Batch[In, Out](
                     case Supervision.Resume ⇒
                   }
               }
-            } else if (left < cost) {
+            else if (left < cost)
               pending = elem
-            } else {
+            else
               try {
                 agg = aggregate(agg, elem)
                 left -= cost
@@ -553,7 +551,6 @@ private[akka] final case class Batch[In, Out](
                     case Supervision.Resume ⇒
                   }
               }
-            }
 
             if (isAvailable(out)) flush()
             if (pending == null) pull(in)
@@ -569,31 +566,30 @@ private[akka] final case class Batch[In, Out](
         new OutHandler {
 
           override def onPull(): Unit =
-            if (agg == null) {
+            if (agg == null)
               if (isClosed(in)) completeStage()
               else if (!hasBeenPulled(in)) pull(in)
-            } else if (isClosed(in)) {
-              push(out, agg)
-              if (pending == null) completeStage()
-              else {
-                try {
-                  agg = seed(pending)
-                } catch {
-                  case NonFatal(ex) ⇒
-                    decider(ex) match {
-                      case Supervision.Stop ⇒ failStage(ex)
-                      case Supervision.Resume ⇒
-                      case Supervision.Restart ⇒
-                        restartState()
-                        if (!hasBeenPulled(in)) pull(in)
-                    }
+              else if (isClosed(in)) {
+                push(out, agg)
+                if (pending == null) completeStage()
+                else {
+                  try agg = seed(pending)
+                  catch {
+                    case NonFatal(ex) ⇒
+                      decider(ex) match {
+                        case Supervision.Stop ⇒ failStage(ex)
+                        case Supervision.Resume ⇒
+                        case Supervision.Restart ⇒
+                          restartState()
+                          if (!hasBeenPulled(in)) pull(in)
+                      }
+                  }
+                  pending = null.asInstanceOf[In]
                 }
-                pending = null.asInstanceOf[In]
+              } else {
+                flush()
+                if (!hasBeenPulled(in)) pull(in)
               }
-            } else {
-              flush()
-              if (!hasBeenPulled(in)) pull(in)
-            }
 
         }
       )
@@ -628,13 +624,13 @@ private[akka] final class Expand[In, Out](extrapolate: In ⇒ Iterator[Out])
       new InHandler {
         override def onPush(): Unit = {
           iterator = extrapolate(grab(in))
-          if (iterator.hasNext) {
+          if (iterator.hasNext)
             if (isAvailable(out)) {
               expanded = true
               pull(in)
               push(out, iterator.next())
             } else expanded = false
-          } else pull(in)
+          else pull(in)
         }
         override def onUpstreamFinish(): Unit =
           if (iterator.hasNext && !expanded) () // need to wait
@@ -646,7 +642,7 @@ private[akka] final class Expand[In, Out](extrapolate: In ⇒ Iterator[Out])
       out,
       new OutHandler {
         override def onPull(): Unit =
-          if (iterator.hasNext) {
+          if (iterator.hasNext)
             if (expanded == false) {
               expanded = true
               if (isClosed(in)) {
@@ -658,7 +654,6 @@ private[akka] final class Expand[In, Out](extrapolate: In ⇒ Iterator[Out])
                 push(out, iterator.next())
               }
             } else push(out, iterator.next())
-          }
       }
     )
   }
@@ -705,18 +700,18 @@ private[akka] final case class MapAsync[In, Out](
         buffer = BufferImpl(parallelism, materializer)
 
       @tailrec private def pushOne(): Unit =
-        if (buffer.isEmpty) {
+        if (buffer.isEmpty)
           if (isClosed(in)) completeStage()
           else if (!hasBeenPulled(in)) pull(in)
-        } else if (buffer.peek.elem == NotYetThere) {
-          if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
-        } else
-          buffer.dequeue().elem match {
-            case Failure(ex) ⇒ pushOne()
-            case Success(elem) ⇒
-              push(out, elem)
-              if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
-          }
+          else if (buffer.peek.elem == NotYetThere) {
+            if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
+          } else
+            buffer.dequeue().elem match {
+              case Failure(ex) ⇒ pushOne()
+              case Success(elem) ⇒
+                push(out, elem)
+                if (todo < parallelism && !hasBeenPulled(in)) tryPull(in)
+            }
 
       def failOrPull(holder: Holder[Try[Out]], f: Failure[Out]) =
         if (decider(f.exception) == Supervision.Stop) failStage(f.exception)

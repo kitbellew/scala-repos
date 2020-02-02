@@ -303,9 +303,9 @@ trait BufferWriter extends Buffer {
     * more information.
     */
   def writeLengthCodedBinary(length: Long): BufferWriter =
-    if (length < 251) {
+    if (length < 251)
       writeByte(length.toInt)
-    } else if (length < 65536) {
+    else if (length < 65536) {
       writeByte(252)
       writeShort(length.toInt)
     } else if (length < 16777216) {

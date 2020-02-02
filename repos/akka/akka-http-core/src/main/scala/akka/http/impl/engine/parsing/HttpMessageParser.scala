@@ -382,7 +382,7 @@ private[http] abstract class HttpMessageParser[
       input: ByteString,
       bodyStart: Int): StateResult = {
     val remainingInputBytes = input.length - bodyStart
-    if (remainingInputBytes > 0) {
+    if (remainingInputBytes > 0)
       if (remainingInputBytes < remainingBodyBytes) {
         emit(EntityPart(input.drop(bodyStart).compact))
         continue(
@@ -397,7 +397,7 @@ private[http] abstract class HttpMessageParser[
         if (isLastMessage) terminate()
         else startNewMessage(input, offset)
       }
-    } else
+    else
       continue(input, bodyStart)(
         parseFixedLengthBody(remainingBodyBytes, isLastMessage))
   }
@@ -416,7 +416,7 @@ private[http] abstract class HttpMessageParser[
       val lineEnd =
         try headerParser.parseHeaderLine(input, lineStart)()
         catch { case e: ParsingException ⇒ errorInfo = e.info; 0 }
-      if (errorInfo eq null) {
+      if (errorInfo eq null)
         headerParser.resultHeader match {
           case EmptyHeader ⇒
             val lastChunk =
@@ -433,7 +433,7 @@ private[http] abstract class HttpMessageParser[
             failEntityStream(
               s"Chunk trailer contains more than the configured limit of $maxHeaderCount headers")
         }
-      } else failEntityStream(errorInfo)
+      else failEntityStream(errorInfo)
     }
 
     def parseChunkBody(
@@ -476,7 +476,7 @@ private[http] abstract class HttpMessageParser[
           s"HTTP chunk extension length exceeds configured limit of $maxChunkExtLength characters")
 
     @tailrec def parseSize(cursor: Int, size: Long): StateResult =
-      if (size <= maxChunkSize) {
+      if (size <= maxChunkSize)
         byteChar(input, cursor) match {
           case c if CharacterClasses.HEXDIG(c) ⇒
             parseSize(cursor + 1, size * 16 + CharUtils.hexValue(c))
@@ -487,7 +487,7 @@ private[http] abstract class HttpMessageParser[
           case c ⇒
             failEntityStream(s"Illegal character '${escape(c)}' in chunk start")
         }
-      } else
+      else
         failEntityStream(
           s"HTTP chunk size exceeds the configured limit of $maxChunkSize bytes")
 

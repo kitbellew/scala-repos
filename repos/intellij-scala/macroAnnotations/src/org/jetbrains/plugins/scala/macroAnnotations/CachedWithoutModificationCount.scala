@@ -65,9 +65,8 @@ object CachedWithoutModificationCount {
 
     annottees.toList match {
       case DefDef(mods, name, tpParams, paramss, retTp, rhs) :: Nil =>
-        if (retTp.isEmpty) {
+        if (retTp.isEmpty)
           abort("You must specify return type")
-        }
         //generated names
         val cacheVarName = c.freshName(name)
         val mapName = generateTermName(name.toString)
@@ -98,20 +97,20 @@ object CachedWithoutModificationCount {
         val addToBuffers = buffersToAddTo.map { buffer =>
           q"$buffer += $mapName"
         }
-        val fields = if (hasParameters) {
-          q"""
+        val fields =
+          if (hasParameters)
+            q"""
             private val $mapName = new java.util.concurrent.ConcurrentHashMap[(..${flatParams
-            .map(_.tpt)}), $wrappedRetTp]()
+              .map(_.tpt)}), $wrappedRetTp]()
             ..$analyzeCachesField
             ..$addToBuffers
           """
-        } else {
-          q"""
+          else
+            q"""
             new _root_.scala.volatile()
             private var $cacheVarName: $wrappedRetTp = null.asInstanceOf[$wrappedRetTp]
             ..$analyzeCachesField
           """
-        }
 
         def getValuesFromMap: c.universe.Tree =
           q"""
@@ -123,11 +122,10 @@ object CachedWithoutModificationCount {
         val hasCacheExpired =
           if (valueWrapper == ValueWrapper.None)
             q"$cacheVarName == null.asInstanceOf[$wrappedRetTp]"
-          else {
+          else
             q"""
               $cacheVarName == null.asInstanceOf[$wrappedRetTp] || $cacheVarName.get() == null.asInstanceOf[$retTp]
             """
-          }
 
         val wrappedResult = valueWrapper match {
           case ValueWrapper.None => q"cacheFunResult"
@@ -154,14 +152,14 @@ object CachedWithoutModificationCount {
           else q"$cacheVarName.get"}
           """
         val getValuesIfHasParams =
-          if (hasParameters) {
+          if (hasParameters)
             q"""
               ..$getValuesFromMap
             """
-          } else q""
+          else q""
 
         val functionContentsInSynchronizedBlock =
-          if (synchronized) {
+          if (synchronized)
             q"""
               ..$getValuesIfHasParams
               if ($hasCacheExpired) {
@@ -171,11 +169,10 @@ object CachedWithoutModificationCount {
                 $functionContents
               }
             """
-          } else {
+          else
             q"""
               $functionContents
             """
-          }
         val actualCalculation =
           transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
         val updatedRhs =

@@ -41,29 +41,25 @@ private[spark] class CompactBuffer[T: ClassTag]
   private var otherElements: Array[T] = null
 
   def apply(position: Int): T = {
-    if (position < 0 || position >= curSize) {
+    if (position < 0 || position >= curSize)
       throw new IndexOutOfBoundsException
-    }
-    if (position == 0) {
+    if (position == 0)
       element0
-    } else if (position == 1) {
+    else if (position == 1)
       element1
-    } else {
+    else
       otherElements(position - 2)
-    }
   }
 
   private def update(position: Int, value: T): Unit = {
-    if (position < 0 || position >= curSize) {
+    if (position < 0 || position >= curSize)
       throw new IndexOutOfBoundsException
-    }
-    if (position == 0) {
+    if (position == 0)
       element0 = value
-    } else if (position == 1) {
+    else if (position == 1)
       element1 = value
-    } else {
+    else
       otherElements(position - 2) = value
-    }
   }
 
   def +=(value: T): CompactBuffer[T] = {
@@ -90,9 +86,9 @@ private[spark] class CompactBuffer[T: ClassTag]
         val itsSize = compactBuf.curSize
         val itsElements = compactBuf.otherElements
         growToSize(curSize + itsSize)
-        if (itsSize == 1) {
+        if (itsSize == 1)
           this(oldSize) = compactBuf.element0
-        } else if (itsSize == 2) {
+        else if (itsSize == 2) {
           this(oldSize) = compactBuf.element0
           this(oldSize + 1) = compactBuf.element1
         } else if (itsSize > 2) {
@@ -118,9 +114,8 @@ private[spark] class CompactBuffer[T: ClassTag]
     private var pos = 0
     override def hasNext: Boolean = pos < curSize
     override def next(): T = {
-      if (!hasNext) {
+      if (!hasNext)
         throw new NoSuchElementException
-      }
       pos += 1
       apply(pos - 1)
     }
@@ -128,26 +123,23 @@ private[spark] class CompactBuffer[T: ClassTag]
 
   /** Increase our size to newSize and grow the backing array if needed. */
   private def growToSize(newSize: Int): Unit = {
-    if (newSize < 0) {
+    if (newSize < 0)
       throw new UnsupportedOperationException(
         "Can't grow buffer past Int.MaxValue elements")
-    }
     val capacity = if (otherElements != null) otherElements.length + 2 else 2
     if (newSize > capacity) {
       var newArrayLen = 8
       while (newSize - 2 > newArrayLen) {
         newArrayLen *= 2
-        if (newArrayLen == Int.MinValue) {
+        if (newArrayLen == Int.MinValue)
           // Prevent overflow if we double from 2^30 to 2^31, which will become Int.MinValue.
           // Note that we set the new array length to Int.MaxValue - 2 so that our capacity
           // calculation above still gives a positive integer.
           newArrayLen = Int.MaxValue - 2
-        }
       }
       val newArray = new Array[T](newArrayLen)
-      if (otherElements != null) {
+      if (otherElements != null)
         System.arraycopy(otherElements, 0, newArray, 0, otherElements.length)
-      }
       otherElements = newArray
     }
     curSize = newSize

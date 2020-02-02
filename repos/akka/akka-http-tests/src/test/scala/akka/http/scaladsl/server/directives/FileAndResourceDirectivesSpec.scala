@@ -102,11 +102,9 @@ class FileAndResourceDirectivesSpec
 
     "properly handle zero-byte files" in {
       val file = File.createTempFile("akkaHttpTest", null)
-      try {
-        Get() ~> getFromFile(file) ~> check {
-          mediaType shouldEqual NoMediaType
-          responseAs[String] shouldEqual ""
-        }
+      try Get() ~> getFromFile(file) ~> check {
+        mediaType shouldEqual NoMediaType
+        responseAs[String] shouldEqual ""
       } finally file.delete
     }
 

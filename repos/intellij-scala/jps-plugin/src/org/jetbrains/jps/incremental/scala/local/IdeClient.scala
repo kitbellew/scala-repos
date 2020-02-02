@@ -33,9 +33,8 @@ abstract class IdeClient(
       source: Option[File],
       line: Option[Long],
       column: Option[Long]) {
-    if (kind == Kind.ERROR) {
+    if (kind == Kind.ERROR)
       hasErrors = true
-    }
 
     val name = if (source.isEmpty) compilerName else ""
 
@@ -43,9 +42,9 @@ abstract class IdeClient(
 
     context.getProjectDescriptor.getProject.getName
     if (kind == Kind.WARNING && ScalaReflectMacroExpansionParser.isMacroMessage(
-          text)) {
+          text))
       ScalaReflectMacroExpansionParser.processMessage(text)
-    } else {
+    else {
       val withoutPointer =
         if (sourcePath.isDefined && line.isDefined && column.isDefined) {
           val lines = text.split('\n')

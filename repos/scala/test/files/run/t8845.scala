@@ -2,12 +2,10 @@
 object Interpreter {
   def mkDataProp(i: Int) = i
   def break(n: Int): Unit =
-    try {
-      n match {
-        case _ =>
-          val newDesc = mkDataProp(n)
-          n match { case _ => return }
-      }
+    try n match {
+      case _ =>
+        val newDesc = mkDataProp(n)
+        n match { case _ => return }
     } catch { case e: Throwable => }
     finally {}
 }

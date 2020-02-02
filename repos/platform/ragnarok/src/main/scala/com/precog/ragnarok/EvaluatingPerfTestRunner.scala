@@ -101,13 +101,12 @@ trait EvaluatingPerfTestRunner[M[+_], T]
       val forest = Timing.time("Compiling query")(compile(query))
       val valid = forest filter { _.errors forall isWarning }
 
-      if (valid.isEmpty) {
+      if (valid.isEmpty)
         sys.error("Error parsing query:\n" + (forest flatMap { _.errors } map {
           _.toString
         } mkString "\n"))
-      } else if (valid.size > 1) {
+      else if (valid.size > 1)
         sys.error("Ambiguous parse tree.")
-      }
 
       val tree = valid.head
 

@@ -82,9 +82,7 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
       }
 
       is.foreach { i => buildFairSchedulerPool(i) }
-    } finally {
-      is.foreach(_.close())
-    }
+    } finally is.foreach(_.close())
 
     // finally create "default" pool
     buildDefaultPool()
@@ -118,24 +116,20 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
       var weight = DEFAULT_WEIGHT
 
       val xmlSchedulingMode = (poolNode \ SCHEDULING_MODE_PROPERTY).text
-      if (xmlSchedulingMode != "") {
-        try {
-          schedulingMode = SchedulingMode.withName(xmlSchedulingMode)
-        } catch {
+      if (xmlSchedulingMode != "")
+        try schedulingMode = SchedulingMode.withName(xmlSchedulingMode)
+        catch {
           case e: NoSuchElementException =>
             logWarning("Error xml schedulingMode, using default schedulingMode")
         }
-      }
 
       val xmlMinShare = (poolNode \ MINIMUM_SHARES_PROPERTY).text
-      if (xmlMinShare != "") {
+      if (xmlMinShare != "")
         minShare = xmlMinShare.toInt
-      }
 
       val xmlWeight = (poolNode \ WEIGHT_PROPERTY).text
-      if (xmlWeight != "") {
+      if (xmlWeight != "")
         weight = xmlWeight.toInt
-      }
 
       val pool = new Pool(poolName, schedulingMode, minShare, weight)
       rootPool.addSchedulable(pool)

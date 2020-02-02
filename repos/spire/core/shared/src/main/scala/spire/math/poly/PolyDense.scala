@@ -63,9 +63,9 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       ct: ClassTag[C]): Polynomial[C] = {
     var i = coeffs.length - 2
     while (i >= 0 && coeffs(i) === ring.zero) i -= 1
-    if (i < 0) {
+    if (i < 0)
       new PolyDense(new Array[C](0))
-    } else {
+    else {
       val arr = new Array[C](i + 1)
       System.arraycopy(coeffs, 0, arr, 0, i + 1)
       new PolyDense(arr)
@@ -92,9 +92,8 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       var c1 = coeffs(odd)
       cfor(odd - 2)(_ >= 1, _ - 2) { i => c1 = coeffs(i) + c1 * x2 }
       c0 + c1 * x
-    } else {
+    } else
       c0
-    }
   }
 
   def derivative(implicit ring: Ring[C], eq: Eq[C]): Polynomial[C] = {
@@ -166,9 +165,9 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
         q: Array[C],
         u: Array[C],
         n: Int): (Polynomial[C], Polynomial[C]) =
-      if (u.isEmpty || n < 0) {
+      if (u.isEmpty || n < 0)
         (polyFromCoeffsLE(q), polyFromCoeffsBE(u))
-      } else {
+      else {
         val v0 = if (rhs.isZero) field.zero else rhs.maxOrderTermCoeff
         val q0 = u(0) / v0
         val uprime = zipSum(u, rhs.coeffsArray.reverse.map(_ * -q0))
@@ -176,22 +175,21 @@ class PolyDense[@sp(Double) C] private[spire] (val coeffs: Array[C])(
       }
 
     val cs = rhs.coeffsArray
-    if (cs.length == 0) {
+    if (cs.length == 0)
       throw new ArithmeticException("/ by zero polynomial")
-    } else if (cs.length == 1) {
+    else if (cs.length == 1) {
       val c = cs(0)
       val q = Polynomial.dense(lhs.coeffs.map(_ / c))
       val r = Polynomial.dense(new Array[C](0))
       (q, r)
-    } else {
+    } else
       eval(new Array[C](0), lhs.coeffs.reverse, lhs.degree - rhs.degree)
-    }
   }
 
   def *:(k: C)(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C] =
-    if (k === ring.zero) {
+    if (k === ring.zero)
       Polynomial.dense(new Array[C](0))
-    } else {
+    else {
       val cs = new Array[C](coeffs.length)
       cfor(0)(_ < cs.length, _ + 1) { i => cs(i) = k * coeffs(i) }
       Polynomial.dense(cs)
@@ -204,9 +202,9 @@ object PolyDense {
       rhs: Polynomial[C]): Polynomial[C] = {
     val lcoeffs = lhs.coeffsArray
     val rcoeffs = rhs.coeffsArray
-    if (lcoeffs.length < rcoeffs.length) {
+    if (lcoeffs.length < rcoeffs.length)
       plusDense(rhs, lhs)
-    } else {
+    else {
       val cs = new Array[C](lcoeffs.length)
       cfor(0)(_ < rcoeffs.length, _ + 1) { i =>
         cs(i) = lcoeffs(i) + rcoeffs(i)

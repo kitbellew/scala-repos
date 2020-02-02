@@ -63,9 +63,9 @@ abstract class IteratorTemplate[T]
   def maybeComputeNext(): Boolean = {
     state = FAILED
     nextItem = makeNext()
-    if (state == DONE) {
+    if (state == DONE)
       false
-    } else {
+    else {
       state = READY
       true
     }

@@ -153,7 +153,7 @@ trait ShardQueryExecutorPlatform[M[+_]]
                     applyQueryOptions(opts) {
                       logger.debug("[QID:%d] Evaluating query".format(qid))
 
-                      if (queryLogger.isDebugEnabled) {
+                      if (queryLogger.isDebugEnabled)
                         eval(dag, evaluationContext, true) map {
                           _.logged(
                             queryLogger,
@@ -163,9 +163,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
                             "size: " + slice.size
                           }
                         }
-                      } else {
+                      else
                         eval(dag, evaluationContext, true)
-                      }
                     }
                 }
               } getOrElse {
@@ -217,9 +216,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
           }: _*)
 
           table flatMap { tbl => mn(tbl.sort(sortKey, opts.sortOrder)) }
-        } else {
+        } else
           table
-        }
 
       def page(table: N[Table]): N[Table] =
         opts.page map {
@@ -253,9 +251,9 @@ trait ShardQueryExecutorPlatform[M[+_]]
           val faults = tree.errors map renderError
 
           (faults, Some(emit(validForest.head)))
-        } else if (validForest.size > 1) {
+        } else if (validForest.size > 1)
           (Set(Fault.Error(None, "Ambiguous parse results.")), None)
-        } else {
+        else {
           val faults = forest flatMap { tree =>
             (tree.errors: Set[Error]) map renderError
           }

@@ -48,14 +48,12 @@ class ScalaAggregateFunction(schema: StructType)
     (0 until schema.length).foreach { i => buffer.update(i, null) }
 
   def update(buffer: MutableAggregationBuffer, input: Row): Unit =
-    if (!input.isNullAt(0) && input.getInt(0) == 50) {
+    if (!input.isNullAt(0) && input.getInt(0) == 50)
       (0 until schema.length).foreach { i => buffer.update(i, input.get(i)) }
-    }
 
   def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit =
-    if (!buffer2.isNullAt(0) && buffer2.getInt(0) == 50) {
+    if (!buffer2.isNullAt(0) && buffer2.getInt(0) == 50)
       (0 until schema.length).foreach { i => buffer1.update(i, buffer2.get(i)) }
-    }
 
   def evaluate(buffer: Row): Any =
     Row.fromSeq(buffer.toSeq)
@@ -106,9 +104,8 @@ class LongProductSum extends UserDefinedAggregateFunction {
     buffer(0) = 0L
 
   def update(buffer: MutableAggregationBuffer, input: Row): Unit =
-    if (!(input.isNullAt(0) || input.isNullAt(1))) {
+    if (!(input.isNullAt(0) || input.isNullAt(1)))
       buffer(0) = buffer.getLong(0) + input.getLong(0) * input.getLong(1)
-    }
 
   def merge(buffer1: MutableAggregationBuffer, buffer2: Row): Unit =
     buffer1(0) = buffer1.getLong(0) + buffer2.getLong(0)

@@ -80,18 +80,16 @@ private class FixedBufWriter(arr: Array[Byte]) extends BufWriter {
   private[this] def remaining = arr.length - index
 
   def writeByte(b: Int): BufWriter = {
-    if (remaining < 1) {
+    if (remaining < 1)
       throw new OverflowException("insufficient space to write a byte")
-    }
     arr(index) = (b & 0xff).toByte
     index += 1
     this
   }
 
   def writeShortBE(s: Int): BufWriter = {
-    if (remaining < 2) {
+    if (remaining < 2)
       throw new OverflowException("insufficient space to write 2 bytes")
-    }
     arr(index) = ((s >> 8) & 0xff).toByte
     arr(index + 1) = ((s) & 0xff).toByte
     index += 2
@@ -99,9 +97,8 @@ private class FixedBufWriter(arr: Array[Byte]) extends BufWriter {
   }
 
   def writeIntBE(i: Int): BufWriter = {
-    if (remaining < 4) {
+    if (remaining < 4)
       throw new OverflowException("insufficient space to write 4 bytes")
-    }
     arr(index) = ((i >> 24) & 0xff).toByte
     arr(index + 1) = ((i >> 16) & 0xff).toByte
     arr(index + 2) = ((i >> 8) & 0xff).toByte
@@ -111,9 +108,8 @@ private class FixedBufWriter(arr: Array[Byte]) extends BufWriter {
   }
 
   def writeLongBE(l: Long): BufWriter = {
-    if (remaining < 8) {
+    if (remaining < 8)
       throw new OverflowException("insufficient space to write 8 bytes")
-    }
     arr(index) = ((l >> 56) & 0xff).toByte
     arr(index + 1) = ((l >> 48) & 0xff).toByte
     arr(index + 2) = ((l >> 40) & 0xff).toByte
@@ -127,10 +123,9 @@ private class FixedBufWriter(arr: Array[Byte]) extends BufWriter {
   }
 
   def writeBytes(bs: Array[Byte]): BufWriter = {
-    if (remaining < bs.length) {
+    if (remaining < bs.length)
       throw new OverflowException(
         s"insufficient space to write ${bs.length} bytes")
-    }
     System.arraycopy(bs, 0, arr, index, bs.length)
     index += bs.length
     this

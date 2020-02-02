@@ -27,7 +27,7 @@ object Packaging {
         }
         //parsing body of regular packaging
         builder.getTokenType match {
-          case ScalaTokenTypes.tLBRACE => {
+          case ScalaTokenTypes.tLBRACE =>
             if (builder.twoNewlinesBeforeCurrentToken) {
               builder error ScalaBundle.message("lbrace.expected")
               packMarker.done(ScalaElementTypes.PACKAGING)
@@ -43,12 +43,10 @@ object Packaging {
             builder.restoreNewlinesState
             packMarker.done(ScalaElementTypes.PACKAGING)
             true
-          }
-          case _ => {
+          case _ =>
             builder error ScalaBundle.message("lbrace.expected")
             packMarker.done(ScalaElementTypes.PACKAGING)
             true
-          }
         }
       case _ =>
         //this code shouldn't be reachable, if it is, this is unexpected error

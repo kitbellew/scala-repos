@@ -43,12 +43,11 @@ class MavenRemoteRepositoryResolver(
   sbt.io.IO.createDirectory(localRepo)
   protected val session =
     MavenRepositorySystemFactory.newSessionImpl(system, localRepo)
-  private val aetherRepository = {
+  private val aetherRepository =
     new org.eclipse.aether.repository.RemoteRepository.Builder(
       repo.name,
       SbtRepositoryLayout.LAYOUT_NAME,
       repo.root).build()
-  }
   // TODO - Check if isUseCacheOnly is used correctly.
   private def isUseCacheOnly: Boolean =
     Option(IvyContext.getContext)

@@ -178,7 +178,7 @@ final class Emitter private (
           }
           addTree(classEmitter.genES6Class(linkedClass, allMembers))
       }
-    } else if (kind == ClassKind.Interface) {
+    } else if (kind == ClassKind.Interface)
       // Default methods
       for (m <- linkedClass.memberMethods) yield {
         val methodCache = classCache.getMethodCache(m.info.encodedName)
@@ -187,22 +187,19 @@ final class Emitter private (
             m.version,
             classEmitter.genDefaultMethod(className, m.tree)))
       }
-    }
 
-    if (classEmitter.needInstanceTests(linkedClass)) {
+    if (classEmitter.needInstanceTests(linkedClass))
       addTree(
         classTreeCache.instanceTests.getOrElseUpdate(
           js.Block(
             classEmitter.genInstanceTests(linkedClass),
             classEmitter.genArrayInstanceTests(linkedClass)
           )(linkedClass.pos)))
-    }
 
-    if (linkedClass.hasRuntimeTypeInfo) {
+    if (linkedClass.hasRuntimeTypeInfo)
       addTree(
         classTreeCache.typeData.getOrElseUpdate(
           classEmitter.genTypeData(linkedClass)))
-    }
 
     if (linkedClass.hasInstances && kind.isClass && linkedClass.hasRuntimeTypeInfo)
       addTree(
@@ -233,9 +230,8 @@ final class Emitter private (
       if (endOfLine != -1) {
         builder.addLine(str.substring(index, endOfLine))
         emitNextLine(endOfLine + 1)
-      } else {
+      } else
         builder.addLine(str.substring(index, str.length))
-      }
     }
     if (str != "")
       emitNextLine(0)
@@ -262,9 +258,8 @@ final class Emitter private (
         statsClassesInvalidated += 1
         _lastVersion = version
         _cache = new DesugaredClassCache
-      } else {
+      } else
         statsClassesReused += 1
-      }
       _cacheUsed = true
       _cache
     }
@@ -298,9 +293,8 @@ final class Emitter private (
         statsMethodsInvalidated += 1
         _tree = v
         _lastVersion = version
-      } else {
+      } else
         statsMethodsReused += 1
-      }
       _cacheUsed = true
       _tree
     }

@@ -63,11 +63,10 @@ private[hive] object HiveShim {
     var first: Boolean = old.isEmpty
 
     for (col <- cols) {
-      if (first) {
+      if (first)
         first = false
-      } else {
+      else
         result.append(',')
-      }
       result.append(col)
     }
     conf.set(ColumnProjectionUtils.READ_COLUMN_NAMES_CONF_STR, result.toString)
@@ -80,12 +79,10 @@ private[hive] object HiveShim {
       conf: Configuration,
       ids: Seq[Integer],
       names: Seq[String]) {
-    if (ids != null && ids.nonEmpty) {
+    if (ids != null && ids.nonEmpty)
       ColumnProjectionUtils.appendReadColumns(conf, ids.asJava)
-    }
-    if (names != null && names.nonEmpty) {
+    if (names != null && names.nonEmpty)
       appendReadColumnNames(conf, names)
-    }
   }
 
   /*
@@ -100,30 +97,28 @@ private[hive] object HiveShim {
         w.setRecordReaderID(new UID())
         // In Hive 1.1, the record's schema may need to be initialized manually or a NPE will
         // be thrown.
-        if (w.getFileSchema() == null) {
+        if (w.getFileSchema() == null)
           serDeProps
             .find(
               _._1 == AvroSerdeUtils.AvroTableProperties.SCHEMA_LITERAL
                 .getPropName())
             .foreach { kv => w.setFileSchema(new Schema.Parser().parse(kv._2)) }
-        }
       case _ =>
     }
     w
   }
 
   def toCatalystDecimal(hdoi: HiveDecimalObjectInspector, data: Any): Decimal =
-    if (hdoi.preferWritable()) {
+    if (hdoi.preferWritable())
       Decimal(
         hdoi.getPrimitiveWritableObject(data).getHiveDecimal().bigDecimalValue,
         hdoi.precision(),
         hdoi.scale())
-    } else {
+    else
       Decimal(
         hdoi.getPrimitiveJavaObject(data).bigDecimalValue(),
         hdoi.precision(),
         hdoi.scale())
-    }
 
   /**
     * This class provides the UDF creation and also the UDF instance serialization and
@@ -143,23 +138,21 @@ private[hive] object HiveShim {
     def this() = this(null)
 
     override def hashCode(): Int =
-      if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
+      if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS)
         Objects.hashCode(
           functionClassName,
           instance.asInstanceOf[GenericUDFMacro].getBody())
-      } else {
+      else
         functionClassName.hashCode()
-      }
 
     override def equals(other: Any): Boolean = other match {
       case a: HiveFunctionWrapper if functionClassName == a.functionClassName =>
         // In case of udf macro, check to make sure they point to the same underlying UDF
-        if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS) {
+        if (functionClassName == HIVE_GENERIC_UDF_MACRO_CLS)
           a.instance.asInstanceOf[GenericUDFMacro].getBody() ==
             instance.asInstanceOf[GenericUDFMacro].getBody()
-        } else {
+        else
           true
-        }
       case _ => false
     }
 
@@ -234,18 +227,17 @@ private[hive] object HiveShim {
     }
 
     def createFunction[UDFType <: AnyRef](): UDFType =
-      if (instance != null) {
+      if (instance != null)
         instance.asInstanceOf[UDFType]
-      } else {
+      else {
         val func = Utils.getContextOrSparkClassLoader
           .loadClass(functionClassName)
           .newInstance
           .asInstanceOf[UDFType]
-        if (!func.isInstanceOf[UDF]) {
+        if (!func.isInstanceOf[UDF])
           // We cache the function if it's no the Simple UDF,
           // as we always have to create new instance for Simple UDF
           instance = func
-        }
         func
       }
   }

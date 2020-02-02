@@ -130,12 +130,11 @@ object DecisionTreeExample {
         .required()
         .action((x, c) => c.copy(input = x))
       checkConfig { params =>
-        if (params.fracTest < 0 || params.fracTest >= 1) {
+        if (params.fracTest < 0 || params.fracTest >= 1)
           failure(
             s"fracTest ${params.fracTest} value incorrect; should be in [0,1).")
-        } else {
+        else
           success
-        }
       }
     }
 
@@ -199,10 +198,9 @@ object DecisionTreeExample {
       val origTestExamples: DataFrame =
         loadData(sqlContext, testInput, dataFormat, Some(numFeatures))
       Array(origExamples, origTestExamples)
-    } else {
+    } else
       // Split input into training, test.
       origExamples.randomSplit(Array(1.0 - fracTest, fracTest), seed = 12345)
-    }
 
     val training = dataframes(0).cache()
     val test = dataframes(1).cache()
@@ -291,19 +289,17 @@ object DecisionTreeExample {
       case "classification" =>
         val treeModel = pipelineModel.stages.last
           .asInstanceOf[DecisionTreeClassificationModel]
-        if (treeModel.numNodes < 20) {
+        if (treeModel.numNodes < 20)
           println(treeModel.toDebugString) // Print full model.
-        } else {
+        else
           println(treeModel) // Print model summary.
-        }
       case "regression" =>
         val treeModel =
           pipelineModel.stages.last.asInstanceOf[DecisionTreeRegressionModel]
-        if (treeModel.numNodes < 20) {
+        if (treeModel.numNodes < 20)
           println(treeModel.toDebugString) // Print full model.
-        } else {
+        else
           println(treeModel) // Print model summary.
-        }
       case _ =>
         throw new IllegalArgumentException("Algo ${params.algo} not supported.")
     }

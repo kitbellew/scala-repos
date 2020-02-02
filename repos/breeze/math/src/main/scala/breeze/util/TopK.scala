@@ -27,9 +27,9 @@ class TopK[T](k: Int)(implicit ord: Ordering[T]) extends Iterable[T] {
   private val keys = new TreeSet[T](ord);
 
   def +=(e: T) =
-    if (keys.size < k) {
+    if (keys.size < k)
       keys.add(e);
-    } else if (keys.size > 0 && ord.lt(keys.first, e) && !keys.contains(e)) {
+    else if (keys.size > 0 && ord.lt(keys.first, e) && !keys.contains(e)) {
       keys.remove(keys.first);
       keys.add(e);
     }

@@ -46,7 +46,7 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     evalDataSet should have size en
 
     forAll(evalDataSet.zipWithIndex) {
-      case (evalData, ex) => {
+      case (evalData, ex) =>
         val (evalInfo, qpaRDD) = evalData
         evalInfo shouldBe EvalInfo(0)
 
@@ -64,7 +64,7 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
             qQx shouldBe aQx
 
             inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
+              case Prediction(pId, pQ, pModels, pPs) =>
                 pId shouldBe 3
                 pQ shouldBe q
                 pModels shouldBe None
@@ -74,10 +74,8 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
                   Prediction(id = 21, q = q, models = Some(model1)),
                   Prediction(id = 22, q = q, models = Some(model2))
                 )
-              }
             }
         }
-      }
     }
   }
 
@@ -119,20 +117,18 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
     // When things are cached correctly, evalDataSet0 and 1 should share the
     // same EI
     evalDataSet0.zip(evalDataSet1).foreach {
-      case (e0, e1) => {
+      case (e0, e1) =>
         e0._1 should be theSameInstanceAs e1._1
         e0._2 should be theSameInstanceAs e1._2
-      }
     }
 
     // So as set1 and set2, however, the QPA-RDD should be different.
     evalDataSet1.zip(evalDataSet2).foreach {
-      case (e1, e2) => {
+      case (e1, e2) =>
         e1._1 should be theSameInstanceAs e2._1
         val e1Qpa = e1._2
         val e2Qpa = e2._2
         e1Qpa should not be theSameInstanceAs(e2Qpa)
-      }
     }
   }
 
@@ -178,17 +174,15 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
 
     // Set0 should have same EI as Set1, since their dsp are the same instance.
     evalDataSet0.zip(evalDataSet1).foreach {
-      case (e0, e1) => {
+      case (e0, e1) =>
         e0._1 should be theSameInstanceAs (e1._1)
-      }
     }
 
     // Set1 should have different EI as Set2, since Set2's dsp is another
     // instance
     evalDataSet1.zip(evalDataSet2).foreach {
-      case (e1, e2) => {
+      case (e1, e2) =>
         e1._1 should not be theSameInstanceAs(e2._1)
-      }
     }
   }
 }

@@ -376,9 +376,9 @@ private[hive] trait HiveInspectors {
       }.orNull
     case mi: MapObjectInspector =>
       val map = mi.getMap(data)
-      if (map == null) {
+      if (map == null)
         null
-      } else {
+      else {
         val keyValues = map.asScala.toSeq
         val keys = keyValues
           .map(kv => unwrap(kv._1, mi.getMapKeyObjectInspector))
@@ -407,42 +407,37 @@ private[hive] trait HiveInspectors {
         if (o != null) {
           val s = o.asInstanceOf[UTF8String].toString
           new HiveVarchar(s, s.length)
-        } else {
+        } else
           null
-        }
 
     case _: JavaHiveCharObjectInspector =>
       (o: Any) =>
         if (o != null) {
           val s = o.asInstanceOf[UTF8String].toString
           new HiveChar(s, s.length)
-        } else {
+        } else
           null
-        }
 
     case _: JavaHiveDecimalObjectInspector =>
       (o: Any) =>
-        if (o != null) {
+        if (o != null)
           HiveDecimal.create(o.asInstanceOf[Decimal].toJavaBigDecimal)
-        } else {
+        else
           null
-        }
 
     case _: JavaDateObjectInspector =>
       (o: Any) =>
-        if (o != null) {
+        if (o != null)
           DateTimeUtils.toJavaDate(o.asInstanceOf[Int])
-        } else {
+        else
           null
-        }
 
     case _: JavaTimestampObjectInspector =>
       (o: Any) =>
-        if (o != null) {
+        if (o != null)
           DateTimeUtils.toJavaTimestamp(o.asInstanceOf[Long])
-        } else {
+        else
           null
-        }
 
     case soi: StandardStructObjectInspector =>
       val schema = dataType.asInstanceOf[StructType]
@@ -450,7 +445,7 @@ private[hive] trait HiveInspectors {
         case (ref, field) =>
           wrapperFor(ref.getFieldObjectInspector, field.dataType)
       }
-      (o: Any) => {
+      (o: Any) =>
         if (o != null) {
           val struct = soi.create()
           val row = o.asInstanceOf[InternalRow]
@@ -462,24 +457,20 @@ private[hive] trait HiveInspectors {
                 wrapper(row.get(i, schema(i).dataType)))
           }
           struct
-        } else {
+        } else
           null
-        }
-      }
 
     case loi: ListObjectInspector =>
       val elementType = dataType.asInstanceOf[ArrayType].elementType
       val wrapper = wrapperFor(loi.getListElementObjectInspector, elementType)
-      (o: Any) => {
+      (o: Any) =>
         if (o != null) {
           val array = o.asInstanceOf[ArrayData]
           val values = new java.util.ArrayList[Any](array.numElements())
           array.foreach(elementType, (_, e) => values.add(wrapper(e)))
           values
-        } else {
+        } else
           null
-        }
-      }
 
     case moi: MapObjectInspector =>
       val mt = dataType.asInstanceOf[MapType]
@@ -487,7 +478,7 @@ private[hive] trait HiveInspectors {
       val valueWrapper =
         wrapperFor(moi.getMapValueObjectInspector, mt.valueType)
 
-      (o: Any) => {
+      (o: Any) =>
         if (o != null) {
           val map = o.asInstanceOf[MapData]
           val jmap = new java.util.HashMap[Any, Any](map.numElements())
@@ -496,10 +487,8 @@ private[hive] trait HiveInspectors {
             mt.valueType,
             (k, v) => jmap.put(keyWrapper(k), valueWrapper(v)))
           jmap
-        } else {
+        } else
           null
-        }
-      }
 
     case _ =>
       identity[Any]
@@ -752,10 +741,10 @@ private[hive] trait HiveInspectors {
       getPrimitiveNullWritableConstantObjectInspector
     case Literal(value, ArrayType(dt, _)) =>
       val listObjectInspector = toInspector(dt)
-      if (value == null) {
+      if (value == null)
         ObjectInspectorFactory
           .getStandardConstantListObjectInspector(listObjectInspector, null)
-      } else {
+      else {
         val list = new java.util.ArrayList[Object]()
         value
           .asInstanceOf[ArrayData]
@@ -766,10 +755,10 @@ private[hive] trait HiveInspectors {
     case Literal(value, MapType(keyType, valueType, _)) =>
       val keyOI = toInspector(keyType)
       val valueOI = toInspector(valueType)
-      if (value == null) {
+      if (value == null)
         ObjectInspectorFactory
           .getStandardConstantMapObjectInspector(keyOI, valueOI, null)
-      } else {
+      else {
         val map = value.asInstanceOf[MapData]
         val jmap = new java.util.HashMap[Any, Any](map.numElements())
 
@@ -932,29 +921,26 @@ private[hive] trait HiveInspectors {
     else new hadoopIo.IntWritable(value.asInstanceOf[Int])
 
   private def getDoubleWritable(value: Any): hiveIo.DoubleWritable =
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       new hiveIo.DoubleWritable(value.asInstanceOf[Double])
-    }
 
   private def getBooleanWritable(value: Any): hadoopIo.BooleanWritable =
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       new hadoopIo.BooleanWritable(value.asInstanceOf[Boolean])
-    }
 
   private def getLongWritable(value: Any): hadoopIo.LongWritable =
     if (value == null) null
     else new hadoopIo.LongWritable(value.asInstanceOf[Long])
 
   private def getFloatWritable(value: Any): hadoopIo.FloatWritable =
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       new hadoopIo.FloatWritable(value.asInstanceOf[Float])
-    }
 
   private def getShortWritable(value: Any): hiveIo.ShortWritable =
     if (value == null) null
@@ -965,32 +951,29 @@ private[hive] trait HiveInspectors {
     else new hiveIo.ByteWritable(value.asInstanceOf[Byte])
 
   private def getBinaryWritable(value: Any): hadoopIo.BytesWritable =
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       new hadoopIo.BytesWritable(value.asInstanceOf[Array[Byte]])
-    }
 
   private def getDateWritable(value: Any): hiveIo.DateWritable =
     if (value == null) null
     else new hiveIo.DateWritable(value.asInstanceOf[Int])
 
   private def getTimestampWritable(value: Any): hiveIo.TimestampWritable =
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       new hiveIo.TimestampWritable(
         DateTimeUtils.toJavaTimestamp(value.asInstanceOf[Long]))
-    }
 
   private def getDecimalWritable(value: Any): hiveIo.HiveDecimalWritable =
-    if (value == null) {
+    if (value == null)
       null
-    } else {
+    else
       // TODO precise, scale?
       new hiveIo.HiveDecimalWritable(
         HiveDecimal.create(value.asInstanceOf[Decimal].toJavaBigDecimal))
-    }
 
   implicit class typeInfoConversions(dt: DataType) {
     import org.apache.hadoop.hive.serde2.typeinfo._

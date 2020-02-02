@@ -70,13 +70,12 @@ case class PartitionedDelimitedSource[P, T](
     "The number of fields needs to be the same as the arity of the value setter")
 
   val types: Array[Class[_]] = {
-    if (classOf[scala.Product].isAssignableFrom(mt.runtimeClass)) {
+    if (classOf[scala.Product].isAssignableFrom(mt.runtimeClass))
       //Assume this is a Tuple:
       mt.typeArguments.map { _.runtimeClass }.toArray
-    } else {
+    else
       //Assume there is only a single item
       Array(mt.runtimeClass)
-    }
   }
 
   // Create the underlying scheme and explicitly set the sink fields to be only the specified fields

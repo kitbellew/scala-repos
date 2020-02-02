@@ -62,18 +62,17 @@ object ServerSSLEngine {
     var noArgsConstructor: Constructor[_] = null
     for (constructor <- providerClass.getConstructors) {
       val parameterTypes = constructor.getParameterTypes
-      if (parameterTypes.length == 0) {
+      if (parameterTypes.length == 0)
         noArgsConstructor = constructor
-      } else if (parameterTypes.length == 1 && classOf[
-                   play.server.ApplicationProvider]
-                   .isAssignableFrom(parameterTypes(0))) {
+      else if (parameterTypes.length == 1 && classOf[
+                 play.server.ApplicationProvider]
+                 .isAssignableFrom(parameterTypes(0)))
         providerArgsConstructor = constructor
-      } else if (parameterTypes.length == 2 &&
-                 classOf[ServerConfig].isAssignableFrom(parameterTypes(0)) &&
-                 classOf[play.server.ApplicationProvider]
-                   .isAssignableFrom(parameterTypes(1))) {
+      else if (parameterTypes.length == 2 &&
+               classOf[ServerConfig].isAssignableFrom(parameterTypes(0)) &&
+               classOf[play.server.ApplicationProvider]
+                 .isAssignableFrom(parameterTypes(1)))
         serverConfigProviderArgsConstructor = constructor
-      }
     }
 
     def javaAppProvider = {
@@ -83,22 +82,21 @@ object ServerSSLEngine {
       new play.server.ApplicationProvider(javaApplication)
     }
 
-    if (serverConfigProviderArgsConstructor != null) {
+    if (serverConfigProviderArgsConstructor != null)
       serverConfigProviderArgsConstructor
         .newInstance(serverConfig, javaAppProvider)
         .asInstanceOf[JavaSSLEngineProvider]
-    } else if (providerArgsConstructor != null) {
+    else if (providerArgsConstructor != null)
       providerArgsConstructor
         .newInstance(javaAppProvider)
         .asInstanceOf[JavaSSLEngineProvider]
-    } else if (noArgsConstructor != null) {
+    else if (noArgsConstructor != null)
       noArgsConstructor
         .newInstance()
         .asInstanceOf[play.server.SSLEngineProvider]
-    } else {
+    else
       throw new ClassCastException(
         "No constructor with (appProvider:play.server.ApplicationProvider) or no-args constructor defined!")
-    }
   }
 
   private def createScalaSSLEngineProvider(
@@ -112,34 +110,31 @@ object ServerSSLEngine {
     var noArgsConstructor: Constructor[ScalaSSLEngineProvider] = null
     for (constructor <- providerClass.getConstructors) {
       val parameterTypes = constructor.getParameterTypes
-      if (parameterTypes.length == 0) {
+      if (parameterTypes.length == 0)
         noArgsConstructor =
           constructor.asInstanceOf[Constructor[ScalaSSLEngineProvider]]
-      } else if (parameterTypes.length == 1 && classOf[ApplicationProvider]
-                   .isAssignableFrom(parameterTypes(0))) {
+      else if (parameterTypes.length == 1 && classOf[ApplicationProvider]
+                 .isAssignableFrom(parameterTypes(0)))
         providerArgsConstructor =
           constructor.asInstanceOf[Constructor[ScalaSSLEngineProvider]]
-      } else if (parameterTypes.length == 2 &&
-                 classOf[ServerConfig].isAssignableFrom(parameterTypes(0)) &&
-                 classOf[ApplicationProvider].isAssignableFrom(
-                   parameterTypes(1))) {
+      else if (parameterTypes.length == 2 &&
+               classOf[ServerConfig].isAssignableFrom(parameterTypes(0)) &&
+               classOf[ApplicationProvider].isAssignableFrom(parameterTypes(1)))
         serverConfigProviderArgsConstructor =
           constructor.asInstanceOf[Constructor[ScalaSSLEngineProvider]]
-      }
     }
 
-    if (serverConfigProviderArgsConstructor != null) {
+    if (serverConfigProviderArgsConstructor != null)
       serverConfigProviderArgsConstructor.newInstance(
         serverConfig,
         applicationProvider)
-    } else if (providerArgsConstructor != null) {
+    else if (providerArgsConstructor != null)
       providerArgsConstructor.newInstance(applicationProvider)
-    } else if (noArgsConstructor != null) {
+    else if (noArgsConstructor != null)
       noArgsConstructor.newInstance()
-    } else {
+    else
       throw new ClassCastException(
         "No constructor with (appProvider:play.core.ApplicationProvider) or no-args constructor defined!")
-    }
 
   }
 }

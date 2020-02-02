@@ -45,18 +45,17 @@ class CaseFilter extends ElementFilter {
           var node = leaf.getPrevSibling
           if (node.isInstanceOf[PsiWhiteSpace]) node = node.getPrevSibling
           node match {
-            case x: PsiErrorElement => {
+            case x: PsiErrorElement =>
               val s = ErrMsg("wrong.top.statment.declaration")
               x.getErrorDescription match {
                 case `s` => return true
                 case _   => return false
               }
-            }
             case _ => return true
           }
         case _ =>
       }
-      if (parent.getParent != null) {
+      if (parent.getParent != null)
         parent.getParent.getParent match {
           case _: ScCaseClause =>
             if (parent.getParent.getParent.getNode.findChildByType(
@@ -64,7 +63,6 @@ class CaseFilter extends ElementFilter {
             else return false
           case _ =>
         }
-      }
       parent.getParent match {
         case _: ScBlockExpr | _: ScTemplateBody =>
           parent match {
@@ -91,7 +89,7 @@ class CaseFilter extends ElementFilter {
           leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
             .isInstanceOf[PsiErrorElement])))
         return true
-      if (parent.isInstanceOf[ScTemplateBody]) {
+      if (parent.isInstanceOf[ScTemplateBody])
         if (leaf.getPrevSibling != null &&
             leaf.getPrevSibling.getPrevSibling != null &&
             leaf.getPrevSibling.getPrevSibling.getLastChild != null &&
@@ -101,7 +99,6 @@ class CaseFilter extends ElementFilter {
             leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
               .isInstanceOf[PsiErrorElement])
           return true
-      }
     }
     false
   }
